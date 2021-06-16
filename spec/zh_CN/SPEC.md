@@ -26,7 +26,7 @@ Meta UI 的规范则是平台搭建者与使用者之间沟通的桥梁。
 - 域（scope）代表了一组 component 的边界，不同 scope 内的 component 无法互相访问，一个 component 可以属于多个 scope。
 - 应用（application）包含了一组 component、trait、scope 的元数据与配置参数。
 
-![](/Users/yanzhen/workspace/meta-ui/assets/overview.png)
+![](../../assets/overview.png)
 
 ## Component
 
