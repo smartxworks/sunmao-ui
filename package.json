@@ -5,6 +5,22 @@
     "lerna": "lerna"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "husky": "^6.0.0",
+    "lerna": "^4.0.0",
+    "lint-staged": "^11.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "packages/**/!(generated)/*.{js,ts,tsx,yml,json}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
