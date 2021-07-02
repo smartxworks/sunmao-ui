@@ -1464,7 +1464,7 @@
 
 "@types/json-schema@^7.0.7":
   version "7.0.7"
-  resolved "https://registry.yarnpkg.com/@types/json-schema/download/@types/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
+  resolved "http://192.168.26.29:7001/@types/json-schema/download/@types/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
   integrity sha1-mKmTUWyFnrDVxMjwmDF6nqaNua0=
 
 "@types/minimatch@^3.0.3":
