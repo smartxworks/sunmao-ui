@@ -1,0 +1,12 @@
+{
+  "extends": "../../config/tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "lib",
+    "lib": ["es6"],
+    "composite": true,
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["__tests__/**/*.ts"]
+}
