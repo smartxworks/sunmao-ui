@@ -1,10 +1,19 @@
 import React from "react";
 import { RuntimeComponent } from "@meta-ui/core";
+import { setStore } from "./store";
+// components
 import PlainButton from "./components/plain/Button";
+import CoreText from "./components/core/Text";
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
-  impl: React.FC;
+  impl: Implementation;
 };
+
+export type Implementation<T = any> = React.FC<
+  T & {
+    mergeState: (partialState: Parameters<typeof setStore>[0]) => void;
+  }
+>;
 
 class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
@@ -33,3 +42,4 @@ class Registry {
 export const registry = new Registry();
 
 registry.registerComponent(PlainButton);
+registry.registerComponent(CoreText);

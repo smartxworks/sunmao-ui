@@ -48,7 +48,7 @@ export type RuntimeApplication = Omit<Application, "spec"> & {
 
 type A = RuntimeApplication["spec"]["components"];
 
-const TYPE_REG = /^([a-zA-Z-_\d]+\/[a-zA-Z-_\d]+)\/([a-zA-Z-_\d]+)$/;
+const TYPE_REG = /^([a-zA-Z0-9_\d]+\/[a-zA-Z0-9_\d]+)\/([a-zA-Z0-9_\d]+)$/;
 function isValidType(v: string): boolean {
   return TYPE_REG.test(v);
 }

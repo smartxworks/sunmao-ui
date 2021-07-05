@@ -6,14 +6,14 @@ describe("scope", () => {
       createScope({
         version: "core/v1",
         metadata: {
-          name: "test-scope",
+          name: "test_scope",
         },
       })
     ).toMatchInlineSnapshot(`
       Object {
         "kind": "Scope",
         "metadata": Object {
-          "name": "test-scope",
+          "name": "test_scope",
         },
         "parsedVersion": Object {
           "category": "core",

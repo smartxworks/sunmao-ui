@@ -1,21 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createComponent } from "@meta-ui/core";
-import ReactMarkdown from "react-markdown";
+import { Implementation } from "../../registry";
+import _Text, { TextProps } from "../_internal/Text";
+import { useExpression } from "../../store";
 
-export type TextProps = {
-  value?: {
-    raw: string;
-    format: "plain" | "md";
-  };
-};
+const Text: Implementation<TextProps> = ({ value, mergeState }) => {
+  const raw = useExpression(value.raw);
 
-const Text: React.FC<TextProps> = ({
-  value = { raw: "**Hello World**", format: "md" },
-}) => {
-  if (value.format === "md") {
-    return <ReactMarkdown>{value.raw}</ReactMarkdown>;
-  }
-  return <>{value.raw}</>;
+  useEffect(() => {
+    mergeState({ value: raw });
+  }, [raw]);
+
+  // console.log("render text");
+
+  return <_Text value={{ ...value, raw }} />;
 };
 
 export default {
@@ -42,7 +40,14 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: {},
+      state: {
+        type: "object",
+        properties: {
+          value: {
+            type: "string",
+          },
+        },
+      },
       methods: [],
     },
   }),
