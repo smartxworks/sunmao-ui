@@ -6,8 +6,9 @@ describe("component", () => {
       createComponent({
         version: "core/v1",
         metadata: {
-          name: "test-component",
+          name: "test_component",
         },
+
         spec: {
           properties: [
             {
@@ -44,7 +45,7 @@ describe("component", () => {
       Object {
         "kind": "Component",
         "metadata": Object {
-          "name": "test-component",
+          "name": "test_component",
         },
         "parsedVersion": Object {
           "category": "core",

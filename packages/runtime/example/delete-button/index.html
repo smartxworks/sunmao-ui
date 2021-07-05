@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: delete button</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "delete-button",
+          description: "delete button example",
+        },
+        spec: {
+          components: [
+            {
+              id: "del_btn",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: `{{ del_btn.count < 3 ? '*Markdown Button*' : "**I'm** Done!" }}`,
+                  format: "md",
+                },
+              },
+              traits: [],
+            },
+            {
+              id: "debug_text",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: `{{ del_btn.value + '---' + del_btn.count }}`,
+                  format: "md",
+                },
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
