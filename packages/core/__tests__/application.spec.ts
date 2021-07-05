@@ -14,14 +14,14 @@ describe("application", () => {
           components: [
             {
               id: "input1",
-              type: "core/v1/test-component",
+              type: "core/v1/test_component",
               properties: {
                 x: "foo",
               },
 
               traits: [
                 {
-                  type: "core/v1/test-trait",
+                  type: "core/v1/test_trait",
                   properties: {
                     width: 2,
                   },
@@ -46,6 +46,10 @@ describe("application", () => {
           "components": Array [
             Object {
               "id": "input1",
+              "parsedType": Object {
+                "name": "test_component",
+                "version": "core/v1",
+              },
               "properties": Object {
                 "x": "foo",
               },
@@ -54,10 +58,10 @@ describe("application", () => {
                   "properties": Object {
                     "width": 2,
                   },
-                  "type": "core/v1/test-trait",
+                  "type": "core/v1/test_trait",
                 },
               ],
-              "type": "core/v1/test-component",
+              "type": "core/v1/test_component",
             },
           ],
         },

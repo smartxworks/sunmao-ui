@@ -1,4 +1,4 @@
-const VERSION_REG = /^([a-zA-Z-_\d]+)\/([a-zA-Z-_\d]+)$/;
+const VERSION_REG = /^([a-zA-Z0-9_\d]+)\/([a-zA-Z0-9_\d]+)$/;
 
 export function isValidVersion(v: string): boolean {
   return VERSION_REG.test(v);
