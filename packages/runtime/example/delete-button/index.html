@@ -7,6 +7,30 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="../../src/main.tsx"></script>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "delete-button",
+          description: "delete button example",
+        },
+        spec: {
+          components: [
+            {
+              id: "del-btn",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: `*Markdown Button*`,
+                  format: "md",
+                },
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
   </body>
 </html>

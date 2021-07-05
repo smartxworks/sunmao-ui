@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
+import { Application, createApplication } from "@meta-ui/core";
+import { registry } from "./registry";
 
-function App() {
-  const [count, setCount] = useState(0);
+const App: React.FC<{ options: Application }> = ({ options }) => {
+  const app = createApplication(options);
+  console.log(app);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-      </header>
+      {app.spec.components.map((c) => {
+        const Impl = registry.getComponent(
+          c.parsedType.version,
+          c.parsedType.name
+        ).impl;
+        return <Impl key={c.id} {...c.properties} />;
+      })}
     </div>
   );
-}
+};
 
 export default App;
