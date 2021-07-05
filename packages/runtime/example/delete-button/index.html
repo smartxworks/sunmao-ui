@@ -18,11 +18,22 @@
         spec: {
           components: [
             {
-              id: "del-btn",
+              id: "del_btn",
               type: "plain/v1/button",
               properties: {
                 text: {
-                  raw: `*Markdown Button*`,
+                  raw: `{{ del_btn.count < 3 ? '*Markdown Button*' : "**I'm** Done!" }}`,
+                  format: "md",
+                },
+              },
+              traits: [],
+            },
+            {
+              id: "debug_text",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: `{{ del_btn.value + '---' + del_btn.count }}`,
                   format: "md",
                 },
               },

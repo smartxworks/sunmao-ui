@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createComponent } from "@meta-ui/core";
-import Text, { TextProps } from "../core/Text";
+import Text, { TextProps } from "../_internal/Text";
+import { Implementation } from "../../registry";
+import { useExpression } from "../../store";
 
-const Button: React.FC<{ text?: TextProps["value"] }> = ({ text }) => {
+const Button: Implementation<{ text: TextProps["value"] }> = ({
+  text,
+  mergeState,
+}) => {
+  const [count, add] = useState(0);
+  const raw = useExpression(text.raw);
+  useEffect(() => {
+    mergeState({ value: raw, count });
+  }, [raw, count]);
+
   return (
-    <button>
-      <Text.impl value={text} />
+    <button onClick={() => add(count + 1)}>
+      <Text value={{ ...text, raw }} />
     </button>
   );
 };
@@ -34,7 +45,14 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: {},
+      state: {
+        type: "object",
+        properties: {
+          value: {
+            type: "string",
+          },
+        },
+      },
       methods: [],
     },
   }),

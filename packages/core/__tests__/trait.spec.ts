@@ -6,7 +6,7 @@ describe("trait", () => {
       createTrait({
         version: "core/v1",
         metadata: {
-          name: "test-trait",
+          name: "test_trait",
         },
 
         spec: {
@@ -29,7 +29,7 @@ describe("trait", () => {
       Object {
         "kind": "Trait",
         "metadata": Object {
-          "name": "test-trait",
+          "name": "test_trait",
         },
         "parsedVersion": Object {
           "category": "core",
