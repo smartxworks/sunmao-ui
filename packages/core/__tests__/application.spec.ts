@@ -46,6 +46,10 @@ describe("application", () => {
           "components": Array [
             Object {
               "id": "input1",
+              "parsedType": Object {
+                "name": "test-component",
+                "version": "core/v1",
+              },
               "properties": Object {
                 "x": "foo",
               },

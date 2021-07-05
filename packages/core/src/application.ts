@@ -29,10 +29,40 @@ type ComponentTrait = {
   properties: object;
 };
 
-// extended runtime
-export type RuntimeApplication = Application & {
-  parsedVersion: Version;
+type ComponentType = {
+  version: string;
+  name: string;
 };
+
+// extended runtime
+export type RuntimeApplication = Omit<Application, "spec"> & {
+  parsedVersion: Version;
+  spec: Omit<ApplicationSpec, "components"> & {
+    components: Array<
+      ApplicationComponent & {
+        parsedType: ComponentType;
+      }
+    >;
+  };
+};
+
+type A = RuntimeApplication["spec"]["components"];
+
+const TYPE_REG = /^([a-zA-Z-_\d]+\/[a-zA-Z-_\d]+)\/([a-zA-Z-_\d]+)$/;
+function isValidType(v: string): boolean {
+  return TYPE_REG.test(v);
+}
+function parseType(v: string): ComponentType {
+  if (!isValidType(v)) {
+    throw new Error(`Invalid type string: "${v}"`);
+  }
+
+  const [, version, name] = v.match(TYPE_REG)!;
+  return {
+    version,
+    name,
+  };
+}
 
 export function createApplication(
   options: Omit<Application, "kind">
@@ -41,5 +71,14 @@ export function createApplication(
     ...options,
     kind: "Application",
     parsedVersion: parseVersion(options.version),
+    spec: {
+      ...options.spec,
+      components: options.spec.components.map((c) => {
+        return {
+          ...c,
+          parsedType: parseType(c.type),
+        };
+      }),
+    },
   };
 }

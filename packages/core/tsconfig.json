@@ -5,7 +5,8 @@
     "outDir": "lib",
     "lib": ["es6"],
     "composite": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "module": "ESNext"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["__tests__/**/*.ts"]
