@@ -12,6 +12,11 @@ type ImplementedRuntimeComponent = RuntimeComponent & {
 export type Implementation<T = any> = React.FC<
   T & {
     mergeState: (partialState: Parameters<typeof setStore>[0]) => void;
+    subscribeMethods: <U>(
+      map: {
+        [K in keyof U]: (parameters: U[K]) => void;
+      }
+    ) => void;
   }
 >;
 
