@@ -11,8 +11,6 @@ const Text: Implementation<TextProps> = ({ value, mergeState }) => {
     mergeState({ value: raw });
   }, [raw]);
 
-  // console.log("render text");
-
   return <_Text value={{ ...value, raw }} />;
 };
 

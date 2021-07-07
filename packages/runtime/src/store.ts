@@ -45,16 +45,17 @@ export function useExpression(raw: string) {
     };
   }, [raw]);
 
-  const [state, setState] = useState<any>(null);
+  const [state, setState] = useState<any>(expression);
+
+  if (!dynamic) {
+    return state;
+  }
 
   useStore.subscribe(
     (value) => {
       setState(value);
     },
     (state) => {
-      if (!dynamic) {
-        return expression;
-      }
       return evalInContext(expression, state);
     }
   );
