@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import create from "zustand";
 import _ from "lodash";
+import mitt from "mitt";
 
 export const useStore = create<Record<string, any>>(() => ({}));
 
@@ -45,19 +46,22 @@ export function useExpression(raw: string) {
     };
   }, [raw]);
 
-  const [state, setState] = useState<any>(null);
+  const [state, setState] = useState<any>(expression);
+
+  if (!dynamic) {
+    return state;
+  }
 
   useStore.subscribe(
     (value) => {
       setState(value);
     },
     (state) => {
-      if (!dynamic) {
-        return expression;
-      }
       return evalInContext(expression, state);
     }
   );
 
   return state;
 }
+
+export const emitter = mitt<Record<string, any>>();
