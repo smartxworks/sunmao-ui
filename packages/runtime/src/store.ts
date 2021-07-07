@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import create from "zustand";
 import _ from "lodash";
+import mitt from "mitt";
 
 export const useStore = create<Record<string, any>>(() => ({}));
 
@@ -62,3 +63,5 @@ export function useExpression(raw: string) {
 
   return state;
 }
+
+export const emitter = mitt<Record<string, any>>();
