@@ -55,6 +55,10 @@ describe("application", () => {
               },
               "traits": Array [
                 Object {
+                  "parsedType": Object {
+                    "name": "test_trait",
+                    "version": "core/v1",
+                  },
                   "properties": Object {
                     "width": 2,
                   },

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { createComponent } from "@meta-ui/core";
-import { Implementation } from "../../registry";
+import { ComponentImplementation } from "../../registry";
 import _Text, { TextProps } from "../_internal/Text";
 import { useExpression } from "../../store";
 
-const Text: Implementation<TextProps> = ({ value, mergeState }) => {
+const Text: ComponentImplementation<TextProps> = ({ value, mergeState }) => {
   const raw = useExpression(value.raw);
 
   useEffect(() => {

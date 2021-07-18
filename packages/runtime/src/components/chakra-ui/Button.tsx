@@ -1,13 +1,20 @@
 import React, { useEffect, useRef } from "react";
 import { createComponent } from "@meta-ui/core";
+import {
+  Button as BaseButton,
+  ChakraProvider,
+  ButtonProps as BaseButtonProps,
+} from "@chakra-ui/react";
 import Text, { TextProps } from "../_internal/Text";
 import { ComponentImplementation } from "../../registry";
 import { useExpression } from "../../store";
 
-const Button: ComponentImplementation<{
-  text: TextProps["value"];
-  onClick?: () => void;
-}> = ({ text, mergeState, subscribeMethods, onClick }) => {
+const Button: ComponentImplementation<
+  BaseButtonProps & {
+    text: TextProps["value"];
+    onClick?: () => void;
+  }
+> = ({ text, mergeState, subscribeMethods, onClick, ...rest }) => {
   const raw = useExpression(text.raw);
   useEffect(() => {
     mergeState({ value: raw });
@@ -23,18 +30,20 @@ const Button: ComponentImplementation<{
   }, []);
 
   return (
-    <button ref={ref} onClick={onClick}>
-      <Text value={{ ...text, raw }} />
-    </button>
+    <ChakraProvider>
+      <BaseButton {...rest} ref={ref} onClick={onClick}>
+        <Text value={{ ...text, raw }} />
+      </BaseButton>
+    </ChakraProvider>
   );
 };
 
 export default {
   ...createComponent({
-    version: "plain/v1",
+    version: "chakra_ui/v1",
     metadata: {
       name: "button",
-      description: "plain button",
+      description: "chakra-ui button",
     },
     spec: {
       properties: [
@@ -50,6 +59,34 @@ export default {
               enum: ["plain", "md"],
             },
           },
+        },
+        {
+          name: "colorScheme",
+          type: "string",
+          enum: [
+            "whiteAlpha",
+            "blackAlpha",
+            "gray",
+            "red",
+            "orange",
+            "yellow",
+            "green",
+            "teal",
+            "blue",
+            "cyan",
+            "purple",
+            "pink",
+            "linkedin",
+            "facebook",
+            "messenger",
+            "whatsapp",
+            "twitter",
+            "telegram",
+          ],
+        },
+        {
+          name: "isLoading",
+          type: "boolean",
         },
       ],
       acceptTraits: [],
