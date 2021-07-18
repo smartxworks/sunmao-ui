@@ -8,7 +8,7 @@ export const useStore = create<Record<string, any>>(() => ({}));
 export const setStore = useStore.setState;
 
 // TODO: use web worker
-function evalInContext(expression: string, ctx: Record<string, any>) {
+export function evalInContext(expression: string, ctx: Record<string, any>) {
   try {
     Object.keys(ctx).forEach((key) => {
       // @ts-ignore
@@ -46,7 +46,9 @@ export function useExpression(raw: string) {
     };
   }, [raw]);
 
-  const [state, setState] = useState<any>(expression);
+  const [state, setState] = useState<any>(
+    evalInContext(expression, useStore.getState())
+  );
 
   if (!dynamic) {
     return state;
@@ -65,3 +67,11 @@ export function useExpression(raw: string) {
 }
 
 export const emitter = mitt<Record<string, any>>();
+
+// EXPERIMENT: utils
+emitter.on("$utils", ({ name, parameters, ...rest }) => {
+  console.log(name, parameters, rest);
+  if (name === "alert") {
+    window.alert(parameters);
+  }
+});

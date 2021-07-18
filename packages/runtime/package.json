@@ -5,9 +5,14 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.6.5",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
     "@meta-ui/core": "^0.1.0",
+    "framer-motion": "^4",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
+    "nanoid": "^3.1.23",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-markdown": "^6.0.2",
