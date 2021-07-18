@@ -29,7 +29,7 @@ type ComponentTrait = {
   properties: object;
 };
 
-type ComponentType = {
+type VersionAndName = {
   version: string;
   name: string;
 };
@@ -39,20 +39,23 @@ export type RuntimeApplication = Omit<Application, "spec"> & {
   parsedVersion: Version;
   spec: Omit<ApplicationSpec, "components"> & {
     components: Array<
-      ApplicationComponent & {
-        parsedType: ComponentType;
+      Omit<ApplicationComponent, "traits"> & {
+        parsedType: VersionAndName;
+        traits: Array<
+          ComponentTrait & {
+            parsedType: VersionAndName;
+          }
+        >;
       }
     >;
   };
 };
 
-type A = RuntimeApplication["spec"]["components"];
-
 const TYPE_REG = /^([a-zA-Z0-9_\d]+\/[a-zA-Z0-9_\d]+)\/([a-zA-Z0-9_\d]+)$/;
 function isValidType(v: string): boolean {
   return TYPE_REG.test(v);
 }
-function parseType(v: string): ComponentType {
+function parseType(v: string): VersionAndName {
   if (!isValidType(v)) {
     throw new Error(`Invalid type string: "${v}"`);
   }
@@ -77,6 +80,12 @@ export function createApplication(
         return {
           ...c,
           parsedType: parseType(c.type),
+          traits: c.traits.map((t) => {
+            return {
+              ...t,
+              parsedType: parseType(t.type),
+            };
+          }),
         };
       }),
     },

@@ -1,19 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { createComponent } from "@meta-ui/core";
 import Text, { TextProps } from "../_internal/Text";
-import { Implementation } from "../../registry";
+import { ComponentImplementation } from "../../registry";
 import { useExpression } from "../../store";
 
-const Button: Implementation<{ text: TextProps["value"] }> = ({
-  text,
-  mergeState,
-  subscribeMethods,
-}) => {
-  const [count, add] = useState(0);
+const Button: ComponentImplementation<{
+  text: TextProps["value"];
+  onClick?: () => void;
+}> = ({ text, mergeState, subscribeMethods, onClick }) => {
   const raw = useExpression(text.raw);
   useEffect(() => {
-    mergeState({ value: raw, count });
-  }, [raw, count]);
+    mergeState({ value: raw });
+  }, [raw]);
 
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -22,10 +20,10 @@ const Button: Implementation<{ text: TextProps["value"] }> = ({
         ref.current?.click();
       },
     });
-  });
+  }, []);
 
   return (
-    <button ref={ref} onClick={() => add(count + 1)}>
+    <button ref={ref} onClick={onClick}>
       <Text value={{ ...text, raw }} />
     </button>
   );
