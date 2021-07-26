@@ -8,15 +8,16 @@ import {
   TabPanel,
   ChakraProvider,
 } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
 import { Type, Static } from "@sinclair/typebox";
+import { ComponentImplementation } from "../../registry";
+import Slot from "../_internal/Slot";
 
 const Tabs: ComponentImplementation<{
   tabNames: Static<typeof TabNamesPropertySchema>;
   initialSelectedTabIndex?: Static<
     typeof InitialSelectedTabIndexPropertySchema
   >;
-}> = ({ tabNames, mergeState, initialSelectedTabIndex }) => {
+}> = ({ tabNames, mergeState, initialSelectedTabIndex, slotsMap }) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(
     initialSelectedTabIndex ?? 0
   );
@@ -37,9 +38,9 @@ const Tabs: ComponentImplementation<{
           ))}
         </TabList>
         <TabPanels>
-          {tabNames.map((name, idx) => (
+          {tabNames.map((_, idx) => (
             <TabPanel key={idx}>
-              <p>{name}</p>
+              <Slot slotsMap={slotsMap} slot={`tab_content_${idx}`} />
             </TabPanel>
           ))}
         </TabPanels>

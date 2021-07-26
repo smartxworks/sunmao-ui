@@ -26,6 +26,66 @@
               },
               traits: [],
             },
+            {
+              id: "btn",
+              type: "chakra_ui/v1/button",
+              properties: {
+                text: {
+                  raw: "in tab1",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "tabs",
+                      slot: "tab_content_0",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "text",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "in tab2",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "tabs",
+                      slot: "tab_content_1",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "nested_tabs",
+              type: "chakra_ui/v1/tabs",
+              properties: {
+                tabNames: ["Tab Three", "Tab Four"],
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "tabs",
+                      slot: "tab_content_1",
+                    },
+                  },
+                },
+              ],
+            },
           ],
         },
       });
