@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Application,
   createApplication,
@@ -7,10 +13,13 @@ import {
 import { merge } from "lodash";
 import { registry } from "./registry";
 import { setStore, useStore, emitter } from "./store";
+import { ContainerPropertySchema } from "./traits/core/slot";
+import { Static } from "@sinclair/typebox";
 
 const ImplWrapper: React.FC<{
   component: RuntimeApplication["spec"]["components"][0];
-}> = ({ component: c }) => {
+  slotsMap: SlotsMap | undefined;
+}> = ({ component: c, slotsMap }) => {
   const Impl = registry.getComponent(
     c.parsedType.version,
     c.parsedType.name
@@ -68,6 +77,7 @@ const ImplWrapper: React.FC<{
       {...traitsProps}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
+      slotsMap={slotsMap}
     />
   );
 };
@@ -107,13 +117,63 @@ const DebugEvent: React.FC = () => {
   );
 };
 
+export type ComponentsMap = Map<string, SlotsMap>;
+export type SlotsMap = Map<string, Array<React.FC>>;
+export function resolveNestedComponents(app: RuntimeApplication): {
+  topLevelComponents: RuntimeApplication["spec"]["components"];
+  componentsMap: ComponentsMap;
+} {
+  const topLevelComponents: RuntimeApplication["spec"]["components"] = [];
+  const componentsMap: ComponentsMap = new Map();
+
+  for (const c of app.spec.components) {
+    const slotTrait = c.traits.find((t) => t.parsedType.name === "slot");
+    if (slotTrait) {
+      const { id, slot } = (
+        slotTrait.properties as {
+          container: Static<typeof ContainerPropertySchema>;
+        }
+      ).container;
+      if (!componentsMap.has(id)) {
+        componentsMap.set(id, new Map());
+      }
+      if (!componentsMap.get(id)?.has(slot)) {
+        componentsMap.get(id)?.set(slot, []);
+      }
+      componentsMap
+        .get(id)
+        ?.get(slot)
+        ?.push(() => (
+          <ImplWrapper component={c} slotsMap={componentsMap.get(c.id)} />
+        ));
+    } else {
+      topLevelComponents.push(c);
+    }
+  }
+
+  return {
+    topLevelComponents,
+    componentsMap,
+  };
+}
+
 const App: React.FC<{ options: Application }> = ({ options }) => {
   const app = createApplication(options);
+  const { topLevelComponents, componentsMap } = useMemo(
+    () => resolveNestedComponents(app),
+    [app]
+  );
 
   return (
     <div className="App">
-      {app.spec.components.map((c) => {
-        return <ImplWrapper key={c.id} component={c} />;
+      {topLevelComponents.map((c) => {
+        return (
+          <ImplWrapper
+            key={c.id}
+            component={c}
+            slotsMap={componentsMap.get(c.id)}
+          />
+        );
       })}
       <DebugStore />
       <DebugEvent />
