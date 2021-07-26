@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { createComponent } from "@meta-ui/core";
-import Text, { TextProps } from "../_internal/Text";
+import { Type } from "@sinclair/typebox";
+import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
 import { ComponentImplementation } from "../../registry";
 import { useExpression } from "../../store";
 
@@ -29,6 +30,10 @@ const Button: ComponentImplementation<{
   );
 };
 
+const StateSchema = Type.Object({
+  value: Type.String(),
+});
+
 export default {
   ...createComponent({
     version: "plain/v1",
@@ -40,27 +45,11 @@ export default {
       properties: [
         {
           name: "text",
-          type: "object",
-          properties: {
-            raw: {
-              type: "string",
-            },
-            format: {
-              type: "string",
-              enum: ["plain", "md"],
-            },
-          },
+          ...TextPropertySchema,
         },
       ],
       acceptTraits: [],
-      state: {
-        type: "object",
-        properties: {
-          value: {
-            type: "string",
-          },
-        },
-      },
+      state: StateSchema,
       methods: [
         {
           name: "click",
