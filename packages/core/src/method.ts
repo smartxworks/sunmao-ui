@@ -1,6 +1,6 @@
-import { JSONSchema4 } from "json-schema";
+import { JSONSchema7 } from "json-schema";
 
 export type MethodSchema = {
   name: string;
-  parameters?: JSONSchema4;
+  parameters?: JSONSchema7;
 };
