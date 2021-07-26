@@ -2103,6 +2103,11 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
+"@sinclair/typebox@^0.19.2":
+  version "0.19.2"
+  resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.19.2.tgz#3a526594d6f652ada78e6c00be84463ae48047e4"
+  integrity sha512-0U/RVPZQw1QxhrbKV0o281ZWI1Ve3osJnyEYnwOp3slydIQHyXumbJANJeNv9BqABDiHWlmzsxSVopPHMvt3Aw==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "http://192.168.26.29:7001/@sinonjs/commons/download/@sinonjs/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
