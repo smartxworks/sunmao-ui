@@ -11,7 +11,14 @@ const Button: ComponentImplementation<{
   colorScheme?: Static<typeof ColorSchemePropertySchema>;
   isLoading?: Static<typeof IsLoadingPropertySchema>;
   onClick?: () => void;
-}> = ({ text, mergeState, subscribeMethods, onClick, ...rest }) => {
+}> = ({
+  text,
+  mergeState,
+  subscribeMethods,
+  onClick,
+  colorScheme,
+  isLoading,
+}) => {
   const raw = useExpression(text.raw);
   useEffect(() => {
     mergeState({ value: raw });
@@ -28,7 +35,7 @@ const Button: ComponentImplementation<{
 
   return (
     <ChakraProvider>
-      <BaseButton {...rest} ref={ref} onClick={onClick}>
+      <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={onClick}>
         <Text value={{ ...text, raw }} />
       </BaseButton>
     </ChakraProvider>
