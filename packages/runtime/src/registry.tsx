@@ -1,6 +1,7 @@
 import React from "react";
 import { RuntimeComponent, RuntimeTrait } from "@meta-ui/core";
 import { setStore } from "./store";
+import { SlotsMap } from "./App";
 // components
 import PlainButton from "./components/plain/Button";
 import CoreText from "./components/core/Text";
@@ -9,6 +10,7 @@ import ChakraUITabs from "./components/chakra-ui/Tabs";
 // traits
 import CoreState from "./traits/core/state";
 import CoreEvent from "./traits/core/event";
+import CoreSlot from "./traits/core/slot";
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -29,6 +31,7 @@ export type ComponentImplementation<T = any> = React.FC<
   T & {
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
+    slotsMap: SlotsMap | undefined;
   }
 >;
 
@@ -93,3 +96,4 @@ registry.registerComponent(ChakraUITabs);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
+registry.registerTrait(CoreSlot);
