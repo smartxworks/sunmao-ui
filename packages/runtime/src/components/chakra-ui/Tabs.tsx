@@ -1,0 +1,82 @@
+import React, { useEffect, useState } from "react";
+import { createComponent } from "@meta-ui/core";
+import {
+  Tabs as BaseTabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  ChakraProvider,
+} from "@chakra-ui/react";
+import { ComponentImplementation } from "../../registry";
+import { Type, Static } from "@sinclair/typebox";
+
+const Tabs: ComponentImplementation<{
+  tabNames: Static<typeof TabNamesPropertySchema>;
+  initialSelectedTabIndex?: Static<
+    typeof InitialSelectedTabIndexPropertySchema
+  >;
+}> = ({ tabNames, mergeState, initialSelectedTabIndex }) => {
+  const [selectedTabIndex, setSelectedTabIndex] = useState(
+    initialSelectedTabIndex ?? 0
+  );
+
+  useEffect(() => {
+    mergeState({ selectedTabIndex });
+  }, [selectedTabIndex]);
+
+  return (
+    <ChakraProvider>
+      <BaseTabs
+        defaultIndex={initialSelectedTabIndex}
+        onChange={(idx) => setSelectedTabIndex(idx)}
+      >
+        <TabList>
+          {tabNames.map((name, idx) => (
+            <Tab key={idx}>{name}</Tab>
+          ))}
+        </TabList>
+        <TabPanels>
+          {tabNames.map((name, idx) => (
+            <TabPanel key={idx}>
+              <p>{name}</p>
+            </TabPanel>
+          ))}
+        </TabPanels>
+      </BaseTabs>
+    </ChakraProvider>
+  );
+};
+
+const TabNamesPropertySchema = Type.Array(Type.String());
+const InitialSelectedTabIndexPropertySchema = Type.Optional(Type.Number());
+
+const StateSchema = Type.Object({
+  selectedTabIndex: Type.Number(),
+});
+
+export default {
+  ...createComponent({
+    version: "chakra_ui/v1",
+    metadata: {
+      name: "tabs",
+      description: "chakra-ui tabs",
+    },
+    spec: {
+      properties: [
+        {
+          name: "tabNames",
+          ...TabNamesPropertySchema,
+        },
+        {
+          name: "initialSelectedTabIndex",
+          ...InitialSelectedTabIndexPropertySchema,
+        },
+      ],
+      acceptTraits: [],
+      state: StateSchema,
+      methods: [],
+    },
+  }),
+  impl: Tabs,
+};
