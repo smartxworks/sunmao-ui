@@ -5,6 +5,7 @@ import { setStore } from "./store";
 import PlainButton from "./components/plain/Button";
 import CoreText from "./components/core/Text";
 import ChakraUIButton from "./components/chakra-ui/Button";
+import ChakraUITabs from "./components/chakra-ui/Tabs";
 // traits
 import CoreState from "./traits/core/state";
 import CoreEvent from "./traits/core/event";
@@ -88,6 +89,7 @@ export const registry = new Registry();
 registry.registerComponent(PlainButton);
 registry.registerComponent(CoreText);
 registry.registerComponent(ChakraUIButton);
+registry.registerComponent(ChakraUITabs);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
