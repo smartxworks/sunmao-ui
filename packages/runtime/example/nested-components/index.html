@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: nested components</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "nested_components",
+          description: "nested components example",
+        },
+        spec: {
+          components: [
+            {
+              id: "tabs",
+              type: "chakra_ui/v1/tabs",
+              properties: {
+                tabNames: ["Tab One", "Tab Two"],
+                initialSelectedTabIndex: 1,
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
