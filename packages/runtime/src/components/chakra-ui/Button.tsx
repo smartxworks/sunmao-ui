@@ -1,20 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import { createComponent } from "@meta-ui/core";
-import {
-  Button as BaseButton,
-  ChakraProvider,
-  ButtonProps as BaseButtonProps,
-} from "@chakra-ui/react";
-import Text, { TextProps } from "../_internal/Text";
+import { Static, Type } from "@sinclair/typebox";
+import { Button as BaseButton, ChakraProvider } from "@chakra-ui/react";
+import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
 import { ComponentImplementation } from "../../registry";
 import { useExpression } from "../../store";
 
-const Button: ComponentImplementation<
-  BaseButtonProps & {
-    text: TextProps["value"];
-    onClick?: () => void;
-  }
-> = ({ text, mergeState, subscribeMethods, onClick, ...rest }) => {
+const Button: ComponentImplementation<{
+  text: TextProps["value"];
+  colorScheme?: Static<typeof ColorSchemePropertySchema>;
+  isLoading?: Static<typeof IsLoadingPropertySchema>;
+  onClick?: () => void;
+}> = ({ text, mergeState, subscribeMethods, onClick, ...rest }) => {
   const raw = useExpression(text.raw);
   useEffect(() => {
     mergeState({ value: raw });
@@ -38,6 +35,36 @@ const Button: ComponentImplementation<
   );
 };
 
+const ColorSchemePropertySchema = Type.Optional(
+  Type.KeyOf(
+    Type.Object({
+      whiteAlpha: Type.String(),
+      blackAlpha: Type.String(),
+      gray: Type.String(),
+      red: Type.String(),
+      orange: Type.String(),
+      yellow: Type.String(),
+      green: Type.String(),
+      teal: Type.String(),
+      blue: Type.String(),
+      cyan: Type.String(),
+      purple: Type.String(),
+      pink: Type.String(),
+      linkedin: Type.String(),
+      facebook: Type.String(),
+      messenger: Type.String(),
+      whatsapp: Type.String(),
+      twitter: Type.String(),
+      telegram: Type.String(),
+    })
+  )
+);
+const IsLoadingPropertySchema = Type.Optional(Type.Boolean());
+
+const StateSchema = Type.Object({
+  value: Type.String(),
+});
+
 export default {
   ...createComponent({
     version: "chakra_ui/v1",
@@ -49,55 +76,19 @@ export default {
       properties: [
         {
           name: "text",
-          type: "object",
-          properties: {
-            raw: {
-              type: "string",
-            },
-            format: {
-              type: "string",
-              enum: ["plain", "md"],
-            },
-          },
+          ...TextPropertySchema,
         },
         {
           name: "colorScheme",
-          type: "string",
-          enum: [
-            "whiteAlpha",
-            "blackAlpha",
-            "gray",
-            "red",
-            "orange",
-            "yellow",
-            "green",
-            "teal",
-            "blue",
-            "cyan",
-            "purple",
-            "pink",
-            "linkedin",
-            "facebook",
-            "messenger",
-            "whatsapp",
-            "twitter",
-            "telegram",
-          ],
+          ...ColorSchemePropertySchema,
         },
         {
           name: "isLoading",
-          type: "boolean",
+          ...IsLoadingPropertySchema,
         },
       ],
       acceptTraits: [],
-      state: {
-        type: "object",
-        properties: {
-          value: {
-            type: "string",
-          },
-        },
-      },
+      state: StateSchema,
       methods: [
         {
           name: "click",
