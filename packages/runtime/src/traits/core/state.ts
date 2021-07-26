@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { createTrait } from "@meta-ui/core";
+import { Static, Type } from "@sinclair/typebox";
 import { TraitImplementation } from "../../registry";
 
 const useStateTrait: TraitImplementation<{
-  key: string;
-  initialValue: any;
+  key: Static<typeof KeyPropertySchema>;
+  initialValue: Static<typeof InitialValuePropertySchema>;
 }> = ({ key, initialValue, mergeState, subscribeMethods }) => {
   useEffect(() => {
     mergeState({ [key]: initialValue });
@@ -20,6 +21,9 @@ const useStateTrait: TraitImplementation<{
   }, []);
 };
 
+const KeyPropertySchema = Type.String();
+const InitialValuePropertySchema = Type.Any();
+
 export default {
   ...createTrait({
     version: "core/v1",
@@ -31,22 +35,18 @@ export default {
       properties: [
         {
           name: "key",
-          type: "string",
+          ...KeyPropertySchema,
         },
         {
           name: "initialValue",
-          type: "any",
+          ...InitialValuePropertySchema,
         },
       ],
-      state: {
-        type: "any",
-      },
+      state: Type.Any(),
       methods: [
         {
           name: "setValue",
-          parameters: {
-            type: "any",
-          },
+          parameters: Type.Any(),
         },
         {
           name: "reset",

@@ -1,24 +1,13 @@
 import { useEffect, useMemo, useRef } from "react";
 import { createTrait } from "@meta-ui/core";
+import { Static, Type } from "@sinclair/typebox";
 import { nanoid } from "nanoid";
 import { debounce, throttle, delay } from "lodash";
 import { TraitImplementation } from "../../registry";
 import { emitter, evalInContext, useStore } from "../../store";
 
 const useEventTrait: TraitImplementation<{
-  events: Array<{
-    event: string;
-    componentId: string;
-    method: {
-      name: string;
-      parameters: string;
-    };
-    wait: {
-      type: "debounce" | "throttle" | "delay";
-      time: number;
-    };
-    disabled: boolean | string;
-  }>;
+  events: Static<typeof EventsPropertySchema>;
 }> = ({ events }) => {
   const hookId = useMemo(() => {
     return nanoid();
@@ -88,6 +77,28 @@ const useEventTrait: TraitImplementation<{
   return hub;
 };
 
+const EventsPropertySchema = Type.Array(
+  Type.Object({
+    event: Type.String(),
+    componentId: Type.String(),
+    method: Type.Object({
+      name: Type.String(),
+      parameters: Type.String(),
+    }),
+    wait: Type.Object({
+      type: Type.KeyOf(
+        Type.Object({
+          debounce: Type.String(),
+          throttle: Type.String(),
+          delay: Type.String(),
+        })
+      ),
+      time: Type.Number(),
+    }),
+    disabled: Type.Union([Type.Boolean(), Type.String()]),
+  })
+);
+
 export default {
   ...createTrait({
     version: "core/v1",
@@ -96,7 +107,12 @@ export default {
       description: "export component events with advance features",
     },
     spec: {
-      properties: [],
+      properties: [
+        {
+          name: "events",
+          ...EventsPropertySchema,
+        },
+      ],
       state: {},
       methods: [],
     },

@@ -1,11 +1,19 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import { Static, Type } from "@sinclair/typebox";
+
+export const TextPropertySchema = Type.Object({
+  raw: Type.String(),
+  format: Type.KeyOf(
+    Type.Object({
+      plain: Type.String(),
+      md: Type.String(),
+    })
+  ),
+});
 
 export type TextProps = {
-  value: {
-    raw: string;
-    format: "plain" | "md";
-  };
+  value: Static<typeof TextPropertySchema>;
 };
 
 const Text: React.FC<TextProps> = ({ value }) => {
