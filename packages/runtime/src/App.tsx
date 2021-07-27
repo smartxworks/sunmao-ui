@@ -57,20 +57,24 @@ const ImplWrapper: React.FC<{
 
   // traits
   const traitsProps = {};
+  const wrappers: React.FC[] = [];
   for (const t of c.traits) {
     const tImpl = registry.getTrait(
       t.parsedType.version,
       t.parsedType.name
     ).impl;
-    const tProps = tImpl({
+    const { props: tProps, component: Wrapper } = tImpl({
       ...t.properties,
       mergeState,
       subscribeMethods,
     });
     merge(traitsProps, tProps);
+    if (Wrapper) {
+      wrappers.push(Wrapper);
+    }
   }
 
-  return (
+  let C = (
     <Impl
       key={c.id}
       {...c.properties}
@@ -80,6 +84,13 @@ const ImplWrapper: React.FC<{
       slotsMap={slotsMap}
     />
   );
+
+  while (wrappers.length) {
+    const W = wrappers.pop()!;
+    C = <W>{C}</W>;
+  }
+
+  return C;
 };
 
 const DebugStore: React.FC = () => {
