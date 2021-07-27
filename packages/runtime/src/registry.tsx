@@ -11,6 +11,7 @@ import ChakraUITabs from "./components/chakra-ui/Tabs";
 import CoreState from "./traits/core/state";
 import CoreEvent from "./traits/core/event";
 import CoreSlot from "./traits/core/slot";
+import CoreHidden from "./traits/core/hidden";
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -40,7 +41,10 @@ export type TraitImplementation<T = any> = (
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
   }
-) => any;
+) => {
+  props: any;
+  component?: React.FC;
+};
 
 class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
@@ -97,3 +101,4 @@ registry.registerComponent(ChakraUITabs);
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
+registry.registerTrait(CoreHidden);

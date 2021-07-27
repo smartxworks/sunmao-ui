@@ -24,5 +24,7 @@ export default {
       methods: [],
     },
   }),
-  impl: () => {},
+  impl: () => ({
+    props: null,
+  }),
 };
