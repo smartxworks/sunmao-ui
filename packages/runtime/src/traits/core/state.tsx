@@ -19,6 +19,10 @@ const useStateTrait: TraitImplementation<{
       },
     });
   }, []);
+
+  return {
+    props: null,
+  };
 };
 
 const KeyPropertySchema = Type.String();
