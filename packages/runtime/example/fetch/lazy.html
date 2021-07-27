@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: delete button</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "fetch-button",
+          description: "fetch button example",
+        },
+        spec: {
+          components: [
+            {
+              id: "fetch_btn",
+              type: "chakra_ui/v1/button",
+              properties: {
+                text: {
+                  raw: `{{ fetch_btn.count > 0 ? 'CLICK TO CONFIRM' : '**DELETE** Button' }}`,
+                  format: "md",
+                },
+                isLoading: false,
+                colorScheme: "twitter",
+              },
+              traits: [
+                {
+                  type: "core/v1/state",
+                  properties: {
+                    key: "count",
+                    initialValue: 0,
+                  },
+                },
+                {
+                  type: "core/v1/fetch",
+                  properties: {
+                    url: "http://localhost:3000",
+                    method: "get",
+                  },
+                },
+                {
+                  type: "core/v1/event",
+                  properties: {
+                    events: [
+                      {
+                        event: "click",
+                        componentId: "fetch_btn",
+                        method: {
+                          name: "trigger",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: "debug_text",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: `{{ fetch_btn.value }}`,
+                  format: "md",
+                },
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
