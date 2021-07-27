@@ -6,7 +6,6 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  ChakraProvider,
 } from "@chakra-ui/react";
 import { Type, Static } from "@sinclair/typebox";
 import { ComponentImplementation } from "../../registry";
@@ -27,25 +26,23 @@ const Tabs: ComponentImplementation<{
   }, [selectedTabIndex]);
 
   return (
-    <ChakraProvider>
-      <BaseTabs
-        defaultIndex={initialSelectedTabIndex}
-        onChange={(idx) => setSelectedTabIndex(idx)}
-      >
-        <TabList>
-          {tabNames.map((name, idx) => (
-            <Tab key={idx}>{name}</Tab>
-          ))}
-        </TabList>
-        <TabPanels>
-          {tabNames.map((_, idx) => (
-            <TabPanel key={idx}>
-              <Slot slotsMap={slotsMap} slot={`tab_content_${idx}`} />
-            </TabPanel>
-          ))}
-        </TabPanels>
-      </BaseTabs>
-    </ChakraProvider>
+    <BaseTabs
+      defaultIndex={initialSelectedTabIndex}
+      onChange={(idx) => setSelectedTabIndex(idx)}
+    >
+      <TabList>
+        {tabNames.map((name, idx) => (
+          <Tab key={idx}>{name}</Tab>
+        ))}
+      </TabList>
+      <TabPanels>
+        {tabNames.map((_, idx) => (
+          <TabPanel key={idx}>
+            <Slot slotsMap={slotsMap} slot={`tab_content_${idx}`} />
+          </TabPanel>
+        ))}
+      </TabPanels>
+    </BaseTabs>
   );
 };
 

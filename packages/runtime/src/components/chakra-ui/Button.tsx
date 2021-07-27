@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { createComponent } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
-import { Button as BaseButton, ChakraProvider } from "@chakra-ui/react";
+import { Button as BaseButton } from "@chakra-ui/react";
 import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
 import { ComponentImplementation } from "../../registry";
 import { useExpression } from "../../store";
@@ -34,11 +34,9 @@ const Button: ComponentImplementation<{
   }, []);
 
   return (
-    <ChakraProvider>
-      <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={onClick}>
-        <Text value={{ ...text, raw }} />
-      </BaseButton>
-    </ChakraProvider>
+    <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={onClick}>
+      <Text value={{ ...text, raw }} />
+    </BaseButton>
   );
 };
 

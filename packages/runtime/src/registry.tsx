@@ -3,8 +3,11 @@ import { RuntimeComponent, RuntimeTrait } from "@meta-ui/core";
 import { setStore } from "./store";
 import { SlotsMap } from "./App";
 // components
+/* --- plain --- */
 import PlainButton from "./components/plain/Button";
 import CoreText from "./components/core/Text";
+/* --- chakra-ui --- */
+import ChakraUIRoot from "./components/chakra-ui/Root";
 import ChakraUIButton from "./components/chakra-ui/Button";
 import ChakraUITabs from "./components/chakra-ui/Tabs";
 // traits
@@ -95,6 +98,7 @@ export const registry = new Registry();
 
 registry.registerComponent(PlainButton);
 registry.registerComponent(CoreText);
+registry.registerComponent(ChakraUIRoot);
 registry.registerComponent(ChakraUIButton);
 registry.registerComponent(ChakraUITabs);
 

@@ -19,14 +19,12 @@
           components: [
             {
               id: "del_btn",
-              type: "chakra_ui/v1/button",
+              type: "plain/v1/button",
               properties: {
                 text: {
                   raw: `{{ del_btn.count > 0 ? 'CLICK TO CONFIRM' : '**DELETE** Button' }}`,
                   format: "md",
                 },
-                isLoading: false,
-                colorScheme: "twitter",
               },
               traits: [
                 {
