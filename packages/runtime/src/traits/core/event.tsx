@@ -74,7 +74,9 @@ const useEventTrait: TraitImplementation<{
     };
   }, []);
 
-  return hub;
+  return {
+    props: hub,
+  };
 };
 
 const EventsPropertySchema = Type.Array(
