@@ -102,15 +102,16 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
     fetchData();
   }, [urlExpression, method, _headers, body, lazy]);
 
+  // only subscribe non lazy fetch trait
   if (lazy) {
+    subscribeMethods({
+      triggerFetch(key) {
+        if (key === name) {
+          fetchData();
+        }
+      },
+    });
   }
-  subscribeMethods({
-    triggerQuery(key) {
-      if (key === name) {
-        fetchData();
-      }
-    },
-  });
 
   return {
     props: null,
