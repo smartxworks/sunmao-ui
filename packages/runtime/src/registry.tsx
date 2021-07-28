@@ -15,6 +15,7 @@ import CoreState from "./traits/core/state";
 import CoreEvent from "./traits/core/event";
 import CoreSlot from "./traits/core/slot";
 import CoreHidden from "./traits/core/hidden";
+import CoreFetch from "./traits/core/fetch";
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -106,3 +107,4 @@ registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);
+registry.registerTrait(CoreFetch);
