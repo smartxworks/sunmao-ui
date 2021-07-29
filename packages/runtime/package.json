@@ -10,6 +10,7 @@
     "@emotion/styled": "^11",
     "@meta-ui/core": "^0.1.0",
     "@sinclair/typebox": "^0.19.2",
+    "dayjs": "^1.10.6",
     "framer-motion": "^4",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
