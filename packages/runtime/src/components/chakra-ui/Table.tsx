@@ -3,6 +3,7 @@ import { Table as BaseTable, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react";
 import { ComponentImplementation } from "../../registry";
 import { createComponent } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
+import { useExpression } from "../../store";
 
 function normalizeData(data: Static<typeof DataPropertySchema>): {
   normalizedData: Array<Record<string, string>>;
@@ -27,7 +28,8 @@ function normalizeData(data: Static<typeof DataPropertySchema>): {
 const Table: ComponentImplementation<{
   data: Static<typeof DataPropertySchema>;
   size: Static<typeof SizePropertySchema>;
-}> = ({ data, size, mergeState }) => {
+}> = ({ data: _data, size, mergeState }) => {
+  const data = useExpression(_data) || [];
   const { normalizedData, keys } = normalizeData(data);
   useEffect(() => {
     mergeState({ data });
@@ -57,7 +59,7 @@ const Table: ComponentImplementation<{
   );
 };
 
-const DataPropertySchema = Type.Array(Type.Any());
+const DataPropertySchema = Type.Union([Type.Array(Type.Any()), Type.String()]);
 const SizePropertySchema = Type.KeyOf(
   Type.Object({
     sm: Type.String(),

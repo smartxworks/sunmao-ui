@@ -38,8 +38,11 @@ export function parseExpression(raw: string): {
 const builtIn = {
   dayjs,
 };
-export function evalInContext(raw: string, ctx: Record<string, any>) {
+export function evalInContext(raw: any, ctx: Record<string, any>) {
   try {
+    if (typeof raw !== "string") {
+      return raw;
+    }
     const { dynamic, expression } = parseExpression(raw);
     if (!dynamic) {
       try {
@@ -72,7 +75,7 @@ export function evalInContext(raw: string, ctx: Record<string, any>) {
     });
   }
 }
-export function useExpression(raw: string) {
+export function useExpression(raw: any) {
   const [state, setState] = useState<any>(
     evalInContext(raw, useStore.getState())
   );
