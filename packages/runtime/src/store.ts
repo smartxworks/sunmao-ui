@@ -1,7 +1,11 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import create from "zustand";
 import _ from "lodash";
 import mitt from "mitt";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 export const useStore = create<Record<string, any>>(() => ({}));
 
@@ -31,6 +35,9 @@ export function parseExpression(raw: string): {
 }
 
 // TODO: use web worker
+const builtIn = {
+  dayjs,
+};
 export function evalInContext(raw: string, ctx: Record<string, any>) {
   try {
     const { dynamic, expression } = parseExpression(raw);
@@ -42,6 +49,10 @@ export function evalInContext(raw: string, ctx: Record<string, any>) {
         return expression;
       }
     }
+    Object.keys(builtIn).forEach((key) => {
+      // @ts-ignore
+      self[key] = builtIn[key];
+    });
     Object.keys(ctx).forEach((key) => {
       // @ts-ignore
       self[key] = ctx[key];
@@ -51,6 +62,10 @@ export function evalInContext(raw: string, ctx: Record<string, any>) {
     // console.error(error);
     return undefined;
   } finally {
+    Object.keys(builtIn).forEach((key) => {
+      // @ts-ignore
+      delete self[key];
+    });
     Object.keys(ctx).forEach((key) => {
       // @ts-ignore
       delete self[key];
@@ -77,8 +92,7 @@ export function useExpression(raw: string) {
 export const emitter = mitt<Record<string, any>>();
 
 // EXPERIMENT: utils
-emitter.on("$utils", ({ name, parameters, ...rest }) => {
-  console.log(name, parameters, rest);
+emitter.on("$utils", ({ name, parameters }) => {
   if (name === "alert") {
     window.alert(parameters);
   }
