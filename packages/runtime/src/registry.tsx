@@ -12,6 +12,7 @@ import ChakraUIButton from "./components/chakra-ui/Button";
 import ChakraUITabs from "./components/chakra-ui/Tabs";
 import ChakraUITable from "./components/chakra-ui/Table";
 import ChakraUIInput from "./components/chakra-ui/Input";
+import ChakraUIBox from "./components/chakra-ui/Box";
 // traits
 import CoreState from "./traits/core/state";
 import CoreEvent from "./traits/core/event";
@@ -106,6 +107,7 @@ registry.registerComponent(ChakraUIButton);
 registry.registerComponent(ChakraUITabs);
 registry.registerComponent(ChakraUITable);
 registry.registerComponent(ChakraUIInput);
+registry.registerComponent(ChakraUIBox);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
