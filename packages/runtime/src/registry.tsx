@@ -6,6 +6,7 @@ import { SlotsMap } from "./App";
 /* --- plain --- */
 import PlainButton from "./components/plain/Button";
 import CoreText from "./components/core/Text";
+import CoreGridLayout from "./components/core/GridLayout";
 /* --- chakra-ui --- */
 import ChakraUIRoot from "./components/chakra-ui/Root";
 import ChakraUIButton from "./components/chakra-ui/Button";
@@ -102,6 +103,7 @@ export const registry = new Registry();
 
 registry.registerComponent(PlainButton);
 registry.registerComponent(CoreText);
+registry.registerComponent(CoreGridLayout);
 registry.registerComponent(ChakraUIRoot);
 registry.registerComponent(ChakraUIButton);
 registry.registerComponent(ChakraUITabs);
