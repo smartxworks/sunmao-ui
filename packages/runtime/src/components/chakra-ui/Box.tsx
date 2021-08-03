@@ -289,7 +289,7 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
 
   return (
     <BaseBox {...styleProps}>
-      <Slot slotsMap={slotsMap} slot="box_content" />
+      <Slot slotsMap={slotsMap} slot="content" />
     </BaseBox>
   );
 };
