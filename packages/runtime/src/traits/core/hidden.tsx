@@ -16,7 +16,7 @@ const Hidden: React.FC<HiddenProps> = ({ hidden: _hidden, children }) => {
   return <>{children}</>;
 };
 
-const useHiddenState: TraitImplementation<HiddenProps> = ({ hidden }) => {
+const useHiddenTrait: TraitImplementation<HiddenProps> = ({ hidden }) => {
   return {
     props: null,
     component: (props) => <Hidden {...props} hidden={hidden} />,
@@ -43,5 +43,5 @@ export default {
       methods: [],
     },
   }),
-  impl: useHiddenState,
+  impl: useHiddenTrait,
 };

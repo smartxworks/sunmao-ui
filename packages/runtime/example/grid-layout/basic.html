@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: basic grid layout</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "basic_grid_layout",
+          description: "basic grid layout example",
+        },
+        spec: {
+          components: [
+            {
+              id: "grid_container",
+              type: "core/v1/grid_layout",
+              properties: {
+                layout: [
+                  {
+                    x: 4,
+                    y: 0,
+                    w: 4,
+                    h: 9,
+                    i: "box1",
+                  },
+                  {
+                    x: 8,
+                    y: 0,
+                    w: 2,
+                    h: 12,
+                    i: "box2",
+                  },
+                ],
+              },
+              traits: [],
+            },
+            {
+              id: "box1",
+              type: "chakra_ui/v1/box",
+              properties: {
+                border: "2px solid blue",
+                w: "100%",
+                h: "100%",
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "grid_container",
+                      slot: "container",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "box2",
+              type: "chakra_ui/v1/box",
+              properties: {
+                bgColor: "pink",
+                w: "100%",
+                h: "100%",
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "grid_container",
+                      slot: "container",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
