@@ -62,7 +62,7 @@ const Input: ComponentImplementation<{
   right,
   mergeState
 }) => {
-  const [value, setValue] = React.useState(""); // TODO: number input and pin input
+  const [value, setValue] = React.useState(""); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue(event.target.value);
 
   useEffect(() => {
