@@ -21,8 +21,10 @@ const ImplWrapper = React.forwardRef<
   {
     component: RuntimeApplication["spec"]["components"][0];
     slotsMap: SlotsMap | undefined;
+    targetSlot: { id: string; slot: string } | null;
+    app: RuntimeApplication;
   }
->(({ component: c, slotsMap, ...props }, ref) => {
+>(({ component: c, slotsMap, targetSlot, app, ...props }, ref) => {
   const Impl = registry.getComponent(
     c.parsedType.version,
     c.parsedType.name
@@ -93,11 +95,23 @@ const ImplWrapper = React.forwardRef<
     C = <W>{C}</W>;
   }
 
+  if (targetSlot) {
+    const targetC = app.spec.components.find((c) => c.id === targetSlot.id);
+    if (targetC?.parsedType.name === "grid_layout") {
+      return (
+        <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+          {C}
+          {props.children}
+        </div>
+      );
+    }
+  }
+
   return (
-    <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+    <React.Fragment key={c.id}>
       {C}
       {props.children}
-    </div>
+    </React.Fragment>
   );
 });
 
@@ -173,6 +187,8 @@ export function resolveNestedComponents(app: RuntimeApplication): {
             <ImplWrapper
               component={c}
               slotsMap={componentsMap.get(c.id)}
+              targetSlot={{ id, slot }}
+              app={app}
               {...props}
               ref={ref}
             />
@@ -205,6 +221,8 @@ const App: React.FC<{ options: Application }> = ({ options }) => {
             key={c.id}
             component={c}
             slotsMap={componentsMap.get(c.id)}
+            targetSlot={null}
+            app={app}
           />
         );
       })}
