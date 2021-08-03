@@ -16,10 +16,13 @@ import { setStore, useStore, emitter } from "./store";
 import { ContainerPropertySchema } from "./traits/core/slot";
 import { Static } from "@sinclair/typebox";
 
-const ImplWrapper: React.FC<{
-  component: RuntimeApplication["spec"]["components"][0];
-  slotsMap: SlotsMap | undefined;
-}> = ({ component: c, slotsMap }) => {
+const ImplWrapper = React.forwardRef<
+  HTMLDivElement,
+  {
+    component: RuntimeApplication["spec"]["components"][0];
+    slotsMap: SlotsMap | undefined;
+  }
+>(({ component: c, slotsMap, ...props }, ref) => {
   const Impl = registry.getComponent(
     c.parsedType.version,
     c.parsedType.name
@@ -90,8 +93,13 @@ const ImplWrapper: React.FC<{
     C = <W>{C}</W>;
   }
 
-  return C;
-};
+  return (
+    <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+      {C}
+      {props.children}
+    </div>
+  );
+});
 
 const DebugStore: React.FC = () => {
   const store = useStore();
@@ -129,7 +137,13 @@ const DebugEvent: React.FC = () => {
 };
 
 export type ComponentsMap = Map<string, SlotsMap>;
-export type SlotsMap = Map<string, Array<React.FC>>;
+export type SlotsMap = Map<
+  string,
+  Array<{
+    component: React.FC;
+    id: string;
+  }>
+>;
 export function resolveNestedComponents(app: RuntimeApplication): {
   topLevelComponents: RuntimeApplication["spec"]["components"];
   componentsMap: ComponentsMap;
@@ -154,9 +168,17 @@ export function resolveNestedComponents(app: RuntimeApplication): {
       componentsMap
         .get(id)
         ?.get(slot)
-        ?.push(() => (
-          <ImplWrapper component={c} slotsMap={componentsMap.get(c.id)} />
-        ));
+        ?.push({
+          component: React.forwardRef<HTMLDivElement, any>((props, ref) => (
+            <ImplWrapper
+              component={c}
+              slotsMap={componentsMap.get(c.id)}
+              {...props}
+              ref={ref}
+            />
+          )),
+          id: c.id,
+        });
     } else {
       topLevelComponents.push(c);
     }

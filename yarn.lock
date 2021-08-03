@@ -2267,6 +2267,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-grid-layout@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/@types/react-grid-layout/-/react-grid-layout-1.1.2.tgz#be46ac453e5193f512b0c4c90f36342e9e82258c"
+  integrity sha512-jGpMO5VTXgrCsOoxGHSzfM/9sihlN6GDNyssaMdl73Q7Vtrbe0VVYxoavodommoRXS29hLW/2RLbQ/Oj5++slg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^17.0.0":
   version "17.0.14"
   resolved "http://192.168.26.29:7001/@types/react/download/@types/react-17.0.14.tgz#f0629761ca02945c4e8fea99b8177f4c5c61fb0f"
@@ -2936,6 +2943,11 @@ cjs-module-lexer@^1.0.0:
   version "1.2.1"
   resolved "http://192.168.26.29:7001/cjs-module-lexer/download/cjs-module-lexer-1.2.1.tgz#2fd46d9906a126965aa541345c499aaa18e8cd73"
   integrity sha1-L9RtmQahJpZapUE0XEmaqhjozXM=
+
+classnames@2.3.1, classnames@^2.2.5:
+  version "2.3.1"
+  resolved "http://192.168.26.29:7001/classnames/download/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+  integrity sha1-38+jiR4wbsHa0QXQ6I9EF7hTXo4=
 
 clean-stack@^2.0.0:
   version "2.2.0"
@@ -5405,6 +5417,11 @@ lodash.clonedeep@^4.5.0:
   resolved "http://192.168.26.29:7001/lodash.clonedeep/download/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
+lodash.isequal@^4.0.0:
+  version "4.5.0"
+  resolved "http://192.168.26.29:7001/lodash.isequal/download/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
 lodash.ismatch@^4.4.0:
   version "4.4.0"
   resolved "http://192.168.26.29:7001/lodash.ismatch/download/lodash.ismatch-4.4.0.tgz#756cb5150ca3ba6f11085a78849645f188f85f37"
@@ -6523,7 +6540,7 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.0.0, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "http://192.168.26.29:7001/prop-types/download/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -6612,6 +6629,14 @@ react-dom@^17.0.0:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-draggable@^4.0.0, react-draggable@^4.0.3:
+  version "4.4.3"
+  resolved "http://192.168.26.29:7001/react-draggable/download/react-draggable-4.4.3.tgz#0727f2cae5813e36b0e4962bf11b2f9ef2b406f3"
+  integrity sha1-ByfyyuWBPjaw5JYr8RsvnvK0BvM=
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
 react-fast-compare@3.2.0:
   version "3.2.0"
   resolved "http://192.168.26.29:7001/react-fast-compare/download/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
@@ -6628,6 +6653,17 @@ react-focus-lock@2.5.0:
     react-clientside-effect "^1.2.2"
     use-callback-ref "^1.2.1"
     use-sidecar "^1.0.1"
+
+react-grid-layout@^1.2.5:
+  version "1.2.5"
+  resolved "http://192.168.26.29:7001/react-grid-layout/download/react-grid-layout-1.2.5.tgz#fa40288d5a1fa783484c44ce78b1e10eb5313d26"
+  integrity sha1-+kAojVofp4NITETOeLHhDrUxPSY=
+  dependencies:
+    classnames "2.3.1"
+    lodash.isequal "^4.0.0"
+    prop-types "^15.0.0"
+    react-draggable "^4.0.0"
+    react-resizable "^3.0.1"
 
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
@@ -6681,6 +6717,14 @@ react-remove-scroll@2.4.1:
     tslib "^1.0.0"
     use-callback-ref "^1.2.3"
     use-sidecar "^1.0.1"
+
+react-resizable@^3.0.1:
+  version "3.0.4"
+  resolved "http://192.168.26.29:7001/react-resizable/download/react-resizable-3.0.4.tgz#aa20108eff28c52c6fddaa49abfbef8abf5e581b"
+  integrity sha1-qiAQjv8oxSxv3apJq/vvir9eWBs=
+  dependencies:
+    prop-types "15.x"
+    react-draggable "^4.0.3"
 
 react-style-singleton@^2.1.0:
   version "2.1.1"
