@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>meta-ui runtime example: input component</title>
+    <title>meta-ui runtime example: number input component</title>
   </head>
   <body>
     <div id="root"></div>
@@ -13,8 +13,8 @@
       renderApp({
         version: "example/v1",
         metadata: {
-          name: "input_component",
-          description: "input component example",
+          name: "number_input_component",
+          description: "number input component example",
         },
         spec: {
           components: [
@@ -25,25 +25,25 @@
               traits: [],
             },
             {
-              id: "input",
-              type: "chakra_ui/v1/input",
+              id: "number_input",
+              type: "chakra_ui/v1/number_input",
               properties: {
-                variant: "filled",
-                placeholder: "This a example",
-                size: "lg",
-                colorScheme: "pink",
-                focusBorderColor: "pink.500",
-                isDisabled: false,
-                isRequired: true,
-                left: {
-                  type: 'addon',
-                  children: 'https://',
+                min: 10,
+                max: 100,
+                step: 5,
+                precision: 2,
+                clampValueOnBlur: false,
+                allowMouseWheel: true,
+                size: 'sm',
+                customerIncrement: {
+                  bg: "green.200",
+                  _active: { bg: "green.300" },
+                  children: "+"
                 },
-                right: {
-                  type: 'element',
-                  children: '.com',
-                  color: 'red',
-                  fontSize: '16px'
+                customerDecrement: {
+                  bg: "pink.200",
+                  _active: { bg: "pink.300" },
+                  children: "-"
                 }
               },
               traits: [
