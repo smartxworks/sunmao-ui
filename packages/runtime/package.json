@@ -10,6 +10,8 @@
     "@emotion/styled": "^11",
     "@meta-ui/core": "^0.1.0",
     "@sinclair/typebox": "^0.19.2",
+    "@vue-reactivity/watch": "^0.1.6",
+    "@vue/reactivity": "^3.1.5",
     "dayjs": "^1.10.6",
     "framer-motion": "^4",
     "lodash": "^4.17.21",
@@ -18,8 +20,7 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-grid-layout": "^1.2.5",
-    "react-markdown": "^6.0.2",
-    "zustand": "^3.5.5"
+    "react-markdown": "^6.0.2"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.170",
