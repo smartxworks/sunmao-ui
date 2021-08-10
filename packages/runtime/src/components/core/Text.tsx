@@ -3,16 +3,13 @@ import { createComponent } from "@meta-ui/core";
 import { Type } from "@sinclair/typebox";
 import { ComponentImplementation } from "../../registry";
 import _Text, { TextProps, TextPropertySchema } from "../_internal/Text";
-import { useExpression } from "../../store";
 
 const Text: ComponentImplementation<TextProps> = ({ value, mergeState }) => {
-  const raw = useExpression(value.raw);
-
   useEffect(() => {
-    mergeState({ value: raw });
-  }, [raw]);
+    mergeState({ value: value.raw });
+  }, [value.raw]);
 
-  return <_Text value={{ ...value, raw }} />;
+  return <_Text value={value} />;
 };
 
 const StateSchema = Type.Object({

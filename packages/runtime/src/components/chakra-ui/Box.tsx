@@ -4,7 +4,6 @@ import { Static, Type } from "@sinclair/typebox";
 import { Box as BaseBox } from "@chakra-ui/react";
 import { ComponentImplementation } from "../../registry";
 import Slot from "../_internal/Slot";
-import { useExpression } from "../../store";
 import { pick } from "lodash";
 
 const CssGlobals = Type.KeyOf(
@@ -278,14 +277,6 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
   ...restProps
 }) => {
   const styleProps = pick(restProps, StyleProps);
-  Object.entries(styleProps).forEach((item) => {
-    const key = item[0] as keyof typeof styleProps;
-    const value = item[1];
-    if (typeof value === "string" && value.startsWith("{{")) {
-      const raw = useExpression(value);
-      styleProps[key] = raw;
-    }
-  });
 
   return (
     <BaseBox {...styleProps}>

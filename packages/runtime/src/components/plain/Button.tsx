@@ -3,16 +3,14 @@ import { createComponent } from "@meta-ui/core";
 import { Type } from "@sinclair/typebox";
 import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
 import { ComponentImplementation } from "../../registry";
-import { useExpression } from "../../store";
 
 const Button: ComponentImplementation<{
   text: TextProps["value"];
   onClick?: () => void;
 }> = ({ text, mergeState, subscribeMethods, onClick }) => {
-  const raw = useExpression(text.raw);
   useEffect(() => {
-    mergeState({ value: raw });
-  }, [raw]);
+    mergeState({ value: text.raw });
+  }, [text.raw]);
 
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -25,7 +23,7 @@ const Button: ComponentImplementation<{
 
   return (
     <button ref={ref} onClick={onClick}>
-      <Text value={{ ...text, raw }} />
+      <Text value={text} />
     </button>
   );
 };

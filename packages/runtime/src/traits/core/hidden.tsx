@@ -2,14 +2,12 @@ import React from "react";
 import { createTrait } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
 import { TraitImplementation } from "../../registry";
-import { useExpression } from "../../store";
 
 type HiddenProps = {
   hidden: Static<typeof HiddenPropertySchema>;
 };
 
-const Hidden: React.FC<HiddenProps> = ({ hidden: _hidden, children }) => {
-  const hidden = useExpression(_hidden.toString());
+const Hidden: React.FC<HiddenProps> = ({ hidden, children }) => {
   if (hidden) {
     return null;
   }
