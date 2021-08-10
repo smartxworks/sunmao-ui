@@ -12,9 +12,11 @@ import {
 } from "@meta-ui/core";
 import { merge } from "lodash";
 import { registry } from "./registry";
-import { setStore, useStore, emitter } from "./store";
+import { emitter, stateStore, deepEval } from "./store";
 import { ContainerPropertySchema } from "./traits/core/slot";
 import { Static } from "@sinclair/typebox";
+import { watch } from "@vue-reactivity/watch";
+import _ from "lodash";
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
@@ -25,6 +27,11 @@ const ImplWrapper = React.forwardRef<
     app: RuntimeApplication;
   }
 >(({ component: c, slotsMap, targetSlot, app, ...props }, ref) => {
+  // TODO: find better way to add barrier
+  if (!stateStore[c.id]) {
+    stateStore[c.id] = {};
+  }
+
   const Impl = registry.getComponent(
     c.parsedType.version,
     c.parsedType.name
@@ -47,9 +54,7 @@ const ImplWrapper = React.forwardRef<
 
   const mergeState = useCallback(
     (partial: any) => {
-      setStore((cur) => {
-        return { [c.id]: { ...cur[c.id], ...partial } };
-      });
+      stateStore[c.id] = { ...stateStore[c.id], ...partial };
     },
     [c.id]
   );
@@ -61,6 +66,28 @@ const ImplWrapper = React.forwardRef<
   );
 
   // traits
+  const [traitPropertiesMap, setTraitPropertiesMap] = useState<
+    Map<typeof c["traits"][0], object>
+  >(
+    c.traits.reduce((prev, cur) => {
+      prev.set(cur, deepEval(cur.properties).result);
+      return prev;
+    }, new Map())
+  );
+  useEffect(() => {
+    const stops: ReturnType<typeof watch>[] = [];
+    for (const t of c.traits) {
+      const { stop, result } = deepEval(t.properties, ({ result }) => {
+        setTraitPropertiesMap(
+          new Map(traitPropertiesMap.set(t, { ...result }))
+        );
+      });
+      setTraitPropertiesMap(new Map(traitPropertiesMap.set(t, { ...result })));
+      stops.push(stop);
+    }
+    return () => stops.forEach((s) => s());
+  }, []);
+
   const traitsProps = {};
   const wrappers: React.FC[] = [];
   for (const t of c.traits) {
@@ -69,7 +96,7 @@ const ImplWrapper = React.forwardRef<
       t.parsedType.name
     ).impl;
     const { props: tProps, component: Wrapper } = tImpl({
-      ...t.properties,
+      ...traitPropertiesMap.get(t),
       mergeState,
       subscribeMethods,
     });
@@ -79,11 +106,30 @@ const ImplWrapper = React.forwardRef<
     }
   }
 
+  const [mergedProps, setMergedProps] = useState(
+    deepEval({
+      ...c.properties,
+      ...traitsProps,
+    }).result
+  );
+  useEffect(() => {
+    const rawProps: Record<string, unknown> = {
+      ...c.properties,
+      ...traitsProps,
+    };
+
+    const { stop, result } = deepEval(rawProps, ({ result }) => {
+      setMergedProps({ ...result });
+    });
+
+    setMergedProps({ ...result });
+    return stop;
+  }, []);
+
   let C = (
     <Impl
       key={c.id}
-      {...c.properties}
-      {...traitsProps}
+      {...mergedProps}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
@@ -116,7 +162,15 @@ const ImplWrapper = React.forwardRef<
 });
 
 const DebugStore: React.FC = () => {
-  const store = useStore();
+  const [store, setStore] = useState(stateStore);
+  useEffect(() => {
+    setStore({ ...stateStore });
+    watch(stateStore, (newValue) => {
+      setTimeout(() => {
+        setStore({ ...newValue });
+      }, 0);
+    });
+  }, []);
 
   return <pre>{JSON.stringify(store, null, 2)}</pre>;
 };

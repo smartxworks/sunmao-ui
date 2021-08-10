@@ -23,7 +23,7 @@ const SizePropertySchema = Type.KeyOf(
     sm: Type.String(),
     md: Type.String(),
     lg: Type.String(),
-    xs: Type.String()
+    xs: Type.String(),
   })
 );
 
@@ -31,19 +31,19 @@ const CustomerStepStylePropertySchema = Type.Object({
   bg: Type.Optional(Type.String()),
   children: Type.Optional(Type.String()),
   _active: Type.Object(Type.Object({ bg: Type.String() })),
-})
+});
 
 const NumberInput: ComponentImplementation<{
-  defaultValue?: Static<typeof DefaultValuePropertySchema>
-  min?: Static<typeof MinPropertySchema>
-  max?: Static<typeof MaxPropertySchema>
-  step?: Static<typeof StepPropertySchema>
-  precision?: Static<typeof PrecisionPropertySchema>
-  clampValueOnBlur?: Static<typeof ClampValueOnBlurPropertySchema>
-  allowMouseWheel?: Static<typeof AllowMouseWheelPropertySchema>
-  size?: Static<typeof SizePropertySchema>
-  customerIncrement?: Static<typeof CustomerStepStylePropertySchema>
-  customerDecrement?: Static<typeof CustomerStepStylePropertySchema>
+  defaultValue?: Static<typeof DefaultValuePropertySchema>;
+  min?: Static<typeof MinPropertySchema>;
+  max?: Static<typeof MaxPropertySchema>;
+  step?: Static<typeof StepPropertySchema>;
+  precision?: Static<typeof PrecisionPropertySchema>;
+  clampValueOnBlur?: Static<typeof ClampValueOnBlurPropertySchema>;
+  allowMouseWheel?: Static<typeof AllowMouseWheelPropertySchema>;
+  size?: Static<typeof SizePropertySchema>;
+  customerIncrement?: Static<typeof CustomerStepStylePropertySchema>;
+  customerDecrement?: Static<typeof CustomerStepStylePropertySchema>;
 }> = ({
   defaultValue = 0,
   min,
@@ -55,10 +55,11 @@ const NumberInput: ComponentImplementation<{
   size,
   customerIncrement,
   customerDecrement,
-  mergeState
+  mergeState,
 }) => {
-  const [value, setValue] = useState(defaultValue)
-  const onChange = (valueAsString: string, valueAsNumber: number) => setValue(valueAsNumber);
+  const [value, setValue] = useState(defaultValue);
+  const onChange = (valueAsString: string, valueAsNumber: number) =>
+    setValue(valueAsNumber);
 
   useEffect(() => {
     mergeState({ value });
@@ -83,7 +84,7 @@ const NumberInput: ComponentImplementation<{
       </NumberInputStepper>
     </BaseNumberInput>
   );
-  }
+};
 
 const StateSchema = Type.Object({
   value: Type.Number(),
@@ -99,50 +100,50 @@ export default {
     spec: {
       properties: [
         {
-          name: 'defaultValue',
-          ...DefaultValuePropertySchema
+          name: "defaultValue",
+          ...DefaultValuePropertySchema,
         },
         {
-          name: 'min',
-          ...MinPropertySchema
+          name: "min",
+          ...MinPropertySchema,
         },
         {
-          name: 'max',
-          ...MaxPropertySchema
+          name: "max",
+          ...MaxPropertySchema,
         },
         {
-          name: 'step',
-          ...StepPropertySchema
+          name: "step",
+          ...StepPropertySchema,
         },
         {
-          name: 'precision',
-          ...PrecisionPropertySchema
+          name: "precision",
+          ...PrecisionPropertySchema,
         },
         {
-          name: 'clampValueOnBlur',
-          ...ClampValueOnBlurPropertySchema
+          name: "clampValueOnBlur",
+          ...ClampValueOnBlurPropertySchema,
         },
         {
-          name: 'allowMouseWheel',
-          ...AllowMouseWheelPropertySchema
+          name: "allowMouseWheel",
+          ...AllowMouseWheelPropertySchema,
         },
         {
-          name: 'size',
-          ...SizePropertySchema
+          name: "size",
+          ...SizePropertySchema,
         },
         {
-          name: 'customerIncrement',
-          ...CustomerStepStylePropertySchema
+          name: "customerIncrement",
+          ...CustomerStepStylePropertySchema,
         },
         {
-          name: 'customerDecrement',
-          ...CustomerStepStylePropertySchema
+          name: "customerDecrement",
+          ...CustomerStepStylePropertySchema,
         },
       ],
       acceptTraits: [],
       state: StateSchema,
       methods: [],
-    }
+    },
   }),
   impl: NumberInput,
-}
+};

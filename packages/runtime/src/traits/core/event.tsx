@@ -4,7 +4,7 @@ import { Static, Type } from "@sinclair/typebox";
 import { nanoid } from "nanoid";
 import { debounce, throttle, delay } from "lodash";
 import { TraitImplementation } from "../../registry";
-import { emitter, evalInContext, useStore } from "../../store";
+import { emitter } from "../../store";
 
 const useEventTrait: TraitImplementation<{
   events: Static<typeof EventsPropertySchema>;
@@ -36,18 +36,15 @@ const useEventTrait: TraitImplementation<{
     for (const event of events) {
       const handler = () => {
         let disabled = false;
-        const currentStoreState = useStore.getState();
         if (typeof event.disabled === "boolean") {
           disabled = event.disabled;
-        } else if (typeof event.disabled === "string") {
-          disabled = evalInContext(event.disabled, currentStoreState);
         }
         if (disabled) {
           return;
         }
         emitter.emit(event.componentId, {
           name: event.method.name,
-          parameters: evalInContext(event.method.parameters, currentStoreState),
+          parameters: event.method.parameters,
         });
       };
       if (!handlerMap.current[event.event]) {
@@ -85,7 +82,7 @@ const EventsPropertySchema = Type.Array(
     componentId: Type.String(),
     method: Type.Object({
       name: Type.String(),
-      parameters: Type.String(),
+      parameters: Type.Any(),
     }),
     wait: Type.Object({
       type: Type.KeyOf(
@@ -97,7 +94,7 @@ const EventsPropertySchema = Type.Array(
       ),
       time: Type.Number(),
     }),
-    disabled: Type.Union([Type.Boolean(), Type.String()]),
+    disabled: Type.Boolean(),
   })
 );
 

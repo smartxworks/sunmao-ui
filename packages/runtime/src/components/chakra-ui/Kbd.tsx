@@ -4,19 +4,17 @@ import { Type } from "@sinclair/typebox";
 import { createComponent } from "@meta-ui/core";
 import { ComponentImplementation } from "../../registry";
 import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
-import { useExpression } from "../../store";
 
 const Kbd: ComponentImplementation<{
   text: TextProps["value"];
 }> = ({ text, mergeState }) => {
-  const raw = useExpression(text.raw);
   useEffect(() => {
-    mergeState({ value: raw });
-  }, [raw]);
+    mergeState({ value: text.raw });
+  }, [text.raw]);
 
   return (
     <BaseKbd>
-      <Text value={{ ...text, raw }} />
+      <Text value={text} />
     </BaseKbd>
   );
 };
