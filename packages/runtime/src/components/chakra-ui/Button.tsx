@@ -4,7 +4,6 @@ import { Static, Type } from "@sinclair/typebox";
 import { Button as BaseButton } from "@chakra-ui/react";
 import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
 import { ComponentImplementation } from "../../registry";
-import { useExpression } from "../../store";
 
 const Button: ComponentImplementation<{
   text: TextProps["value"];
@@ -19,10 +18,9 @@ const Button: ComponentImplementation<{
   colorScheme,
   isLoading,
 }) => {
-  const raw = useExpression(text.raw);
   useEffect(() => {
-    mergeState({ value: raw });
-  }, [raw]);
+    mergeState({ value: text.raw });
+  }, [text.raw]);
 
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -35,7 +33,7 @@ const Button: ComponentImplementation<{
 
   return (
     <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={onClick}>
-      <Text value={{ ...text, raw }} />
+      <Text value={text} />
     </BaseButton>
   );
 };

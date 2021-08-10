@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from "react";
 import { createTrait } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
 import { TraitImplementation } from "../../registry";
-import { evalInContext, useExpression, useStore } from "../../store";
 
 const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   name,
@@ -18,8 +17,6 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
     return _lazy === undefined ? method.toLowerCase() !== "get" : _lazy;
   }, [method, _lazy]);
 
-  const urlExpression = useExpression(url);
-
   const fetchData = useCallback(() => {
     // before fetching, initial data
     mergeState({
@@ -34,12 +31,11 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
     if (_headers) {
       for (let i = 0; i < _headers.length; i++) {
         const header = _headers[i];
-        const value = evalInContext(_headers[i].value, useStore.getState());
-        headers.append(header.key, value);
+        headers.append(header.key, _headers[i].value);
       }
     }
     // fetch data
-    fetch(urlExpression, {
+    fetch(url, {
       method,
       headers,
       body,
@@ -81,7 +77,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
         });
       }
     );
-  }, [urlExpression, method, _headers, body, lazy]);
+  }, [url, method, _headers, body, lazy]);
 
   // intialize data
   useEffect(() => {
@@ -96,11 +92,11 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
 
   // non lazy query, listen to the change and query;
   useEffect(() => {
-    if (lazy || !urlExpression) {
+    if (lazy || !url) {
       return;
     }
     fetchData();
-  }, [urlExpression, method, _headers, body, lazy]);
+  }, [url, method, _headers, body, lazy]);
 
   // only subscribe non lazy fetch trait
   if (lazy) {
