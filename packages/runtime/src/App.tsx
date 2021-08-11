@@ -260,7 +260,11 @@ export function resolveNestedComponents(app: RuntimeApplication): {
   };
 }
 
-const App: React.FC<{ options: Application }> = ({ options }) => {
+const App: React.FC<{
+  options: Application;
+  debugStore?: boolean;
+  debugEvent?: boolean;
+}> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
   const { topLevelComponents, componentsMap } = useMemo(
     () => resolveNestedComponents(app),
@@ -280,8 +284,8 @@ const App: React.FC<{ options: Application }> = ({ options }) => {
           />
         );
       })}
-      <DebugStore />
-      <DebugEvent />
+      {debugStore && <DebugStore />}
+      {debugEvent && <DebugEvent />}
     </div>
   );
 };

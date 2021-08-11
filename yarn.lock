@@ -2255,6 +2255,11 @@
   resolved "http://192.168.26.29:7001/@types/prettier/download/@types/prettier-2.3.2.tgz#fc8c2825e4ed2142473b4a81064e6e081463d1b3"
   integrity sha1-/IwoJeTtIUJHO0qBBk5uCBRj0bM=
 
+"@types/prismjs@^1.16.6":
+  version "1.16.6"
+  resolved "http://192.168.26.29:7001/@types/prismjs/download/@types/prismjs-1.16.6.tgz#377054f72f671b36dbe78c517ce2b279d83ecc40"
+  integrity sha1-N3BU9y9nGzbb54xRfOKyedg+zEA=
+
 "@types/prop-types@*":
   version "15.7.4"
   resolved "http://192.168.26.29:7001/@types/prop-types/download/@types/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
@@ -6519,6 +6524,11 @@ pretty-format@^27.0.6:
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
 
+prismjs@^1.24.1:
+  version "1.24.1"
+  resolved "http://192.168.26.29:7001/prismjs/download/prismjs-1.24.1.tgz#c4d7895c4d6500289482fa8936d9cdd192684036"
+  integrity sha1-xNeJXE1lACiUgvqJNtnN0ZJoQDY=
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "http://192.168.26.29:7001/process-nextick-args/download/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
@@ -6742,6 +6752,11 @@ react-resizable@^3.0.1:
   dependencies:
     prop-types "15.x"
     react-draggable "^4.0.3"
+
+react-simple-code-editor@^0.11.0:
+  version "0.11.0"
+  resolved "http://192.168.26.29:7001/react-simple-code-editor/download/react-simple-code-editor-0.11.0.tgz#bb57c7c29b570f2ab229872599eac184f5bc673c"
+  integrity sha1-u1fHwptXDyqyKYclmerBhPW8Zzw=
 
 react-style-singleton@^2.1.0:
   version "2.1.1"
