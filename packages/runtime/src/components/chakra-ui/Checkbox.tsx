@@ -3,7 +3,6 @@ import { createComponent } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
 import { Checkbox as BaseCheckbox } from "@chakra-ui/react";
 import { ComponentImplementation } from "../../registry";
-import { useExpression } from "../../store";
 import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
 
 const DefaultIsCheckedSchema = Type.Optional(Type.Boolean());
@@ -69,12 +68,11 @@ const Checkbox: ComponentImplementation<{
   value,
   mergeState,
 }) => {
-  const raw = useExpression(text.raw);
   const [checked, setChecked] = useState(defaultIsChecked);
 
   useEffect(() => {
-    mergeState({ value: raw });
-  }, [raw]);
+    mergeState({ value: text.raw });
+  }, [text.raw]);
 
   useEffect(() => {
     mergeState({ value: checked });
@@ -97,7 +95,7 @@ const Checkbox: ComponentImplementation<{
         setChecked(e.target.checked);
       }}
     >
-      <Text value={{ ...text, raw }} />
+      <Text value={text} />
     </BaseCheckbox>
   );
 };
