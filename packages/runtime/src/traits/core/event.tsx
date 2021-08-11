@@ -1,32 +1,22 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { createTrait } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
-import { nanoid } from "nanoid";
 import { debounce, throttle, delay } from "lodash";
 import { TraitImplementation } from "../../registry";
-import { emitter } from "../../store";
+import { apiService } from "../../api-service";
 
 const useEventTrait: TraitImplementation<{
   events: Static<typeof EventsPropertySchema>;
 }> = ({ events }) => {
-  const hookId = useMemo(() => {
-    return nanoid();
-  }, []);
   const handlerMap = useRef<Record<string, Array<(parameters?: any) => void>>>(
     {}
   );
-  useEffect(() => {
-    const handler = (s: { name: string; parameters?: any }) => {
-      if (!handlerMap.current[s.name]) {
-        // maybe log?
-        return;
-      }
-      handlerMap.current[s.name].forEach((fn) => fn(s.parameters));
-    };
-    emitter.on(hookId, handler);
-    return () => {
-      emitter.off(hookId, handler);
-    };
+  const eventHandler = useCallback((s: { name: string; parameters?: any }) => {
+    if (!handlerMap.current[s.name]) {
+      // maybe log?
+      return;
+    }
+    handlerMap.current[s.name].forEach((fn) => fn(s.parameters));
   }, []);
 
   useEffect(() => {
@@ -42,7 +32,8 @@ const useEventTrait: TraitImplementation<{
         if (disabled) {
           return;
         }
-        emitter.emit(event.componentId, {
+        apiService.send("uiMethod", {
+          componentId: event.componentId,
           name: event.method.name,
           parameters: event.method.parameters,
         });
@@ -66,7 +57,9 @@ const useEventTrait: TraitImplementation<{
     return {
       // HARDCODE
       onClick() {
-        emitter.emit(hookId, { name: "click" });
+        eventHandler({
+          name: "click",
+        });
       },
     };
   }, []);

@@ -1,5 +1,4 @@
 import _ from "lodash";
-import mitt from "mitt";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { reactive } from "@vue/reactivity";
@@ -29,15 +28,6 @@ function parseExpression(raw: string): {
     expression: matchArr[1],
   };
 }
-
-export const emitter = mitt<Record<string, any>>();
-
-// EXPERIMENT: utils
-emitter.on("$utils", ({ name, parameters }) => {
-  if (name === "alert") {
-    window.alert(parameters);
-  }
-});
 
 function isNumeric(x: string | number) {
   return !isNaN(Number(x));
