@@ -12,11 +12,13 @@ import {
 } from "@meta-ui/core";
 import { merge } from "lodash";
 import { registry } from "./registry";
-import { emitter, stateStore, deepEval } from "./store";
+import { stateStore, deepEval } from "./store";
+import { apiService } from "./api-service";
 import { ContainerPropertySchema } from "./traits/core/slot";
 import { Static } from "@sinclair/typebox";
 import { watch } from "@vue-reactivity/watch";
 import _ from "lodash";
+import copy from "copy-to-clipboard";
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
@@ -39,16 +41,23 @@ const ImplWrapper = React.forwardRef<
 
   const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
   useEffect(() => {
-    const handler = (s: { name: string; parameters?: any }) => {
+    const handler = (s: {
+      componentId: string;
+      name: string;
+      parameters?: any;
+    }) => {
+      if (s.componentId !== c.id) {
+        return;
+      }
       if (!handlerMap.current[s.name]) {
         // maybe log?
         return;
       }
       handlerMap.current[s.name](s.parameters);
     };
-    emitter.on(c.id, handler);
+    apiService.on("uiMethod", handler);
     return () => {
-      emitter.off(c.id, handler);
+      apiService.off("uiMethod", handler);
     };
   }, []);
 
@@ -180,26 +189,35 @@ const DebugEvent: React.FC = () => {
 
   useEffect(() => {
     const handler = (type: string, event: unknown) => {
-      setEvents((cur) =>
-        cur.concat({ type, event, t: new Date().toLocaleString() })
-      );
+      setEvents((cur) => cur.concat({ type, event, t: new Date() }));
     };
-    emitter.on("*", handler);
-    return () => emitter.off("*", handler);
+    apiService.on("*", handler);
+    return () => apiService.off("*", handler);
   }, []);
 
   return (
-    <div
-      style={{
-        padding: "0.5em",
-        border: "2px solid black",
-        maxHeight: "200px",
-        overflow: "auto",
-      }}
-    >
-      {events.map((event, idx) => (
-        <pre key={idx}>{JSON.stringify(event)}</pre>
-      ))}
+    <div>
+      <div>
+        <button
+          onClick={() => {
+            copy(JSON.stringify(events));
+          }}
+        >
+          copy test case
+        </button>
+      </div>
+      <div
+        style={{
+          padding: "0.5em",
+          border: "2px solid black",
+          maxHeight: "200px",
+          overflow: "auto",
+        }}
+      >
+        {events.map((event, idx) => (
+          <pre key={idx}>{JSON.stringify(event)}</pre>
+        ))}
+      </div>
     </div>
   );
 };
