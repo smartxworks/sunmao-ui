@@ -1,6 +1,5 @@
 import React from "react";
 import { RuntimeComponent, RuntimeTrait } from "@meta-ui/core";
-import { setStore } from "./store";
 import { SlotsMap } from "./App";
 // components
 /* --- plain --- */
@@ -20,6 +19,8 @@ import ChakraUICheckbox from "./components/chakra-ui/Checkbox";
 import ChakraUIStack from "./components/chakra-ui/Stack";
 import ChakraUIHStack from "./components/chakra-ui/HStack";
 import ChakraUIVStack from "./components/chakra-ui/VStack";
+/* --- lab --- */
+import LabEditor from "./components/lab/Editor";
 // traits
 import CoreState from "./traits/core/state";
 import CoreEvent from "./traits/core/event";
@@ -40,7 +41,7 @@ type SubscribeMethods = <U>(
     [K in keyof U]: (parameters: U[K]) => void;
   }
 ) => void;
-type MergeState = (partialState: Parameters<typeof setStore>[0]) => void;
+type MergeState = (partialState: any) => void;
 
 export type ComponentImplementation<T = any> = React.FC<
   T & {
@@ -122,6 +123,7 @@ registry.registerComponent(ChakraUICheckbox);
 registry.registerComponent(ChakraUIStack);
 registry.registerComponent(ChakraUIHStack);
 registry.registerComponent(ChakraUIVStack);
+registry.registerComponent(LabEditor);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
