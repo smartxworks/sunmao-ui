@@ -1,7 +1,7 @@
 import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static } from '@sinclair/typebox';
-import { HStack as BaseVStack } from '@chakra-ui/react';
+import { HStack as BaseHStack } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
 import {
@@ -20,9 +20,9 @@ const HStack: ComponentImplementation<{
   spacing?: Static<typeof SpacingSchema>;
 }> = ({ direction, wrap, align, justify, spacing, slotsMap }) => {
   return (
-    <BaseVStack {...{ direction, wrap, align, justify, spacing }}>
+    <BaseHStack {...{ direction, wrap, align, justify, spacing }}>
       <Slot slotsMap={slotsMap} slot="content" />
-    </BaseVStack>
+    </BaseHStack>
   );
 };
 

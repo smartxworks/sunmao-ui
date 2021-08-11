@@ -6,8 +6,8 @@ import { ComponentImplementation } from '../../registry';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 
 const DefaultIsCheckedSchema = Type.Optional(Type.Boolean());
-const IsDisabledSchema = Type.Optional(Type.Boolean());
-const ColorSchemePropertySchema = Type.Optional(
+export const IsDisabledSchema = Type.Optional(Type.Boolean());
+export const ColorSchemePropertySchema = Type.Optional(
   Type.KeyOf(
     Type.Object({
       whiteAlpha: Type.String(),
@@ -31,7 +31,7 @@ const ColorSchemePropertySchema = Type.Optional(
     })
   )
 );
-const SizePropertySchema = Type.KeyOf(
+export const SizePropertySchema = Type.KeyOf(
   Type.Object({
     sm: Type.String(),
     md: Type.String(),
@@ -78,12 +78,16 @@ const Checkbox: ComponentImplementation<{
     mergeState({ value: checked });
   }, [checked]);
 
+  const args: {
+    colorScheme?: Static<typeof ColorSchemePropertySchema>;
+    size?: Static<typeof SizePropertySchema>;
+  } = {};
+  if (colorScheme) args.colorScheme = colorScheme;
+  if (size) args.size = size;
+
   return (
     <BaseCheckbox
-      {...{
-        colorScheme,
-        size,
-      }}
+      {...args}
       defaultChecked={defaultIsChecked}
       isDisabled={isDisabled}
       isInvalid={isInValid}

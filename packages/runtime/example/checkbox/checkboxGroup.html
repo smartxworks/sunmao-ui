@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: checkbox component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "checkbox",
+          description: "checkbox",
+        },
+        spec: {
+          components: [
+            {
+              id: "root",
+              type: "chakra_ui/v1/root",
+              properties: {},
+              traits: [],
+            },
+            {
+              id: "checkbox_group",
+              type: "chakra_ui/v1/checkbox_group",
+              properties: {
+                colorScheme:"green",
+                defaultValue: ["naruto", "kakashi"],
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "root",
+                      slot: "root",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "hstack",
+              type: "chakra_ui/v1/hstack",
+              properties: {
+                spacing: 8,
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "checkbox_group",
+                      slot: "content",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "checkbox_1",
+              type: "chakra_ui/v1/checkbox",
+              properties: {
+                value: "naruto",
+                text: {
+                  raw: "naruto",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "hstack",
+                      slot: "content",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "checkbox_2",
+              type: "chakra_ui/v1/checkbox",
+              properties: {
+                value: "sasuke",
+                text: {
+                  raw: "sasuke",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "hstack",
+                      slot: "content",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "checkbox_3",
+              type: "chakra_ui/v1/checkbox",
+              properties: {
+                value: "kakashi",
+                text: {
+                  raw: "kakashi",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "hstack",
+                      slot: "content",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "debug_text",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: `{{ !!checkbox_group.value ?  checkbox_group.value.join(", ") : checkbox_group.value }}`,
+                  format: "plain",
+                },
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
