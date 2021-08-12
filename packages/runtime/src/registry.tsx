@@ -1,11 +1,12 @@
 import React from "react";
 import { RuntimeComponent, RuntimeTrait } from "@meta-ui/core";
-import { SlotsMap } from "./App";
+import { RouterComponentMap, SlotsMap } from "./App";
 // components
 /* --- plain --- */
 import PlainButton from "./components/plain/Button";
 import CoreText from "./components/core/Text";
 import CoreGridLayout from "./components/core/GridLayout";
+import CoreRouter from "./components/core/Router";
 /* --- chakra-ui --- */
 import ChakraUIRoot from "./components/chakra-ui/Root";
 import ChakraUIButton from "./components/chakra-ui/Button";
@@ -27,6 +28,7 @@ import CoreEvent from "./traits/core/event";
 import CoreSlot from "./traits/core/slot";
 import CoreHidden from "./traits/core/hidden";
 import CoreFetch from "./traits/core/fetch";
+import CoreRoute from "./traits/core/route";
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -48,6 +50,7 @@ export type ComponentImplementation<T = any> = React.FC<
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
     slotsMap: SlotsMap | undefined;
+    routerMap: RouterComponentMap;
   }
 >;
 
@@ -124,9 +127,11 @@ registry.registerComponent(ChakraUIStack);
 registry.registerComponent(ChakraUIHStack);
 registry.registerComponent(ChakraUIVStack);
 registry.registerComponent(LabEditor);
+registry.registerComponent(CoreRouter);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);
 registry.registerTrait(CoreFetch);
+registry.registerTrait(CoreRoute);
