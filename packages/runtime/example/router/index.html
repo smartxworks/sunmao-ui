@@ -24,7 +24,7 @@
                 routerPolicy: [
                   {
                     type: "route",
-                    path: "/",
+                    path: "/react",
                     cid: "text_react",
                     default: true,
                   },
@@ -39,6 +39,11 @@
                     path: "/vue",
                     cid: "text_vue",
                     default: false,
+                  },
+                  {
+                    type: "redirect",
+                    path: "/redirect",
+                    href: "/",
                   },
                 ],
               },
@@ -135,7 +140,8 @@
                         componentId: "router",
                         method: {
                           name: "navigate",
-                          parameters: "{{['/','/vue','/angular'][router.index%3]}}",
+                          parameters:
+                            "{{['/','/vue','/angular'][router.index%3]}}",
                         },
                         wait: {},
                         disabled: false,
