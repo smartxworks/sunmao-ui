@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      delete window.history;
+    </script>
     <title>meta-ui runtime example: nested components</title>
   </head>
   <body>
@@ -12,8 +15,8 @@
       renderApp({
         version: "example/v1",
         metadata: {
-          name: "router",
-          description: "normal router example",
+          name: "hash_router",
+          description: "hash router example",
         },
         spec: {
           components: [
