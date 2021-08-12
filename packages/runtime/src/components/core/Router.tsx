@@ -14,6 +14,7 @@ import {
   Route as Woute,
   Switch,
   useLocation,
+  useRouter,
 } from "wouter";
 import makeCachedMatcher from "wouter/matcher";
 import { Key, pathToRegexp } from "path-to-regexp";
@@ -67,26 +68,37 @@ export const RouterProvider: React.FC<{ useRouter: boolean }> = ({
 const Router: ComponentImplementation<{
   routerPolicy: Static<typeof RouterPolicyPropertySchema>;
 }> = ({ routerMap, routerPolicy, subscribeMethods }) => {
+  const [parentPath, naviagte] = useLocation();
+
   const routes = useMemo(() => {
-    const defaultEle: {
-      ele?: React.FC;
-      path?: string;
-    } = {};
+    let defaultPath: string | undefined = undefined;
     const result = routerPolicy.map(
       ({ type, path, cid, href, default: _default }) => {
         const C = routerMap && routerMap.get(cid);
-        if (!C) {
-          console.warn("component not registered to router");
-          return <></>;
-        }
-        if (!defaultEle.ele && _default) {
-          defaultEle.ele = C;
-          defaultEle.path = path;
+        if (defaultPath === undefined && _default) {
+          defaultPath = path;
         }
         switch (type.toUpperCase()) {
           case RouteType.REDIRECT:
-            return <Redirect href={href || path} key={cid}></Redirect>;
+            return (
+              <Woute path={path}>
+                <Redirect href={href || path} />
+              </Woute>
+            );
           case RouteType.ROUTE:
+            if (!C) {
+              console.warn("component not registered to router");
+              return <></>;
+            }
+            if (C.displayName === "router") {
+              return (
+                <Woute path={path}>
+                  <Wouter base={`${parentPath}/${path}`}>
+                    <C key={cid}></C>
+                  </Wouter>
+                </Woute>
+              );
+            }
             return (
               <Woute path={path}>
                 <C key={cid}></C>
@@ -98,21 +110,19 @@ const Router: ComponentImplementation<{
         }
       }
     );
-    // if (defaultEle.ele) {
-    //   const C = defaultEle.ele as React.FC;
-    //   result.push(
-    //     <Redirect href={defaultEle.path}>
-    //       <C></C>
-    //     </Redirect>
-    //   );
-    // }
+    if (defaultPath) {
+      result.push(
+        <Woute>
+          <Redirect href={defaultPath} />
+        </Woute>
+      );
+    }
     return result;
   }, []);
-  const [, navigate] = useLocation();
   useEffect(() => {
     subscribeMethods({
       navigate: (path: string) => {
-        navigate(path);
+        naviagte(path);
       },
     });
   }, []);
@@ -124,7 +134,6 @@ enum RouteType {
   ROUTE = "ROUTE",
 }
 
-const IdPropertySchema = Type.String();
 const RouterPolicyPropertySchema = Type.Array(
   Type.Object({
     type: Type.Enum(RouteType), // redirect, route

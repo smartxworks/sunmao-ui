@@ -292,19 +292,18 @@ export function resolveAppComponents(
       if (!routerComponentsMap.has(id)) {
         routerComponentsMap.set(id, new Map());
       }
-      routerComponentsMap.get(id)!.set(
-        c.id,
-        React.forwardRef<HTMLDivElement, any>((props, ref) => (
-          <ImplWrapper
-            component={c}
-            slotsMap={slotComponentsMap.get(c.id)}
-            routerMap={routerComponentsMap.get(c.id)}
-            app={app}
-            {...props}
-            ref={ref}
-          />
-        ))
-      );
+      const C = React.forwardRef<HTMLDivElement, any>((props, ref) => (
+        <ImplWrapper
+          component={c}
+          slotsMap={slotComponentsMap.get(c.id)}
+          routerMap={routerComponentsMap.get(c.id)}
+          app={app}
+          {...props}
+          ref={ref}
+        />
+      ));
+      C.displayName = c.parsedType.name;
+      routerComponentsMap.get(id)!.set(c.id, C);
     }
     // if the component is neither assigned with slot trait nor route trait, consider it as a top level component
     !slotTrait && !routeTrait && topLevelComponents.push(c);
