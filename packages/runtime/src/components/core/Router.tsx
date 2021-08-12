@@ -17,10 +17,12 @@ const currentLocation = () => {
   return window.location.hash.replace(/^#/, "") || "/";
 };
 
-const navigate = (to: string) => (window.location.hash = to);
+const navigate = (to: string) => {
+  window.location.hash = to;
+};
 
 // if history api is not supported, graceful downgrade to use hash instead
-const useHashLocation = (): [string, (str: string) => string] => {
+const useHashLocation = (): [string, (str: string) => void] => {
   const [loc, setLoc] = useState(currentLocation());
 
   useEffect(() => {
@@ -41,6 +43,7 @@ const matcher = makeCachedMatcher((path: string) => {
   return { keys, regexp };
 });
 
+// provide a basic top-level router, determine to use hash or history api.
 export const RouterProvider: React.FC<{
   useRouter: boolean;
 }> = ({ useRouter, children }) => {
@@ -56,6 +59,8 @@ export const RouterProvider: React.FC<{
 };
 
 // all route-like component must have path property, router use path to determined if a component match the route
+// but we need path to match both nested router itself and its child route, so we need to have an alternative property called base as the real path of the nested router
+// and used by its children
 const NestedWouter: React.FC<{ path: string; base: string }> = ({
   children,
   path,
@@ -73,7 +78,12 @@ const NestedWouter: React.FC<{ path: string; base: string }> = ({
 
   // we need key to make sure the router will remount if the base changes
   return (
-    <Wouter base={nestedBase} key={nestedBase}>
+    <Wouter
+      base={nestedBase}
+      hook={router.hook}
+      matcher={router.matcher}
+      key={nestedBase}
+    >
       {children}
     </Wouter>
   );
