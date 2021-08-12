@@ -233,7 +233,7 @@ export type SlotsMap = Map<
 >;
 
 export type RouterComponentsMap = Map<string, RouterComponentMap>;
-export type RouterComponentMap = Map<string, React.FC>;
+export type RouterComponentMap = Map<string, React.FC<any>>;
 
 export function resolveAppComponents(
   app: RuntimeApplication

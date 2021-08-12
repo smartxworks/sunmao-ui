@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useMemo,
-  createElement,
-  useState,
-  useRef,
-} from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { createComponent } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
 import { ComponentImplementation } from "../../registry";
@@ -47,14 +41,10 @@ const matcher = makeCachedMatcher((path: string) => {
   return { keys, regexp };
 });
 
-export const RouterProvider: React.FC<{ useRouter: boolean }> = ({
-  useRouter,
-  children,
-}) => {
-  // TODO: use history api here;
-  const hook =
-    //useRef(useHashLocation);
-    useRef(window.history ? undefined : useHashLocation);
+export const RouterProvider: React.FC<{
+  useRouter: boolean;
+}> = ({ useRouter, children }) => {
+  const hook = useRef(window.history ? undefined : useHashLocation);
   const base = useRef(location.pathname);
   return useRouter ? (
     <Wouter base={base.current} hook={hook.current} matcher={matcher}>
@@ -65,10 +55,37 @@ export const RouterProvider: React.FC<{ useRouter: boolean }> = ({
   );
 };
 
+// all route-like component must have path property, router use path to determined if a component match the route
+const NestedWouter: React.FC<{ path: string; base: string }> = ({
+  children,
+  path,
+  base,
+}) => {
+  const router = useRouter();
+  const [parentLocation] = useLocation();
+
+  const nestedBase = `${router.base}${base}`;
+
+  // don't render anything outside of the scope
+  if (!parentLocation.startsWith(base)) {
+    return null;
+  }
+
+  // we need key to make sure the router will remount if the base changes
+  return (
+    <Wouter base={nestedBase} key={nestedBase}>
+      {children}
+    </Wouter>
+  );
+};
+
+// const Default = React.FC<{}>
+
 const Router: ComponentImplementation<{
   routerPolicy: Static<typeof RouterPolicyPropertySchema>;
 }> = ({ routerMap, routerPolicy, subscribeMethods }) => {
-  const [parentPath, naviagte] = useLocation();
+  const [, naviagte] = useLocation();
+  const router = useRouter();
 
   const routes = useMemo(() => {
     let defaultPath: string | undefined = undefined;
@@ -81,7 +98,7 @@ const Router: ComponentImplementation<{
         switch (type.toUpperCase()) {
           case RouteType.REDIRECT:
             return (
-              <Woute path={path}>
+              <Woute key={path} path={path}>
                 <Redirect href={href || path} />
               </Woute>
             );
@@ -92,15 +109,18 @@ const Router: ComponentImplementation<{
             }
             if (C.displayName === "router") {
               return (
-                <Woute path={path}>
-                  <Wouter base={`${parentPath}/${path}`}>
-                    <C key={cid}></C>
-                  </Wouter>
-                </Woute>
+                // it should match both itself and its children path, so we need to match its path itself
+                <NestedWouter
+                  path={`(${path}|${path}/.*)`}
+                  base={path}
+                  key={path}
+                >
+                  <C key={cid}></C>
+                </NestedWouter>
               );
             }
             return (
-              <Woute path={path}>
+              <Woute key={path} path={path}>
                 <C key={cid}></C>
               </Woute>
             );

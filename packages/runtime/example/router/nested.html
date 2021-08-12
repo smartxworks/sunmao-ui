@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: nested components</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "nested_components",
+          description: "nested components example",
+        },
+        spec: {
+          components: [
+            {
+              id: "parent",
+              type: "core/v1/router",
+              properties: {
+                routerPolicy: [
+                  {
+                    type: "route",
+                    path: "/1",
+                    cid: "child1",
+                    default: true,
+                  },
+                  {
+                    type: "route",
+                    path: "/2",
+                    cid: "child2",
+                    default: false,
+                  },
+                ],
+              },
+              traits: [],
+            },
+            {
+              id: "child1",
+              type: "core/v1/router",
+              properties: {
+                routerPolicy: [
+                  {
+                    type: "route",
+                    path: "/1",
+                    cid: "grandchild1_1",
+                    default: true,
+                  },
+                  {
+                    type: "route",
+                    path: "/2",
+                    cid: "grandchild1_2",
+                    default: false,
+                  },
+                  {
+                    type: "route",
+                    path: "/3",
+                    cid: "grandchild1_3",
+                    default: false,
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "parent",
+                  },
+                },
+              ],
+            },
+            {
+              id: "child2",
+              type: "core/v1/router",
+              properties: {
+                routerPolicy: [
+                  {
+                    type: "route",
+                    path: "/1",
+                    cid: "grandchild2_1",
+                    default: true,
+                  },
+                  {
+                    type: "route",
+                    path: "/2",
+                    cid: "grandchild2_2",
+                    default: false,
+                  },
+                  {
+                    type: "route",
+                    path: "/3",
+                    cid: "grandchild2_3",
+                    default: false,
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "parent",
+                  },
+                },
+              ],
+            },
+            {
+              id: "grandchild1_1",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "1_1",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "child1",
+                  },
+                },
+              ],
+            },
+            {
+              id: "grandchild1_2",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "1_2",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "child1",
+                  },
+                },
+              ],
+            },
+            {
+              id: "grandchild1_3",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "1_3",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "child1",
+                  },
+                },
+              ],
+            },
+            {
+              id: "grandchild2_1",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "2_1",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "child2",
+                  },
+                },
+              ],
+            },
+            {
+              id: "grandchild2_2",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "2_2",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "child2",
+                  },
+                },
+              ],
+            },
+            {
+              id: "grandchild2_3",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "2_3",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "child2",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
