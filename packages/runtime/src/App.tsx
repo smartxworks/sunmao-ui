@@ -15,29 +15,30 @@ import { registry } from "./registry";
 import { stateStore, deepEval } from "./store";
 import { apiService } from "./api-service";
 import { ContainerPropertySchema } from "./traits/core/slot";
+import { RouterIdPropertySchema } from "./traits/core/route";
 import { Static } from "@sinclair/typebox";
 import { watch } from "@vue-reactivity/watch";
 import _ from "lodash";
 import copy from "copy-to-clipboard";
+import { RouterProvider } from "./components/core/Router";
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
     component: RuntimeApplication["spec"]["components"][0];
     slotsMap: SlotsMap | undefined;
+    routerMap: RouterComponentMap | undefined;
     targetSlot: { id: string; slot: string } | null;
     app: RuntimeApplication;
   }
->(({ component: c, slotsMap, targetSlot, app, ...props }, ref) => {
+>(({ component: c, slotsMap, routerMap, targetSlot, app, ...props }, ref) => {
   // TODO: find better way to add barrier
   if (!stateStore[c.id]) {
     stateStore[c.id] = {};
   }
 
-  const Impl = registry.getComponent(
-    c.parsedType.version,
-    c.parsedType.name
-  ).impl;
+  const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name)
+    .impl;
 
   const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
   useEffect(() => {
@@ -67,6 +68,7 @@ const ImplWrapper = React.forwardRef<
     },
     [c.id]
   );
+
   const subscribeMethods = useCallback(
     (map: any) => {
       handlerMap.current = merge(handlerMap.current, map);
@@ -100,10 +102,8 @@ const ImplWrapper = React.forwardRef<
   const traitsProps = {};
   const wrappers: React.FC[] = [];
   for (const t of c.traits) {
-    const tImpl = registry.getTrait(
-      t.parsedType.version,
-      t.parsedType.name
-    ).impl;
+    const tImpl = registry.getTrait(t.parsedType.version, t.parsedType.name)
+      .impl;
     const { props: tProps, component: Wrapper } = tImpl({
       ...traitPropertiesMap.get(t),
       mergeState,
@@ -142,6 +142,7 @@ const ImplWrapper = React.forwardRef<
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
+      routerMap={routerMap}
     />
   );
 
@@ -222,7 +223,7 @@ const DebugEvent: React.FC = () => {
   );
 };
 
-export type ComponentsMap = Map<string, SlotsMap>;
+export type SlotComponentMap = Map<string, SlotsMap>;
 export type SlotsMap = Map<
   string,
   Array<{
@@ -230,35 +231,49 @@ export type SlotsMap = Map<
     id: string;
   }>
 >;
-export function resolveNestedComponents(app: RuntimeApplication): {
+
+export type RouterComponentsMap = Map<string, RouterComponentMap>;
+export type RouterComponentMap = Map<string, React.FC>;
+
+export function resolveAppComponents(
+  app: RuntimeApplication
+): {
   topLevelComponents: RuntimeApplication["spec"]["components"];
-  componentsMap: ComponentsMap;
+  slotComponentsMap: SlotComponentMap;
+  routerComponentsMap: RouterComponentsMap;
+  useRouter: boolean;
 } {
   const topLevelComponents: RuntimeApplication["spec"]["components"] = [];
-  const componentsMap: ComponentsMap = new Map();
+  const slotComponentsMap: SlotComponentMap = new Map();
+  const routerComponentsMap: RouterComponentsMap = new Map();
+  let useRouter = false;
 
   for (const c of app.spec.components) {
+    if (!useRouter && c.parsedType.name === "router") {
+      // if any router component was declared, set useRouter to true
+      useRouter = true;
+    }
+    // handle component with slot trait
     const slotTrait = c.traits.find((t) => t.parsedType.name === "slot");
     if (slotTrait) {
-      const { id, slot } = (
-        slotTrait.properties as {
-          container: Static<typeof ContainerPropertySchema>;
-        }
-      ).container;
-      if (!componentsMap.has(id)) {
-        componentsMap.set(id, new Map());
+      const { id, slot } = (slotTrait.properties as {
+        container: Static<typeof ContainerPropertySchema>;
+      }).container;
+      if (!slotComponentsMap.has(id)) {
+        slotComponentsMap.set(id, new Map());
       }
-      if (!componentsMap.get(id)?.has(slot)) {
-        componentsMap.get(id)?.set(slot, []);
+      if (!slotComponentsMap.get(id)?.has(slot)) {
+        slotComponentsMap.get(id)?.set(slot, []);
       }
-      componentsMap
+      slotComponentsMap
         .get(id)
         ?.get(slot)
         ?.push({
           component: React.forwardRef<HTMLDivElement, any>((props, ref) => (
             <ImplWrapper
               component={c}
-              slotsMap={componentsMap.get(c.id)}
+              slotsMap={slotComponentsMap.get(c.id)}
+              routerMap={routerComponentsMap.get(c.id)}
               targetSlot={{ id, slot }}
               app={app}
               {...props}
@@ -267,14 +282,44 @@ export function resolveNestedComponents(app: RuntimeApplication): {
           )),
           id: c.id,
         });
-    } else {
-      topLevelComponents.push(c);
     }
+    // handle component with route trait
+    const routeTrait = c.traits.find((t) => t.parsedType.name === "route");
+    if (routeTrait) {
+      const { routerId: id } = routeTrait.properties as {
+        routerId: Static<typeof RouterIdPropertySchema>;
+      };
+      if (!routerComponentsMap.has(id)) {
+        routerComponentsMap.set(id, new Map());
+      }
+      routerComponentsMap.get(id)!.set(
+        c.id,
+        React.forwardRef<HTMLDivElement, any>((props, ref) => (
+          <ImplWrapper
+            component={c}
+            slotsMap={slotComponentsMap.get(c.id)}
+            routerMap={routerComponentsMap.get(c.id)}
+            app={app}
+            {...props}
+            ref={ref}
+          />
+        ))
+      );
+    }
+    // if the component is neither assigned with slot trait nor route trait, consider it as a top level component
+    !slotTrait && !routeTrait && topLevelComponents.push(c);
+  }
+
+  // if no router component is used, clear routerComponent map;
+  if (!useRouter) {
+    routerComponentsMap.clear();
   }
 
   return {
     topLevelComponents,
-    componentsMap,
+    slotComponentsMap,
+    routerComponentsMap,
+    useRouter,
   };
 }
 
@@ -284,24 +329,29 @@ const App: React.FC<{
   debugEvent?: boolean;
 }> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
-  const { topLevelComponents, componentsMap } = useMemo(
-    () => resolveNestedComponents(app),
-    [app]
-  );
+  const {
+    topLevelComponents,
+    slotComponentsMap,
+    routerComponentsMap,
+    useRouter,
+  } = useMemo(() => resolveAppComponents(app), [app]);
 
   return (
     <div className="App">
-      {topLevelComponents.map((c) => {
-        return (
-          <ImplWrapper
-            key={c.id}
-            component={c}
-            slotsMap={componentsMap.get(c.id)}
-            targetSlot={null}
-            app={app}
-          />
-        );
-      })}
+      <RouterProvider useRouter={useRouter}>
+        {topLevelComponents.map((c) => {
+          return (
+            <ImplWrapper
+              key={c.id}
+              component={c}
+              slotsMap={slotComponentsMap.get(c.id)}
+              routerMap={routerComponentsMap.get(c.id)}
+              targetSlot={null}
+              app={app}
+            />
+          );
+        })}
+      </RouterProvider>
       {debugStore && <DebugStore />}
       {debugEvent && <DebugEvent />}
     </div>

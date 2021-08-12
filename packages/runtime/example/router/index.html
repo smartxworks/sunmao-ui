@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: nested components</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "nested_components",
+          description: "nested components example",
+        },
+        spec: {
+          components: [
+            {
+              id: "router",
+              type: "core/v1/router",
+              properties: {
+                routerPolicy: [
+                  {
+                    type: "route",
+                    path: "/",
+                    cid: "text_react",
+                    default: true,
+                  },
+                  {
+                    type: "route",
+                    path: "/angular",
+                    cid: "text_ng",
+                    default: false,
+                  },
+                  {
+                    type: "route",
+                    path: "/vue",
+                    cid: "text_vue",
+                    default: false,
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: "core/v1/state",
+                  properties: {
+                    key: "index",
+                    initialValue: 0,
+                  },
+                },
+              ],
+            },
+            {
+              id: "text_react",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "React",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "router",
+                  },
+                },
+              ],
+            },
+            {
+              id: "text_ng",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "Angular",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "router",
+                  },
+                },
+              ],
+            },
+            {
+              id: "text_vue",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "Vue",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "router",
+                  },
+                },
+              ],
+            },
+            {
+              id: "switch_button",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: "switch",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/event",
+                  properties: {
+                    events: [
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "setValue",
+                          parameters: "{{router.index + 1}}",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "navigate",
+                          parameters: "{{['/','/vue','/angular'][router.index%3]}}",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
