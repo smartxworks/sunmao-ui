@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import { createComponent } from "@meta-ui/core";
 import { Static, Type } from "@sinclair/typebox";
 import { ComponentImplementation } from "../../registry";
@@ -13,20 +19,29 @@ import {
 import makeCachedMatcher from "wouter/matcher";
 import { Key, pathToRegexp } from "path-to-regexp";
 
-const currentLocation = () => {
-  return window.location.hash.replace(/^#/, "") || "/";
-};
-
-const navigate = (to: string) => {
-  window.location.hash = to;
+const currentLocation = (base: string, hash = location.hash) => {
+  hash = window.location.hash.replace(/^#/, "");
+  return !hash.toLowerCase().indexOf(hash)
+    ? hash.slice(base.length) || "/"
+    : "~" + hash;
 };
 
 // if history api is not supported, graceful downgrade to use hash instead
-const useHashLocation = (): [string, (str: string) => void] => {
-  const [loc, setLoc] = useState(currentLocation());
+const useHashLocation = ({ base = "" } = {}): [
+  string,
+  (str: string) => void
+] => {
+  const [loc, setLoc] = useState(currentLocation(base));
+  const navigate = useCallback(
+    (to: string) => {
+      console.log(base);
+      window.location.hash = base + to;
+    },
+    [base]
+  );
 
   useEffect(() => {
-    const handler = () => setLoc(currentLocation());
+    const handler = () => setLoc(currentLocation(base));
     // subscribe to hash changes
     window.addEventListener("hashchange", handler);
     return () => window.removeEventListener("hashchange", handler);
@@ -48,7 +63,7 @@ export const RouterProvider: React.FC<{
   useRouter: boolean;
 }> = ({ useRouter, children }) => {
   const hook = useRef(window.history ? undefined : useHashLocation);
-  const base = useRef(location.pathname);
+  const base = useRef(window.history ? location.pathname : location.hash);
   return useRouter ? (
     <Wouter base={base.current} hook={hook.current} matcher={matcher}>
       {children}
