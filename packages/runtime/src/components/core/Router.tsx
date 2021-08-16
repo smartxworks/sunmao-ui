@@ -34,7 +34,6 @@ const useHashLocation = ({ base = "" } = {}): [
   const [loc, setLoc] = useState(currentLocation(base));
   const navigate = useCallback(
     (to: string) => {
-      console.log(base);
       window.location.hash = base + to;
     },
     [base]
@@ -73,7 +72,7 @@ export const RouterProvider: React.FC<{
   );
 };
 
-// all route-like component must have path property, router use path to determined if a component match the route
+// all route-like component must have path property, wouter use path to determined if a component match the route
 // but we need path to match both nested router itself and its child route, so we need to have an alternative property called base as the real path of the nested router
 // and used by its children
 const NestedWouter: React.FC<{ path: string; base: string }> = ({
@@ -108,9 +107,8 @@ const NestedWouter: React.FC<{ path: string; base: string }> = ({
 
 const Router: ComponentImplementation<{
   routerPolicy: Static<typeof RouterPolicyPropertySchema>;
-}> = ({ routerMap, routerPolicy, subscribeMethods }) => {
-  const [, naviagte] = useLocation();
-  const router = useRouter();
+}> = ({ routerMap, routerPolicy, subscribeMethods, mergeState }) => {
+  const [location, naviagte] = useLocation();
 
   const routes = useMemo(() => {
     let defaultPath: string | undefined = undefined;
@@ -134,7 +132,7 @@ const Router: ComponentImplementation<{
             }
             if (C.displayName === "router") {
               return (
-                // it should match both itself and its children path, so we need to match its path itself
+                // it should match both itself and its children path
                 <NestedWouter
                   path={`(${path}|${path}/.*)`}
                   base={path}
@@ -146,7 +144,9 @@ const Router: ComponentImplementation<{
             }
             return (
               <Woute key={path} path={path}>
-                <C key={cid}></C>
+                {(params) => {
+                  return <C {...params} key={cid}></C>;
+                }}
               </Woute>
             );
           default:
@@ -163,7 +163,8 @@ const Router: ComponentImplementation<{
       );
     }
     return result;
-  }, []);
+  }, [routerPolicy]);
+
   useEffect(() => {
     subscribeMethods({
       navigate: (path: string) => {
@@ -171,6 +172,14 @@ const Router: ComponentImplementation<{
       },
     });
   }, []);
+
+  useEffect(() => {
+    // to assign location as a state
+    mergeState({
+      route: location,
+    });
+  }, [location]);
+
   return <Switch children={routes}></Switch>;
 };
 
