@@ -30,146 +30,155 @@ const ImplWrapper = React.forwardRef<
     routerMap: RouterComponentMap | undefined;
     targetSlot: { id: string; slot: string } | null;
     app: RuntimeApplication;
+    [key: string]: any;
   }
->(({ component: c, slotsMap, routerMap, targetSlot, app, ...props }, ref) => {
-  // TODO: find better way to add barrier
-  if (!stateStore[c.id]) {
-    stateStore[c.id] = {};
-  }
+>(
+  (
+    { component: c, slotsMap, routerMap, targetSlot, app, children, ...props },
+    ref
+  ) => {
+    // TODO: find better way to add barrier
+    if (!stateStore[c.id]) {
+      stateStore[c.id] = {};
+    }
 
-  const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name)
-    .impl;
+    const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name)
+      .impl;
 
-  const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
-  useEffect(() => {
-    const handler = (s: {
-      componentId: string;
-      name: string;
-      parameters?: any;
-    }) => {
-      if (s.componentId !== c.id) {
-        return;
-      }
-      if (!handlerMap.current[s.name]) {
-        // maybe log?
-        return;
-      }
-      handlerMap.current[s.name](s.parameters);
-    };
-    apiService.on("uiMethod", handler);
-    return () => {
-      apiService.off("uiMethod", handler);
-    };
-  }, []);
+    const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
+    useEffect(() => {
+      const handler = (s: {
+        componentId: string;
+        name: string;
+        parameters?: any;
+      }) => {
+        if (s.componentId !== c.id) {
+          return;
+        }
+        if (!handlerMap.current[s.name]) {
+          // maybe log?
+          return;
+        }
+        handlerMap.current[s.name](s.parameters);
+      };
+      apiService.on("uiMethod", handler);
+      return () => {
+        apiService.off("uiMethod", handler);
+      };
+    }, []);
 
-  const mergeState = useCallback(
-    (partial: any) => {
-      stateStore[c.id] = { ...stateStore[c.id], ...partial };
-    },
-    [c.id]
-  );
+    const mergeState = useCallback(
+      (partial: any) => {
+        stateStore[c.id] = { ...stateStore[c.id], ...partial };
+      },
+      [c.id]
+    );
 
-  const subscribeMethods = useCallback(
-    (map: any) => {
-      handlerMap.current = merge(handlerMap.current, map);
-    },
-    [handlerMap.current]
-  );
+    const subscribeMethods = useCallback(
+      (map: any) => {
+        handlerMap.current = merge(handlerMap.current, map);
+      },
+      [handlerMap.current]
+    );
 
-  // traits
-  const [traitPropertiesMap, setTraitPropertiesMap] = useState<
-    Map<typeof c["traits"][0], object>
-  >(
-    c.traits.reduce((prev, cur) => {
-      prev.set(cur, deepEval(cur.properties).result);
-      return prev;
-    }, new Map())
-  );
-  useEffect(() => {
-    const stops: ReturnType<typeof watch>[] = [];
-    for (const t of c.traits) {
-      const { stop, result } = deepEval(t.properties, ({ result }) => {
+    // traits
+    const [traitPropertiesMap, setTraitPropertiesMap] = useState<
+      Map<typeof c["traits"][0], object>
+    >(
+      c.traits.reduce((prev, cur) => {
+        prev.set(cur, deepEval(cur.properties).result);
+        return prev;
+      }, new Map())
+    );
+    useEffect(() => {
+      const stops: ReturnType<typeof watch>[] = [];
+      for (const t of c.traits) {
+        const { stop, result } = deepEval(t.properties, ({ result }) => {
+          setTraitPropertiesMap(
+            new Map(traitPropertiesMap.set(t, { ...result }))
+          );
+        });
         setTraitPropertiesMap(
           new Map(traitPropertiesMap.set(t, { ...result }))
         );
+        stops.push(stop);
+      }
+      return () => stops.forEach((s) => s());
+    }, []);
+
+    const traitsProps = {};
+    const wrappers: React.FC[] = [];
+    for (const t of c.traits) {
+      const tImpl = registry.getTrait(t.parsedType.version, t.parsedType.name)
+        .impl;
+      const { props: tProps, component: Wrapper } = tImpl({
+        ...traitPropertiesMap.get(t),
+        mergeState,
+        subscribeMethods,
       });
-      setTraitPropertiesMap(new Map(traitPropertiesMap.set(t, { ...result })));
-      stops.push(stop);
+      merge(traitsProps, tProps);
+      if (Wrapper) {
+        wrappers.push(Wrapper);
+      }
     }
-    return () => stops.forEach((s) => s());
-  }, []);
 
-  const traitsProps = {};
-  const wrappers: React.FC[] = [];
-  for (const t of c.traits) {
-    const tImpl = registry.getTrait(t.parsedType.version, t.parsedType.name)
-      .impl;
-    const { props: tProps, component: Wrapper } = tImpl({
-      ...traitPropertiesMap.get(t),
-      mergeState,
-      subscribeMethods,
-    });
-    merge(traitsProps, tProps);
-    if (Wrapper) {
-      wrappers.push(Wrapper);
-    }
-  }
+    const [mergedProps, setMergedProps] = useState(
+      deepEval({
+        ...c.properties,
+        ...traitsProps,
+      }).result
+    );
+    useEffect(() => {
+      const rawProps: Record<string, unknown> = {
+        ...c.properties,
+        ...traitsProps,
+      };
 
-  const [mergedProps, setMergedProps] = useState(
-    deepEval({
-      ...c.properties,
-      ...traitsProps,
-    }).result
-  );
-  useEffect(() => {
-    const rawProps: Record<string, unknown> = {
-      ...c.properties,
-      ...traitsProps,
-    };
+      const { stop, result } = deepEval(rawProps, ({ result }) => {
+        setMergedProps({ ...result });
+      });
 
-    const { stop, result } = deepEval(rawProps, ({ result }) => {
       setMergedProps({ ...result });
-    });
+      return stop;
+    }, []);
 
-    setMergedProps({ ...result });
-    return stop;
-  }, []);
+    let C = (
+      <Impl
+        key={c.id}
+        {...mergedProps}
+        {...props}
+        mergeState={mergeState}
+        subscribeMethods={subscribeMethods}
+        slotsMap={slotsMap}
+        routerMap={routerMap}
+      />
+    );
 
-  let C = (
-    <Impl
-      key={c.id}
-      {...mergedProps}
-      mergeState={mergeState}
-      subscribeMethods={subscribeMethods}
-      slotsMap={slotsMap}
-      routerMap={routerMap}
-    />
-  );
-
-  while (wrappers.length) {
-    const W = wrappers.pop()!;
-    C = <W>{C}</W>;
-  }
-
-  if (targetSlot) {
-    const targetC = app.spec.components.find((c) => c.id === targetSlot.id);
-    if (targetC?.parsedType.name === "grid_layout") {
-      return (
-        <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
-          {C}
-          {props.children}
-        </div>
-      );
+    while (wrappers.length) {
+      const W = wrappers.pop()!;
+      C = <W>{C}</W>;
     }
-  }
 
-  return (
-    <React.Fragment key={c.id}>
-      {C}
-      {props.children}
-    </React.Fragment>
-  );
-});
+    if (targetSlot) {
+      const targetC = app.spec.components.find((c) => c.id === targetSlot.id);
+      if (targetC?.parsedType.name === "grid_layout") {
+        return (
+          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+            {C}
+            {children}
+          </div>
+        );
+      }
+    }
+
+    return (
+      <React.Fragment key={c.id}>
+        {C}
+        {children}
+      </React.Fragment>
+    );
+  }
+);
 
 const DebugStore: React.FC = () => {
   const [store, setStore] = useState(stateStore);
