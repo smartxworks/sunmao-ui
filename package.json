@@ -7,7 +7,8 @@
   "devDependencies": {
     "husky": "^6.0.0",
     "lerna": "^4.0.0",
-    "lint-staged": "^11.0.0"
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.2"
   },
   "workspaces": [
     "packages/*"
@@ -18,7 +19,7 @@
     }
   },
   "lint-staged": {
-    "packages/**/!(generated)/*.{js,ts,tsx,yml,json}": [
+    "*.{ts,tsx,html,json}": [
       "prettier --write",
       "git add"
     ]
