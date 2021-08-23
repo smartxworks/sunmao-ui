@@ -1,32 +1,33 @@
-import React from "react";
-import { RuntimeComponent, RuntimeTrait } from "@meta-ui/core";
-import { SlotsMap } from "./App";
+import React from 'react';
+import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
+import { SlotsMap } from './App';
 // components
 /* --- plain --- */
-import PlainButton from "./components/plain/Button";
-import CoreText from "./components/core/Text";
-import CoreGridLayout from "./components/core/GridLayout";
+import PlainButton from './components/plain/Button';
+import CoreText from './components/core/Text';
+import CoreGridLayout from './components/core/GridLayout';
 /* --- chakra-ui --- */
-import ChakraUIRoot from "./components/chakra-ui/Root";
-import ChakraUIButton from "./components/chakra-ui/Button";
-import ChakraUITabs from "./components/chakra-ui/Tabs";
-import ChakraUITable from "./components/chakra-ui/Table";
-import ChakraUIInput from "./components/chakra-ui/Input";
-import ChakraUIBox from "./components/chakra-ui/Box";
-import ChakraUIKbd from "./components/chakra-ui/Kbd";
-import ChakraUINumberInput from "./components/chakra-ui/NumberInput";
-import ChakraUICheckbox from "./components/chakra-ui/Checkbox";
-import ChakraUIStack from "./components/chakra-ui/Stack";
-import ChakraUIHStack from "./components/chakra-ui/HStack";
-import ChakraUIVStack from "./components/chakra-ui/VStack";
+import ChakraUIRoot from './components/chakra-ui/Root';
+import ChakraUIButton from './components/chakra-ui/Button';
+import ChakraUITabs from './components/chakra-ui/Tabs';
+import ChakraUITable from './components/chakra-ui/Table';
+import ChakraUIInput from './components/chakra-ui/Input';
+import ChakraUIBox from './components/chakra-ui/Box';
+import ChakraUIKbd from './components/chakra-ui/Kbd';
+import ChakraUINumberInput from './components/chakra-ui/NumberInput';
+import ChakraUICheckbox from './components/chakra-ui/Checkbox';
+import ChakraUIStack from './components/chakra-ui/Stack';
+import ChakraUIHStack from './components/chakra-ui/HStack';
+import ChakraUIVStack from './components/chakra-ui/VStack';
 /* --- lab --- */
-import LabEditor from "./components/lab/Editor";
+import LabEditor from './components/lab/Editor';
 // traits
-import CoreState from "./traits/core/state";
-import CoreEvent from "./traits/core/event";
-import CoreSlot from "./traits/core/slot";
-import CoreHidden from "./traits/core/hidden";
-import CoreFetch from "./traits/core/fetch";
+import CoreState from './traits/core/state';
+import CoreEvent from './traits/core/event';
+import CoreSlot from './traits/core/slot';
+import CoreHidden from './traits/core/hidden';
+import CoreFetch from './traits/core/fetch';
+import CoreValidation from './traits/core/validation';
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -130,3 +131,4 @@ registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);
 registry.registerTrait(CoreFetch);
+registry.registerTrait(CoreValidation);
