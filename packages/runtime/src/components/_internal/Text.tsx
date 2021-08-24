@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../registry';
 
 export const TextPropertySchema = Type.Object({
   raw: Type.String(),
@@ -15,9 +14,10 @@ export const TextPropertySchema = Type.Object({
 
 export type TextProps = {
   value: Static<typeof TextPropertySchema>;
+  style?: CSSProperties;
 };
 
-const Text: ComponentImplementation<TextProps> = ({ value, style }) => {
+const Text: React.FC<TextProps> = ({ value, style }) => {
   if (value.format === 'md') {
     return <ReactMarkdown>{value.raw}</ReactMarkdown>;
   }
