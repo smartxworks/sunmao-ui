@@ -20,7 +20,6 @@ import { Static } from "@sinclair/typebox";
 import { watch } from "@vue-reactivity/watch";
 import _ from "lodash";
 import copy from "copy-to-clipboard";
-import { RouterProvider } from "./components/core/Router";
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
@@ -346,20 +345,18 @@ const App: React.FC<{
 
   return (
     <div className="App">
-      <RouterProvider useRouter={useRouter}>
-        {topLevelComponents.map((c) => {
-          return (
-            <ImplWrapper
-              key={c.id}
-              component={c}
-              slotsMap={slotComponentsMap.get(c.id)}
-              routerMap={routerComponentsMap.get(c.id)}
-              targetSlot={null}
-              app={app}
-            />
-          );
-        })}
-      </RouterProvider>
+      {topLevelComponents.map((c) => {
+        return (
+          <ImplWrapper
+            key={c.id}
+            component={c}
+            slotsMap={slotComponentsMap.get(c.id)}
+            routerMap={routerComponentsMap.get(c.id)}
+            targetSlot={null}
+            app={app}
+          />
+        );
+      })}
       {debugStore && <DebugStore />}
       {debugEvent && <DebugEvent />}
     </div>

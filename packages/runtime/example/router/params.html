@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: params router</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "params_router",
+          description: "params router example",
+        },
+        spec: {
+          components: [
+            {
+              id: "router",
+              type: "core/v1/router",
+              properties: {
+                switchPolicy: [
+                  {
+                    type: "route",
+                    path: "/:value",
+                    cid: "text",
+                    default: false,
+                  },
+                ],
+              },
+              traits: [],
+            },
+            {
+              id: "text",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: `{{ router.value }}`,
+                  format: "md",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/route",
+                  properties: {
+                    routerId: "router",
+                  },
+                },
+              ],
+            },
+            {
+              id: "url",
+              type: "chakra_ui/v1/input",
+              properties: {
+                left: {
+                  type: "addon",
+                  children: "Go to ",
+                },
+              },
+              traits: [],
+            },
+            {
+              id: "nav_btn",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: "navigate",
+                  format: "md",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/event",
+                  properties: {
+                    events: [
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "navigate",
+                          parameters: "{{`/${url.value}`}}",
+                        },
+                        wait: {},
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      })
+    </script>
+  </body>
+</html>
