@@ -86,9 +86,11 @@ const ImplWrapper = React.forwardRef<
     }, new Map())
   );
   useEffect(() => {
+    console.log('traitPropertiesMap更新了');
     const stops: ReturnType<typeof watch>[] = [];
     for (const t of c.traits) {
       const { stop, result } = deepEval(t.properties, ({ result }) => {
+        console.log('更新了 map 的trait', result);
         setTraitPropertiesMap(
           new Map(traitPropertiesMap.set(t, { ...result }))
         );
@@ -97,61 +99,64 @@ const ImplWrapper = React.forwardRef<
       stops.push(stop);
     }
     return () => stops.forEach(s => s());
-  }, []);
+  }, [c.traits]);
 
-  const traitsProps = {};
-  const wrappers: React.FC[] = [];
-  for (const t of c.traits) {
-    const tImpl = registry.getTrait(
-      t.parsedType.version,
-      t.parsedType.name
-    ).impl;
-    const { props: tProps, component: Wrapper } = tImpl({
-      ...traitPropertiesMap.get(t),
-      mergeState,
-      subscribeMethods,
-    });
-    merge(traitsProps, tProps);
-    if (Wrapper) {
-      wrappers.push(Wrapper);
-    }
-  }
+  // const propsFromTraits: Record<string, unknown> = useMemo(() => {
+  //   return c.traits.reduce((prevProps, t) => {
+  //     const tImpl = registry.getTrait(
+  //       t.parsedType.version,
+  //       t.parsedType.name
+  //     ).impl;
+  //     const traitProps = traitPropertiesMap.get(t)
+  //     const traitResult = tImpl({...traitProps, mergeState, subscribeMethods})
+  //     return {...prevProps, ...traitResult.props}
+  //   }, {})
+  // }, [c.traits, traitPropertiesMap])
 
-  const [mergedProps, setMergedProps] = useState(
-    deepEval({
-      ...c.properties,
-      ...traitsProps,
-    }).result
+  const propsFromTraits: Record<string, unknown> = c.traits.reduce(
+    (prevProps, t) => {
+      const tImpl = registry.getTrait(
+        t.parsedType.version,
+        t.parsedType.name
+      ).impl;
+      const traitProps = traitPropertiesMap.get(t);
+      const traitResult = tImpl({
+        ...traitProps,
+        mergeState,
+        subscribeMethods,
+      });
+      return { ...prevProps, ...traitResult.props };
+    },
+    {}
   );
+
+  const [componentProps, setComponentProps] = useState(
+    merge(deepEval(c.properties).result, propsFromTraits)
+  );
+
   useEffect(() => {
-    const rawProps: Record<string, unknown> = {
-      ...c.properties,
-      ...traitsProps,
-    };
-
-    const { stop, result } = deepEval(rawProps, ({ result }) => {
-      setMergedProps({ ...result });
+    const { stop, result } = deepEval(c.properties, ({ result }) => {
+      setComponentProps(result);
+      console.log('updateresult', result);
     });
+    console.log('result', result);
 
-    setMergedProps({ ...result });
+    setComponentProps(result);
     return stop;
   }, []);
+
+  const mergeProps = { ...componentProps, ...propsFromTraits };
+  console.log('mergedProps', componentProps);
 
   let C = (
     <Impl
       key={c.id}
-      {...mergedProps}
-      {...props}
+      {...mergeProps}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
     />
   );
-
-  while (wrappers.length) {
-    const W = wrappers.pop()!;
-    C = <W>{C}</W>;
-  }
 
   if (targetSlot) {
     const targetC = app.spec.components.find(c => c.id === targetSlot.id);
