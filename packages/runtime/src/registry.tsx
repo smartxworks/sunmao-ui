@@ -60,7 +60,6 @@ export type TraitImplementation<T = any> = (
   }
 ) => {
   props: any;
-  component?: React.FC;
 };
 
 class Registry {
