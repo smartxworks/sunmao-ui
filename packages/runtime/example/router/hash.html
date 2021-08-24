@@ -24,7 +24,7 @@
               id: "router",
               type: "core/v1/router",
               properties: {
-                routerPolicy: [
+                switchPolicy: [
                   {
                     type: "route",
                     path: "/react",
@@ -46,7 +46,7 @@
                   {
                     type: "redirect",
                     path: "/redirect",
-                    href: "/",
+                    href: "/angular",
                   },
                 ],
               },
@@ -145,6 +145,45 @@
                           name: "navigate",
                           parameters:
                             "{{['/','/vue','/angular'][router.index%3]}}",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: "redirect_button",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: "redirect",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/event",
+                  properties: {
+                    events: [
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "setValue",
+                          parameters: "2",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "navigate",
+                          parameters: "/redirect",
                         },
                         wait: {},
                         disabled: false,
