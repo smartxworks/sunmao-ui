@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
 import { SlotsMap } from './App';
 // components
@@ -49,6 +49,7 @@ export type ComponentImplementation<T = any> = React.FC<
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
     slotsMap: SlotsMap | undefined;
+    style?: CSSProperties;
   }
 >;
 
