@@ -67,6 +67,7 @@ const Input: ComponentImplementation<{
   left,
   right,
   mergeState,
+  data,
 }) => {
   const [value, setValue] = React.useState(''); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -74,7 +75,8 @@ const Input: ComponentImplementation<{
 
   useEffect(() => {
     mergeState({ value });
-  }, [value]);
+    mergeState({ data });
+  }, [value, data]);
 
   return (
     <InputGroup size={size}>

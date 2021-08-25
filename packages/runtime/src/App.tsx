@@ -85,12 +85,12 @@ const ImplWrapper = React.forwardRef<
       return prev;
     }, new Map())
   );
+
+  // eval traits' properties
   useEffect(() => {
-    console.log('traitPropertiesMap更新了');
     const stops: ReturnType<typeof watch>[] = [];
     for (const t of c.traits) {
       const { stop, result } = deepEval(t.properties, ({ result }) => {
-        console.log('更新了 map 的trait', result);
         setTraitPropertiesMap(
           new Map(traitPropertiesMap.set(t, { ...result }))
         );
@@ -101,18 +101,7 @@ const ImplWrapper = React.forwardRef<
     return () => stops.forEach(s => s());
   }, [c.traits]);
 
-  // const propsFromTraits: Record<string, unknown> = useMemo(() => {
-  //   return c.traits.reduce((prevProps, t) => {
-  //     const tImpl = registry.getTrait(
-  //       t.parsedType.version,
-  //       t.parsedType.name
-  //     ).impl;
-  //     const traitProps = traitPropertiesMap.get(t)
-  //     const traitResult = tImpl({...traitProps, mergeState, subscribeMethods})
-  //     return {...prevProps, ...traitResult.props}
-  //   }, {})
-  // }, [c.traits, traitPropertiesMap])
-
+  // excecute traits and get result
   const propsFromTraits: Record<string, unknown> = c.traits.reduce(
     (prevProps, t) => {
       const tImpl = registry.getTrait(
@@ -134,24 +123,22 @@ const ImplWrapper = React.forwardRef<
     merge(deepEval(c.properties).result, propsFromTraits)
   );
 
+  // eval component properties
   useEffect(() => {
     const { stop, result } = deepEval(c.properties, ({ result }) => {
-      setComponentProps(result);
-      console.log('updateresult', result);
+      setComponentProps({ ...result });
     });
-    console.log('result', result);
 
     setComponentProps(result);
     return stop;
   }, []);
 
-  const mergeProps = { ...componentProps, ...propsFromTraits };
-  console.log('mergedProps', componentProps);
+  const mergedProps = { ...componentProps, ...propsFromTraits };
 
   let C = (
     <Impl
       key={c.id}
-      {...mergeProps}
+      {...mergedProps}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
