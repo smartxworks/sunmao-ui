@@ -50,12 +50,13 @@ export type ComponentImplementation<T = any> = React.FC<
     subscribeMethods: SubscribeMethods;
     slotsMap: SlotsMap | undefined;
     style?: CSSProperties;
-    data?: unknown;
+    data?: Record<string, any>;
   }
 >;
 
 export type TraitImplementation<T = any> = (
   props: T & {
+    componentId: string;
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
   }

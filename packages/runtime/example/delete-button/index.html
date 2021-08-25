@@ -52,7 +52,7 @@
                         event: 'click',
                         componentId: 'del_btn',
                         method: {
-                          name: 'setValue',
+                          name: 'setCount',
                           parameters:
                             '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
                         },
@@ -63,7 +63,11 @@
                         event: 'click',
                         componentId: 'del_btn',
                         method: {
+<<<<<<< HEAD
                           name: 'setValue',
+=======
+                          name: 'setCount',
+>>>>>>> 220ff4e (refactor state trait)
                           parameters: '0',
                         },
                         wait: {
