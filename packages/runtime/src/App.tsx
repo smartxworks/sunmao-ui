@@ -19,6 +19,7 @@ import { Static } from '@sinclair/typebox';
 import { watch } from '@vue-reactivity/watch';
 import _ from 'lodash';
 import copy from 'copy-to-clipboard';
+import { globalHandlerMap } from './handler';
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
@@ -40,7 +41,11 @@ const ImplWrapper = React.forwardRef<
     c.parsedType.name
   ).impl;
 
-  const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
+  if (!globalHandlerMap.has(c.id)) {
+    globalHandlerMap.set(c.id, {});
+  }
+
+  let handlerMap = globalHandlerMap.get(c.id)!;
   useEffect(() => {
     const handler = (s: {
       componentId: string;
@@ -50,11 +55,11 @@ const ImplWrapper = React.forwardRef<
       if (s.componentId !== c.id) {
         return;
       }
-      if (!handlerMap.current[s.name]) {
+      if (!handlerMap[s.name]) {
         // maybe log?
         return;
       }
-      handlerMap.current[s.name](s.parameters);
+      handlerMap[s.name](s.parameters);
     };
     apiService.on('uiMethod', handler);
     return () => {
@@ -68,13 +73,10 @@ const ImplWrapper = React.forwardRef<
     },
     [c.id]
   );
-
-  const subscribeMethods = useCallback(
-    (map: any) => {
-      handlerMap.current = merge(handlerMap.current, map);
-    },
-    [handlerMap.current]
-  );
+  const subscribeMethods = useCallback((map: any) => {
+    handlerMap = { ...handlerMap, ...map };
+    globalHandlerMap.set(c.id, handlerMap);
+  }, []);
 
   // traits
   const [traitPropertiesMap, setTraitPropertiesMap] = useState<
@@ -111,6 +113,7 @@ const ImplWrapper = React.forwardRef<
       const traitProps = traitPropertiesMap.get(t);
       const traitResult = tImpl({
         ...traitProps,
+        componentId: c.id,
         mergeState,
         subscribeMethods,
       });

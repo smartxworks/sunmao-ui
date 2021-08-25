@@ -75,7 +75,7 @@ const Input: ComponentImplementation<{
 
   useEffect(() => {
     mergeState({ value });
-    mergeState({ data });
+    mergeState({ ...data });
   }, [value, data]);
 
   return (
