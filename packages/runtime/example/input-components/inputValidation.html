@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: input validation component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'inputValidation',
+          description: 'input validation example',
+        },
+        spec: {
+          components: [
+            {
+              id: 'emailInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                size: 'lg',
+                left: {
+                  type: 'addon',
+                  children: '邮箱',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/validation',
+                  properties: {
+                    value: '{{ emailInput.value || "" }}',
+                    maxLength: 20,
+                    minLength: 10,
+                    rule: 'email',
+                  },
+                },
+              ],
+            },
+            {
+              id: 'emailValidationText',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '{{ emailInput.data.validationResult.errorMsg }}',
+                  format: 'plain',
+                },
+              },
+              traits: [],
+            },
+            {
+              id: 'phoneInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                size: 'lg',
+                left: {
+                  type: 'addon',
+                  children: '手机',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/validation',
+                  properties: {
+                    value: '{{ phoneInput.value || "" }}',
+                    maxLength: 100,
+                    minLength: 0,
+                    rule: 'phoneNumber',
+                  },
+                },
+              ],
+            },
+            {
+              id: 'phoneValidationText',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '{{ phoneInput.data.validationResult.errorMsg }}',
+                  format: 'plain',
+                },
+              },
+              traits: [],
+            },
+            {
+              id: 'submitButton',
+              type: 'plain/v1/button',
+              properties: {
+                text: {
+                  raw: '提交',
+                  format: 'plain',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/event',
+                  properties: {
+                    events: [
+                      {
+                        event: 'click',
+                        componentId: '$utils',
+                        method: {
+                          name: 'alert',
+                          parameters:
+                            '{{ `邮箱：${ emailInput.value } 手机号：${ phoneInput.value }` }}',
+                        },
+                        wait: {},
+                        disabled:
+                          '{{ !emailInput.data.validationResult.isValid || !phoneInput.data.validationResult.isValid }}',
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

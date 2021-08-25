@@ -50,6 +50,7 @@ export type ComponentImplementation<T = any> = React.FC<
     subscribeMethods: SubscribeMethods;
     slotsMap: SlotsMap | undefined;
     style?: CSSProperties;
+    data?: unknown;
   }
 >;
 
