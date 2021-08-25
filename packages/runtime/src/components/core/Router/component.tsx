@@ -12,7 +12,7 @@ import React, {
 } from "react";
 import { DefaultParams, Match } from "wouter";
 import { RouteType, SwitchPolicy } from ".";
-import { RouterComponentMap } from "../../../App";
+import { SlotsMap } from "../../../App";
 import { makeMatcher } from "./matcher";
 import {
   useRouter,
@@ -63,7 +63,7 @@ export const Route: React.FC<RouteProps> = ({
 type SwitchProps = {
   location?: string;
   switchPolicy: SwitchPolicy;
-  routerMap: RouterComponentMap;
+  slotMap?: SlotsMap;
   mergeState: (partialState: any) => void;
   subscribeMethods: (map: { [key: string]: (parameters: any) => void }) => void;
 };
@@ -71,7 +71,7 @@ type SwitchProps = {
 export const Switch: React.FC<SwitchProps> = ({
   switchPolicy,
   location,
-  routerMap,
+  slotMap,
   mergeState,
   subscribeMethods,
 }) => {
@@ -86,14 +86,14 @@ export const Switch: React.FC<SwitchProps> = ({
       ({
         type,
         path,
-        cid,
+        slotId,
         href,
         default: _default,
         exact,
         strict,
         sensitive,
       }) => {
-        const C = routerMap && routerMap.get(cid);
+        const componentsArr = slotMap && slotMap.get(slotId);
         if (defaultPath === undefined && _default) {
           defaultPath = path;
         }
@@ -112,15 +112,19 @@ export const Switch: React.FC<SwitchProps> = ({
               </Route>
             );
           case RouteType.ROUTE:
-            if (!C) {
+            if (!componentsArr) {
               console.warn("component not registered to router");
               return <></>;
             }
+            if (componentsArr.length !== 1) {
+              console.warn("router slot can only have one component");
+            }
+            const { component: C } = componentsArr[0];
             if (C.displayName === "router") {
               return (
                 // it should match both itself and its children path
                 <Nested path={`(${path}|${path}/.*)`} base={path} key={path}>
-                  <C key={cid}></C>
+                  <C key={slotId}></C>
                 </Nested>
               );
             }
@@ -133,7 +137,7 @@ export const Switch: React.FC<SwitchProps> = ({
                 path={path}
                 mergeState={mergeState}
               >
-                <C key={cid}></C>
+                <C key={slotId}></C>
               </Route>
             );
           default:

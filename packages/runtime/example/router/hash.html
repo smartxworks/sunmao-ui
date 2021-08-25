@@ -28,19 +28,19 @@
                   {
                     type: "route",
                     path: "/react",
-                    cid: "text_react",
+                    slotId: "text_react",
                     default: true,
                   },
                   {
                     type: "route",
                     path: "/angular",
-                    cid: "text_ng",
+                    slotId: "text_ng",
                     default: false,
                   },
                   {
                     type: "route",
                     path: "/vue",
-                    cid: "text_vue",
+                    slotId: "text_vue",
                     default: false,
                   },
                   {
@@ -71,9 +71,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "router",
+                    container: {
+                      id: "router",
+                      slot: "text_react",
+                    },
                   },
                 },
               ],
@@ -89,9 +92,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "router",
+                    container: {
+                      id: "router",
+                      slot: "text_ng",
+                    },
                   },
                 },
               ],
@@ -107,9 +113,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "router",
+                    container: {
+                      id: "router",
+                      slot: "text_vue",
+                    },
                   },
                 },
               ],
