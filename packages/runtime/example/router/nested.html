@@ -25,13 +25,13 @@
                   {
                     type: "route",
                     path: "/1",
-                    cid: "child1",
+                    slotId: "child1",
                     default: true,
                   },
                   {
                     type: "route",
                     path: "/2",
-                    cid: "child2",
+                    slotId: "child2",
                     default: false,
                   },
                 ],
@@ -46,28 +46,31 @@
                   {
                     type: "route",
                     path: "/1",
-                    cid: "grandchild1_1",
+                    slotId: "grandchild1_1",
                     default: true,
                   },
                   {
                     type: "route",
                     path: "/2",
-                    cid: "grandchild1_2",
+                    slotId: "grandchild1_2",
                     default: false,
                   },
                   {
                     type: "route",
                     path: "/3",
-                    cid: "grandchild1_3",
+                    slotId: "grandchild1_3",
                     default: false,
                   },
                 ],
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "parent",
+                    container: {
+                      id: "parent",
+                      slot: "child1",
+                    },
                   },
                 },
               ],
@@ -80,28 +83,31 @@
                   {
                     type: "route",
                     path: "/1",
-                    cid: "grandchild2_1",
+                    slotId: "grandchild2_1",
                     default: true,
                   },
                   {
                     type: "route",
                     path: "/2",
-                    cid: "grandchild2_2",
+                    slotId: "grandchild2_2",
                     default: false,
                   },
                   {
                     type: "route",
                     path: "/3",
-                    cid: "grandchild2_3",
+                    slotId: "grandchild2_3",
                     default: false,
                   },
                 ],
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "parent",
+                    container: {
+                      id: "parent",
+                      slot: "child2",
+                    },
                   },
                 },
               ],
@@ -117,9 +123,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "child1",
+                    container: {
+                      id: "child1",
+                      slot: "grandchild1_1",
+                    },
                   },
                 },
               ],
@@ -135,9 +144,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "child1",
+                    container: {
+                      id: "child1",
+                      slot: "grandchild1_2",
+                    },
                   },
                 },
               ],
@@ -153,9 +165,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "child1",
+                    container: {
+                      id: "child1",
+                      slot: "grandchild1_3",
+                    },
                   },
                 },
               ],
@@ -171,9 +186,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "child2",
+                    container: {
+                      id: "child2",
+                      slot: "grandchild2_1",
+                    },
                   },
                 },
               ],
@@ -189,9 +207,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "child2",
+                    container: {
+                      id: "child2",
+                      slot: "grandchild2_2",
+                    },
                   },
                 },
               ],
@@ -207,9 +228,12 @@
               },
               traits: [
                 {
-                  type: "core/v1/route",
+                  type: "core/v1/slot",
                   properties: {
-                    routerId: "child2",
+                    container: {
+                      id: "child2",
+                      slot: "grandchild2_3",
+                    },
                   },
                 },
               ],

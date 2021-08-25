@@ -8,10 +8,10 @@ import { useRouter } from "./hooks";
 const Router: ComponentImplementation<{
   switchPolicy: Static<typeof SwitchPolicyPropertySchema>;
   nested?: boolean;
-}> = ({ routerMap, switchPolicy, subscribeMethods, mergeState }) => {
+}> = ({ slotsMap, switchPolicy, subscribeMethods, mergeState }) => {
   return (
     <Switch
-      routerMap={routerMap}
+      slotMap={slotsMap}
       switchPolicy={switchPolicy}
       subscribeMethods={subscribeMethods}
       mergeState={mergeState}
@@ -31,7 +31,7 @@ const SwitchPolicyPropertySchema = Type.Array(
     type: Type.Enum(RouteType), // redirect, route
     default: Type.Boolean(), //only the first one with default will be treated as default component;
     path: Type.String(),
-    cid: Type.String(),
+    slotId: Type.String(),
     href: Type.Optional(Type.String()), // work for redirect
     strict: Type.Optional(Type.Boolean()),
     exact: Type.Optional(Type.Boolean()),

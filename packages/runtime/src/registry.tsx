@@ -1,6 +1,6 @@
 import React from "react";
 import { RuntimeComponent, RuntimeTrait } from "@meta-ui/core";
-import { RouterComponentMap, SlotsMap } from "./App";
+import { SlotsMap } from "./App";
 // components
 /* --- plain --- */
 import PlainButton from "./components/plain/Button";
@@ -28,7 +28,6 @@ import CoreEvent from "./traits/core/event";
 import CoreSlot from "./traits/core/slot";
 import CoreHidden from "./traits/core/hidden";
 import CoreFetch from "./traits/core/fetch";
-import CoreRoute from "./traits/core/route";
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -50,7 +49,6 @@ export type ComponentImplementation<T = any> = React.FC<
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
     slotsMap: SlotsMap | undefined;
-    routerMap: RouterComponentMap;
   }
 >;
 
@@ -134,4 +132,3 @@ registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);
 registry.registerTrait(CoreFetch);
-registry.registerTrait(CoreRoute);
