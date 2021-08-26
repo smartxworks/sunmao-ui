@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo } from 'react';
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
+
+let hasFetched = false;
 
 const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   name,
@@ -13,11 +14,9 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   mergeState,
   subscribeMethods,
 }) => {
-  const lazy = useMemo(() => {
-    return _lazy === undefined ? method.toLowerCase() !== 'get' : _lazy;
-  }, [method, _lazy]);
-
-  const fetchData = useCallback(() => {
+  const lazy = undefined ? method.toLowerCase() !== 'get' : _lazy;
+  const fetchData = () => {
+    hasFetched = true;
     // before fetching, initial data
     mergeState({
       [name]: {
@@ -77,26 +76,12 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
         });
       }
     );
-  }, [url, method, _headers, body, lazy]);
-
-  // intialize data
-  useEffect(() => {
-    mergeState({
-      [name]: {
-        loading: false,
-        data: undefined,
-        error: undefined,
-      },
-    });
-  }, []);
+  };
 
   // non lazy query, listen to the change and query;
-  useEffect(() => {
-    if (lazy || !url) {
-      return;
-    }
+  if (!lazy && url && !hasFetched) {
     fetchData();
-  }, [url, method, _headers, body, lazy]);
+  }
 
   // only subscribe non lazy fetch trait
   if (lazy) {
