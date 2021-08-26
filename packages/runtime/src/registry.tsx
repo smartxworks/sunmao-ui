@@ -54,15 +54,20 @@ export type ComponentImplementation<T = any> = React.FC<
   }
 >;
 
+export type TraitResult = {
+  props: {
+    data?: unknown;
+    style?: CSSProperties;
+  } | null;
+};
+
 export type TraitImplementation<T = any> = (
   props: T & {
     componentId: string;
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
   }
-) => {
-  props: any;
-};
+) => TraitResult;
 
 class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
