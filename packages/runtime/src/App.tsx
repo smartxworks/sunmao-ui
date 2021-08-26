@@ -7,11 +7,13 @@ import React, {
 } from 'react';
 import {
   Application,
+  ComponentTrait,
   createApplication,
   RuntimeApplication,
+  Trait,
 } from '@meta-ui/core';
 import { merge } from 'lodash';
-import { registry } from './registry';
+import { registry, TraitResult } from './registry';
 import { stateStore, deepEval } from './store';
 import { apiService } from './api-service';
 import { ContainerPropertySchema } from './traits/core/slot';
@@ -21,10 +23,16 @@ import _ from 'lodash';
 import copy from 'copy-to-clipboard';
 import { globalHandlerMap } from './handler';
 
+type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
+type ApplicationComponent = RuntimeApplication['spec']['components'][0];
+type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
+
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
-    component: RuntimeApplication['spec']['components'][0];
+    component: ApplicationComponent;
     slotsMap: SlotsMap | undefined;
     targetSlot: { id: string; slot: string } | null;
     app: RuntimeApplication;
@@ -78,65 +86,65 @@ const ImplWrapper = React.forwardRef<
     globalHandlerMap.set(c.id, handlerMap);
   }, []);
 
-  // traits
-  const [traitPropertiesMap, setTraitPropertiesMap] = useState<
-    Map<typeof c['traits'][0], object>
-  >(
-    c.traits.reduce((prev, cur) => {
-      prev.set(cur, deepEval(cur.properties).result);
-      return prev;
-    }, new Map())
-  );
+  // result returned from traits
+  const [traitResults, setTraitResults] = useState<TraitResult[]>([]);
 
-  // eval traits' properties
+  // eval traits' properties then excecute traits
   useEffect(() => {
+    function excecuteTrait(
+      trait: ApplicationTrait,
+      traitProperty: ApplicationTrait['properties']
+    ) {
+      const tImpl = registry.getTrait(
+        trait.parsedType.version,
+        trait.parsedType.name
+      ).impl;
+      const traitResult = tImpl({
+        ...traitProperty,
+        componentId: c.id,
+        mergeState,
+        subscribeMethods,
+      });
+      setTraitResults(results => results.concat(traitResult));
+    }
+
     const stops: ReturnType<typeof watch>[] = [];
     for (const t of c.traits) {
       const { stop, result } = deepEval(t.properties, ({ result }) => {
-        setTraitPropertiesMap(
-          new Map(traitPropertiesMap.set(t, { ...result }))
-        );
+        excecuteTrait(t, { ...result });
       });
-      setTraitPropertiesMap(new Map(traitPropertiesMap.set(t, { ...result })));
+      excecuteTrait(t, { ...result });
       stops.push(stop);
     }
     return () => stops.forEach(s => s());
   }, [c.traits]);
 
-  // excecute traits and get result
-  const propsFromTraits: Record<string, unknown> = c.traits.reduce(
-    (prevProps, t) => {
-      const tImpl = registry.getTrait(
-        t.parsedType.version,
-        t.parsedType.name
-      ).impl;
-      const traitProps = traitPropertiesMap.get(t);
-      const traitResult = tImpl({
-        ...traitProps,
-        componentId: c.id,
-        mergeState,
-        subscribeMethods,
-      });
-      return { ...prevProps, ...traitResult.props };
-    },
-    {}
-  );
+  // reduce traitResults
+  const propsFromTraits: TraitResult = useMemo(() => {
+    return Array.from(traitResults.values()).reduce(
+      (prevProps, result: TraitResult) => {
+        return { ...prevProps, ...result.props };
+      },
+      { props: null }
+    );
+  }, [traitResults]);
 
-  const [componentProps, setComponentProps] = useState(
+  // component properties
+  const [evaledComponentProperties, setEvaledComponentProperties] = useState(
     merge(deepEval(c.properties).result, propsFromTraits)
   );
 
   // eval component properties
   useEffect(() => {
     const { stop, result } = deepEval(c.properties, ({ result }) => {
-      setComponentProps({ ...result });
+      setEvaledComponentProperties({ ...result });
     });
 
-    setComponentProps(result);
+    setEvaledComponentProperties(result);
     return stop;
   }, []);
 
-  const mergedProps = { ...componentProps, ...propsFromTraits };
+  const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
   let C = (
     <Impl
