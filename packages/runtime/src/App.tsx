@@ -29,7 +29,7 @@ type ArrayElement<ArrayType extends readonly unknown[]> =
 type ApplicationComponent = RuntimeApplication['spec']['components'][0];
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
-const ImplWrapper = React.forwardRef<
+export const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
     component: ApplicationComponent;

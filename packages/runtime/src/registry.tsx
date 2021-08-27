@@ -1,5 +1,9 @@
 import React, { CSSProperties } from 'react';
-import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
+import {
+  RuntimeApplication,
+  RuntimeComponent,
+  RuntimeTrait,
+} from '@meta-ui/core';
 import { SlotsMap } from './App';
 // components
 /* --- plain --- */
@@ -15,6 +19,7 @@ import ChakraUITable from './components/chakra-ui/Table';
 import ChakraUIInput from './components/chakra-ui/Input';
 import ChakraUIBox from './components/chakra-ui/Box';
 import ChakraUIKbd from './components/chakra-ui/Kbd';
+import ChakraUIKList from './components/chakra-ui/List';
 import ChakraUINumberInput from './components/chakra-ui/NumberInput';
 import ChakraUICheckboxGroup from './components/chakra-ui/CheckboxGroup';
 import ChakraUICheckbox from './components/chakra-ui/Checkbox';
@@ -140,6 +145,7 @@ registry.registerComponent(ChakraUICheckboxGroup);
 registry.registerComponent(ChakraUIStack);
 registry.registerComponent(ChakraUIHStack);
 registry.registerComponent(ChakraUIVStack);
+registry.registerComponent(ChakraUIKList);
 registry.registerComponent(LabEditor);
 registry.registerComponent(CoreRouter);
 
