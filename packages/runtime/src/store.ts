@@ -66,7 +66,7 @@ function maskedEval(raw: string) {
   }
 }
 
-const mapValuesDeep = (
+export const mapValuesDeep = (
   obj: any,
   fn: (params: {
     value: any;

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: list component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'list_component',
+          description: 'list component example',
+        },
+        spec: {
+          components: [
+            {
+              id: 'root',
+              type: 'chakra_ui/v1/root',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'listTitle',
+                    initialValue: 'UserList',
+                  },
+                },
+              ],
+            },
+            {
+              id: 'list',
+              type: 'chakra_ui/v1/list',
+              properties: {
+                listData: [
+                  {
+                    id: 1,
+                    name: 'Hanson Deck',
+                    email: 'hanson@deck.com',
+                    sales: 37,
+                  },
+                  {
+                    id: 2,
+                    name: 'Max Conversation',
+                    email: 'Max@conversation.com',
+                    sales: 424,
+                  },
+                  {
+                    id: 3,
+                    name: 'Jason Response',
+                    email: 'jason@response.com',
+                    sales: 55,
+                  },
+                  {
+                    id: 4,
+                    name: 'Sue Shei',
+                    email: 'sueshei@example.com',
+                    sales: 550,
+                  },
+                  {
+                    id: 5,
+                    name: 'Eric Widget',
+                    email: 'eric@widget.org',
+                    sales: 243,
+                  },
+                ],
+                template: {
+                  id: 'listItemTemplate',
+                  type: 'chakra_ui/v1/button',
+                  properties: {
+                    text: {
+                      raw: '`name: ${$listItem.name}  email: ${$listItem.email}`',
+                      format: 'plain',
+                    },
+                  },
+                  traits: [
+                    {
+                      type: 'core/v1/event',
+                      parsedType: {
+                        version: 'core/v1',
+                        name: 'event',
+                      },
+                      properties: {
+                        events: [
+                          {
+                            event: 'click',
+                            componentId: '$utils',
+                            method: {
+                              name: 'alert',
+                              parameters: '`click: ${$listItem.name}`',
+                            },
+                            wait: {},
+                            disabled: 'false',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
