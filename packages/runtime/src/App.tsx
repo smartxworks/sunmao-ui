@@ -27,17 +27,16 @@ const ImplWrapper = React.forwardRef<
     slotsMap: SlotsMap | undefined;
     targetSlot: { id: string; slot: string } | null;
     app: RuntimeApplication;
+    [key: string]: any;
   }
->(({ component: c, slotsMap, targetSlot, app, ...props }, ref) => {
+>(({ component: c, slotsMap, targetSlot, app, children, ...props }, ref) => {
   // TODO: find better way to add barrier
   if (!stateStore[c.id]) {
     stateStore[c.id] = {};
   }
 
-  const Impl = registry.getComponent(
-    c.parsedType.version,
-    c.parsedType.name
-  ).impl;
+  const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name)
+    .impl;
 
   const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
   useEffect(() => {
@@ -67,6 +66,7 @@ const ImplWrapper = React.forwardRef<
     },
     [c.id]
   );
+
   const subscribeMethods = useCallback(
     (map: any) => {
       handlerMap.current = merge(handlerMap.current, map);
@@ -100,10 +100,8 @@ const ImplWrapper = React.forwardRef<
   const traitsProps = {};
   const wrappers: React.FC[] = [];
   for (const t of c.traits) {
-    const tImpl = registry.getTrait(
-      t.parsedType.version,
-      t.parsedType.name
-    ).impl;
+    const tImpl = registry.getTrait(t.parsedType.version, t.parsedType.name)
+      .impl;
     const { props: tProps, component: Wrapper } = tImpl({
       ...traitPropertiesMap.get(t),
       mergeState,
@@ -139,6 +137,7 @@ const ImplWrapper = React.forwardRef<
     <Impl
       key={c.id}
       {...mergedProps}
+      {...props}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
@@ -156,7 +155,7 @@ const ImplWrapper = React.forwardRef<
       return (
         <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
           {C}
-          {props.children}
+          {children}
         </div>
       );
     }
@@ -165,7 +164,7 @@ const ImplWrapper = React.forwardRef<
   return (
     <React.Fragment key={c.id}>
       {C}
-      {props.children}
+      {children}
     </React.Fragment>
   );
 });
@@ -222,7 +221,7 @@ const DebugEvent: React.FC = () => {
   );
 };
 
-export type ComponentsMap = Map<string, SlotsMap>;
+export type SlotComponentMap = Map<string, SlotsMap>;
 export type SlotsMap = Map<
   string,
   Array<{
@@ -230,51 +229,53 @@ export type SlotsMap = Map<
     id: string;
   }>
 >;
-export function resolveNestedComponents(app: RuntimeApplication): {
+
+export function resolveAppComponents(
+  app: RuntimeApplication
+): {
   topLevelComponents: RuntimeApplication["spec"]["components"];
-  componentsMap: ComponentsMap;
+  slotComponentsMap: SlotComponentMap;
 } {
   const topLevelComponents: RuntimeApplication["spec"]["components"] = [];
-  const componentsMap: ComponentsMap = new Map();
+  const slotComponentsMap: SlotComponentMap = new Map();
 
   for (const c of app.spec.components) {
+    // handle component with slot trait
     const slotTrait = c.traits.find((t) => t.parsedType.name === "slot");
     if (slotTrait) {
-      const { id, slot } = (
-        slotTrait.properties as {
-          container: Static<typeof ContainerPropertySchema>;
-        }
-      ).container;
-      if (!componentsMap.has(id)) {
-        componentsMap.set(id, new Map());
+      const { id, slot } = (slotTrait.properties as {
+        container: Static<typeof ContainerPropertySchema>;
+      }).container;
+      if (!slotComponentsMap.has(id)) {
+        slotComponentsMap.set(id, new Map());
       }
-      if (!componentsMap.get(id)?.has(slot)) {
-        componentsMap.get(id)?.set(slot, []);
+      if (!slotComponentsMap.get(id)?.has(slot)) {
+        slotComponentsMap.get(id)?.set(slot, []);
       }
-      componentsMap
-        .get(id)
-        ?.get(slot)
-        ?.push({
-          component: React.forwardRef<HTMLDivElement, any>((props, ref) => (
-            <ImplWrapper
-              component={c}
-              slotsMap={componentsMap.get(c.id)}
-              targetSlot={{ id, slot }}
-              app={app}
-              {...props}
-              ref={ref}
-            />
-          )),
-          id: c.id,
-        });
-    } else {
-      topLevelComponents.push(c);
+      const component = React.forwardRef<HTMLDivElement, any>((props, ref) => (
+        <ImplWrapper
+          component={c}
+          slotsMap={slotComponentsMap.get(c.id)}
+          targetSlot={{ id, slot }}
+          app={app}
+          {...props}
+          ref={ref}
+        />
+      ));
+      component.displayName = c.parsedType.name;
+      slotComponentsMap.get(id)?.get(slot)?.push({
+        component,
+        id: c.id,
+      });
     }
+
+    // if the component is neither assigned with slot trait nor route trait, consider it as a top level component
+    !slotTrait && topLevelComponents.push(c);
   }
 
   return {
     topLevelComponents,
-    componentsMap,
+    slotComponentsMap,
   };
 }
 
@@ -284,8 +285,8 @@ const App: React.FC<{
   debugEvent?: boolean;
 }> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
-  const { topLevelComponents, componentsMap } = useMemo(
-    () => resolveNestedComponents(app),
+  const { topLevelComponents, slotComponentsMap } = useMemo(
+    () => resolveAppComponents(app),
     [app]
   );
 
@@ -296,7 +297,7 @@ const App: React.FC<{
           <ImplWrapper
             key={c.id}
             component={c}
-            slotsMap={componentsMap.get(c.id)}
+            slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
           />
