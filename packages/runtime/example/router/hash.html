@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      delete window.history;
+    </script>
+    <title>meta-ui runtime example: hash router</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from "../../src/main.tsx";
+      renderApp({
+        version: "example/v1",
+        metadata: {
+          name: "hash_router",
+          description: "hash router example",
+        },
+        spec: {
+          components: [
+            {
+              id: "router",
+              type: "core/v1/router",
+              properties: {
+                switchPolicy: [
+                  {
+                    type: "route",
+                    path: "/react",
+                    slotId: "text_react",
+                    default: true,
+                  },
+                  {
+                    type: "route",
+                    path: "/angular",
+                    slotId: "text_ng",
+                    default: false,
+                  },
+                  {
+                    type: "route",
+                    path: "/vue",
+                    slotId: "text_vue",
+                    default: false,
+                  },
+                  {
+                    type: "redirect",
+                    path: "/redirect",
+                    href: "/angular",
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: "core/v1/state",
+                  properties: {
+                    key: "index",
+                    initialValue: 0,
+                  },
+                },
+              ],
+            },
+            {
+              id: "text_react",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "React",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "router",
+                      slot: "text_react",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "text_ng",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "Angular",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "router",
+                      slot: "text_ng",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "text_vue",
+              type: "core/v1/text",
+              properties: {
+                value: {
+                  raw: "Vue",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/slot",
+                  properties: {
+                    container: {
+                      id: "router",
+                      slot: "text_vue",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: "switch_button",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: "switch",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/event",
+                  properties: {
+                    events: [
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "setValue",
+                          parameters: "{{router.index + 1}}",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "navigate",
+                          parameters:
+                            "{{['/','/vue','/angular'][router.index%3]}}",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: "redirect_button",
+              type: "plain/v1/button",
+              properties: {
+                text: {
+                  raw: "redirect",
+                  format: "plain",
+                },
+              },
+              traits: [
+                {
+                  type: "core/v1/event",
+                  properties: {
+                    events: [
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "setValue",
+                          parameters: "2",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                      {
+                        event: "click",
+                        componentId: "router",
+                        method: {
+                          name: "navigate",
+                          parameters: "/redirect",
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

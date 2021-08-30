@@ -6,6 +6,7 @@ import { SlotsMap } from "./App";
 import PlainButton from "./components/plain/Button";
 import CoreText from "./components/core/Text";
 import CoreGridLayout from "./components/core/GridLayout";
+import CoreRouter from "./components/core/Router";
 /* --- chakra-ui --- */
 import ChakraUIRoot from "./components/chakra-ui/Root";
 import ChakraUIButton from "./components/chakra-ui/Button";
@@ -124,6 +125,7 @@ registry.registerComponent(ChakraUIStack);
 registry.registerComponent(ChakraUIHStack);
 registry.registerComponent(ChakraUIVStack);
 registry.registerComponent(LabEditor);
+registry.registerComponent(CoreRouter);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreEvent);
