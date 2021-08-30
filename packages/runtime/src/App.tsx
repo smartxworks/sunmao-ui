@@ -26,7 +26,8 @@ import { globalHandlerMap } from './handler';
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-type ApplicationComponent = RuntimeApplication['spec']['components'][0];
+type ApplicationComponents = RuntimeApplication['spec']['components'];
+type ApplicationComponent = ApplicationComponents[0];
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
 export const ImplWrapper = React.forwardRef<
@@ -153,10 +154,11 @@ export const ImplWrapper = React.forwardRef<
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
+      app={app}
     />
   );
 
-  if (targetSlot) {
+  if (targetSlot && app) {
     const targetC = app.spec.components.find(c => c.id === targetSlot.id);
     if (targetC?.parsedType.name === 'grid_layout') {
       return (

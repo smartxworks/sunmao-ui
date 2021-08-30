@@ -68,39 +68,100 @@
                     sales: 243,
                   },
                 ],
-                template: {
-                  id: 'listItemTemplate',
-                  type: 'chakra_ui/v1/button',
-                  properties: {
-                    text: {
-                      raw: '`name: ${$listItem.name}  email: ${$listItem.email}`',
-                      format: 'plain',
+                template: [
+                  {
+                    id: '`listItemTemplate-${$listItem.id}`',
+                    type: 'chakra_ui/v1/hstack',
+                    properties: {
+                      spacing: '24px',
                     },
+                    traits: [],
                   },
-                  traits: [
-                    {
-                      type: 'core/v1/event',
-                      parsedType: {
-                        version: 'core/v1',
-                        name: 'event',
-                      },
-                      properties: {
-                        events: [
-                          {
-                            event: 'click',
-                            componentId: '$utils',
-                            method: {
-                              name: 'alert',
-                              parameters: '`click: ${$listItem.name}`',
-                            },
-                            wait: {},
-                            disabled: 'false',
-                          },
-                        ],
+                  {
+                    id: '`listItemName-${$listItem.id}`',
+                    type: 'core/v1/text',
+                    properties: {
+                      value: {
+                        raw: '`姓名：${$listItem.name}`',
+                        format: 'plain',
                       },
                     },
-                  ],
-                },
+                    traits: [
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: '`listItemTemplate-${$listItem.id}`',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    id: '`listItemEmail-${$listItem.id}`',
+                    type: 'core/v1/text',
+                    properties: {
+                      value: {
+                        raw: '`email：${$listItem.email}`',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: '`listItemTemplate-${$listItem.id}`',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    id: '`listItemButton-${$listItem.id}`',
+                    type: 'chakra_ui/v1/button',
+                    properties: {
+                      text: {
+                        raw: '打招呼',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/event',
+                        parsedType: {
+                          version: 'core/v1',
+                          name: 'event',
+                        },
+                        properties: {
+                          events: [
+                            {
+                              event: 'click',
+                              componentId: '$utils',
+                              method: {
+                                name: 'alert',
+                                parameters: '`click: ${$listItem.name}`',
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: '`listItemTemplate-${$listItem.id}`',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
               },
               traits: [
                 {
