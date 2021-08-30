@@ -1,14 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { createComponent } from '@meta-ui/core';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { createApplication, createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import {
-  List as BaseList,
-  ListItem as BaseListItem,
-  ListIcon,
-} from '@chakra-ui/react';
+import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../registry';
-import { ImplWrapper } from '../../App';
+import { ImplWrapper, resolveAppComponents } from '../../App';
 import { mapValuesDeep } from '../../store';
 import { values } from 'lodash';
 import { parseType } from '../../util-methods';
@@ -18,42 +14,42 @@ const List: ComponentImplementation<{
   template: Static<typeof TemplatePropertySchema>;
   onClick?: () => void;
 }> = ({ listData, template, mergeState, subscribeMethods, app }) => {
-  // useEffect(() => {
-  //   mergeState({ value: text.raw });
-  // }, [text.raw]);
-
-  // const ref = useRef<HTMLListElement>(null);
-  // useEffect(() => {
-  //   subscribeMethods({
-  //     click() {
-  //       ref.current?.click();
-  //     },
-  //   });
-  // }, []);
+  const templateAsApp = useMemo(() => {
+    return createApplication({
+      ...app,
+      spec: {
+        components: template as any,
+      },
+    });
+  }, [app, template]);
 
   const listItems = listData.map((listItem, i) => {
-    // const evaledText = eval(template.properties.value.raw)
-    const evaledComponent = mapValuesDeep(template, ({ value, key }) => {
-      console.log(value);
+    const evaledTemplate = mapValuesDeep(templateAsApp, ({ value, key }) => {
       // what will happen if listData was uglified?
       if (typeof value === 'string' && value.includes('$listItem')) {
         const expression = value.replaceAll('$listItem', 'listData[i]');
-        console.log('expression', expression);
         return eval(expression);
       }
       return value;
     });
-    evaledComponent.parsedType = parseType(evaledComponent.type);
-    console.log('evaled', evaledComponent);
-    return (
-      <BaseListItem key={listItem.name} spacing={3}>
-        <ListIcon color="green.500" />
+    const { topLevelComponents, slotComponentsMap } =
+      resolveAppComponents(evaledTemplate);
+
+    const componentElements = topLevelComponents.map(c => {
+      return (
         <ImplWrapper
-          component={evaledComponent}
-          slotsMap={undefined}
+          key={c.id}
+          component={c}
+          slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={null}
           app={app}
         />
+      );
+    });
+
+    return (
+      <BaseListItem key={listItem.name} spacing={3}>
+        {componentElements}
       </BaseListItem>
     );
   });
