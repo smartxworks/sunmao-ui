@@ -6,28 +6,15 @@ import { watch } from '@vue-reactivity/watch';
 
 dayjs.extend(relativeTime);
 
-function parseExpression(raw: string): {
-  dynamic: boolean;
+type ExpChunk = {
   expression: string;
-} {
-  if (!raw) {
-    return {
-      dynamic: false,
-      expression: raw,
-    };
-  }
-  const matchArr = raw.match(/{{(.+)}}/);
-  if (!matchArr) {
-    return {
-      dynamic: false,
-      expression: raw,
-    };
-  }
-  return {
-    dynamic: true,
-    expression: matchArr[1],
-  };
-}
+  isDynamic: boolean;
+};
+
+// TODO: use web worker
+const builtIn = {
+  dayjs,
+};
 
 function isNumeric(x: string | number) {
   return !isNaN(Number(x));
@@ -35,10 +22,47 @@ function isNumeric(x: string | number) {
 
 export const stateStore = reactive<Record<string, any>>({});
 
-// TODO: use web worker
-const builtIn = {
-  dayjs,
-};
+function parseExpression(str: string): ExpChunk[] {
+  let l = 0;
+  let r = 0;
+  let isInBrackets = false;
+  const res = [];
+
+  while (r < str.length - 1) {
+    if (!isInBrackets && str.substr(r, 2) === '{{') {
+      if (l !== r) {
+        const substr = str.substring(l, r);
+        res.push({
+          expression: substr,
+          isDynamic: false,
+        });
+      }
+      isInBrackets = true;
+      r += 2;
+      l = r;
+    } else if (isInBrackets && str.substr(r, 2) === '}}') {
+      const substr = str.substring(l, r);
+      res.push({
+        expression: substr,
+        isDynamic: true,
+      });
+      isInBrackets = false;
+      r += 2;
+      l = r;
+    } else {
+      r++;
+    }
+  }
+
+  if (r > l) {
+    res.push({
+      expression: str.substring(l, r + 1),
+      isDynamic: false,
+    });
+  }
+  return res;
+}
+
 function maskedEval(raw: string) {
   if (isNumeric(raw)) {
     return _.toNumber(raw);
@@ -50,20 +74,25 @@ function maskedEval(raw: string) {
     return false;
   }
 
-  const { dynamic, expression } = parseExpression(raw);
+  const expChunks = parseExpression(raw);
+  const evaled = expChunks.map(({ expression: exp, isDynamic }) => {
+    if (!isDynamic) {
+      return exp;
+    }
 
-  if (!dynamic) {
-    return raw;
-  }
-  try {
-    const result = new Function(`with(this) { return ${expression} }`).call({
-      ...stateStore,
-      ...builtIn,
-    });
-    return result;
-  } catch {
-    return undefined;
-  }
+    try {
+      const result = new Function(`with(this) { return ${exp} }`).call({
+        ...stateStore,
+        ...builtIn,
+      });
+      return result;
+    } catch (e) {
+      console.error(Error(`Cannot eval value '${exp}' in '${raw}'`));
+      return undefined;
+    }
+  });
+
+  return evaled.length === 1 ? evaled[0] : evaled.join('');
 }
 
 export const mapValuesDeep = (
@@ -97,10 +126,11 @@ export function deepEval(
 
   const evaluated = mapValuesDeep(obj, ({ value: v, path }) => {
     if (typeof v === 'string') {
-      const { dynamic } = parseExpression(v);
+      const isDynamicExpression = parseExpression(v).some(
+        ({ isDynamic }) => isDynamic
+      );
       const result = maskedEval(v);
-
-      if (dynamic && watcher) {
+      if (isDynamicExpression && watcher) {
         const stop = watch(
           () => {
             return maskedEval(v);
