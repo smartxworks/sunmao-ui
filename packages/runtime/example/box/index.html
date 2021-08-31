@@ -9,43 +9,43 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "box",
-          description: "box",
+          name: 'box',
+          description: 'box',
         },
         spec: {
           components: [
             {
-              id: "test_btn",
-              type: "plain/v1/button",
+              id: 'test_btn',
+              type: 'plain/v1/button',
               properties: {
                 text: {
-                  raw: "Click",
-                  format: "plain",
+                  raw: 'Click',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/state",
+                  type: 'core/v1/state',
                   properties: {
-                    key: "count",
+                    key: 'count',
                     initialValue: 0,
                   },
                 },
                 {
-                  type: "core/v1/event",
+                  type: 'core/v1/event',
                   properties: {
                     events: [
                       {
-                        event: "click",
-                        componentId: "test_btn",
+                        event: 'click',
+                        componentId: 'test_btn',
                         method: {
-                          name: "setValue",
+                          name: 'setValue',
                           parameters:
-                            "{{ test_btn.count > 0 ? 0 : test_btn.count + 1 }}",
+                            '{{ test_btn.count > 0 ? 0 : test_btn.count + 1 }}',
                         },
                         wait: {},
                         disabled: false,
@@ -56,14 +56,14 @@
               ],
             },
             {
-              id: "box_container",
-              type: "chakra_ui/v1/box",
+              id: 'box_container',
+              type: 'chakra_ui/v1/box',
               properties: {
                 my: 8,
                 p: 8,
-                display: "flex",
+                display: 'flex',
                 bg: "{{ test_btn.count % 2 ? 'teal' : 'white' }}",
-                border: "1px solid",
+                border: '1px solid',
                 borderColor: "{{ test_btn.count % 2 ? 'white' : 'teal' }}",
                 borderRadius: 8,
                 h: 200,
@@ -71,93 +71,93 @@
               traits: [],
             },
             {
-              id: "box_child_1",
-              type: "chakra_ui/v1/box",
+              id: 'box_child_1',
+              type: 'chakra_ui/v1/box',
               properties: {
                 mr: 4,
                 flex: 1,
-                bg: "teal",
+                bg: 'teal',
                 color: "{{ test_btn.count % 2 ? 'teal' : 'white' }}",
                 bg: "{{ test_btn.count % 2 ? 'white' : 'teal' }}",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 borderRadius: 4,
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "box_container",
-                      slot: "content",
+                      id: 'box_container',
+                      slot: 'content',
                     },
                   },
                 },
               ],
             },
             {
-              id: "text",
-              type: "core/v1/text",
+              id: 'text',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "in box child 1",
-                  format: "plain",
+                  raw: 'in box child 1',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "box_child_1",
-                      slot: "content",
+                      id: 'box_child_1',
+                      slot: 'content',
                     },
                   },
                 },
               ],
             },
             {
-              id: "box_child_2",
-              type: "chakra_ui/v1/box",
+              id: 'box_child_2',
+              type: 'chakra_ui/v1/box',
               properties: {
                 flex: 1,
-                bg: "teal",
+                bg: 'teal',
                 color: "{{ test_btn.count % 2 ? 'teal' : 'white' }}",
                 bg: "{{ test_btn.count % 2 ? 'white' : 'teal' }}",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 borderRadius: 4,
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "box_container",
-                      slot: "content",
+                      id: 'box_container',
+                      slot: 'content',
                     },
                   },
                 },
               ],
             },
             {
-              id: "text",
-              type: "core/v1/text",
+              id: 'text',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "in box child 2",
-                  format: "plain",
+                  raw: 'in box child 2',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "box_child_2",
-                      slot: "content",
+                      id: 'box_child_2',
+                      slot: 'content',
                     },
                   },
                 },

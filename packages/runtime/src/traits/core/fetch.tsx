@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo } from "react";
-import { createTrait } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { TraitImplementation } from "../../registry";
+import { useCallback, useEffect, useMemo } from 'react';
+import { createTrait } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { TraitImplementation } from '../../registry';
 
 const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   name,
@@ -14,7 +14,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   subscribeMethods,
 }) => {
   const lazy = useMemo(() => {
-    return _lazy === undefined ? method.toLowerCase() !== "get" : _lazy;
+    return _lazy === undefined ? method.toLowerCase() !== 'get' : _lazy;
   }, [method, _lazy]);
 
   const fetchData = useCallback(() => {
@@ -40,7 +40,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
       headers,
       body,
     }).then(
-      async (response) => {
+      async response => {
         if (response.ok) {
           // handle 20x/30x
           const data = await response.json();
@@ -66,7 +66,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
           });
         }
       },
-      async (error) => {
+      async error => {
         console.warn(error);
         mergeState({
           [name]: {
@@ -134,35 +134,35 @@ type FetchPropertySchema = {
 
 export default {
   ...createTrait({
-    version: "core/v1",
+    version: 'core/v1',
     metadata: {
-      name: "fetch",
-      description: "fetch data to store",
+      name: 'fetch',
+      description: 'fetch data to store',
     },
     spec: {
       properties: [
         {
-          name: "name",
+          name: 'name',
           ...NamePropertySchema,
         },
         {
-          name: "url",
+          name: 'url',
           ...UrlPropertySchema,
         },
         {
-          name: "method",
+          name: 'method',
           ...MethodPropertySchema,
         },
         {
-          name: "lazy",
+          name: 'lazy',
           ...LazyPropertySchema,
         },
         {
-          name: "headers",
+          name: 'headers',
           ...HeaderPropertySchema,
         },
         {
-          name: "body",
+          name: 'body',
           ...BodyPropertySchema,
         },
       ],

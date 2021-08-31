@@ -1,8 +1,8 @@
-import React from "react";
-import RGL, { WidthProvider } from "react-grid-layout";
-import { Static, Type } from "@sinclair/typebox";
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
+import React from 'react';
+import RGL, { WidthProvider } from 'react-grid-layout';
+import { Static, Type } from '@sinclair/typebox';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
 const ReactGridLayout = WidthProvider(RGL);
 

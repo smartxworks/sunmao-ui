@@ -1,13 +1,13 @@
-import { Key, pathToRegexp } from "path-to-regexp";
-import { Match, PatternToRegexpResult as WouterPTR } from "wouter";
-import { RouteProps } from "./component";
+import { Key, pathToRegexp } from 'path-to-regexp';
+import { Match, PatternToRegexpResult as WouterPTR } from 'wouter';
+import { RouteProps } from './component';
 
 export type MatcherFn = (
   location: string | undefined,
   prop: RouteProps
 ) => Match;
 export type PatternToRegexpResult = {
-  ""?: WouterPTR;
+  ''?: WouterPTR;
   exact?: WouterPTR;
   strict?: WouterPTR;
   sensitive?: WouterPTR;
@@ -36,8 +36,8 @@ export function makeMatcher(): MatcherFn {
     strict: boolean,
     sensitive: boolean
   ): WouterPTR => {
-    const key = `${exact ? "exact" : ""}${strict ? "strict" : ""}${
-      sensitive ? "sensitive" : ""
+    const key = `${exact ? 'exact' : ''}${strict ? 'strict' : ''}${
+      sensitive ? 'sensitive' : ''
     }` as keyof PatternToRegexpResult;
     if (!cache[pattern]) {
       cache[pattern] = {};
@@ -50,7 +50,7 @@ export function makeMatcher(): MatcherFn {
 
   return (location, { path, strict, exact, sensitive }) => {
     const { regexp, keys } = getRegexp(
-      path || "",
+      path || '',
       exact || true,
       strict || true,
       sensitive || false

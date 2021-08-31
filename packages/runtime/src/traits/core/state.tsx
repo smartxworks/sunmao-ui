@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { createTrait } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { TraitImplementation } from "../../registry";
+import { useEffect } from 'react';
+import { createTrait } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { TraitImplementation } from '../../registry';
 
 const useStateTrait: TraitImplementation<{
   key: Static<typeof KeyPropertySchema>;
@@ -30,30 +30,30 @@ const InitialValuePropertySchema = Type.Any();
 
 export default {
   ...createTrait({
-    version: "core/v1",
+    version: 'core/v1',
     metadata: {
-      name: "state",
-      description: "add state to component",
+      name: 'state',
+      description: 'add state to component',
     },
     spec: {
       properties: [
         {
-          name: "key",
+          name: 'key',
           ...KeyPropertySchema,
         },
         {
-          name: "initialValue",
+          name: 'initialValue',
           ...InitialValuePropertySchema,
         },
       ],
       state: Type.Any(),
       methods: [
         {
-          name: "setValue",
+          name: 'setValue',
           parameters: Type.Any(),
         },
         {
-          name: "reset",
+          name: 'reset',
         },
       ],
     },

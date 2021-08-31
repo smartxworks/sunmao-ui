@@ -8,147 +8,147 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "router",
-          description: "normal router example",
+          name: 'router',
+          description: 'normal router example',
         },
         spec: {
           components: [
             {
-              id: "router",
-              type: "core/v1/router",
+              id: 'router',
+              type: 'core/v1/router',
               properties: {
                 switchPolicy: [
                   {
-                    type: "route",
-                    path: "/react",
-                    slotId: "text_react",
+                    type: 'route',
+                    path: '/react',
+                    slotId: 'text_react',
                     default: true,
                   },
                   {
-                    type: "route",
-                    path: "/angular",
-                    slotId: "text_ng",
+                    type: 'route',
+                    path: '/angular',
+                    slotId: 'text_ng',
                     default: false,
                   },
                   {
-                    type: "route",
-                    path: "/vue",
-                    slotId: "text_vue",
+                    type: 'route',
+                    path: '/vue',
+                    slotId: 'text_vue',
                     default: false,
                   },
                   {
-                    type: "redirect",
-                    path: "/redirect",
-                    href: "/angular",
+                    type: 'redirect',
+                    path: '/redirect',
+                    href: '/angular',
                   },
                 ],
               },
               traits: [
                 {
-                  type: "core/v1/state",
+                  type: 'core/v1/state',
                   properties: {
-                    key: "index",
+                    key: 'index',
                     initialValue: 0,
                   },
                 },
               ],
             },
             {
-              id: "text_react",
-              type: "core/v1/text",
+              id: 'text_react',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "React",
-                  format: "plain",
+                  raw: 'React',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "router",
-                      slot: "text_react",
+                      id: 'router',
+                      slot: 'text_react',
                     },
                   },
                 },
               ],
             },
             {
-              id: "text_ng",
-              type: "core/v1/text",
+              id: 'text_ng',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "Angular",
-                  format: "plain",
+                  raw: 'Angular',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "router",
-                      slot: "text_ng",
+                      id: 'router',
+                      slot: 'text_ng',
                     },
                   },
                 },
               ],
             },
             {
-              id: "text_vue",
-              type: "core/v1/text",
+              id: 'text_vue',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "Vue",
-                  format: "plain",
+                  raw: 'Vue',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "router",
-                      slot: "text_vue",
+                      id: 'router',
+                      slot: 'text_vue',
                     },
                   },
                 },
               ],
             },
             {
-              id: "switch_button",
-              type: "plain/v1/button",
+              id: 'switch_button',
+              type: 'plain/v1/button',
               properties: {
                 text: {
-                  raw: "switch",
-                  format: "plain",
+                  raw: 'switch',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/event",
+                  type: 'core/v1/event',
                   properties: {
                     events: [
                       {
-                        event: "click",
-                        componentId: "router",
+                        event: 'click',
+                        componentId: 'router',
                         method: {
-                          name: "setValue",
-                          parameters: "{{router.index + 1}}",
+                          name: 'setValue',
+                          parameters: '{{router.index + 1}}',
                         },
                         wait: {},
                         disabled: false,
                       },
                       {
-                        event: "click",
-                        componentId: "router",
+                        event: 'click',
+                        componentId: 'router',
                         method: {
-                          name: "navigate",
+                          name: 'navigate',
                           parameters:
                             "{{['/','/vue','/angular'][router.index%3]}}",
                         },
@@ -161,35 +161,35 @@
               ],
             },
             {
-              id: "redirect_button",
-              type: "plain/v1/button",
+              id: 'redirect_button',
+              type: 'plain/v1/button',
               properties: {
                 text: {
-                  raw: "redirect",
-                  format: "plain",
+                  raw: 'redirect',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/event",
+                  type: 'core/v1/event',
                   properties: {
                     events: [
                       {
-                        event: "click",
-                        componentId: "router",
+                        event: 'click',
+                        componentId: 'router',
                         method: {
-                          name: "setValue",
-                          parameters: "2",
+                          name: 'setValue',
+                          parameters: '2',
                         },
                         wait: {},
                         disabled: false,
                       },
                       {
-                        event: "click",
-                        componentId: "router",
+                        event: 'click',
+                        componentId: 'router',
                         method: {
-                          name: "navigate",
-                          parameters: "/redirect",
+                          name: 'navigate',
+                          parameters: '/redirect',
                         },
                         wait: {},
                         disabled: false,

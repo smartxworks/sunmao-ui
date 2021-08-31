@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   NumberInput as BaseNumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-} from "@chakra-ui/react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { ComponentImplementation } from "../../registry";
+} from '@chakra-ui/react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { ComponentImplementation } from '../../registry';
 
 const DefaultValuePropertySchema = Type.Optional(Type.Number());
 const MinPropertySchema = Type.Optional(Type.Number());
@@ -75,8 +75,7 @@ const NumberInput: ComponentImplementation<{
       clampValueOnBlur={clampValueOnBlur}
       allowMouseWheel={allowMouseWheel}
       size={size}
-      onChange={onChange}
-    >
+      onChange={onChange}>
       <NumberInputField />
       <NumberInputStepper>
         <NumberIncrementStepper {...customerIncrement} />
@@ -92,51 +91,51 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "number_input",
-      description: "chakra_ui number input",
+      name: 'number_input',
+      description: 'chakra_ui number input',
     },
     spec: {
       properties: [
         {
-          name: "defaultValue",
+          name: 'defaultValue',
           ...DefaultValuePropertySchema,
         },
         {
-          name: "min",
+          name: 'min',
           ...MinPropertySchema,
         },
         {
-          name: "max",
+          name: 'max',
           ...MaxPropertySchema,
         },
         {
-          name: "step",
+          name: 'step',
           ...StepPropertySchema,
         },
         {
-          name: "precision",
+          name: 'precision',
           ...PrecisionPropertySchema,
         },
         {
-          name: "clampValueOnBlur",
+          name: 'clampValueOnBlur',
           ...ClampValueOnBlurPropertySchema,
         },
         {
-          name: "allowMouseWheel",
+          name: 'allowMouseWheel',
           ...AllowMouseWheelPropertySchema,
         },
         {
-          name: "size",
+          name: 'size',
           ...SizePropertySchema,
         },
         {
-          name: "customerIncrement",
+          name: 'customerIncrement',
           ...CustomerStepStylePropertySchema,
         },
         {
-          name: "customerDecrement",
+          name: 'customerDecrement',
           ...CustomerStepStylePropertySchema,
         },
       ],
