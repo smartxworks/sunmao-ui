@@ -9,12 +9,11 @@ const Button: ComponentImplementation<{
   text: TextProps['value'];
   colorScheme?: Static<typeof ColorSchemePropertySchema>;
   isLoading?: Static<typeof IsLoadingPropertySchema>;
-  onClick?: () => void;
 }> = ({
   text,
   mergeState,
   subscribeMethods,
-  onClick,
+  callbackMap: callbacks,
   colorScheme,
   isLoading,
 }) => {
@@ -32,7 +31,10 @@ const Button: ComponentImplementation<{
   }, []);
 
   return (
-    <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={onClick}>
+    <BaseButton
+      {...{ colorScheme, isLoading }}
+      ref={ref}
+      onClick={callbacks?.click}>
       <Text value={text} />
     </BaseButton>
   );
