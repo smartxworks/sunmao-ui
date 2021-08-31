@@ -6,8 +6,7 @@ import { ComponentImplementation } from '../../registry';
 
 const Button: ComponentImplementation<{
   text: TextProps['value'];
-  onClick?: () => void;
-}> = ({ text, mergeState, subscribeMethods, onClick }) => {
+}> = ({ text, mergeState, subscribeMethods, callbackMap }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
   }, [text.raw]);
@@ -22,7 +21,7 @@ const Button: ComponentImplementation<{
   }, []);
 
   return (
-    <button ref={ref} onClick={onClick}>
+    <button ref={ref} onClick={callbackMap?.click}>
       <Text value={text} />
     </button>
   );

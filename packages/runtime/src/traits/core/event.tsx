@@ -1,20 +1,13 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
-import { TraitImplementation } from '../../registry';
+import { CallbackMap, TraitImplementation } from '../../registry';
 import { apiService } from '../../api-service';
 
 const useEventTrait: TraitImplementation<{
   events: Static<typeof EventsPropertySchema>;
 }> = ({ events }) => {
-  const handlerMap: Record<string, Array<(parameters?: any) => void>> = {};
-  const eventHandler = (s: { name: string; parameters?: any }) => {
-    if (!handlerMap[s.name]) {
-      // maybe log?
-      return;
-    }
-    handlerMap[s.name].forEach(fn => fn(s.parameters));
-  };
+  const callbackQueueMap: Record<string, Array<() => void>> = {};
 
   // setup current handlers
   for (const event of events) {
@@ -26,17 +19,17 @@ const useEventTrait: TraitImplementation<{
       if (disabled) {
         return;
       }
-      console.log(event);
+
       apiService.send('uiMethod', {
         componentId: event.componentId,
         name: event.method.name,
         parameters: event.method.parameters,
       });
     };
-    if (!handlerMap[event.event]) {
-      handlerMap[event.event] = [];
+    if (!callbackQueueMap[event.event]) {
+      callbackQueueMap[event.event] = [];
     }
-    handlerMap[event.event].push(
+    callbackQueueMap[event.event].push(
       event.wait.type === 'debounce'
         ? debounce(handler, event.wait.time)
         : event.wait.type === 'throttle'
@@ -47,14 +40,21 @@ const useEventTrait: TraitImplementation<{
     );
   }
 
+  const callbackMap: CallbackMap = {};
+
+  for (const eventName in callbackQueueMap) {
+    callbackMap[eventName] = () => {
+      if (!callbackQueueMap[eventName]) {
+        // maybe log?
+        return;
+      }
+      callbackQueueMap[eventName].forEach(fn => fn());
+    };
+  }
+
   return {
     props: {
-      // HARDCODE
-      onClick() {
-        eventHandler({
-          name: 'click',
-        });
-      },
+      callbackMap,
     },
   };
 };
