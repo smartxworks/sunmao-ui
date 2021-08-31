@@ -52,9 +52,12 @@
                         event: 'click',
                         componentId: 'del_btn',
                         method: {
-                          name: 'setCount',
-                          parameters:
-                            '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'count',
+                            value:
+                              '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
+                          },
                         },
                         wait: {},
                         disabled: false,
@@ -63,8 +66,11 @@
                         event: 'click',
                         componentId: 'del_btn',
                         method: {
-                          name: 'setCount',
-                          parameters: '0',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'count',
+                            value: '0',
+                          },
                         },
                         wait: {
                           type: 'delay',

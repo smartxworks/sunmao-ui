@@ -5,6 +5,8 @@ import { stateStore } from '../../store';
 
 const HasInitializedMap = new Map<string, boolean>();
 
+type KeyValue = { key: string; value: unknown };
+
 const useStateTrait: TraitImplementation<{
   key: Static<typeof KeyPropertySchema>;
   initialValue: Static<typeof InitialValuePropertySchema>;
@@ -17,10 +19,10 @@ const useStateTrait: TraitImplementation<{
 
     const upperCaseKey = capitalizeFirstLetter(key);
     const methods = {
-      [`set${upperCaseKey}`](value: unknown) {
+      setValue({ key, value }: KeyValue) {
         mergeState({ [key]: value });
       },
-      [`reset${upperCaseKey}`]() {
+      resetValue({ key }: KeyValue) {
         mergeState({ [key]: initialValue });
       },
     };
@@ -62,7 +64,10 @@ export default {
       methods: [
         {
           name: 'setValue',
-          parameters: Type.Any(),
+          parameters: Type.Object({
+            key: Type.String(),
+            value: Type.Any(),
+          }),
         },
         {
           name: 'reset',
