@@ -1,16 +1,16 @@
-import React from "react";
-import { createComponent } from "@meta-ui/core";
-import { Static } from "@sinclair/typebox";
-import { HStack as BaseVStack } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
-import Slot from "../_internal/Slot";
+import React from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Static } from '@sinclair/typebox';
+import { HStack as BaseVStack } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../registry';
+import Slot from '../_internal/Slot';
 import {
   DirectionSchema,
   FlexWrapSchema,
   AlignItemsSchema,
   JustifyContentSchema,
   SpacingSchema,
-} from "./Stack";
+} from './Stack';
 
 const HStack: ComponentImplementation<{
   direction?: Static<typeof DirectionSchema>;
@@ -28,31 +28,31 @@ const HStack: ComponentImplementation<{
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "hstack",
-      description: "chakra-ui hstack",
+      name: 'hstack',
+      description: 'chakra-ui hstack',
     },
     spec: {
       properties: [
         {
-          name: "diection",
+          name: 'diection',
           ...DirectionSchema,
         },
         {
-          name: "wrap",
+          name: 'wrap',
           ...FlexWrapSchema,
         },
         {
-          name: "align",
+          name: 'align',
           ...AlignItemsSchema,
         },
         {
-          name: "justify",
+          name: 'justify',
           ...JustifyContentSchema,
         },
         {
-          name: "spacing",
+          name: 'spacing',
           ...SpacingSchema,
         },
       ],

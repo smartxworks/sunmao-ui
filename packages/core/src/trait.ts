@@ -1,13 +1,13 @@
-import { JSONSchema7 } from "json-schema";
-import { Metadata } from "./metadata";
-import { MethodSchema } from "./method";
-import { parseVersion, Version } from "./version";
+import { JSONSchema7 } from 'json-schema';
+import { Metadata } from './metadata';
+import { MethodSchema } from './method';
+import { parseVersion, Version } from './version';
 
 // spec
 
 export type Trait = {
   version: string;
-  kind: "Trait";
+  kind: 'Trait';
   metadata: Metadata;
   spec: TraitSpec;
 };
@@ -23,10 +23,10 @@ export type RuntimeTrait = Trait & {
   parsedVersion: Version;
 };
 
-export function createTrait(options: Omit<Trait, "kind">): RuntimeTrait {
+export function createTrait(options: Omit<Trait, 'kind'>): RuntimeTrait {
   return {
     ...options,
-    kind: "Trait",
+    kind: 'Trait',
     parsedVersion: parseVersion(options.version),
   };
 }

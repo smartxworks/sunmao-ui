@@ -5,20 +5,20 @@ import React, {
   useRef,
   createContext,
   useContext,
-} from "react";
-import useWouterLocation, { LocationHook } from "wouter/use-location";
-import { Wouter } from "./component";
+} from 'react';
+import useWouterLocation, { LocationHook } from 'wouter/use-location';
+import { Wouter } from './component';
 
 // hash location and hash hook
 const currentLocation = (base: string, hash = location.hash) => {
-  hash = window.location.hash.replace(/^#/, "");
+  hash = window.location.hash.replace(/^#/, '');
   return !hash.toLowerCase().indexOf(hash)
-    ? hash.slice(base.length) || "/"
-    : "~" + hash;
+    ? hash.slice(base.length) || '/'
+    : '~' + hash;
 };
 
 // if history api is not supported, graceful downgrade to use hash instead
-const useHashLocation = ({ base = "" } = {}): [
+const useHashLocation = ({ base = '' } = {}): [
   string,
   (str: string) => void
 ] => {
@@ -33,8 +33,8 @@ const useHashLocation = ({ base = "" } = {}): [
   useEffect(() => {
     const handler = () => setLoc(currentLocation(base));
     // subscribe to hash changes
-    window.addEventListener("hashchange", handler);
-    return () => window.removeEventListener("hashchange", handler);
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
   }, []);
 
   return [loc, navigate];
@@ -77,9 +77,9 @@ export const useNavigate = (options: {
   const navRef = useRef<() => void>();
   const [, navigate] = useLocation();
   const to = options.to || options.href;
-  if (!to && to !== "") {
-    console.error("undefined path");
+  if (!to && to !== '') {
+    console.error('undefined path');
   }
-  navRef.current = () => navigate(to || "", options);
+  navRef.current = () => navigate(to || '', options);
   return navRef;
 };

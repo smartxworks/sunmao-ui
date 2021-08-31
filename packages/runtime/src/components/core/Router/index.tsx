@@ -1,9 +1,9 @@
-import { Static, Type } from "@sinclair/typebox";
-import React from "react";
-import { createComponent } from "@meta-ui/core";
-import { ComponentImplementation } from "../../../registry";
-import { Switch } from "./component";
-import { useRouter } from "./hooks";
+import { Static, Type } from '@sinclair/typebox';
+import React from 'react';
+import { createComponent } from '@meta-ui/core';
+import { ComponentImplementation } from '../../../registry';
+import { Switch } from './component';
+import { useRouter } from './hooks';
 
 const Router: ComponentImplementation<{
   switchPolicy: Static<typeof SwitchPolicyPropertySchema>;
@@ -14,14 +14,13 @@ const Router: ComponentImplementation<{
       slotMap={slotsMap}
       switchPolicy={switchPolicy}
       subscribeMethods={subscribeMethods}
-      mergeState={mergeState}
-    ></Switch>
+      mergeState={mergeState}></Switch>
   );
 };
 
 export enum RouteType {
-  REDIRECT = "REDIRECT",
-  ROUTE = "ROUTE",
+  REDIRECT = 'REDIRECT',
+  ROUTE = 'ROUTE',
 }
 
 export type SwitchPolicy = Static<typeof SwitchPolicyPropertySchema>;
@@ -41,15 +40,15 @@ const SwitchPolicyPropertySchema = Type.Array(
 
 export default {
   ...createComponent({
-    version: "core/v1",
+    version: 'core/v1',
     metadata: {
-      name: "router",
-      description: "create a router-controlled component",
+      name: 'router',
+      description: 'create a router-controlled component',
     },
     spec: {
       properties: [
         {
-          name: "switchPolicy",
+          name: 'switchPolicy',
           ...SwitchPolicyPropertySchema,
         },
       ],

@@ -1,108 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: delete button</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>meta-ui runtime example: delete button</title>
-</head>
-
-<body>
-  <div id="root"></div>
-  <script type="module">
-    import renderApp from "../../src/main.tsx";
-    renderApp({
-      version: "example/v1",
-      metadata: {
-        name: "fetch-list",
-        description: "fetch trait example",
-      },
-      spec: {
-        components: [
-          {
-            id: "fetch_btn",
-            type: "plain/v1/button",
-            properties: {
-              text: {
-                raw: `fetching`,
-                format: "md",
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'fetch-list',
+          description: 'fetch trait example',
+        },
+        spec: {
+          components: [
+            {
+              id: 'fetch_btn',
+              type: 'plain/v1/button',
+              properties: {
+                text: {
+                  raw: `fetching`,
+                  format: 'md',
+                },
               },
-            },
-            traits: [
-              {
-                type: "core/v1/event",
-                properties: {
-                  events: [
-                    {
-                      event: "click",
-                      componentId: "fetch_list",
-                      method: {
-                        name: "triggerFetch",
-                        parameters: "query",
+              traits: [
+                {
+                  type: 'core/v1/event',
+                  properties: {
+                    events: [
+                      {
+                        event: 'click',
+                        componentId: 'fetch_list',
+                        method: {
+                          name: 'triggerFetch',
+                          parameters: 'query',
+                        },
+                        wait: {},
+                        disabled: false,
                       },
-                      wait: {},
-                      disabled: false,
-                    }
-                  ]
-                }
-              }
-
-            ]
-          },
-          {
-            id: "fetch_list",
-            type: "core/v1/text",
-            properties: {
-              value: {
-                raw: `{{fetch_list.query.loading? "Fetching": fetch_list.query.data? JSON.stringify(fetch_list.query.data): fetch_list.query.error? fetch_list.query.error.message: "No data"}}`,
-                format: "md",
-              },
+                    ],
+                  },
+                },
+              ],
             },
-            traits: [
-              {
-                type: "core/v1/state",
-                properties: {
-                  key: "country",
-                  initialValue: "CN",
+            {
+              id: 'fetch_list',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: `{{fetch_list.query.loading? "Fetching": fetch_list.query.data? JSON.stringify(fetch_list.query.data): fetch_list.query.error? fetch_list.query.error.message: "No data"}}`,
+                  format: 'md',
                 },
               },
-              {
-                type: "core/v1/state",
-                properties: {
-                  key: "token",
-                  initialValue: "01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2",
+              traits: [
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'country',
+                    initialValue: 'CN',
+                  },
                 },
-              },
-              {
-                type: "core/v1/fetch",
-                properties: {
-                  name: "query",
-                  url: `{{ "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/"+fetch_list.country+"/CNY/zh-CN/CSHA/SZX/anytime/anytime"}}`,
-                  method: "get",
-                  headers: [
-                    { key: "x-rapidapi-key", value: `{{fetch_list.token}}` },
-                    { key: "x-rapidapi-host", value: "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com" }
-                  ],
-                  lazy: true
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'token',
+                    initialValue:
+                      '01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2',
+                  },
                 },
-              },
-            ],
-          },
-          {
-            id: "debug_text",
-            type: "core/v1/text",
-            properties: {
-              value: {
-                raw: `{{ fetch.data }}`,
-                format: "md",
-              },
+                {
+                  type: 'core/v1/fetch',
+                  properties: {
+                    name: 'query',
+                    url: `{{ "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/"+fetch_list.country+"/CNY/zh-CN/CSHA/SZX/anytime/anytime"}}`,
+                    method: 'get',
+                    headers: [
+                      { key: 'x-rapidapi-key', value: `{{fetch_list.token}}` },
+                      {
+                        key: 'x-rapidapi-host',
+                        value:
+                          'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
+                      },
+                    ],
+                    lazy: true,
+                  },
+                },
+              ],
             },
-            traits: [],
-          },
-        ],
-      },
-    });
-  </script>
-</body>
-
+            {
+              id: 'debug_text',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: `{{ fetch.data }}`,
+                  format: 'md',
+                },
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
 </html>

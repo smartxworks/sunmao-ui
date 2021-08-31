@@ -9,11 +9,11 @@ import React, {
   useRef,
   createElement,
   useLayoutEffect,
-} from "react";
-import { DefaultParams, Match } from "wouter";
-import { RouteType, SwitchPolicy } from ".";
-import { SlotsMap } from "../../../App";
-import { makeMatcher } from "./matcher";
+} from 'react';
+import { DefaultParams, Match } from 'wouter';
+import { RouteType, SwitchPolicy } from '.';
+import { SlotsMap } from '../../../App';
+import { makeMatcher } from './matcher';
 import {
   useRouter,
   useLocation,
@@ -21,7 +21,7 @@ import {
   RouterContext,
   RouterCtx,
   useNavigate,
-} from "./hooks";
+} from './hooks';
 
 export type RouteLikeElement = PropsWithChildren<{
   path?: string;
@@ -57,7 +57,7 @@ export const Route: React.FC<RouteProps> = ({
     };
   }, [params]);
   if (!matches) return null;
-  return typeof children === "function" ? children(params) : children;
+  return typeof children === 'function' ? children(params) : children;
 };
 
 type SwitchProps = {
@@ -106,21 +106,20 @@ export const Switch: React.FC<SwitchProps> = ({
                 strict={strict}
                 sensitive={sensitive}
                 path={path}
-                mergeState={mergeState}
-              >
+                mergeState={mergeState}>
                 <Redirect href={href || path} />
               </Route>
             );
           case RouteType.ROUTE:
             if (!componentsArr) {
-              console.warn("component not registered to router");
+              console.warn('component not registered to router');
               return <></>;
             }
             if (componentsArr.length !== 1) {
-              console.warn("router slot can only have one component");
+              console.warn('router slot can only have one component');
             }
             const { component: C } = componentsArr[0];
-            if (C.displayName === "router") {
+            if (C.displayName === 'router') {
               return (
                 // it should match both itself and its children path
                 <Nested path={`(${path}|${path}/.*)`} base={path} key={path}>
@@ -135,13 +134,12 @@ export const Switch: React.FC<SwitchProps> = ({
                 sensitive={sensitive}
                 key={path}
                 path={path}
-                mergeState={mergeState}
-              >
+                mergeState={mergeState}>
                 <C key={slotId}></C>
               </Route>
             );
           default:
-            console.warn("unsupport router type");
+            console.warn('unsupport router type');
             return <></>;
         }
       }
@@ -233,7 +231,7 @@ type RedirectProps = {
   replace?: boolean;
 };
 
-export const Redirect: React.FC<RedirectProps> = (props) => {
+export const Redirect: React.FC<RedirectProps> = props => {
   const navRef = useNavigate(props);
 
   // empty array means running the effect once, navRef is a ref so it never changes
@@ -255,7 +253,7 @@ const flattenChildren = (
   }
   return Array.isArray(children)
     ? ([] as ReactElement<RouteProps>[]).concat(
-        ...children.map((c) =>
+        ...children.map(c =>
           c.type === Fragment
             ? flattenChildren(c.props.children as ReactElement<RouteProps>)
             : flattenChildren(c)

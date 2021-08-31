@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from "react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { Button as BaseButton } from "@chakra-ui/react";
-import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
-import { ComponentImplementation } from "../../registry";
+import React, { useEffect, useRef } from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { Button as BaseButton } from '@chakra-ui/react';
+import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import { ComponentImplementation } from '../../registry';
 
 const Button: ComponentImplementation<{
-  text: TextProps["value"];
+  text: TextProps['value'];
   colorScheme?: Static<typeof ColorSchemePropertySchema>;
   isLoading?: Static<typeof IsLoadingPropertySchema>;
   onClick?: () => void;
@@ -70,23 +70,23 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "button",
-      description: "chakra-ui button",
+      name: 'button',
+      description: 'chakra-ui button',
     },
     spec: {
       properties: [
         {
-          name: "text",
+          name: 'text',
           ...TextPropertySchema,
         },
         {
-          name: "colorScheme",
+          name: 'colorScheme',
           ...ColorSchemePropertySchema,
         },
         {
-          name: "isLoading",
+          name: 'isLoading',
           ...IsLoadingPropertySchema,
         },
       ],
@@ -94,7 +94,7 @@ export default {
       state: StateSchema,
       methods: [
         {
-          name: "click",
+          name: 'click',
         },
       ],
     },

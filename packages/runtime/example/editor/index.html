@@ -8,33 +8,33 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
 
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "editor",
-          description: "nested meta-ui editor",
+          name: 'editor',
+          description: 'nested meta-ui editor',
         },
         spec: {
           components: [
             {
-              id: "root",
-              type: "chakra_ui/v1/root",
+              id: 'root',
+              type: 'chakra_ui/v1/root',
               properties: {},
               traits: [],
             },
             {
-              id: "editor",
-              type: "lab/v1/editor",
+              id: 'editor',
+              type: 'lab/v1/editor',
               properties: {},
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
                 },

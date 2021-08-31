@@ -8,30 +8,30 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "nested_router",
-          description: "nested router example",
+          name: 'nested_router',
+          description: 'nested router example',
         },
         spec: {
           components: [
             {
-              id: "parent",
-              type: "core/v1/router",
+              id: 'parent',
+              type: 'core/v1/router',
               properties: {
                 switchPolicy: [
                   {
-                    type: "route",
-                    path: "/1",
-                    slotId: "child1",
+                    type: 'route',
+                    path: '/1',
+                    slotId: 'child1',
                     default: true,
                   },
                   {
-                    type: "route",
-                    path: "/2",
-                    slotId: "child2",
+                    type: 'route',
+                    path: '/2',
+                    slotId: 'child2',
                     default: false,
                   },
                 ],
@@ -39,200 +39,200 @@
               traits: [],
             },
             {
-              id: "child1",
-              type: "core/v1/router",
+              id: 'child1',
+              type: 'core/v1/router',
               properties: {
                 switchPolicy: [
                   {
-                    type: "route",
-                    path: "/1",
-                    slotId: "grandchild1_1",
+                    type: 'route',
+                    path: '/1',
+                    slotId: 'grandchild1_1',
                     default: true,
                   },
                   {
-                    type: "route",
-                    path: "/2",
-                    slotId: "grandchild1_2",
+                    type: 'route',
+                    path: '/2',
+                    slotId: 'grandchild1_2',
                     default: false,
                   },
                   {
-                    type: "route",
-                    path: "/3",
-                    slotId: "grandchild1_3",
+                    type: 'route',
+                    path: '/3',
+                    slotId: 'grandchild1_3',
                     default: false,
                   },
                 ],
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "parent",
-                      slot: "child1",
+                      id: 'parent',
+                      slot: 'child1',
                     },
                   },
                 },
               ],
             },
             {
-              id: "child2",
-              type: "core/v1/router",
+              id: 'child2',
+              type: 'core/v1/router',
               properties: {
                 switchPolicy: [
                   {
-                    type: "route",
-                    path: "/1",
-                    slotId: "grandchild2_1",
+                    type: 'route',
+                    path: '/1',
+                    slotId: 'grandchild2_1',
                     default: true,
                   },
                   {
-                    type: "route",
-                    path: "/2",
-                    slotId: "grandchild2_2",
+                    type: 'route',
+                    path: '/2',
+                    slotId: 'grandchild2_2',
                     default: false,
                   },
                   {
-                    type: "route",
-                    path: "/3",
-                    slotId: "grandchild2_3",
+                    type: 'route',
+                    path: '/3',
+                    slotId: 'grandchild2_3',
                     default: false,
                   },
                 ],
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "parent",
-                      slot: "child2",
+                      id: 'parent',
+                      slot: 'child2',
                     },
                   },
                 },
               ],
             },
             {
-              id: "grandchild1_1",
-              type: "core/v1/text",
+              id: 'grandchild1_1',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "1_1",
-                  format: "plain",
+                  raw: '1_1',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "child1",
-                      slot: "grandchild1_1",
+                      id: 'child1',
+                      slot: 'grandchild1_1',
                     },
                   },
                 },
               ],
             },
             {
-              id: "grandchild1_2",
-              type: "core/v1/text",
+              id: 'grandchild1_2',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "1_2",
-                  format: "plain",
+                  raw: '1_2',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "child1",
-                      slot: "grandchild1_2",
+                      id: 'child1',
+                      slot: 'grandchild1_2',
                     },
                   },
                 },
               ],
             },
             {
-              id: "grandchild1_3",
-              type: "core/v1/text",
+              id: 'grandchild1_3',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "1_3",
-                  format: "plain",
+                  raw: '1_3',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "child1",
-                      slot: "grandchild1_3",
+                      id: 'child1',
+                      slot: 'grandchild1_3',
                     },
                   },
                 },
               ],
             },
             {
-              id: "grandchild2_1",
-              type: "core/v1/text",
+              id: 'grandchild2_1',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "2_1",
-                  format: "plain",
+                  raw: '2_1',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "child2",
-                      slot: "grandchild2_1",
+                      id: 'child2',
+                      slot: 'grandchild2_1',
                     },
                   },
                 },
               ],
             },
             {
-              id: "grandchild2_2",
-              type: "core/v1/text",
+              id: 'grandchild2_2',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "2_2",
-                  format: "plain",
+                  raw: '2_2',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "child2",
-                      slot: "grandchild2_2",
+                      id: 'child2',
+                      slot: 'grandchild2_2',
                     },
                   },
                 },
               ],
             },
             {
-              id: "grandchild2_3",
-              type: "core/v1/text",
+              id: 'grandchild2_3',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "2_3",
-                  format: "plain",
+                  raw: '2_3',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "child2",
-                      slot: "grandchild2_3",
+                      id: 'child2',
+                      slot: 'grandchild2_3',
                     },
                   },
                 },

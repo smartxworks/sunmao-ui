@@ -8,25 +8,25 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
 
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "number_input_component",
-          description: "number input component example",
+          name: 'number_input_component',
+          description: 'number input component example',
         },
         spec: {
           components: [
             {
-              id: "root",
-              type: "chakra_ui/v1/root",
+              id: 'root',
+              type: 'chakra_ui/v1/root',
               properties: {},
               traits: [],
             },
             {
-              id: "number_input",
-              type: "chakra_ui/v1/number_input",
+              id: 'number_input',
+              type: 'chakra_ui/v1/number_input',
               properties: {
                 min: 10,
                 max: 100,
@@ -36,28 +36,28 @@
                 allowMouseWheel: true,
                 size: 'sm',
                 customerIncrement: {
-                  bg: "green.200",
-                  _active: { bg: "green.300" },
-                  children: "+"
+                  bg: 'green.200',
+                  _active: { bg: 'green.300' },
+                  children: '+',
                 },
                 customerDecrement: {
-                  bg: "pink.200",
-                  _active: { bg: "pink.300" },
-                  children: "-"
-                }
+                  bg: 'pink.200',
+                  _active: { bg: 'pink.300' },
+                  children: '-',
+                },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
-                }
+                },
               ],
-            }
+            },
           ],
         },
       });

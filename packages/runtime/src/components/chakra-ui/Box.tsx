@@ -1,14 +1,14 @@
-import React from "react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { Box as BaseBox } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
-import Slot from "../_internal/Slot";
-import { pick } from "lodash";
+import React from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { Box as BaseBox } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../registry';
+import Slot from '../_internal/Slot';
+import { pick } from 'lodash';
 
 const CssGlobals = Type.KeyOf(
   Type.Object({
-    "-moz-initial": Type.String(),
+    '-moz-initial': Type.String(),
     inherit: Type.String(),
     initial: Type.String(),
     revert: Type.String(),
@@ -37,7 +37,7 @@ const TextAlign = Type.Union([
       end: Type.String(),
       justify: Type.String(),
       left: Type.String(),
-      "match-parent": Type.String(),
+      'match-parent': Type.String(),
       right: Type.String(),
       start: Type.String(),
     })
@@ -48,8 +48,8 @@ const TextTransForm = Type.Union([
   Type.KeyOf(
     Type.Object({
       capitalize: Type.String(),
-      "full-size-kana": Type.String(),
-      "full-width": Type.String(),
+      'full-size-kana': Type.String(),
+      'full-width': Type.String(),
       lowercase: Type.String(),
       none: Type.String(),
       uppercase: Type.String(),
@@ -60,7 +60,7 @@ const Overflow = Type.Union([
   CssGlobals,
   Type.KeyOf(
     Type.Object({
-      "-moz-hidden-unscrollable": Type.String(),
+      '-moz-hidden-unscrollable': Type.String(),
       auto: Type.String(),
       clip: Type.String(),
       hidden: Type.String(),
@@ -75,7 +75,7 @@ const FlexWrap = Type.Union([
     Type.Object({
       nowrap: Type.String(),
       wrap: Type.String(),
-      "wrap-reverse": Type.String(),
+      'wrap-reverse': Type.String(),
     })
   ),
 ]);
@@ -84,9 +84,9 @@ const FlexDirection = Type.Union([
   Type.KeyOf(
     Type.Object({
       column: Type.String(),
-      "column-reverse": Type.String(),
+      'column-reverse': Type.String(),
       row: Type.String(),
-      "row-reverse": Type.String(),
+      'row-reverse': Type.String(),
     })
   ),
 ]);
@@ -94,7 +94,7 @@ const Position = Type.Union([
   CssGlobals,
   Type.KeyOf(
     Type.Object({
-      "-webkit-sticky": Type.String(),
+      '-webkit-sticky': Type.String(),
       absolute: Type.String(),
       fixed: Type.String(),
       relative: Type.String(),
@@ -107,9 +107,9 @@ const WordBreak = Type.Union([
   CssGlobals,
   Type.KeyOf(
     Type.Object({
-      "break-all": Type.String(),
-      "break-word": Type.String(),
-      "keep-all": Type.String(),
+      'break-all': Type.String(),
+      'break-word': Type.String(),
+      'keep-all': Type.String(),
       normal: Type.String(),
     })
   ),
@@ -118,13 +118,13 @@ const WhiteSpace = Type.Union([
   CssGlobals,
   Type.KeyOf(
     Type.Object({
-      "-moz-pre-wrap": Type.String(),
-      "break-spaces": Type.String(),
+      '-moz-pre-wrap': Type.String(),
+      'break-spaces': Type.String(),
       normal: Type.String(),
       nowrap: Type.String(),
       pre: Type.String(),
-      "pre-line": Type.String(),
-      "pre-wrap": Type.String(),
+      'pre-line': Type.String(),
+      'pre-wrap': Type.String(),
     })
   ),
 ]);
@@ -132,8 +132,8 @@ const BoxSizing = Type.Union([
   CssGlobals,
   Type.KeyOf(
     Type.Object({
-      "border-box": Type.String(),
-      "content-box": Type.String(),
+      'border-box': Type.String(),
+      'content-box': Type.String(),
     })
   ),
 ]);
@@ -287,10 +287,10 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "box",
-      description: "chakra-ui box",
+      name: 'box',
+      description: 'chakra-ui box',
     },
     spec: {
       properties: Object.entries(StyleSchema.properties).map(

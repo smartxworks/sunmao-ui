@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 class ErrorBoundary extends React.Component<{}, { error: unknown }> {
   constructor(props: {}) {
@@ -7,7 +7,7 @@ class ErrorBoundary extends React.Component<{}, { error: unknown }> {
   }
 
   static getDerivedStateFromError(error: unknown) {
-    console.log("!!!", { error });
+    console.log('!!!', { error });
     return { error };
   }
 
