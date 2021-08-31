@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { Table as BaseTable, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
+import React, { useEffect } from 'react';
+import { Table as BaseTable, Thead, Tr, Th, Tbody, Td } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../registry';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
 
 function normalizeData(data: Static<typeof DataPropertySchema>): {
   normalizedData: Array<Record<string, string>>;
@@ -11,11 +11,11 @@ function normalizeData(data: Static<typeof DataPropertySchema>): {
   const normalizedData: Array<Record<string, string>> = [];
   const keys = new Set<string>();
   for (const item of data) {
-    if (typeof data !== "object") {
+    if (typeof data !== 'object') {
       normalizedData.push({});
     } else {
       normalizedData.push(item);
-      Object.keys(item).forEach((key) => keys.add(key));
+      Object.keys(item).forEach(key => keys.add(key));
     }
   }
   return {
@@ -37,7 +37,7 @@ const Table: ComponentImplementation<{
     <BaseTable size={size}>
       <Thead>
         <Tr>
-          {keys.map((key) => (
+          {keys.map(key => (
             <Th key={key}>{key}</Th>
           ))}
         </Tr>
@@ -46,8 +46,8 @@ const Table: ComponentImplementation<{
         {normalizedData.map((item, idx) => {
           return (
             <Tr key={idx}>
-              {keys.map((key) => (
-                <Td key={key}>{item[key] ?? "-"}</Td>
+              {keys.map(key => (
+                <Td key={key}>{item[key] ?? '-'}</Td>
               ))}
             </Tr>
           );
@@ -72,19 +72,19 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "table",
-      description: "chakra-ui table",
+      name: 'table',
+      description: 'chakra-ui table',
     },
     spec: {
       properties: [
         {
-          name: "data",
+          name: 'data',
           ...DataPropertySchema,
         },
         {
-          name: "size",
+          name: 'size',
           ...SizePropertySchema,
         },
       ],

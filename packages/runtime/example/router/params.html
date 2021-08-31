@@ -8,24 +8,24 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "params_router",
-          description: "params router example",
+          name: 'params_router',
+          description: 'params router example',
         },
         spec: {
           components: [
             {
-              id: "router",
-              type: "core/v1/router",
+              id: 'router',
+              type: 'core/v1/router',
               properties: {
                 switchPolicy: [
                   {
-                    type: "route",
-                    path: "/:value",
-                    slotId: "text",
+                    type: 'route',
+                    path: '/:value',
+                    slotId: 'text',
                     default: false,
                   },
                 ],
@@ -33,57 +33,57 @@
               traits: [],
             },
             {
-              id: "text",
-              type: "core/v1/text",
+              id: 'text',
+              type: 'core/v1/text',
               properties: {
                 value: {
                   raw: `{{ router.value }}`,
-                  format: "md",
+                  format: 'md',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "router",
-                      slot: "text",
+                      id: 'router',
+                      slot: 'text',
                     },
                   },
                 },
               ],
             },
             {
-              id: "url",
-              type: "chakra_ui/v1/input",
+              id: 'url',
+              type: 'chakra_ui/v1/input',
               properties: {
                 left: {
-                  type: "addon",
-                  children: "Go to ",
+                  type: 'addon',
+                  children: 'Go to ',
                 },
               },
               traits: [],
             },
             {
-              id: "nav_btn",
-              type: "plain/v1/button",
+              id: 'nav_btn',
+              type: 'plain/v1/button',
               properties: {
                 text: {
-                  raw: "navigate",
-                  format: "md",
+                  raw: 'navigate',
+                  format: 'md',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/event",
+                  type: 'core/v1/event',
                   properties: {
                     events: [
                       {
-                        event: "click",
-                        componentId: "router",
+                        event: 'click',
+                        componentId: 'router',
                         method: {
-                          name: "navigate",
-                          parameters: "{{`/${url.value}`}}",
+                          name: 'navigate',
+                          parameters: '{{`/${url.value}`}}',
                         },
                         wait: {},
                       },

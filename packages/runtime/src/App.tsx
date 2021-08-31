@@ -4,26 +4,26 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
+} from 'react';
 import {
   Application,
   createApplication,
   RuntimeApplication,
-} from "@meta-ui/core";
-import { merge } from "lodash";
-import { registry } from "./registry";
-import { stateStore, deepEval } from "./store";
-import { apiService } from "./api-service";
-import { ContainerPropertySchema } from "./traits/core/slot";
-import { Static } from "@sinclair/typebox";
-import { watch } from "@vue-reactivity/watch";
-import _ from "lodash";
-import copy from "copy-to-clipboard";
+} from '@meta-ui/core';
+import { merge } from 'lodash';
+import { registry } from './registry';
+import { stateStore, deepEval } from './store';
+import { apiService } from './api-service';
+import { ContainerPropertySchema } from './traits/core/slot';
+import { Static } from '@sinclair/typebox';
+import { watch } from '@vue-reactivity/watch';
+import _ from 'lodash';
+import copy from 'copy-to-clipboard';
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
-    component: RuntimeApplication["spec"]["components"][0];
+    component: RuntimeApplication['spec']['components'][0];
     slotsMap: SlotsMap | undefined;
     targetSlot: { id: string; slot: string } | null;
     app: RuntimeApplication;
@@ -35,8 +35,10 @@ const ImplWrapper = React.forwardRef<
     stateStore[c.id] = {};
   }
 
-  const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name)
-    .impl;
+  const Impl = registry.getComponent(
+    c.parsedType.version,
+    c.parsedType.name
+  ).impl;
 
   const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
   useEffect(() => {
@@ -54,9 +56,9 @@ const ImplWrapper = React.forwardRef<
       }
       handlerMap.current[s.name](s.parameters);
     };
-    apiService.on("uiMethod", handler);
+    apiService.on('uiMethod', handler);
     return () => {
-      apiService.off("uiMethod", handler);
+      apiService.off('uiMethod', handler);
     };
   }, []);
 
@@ -76,7 +78,7 @@ const ImplWrapper = React.forwardRef<
 
   // traits
   const [traitPropertiesMap, setTraitPropertiesMap] = useState<
-    Map<typeof c["traits"][0], object>
+    Map<typeof c['traits'][0], object>
   >(
     c.traits.reduce((prev, cur) => {
       prev.set(cur, deepEval(cur.properties).result);
@@ -94,14 +96,16 @@ const ImplWrapper = React.forwardRef<
       setTraitPropertiesMap(new Map(traitPropertiesMap.set(t, { ...result })));
       stops.push(stop);
     }
-    return () => stops.forEach((s) => s());
+    return () => stops.forEach(s => s());
   }, []);
 
   const traitsProps = {};
   const wrappers: React.FC[] = [];
   for (const t of c.traits) {
-    const tImpl = registry.getTrait(t.parsedType.version, t.parsedType.name)
-      .impl;
+    const tImpl = registry.getTrait(
+      t.parsedType.version,
+      t.parsedType.name
+    ).impl;
     const { props: tProps, component: Wrapper } = tImpl({
       ...traitPropertiesMap.get(t),
       mergeState,
@@ -150,8 +154,8 @@ const ImplWrapper = React.forwardRef<
   }
 
   if (targetSlot) {
-    const targetC = app.spec.components.find((c) => c.id === targetSlot.id);
-    if (targetC?.parsedType.name === "grid_layout") {
+    const targetC = app.spec.components.find(c => c.id === targetSlot.id);
+    if (targetC?.parsedType.name === 'grid_layout') {
       return (
         <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
           {C}
@@ -173,7 +177,7 @@ const DebugStore: React.FC = () => {
   const [store, setStore] = useState(stateStore);
   useEffect(() => {
     setStore({ ...stateStore });
-    watch(stateStore, (newValue) => {
+    watch(stateStore, newValue => {
       setTimeout(() => {
         setStore({ ...newValue });
       }, 0);
@@ -188,10 +192,10 @@ const DebugEvent: React.FC = () => {
 
   useEffect(() => {
     const handler = (type: string, event: unknown) => {
-      setEvents((cur) => cur.concat({ type, event, t: new Date() }));
+      setEvents(cur => cur.concat({ type, event, t: new Date() }));
     };
-    apiService.on("*", handler);
-    return () => apiService.off("*", handler);
+    apiService.on('*', handler);
+    return () => apiService.off('*', handler);
   }, []);
 
   return (
@@ -200,19 +204,17 @@ const DebugEvent: React.FC = () => {
         <button
           onClick={() => {
             copy(JSON.stringify(events));
-          }}
-        >
+          }}>
           copy test case
         </button>
       </div>
       <div
         style={{
-          padding: "0.5em",
-          border: "2px solid black",
-          maxHeight: "200px",
-          overflow: "auto",
-        }}
-      >
+          padding: '0.5em',
+          border: '2px solid black',
+          maxHeight: '200px',
+          overflow: 'auto',
+        }}>
         {events.map((event, idx) => (
           <pre key={idx}>{JSON.stringify(event)}</pre>
         ))}
@@ -230,22 +232,22 @@ export type SlotsMap = Map<
   }>
 >;
 
-export function resolveAppComponents(
-  app: RuntimeApplication
-): {
-  topLevelComponents: RuntimeApplication["spec"]["components"];
+export function resolveAppComponents(app: RuntimeApplication): {
+  topLevelComponents: RuntimeApplication['spec']['components'];
   slotComponentsMap: SlotComponentMap;
 } {
-  const topLevelComponents: RuntimeApplication["spec"]["components"] = [];
+  const topLevelComponents: RuntimeApplication['spec']['components'] = [];
   const slotComponentsMap: SlotComponentMap = new Map();
 
   for (const c of app.spec.components) {
     // handle component with slot trait
-    const slotTrait = c.traits.find((t) => t.parsedType.name === "slot");
+    const slotTrait = c.traits.find(t => t.parsedType.name === 'slot');
     if (slotTrait) {
-      const { id, slot } = (slotTrait.properties as {
-        container: Static<typeof ContainerPropertySchema>;
-      }).container;
+      const { id, slot } = (
+        slotTrait.properties as {
+          container: Static<typeof ContainerPropertySchema>;
+        }
+      ).container;
       if (!slotComponentsMap.has(id)) {
         slotComponentsMap.set(id, new Map());
       }
@@ -292,7 +294,7 @@ const App: React.FC<{
 
   return (
     <div className="App">
-      {topLevelComponents.map((c) => {
+      {topLevelComponents.map(c => {
         return (
           <ImplWrapper
             key={c.id}

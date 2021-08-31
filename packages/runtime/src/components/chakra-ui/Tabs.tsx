@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { createComponent } from "@meta-ui/core";
+import React, { useEffect, useState } from 'react';
+import { createComponent } from '@meta-ui/core';
 import {
   Tabs as BaseTabs,
   TabList,
   Tab,
   TabPanels,
   TabPanel,
-} from "@chakra-ui/react";
-import { Type, Static } from "@sinclair/typebox";
-import { ComponentImplementation } from "../../registry";
-import Slot from "../_internal/Slot";
+} from '@chakra-ui/react';
+import { Type, Static } from '@sinclair/typebox';
+import { ComponentImplementation } from '../../registry';
+import Slot from '../_internal/Slot';
 
 const Tabs: ComponentImplementation<{
   tabNames: Static<typeof TabNamesPropertySchema>;
@@ -28,8 +28,7 @@ const Tabs: ComponentImplementation<{
   return (
     <BaseTabs
       defaultIndex={initialSelectedTabIndex}
-      onChange={(idx) => setSelectedTabIndex(idx)}
-    >
+      onChange={idx => setSelectedTabIndex(idx)}>
       <TabList>
         {tabNames.map((name, idx) => (
           <Tab key={idx}>{name}</Tab>
@@ -55,19 +54,19 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "tabs",
-      description: "chakra-ui tabs",
+      name: 'tabs',
+      description: 'chakra-ui tabs',
     },
     spec: {
       properties: [
         {
-          name: "tabNames",
+          name: 'tabNames',
           ...TabNamesPropertySchema,
         },
         {
-          name: "initialSelectedTabIndex",
+          name: 'initialSelectedTabIndex',
           ...InitialSelectedTabIndexPropertySchema,
         },
       ],

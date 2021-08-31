@@ -8,120 +8,120 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "chakra-ui keyboard",
-          description: "keyboard example",
+          name: 'chakra-ui keyboard',
+          description: 'keyboard example',
         },
         spec: {
           components: [
             {
-              id: "root",
-              type: "chakra_ui/v1/root",
+              id: 'root',
+              type: 'chakra_ui/v1/root',
               properties: {},
               traits: [],
             },
             {
-              id: "key_shift",
-              type: "chakra_ui/v1/kbd",
+              id: 'key_shift',
+              type: 'chakra_ui/v1/kbd',
               properties: {
                 text: {
-                  format: "plain",
-                  raw: "shift",
+                  format: 'plain',
+                  raw: 'shift',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
                 },
               ],
             },
             {
-              id: "plus",
-              type: "core/v1/text",
+              id: 'plus',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: " + ",
-                  format: "plain",
+                  raw: ' + ',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
                 },
               ],
             },
             {
-              id: "key_f",
-              type: "chakra_ui/v1/kbd",
+              id: 'key_f',
+              type: 'chakra_ui/v1/kbd',
               properties: {
                 text: {
-                  format: "plain",
-                  raw: "f",
+                  format: 'plain',
+                  raw: 'f',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
                 },
               ],
             },
             {
-              id: "forward_text_box",
-              type: "chakra_ui/v1/box",
+              id: 'forward_text_box',
+              type: 'chakra_ui/v1/box',
               properties: {
-                color: "gray",
-                display: "inline",
+                color: 'gray',
+                display: 'inline',
                 ml: 2,
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
                 },
               ],
             },
             {
-              id: "forward_text",
-              type: "core/v1/text",
+              id: 'forward_text',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "Port-Forward",
-                  format: "plain",
+                  raw: 'Port-Forward',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "forward_text_box",
-                      slot: "content",
+                      id: 'forward_text_box',
+                      slot: 'content',
                     },
                   },
                 },

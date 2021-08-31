@@ -1,7 +1,7 @@
-import React from "react";
-import { createTrait } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { TraitImplementation } from "../../registry";
+import React from 'react';
+import { createTrait } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { TraitImplementation } from '../../registry';
 
 type HiddenProps = {
   hidden: Static<typeof HiddenPropertySchema>;
@@ -17,7 +17,7 @@ const Hidden: React.FC<HiddenProps> = ({ hidden, children }) => {
 const useHiddenTrait: TraitImplementation<HiddenProps> = ({ hidden }) => {
   return {
     props: null,
-    component: (props) => <Hidden {...props} hidden={hidden} />,
+    component: props => <Hidden {...props} hidden={hidden} />,
   };
 };
 
@@ -25,15 +25,15 @@ const HiddenPropertySchema = Type.Union([Type.Boolean(), Type.String()]);
 
 export default {
   ...createTrait({
-    version: "core/v1",
+    version: 'core/v1',
     metadata: {
-      name: "hidden",
-      description: "render component with condition",
+      name: 'hidden',
+      description: 'render component with condition',
     },
     spec: {
       properties: [
         {
-          name: "hidden",
+          name: 'hidden',
           ...HiddenPropertySchema,
         },
       ],

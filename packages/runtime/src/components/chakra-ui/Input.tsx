@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   Input as BaseInput,
   InputGroup,
@@ -6,10 +6,10 @@ import {
   InputLeftElement,
   InputRightAddon,
   InputRightElement,
-} from "@chakra-ui/react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { ComponentImplementation } from "../../registry";
+} from '@chakra-ui/react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { ComponentImplementation } from '../../registry';
 
 const VariantPropertySchema = Type.KeyOf(
   Type.Object({
@@ -68,7 +68,7 @@ const Input: ComponentImplementation<{
   right,
   mergeState,
 }) => {
-  const [value, setValue] = React.useState(""); // TODO: pin input
+  const [value, setValue] = React.useState(''); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value);
 
@@ -79,7 +79,7 @@ const Input: ComponentImplementation<{
   return (
     <InputGroup size={size}>
       {left ? (
-        left.type === "addon" ? (
+        left.type === 'addon' ? (
           <InputLeftAddon children={left.children} />
         ) : (
           <InputLeftElement
@@ -100,7 +100,7 @@ const Input: ComponentImplementation<{
         onChange={onChange}
       />
       {right ? (
-        right.type === "addon" ? (
+        right.type === 'addon' ? (
           <InputRightAddon children={right.children} />
         ) : (
           <InputRightElement
@@ -122,43 +122,43 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "input",
-      description: "chakra_ui input",
+      name: 'input',
+      description: 'chakra_ui input',
     },
     spec: {
       properties: [
         {
-          name: "variant",
+          name: 'variant',
           ...VariantPropertySchema,
         },
         {
-          name: "placeholder",
+          name: 'placeholder',
           ...PlaceholderPropertySchema,
         },
         {
-          name: "size",
+          name: 'size',
           ...SizePropertySchema,
         },
         {
-          name: "focusBorderColor",
+          name: 'focusBorderColor',
           ...FocusBorderColorPropertySchema,
         },
         {
-          name: "isDisabled",
+          name: 'isDisabled',
           ...IsDisabledPropertySchema,
         },
         {
-          name: "isRequired",
+          name: 'isRequired',
           ...IsRequiredPropertySchema,
         },
         {
-          name: "left",
+          name: 'left',
           ...AppendElementPropertySchema,
         },
         {
-          name: "right",
+          name: 'right',
           ...AppendElementPropertySchema,
         },
       ],

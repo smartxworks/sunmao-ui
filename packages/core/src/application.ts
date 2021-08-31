@@ -1,11 +1,11 @@
-import { Metadata } from "./metadata";
-import { parseVersion, Version } from "./version";
+import { Metadata } from './metadata';
+import { parseVersion, Version } from './version';
 
 // spec
 
 export type Application = {
   version: string;
-  kind: "Application";
+  kind: 'Application';
   metadata: Metadata;
   spec: ApplicationSpec;
 };
@@ -35,11 +35,11 @@ type VersionAndName = {
 };
 
 // extended runtime
-export type RuntimeApplication = Omit<Application, "spec"> & {
+export type RuntimeApplication = Omit<Application, 'spec'> & {
   parsedVersion: Version;
-  spec: Omit<ApplicationSpec, "components"> & {
+  spec: Omit<ApplicationSpec, 'components'> & {
     components: Array<
-      Omit<ApplicationComponent, "traits"> & {
+      Omit<ApplicationComponent, 'traits'> & {
         parsedType: VersionAndName;
         traits: Array<
           ComponentTrait & {
@@ -68,19 +68,19 @@ function parseType(v: string): VersionAndName {
 }
 
 export function createApplication(
-  options: Omit<Application, "kind">
+  options: Omit<Application, 'kind'>
 ): RuntimeApplication {
   return {
     ...options,
-    kind: "Application",
+    kind: 'Application',
     parsedVersion: parseVersion(options.version),
     spec: {
       ...options.spec,
-      components: options.spec.components.map((c) => {
+      components: options.spec.components.map(c => {
         return {
           ...c,
           parsedType: parseType(c.type),
-          traits: c.traits.map((t) => {
+          traits: c.traits.map(t => {
             return {
               ...t,
               parsedType: parseType(t.type),

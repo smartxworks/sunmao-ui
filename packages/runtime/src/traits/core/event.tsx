@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { createTrait } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { debounce, throttle, delay } from "lodash";
-import { TraitImplementation } from "../../registry";
-import { apiService } from "../../api-service";
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { createTrait } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { debounce, throttle, delay } from 'lodash';
+import { TraitImplementation } from '../../registry';
+import { apiService } from '../../api-service';
 
 const useEventTrait: TraitImplementation<{
   events: Static<typeof EventsPropertySchema>;
@@ -16,7 +16,7 @@ const useEventTrait: TraitImplementation<{
       // maybe log?
       return;
     }
-    handlerMap.current[s.name].forEach((fn) => fn(s.parameters));
+    handlerMap.current[s.name].forEach(fn => fn(s.parameters));
   }, []);
 
   useEffect(() => {
@@ -26,13 +26,13 @@ const useEventTrait: TraitImplementation<{
     for (const event of events) {
       const handler = () => {
         let disabled = false;
-        if (typeof event.disabled === "boolean") {
+        if (typeof event.disabled === 'boolean') {
           disabled = event.disabled;
         }
         if (disabled) {
           return;
         }
-        apiService.send("uiMethod", {
+        apiService.send('uiMethod', {
           componentId: event.componentId,
           name: event.method.name,
           parameters: event.method.parameters,
@@ -42,11 +42,11 @@ const useEventTrait: TraitImplementation<{
         handlerMap.current[event.event] = [];
       }
       handlerMap.current[event.event].push(
-        event.wait.type === "debounce"
+        event.wait.type === 'debounce'
           ? debounce(handler, event.wait.time)
-          : event.wait.type === "throttle"
+          : event.wait.type === 'throttle'
           ? throttle(handler, event.wait.time)
-          : event.wait.type === "delay"
+          : event.wait.type === 'delay'
           ? () => delay(handler, event.wait.time)
           : handler
       );
@@ -58,7 +58,7 @@ const useEventTrait: TraitImplementation<{
       // HARDCODE
       onClick() {
         eventHandler({
-          name: "click",
+          name: 'click',
         });
       },
     };
@@ -93,15 +93,15 @@ const EventsPropertySchema = Type.Array(
 
 export default {
   ...createTrait({
-    version: "core/v1",
+    version: 'core/v1',
     metadata: {
-      name: "event",
-      description: "export component events with advance features",
+      name: 'event',
+      description: 'export component events with advance features',
     },
     spec: {
       properties: [
         {
-          name: "events",
+          name: 'events',
           ...EventsPropertySchema,
         },
       ],

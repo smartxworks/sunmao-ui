@@ -8,42 +8,42 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "hidden_trait",
-          description: "hidden trait example",
+          name: 'hidden_trait',
+          description: 'hidden trait example',
         },
         spec: {
           components: [
             {
-              id: "btn",
-              type: "plain/v1/button",
+              id: 'btn',
+              type: 'plain/v1/button',
               properties: {
                 text: {
-                  raw: "toggle text",
-                  format: "plain",
+                  raw: 'toggle text',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/state",
+                  type: 'core/v1/state',
                   properties: {
-                    key: "count",
+                    key: 'count',
                     initialValue: 0,
                   },
                 },
                 {
-                  type: "core/v1/event",
+                  type: 'core/v1/event',
                   properties: {
                     events: [
                       {
-                        event: "click",
-                        componentId: "btn",
+                        event: 'click',
+                        componentId: 'btn',
                         method: {
-                          name: "setValue",
-                          parameters: "{{ btn.count + 1 }}",
+                          name: 'setValue',
+                          parameters: '{{ btn.count + 1 }}',
                         },
                         wait: {},
                         disabled: false,
@@ -54,19 +54,19 @@
               ],
             },
             {
-              id: "text",
-              type: "core/v1/text",
+              id: 'text',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "hidden with condition",
-                  format: "plain",
+                  raw: 'hidden with condition',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/hidden",
+                  type: 'core/v1/hidden',
                   properties: {
-                    hidden: "{{ btn.count % 2 === 0 }}",
+                    hidden: '{{ btn.count % 2 === 0 }}',
                   },
                 },
               ],

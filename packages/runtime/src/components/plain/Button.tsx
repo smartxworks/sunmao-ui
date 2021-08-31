@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import { createComponent } from "@meta-ui/core";
-import { Type } from "@sinclair/typebox";
-import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
-import { ComponentImplementation } from "../../registry";
+import React, { useEffect, useRef } from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Type } from '@sinclair/typebox';
+import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import { ComponentImplementation } from '../../registry';
 
 const Button: ComponentImplementation<{
-  text: TextProps["value"];
+  text: TextProps['value'];
   onClick?: () => void;
 }> = ({ text, mergeState, subscribeMethods, onClick }) => {
   useEffect(() => {
@@ -34,15 +34,15 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "plain/v1",
+    version: 'plain/v1',
     metadata: {
-      name: "button",
-      description: "plain button",
+      name: 'button',
+      description: 'plain button',
     },
     spec: {
       properties: [
         {
-          name: "text",
+          name: 'text',
           ...TextPropertySchema,
         },
       ],
@@ -50,7 +50,7 @@ export default {
       state: StateSchema,
       methods: [
         {
-          name: "click",
+          name: 'click',
         },
       ],
     },

@@ -8,95 +8,95 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "nested_components",
-          description: "nested components example",
+          name: 'nested_components',
+          description: 'nested components example',
         },
         spec: {
           components: [
             {
-              id: "root",
-              type: "chakra_ui/v1/root",
+              id: 'root',
+              type: 'chakra_ui/v1/root',
               properties: {},
               traits: [],
             },
             {
-              id: "tabs",
-              type: "chakra_ui/v1/tabs",
+              id: 'tabs',
+              type: 'chakra_ui/v1/tabs',
               properties: {
-                tabNames: ["Tab One", "Tab Two"],
+                tabNames: ['Tab One', 'Tab Two'],
                 initialSelectedTabIndex: 1,
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "root",
-                      slot: "root",
+                      id: 'root',
+                      slot: 'root',
                     },
                   },
                 },
               ],
             },
             {
-              id: "btn",
-              type: "chakra_ui/v1/button",
+              id: 'btn',
+              type: 'chakra_ui/v1/button',
               properties: {
                 text: {
-                  raw: "in tab1",
-                  format: "plain",
+                  raw: 'in tab1',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "tabs",
-                      slot: "tab_content_0",
+                      id: 'tabs',
+                      slot: 'tab_content_0',
                     },
                   },
                 },
               ],
             },
             {
-              id: "text",
-              type: "core/v1/text",
+              id: 'text',
+              type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: "in tab2",
-                  format: "plain",
+                  raw: 'in tab2',
+                  format: 'plain',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "tabs",
-                      slot: "tab_content_1",
+                      id: 'tabs',
+                      slot: 'tab_content_1',
                     },
                   },
                 },
               ],
             },
             {
-              id: "nested_tabs",
-              type: "chakra_ui/v1/tabs",
+              id: 'nested_tabs',
+              type: 'chakra_ui/v1/tabs',
               properties: {
-                tabNames: ["Tab Three", "Tab Four"],
+                tabNames: ['Tab Three', 'Tab Four'],
               },
               traits: [
                 {
-                  type: "core/v1/slot",
+                  type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: "tabs",
-                      slot: "tab_content_1",
+                      id: 'tabs',
+                      slot: 'tab_content_1',
                     },
                   },
                 },
