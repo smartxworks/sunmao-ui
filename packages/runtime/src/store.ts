@@ -1,8 +1,8 @@
-import _ from "lodash";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { reactive } from "@vue/reactivity";
-import { watch } from "@vue-reactivity/watch";
+import _ from 'lodash';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { reactive } from '@vue/reactivity';
+import { watch } from '@vue-reactivity/watch';
 
 dayjs.extend(relativeTime);
 
@@ -43,10 +43,10 @@ function maskedEval(raw: string) {
   if (isNumeric(raw)) {
     return _.toNumber(raw);
   }
-  if (raw === "true") {
+  if (raw === 'true') {
     return true;
   }
-  if (raw === "false") {
+  if (raw === 'false') {
     return false;
   }
 
@@ -92,7 +92,7 @@ export function deepEval(
   const stops: ReturnType<typeof watch>[] = [];
 
   const evaluated = mapValuesDeep(obj, ({ value: v, path }) => {
-    if (typeof v === "string") {
+    if (typeof v === 'string') {
       const { dynamic } = parseExpression(v);
       const result = maskedEval(v);
 
@@ -101,7 +101,7 @@ export function deepEval(
           () => {
             return maskedEval(v);
           },
-          (newV) => {
+          newV => {
             _.set(evaluated, path, newV);
             watcher({ result: evaluated });
           }
@@ -116,6 +116,6 @@ export function deepEval(
 
   return {
     result: evaluated,
-    stop: () => stops.forEach((s) => s()),
+    stop: () => stops.forEach(s => s()),
   };
 }

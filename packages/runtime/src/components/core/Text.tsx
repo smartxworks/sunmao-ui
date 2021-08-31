@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { createComponent } from "@meta-ui/core";
-import { Type } from "@sinclair/typebox";
-import { ComponentImplementation } from "../../registry";
-import _Text, { TextProps, TextPropertySchema } from "../_internal/Text";
+import React, { useEffect } from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Type } from '@sinclair/typebox';
+import { ComponentImplementation } from '../../registry';
+import _Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 
 const Text: ComponentImplementation<TextProps> = ({ value, mergeState }) => {
   useEffect(() => {
@@ -18,15 +18,15 @@ const StateSchema = Type.Object({
 
 export default {
   ...createComponent({
-    version: "core/v1",
+    version: 'core/v1',
     metadata: {
-      name: "text",
-      description: "support plain and markdown formats",
+      name: 'text',
+      description: 'support plain and markdown formats',
     },
     spec: {
       properties: [
         {
-          name: "value",
+          name: 'value',
           ...TextPropertySchema,
         },
       ],

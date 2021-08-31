@@ -1,26 +1,26 @@
-import React from "react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { Stack as BaseStack } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
-import Slot from "../_internal/Slot";
+import React from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { Stack as BaseStack } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../registry';
+import Slot from '../_internal/Slot';
 
 export const DirectionSchema = Type.Union([
   Type.KeyOf(
     Type.Object({
       column: Type.String(),
-      "column-reverse": Type.String(),
+      'column-reverse': Type.String(),
       row: Type.String(),
-      "row-reverse": Type.String(),
+      'row-reverse': Type.String(),
     })
   ),
   Type.Array(
     Type.KeyOf(
       Type.Object({
         column: Type.String(),
-        "column-reverse": Type.String(),
+        'column-reverse': Type.String(),
         row: Type.String(),
-        "row-reverse": Type.String(),
+        'row-reverse': Type.String(),
       })
     )
   ),
@@ -29,7 +29,7 @@ export const FlexWrapSchema = Type.KeyOf(
   Type.Object({
     nowrap: Type.String(),
     wrap: Type.String(),
-    "wrap-reverse": Type.String(),
+    'wrap-reverse': Type.String(),
   })
 );
 export const AlignItemsSchema = Type.String();
@@ -52,31 +52,31 @@ const Stack: ComponentImplementation<{
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "stack",
-      description: "chakra-ui stack",
+      name: 'stack',
+      description: 'chakra-ui stack',
     },
     spec: {
       properties: [
         {
-          name: "diection",
+          name: 'diection',
           ...DirectionSchema,
         },
         {
-          name: "wrap",
+          name: 'wrap',
           ...FlexWrapSchema,
         },
         {
-          name: "align",
+          name: 'align',
           ...AlignItemsSchema,
         },
         {
-          name: "justify",
+          name: 'justify',
           ...JustifyContentSchema,
         },
         {
-          name: "spacing",
+          name: 'spacing',
           ...SpacingSchema,
         },
       ],

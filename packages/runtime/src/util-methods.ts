@@ -1,13 +1,13 @@
-import { apiService } from "./api-service";
+import { apiService } from './api-service';
 
 export function mountUtilMethods() {
-  apiService.on("uiMethod", ({ componentId, name, parameters }) => {
-    if (componentId !== "$utils") {
+  apiService.on('uiMethod', ({ componentId, name, parameters }) => {
+    if (componentId !== '$utils') {
       return;
     }
 
     switch (name) {
-      case "alert":
+      case 'alert':
         window.alert(parameters);
         break;
       default:

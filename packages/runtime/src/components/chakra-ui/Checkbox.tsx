@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { Checkbox as BaseCheckbox } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
-import Text, { TextProps, TextPropertySchema } from "../_internal/Text";
+import React, { useState, useEffect } from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { Checkbox as BaseCheckbox } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../registry';
+import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 
 const DefaultIsCheckedSchema = Type.Optional(Type.Boolean());
 const IsDisabledSchema = Type.Optional(Type.Boolean());
@@ -45,7 +45,7 @@ const IsIndeterminateSchema = Type.Optional(Type.Boolean());
 const ValueSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
 
 const Checkbox: ComponentImplementation<{
-  text: TextProps["value"];
+  text: TextProps['value'];
   defaultIsChecked?: Static<typeof DefaultIsCheckedSchema>;
   isDisabled?: Static<typeof IsDisabledSchema>;
   colorScheme?: Static<typeof ColorSchemePropertySchema>;
@@ -91,10 +91,9 @@ const Checkbox: ComponentImplementation<{
       isChecked={isChecked}
       isIndeterminate={isIndeterminate}
       value={value}
-      onChange={(e) => {
+      onChange={e => {
         setChecked(e.target.checked);
-      }}
-    >
+      }}>
       <Text value={text} />
     </BaseCheckbox>
   );
@@ -102,51 +101,51 @@ const Checkbox: ComponentImplementation<{
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "checkbox",
-      description: "chakra-ui checkbox",
+      name: 'checkbox',
+      description: 'chakra-ui checkbox',
     },
     spec: {
       properties: [
         {
-          name: "text",
+          name: 'text',
           ...TextPropertySchema,
         },
         {
-          name: "defaultIsChecked",
+          name: 'defaultIsChecked',
           ...DefaultIsCheckedSchema,
         },
         {
-          name: "isDisabled",
+          name: 'isDisabled',
           ...IsDisabledSchema,
         },
         {
-          name: "colorScheme",
+          name: 'colorScheme',
           ...ColorSchemePropertySchema,
         },
         {
-          name: "size",
+          name: 'size',
           ...SizePropertySchema,
         },
         {
-          name: "isInValid",
+          name: 'isInValid',
           ...IsInvalidSchema,
         },
         {
-          name: "spacing",
+          name: 'spacing',
           ...SpacingSchema,
         },
         {
-          name: "isChecked",
+          name: 'isChecked',
           ...IsCheckedSchema,
         },
         {
-          name: "isIndeterminate",
+          name: 'isIndeterminate',
           ...IsIndeterminateSchema,
         },
         {
-          name: "value",
+          name: 'value',
           ...ValueSchema,
         },
       ],

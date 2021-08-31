@@ -1,14 +1,14 @@
-import { JSONSchema7 } from "json-schema";
-import { parseVersion } from "./version";
-import { Metadata } from "./metadata";
-import { MethodSchema } from "./method";
-import { Version } from "./version";
+import { JSONSchema7 } from 'json-schema';
+import { parseVersion } from './version';
+import { Metadata } from './metadata';
+import { MethodSchema } from './method';
+import { Version } from './version';
 
 // spec
 
 export type Component = {
   version: string;
-  kind: "Component";
+  kind: 'Component';
   metadata: Metadata;
   spec: ComponentSpec;
 };
@@ -30,11 +30,11 @@ export type RuntimeComponent = Component & {
 };
 
 export function createComponent(
-  options: Omit<Component, "kind">
+  options: Omit<Component, 'kind'>
 ): RuntimeComponent {
   return {
     ...options,
-    kind: "Component",
+    kind: 'Component',
     parsedVersion: parseVersion(options.version),
   };
 }
