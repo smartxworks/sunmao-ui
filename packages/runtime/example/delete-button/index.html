@@ -8,69 +8,69 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp, { runTest } from "../../src/main.tsx";
+      import renderApp from '../../src/main.tsx';
       renderApp({
-        version: "example/v1",
+        version: 'example/v1',
         metadata: {
-          name: "delete-button",
-          description: "delete button example",
+          name: 'delete-button',
+          description: 'delete button example',
         },
         spec: {
           components: [
             {
-              id: "del_btn",
-              type: "plain/v1/button",
+              id: 'del_btn',
+              type: 'plain/v1/button',
               properties: {
                 text: {
                   raw: `{{ del_btn.count > 0 ? 'CLICK TO CONFIRM' : '**DELETE** Button' }}`,
-                  format: "md",
+                  format: 'md',
                 },
               },
               traits: [
                 {
-                  type: "core/v1/state",
+                  type: 'core/v1/state',
                   properties: {
-                    key: "count",
+                    key: 'count',
                     initialValue: 0,
                   },
                 },
                 {
-                  type: "core/v1/event",
+                  type: 'core/v1/event',
                   properties: {
                     events: [
                       {
-                        event: "click",
-                        componentId: "$utils",
+                        event: 'click',
+                        componentId: '$utils',
                         method: {
-                          name: "alert",
+                          name: 'alert',
                           parameters: "{{ 'deleted!' }}",
                         },
                         wait: {},
-                        disabled: "{{ del_btn.count === 0 }}",
+                        disabled: '{{ del_btn.count === 0 }}',
                       },
                       {
-                        event: "click",
-                        componentId: "del_btn",
+                        event: 'click',
+                        componentId: 'del_btn',
                         method: {
-                          name: "setValue",
+                          name: 'setValue',
                           parameters:
-                            "{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}",
+                            '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
                         },
                         wait: {},
                         disabled: false,
                       },
                       {
-                        event: "click",
-                        componentId: "del_btn",
+                        event: 'click',
+                        componentId: 'del_btn',
                         method: {
-                          name: "setValue",
-                          parameters: "0",
+                          name: 'setValue',
+                          parameters: '0',
                         },
                         wait: {
-                          type: "delay",
+                          type: 'delay',
                           time: 2000,
                         },
-                        disabled: "{{ del_btn.count === 0 }}",
+                        disabled: '{{ del_btn.count === 0 }}',
                       },
                     ],
                   },
@@ -78,12 +78,12 @@
               ],
             },
             {
-              id: "debug_text",
-              type: "core/v1/text",
+              id: 'debug_text',
+              type: 'core/v1/text',
               properties: {
                 value: {
                   raw: `{{ del_btn.value + '---' + del_btn.count }}`,
-                  format: "md",
+                  format: 'md',
                 },
               },
               traits: [],
