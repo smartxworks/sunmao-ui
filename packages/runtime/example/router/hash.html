@@ -141,8 +141,11 @@
                         event: 'click',
                         componentId: 'router',
                         method: {
-                          name: 'setIndex',
-                          parameters: '{{router.index + 1}}',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'index',
+                            value: '{{router.index + 1}}',
+                          },
                         },
                         wait: {},
                         disabled: false,
@@ -181,8 +184,11 @@
                         event: 'click',
                         componentId: 'router',
                         method: {
-                          name: 'setIndex',
-                          parameters: '2',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'index',
+                            value: '2',
+                          },
                         },
                         wait: {},
                         disabled: false,

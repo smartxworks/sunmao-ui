@@ -42,8 +42,11 @@
                         event: 'click',
                         componentId: 'btn',
                         method: {
-                          name: 'setCount',
-                          parameters: '{{ btn.count + 1 }}',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'count',
+                            value: '{{ btn.count + 1 }}',
+                          },
                         },
                         wait: {},
                         disabled: false,

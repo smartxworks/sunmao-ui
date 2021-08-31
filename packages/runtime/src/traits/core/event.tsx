@@ -26,6 +26,7 @@ const useEventTrait: TraitImplementation<{
       if (disabled) {
         return;
       }
+      console.log(event);
       apiService.send('uiMethod', {
         componentId: event.componentId,
         name: event.method.name,
