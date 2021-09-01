@@ -5,9 +5,10 @@ import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../registry';
 import { ImplWrapper, resolveAppComponents } from '../../App';
-import { mapValuesDeep } from '../../store';
+import { mapValuesDeep, maskedEval } from '../../store';
 import { values } from 'lodash';
 import { parseType } from '../../util-methods';
+import { LIST_ITEM_EXP } from '../../constants';
 
 const List: ComponentImplementation<{
   listData: Static<typeof ListDataPropertySchema>;
@@ -25,10 +26,8 @@ const List: ComponentImplementation<{
 
   const listItems = listData.map((listItem, i) => {
     const evaledTemplate = mapValuesDeep(templateAsApp, ({ value, key }) => {
-      // what will happen if listData was uglified?
-      if (typeof value === 'string' && value.includes('$listItem')) {
-        const expression = value.replaceAll('$listItem', 'listData[i]');
-        return eval(expression);
+      if (typeof value === 'string') {
+        return maskedEval(value, true, { [LIST_ITEM_EXP]: listItem });
       }
       return value;
     });

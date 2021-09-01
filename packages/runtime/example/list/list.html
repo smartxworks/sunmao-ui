@@ -27,7 +27,28 @@
                   type: 'core/v1/state',
                   properties: {
                     key: 'listTitle',
-                    initialValue: 'UserList',
+                    initialValue: '客户列表',
+                  },
+                },
+              ],
+            },
+            {
+              id: 'title',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '**{{root.listTitle}}**',
+                  format: 'md',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
                   },
                 },
               ],
@@ -70,7 +91,7 @@
                 ],
                 template: [
                   {
-                    id: '`listItemTemplate-${$listItem.id}`',
+                    id: 'listItemTemplate-{{$listItem.id}}',
                     type: 'chakra_ui/v1/hstack',
                     properties: {
                       spacing: '24px',
@@ -78,11 +99,11 @@
                     traits: [],
                   },
                   {
-                    id: '`listItemName-${$listItem.id}`',
+                    id: 'listItemName-{{$listItem.id}}',
                     type: 'core/v1/text',
                     properties: {
                       value: {
-                        raw: '`姓名：${$listItem.name}`',
+                        raw: '姓名：{{$listItem.name}}',
                         format: 'plain',
                       },
                     },
@@ -91,7 +112,7 @@
                         type: 'core/v1/slot',
                         properties: {
                           container: {
-                            id: '`listItemTemplate-${$listItem.id}`',
+                            id: 'listItemTemplate-{{$listItem.id}}',
                             slot: 'content',
                           },
                         },
@@ -99,11 +120,11 @@
                     ],
                   },
                   {
-                    id: '`listItemEmail-${$listItem.id}`',
+                    id: 'listItemEmail-{{$listItem.id}}',
                     type: 'core/v1/text',
                     properties: {
                       value: {
-                        raw: '`email：${$listItem.email}`',
+                        raw: 'email：{{$listItem.email}}',
                         format: 'plain',
                       },
                     },
@@ -112,7 +133,7 @@
                         type: 'core/v1/slot',
                         properties: {
                           container: {
-                            id: '`listItemTemplate-${$listItem.id}`',
+                            id: 'listItemTemplate-{{$listItem.id}}',
                             slot: 'content',
                           },
                         },
@@ -120,7 +141,7 @@
                     ],
                   },
                   {
-                    id: '`listItemButton-${$listItem.id}`',
+                    id: 'listItemButton-{{$listItem.id}}',
                     type: 'chakra_ui/v1/button',
                     properties: {
                       text: {
@@ -142,7 +163,8 @@
                               componentId: '$utils',
                               method: {
                                 name: 'alert',
-                                parameters: '`click: ${$listItem.name}`',
+                                parameters:
+                                  'Hello, {{$listItem.name}}. You are in {{ root.listTitle }}',
                               },
                               wait: {},
                               disabled: 'false',
@@ -154,7 +176,7 @@
                         type: 'core/v1/slot',
                         properties: {
                           container: {
-                            id: '`listItemTemplate-${$listItem.id}`',
+                            id: 'listItemTemplate-{{$listItem.id}}',
                             slot: 'content',
                           },
                         },
