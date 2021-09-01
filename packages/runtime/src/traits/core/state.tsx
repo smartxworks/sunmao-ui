@@ -1,7 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
-import { stateStore } from '../../store';
 
 const HasInitializedMap = new Map<string, boolean>();
 
@@ -17,7 +16,6 @@ const useStateTrait: TraitImplementation<{
   if (!hasInitialized) {
     mergeState({ [key]: initialValue });
 
-    const upperCaseKey = capitalizeFirstLetter(key);
     const methods = {
       setValue({ key, value }: KeyValue) {
         mergeState({ [key]: value });
@@ -34,10 +32,6 @@ const useStateTrait: TraitImplementation<{
     props: null,
   };
 };
-
-function capitalizeFirstLetter(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 
 const KeyPropertySchema = Type.String();
 const InitialValuePropertySchema = Type.Any();
