@@ -9,6 +9,33 @@
     <div id="root"></div>
     <script type="module">
       import renderApp from '../../src/main.tsx';
+      const listdata = [
+        {
+          id: 1,
+          name: 'Hanson Deck',
+          email: 'hanson@deck.com',
+        },
+        {
+          id: 2,
+          name: 'Max Conversation',
+          email: 'Max@conversation.com',
+        },
+        {
+          id: 3,
+          name: 'Jason Response',
+          email: 'jason@response.com',
+        },
+        {
+          id: 4,
+          name: 'Sue Shei',
+          email: 'sueshei@example.com',
+        },
+        {
+          id: 5,
+          name: 'Eric Widget',
+          email: 'eric@widget.org',
+        },
+      ];
 
       renderApp({
         version: 'example/v1',
@@ -28,6 +55,13 @@
                   properties: {
                     key: 'listTitle',
                     initialValue: '客户列表',
+                  },
+                },
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'listData',
+                    initialValue: listdata,
                   },
                 },
               ],
@@ -57,38 +91,7 @@
               id: 'list',
               type: 'chakra_ui/v1/list',
               properties: {
-                listData: [
-                  {
-                    id: 1,
-                    name: 'Hanson Deck',
-                    email: 'hanson@deck.com',
-                    sales: 37,
-                  },
-                  {
-                    id: 2,
-                    name: 'Max Conversation',
-                    email: 'Max@conversation.com',
-                    sales: 424,
-                  },
-                  {
-                    id: 3,
-                    name: 'Jason Response',
-                    email: 'jason@response.com',
-                    sales: 55,
-                  },
-                  {
-                    id: 4,
-                    name: 'Sue Shei',
-                    email: 'sueshei@example.com',
-                    sales: 550,
-                  },
-                  {
-                    id: 5,
-                    name: 'Eric Widget',
-                    email: 'eric@widget.org',
-                    sales: 243,
-                  },
-                ],
+                listData: '{{ root.listData }}',
                 template: [
                   {
                     id: 'listItemTemplate-{{$listItem.id}}',
@@ -183,9 +186,108 @@
                       },
                     ],
                   },
+                  {
+                    id: 'listItemDelete-{{$listItem.id}}',
+                    type: 'chakra_ui/v1/button',
+                    properties: {
+                      text: {
+                        raw: '删除',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/event',
+                        parsedType: {
+                          version: 'core/v1',
+                          name: 'event',
+                        },
+                        properties: {
+                          events: [
+                            {
+                              event: 'click',
+                              componentId: 'root',
+                              method: {
+                                name: 'setValue',
+                                parameters: {
+                                  key: 'listData',
+                                  value: `{{ (root.listData || []).filter((item) => item.id !== $listItem.id)}}`,
+                                },
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: 'listItemTemplate-{{$listItem.id}}',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
                 ],
               },
               traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'addButton',
+              type: 'chakra_ui/v1/button',
+              properties: {
+                text: {
+                  raw: '添加客户',
+                  format: 'plain',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/event',
+                  parsedType: {
+                    version: 'core/v1',
+                    name: 'event',
+                  },
+                  properties: {
+                    events: [
+                      {
+                        event: 'click',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'listData',
+                            value: `{{
+                              function() {
+                                let list = root.listData || []
+                                return list.concat({
+                                  id: Date.now(),
+                                  name: 'Bowen Tan',
+                                  email: 'bowen.tan@smartx.com'
+                                })
+                              }()
+                            }}`,
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ],
+                  },
+                },
                 {
                   type: 'core/v1/slot',
                   properties: {

@@ -35,6 +35,10 @@ const List: ComponentImplementation<{
   template: Static<typeof TemplatePropertySchema>;
   onClick?: () => void;
 }> = ({ listData, template, mergeState, subscribeMethods, app }) => {
+  if (!listData) {
+    return null;
+  }
+
   const parsedtemplete = template.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
@@ -66,7 +70,7 @@ const List: ComponentImplementation<{
     });
 
     return (
-      <BaseListItem key={listItem.name} spacing={3}>
+      <BaseListItem key={listItem.id} spacing={3}>
         {componentElements}
       </BaseListItem>
     );

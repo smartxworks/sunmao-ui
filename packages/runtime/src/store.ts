@@ -42,7 +42,8 @@ function parseExpression(str: string, parseListItem = false): ExpChunk[] {
       r += 2;
       l = r;
     } else if (isInBrackets && str.substr(r, 2) === '}}') {
-      const substr = str.substring(l, r);
+      // remove \n from start and end of substr
+      const substr = str.substring(l, r).replace(/^\s+|\s+$/g, '');
       const chunk = {
         expression: substr,
         isDynamic: true,
@@ -100,7 +101,9 @@ export function maskedEval(
       });
       return result;
     } catch (e) {
-      console.error(Error(`Cannot eval value '${exp}' in '${raw}'`));
+      console.error(
+        Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`)
+      );
       return undefined;
     }
   });
