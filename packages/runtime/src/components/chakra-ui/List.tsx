@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { createApplication, createComponent } from '@meta-ui/core';
+import {
+  Application,
+  createComponent,
+  RuntimeApplication,
+} from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
@@ -10,29 +14,44 @@ import { values } from 'lodash';
 import { parseType } from '../../util-methods';
 import { LIST_ITEM_EXP } from '../../constants';
 
+export function parseTypeComponents(
+  c: Application['spec']['components'][0]
+): RuntimeApplication['spec']['components'][0] {
+  return {
+    ...c,
+    children: [],
+    parsedType: parseType(c.type),
+    traits: c.traits.map(t => {
+      return {
+        ...t,
+        parsedType: parseType(t.type),
+      };
+    }),
+  };
+}
+
 const List: ComponentImplementation<{
   listData: Static<typeof ListDataPropertySchema>;
   template: Static<typeof TemplatePropertySchema>;
   onClick?: () => void;
 }> = ({ listData, template, mergeState, subscribeMethods, app }) => {
-  const templateAsApp = useMemo(() => {
-    return createApplication({
-      ...app,
-      spec: {
-        components: template as any,
-      },
-    });
-  }, [app, template]);
+  const parsedtemplete = template.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
-    const evaledTemplate = mapValuesDeep(templateAsApp, ({ value, key }) => {
-      if (typeof value === 'string') {
-        return maskedEval(value, true, { [LIST_ITEM_EXP]: listItem });
+    const evaledTemplate = mapValuesDeep(
+      { parsedtemplete },
+      ({ value, key }) => {
+        if (typeof value === 'string') {
+          return maskedEval(value, true, { [LIST_ITEM_EXP]: listItem });
+        }
+        return value;
       }
-      return value;
-    });
-    const { topLevelComponents, slotComponentsMap } =
-      resolveAppComponents(evaledTemplate);
+    ).parsedtemplete;
+
+    const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
+      evaledTemplate,
+      app
+    );
 
     const componentElements = topLevelComponents.map(c => {
       return (
@@ -59,7 +78,10 @@ const List: ComponentImplementation<{
 const ListDataPropertySchema = Type.Array(
   Type.Object(Type.String(), Type.String())
 );
-const TemplatePropertySchema = Type.Object(Type.String(), Type.Unknown());
+const TemplatePropertySchema = Type.Object(
+  Type.String(),
+  Type.Array(Type.Object(Type.String()))
+);
 
 export default {
   ...createComponent({
