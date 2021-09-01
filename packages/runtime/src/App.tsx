@@ -237,14 +237,17 @@ export type SlotsMap = Map<
   }>
 >;
 
-export function resolveAppComponents(app: RuntimeApplication): {
+export function resolveAppComponents(
+  components: RuntimeApplication['spec']['components'],
+  app?: RuntimeApplication
+): {
   topLevelComponents: RuntimeApplication['spec']['components'];
   slotComponentsMap: SlotComponentMap;
 } {
   const topLevelComponents: RuntimeApplication['spec']['components'] = [];
   const slotComponentsMap: SlotComponentMap = new Map();
 
-  for (const c of app.spec.components) {
+  for (const c of components) {
     // handle component with slot trait
     const slotTrait = c.traits.find(t => t.parsedType.name === 'slot');
     if (slotTrait) {
@@ -293,7 +296,7 @@ const App: React.FC<{
 }> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
   const { topLevelComponents, slotComponentsMap } = useMemo(
-    () => resolveAppComponents(app),
+    () => resolveAppComponents(app.spec.components, app),
     [app]
   );
 
