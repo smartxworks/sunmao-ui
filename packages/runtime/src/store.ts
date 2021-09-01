@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reactive } from '@vue/reactivity';
 import { watch } from '@vue-reactivity/watch';
+import { LIST_ITEM_EXP } from './constants';
 
 dayjs.extend(relativeTime);
 
@@ -22,7 +23,7 @@ function isNumeric(x: string | number) {
 
 export const stateStore = reactive<Record<string, any>>({});
 
-function parseExpression(str: string): ExpChunk[] {
+function parseExpression(str: string, parseListItem = false): ExpChunk[] {
   let l = 0;
   let r = 0;
   let isInBrackets = false;
@@ -42,10 +43,18 @@ function parseExpression(str: string): ExpChunk[] {
       l = r;
     } else if (isInBrackets && str.substr(r, 2) === '}}') {
       const substr = str.substring(l, r);
-      res.push({
+      const chunk = {
         expression: substr,
         isDynamic: true,
-      });
+      };
+      // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
+      // unless explicitly pass parseListItem as true
+      if (!parseListItem && substr.includes(LIST_ITEM_EXP)) {
+        chunk.expression = `{{${substr}}}`;
+        chunk.isDynamic = false;
+      }
+      res.push(chunk);
+
       isInBrackets = false;
       r += 2;
       l = r;
@@ -63,7 +72,11 @@ function parseExpression(str: string): ExpChunk[] {
   return res;
 }
 
-function maskedEval(raw: string) {
+export function maskedEval(
+  raw: string,
+  evalListItem = false,
+  scopeObject = {}
+) {
   if (isNumeric(raw)) {
     return _.toNumber(raw);
   }
@@ -74,16 +87,16 @@ function maskedEval(raw: string) {
     return false;
   }
 
-  const expChunks = parseExpression(raw);
+  const expChunks = parseExpression(raw, evalListItem);
   const evaled = expChunks.map(({ expression: exp, isDynamic }) => {
     if (!isDynamic) {
       return exp;
     }
-
     try {
       const result = new Function(`with(this) { return ${exp} }`).call({
         ...stateStore,
         ...builtIn,
+        ...scopeObject,
       });
       return result;
     } catch (e) {
