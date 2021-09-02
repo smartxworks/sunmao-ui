@@ -40,11 +40,6 @@ export const ImplWrapper = React.forwardRef<
     [key: string]: any;
   }
 >(({ component: c, slotsMap, targetSlot, app, children, ...props }, ref) => {
-  // TODO: find better way to add barrier
-  if (!stateStore[c.id]) {
-    stateStore[c.id] = {};
-  }
-
   const Impl = registry.getComponent(
     c.parsedType.version,
     c.parsedType.name
