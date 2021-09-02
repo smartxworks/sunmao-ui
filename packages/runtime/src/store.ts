@@ -18,7 +18,7 @@ const builtIn = {
 };
 
 function isNumeric(x: string | number) {
-  return !isNaN(Number(x));
+  return !isNaN(Number(x)) && x !== '';
 }
 
 export const stateStore = reactive<Record<string, any>>({});
