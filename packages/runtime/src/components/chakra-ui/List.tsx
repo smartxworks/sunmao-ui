@@ -12,7 +12,7 @@ import { ImplWrapper, resolveAppComponents } from '../../App';
 import { mapValuesDeep, maskedEval } from '../../store';
 import { values } from 'lodash';
 import { parseType } from '../../util-methods';
-import { LIST_ITEM_EXP } from '../../constants';
+import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
@@ -52,7 +52,10 @@ const List: ComponentImplementation<{
       { parsedtemplete },
       ({ value, key }) => {
         if (typeof value === 'string') {
-          return maskedEval(value, true, { [LIST_ITEM_EXP]: listItem });
+          return maskedEval(value, true, {
+            [LIST_ITEM_EXP]: listItem,
+            [LIST_ITEM_INDEX_EXP]: i,
+          });
         }
         return value;
       }
