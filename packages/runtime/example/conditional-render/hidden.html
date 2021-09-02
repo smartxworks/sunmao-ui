@@ -43,7 +43,10 @@
                         componentId: 'btn',
                         method: {
                           name: 'setValue',
-                          parameters: '{{ btn.count + 1 }}',
+                          parameters: {
+                            key: 'count',
+                            value: '{{ btn.count + 1 }}',
+                          },
                         },
                         wait: {},
                         disabled: false,

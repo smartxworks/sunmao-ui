@@ -55,11 +55,15 @@ function maskedEval(raw: string) {
   if (!dynamic) {
     return raw;
   }
-
-  return new Function(`with(this) { return ${expression} }`).call({
-    ...stateStore,
-    ...builtIn,
-  });
+  try {
+    const result = new Function(`with(this) { return ${expression} }`).call({
+      ...stateStore,
+      ...builtIn,
+    });
+    return result;
+  } catch {
+    return undefined;
+  }
 }
 
 const mapValuesDeep = (

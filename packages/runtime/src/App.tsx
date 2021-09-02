@@ -7,11 +7,13 @@ import React, {
 } from 'react';
 import {
   Application,
+  ComponentTrait,
   createApplication,
   RuntimeApplication,
+  Trait,
 } from '@meta-ui/core';
 import { merge } from 'lodash';
-import { registry } from './registry';
+import { registry, TraitResult } from './registry';
 import { stateStore, deepEval } from './store';
 import { apiService } from './api-service';
 import { ContainerPropertySchema } from './traits/core/slot';
@@ -19,11 +21,18 @@ import { Static } from '@sinclair/typebox';
 import { watch } from '@vue-reactivity/watch';
 import _ from 'lodash';
 import copy from 'copy-to-clipboard';
+import { globalHandlerMap } from './handler';
+
+type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
+type ApplicationComponent = RuntimeApplication['spec']['components'][0];
+type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
 const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
-    component: RuntimeApplication['spec']['components'][0];
+    component: ApplicationComponent;
     slotsMap: SlotsMap | undefined;
     targetSlot: { id: string; slot: string } | null;
     app: RuntimeApplication;
@@ -40,7 +49,11 @@ const ImplWrapper = React.forwardRef<
     c.parsedType.name
   ).impl;
 
-  const handlerMap = useRef<Record<string, (parameters?: any) => void>>({});
+  if (!globalHandlerMap.has(c.id)) {
+    globalHandlerMap.set(c.id, {});
+  }
+
+  let handlerMap = globalHandlerMap.get(c.id)!;
   useEffect(() => {
     const handler = (s: {
       componentId: string;
@@ -50,11 +63,11 @@ const ImplWrapper = React.forwardRef<
       if (s.componentId !== c.id) {
         return;
       }
-      if (!handlerMap.current[s.name]) {
+      if (!handlerMap[s.name]) {
         // maybe log?
         return;
       }
-      handlerMap.current[s.name](s.parameters);
+      handlerMap[s.name](s.parameters);
     };
     apiService.on('uiMethod', handler);
     return () => {
@@ -68,90 +81,80 @@ const ImplWrapper = React.forwardRef<
     },
     [c.id]
   );
+  const subscribeMethods = useCallback((map: any) => {
+    handlerMap = { ...handlerMap, ...map };
+    globalHandlerMap.set(c.id, handlerMap);
+  }, []);
 
-  const subscribeMethods = useCallback(
-    (map: any) => {
-      handlerMap.current = merge(handlerMap.current, map);
-    },
-    [handlerMap.current]
-  );
+  // result returned from traits
+  const [traitResults, setTraitResults] = useState<TraitResult[]>([]);
 
-  // traits
-  const [traitPropertiesMap, setTraitPropertiesMap] = useState<
-    Map<typeof c['traits'][0], object>
-  >(
-    c.traits.reduce((prev, cur) => {
-      prev.set(cur, deepEval(cur.properties).result);
-      return prev;
-    }, new Map())
-  );
+  // eval traits' properties then excecute traits
   useEffect(() => {
+    function excecuteTrait(
+      trait: ApplicationTrait,
+      traitProperty: ApplicationTrait['properties']
+    ) {
+      const tImpl = registry.getTrait(
+        trait.parsedType.version,
+        trait.parsedType.name
+      ).impl;
+      const traitResult = tImpl({
+        ...traitProperty,
+        componentId: c.id,
+        mergeState,
+        subscribeMethods,
+      });
+      setTraitResults(results => results.concat(traitResult));
+    }
+
     const stops: ReturnType<typeof watch>[] = [];
     for (const t of c.traits) {
       const { stop, result } = deepEval(t.properties, ({ result }) => {
-        setTraitPropertiesMap(
-          new Map(traitPropertiesMap.set(t, { ...result }))
-        );
+        excecuteTrait(t, { ...result });
       });
-      setTraitPropertiesMap(new Map(traitPropertiesMap.set(t, { ...result })));
+      excecuteTrait(t, { ...result });
       stops.push(stop);
     }
     return () => stops.forEach(s => s());
-  }, []);
+  }, [c.traits]);
 
-  const traitsProps = {};
-  const wrappers: React.FC[] = [];
-  for (const t of c.traits) {
-    const tImpl = registry.getTrait(
-      t.parsedType.version,
-      t.parsedType.name
-    ).impl;
-    const { props: tProps, component: Wrapper } = tImpl({
-      ...traitPropertiesMap.get(t),
-      mergeState,
-      subscribeMethods,
-    });
-    merge(traitsProps, tProps);
-    if (Wrapper) {
-      wrappers.push(Wrapper);
-    }
-  }
+  // reduce traitResults
+  const propsFromTraits: TraitResult = useMemo(() => {
+    return Array.from(traitResults.values()).reduce(
+      (prevProps, result: TraitResult) => {
+        return { ...prevProps, ...result.props };
+      },
+      { props: null }
+    );
+  }, [traitResults]);
 
-  const [mergedProps, setMergedProps] = useState(
-    deepEval({
-      ...c.properties,
-      ...traitsProps,
-    }).result
+  // component properties
+  const [evaledComponentProperties, setEvaledComponentProperties] = useState(
+    merge(deepEval(c.properties).result, propsFromTraits)
   );
-  useEffect(() => {
-    const rawProps: Record<string, unknown> = {
-      ...c.properties,
-      ...traitsProps,
-    };
 
-    const { stop, result } = deepEval(rawProps, ({ result }) => {
-      setMergedProps({ ...result });
+  // eval component properties
+  useEffect(() => {
+    const { stop, result } = deepEval(c.properties, ({ result }) => {
+      setEvaledComponentProperties({ ...result });
     });
 
-    setMergedProps({ ...result });
+    setEvaledComponentProperties(result);
     return stop;
   }, []);
+
+  const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
   let C = (
     <Impl
       key={c.id}
       {...mergedProps}
-      {...props}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
     />
   );
-
-  while (wrappers.length) {
-    const W = wrappers.pop()!;
-    C = <W>{C}</W>;
-  }
 
   if (targetSlot) {
     const targetC = app.spec.components.find(c => c.id === targetSlot.id);

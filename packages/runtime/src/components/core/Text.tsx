@@ -4,12 +4,16 @@ import { Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
 import _Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 
-const Text: ComponentImplementation<TextProps> = ({ value, mergeState }) => {
+const Text: ComponentImplementation<TextProps> = ({
+  value,
+  mergeState,
+  style,
+}) => {
   useEffect(() => {
     mergeState({ value: value.raw });
   }, [value.raw]);
 
-  return <_Text value={value} />;
+  return <_Text value={value} style={style} />;
 };
 
 const StateSchema = Type.Object({

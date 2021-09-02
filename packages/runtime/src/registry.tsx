@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
 import { SlotsMap } from './App';
 // components
@@ -29,6 +29,7 @@ import CoreEvent from './traits/core/event';
 import CoreSlot from './traits/core/slot';
 import CoreHidden from './traits/core/hidden';
 import CoreFetch from './traits/core/fetch';
+import CoreValidation from './traits/core/validation';
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -50,18 +51,25 @@ export type ComponentImplementation<T = any> = React.FC<
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
     slotsMap: SlotsMap | undefined;
+    style?: CSSProperties;
+    data?: Record<string, any>;
   }
 >;
 
+export type TraitResult = {
+  props: {
+    data?: unknown;
+    style?: CSSProperties;
+  } | null;
+};
+
 export type TraitImplementation<T = any> = (
   props: T & {
+    componentId: string;
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
   }
-) => {
-  props: any;
-  component?: React.FC;
-};
+) => TraitResult;
 
 class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
@@ -134,3 +142,4 @@ registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);
 registry.registerTrait(CoreFetch);
+registry.registerTrait(CoreValidation);

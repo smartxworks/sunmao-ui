@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
@@ -7,17 +7,15 @@ type HiddenProps = {
   hidden: Static<typeof HiddenPropertySchema>;
 };
 
-const Hidden: React.FC<HiddenProps> = ({ hidden, children }) => {
-  if (hidden) {
-    return null;
-  }
-  return <>{children}</>;
-};
-
 const useHiddenTrait: TraitImplementation<HiddenProps> = ({ hidden }) => {
+  const style: CSSProperties = {};
+  if (hidden) {
+    style.display = 'none';
+  }
   return {
-    props: null,
-    component: props => <Hidden {...props} hidden={hidden} />,
+    props: {
+      style,
+    },
   };
 };
 

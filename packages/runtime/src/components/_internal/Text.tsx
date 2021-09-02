@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 
@@ -14,13 +14,14 @@ export const TextPropertySchema = Type.Object({
 
 export type TextProps = {
   value: Static<typeof TextPropertySchema>;
+  style?: CSSProperties;
 };
 
-const Text: React.FC<TextProps> = ({ value }) => {
+const Text: React.FC<TextProps> = ({ value, style }) => {
   if (value.format === 'md') {
     return <ReactMarkdown>{value.raw}</ReactMarkdown>;
   }
-  return <>{value.raw}</>;
+  return <span style={style}>{value.raw}</span>;
 };
 
 export default Text;
