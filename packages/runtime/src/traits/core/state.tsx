@@ -1,24 +1,32 @@
-import { useEffect } from 'react';
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
 
+const HasInitializedMap = new Map<string, boolean>();
+
+type KeyValue = { key: string; value: unknown };
+
 const useStateTrait: TraitImplementation<{
   key: Static<typeof KeyPropertySchema>;
   initialValue: Static<typeof InitialValuePropertySchema>;
-}> = ({ key, initialValue, mergeState, subscribeMethods }) => {
-  useEffect(() => {
+}> = ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
+  const hashId = `#${componentId}@${key}`;
+  let hasInitialized = HasInitializedMap.get(hashId);
+
+  if (!hasInitialized) {
     mergeState({ [key]: initialValue });
 
-    subscribeMethods({
-      setValue(value) {
+    const methods = {
+      setValue({ key, value }: KeyValue) {
         mergeState({ [key]: value });
       },
-      reset() {
+      resetValue({ key }: KeyValue) {
         mergeState({ [key]: initialValue });
       },
-    });
-  }, []);
+    };
+    subscribeMethods(methods);
+    HasInitializedMap.set(hashId, true);
+  }
 
   return {
     props: null,
@@ -50,7 +58,10 @@ export default {
       methods: [
         {
           name: 'setValue',
-          parameters: Type.Any(),
+          parameters: Type.Object({
+            key: Type.String(),
+            value: Type.Any(),
+          }),
         },
         {
           name: 'reset',

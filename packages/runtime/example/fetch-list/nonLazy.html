@@ -45,7 +45,10 @@
                         componentId: 'fetch_btn',
                         method: {
                           name: 'setValue',
-                          parameters: `{{ fetch_btn.token ? "":"01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2" }}`,
+                          parameters: {
+                            key: 'count',
+                            value: `{{ fetch_btn.token ? "":"01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2" }}`,
+                          },
                         },
                         wait: {},
                         disabled: false,

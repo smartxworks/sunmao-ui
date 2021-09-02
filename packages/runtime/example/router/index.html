@@ -139,7 +139,10 @@
                         componentId: 'router',
                         method: {
                           name: 'setValue',
-                          parameters: '{{router.index + 1}}',
+                          parameters: {
+                            key: 'index',
+                            value: '{{router.index + 1}}',
+                          },
                         },
                         wait: {},
                         disabled: false,
@@ -179,7 +182,10 @@
                         componentId: 'router',
                         method: {
                           name: 'setValue',
-                          parameters: '2',
+                          parameters: {
+                            key: 'index',
+                            value: '2',
+                          },
                         },
                         wait: {},
                         disabled: false,

@@ -53,8 +53,11 @@
                         componentId: 'del_btn',
                         method: {
                           name: 'setValue',
-                          parameters:
-                            '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
+                          parameters: {
+                            key: 'count',
+                            value:
+                              '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
+                          },
                         },
                         wait: {},
                         disabled: false,
@@ -64,7 +67,10 @@
                         componentId: 'del_btn',
                         method: {
                           name: 'setValue',
-                          parameters: '0',
+                          parameters: {
+                            key: 'count',
+                            value: '0',
+                          },
                         },
                         wait: {
                           type: 'delay',
