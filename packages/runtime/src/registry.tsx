@@ -29,6 +29,7 @@ import ChakraUIVStack from './components/chakra-ui/VStack';
 /* --- lab --- */
 import LabEditor from './components/lab/Editor';
 // traits
+import CoreArrayState from './traits/core/arrayState';
 import CoreState from './traits/core/state';
 import CoreEvent from './traits/core/event';
 import CoreSlot from './traits/core/slot';
@@ -150,6 +151,7 @@ registry.registerComponent(LabEditor);
 registry.registerComponent(CoreRouter);
 
 registry.registerTrait(CoreState);
+registry.registerTrait(CoreArrayState);
 registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reactive } from '@vue/reactivity';
 import { watch } from '@vue-reactivity/watch';
-import { LIST_ITEM_EXP } from './constants';
+import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from './constants';
 
 dayjs.extend(relativeTime);
 
@@ -50,7 +50,11 @@ function parseExpression(str: string, parseListItem = false): ExpChunk[] {
       };
       // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
       // unless explicitly pass parseListItem as true
-      if (!parseListItem && substr.includes(LIST_ITEM_EXP)) {
+      if (
+        (substr.includes(LIST_ITEM_EXP) ||
+          substr.includes(LIST_ITEM_INDEX_EXP)) &&
+        !parseListItem
+      ) {
         chunk.expression = `{{${substr}}}`;
         chunk.isDynamic = false;
       }

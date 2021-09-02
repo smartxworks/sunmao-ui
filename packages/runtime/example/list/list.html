@@ -58,7 +58,7 @@
                   },
                 },
                 {
-                  type: 'core/v1/state',
+                  type: 'core/v1/arrayState',
                   properties: {
                     key: 'listData',
                     initialValue: listdata,
@@ -208,10 +208,11 @@
                               event: 'click',
                               componentId: 'root',
                               method: {
-                                name: 'setValue',
+                                name: 'deleteItemById',
                                 parameters: {
                                   key: 'listData',
-                                  value: `{{ (root.listData || []).filter((item) => item.id !== $listItem.id)}}`,
+                                  itemIdKey: 'id',
+                                  itemId: '{{ $listItem.id }}',
                                 },
                               },
                               wait: {},
