@@ -38,10 +38,16 @@ const List: ComponentImplementation<{
   if (!listData) {
     return null;
   }
-
+  const itemElementMemo = useRef(new Map());
   const parsedtemplete = template.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
+    if (itemElementMemo.current.has(listItem.id)) {
+      if (itemElementMemo.current.get(listItem.id).value === listItem) {
+        return itemElementMemo.current.get(listItem.id).ele;
+      }
+    }
+
     const evaledTemplate = mapValuesDeep(
       { parsedtemplete },
       ({ value, key }) => {
@@ -69,11 +75,17 @@ const List: ComponentImplementation<{
       );
     });
 
-    return (
+    const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
         {componentElements}
       </BaseListItem>
     );
+
+    itemElementMemo.current.set(listItem.id, {
+      value: listItem,
+      ele: listItemEle,
+    });
+    return listItemEle;
   });
 
   return <BaseList>{listItems}</BaseList>;
