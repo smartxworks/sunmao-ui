@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   Application,
   createComponent,
@@ -6,11 +6,9 @@ import {
 } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
-import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../registry';
 import { ImplWrapper, resolveAppComponents } from '../../App';
 import { mapValuesDeep, maskedEval } from '../../store';
-import { values } from 'lodash';
 import { parseType } from '../../util-methods';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 
@@ -34,7 +32,7 @@ const List: ComponentImplementation<{
   listData: Static<typeof ListDataPropertySchema>;
   template: Static<typeof TemplatePropertySchema>;
   onClick?: () => void;
-}> = ({ listData, template, mergeState, subscribeMethods, app }) => {
+}> = ({ listData, template, app }) => {
   if (!listData) {
     return null;
   }
@@ -42,24 +40,22 @@ const List: ComponentImplementation<{
   const parsedtemplete = template.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
+    // this memo only diff listItem, dosen't compare expressions
     if (itemElementMemo.current.has(listItem.id)) {
       if (itemElementMemo.current.get(listItem.id).value === listItem) {
         return itemElementMemo.current.get(listItem.id).ele;
       }
     }
 
-    const evaledTemplate = mapValuesDeep(
-      { parsedtemplete },
-      ({ value, key }) => {
-        if (typeof value === 'string') {
-          return maskedEval(value, true, {
-            [LIST_ITEM_EXP]: listItem,
-            [LIST_ITEM_INDEX_EXP]: i,
-          });
-        }
-        return value;
+    const evaledTemplate = mapValuesDeep({ parsedtemplete }, ({ value }) => {
+      if (typeof value === 'string') {
+        return maskedEval(value, true, {
+          [LIST_ITEM_EXP]: listItem,
+          [LIST_ITEM_INDEX_EXP]: i,
+        });
       }
-    ).parsedtemplete;
+      return value;
+    }).parsedtemplete;
 
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
       evaledTemplate,
