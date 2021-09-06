@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import {
   RuntimeApplication,
   RuntimeComponent,
@@ -35,6 +35,7 @@ import CoreArrayState from './traits/core/arrayState';
 import CoreState from './traits/core/state';
 import CoreEvent from './traits/core/event';
 import CoreSlot from './traits/core/slot';
+import CoreStyle from './traits/core/style';
 import CoreHidden from './traits/core/hidden';
 import CoreFetch from './traits/core/fetch';
 import CoreValidation from './traits/core/validation';
@@ -60,8 +61,8 @@ export type ComponentMergedProps = {
   mergeState: MergeState;
   subscribeMethods: SubscribeMethods;
   slotsMap: SlotsMap | undefined;
-  style?: CSSProperties;
-  data?: Record<string, any>;
+  style?: Record<string, any>;
+  data?: Record<string, unknown>;
   callbackMap?: CallbackMap;
   app?: RuntimeApplication;
 };
@@ -73,7 +74,7 @@ export type ComponentImplementation<T = any> = React.FC<
 export type TraitResult = {
   props: {
     data?: unknown;
-    style?: CSSProperties;
+    style?: Record<string, any>;
     callbackMap?: CallbackMap;
   } | null;
 };
@@ -159,6 +160,7 @@ registry.registerTrait(CoreState);
 registry.registerTrait(CoreArrayState);
 registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
+registry.registerTrait(CoreStyle);
 registry.registerTrait(CoreHidden);
 registry.registerTrait(CoreFetch);
 registry.registerTrait(CoreValidation);
