@@ -61,6 +61,7 @@ export type ComponentMergedProps = {
   style?: CSSProperties;
   data?: Record<string, any>;
   callbackMap?: CallbackMap;
+  app?: RuntimeApplication;
 };
 
 export type ComponentImplementation<T = any> = React.FC<

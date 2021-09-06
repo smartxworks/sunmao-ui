@@ -26,8 +26,7 @@ import { globalHandlerMap } from './handler';
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-type ApplicationComponents = RuntimeApplication['spec']['components'];
-type ApplicationComponent = ApplicationComponents[0];
+type ApplicationComponent = RuntimeApplication['spec']['components'][0];
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
 export const ImplWrapper = React.forwardRef<
