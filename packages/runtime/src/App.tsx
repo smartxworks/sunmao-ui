@@ -68,6 +68,7 @@ export const ImplWrapper = React.forwardRef<
     apiService.on('uiMethod', handler);
     return () => {
       apiService.off('uiMethod', handler);
+      globalHandlerMap.delete(c.id);
     };
   }, []);
 
