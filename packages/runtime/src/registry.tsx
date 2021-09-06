@@ -46,20 +46,26 @@ type SubscribeMethods = <U>(
 ) => void;
 type MergeState = (partialState: any) => void;
 
+export type CallbackMap = Record<string, () => void>;
+
+export type ComponentMergedProps = {
+  mergeState: MergeState;
+  subscribeMethods: SubscribeMethods;
+  slotsMap: SlotsMap | undefined;
+  style?: CSSProperties;
+  data?: Record<string, any>;
+  callbackMap?: CallbackMap;
+};
+
 export type ComponentImplementation<T = any> = React.FC<
-  T & {
-    mergeState: MergeState;
-    subscribeMethods: SubscribeMethods;
-    slotsMap: SlotsMap | undefined;
-    style?: CSSProperties;
-    data?: Record<string, any>;
-  }
+  T & ComponentMergedProps
 >;
 
 export type TraitResult = {
   props: {
     data?: unknown;
     style?: CSSProperties;
+    callbackMap?: CallbackMap;
   } | null;
 };
 
