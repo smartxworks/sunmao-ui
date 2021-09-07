@@ -8,6 +8,7 @@ describe('parseExpression function', () => {
     expect(parseExpression('Hello, {{ value }}!')).toMatchObject([
       { expression: 'Hello, ', isDynamic: false },
       { expression: 'value', isDynamic: true },
+      { expression: '!', isDynamic: false },
     ]);
     expect(
       parseExpression('{{ $listItem.name }} is in {{ root.listTitle }} list')

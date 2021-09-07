@@ -70,7 +70,7 @@ export function parseExpression(
     }
   }
 
-  if (r > l) {
+  if (r >= l && l < str.length) {
     res.push({
       expression: str.substring(l, r + 1),
       isDynamic: false,
