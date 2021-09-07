@@ -141,13 +141,13 @@ registry.registerComponent(ChakraUITable);
 registry.registerComponent(ChakraUIInput);
 registry.registerComponent(ChakraUIBox);
 registry.registerComponent(ChakraUIKbd);
+registry.registerComponent(ChakraUIKList);
 registry.registerComponent(ChakraUINumberInput);
 registry.registerComponent(ChakraUICheckbox);
 registry.registerComponent(ChakraUICheckboxGroup);
 registry.registerComponent(ChakraUIStack);
 registry.registerComponent(ChakraUIHStack);
 registry.registerComponent(ChakraUIVStack);
-registry.registerComponent(ChakraUIKList);
 registry.registerComponent(LabEditor);
 registry.registerComponent(CoreRouter);
 
