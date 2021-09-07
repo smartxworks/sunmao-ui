@@ -1,6 +1,7 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
+import { stateStore } from '../../store';
 
 let hasFetched = false;
 
@@ -13,8 +14,20 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   body,
   mergeState,
   subscribeMethods,
+  componentId,
 }) => {
+  if (!stateStore[componentId][name]) {
+    mergeState({
+      [name]: {
+        loading: true,
+        data: undefined,
+        error: undefined,
+      },
+    });
+  }
+
   const lazy = undefined ? method.toLowerCase() !== 'get' : _lazy;
+
   const fetchData = () => {
     hasFetched = true;
     // before fetching, initial data
