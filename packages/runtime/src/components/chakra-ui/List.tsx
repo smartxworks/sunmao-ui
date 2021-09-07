@@ -9,8 +9,8 @@ import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import { ImplWrapper, resolveAppComponents } from '../../App';
 import { mapValuesDeep, maskedEval } from '../../store';
-import { parseType } from '../../util-methods';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
+import { parseType } from '../../utils/parseType';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]

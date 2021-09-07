@@ -22,8 +22,10 @@ function isNumeric(x: string | number) {
 }
 
 export const stateStore = reactive<Record<string, any>>({});
-
-function parseExpression(str: string, parseListItem = false): ExpChunk[] {
+export function parseExpression(
+  str: string,
+  parseListItem = false
+): ExpChunk[] {
   let l = 0;
   let r = 0;
   let isInBrackets = false;
