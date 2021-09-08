@@ -40,7 +40,7 @@ const Button: ComponentImplementation<{
   );
 };
 
-const ColorSchemePropertySchema = Type.Optional(
+export const ColorSchemePropertySchema = Type.Optional(
   Type.KeyOf(
     Type.Object({
       whiteAlpha: Type.String(),

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: list component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+      const listdata = [
+        {
+          id: 1,
+          name: '马云',
+          email: 'jack.ma@deck.com',
+        },
+        {
+          id: 2,
+          name: '马化腾',
+          email: 'pony.ma@conversation.com',
+        },
+        {
+          id: 3,
+          name: '李彦宏',
+          email: 'robin.li@response.com',
+        },
+        {
+          id: 4,
+          name: '张一鸣',
+          email: 'yiming.zhang@example.com',
+        },
+        {
+          id: 5,
+          name: '王兴',
+          email: 'xing.wang@widget.org',
+        },
+      ];
+
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'list_component',
+          description: 'list component example',
+        },
+        spec: {
+          components: [
+            // root component
+            {
+              id: 'root',
+              type: 'chakra_ui/v1/root',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'isAddItem',
+                    initialValue: false,
+                  },
+                },
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'editingId',
+                    initialValue: '',
+                  },
+                },
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'deleteId',
+                    initialValue: '',
+                  },
+                },
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'listTitle',
+                    initialValue: '客户列表',
+                  },
+                },
+                {
+                  type: 'core/v1/arrayState',
+                  properties: {
+                    key: 'listData',
+                    initialValue: listdata,
+                  },
+                },
+              ],
+            },
+            // list title
+            {
+              id: 'title',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '**{{root.listTitle}}**',
+                  format: 'md',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            // list component
+            {
+              id: 'list',
+              type: 'chakra_ui/v1/list',
+              properties: {
+                listData: '{{ root.listData }}',
+                template: [
+                  // list item
+                  {
+                    id: 'listItemTemplate-{{$listItem.id}}',
+                    type: 'chakra_ui/v1/hstack',
+                    properties: {
+                      spacing: '24px',
+                    },
+                    traits: [],
+                  },
+                  // name
+                  {
+                    id: 'listItemName-{{$listItem.id}}',
+                    type: 'core/v1/text',
+                    properties: {
+                      value: {
+                        raw: '姓名：{{$listItem.name}}',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: 'listItemTemplate-{{$listItem.id}}',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  // email
+                  {
+                    id: 'listItemEmail-{{$listItem.id}}',
+                    type: 'core/v1/text',
+                    properties: {
+                      value: {
+                        raw: 'email：{{$listItem.email}}',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: 'listItemTemplate-{{$listItem.id}}',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  // edit button
+                  {
+                    id: 'listItemButton-{{$listItem.id}}',
+                    type: 'chakra_ui/v1/button',
+                    properties: {
+                      text: {
+                        raw: '编辑',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/event',
+                        parsedType: {
+                          version: 'core/v1',
+                          name: 'event',
+                        },
+                        properties: {
+                          events: [
+                            // set root state of editingId
+                            {
+                              event: 'click',
+                              componentId: 'root',
+                              method: {
+                                name: 'setValue',
+                                parameters: {
+                                  key: 'editingId',
+                                  value: '{{ $listItem.id }}',
+                                },
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                            // set root state of isAddItem
+                            {
+                              event: 'click',
+                              componentId: 'root',
+                              method: {
+                                name: 'setValue',
+                                parameters: {
+                                  key: 'isAddItem',
+                                  value: false,
+                                }
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                            // open dialog and prop value
+                            {
+                              event: 'click',
+                              componentId: 'editDialog',
+                              method: {
+                                name: 'openDialog',
+                                parameters: {
+                                  title: '编辑信息',
+                                }
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                            // set name input value when delay 1, because nameInput component not mount when dialog opening
+                            {
+                              event: 'click',
+                              componentId: 'nameInput',
+                              method: {
+                                name: 'setInputValue',
+                                parameters: {
+                                  value: '{{ $listItem.name }}',
+                                },
+                              },
+                              wait: {
+                                type: 'delay',
+                                time: 1
+                              },
+                              disabled: 'false',
+                            },
+                            // set email input value when delay 1, because emailInput component not mount when dialog opening
+                            {
+                              event: 'click',
+                              componentId: 'emailInput',
+                              method: {
+                                name: 'setInputValue',
+                                parameters: {
+                                  value: '{{ $listItem.email }}',
+                                },
+                              },
+                              wait: {
+                                type: 'delay',
+                                time: 1
+                              },
+                              disabled: 'false',
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: 'listItemTemplate-{{$listItem.id}}',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  // delete button
+                  {
+                    id: 'listItemDelete-{{$listItem.id}}',
+                    type: 'chakra_ui/v1/button',
+                    properties: {
+                      text: {
+                        raw: '删除',
+                        format: 'plain',
+                      },
+                    },
+                    traits: [
+                      {
+                        type: 'core/v1/event',
+                        parsedType: {
+                          version: 'core/v1',
+                          name: 'event',
+                        },
+                        properties: {
+                          events: [
+                            // set delete id
+                            {
+                              event: 'click',
+                              componentId: 'root',
+                              method: {
+                                name: 'setValue',
+                                parameters: {
+                                  key: 'deleteId',
+                                  value: '{{ $listItem.id }}',
+                                },
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                            // open dialog and prop value
+                            {
+                              event: 'click',
+                              componentId: 'deleteDialog',
+                              method: {
+                                name: 'openDialog',
+                                parameters: {
+                                  title: '删除信息',
+                                }
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                            // set delete info value
+                            {
+                              event: 'click',
+                              componentId: 'deleteDialog',
+                              method: {
+                                name: 'setValue',
+                                parameters: {
+                                  key: 'deleteContent',
+                                  value: '是否确认删除『{{ $listItem.name }}: {{ $listItem.email }}』',
+                                },
+                              },
+                              wait: {
+                                type: 'delay',
+                                time: 1
+                              },
+                              disabled: 'false',
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        type: 'core/v1/slot',
+                        properties: {
+                          container: {
+                            id: 'listItemTemplate-{{$listItem.id}}',
+                            slot: 'content',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            // edit dialog
+            {
+              id: 'editDialog',
+              type: 'chakra_ui/v1/dialog',
+              properties: {
+                title: 'This is a dialog',
+                confirmButton: {
+                  text: 'save',
+                  colorScheme: 'purple'
+                },
+                cancelButton: {
+                  text: 'cancel'
+                }
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                // dialog events
+                {
+                  type: 'core/v1/event',
+                  parsedType: {
+                    version: 'core/v1',
+                    name: 'event',
+                  },
+                  properties: {
+                    events: [
+                      // when click confirm
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'editDialog',
+                        method: {
+                          name: 'confirmDialog'
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'listData',
+                            value: `{{
+                              (function() {
+                                const list = [...root.listData || []]
+                                if (typeof nameInput !== "undefined" && typeof emailInput !== "undefined") {
+                                  if (root.isAddItem) {
+                                    list.push({
+                                      id: Date.now(),
+                                      name: nameInput.value,
+                                      email: emailInput.value
+                                    })
+                                  } else {
+                                    let index = list.findIndex((item) => item.id == root.editingId)
+                                    list[index] = {
+                                      ...list[index],
+                                      name: nameInput.value,
+                                      email: emailInput.value
+                                    }
+                                  }
+                                }
+                                return list
+                              })()
+                            }}`,
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      // when cancel dialog
+                      {
+                        event: 'cancelDialog',
+                        componentId: 'editDialog',
+                        method: {
+                          name: 'cancelDialog'
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ]
+                  }
+                },
+              ],
+            },
+            // name input component
+            {
+              id: 'nameInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                left: {
+                  type: 'addon',
+                  children: '姓名',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'editDialog',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            // email input component
+            {
+              id: 'emailInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                left: {
+                  type: 'addon',
+                  children: '邮箱',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'editDialog',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            // delete dialog
+            {
+              id: 'deleteDialog',
+              type: 'chakra_ui/v1/dialog',
+              properties: {
+                title: 'This is a dialog',
+                confirmButton: {
+                  text: '确定'
+                },
+                cancelButton: {
+                  text: '取消'
+                }
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'deleteContent',
+                    initialValue: '',
+                  },
+                },
+                // dialog events
+                {
+                  type: 'core/v1/event',
+                  parsedType: {
+                    version: 'core/v1',
+                    name: 'event',
+                  },
+                  properties: {
+                    events: [
+                      // when confirm dialog
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'deleteDialog',
+                        method: {
+                          name: 'confirmDialog'
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'root',
+                        method: {
+                          name: 'deleteItemById',
+                          parameters: {
+                            key: 'listData',
+                            itemIdKey: 'id',
+                            itemId: '{{ root.deleteId }}',
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      // when cancel dialog
+                      {
+                        event: 'cancelDialog',
+                        componentId: 'deleteDialog',
+                        method: {
+                          name: 'cancelDialog'
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ]
+                  }
+                }
+              ],
+            },
+            // delete content component
+            {
+              id: 'deleteContent',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '**{{deleteDialog.deleteContent}}**',
+                  format: 'md',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'deleteDialog',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            // add button
+            {
+              id: 'addButton',
+              type: 'chakra_ui/v1/button',
+              properties: {
+                text: {
+                  raw: '添加客户',
+                  format: 'plain',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/event',
+                  parsedType: {
+                    version: 'core/v1',
+                    name: 'event',
+                  },
+                  properties: {
+                    events: [
+                      // open dialog and prop value
+                      {
+                        event: 'click',
+                        componentId: 'editDialog',
+                        method: {
+                          name: 'openDialog',
+                          parameters: {
+                            title: '添加客户',
+                          }
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      // set root state of isAddItem
+                      {
+                        event: 'click',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'isAddItem',
+                            value: true,
+                          }
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ],
+                  },
+                },
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
