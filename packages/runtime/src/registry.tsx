@@ -15,7 +15,7 @@ import CoreRouter from './components/core/Router';
 import ChakraUIRoot from './components/chakra-ui/Root';
 import ChakraUIButton from './components/chakra-ui/Button';
 import ChakraUITabs from './components/chakra-ui/Tabs';
-import ChakraUITable from './components/chakra-ui/Table';
+import ChakraUITable from './components/chakra-ui/Table/Table';
 import ChakraUIInput from './components/chakra-ui/Input';
 import ChakraUIBox from './components/chakra-ui/Box';
 import ChakraUIKbd from './components/chakra-ui/Kbd';
