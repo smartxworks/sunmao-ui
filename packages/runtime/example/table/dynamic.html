@@ -30,6 +30,22 @@
               properties: {
                 size: 'sm',
                 data: '{{ table.query.data }}',
+                majorKey: 'id',
+                rowsPerPage: 5,
+                columns: [
+                  {
+                    key: 'id',
+                    title: 'ID',
+                  },
+                  {
+                    key: 'title',
+                    title: 'Title',
+                  },
+                  {
+                    key: 'body',
+                    title: 'Content',
+                  },
+                ],
               },
               traits: [
                 {
