@@ -1,9 +1,10 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
+import { globalHandlerMap } from '../../handler';
 import { TraitImplementation } from '../../registry';
 import { stateStore } from '../../store';
 
-let hasFetched = false;
+let hasFetchedMap = new Map<string, boolean>();
 
 const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   name,
@@ -15,7 +16,9 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   mergeState,
   subscribeMethods,
   componentId,
+  onComplete,
 }) => {
+  // initial data
   if (!stateStore[componentId][name]) {
     mergeState({
       [name]: {
@@ -25,19 +28,13 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
       },
     });
   }
-
+  const hashId = `#${componentId}@${name}`;
+  const hasFetched = hasFetchedMap.get(hashId);
   const lazy = undefined ? method.toLowerCase() !== 'get' : _lazy;
 
   const fetchData = () => {
-    hasFetched = true;
-    // before fetching, initial data
-    mergeState({
-      [name]: {
-        loading: true,
-        data: undefined,
-        error: undefined,
-      },
-    });
+    // TODO: clear when component destory
+    hasFetchedMap.set(hashId, true);
     // FIXME: listen to the header change
     const headers = new Headers();
     if (_headers) {
@@ -46,11 +43,12 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
         headers.append(header.key, _headers[i].value);
       }
     }
+
     // fetch data
     fetch(url, {
       method,
       headers,
-      body,
+      body: JSON.stringify(body),
     }).then(
       async response => {
         if (response.ok) {
@@ -62,6 +60,12 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
               data,
               error: undefined,
             },
+          });
+          onComplete?.forEach(event => {
+            const hanlderMap = globalHandlerMap.get(event.componentId);
+            if (hanlderMap) {
+              hanlderMap[event.method.name](event.method.parameters);
+            }
           });
         } else {
           // TODO: Add FetchError class and remove console info
@@ -96,16 +100,13 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
     fetchData();
   }
 
-  // only subscribe non lazy fetch trait
-  if (lazy) {
-    subscribeMethods({
-      triggerFetch(key) {
-        if (key === name) {
-          fetchData();
-        }
-      },
-    });
-  }
+  subscribeMethods({
+    triggerFetch(key) {
+      if (key === name) {
+        fetchData();
+      }
+    },
+  });
 
   return {
     props: null,
@@ -120,6 +121,15 @@ const HeaderPropertySchema = Type.Array(
   Type.Object({ key: Type.String(), value: Type.String() })
 );
 const BodyPropertySchema = Type.Any(); // Type.String()?
+const OnCompletePropertySchema = Type.Array(
+  Type.Object({
+    componentId: Type.String(),
+    method: Type.Object({
+      name: Type.String(),
+      parameters: Type.Any(),
+    }),
+  })
+);
 
 type FetchPropertySchema = {
   name: Static<typeof NamePropertySchema>;
@@ -128,6 +138,7 @@ type FetchPropertySchema = {
   lazy?: Static<typeof LazyPropertySchema>;
   headers?: Static<typeof HeaderPropertySchema>;
   body?: Static<typeof BodyPropertySchema>;
+  onComplete?: Static<typeof OnCompletePropertySchema>;
 };
 
 export default {
