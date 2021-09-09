@@ -11,6 +11,7 @@ import PlainButton from './components/plain/Button';
 import CoreText from './components/core/Text';
 import CoreGridLayout from './components/core/GridLayout';
 import CoreRouter from './components/core/Router';
+import CoreDummy from './components/core/Dummy';
 /* --- chakra-ui --- */
 import ChakraUIRoot from './components/chakra-ui/Root';
 import ChakraUIButton from './components/chakra-ui/Button';
@@ -159,6 +160,7 @@ registry.registerComponent(ChakraUIDialog);
 registry.registerComponent(ChakraUISelect);
 registry.registerComponent(LabEditor);
 registry.registerComponent(CoreRouter);
+registry.registerComponent(CoreDummy);
 
 registry.registerTrait(CoreState);
 registry.registerTrait(CoreArrayState);
