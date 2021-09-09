@@ -1,57 +1,35 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import {
-  Table as BaseTable,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  Button,
-} from '@chakra-ui/react';
-import { ComponentImplementation } from '../../../registry';
-import { createComponent } from '@meta-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Table as BaseTable, Thead, Tr, Th, Tbody } from '@chakra-ui/react';
+import { Static } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
-import { apiService } from '../../../api-service';
-
-function normalizeData(data: Static<typeof DataPropertySchema>): {
-  normalizedData: Array<Record<string, string>>;
-  keys: string[];
-} {
-  const normalizedData: Array<Record<string, string>> = [];
-  const keys = new Set<string>();
-  for (const item of data) {
-    if (typeof data !== 'object') {
-      normalizedData.push({});
-    } else {
-      normalizedData.push(item);
-      Object.keys(item).forEach(key => keys.add(key));
-    }
-  }
-  return {
-    normalizedData,
-    keys: Array.from(keys),
-  };
-}
+import { ComponentImplementation } from '../../../registry';
+import {
+  ColumnsPropertySchema,
+  DataPropertySchema,
+  MajorKeyPropertySchema,
+  RowsPerPagePropertySchema,
+  TableSizePropertySchema,
+} from './TableTypes';
+import { TableTd } from './Td';
 
 type SortRule = {
   key: string;
   desc: boolean;
 };
 
-const Table: ComponentImplementation<{
+export const TableImpl: ComponentImplementation<{
   data?: Static<typeof DataPropertySchema>;
   majorKey: Static<typeof MajorKeyPropertySchema>;
   rowsPerPage: Static<typeof RowsPerPagePropertySchema>;
-  size: Static<typeof SizePropertySchema>;
+  size: Static<typeof TableSizePropertySchema>;
   columns: Static<typeof ColumnsPropertySchema>;
 }> = ({ data, majorKey, rowsPerPage, size, columns, mergeState }) => {
   if (!data) {
     return <div>loading</div>;
   }
 
-  const { normalizedData } = normalizeData(data);
+  const normalizedData = data;
   const [selectedItem, setSelectedItem] = useState<Record<string, string>>();
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [sortRule, setSortRule] = useState<SortRule | undefined>();
@@ -132,118 +110,4 @@ const Table: ComponentImplementation<{
       />
     </div>
   );
-};
-
-const TableTd: React.FC<{
-  item: any;
-  column: Static<typeof ColumnSchema>;
-  onClickItem: () => void;
-}> = props => {
-  const { item, column, onClickItem } = props;
-  switch (column.type) {
-    case 'image':
-      return (
-        <Td>
-          <img src={item[column.key]} />
-        </Td>
-      );
-    case 'button':
-      const onClick = () => {
-        onClickItem();
-        column.buttonConfig.events.forEach(event => {
-          apiService.send('uiMethod', {
-            componentId: event.componentId,
-            name: event.method.name,
-            parameters: event.method.parameters,
-          });
-        });
-      };
-      return (
-        <Td>
-          <Button onClick={onClick}>{column.buttonConfig.text}</Button>
-        </Td>
-      );
-
-    default:
-      return <Td>{item[column.key]}</Td>;
-  }
-};
-
-const MajorKeyPropertySchema = Type.String();
-const RowsPerPagePropertySchema = Type.Number();
-const DataPropertySchema = Type.Array(Type.Any());
-const SizePropertySchema = Type.KeyOf(
-  Type.Object({
-    sm: Type.String(),
-    md: Type.String(),
-    lg: Type.String(),
-  })
-);
-
-const TdTypeSchema = Type.KeyOf(
-  Type.Object({
-    text: Type.String(),
-    image: Type.String(),
-    button: Type.String(),
-  })
-);
-const ColumnSchema = Type.Object({
-  key: Type.String(),
-  title: Type.String(),
-  // displayValue: Type.String(),
-  type: TdTypeSchema,
-  buttonConfig: Type.Object({
-    text: Type.String(),
-    events: Type.Array(
-      Type.Object({
-        componentId: Type.String(),
-        method: Type.Object({
-          name: Type.String(),
-          parameters: Type.Any(),
-        }),
-      })
-    ),
-  }),
-});
-
-const ColumnsPropertySchema = Type.Array(ColumnSchema);
-
-const StateSchema = Type.Object({});
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'table',
-      description: 'chakra-ui table',
-    },
-    spec: {
-      properties: [
-        {
-          name: 'data',
-          ...DataPropertySchema,
-        },
-        {
-          name: 'marjorKey',
-          ...MajorKeyPropertySchema,
-        },
-        {
-          name: 'rowsPerPage',
-          ...RowsPerPagePropertySchema,
-        },
-        {
-          name: 'size',
-          ...SizePropertySchema,
-        },
-        {
-          name: 'columns',
-          ...ColumnsPropertySchema,
-        },
-      ],
-      acceptTraits: [],
-      state: StateSchema,
-      methods: [],
-    },
-  }),
-  impl: Table,
 };

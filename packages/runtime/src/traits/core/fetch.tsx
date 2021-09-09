@@ -2,12 +2,10 @@ import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { apiService } from '../../api-service';
 import { TraitImplementation } from '../../registry';
-import { stateStore } from '../../store';
 
 let hasFetchedMap = new Map<string, boolean>();
 
 const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
-  name,
   url,
   method,
   lazy: _lazy,
@@ -18,17 +16,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   componentId,
   onComplete,
 }) => {
-  // initial data
-  if (!stateStore[componentId][name]) {
-    mergeState({
-      [name]: {
-        loading: true,
-        data: undefined,
-        error: undefined,
-      },
-    });
-  }
-  const hashId = `#${componentId}@${name}`;
+  const hashId = `#${componentId}@${'fetch'}`;
   const hasFetched = hasFetchedMap.get(hashId);
   const lazy = undefined ? method.toLowerCase() !== 'get' : _lazy;
 
@@ -55,7 +43,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
           // handle 20x/30x
           const data = await response.json();
           mergeState({
-            [name]: {
+            fetch: {
               loading: false,
               data,
               error: undefined,
@@ -75,7 +63,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
           );
           console.warn(error);
           mergeState({
-            [name]: {
+            fetch: {
               loading: false,
               data: undefined,
               error,
@@ -86,7 +74,7 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
       async error => {
         console.warn(error);
         mergeState({
-          [name]: {
+          fetch: {
             loading: false,
             data: undefined,
             error: error instanceof Error ? error : new Error(error),
@@ -102,10 +90,8 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   }
 
   subscribeMethods({
-    triggerFetch(key) {
-      if (key === name) {
-        fetchData();
-      }
+    triggerFetch() {
+      fetchData();
     },
   });
 
@@ -114,7 +100,6 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   };
 };
 
-const NamePropertySchema = Type.String();
 const UrlPropertySchema = Type.String(); // {format:uri}?;
 const MethodPropertySchema = Type.String(); // {pattern: /^(get|post|put|delete)$/i}
 const LazyPropertySchema = Type.Boolean();
@@ -133,7 +118,6 @@ const OnCompletePropertySchema = Type.Array(
 );
 
 type FetchPropertySchema = {
-  name: Static<typeof NamePropertySchema>;
   url: Static<typeof UrlPropertySchema>;
   method: Static<typeof MethodPropertySchema>;
   lazy?: Static<typeof LazyPropertySchema>;
@@ -151,10 +135,6 @@ export default {
     },
     spec: {
       properties: [
-        {
-          name: 'name',
-          ...NamePropertySchema,
-        },
         {
           name: 'url',
           ...UrlPropertySchema,
@@ -176,7 +156,13 @@ export default {
           ...BodyPropertySchema,
         },
       ],
-      state: {},
+      state: Type.Object({
+        fetch: Type.Object({
+          loading: Type.Boolean(),
+          data: Type.Any(),
+          error: Type.Any(),
+        }),
+      }),
       methods: [],
     },
   }),
