@@ -1,10 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import { Table as BaseTable, Thead, Tr, Th, Tbody, Td } from '@chakra-ui/react';
+import {
+  Table as BaseTable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  Button,
+} from '@chakra-ui/react';
 import { ComponentImplementation } from '../../../registry';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
+import { apiService } from '../../../api-service';
 
 function normalizeData(data: Static<typeof DataPropertySchema>): {
   normalizedData: Array<Record<string, string>>;
@@ -59,7 +68,7 @@ const Table: ComponentImplementation<{
     currentPage * rowsPerPage + rowsPerPage
   );
 
-  const onClickRow = useCallback(
+  const onClickItem = useCallback(
     item => {
       setSelectedItem(item);
       mergeState({ selectedItem: item });
@@ -102,9 +111,14 @@ const Table: ComponentImplementation<{
               <Tr
                 key={item[majorKey]}
                 bgColor={isSelected ? 'gray' : undefined}
-                onClick={() => onClickRow(item)}>
-                {columns.map(({ key }) => (
-                  <Td key={key}>{item[key] ?? '-'}</Td>
+                onClick={() => onClickItem(item)}>
+                {columns.map(column => (
+                  <TableTd
+                    key={column.key}
+                    item={item}
+                    column={column}
+                    onClickItem={() => onClickItem(item)}
+                  />
                 ))}
               </Tr>
             );
@@ -120,6 +134,41 @@ const Table: ComponentImplementation<{
   );
 };
 
+const TableTd: React.FC<{
+  item: any;
+  column: Static<typeof ColumnSchema>;
+  onClickItem: () => void;
+}> = props => {
+  const { item, column, onClickItem } = props;
+  switch (column.type) {
+    case 'image':
+      return (
+        <Td>
+          <img src={item[column.key]} />
+        </Td>
+      );
+    case 'button':
+      const onClick = () => {
+        onClickItem();
+        column.buttonConfig.events.forEach(event => {
+          apiService.send('uiMethod', {
+            componentId: event.componentId,
+            name: event.method.name,
+            parameters: event.method.parameters,
+          });
+        });
+      };
+      return (
+        <Td>
+          <Button onClick={onClick}>{column.buttonConfig.text}</Button>
+        </Td>
+      );
+
+    default:
+      return <Td>{item[column.key]}</Td>;
+  }
+};
+
 const MajorKeyPropertySchema = Type.String();
 const RowsPerPagePropertySchema = Type.Number();
 const DataPropertySchema = Type.Array(Type.Any());
@@ -130,14 +179,34 @@ const SizePropertySchema = Type.KeyOf(
     lg: Type.String(),
   })
 );
-const ColumnsPropertySchema = Type.Array(
+
+const TdTypeSchema = Type.KeyOf(
   Type.Object({
-    key: Type.String(),
-    title: Type.String(),
-    // displayValue: Type.String(),
-    // type: Type.String(),// text,image,button...
+    text: Type.String(),
+    image: Type.String(),
+    button: Type.String(),
   })
 );
+const ColumnSchema = Type.Object({
+  key: Type.String(),
+  title: Type.String(),
+  // displayValue: Type.String(),
+  type: TdTypeSchema,
+  buttonConfig: Type.Object({
+    text: Type.String(),
+    events: Type.Array(
+      Type.Object({
+        componentId: Type.String(),
+        method: Type.Object({
+          name: Type.String(),
+          parameters: Type.Any(),
+        }),
+      })
+    ),
+  }),
+});
+
+const ColumnsPropertySchema = Type.Array(ColumnSchema);
 
 const StateSchema = Type.Object({});
 

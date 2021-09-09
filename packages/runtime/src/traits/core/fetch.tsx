@@ -1,6 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { globalHandlerMap } from '../../handler';
+import { apiService } from '../../api-service';
 import { TraitImplementation } from '../../registry';
 import { stateStore } from '../../store';
 
@@ -62,10 +62,11 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
             },
           });
           onComplete?.forEach(event => {
-            const hanlderMap = globalHandlerMap.get(event.componentId);
-            if (hanlderMap) {
-              hanlderMap[event.method.name](event.method.parameters);
-            }
+            apiService.send('uiMethod', {
+              componentId: event.componentId,
+              name: event.method.name,
+              parameters: event.method.parameters,
+            });
           });
         } else {
           // TODO: Add FetchError class and remove console info
