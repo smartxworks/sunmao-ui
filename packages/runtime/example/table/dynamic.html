@@ -29,21 +29,51 @@
               type: 'chakra_ui/v1/table',
               properties: {
                 size: 'sm',
-                data: '{{ table.query.data }}',
+                data: '{{ table.fetchUsersQuery.data }}',
                 majorKey: 'id',
                 rowsPerPage: 5,
                 columns: [
                   {
                     key: 'id',
                     title: 'ID',
+                    type: 'text',
                   },
                   {
-                    key: 'title',
-                    title: 'Title',
+                    key: 'name',
+                    title: 'Name',
+                    type: 'text',
                   },
                   {
-                    key: 'body',
-                    title: 'Content',
+                    key: 'avatar',
+                    title: 'Avatar',
+                    type: 'image',
+                  },
+                  {
+                    key: 'company',
+                    title: 'Company',
+                    type: 'text',
+                  },
+                  {
+                    key: 'email',
+                    title: 'Email',
+                    type: 'text',
+                  },
+                  {
+                    key: 'operation',
+                    title: 'Operation',
+                    type: 'button',
+                    buttonConfig: {
+                      text: 'Delete',
+                      events: [
+                        {
+                          componentId: 'table',
+                          method: {
+                            name: 'triggerFetch',
+                            parameters: 'deleteUserQuery',
+                          },
+                        },
+                      ],
+                    },
                   },
                 ],
               },
@@ -60,10 +90,30 @@
                 {
                   type: 'core/v1/fetch',
                   properties: {
-                    name: 'query',
-                    url: 'https://jsonplaceholder.typicode.com/posts?userId=1',
+                    name: 'fetchUsersQuery',
+                    url: 'https://61373521eac1410017c18209.mockapi.io/users',
                     method: 'get',
                     lazy: false,
+                  },
+                },
+                {
+                  type: 'core/v1/fetch',
+                  properties: {
+                    name: 'deleteUserQuery',
+                    url: 'https://61373521eac1410017c18209.mockapi.io/users/{{ table.selectedItem ? table.selectedItem.id : "" }}',
+                    method: 'delete',
+                    lazy: true,
+                    onComplete: [
+                      {
+                        componentId: 'table',
+                        method: {
+                          name: 'triggerFetch',
+                          parameters: 'fetchUsersQuery',
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ],
                   },
                 },
               ],
