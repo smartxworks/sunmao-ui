@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { sortBy } from 'lodash';
 import { Table as BaseTable, Thead, Tr, Th, Tbody, Td } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../../registry';
 import { createComponent } from '@meta-ui/core';
@@ -25,6 +26,11 @@ function normalizeData(data: Static<typeof DataPropertySchema>): {
   };
 }
 
+type SortRule = {
+  key: string;
+  desc: boolean;
+};
+
 const Table: ComponentImplementation<{
   data?: Static<typeof DataPropertySchema>;
   majorKey: Static<typeof MajorKeyPropertySchema>;
@@ -39,9 +45,16 @@ const Table: ComponentImplementation<{
   const { normalizedData } = normalizeData(data);
   const [selectedItem, setSelectedItem] = useState<Record<string, string>>();
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [sortRule, setSortRule] = useState<SortRule | undefined>();
   const pageNumber = Math.ceil(data.length / rowsPerPage);
-  console.log('currentPage', currentPage);
-  const currentPageData = normalizedData.slice(
+
+  const sortedData = useMemo(() => {
+    if (!sortRule) return normalizedData;
+    const sorted = sortBy(normalizedData, sortRule.key);
+    return sortRule.desc ? sorted.reverse() : sorted;
+  }, [sortRule, normalizedData]);
+
+  const currentPageData = sortedData.slice(
     currentPage * rowsPerPage,
     currentPage * rowsPerPage + rowsPerPage
   );
@@ -59,9 +72,26 @@ const Table: ComponentImplementation<{
       <BaseTable size={size}>
         <Thead>
           <Tr>
-            {columns.map(({ title, key }) => (
-              <Th key={key}>{title}</Th>
-            ))}
+            {columns.map(({ title, key }) => {
+              let sortArrow;
+              if (sortRule && sortRule.key === key) {
+                sortArrow = sortRule.desc ? '⬇️' : '⬆️';
+              }
+
+              const onClick = () => {
+                if (sortRule && sortRule.key === key) {
+                  setSortRule({ key, desc: !sortRule.desc });
+                } else {
+                  setSortRule({ key, desc: true });
+                }
+              };
+              return (
+                <Th key={key} onClick={onClick}>
+                  {title}
+                  {sortArrow}
+                </Th>
+              );
+            })}
           </Tr>
         </Thead>
         <Tbody>
