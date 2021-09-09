@@ -54,14 +54,21 @@
                 {
                   type: 'core/v1/state',
                   properties: {
-                    key: 'isAddItem',
-                    initialValue: false,
+                    key: 'editingId',
+                    initialValue: '',
                   },
                 },
                 {
                   type: 'core/v1/state',
                   properties: {
-                    key: 'editingId',
+                    key: 'nameInputInitialValue',
+                    initialValue: '',
+                  },
+                },
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'emailInputInitialValue',
                     initialValue: '',
                   },
                 },
@@ -203,16 +210,30 @@
                               wait: {},
                               disabled: 'false',
                             },
-                            // set root state of isAddItem
+                            // set root state of nameInputInitialValue
                             {
                               event: 'click',
                               componentId: 'root',
                               method: {
                                 name: 'setValue',
                                 parameters: {
-                                  key: 'isAddItem',
-                                  value: false,
-                                }
+                                  key: 'nameInputInitialValue',
+                                  value: '{{ $listItem.name }}',
+                                },
+                              },
+                              wait: {},
+                              disabled: 'false',
+                            },
+                            // set root state of emailInputInitialValue
+                            {
+                              event: 'click',
+                              componentId: 'root',
+                              method: {
+                                name: 'setValue',
+                                parameters: {
+                                  key: 'emailInputInitialValue',
+                                  value: '{{ $listItem.email }}',
+                                },
                               },
                               wait: {},
                               disabled: 'false',
@@ -228,38 +249,6 @@
                                 }
                               },
                               wait: {},
-                              disabled: 'false',
-                            },
-                            // set name input value when delay 1, because nameInput component not mount when dialog opening
-                            {
-                              event: 'click',
-                              componentId: 'nameInput',
-                              method: {
-                                name: 'setInputValue',
-                                parameters: {
-                                  value: '{{ $listItem.name }}',
-                                },
-                              },
-                              wait: {
-                                type: 'delay',
-                                time: 1
-                              },
-                              disabled: 'false',
-                            },
-                            // set email input value when delay 1, because emailInput component not mount when dialog opening
-                            {
-                              event: 'click',
-                              componentId: 'emailInput',
-                              method: {
-                                name: 'setInputValue',
-                                parameters: {
-                                  value: '{{ $listItem.email }}',
-                                },
-                              },
-                              wait: {
-                                type: 'delay',
-                                time: 1
-                              },
                               disabled: 'false',
                             },
                           ],
@@ -421,25 +410,44 @@
                               (function() {
                                 const list = [...root.listData || []]
                                 if (typeof nameInput !== "undefined" && typeof emailInput !== "undefined") {
-                                  if (root.isAddItem) {
-                                    list.push({
-                                      id: Date.now(),
-                                      name: nameInput.value,
-                                      email: emailInput.value
-                                    })
-                                  } else {
-                                    let index = list.findIndex((item) => item.id == root.editingId)
-                                    list[index] = {
-                                      ...list[index],
-                                      name: nameInput.value,
-                                      email: emailInput.value
-                                    }
+                                  let index = list.findIndex((item) => item.id == root.editingId)
+                                  list[index] = {
+                                    ...list[index],
+                                    name: nameInput.value,
+                                    email: emailInput.value
                                   }
                                 }
                                 return list
                               })()
                             }}`,
                           },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      // reset initialValue
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'nameInputInitialValue',
+                            value: '',
+                          }
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'emailInputInitialValue',
+                            value: '',
+                          }
                         },
                         wait: {},
                         disabled: 'false',
@@ -468,6 +476,7 @@
                   type: 'addon',
                   children: '姓名',
                 },
+                initialValue: '{{ root.nameInputInitialValue }}'
               },
               traits: [
                 {
@@ -490,6 +499,7 @@
                   type: 'addon',
                   children: '邮箱',
                 },
+                initialValue: '{{ root.emailInputInitialValue }}'
               },
               traits: [
                 {
@@ -625,26 +635,9 @@
                       // open dialog and prop value
                       {
                         event: 'click',
-                        componentId: 'editDialog',
+                        componentId: 'createDialog',
                         method: {
                           name: 'openDialog',
-                          parameters: {
-                            title: '添加客户',
-                          }
-                        },
-                        wait: {},
-                        disabled: 'false',
-                      },
-                      // set root state of isAddItem
-                      {
-                        event: 'click',
-                        componentId: 'root',
-                        method: {
-                          name: 'setValue',
-                          parameters: {
-                            key: 'isAddItem',
-                            value: true,
-                          }
                         },
                         wait: {},
                         disabled: 'false',
@@ -658,6 +651,135 @@
                     container: {
                       id: 'root',
                       slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            // create dialog
+            {
+              id: 'createDialog',
+              type: 'chakra_ui/v1/dialog',
+              properties: {
+                title: 'This is a dialog',
+                confirmButton: {
+                  text: 'save',
+                  colorScheme: 'purple'
+                },
+                cancelButton: {
+                  text: 'cancel'
+                }
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                // dialog events
+                {
+                  type: 'core/v1/event',
+                  parsedType: {
+                    version: 'core/v1',
+                    name: 'event',
+                  },
+                  properties: {
+                    events: [
+                      // when click confirm
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'createDialog',
+                        method: {
+                          name: 'confirmDialog'
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'confirmDialog',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'listData',
+                            value: `{{
+                              (function() {
+                                const list = [...root.listData || []]
+                                if (typeof createNameInput !== "undefined" && typeof createEmailInput !== "undefined") {
+                                  list.push({
+                                    id: Date.now(),
+                                    name: createNameInput.value,
+                                    email: createEmailInput.value
+                                  })
+                                }
+                                return list
+                              })()
+                            }}`,
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      // when cancel dialog
+                      {
+                        event: 'cancelDialog',
+                        componentId: 'createDialog',
+                        method: {
+                          name: 'cancelDialog'
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ]
+                  }
+                },
+              ],
+            },
+            // create name input component
+            {
+              id: 'createNameInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                left: {
+                  type: 'addon',
+                  children: '姓名',
+                },
+                initialValue: ''
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'createDialog',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            // create email input component
+            {
+              id: 'createEmailInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                left: {
+                  type: 'addon',
+                  children: '邮箱',
+                },
+                initialValue: ''
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'createDialog',
+                      slot: 'content',
                     },
                   },
                 },
