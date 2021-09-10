@@ -7,7 +7,6 @@ import {
   Static,
   StringKind,
   TSchema,
-  TypeBuilder,
 } from '@sinclair/typebox';
 import { RuntimeApplication } from '../../../core/typings';
 import { registry } from '../registry';

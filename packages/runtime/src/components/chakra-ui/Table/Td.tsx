@@ -3,6 +3,8 @@ import { Static } from '@sinclair/typebox';
 import { apiService } from '../../../api-service';
 import { ColumnSchema } from './TableTypes';
 import { Button, Td } from '@chakra-ui/react';
+import { maskedEval } from '../../../store';
+import { LIST_ITEM_EXP } from '../../../constants';
 
 export const TableTd: React.FC<{
   item: any;
@@ -10,11 +12,17 @@ export const TableTd: React.FC<{
   onClickItem: () => void;
 }> = props => {
   const { item, column, onClickItem } = props;
+  let value = item[column.key];
+
+  if (column.displayValue) {
+    value = maskedEval(column.displayValue, true, { [LIST_ITEM_EXP]: item });
+  }
+
   switch (column.type) {
     case 'image':
       return (
         <Td>
-          <img src={item[column.key]} />
+          <img src={value} />
         </Td>
       );
     case 'button':
@@ -35,6 +43,6 @@ export const TableTd: React.FC<{
       );
 
     default:
-      return <Td>{item[column.key]}</Td>;
+      return <Td>{value}</Td>;
   }
 };
