@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { createComponent } from "@meta-ui/core";
-import { Static, Type } from "@sinclair/typebox";
-import { CheckboxGroup as BaseCheckboxGroup } from "@chakra-ui/react";
-import { ComponentImplementation } from "../../registry";
-import Slot from "../_internal/Slot";
-import {
-  ColorSchemePropertySchema,
-  SizePropertySchema,
-  IsDisabledSchema,
-} from "./Checkbox";
+import React, { useState, useEffect } from 'react';
+import { createComponent } from '@meta-ui/core';
+import { Static, Type } from '@sinclair/typebox';
+import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../registry';
+import Slot from '../_internal/Slot';
+import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
+import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const DefaultValueSchema = Type.Optional(
   Type.Array(Type.Union([Type.String(), Type.Number()]))
@@ -38,8 +35,7 @@ const CheckboxGroup: ComponentImplementation<{
       size={size}
       defaultValue={defaultValue}
       isDisabled={isDisabled}
-      onChange={(val) => setValue(val)}
-    >
+      onChange={val => setValue(val)}>
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseCheckboxGroup>
   );
@@ -47,27 +43,27 @@ const CheckboxGroup: ComponentImplementation<{
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "checkbox_group",
-      description: "chakra-ui checkbox group",
+      name: 'checkbox_group',
+      description: 'chakra-ui checkbox group',
     },
     spec: {
       properties: [
         {
-          name: "colorScheme",
+          name: 'colorScheme',
           ...ColorSchemePropertySchema,
         },
         {
-          name: "size",
+          name: 'size',
           ...SizePropertySchema,
         },
         {
-          name: "isDisabled",
+          name: 'isDisabled',
           ...IsDisabledSchema,
         },
         {
-          name: "defaultValue",
+          name: 'defaultValue',
           ...DefaultValueSchema,
         },
       ],
