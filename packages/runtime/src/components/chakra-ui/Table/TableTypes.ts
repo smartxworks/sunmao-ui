@@ -21,7 +21,7 @@ export const TdTypeSchema = Type.KeyOf(
 export const ColumnSchema = Type.Object({
   key: Type.String(),
   title: Type.String(),
-  // displayValue: Type.String(),
+  displayValue: Type.Optional(Type.String()),
   type: TdTypeSchema,
   buttonConfig: Type.Object({
     text: Type.String(),
