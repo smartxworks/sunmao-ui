@@ -7,6 +7,7 @@ import {
   RowsPerPagePropertySchema,
   TableStateSchema,
   TableSizePropertySchema,
+  IsMultiSelectPropertySchema,
 } from './TableTypes';
 
 export default {
@@ -37,6 +38,10 @@ export default {
         {
           name: 'columns',
           ...ColumnsPropertySchema,
+        },
+        {
+          name: 'isMultiSelect',
+          ...IsMultiSelectPropertySchema,
         },
       ],
       acceptTraits: [],

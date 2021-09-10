@@ -38,7 +38,9 @@ export const ColumnSchema = Type.Object({
 });
 
 export const ColumnsPropertySchema = Type.Array(ColumnSchema);
+export const IsMultiSelectPropertySchema = Type.Boolean();
 
 export const TableStateSchema = Type.Object({
   selectedItem: Type.Object({}),
+  selectedItems: Type.Array(Type.Object({})),
 });

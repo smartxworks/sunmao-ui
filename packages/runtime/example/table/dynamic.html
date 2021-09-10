@@ -106,6 +106,7 @@
                 data: '{{ fetchUser.fetch.data }}',
                 majorKey: 'id',
                 rowsPerPage: 5,
+                isMultiSelect: true,
                 columns: [
                   {
                     key: 'id',
@@ -195,6 +196,28 @@
                 left: {
                   type: 'addon',
                   children: '姓名',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+
+            {
+              id: 'selectedText',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '当前选中 {{table.selectedItems.length}} 人',
+                  format: 'plain',
                 },
               },
               traits: [
