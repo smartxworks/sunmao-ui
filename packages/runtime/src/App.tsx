@@ -14,6 +14,7 @@ import { watch } from '@vue-reactivity/watch';
 import _ from 'lodash';
 import copy from 'copy-to-clipboard';
 import { globalHandlerMap } from './handler';
+import { initStateAndMethod } from './utils/initStateAndMethod';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
@@ -295,6 +296,8 @@ const App: React.FC<{
   debugEvent?: boolean;
 }> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
+  initStateAndMethod(app.spec.components);
+
   const { topLevelComponents, slotComponentsMap } = useMemo(
     () => resolveAppComponents(app.spec.components, app),
     [app]
