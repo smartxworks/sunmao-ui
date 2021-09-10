@@ -4,6 +4,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../registry';
+import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const Button: ComponentImplementation<{
   text: TextProps['value'];
@@ -40,30 +41,6 @@ const Button: ComponentImplementation<{
   );
 };
 
-const ColorSchemePropertySchema = Type.Optional(
-  Type.KeyOf(
-    Type.Object({
-      whiteAlpha: Type.String(),
-      blackAlpha: Type.String(),
-      gray: Type.String(),
-      red: Type.String(),
-      orange: Type.String(),
-      yellow: Type.String(),
-      green: Type.String(),
-      teal: Type.String(),
-      blue: Type.String(),
-      cyan: Type.String(),
-      purple: Type.String(),
-      pink: Type.String(),
-      linkedin: Type.String(),
-      facebook: Type.String(),
-      messenger: Type.String(),
-      whatsapp: Type.String(),
-      twitter: Type.String(),
-      telegram: Type.String(),
-    })
-  )
-);
 const IsLoadingPropertySchema = Type.Optional(Type.Boolean());
 
 const StateSchema = Type.Object({
