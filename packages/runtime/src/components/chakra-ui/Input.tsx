@@ -67,6 +67,7 @@ const Input: ComponentImplementation<{
   left,
   right,
   mergeState,
+  subscribeMethods,
   data,
 }) => {
   const [value, setValue] = React.useState(''); // TODO: pin input
@@ -77,6 +78,14 @@ const Input: ComponentImplementation<{
     mergeState({ value });
     mergeState({ ...data });
   }, [value, data]);
+
+  useEffect(() => {
+    subscribeMethods({
+      setInputValue({ value }) {
+        setValue(value);
+      },
+    });
+  }, []);
 
   return (
     <InputGroup size={size}>
@@ -94,6 +103,7 @@ const Input: ComponentImplementation<{
         <></>
       )}
       <BaseInput
+        value={value}
         variant={variant}
         placeholder={placeholder}
         focusBorderColor={focusBorderColor}
@@ -166,7 +176,14 @@ export default {
       ],
       acceptTraits: [],
       state: StateSchema,
-      methods: [],
+      methods: [
+        {
+          name: 'setInputValue',
+          parameters: Type.Object({
+            value: Type.String(),
+          }),
+        },
+      ],
     },
   }),
   impl: Input,

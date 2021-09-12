@@ -1,5 +1,9 @@
 import React, { CSSProperties } from 'react';
-import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
+import {
+  RuntimeApplication,
+  RuntimeComponent,
+  RuntimeTrait,
+} from '@meta-ui/core';
 import { SlotsMap } from './App';
 // components
 /* --- plain --- */
@@ -15,6 +19,7 @@ import ChakraUITable from './components/chakra-ui/Table';
 import ChakraUIInput from './components/chakra-ui/Input';
 import ChakraUIBox from './components/chakra-ui/Box';
 import ChakraUIKbd from './components/chakra-ui/Kbd';
+import ChakraUIKList from './components/chakra-ui/List';
 import ChakraUINumberInput from './components/chakra-ui/NumberInput';
 import ChakraUICheckboxGroup from './components/chakra-ui/CheckboxGroup';
 import ChakraUICheckbox from './components/chakra-ui/Checkbox';
@@ -26,6 +31,7 @@ import ChakraUIImage from './components/chakra-ui/Image';
 /* --- lab --- */
 import LabEditor from './components/lab/Editor';
 // traits
+import CoreArrayState from './traits/core/arrayState';
 import CoreState from './traits/core/state';
 import CoreEvent from './traits/core/event';
 import CoreSlot from './traits/core/slot';
@@ -57,6 +63,7 @@ export type ComponentMergedProps = {
   style?: CSSProperties;
   data?: Record<string, any>;
   callbackMap?: CallbackMap;
+  app?: RuntimeApplication;
 };
 
 export type ComponentImplementation<T = any> = React.FC<
@@ -136,6 +143,7 @@ registry.registerComponent(ChakraUITable);
 registry.registerComponent(ChakraUIInput);
 registry.registerComponent(ChakraUIBox);
 registry.registerComponent(ChakraUIKbd);
+registry.registerComponent(ChakraUIKList);
 registry.registerComponent(ChakraUINumberInput);
 registry.registerComponent(ChakraUICheckbox);
 registry.registerComponent(ChakraUICheckboxGroup);
@@ -148,6 +156,7 @@ registry.registerComponent(LabEditor);
 registry.registerComponent(CoreRouter);
 
 registry.registerTrait(CoreState);
+registry.registerTrait(CoreArrayState);
 registry.registerTrait(CoreEvent);
 registry.registerTrait(CoreSlot);
 registry.registerTrait(CoreHidden);

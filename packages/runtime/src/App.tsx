@@ -21,7 +21,7 @@ type ArrayElement<ArrayType extends readonly unknown[]> =
 type ApplicationComponent = RuntimeApplication['spec']['components'][0];
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
-const ImplWrapper = React.forwardRef<
+export const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
     component: ApplicationComponent;
@@ -31,11 +31,6 @@ const ImplWrapper = React.forwardRef<
     [key: string]: any;
   }
 >(({ component: c, slotsMap, targetSlot, app, children, ...props }, ref) => {
-  // TODO: find better way to add barrier
-  if (!stateStore[c.id]) {
-    stateStore[c.id] = {};
-  }
-
   const Impl = registry.getComponent(
     c.parsedType.version,
     c.parsedType.name
@@ -64,6 +59,7 @@ const ImplWrapper = React.forwardRef<
     apiService.on('uiMethod', handler);
     return () => {
       apiService.off('uiMethod', handler);
+      globalHandlerMap.delete(c.id);
     };
   }, []);
 
@@ -145,10 +141,11 @@ const ImplWrapper = React.forwardRef<
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
       slotsMap={slotsMap}
+      app={app}
     />
   );
 
-  if (targetSlot) {
+  if (targetSlot && app) {
     const targetC = app.spec.components.find(c => c.id === targetSlot.id);
     if (targetC?.parsedType.name === 'grid_layout') {
       return (
@@ -227,14 +224,17 @@ export type SlotsMap = Map<
   }>
 >;
 
-export function resolveAppComponents(app: RuntimeApplication): {
+export function resolveAppComponents(
+  components: RuntimeApplication['spec']['components'],
+  app?: RuntimeApplication
+): {
   topLevelComponents: RuntimeApplication['spec']['components'];
   slotComponentsMap: SlotComponentMap;
 } {
   const topLevelComponents: RuntimeApplication['spec']['components'] = [];
   const slotComponentsMap: SlotComponentMap = new Map();
 
-  for (const c of app.spec.components) {
+  for (const c of components) {
     // handle component with slot trait
     const slotTrait = c.traits.find(t => t.parsedType.name === 'slot');
     if (slotTrait) {
@@ -283,7 +283,7 @@ const App: React.FC<{
 }> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
   const { topLevelComponents, slotComponentsMap } = useMemo(
-    () => resolveAppComponents(app),
+    () => resolveAppComponents(app.spec.components, app),
     [app]
   );
 
