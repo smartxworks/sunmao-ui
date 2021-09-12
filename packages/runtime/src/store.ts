@@ -3,43 +3,87 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reactive } from '@vue/reactivity';
 import { watch } from '@vue-reactivity/watch';
+import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from './constants';
 
 dayjs.extend(relativeTime);
 
-function parseExpression(raw: string): {
-  dynamic: boolean;
+type ExpChunk = {
   expression: string;
-} {
-  if (!raw) {
-    return {
-      dynamic: false,
-      expression: raw,
-    };
-  }
-  const matchArr = raw.match(/{{(.+)}}/);
-  if (!matchArr) {
-    return {
-      dynamic: false,
-      expression: raw,
-    };
-  }
-  return {
-    dynamic: true,
-    expression: matchArr[1],
-  };
-}
-
-function isNumeric(x: string | number) {
-  return !isNaN(Number(x));
-}
-
-export const stateStore = reactive<Record<string, any>>({});
+  isDynamic: boolean;
+};
 
 // TODO: use web worker
 const builtIn = {
   dayjs,
 };
-function maskedEval(raw: string) {
+
+function isNumeric(x: string | number) {
+  return !isNaN(Number(x)) && x !== '';
+}
+
+export const stateStore = reactive<Record<string, any>>({});
+export function parseExpression(
+  str: string,
+  parseListItem = false
+): ExpChunk[] {
+  let l = 0;
+  let r = 0;
+  let isInBrackets = false;
+  const res = [];
+
+  while (r < str.length - 1) {
+    if (!isInBrackets && str.substr(r, 2) === '{{') {
+      if (l !== r) {
+        const substr = str.substring(l, r);
+        res.push({
+          expression: substr,
+          isDynamic: false,
+        });
+      }
+      isInBrackets = true;
+      r += 2;
+      l = r;
+    } else if (isInBrackets && str.substr(r, 2) === '}}') {
+      // remove \n from start and end of substr
+      const substr = str.substring(l, r).replace(/^\s+|\s+$/g, '');
+      const chunk = {
+        expression: substr,
+        isDynamic: true,
+      };
+      // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
+      // unless explicitly pass parseListItem as true
+      if (
+        (substr.includes(LIST_ITEM_EXP) ||
+          substr.includes(LIST_ITEM_INDEX_EXP)) &&
+        !parseListItem
+      ) {
+        chunk.expression = `{{${substr}}}`;
+        chunk.isDynamic = false;
+      }
+      res.push(chunk);
+
+      isInBrackets = false;
+      r += 2;
+      l = r;
+    } else {
+      r++;
+    }
+  }
+
+  if (r >= l && l < str.length) {
+    res.push({
+      expression: str.substring(l, r + 1),
+      isDynamic: false,
+    });
+  }
+  return res;
+}
+
+export function maskedEval(
+  raw: string,
+  evalListItem = false,
+  scopeObject = {}
+) {
   if (isNumeric(raw)) {
     return _.toNumber(raw);
   }
@@ -50,23 +94,30 @@ function maskedEval(raw: string) {
     return false;
   }
 
-  const { dynamic, expression } = parseExpression(raw);
+  const expChunks = parseExpression(raw, evalListItem);
+  const evaled = expChunks.map(({ expression: exp, isDynamic }) => {
+    if (!isDynamic) {
+      return exp;
+    }
+    try {
+      const result = new Function(`with(this) { return ${exp} }`).call({
+        ...stateStore,
+        ...builtIn,
+        ...scopeObject,
+      });
+      return result;
+    } catch (e) {
+      console.error(
+        Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`)
+      );
+      return undefined;
+    }
+  });
 
-  if (!dynamic) {
-    return raw;
-  }
-  try {
-    const result = new Function(`with(this) { return ${expression} }`).call({
-      ...stateStore,
-      ...builtIn,
-    });
-    return result;
-  } catch {
-    return undefined;
-  }
+  return evaled.length === 1 ? evaled[0] : evaled.join('');
 }
 
-const mapValuesDeep = (
+export const mapValuesDeep = (
   obj: any,
   fn: (params: {
     value: any;
@@ -97,10 +148,11 @@ export function deepEval(
 
   const evaluated = mapValuesDeep(obj, ({ value: v, path }) => {
     if (typeof v === 'string') {
-      const { dynamic } = parseExpression(v);
+      const isDynamicExpression = parseExpression(v).some(
+        ({ isDynamic }) => isDynamic
+      );
       const result = maskedEval(v);
-
-      if (dynamic && watcher) {
+      if (isDynamicExpression && watcher) {
         const stop = watch(
           () => {
             return maskedEval(v);
