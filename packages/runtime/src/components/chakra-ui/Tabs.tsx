@@ -16,7 +16,7 @@ const Tabs: ComponentImplementation<{
   initialSelectedTabIndex?: Static<
     typeof InitialSelectedTabIndexPropertySchema
   >;
-}> = ({ tabNames, mergeState, initialSelectedTabIndex, slotsMap }) => {
+}> = ({ tabNames, mergeState, initialSelectedTabIndex, slotsMap, style }) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(
     initialSelectedTabIndex ?? 0
   );
@@ -31,12 +31,14 @@ const Tabs: ComponentImplementation<{
       onChange={idx => setSelectedTabIndex(idx)}>
       <TabList>
         {tabNames.map((name, idx) => (
-          <Tab key={idx}>{name}</Tab>
+          <Tab key={idx} css={style?.tabItem}>
+            {name}
+          </Tab>
         ))}
       </TabList>
       <TabPanels>
         {tabNames.map((_, idx) => (
-          <TabPanel key={idx}>
+          <TabPanel key={idx} css={style?.tabContent}>
             <Slot slotsMap={slotsMap} slot={`tab_content_${idx}`} />
           </TabPanel>
         ))}
