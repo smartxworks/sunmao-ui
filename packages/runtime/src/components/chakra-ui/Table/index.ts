@@ -24,7 +24,7 @@ export default {
           ...DataPropertySchema,
         },
         {
-          name: 'marjorKey',
+          name: 'majorKey',
           ...MajorKeyPropertySchema,
         },
         {
