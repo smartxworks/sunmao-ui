@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { createComponent } from "@meta-ui/core";
-import { ComponentImplementation } from "../../registry";
+import React, { useEffect, useState, useRef } from 'react';
+import { createComponent } from '@meta-ui/core';
+import { ComponentImplementation } from '../../registry';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -9,10 +9,10 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-} from "@chakra-ui/react";
-import { Static, Type } from "@sinclair/typebox";
-import { ColorSchemePropertySchema } from "./Button";
-import Slot from "../_internal/Slot";
+} from '@chakra-ui/react';
+import { Static, Type } from '@sinclair/typebox';
+import Slot from '../_internal/Slot';
+import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const TitlePropertySchema = Type.Optional(Type.String());
 
@@ -31,16 +31,16 @@ const Dialog: ComponentImplementation<{
   callbackMap: callbacks,
   title: customerTitle,
   confirmButton = {
-    text: "confirm",
-    colorScheme: "red",
+    text: 'confirm',
+    colorScheme: 'red',
   },
   cancelButton = {
-    text: "cancel",
-    colorScheme: "blue",
+    text: 'cancel',
+    colorScheme: 'blue',
   },
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState(customerTitle || "");
+  const [title, setTitle] = useState(customerTitle || '');
   const cancelRef = useRef(null);
 
   useEffect(() => {
@@ -63,8 +63,7 @@ const Dialog: ComponentImplementation<{
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
-        onClose={() => setIsOpen(false)}
-      >
+        onClose={() => setIsOpen(false)}>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader>{title}</AlertDialogHeader>
@@ -77,15 +76,13 @@ const Dialog: ComponentImplementation<{
               <Button
                 ref={cancelRef}
                 colorScheme={cancelButton.colorScheme}
-                onClick={callbacks?.cancelDialog}
-              >
+                onClick={callbacks?.cancelDialog}>
                 {cancelButton.text}
               </Button>
               <Button
                 colorScheme={confirmButton.colorScheme}
                 onClick={callbacks?.confirmDialog}
-                ml={3}
-              >
+                ml={3}>
                 {confirmButton.text}
               </Button>
             </AlertDialogFooter>
@@ -98,23 +95,23 @@ const Dialog: ComponentImplementation<{
 
 export default {
   ...createComponent({
-    version: "chakra_ui/v1",
+    version: 'chakra_ui/v1',
     metadata: {
-      name: "dialog",
-      description: "chakra_ui dialog",
+      name: 'dialog',
+      description: 'chakra_ui dialog',
     },
     spec: {
       properties: [
         {
-          name: "title",
+          name: 'title',
           ...TitlePropertySchema,
         },
         {
-          name: "confirmButton",
+          name: 'confirmButton',
           ...HandleButtonPropertySchema,
         },
         {
-          name: "cancelButton",
+          name: 'cancelButton',
           ...HandleButtonPropertySchema,
         },
       ],
@@ -122,16 +119,16 @@ export default {
       state: {},
       methods: [
         {
-          name: "openDialog",
+          name: 'openDialog',
           parameters: Type.Object({
             title: Type.String(),
           }),
         },
         {
-          name: "confirmDialog",
+          name: 'confirmDialog',
         },
         {
-          name: "cancelDialog",
+          name: 'cancelDialog',
         },
       ],
     },
