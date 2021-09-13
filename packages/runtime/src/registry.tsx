@@ -29,6 +29,7 @@ import ChakraUIHStack from './components/chakra-ui/HStack';
 import ChakraUIVStack from './components/chakra-ui/VStack';
 import ChakraUIImage from './components/chakra-ui/Image';
 import ChakraUIDialog from './components/chakra-ui/Dialog';
+import ChakraUISelect from './components/chakra-ui/Select';
 /* --- lab --- */
 import LabEditor from './components/lab/Editor';
 // traits
@@ -155,6 +156,7 @@ registry.registerComponent(ChakraUIHStack);
 registry.registerComponent(ChakraUIVStack);
 registry.registerComponent(ChakraUIImage);
 registry.registerComponent(ChakraUIDialog);
+registry.registerComponent(ChakraUISelect);
 registry.registerComponent(LabEditor);
 registry.registerComponent(CoreRouter);
 
