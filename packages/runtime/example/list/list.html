@@ -9,34 +9,31 @@
     <div id="root"></div>
     <script type="module">
       import renderApp from '../../src/main.tsx';
-
-      const refresh = [
+      const listdata = [
         {
-          componentId: 'nameInput',
-          method: {
-            name: 'setInputValue',
-            parameters: {
-              value: ``,
-            },
-          },
+          id: 1,
+          name: '马云',
+          email: 'jack.ma@deck.com',
         },
         {
-          componentId: 'emailInput',
-          method: {
-            name: 'setInputValue',
-            parameters: {
-              value: ``,
-            },
-          },
+          id: 2,
+          name: '马化腾',
+          email: 'pony.ma@conversation.com',
         },
         {
-          componentId: 'root',
-          method: {
-            name: 'triggerFetch',
-            parameters: 'getCustomersQuery',
-          },
-          wait: {},
-          disabled: 'false',
+          id: 3,
+          name: '李彦宏',
+          email: 'robin.li@response.com',
+        },
+        {
+          id: 4,
+          name: '张一鸣',
+          email: 'yiming.zhang@example.com',
+        },
+        {
+          id: 5,
+          name: '王兴',
+          email: 'xing.wang@widget.org',
         },
       ];
 
@@ -64,16 +61,7 @@
                   type: 'core/v1/arrayState',
                   properties: {
                     key: 'listData',
-                    initialValue: [],
-                  },
-                },
-                {
-                  type: 'core/v1/fetch',
-                  properties: {
-                    name: 'getCustomersQuery',
-                    url: 'https://61373521eac1410017c18209.mockapi.io/customers',
-                    method: 'get',
-                    headers: [],
+                    initialValue: listdata,
                   },
                 },
               ],
@@ -103,8 +91,7 @@
               id: 'list',
               type: 'chakra_ui/v1/list',
               properties: {
-                listData:
-                  '{{ root.getCustomersQuery ? root.getCustomersQuery.data : [] }}',
+                listData: '{{ root.listData }}',
                 template: [
                   {
                     id: 'listItemTemplate-{{$listItem.id}}',
@@ -236,16 +223,6 @@
                     },
                     traits: [
                       {
-                        type: 'core/v1/fetch',
-                        properties: {
-                          name: 'deleteUserQuery',
-                          url: 'https://61373521eac1410017c18209.mockapi.io/customers/{{ $listItem.id }}',
-                          method: 'delete',
-                          lazy: true,
-                          onComplete: refresh,
-                        },
-                      },
-                      {
                         type: 'core/v1/event',
                         parsedType: {
                           version: 'core/v1',
@@ -255,10 +232,14 @@
                           events: [
                             {
                               event: 'click',
-                              componentId: 'listItemDelete-{{$listItem.id}}',
+                              componentId: 'root',
                               method: {
-                                name: 'triggerFetch',
-                                parameters: 'deleteUserQuery',
+                                name: 'deleteItemById',
+                                parameters: {
+                                  key: 'listData',
+                                  itemIdKey: 'id',
+                                  itemId: '{{ $listItem.id }}',
+                                },
                               },
                               wait: {},
                               disabled: 'false',
@@ -344,23 +325,6 @@
               },
               traits: [
                 {
-                  type: 'core/v1/fetch',
-                  properties: {
-                    name: 'createUserQuery',
-                    url: 'https://61373521eac1410017c18209.mockapi.io/customers',
-                    method: 'post',
-                    headers: [
-                      { key: 'Content-Type', value: 'application/json' },
-                    ],
-                    body: {
-                      name: '{{ nameInput.value }}',
-                      email: '{{ emailInput.value }}',
-                    },
-                    lazy: true,
-                    onComplete: refresh,
-                  },
-                },
-                {
                   type: 'core/v1/event',
                   parsedType: {
                     version: 'core/v1',
@@ -370,10 +334,22 @@
                     events: [
                       {
                         event: 'click',
-                        componentId: 'addButton',
+                        componentId: 'root',
                         method: {
-                          name: 'triggerFetch',
-                          parameters: 'createUserQuery',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'listData',
+                            value: `{{
+                              (function() {
+                                let list = root.listData || []
+                                return list.concat({
+                                  id: Date.now(),
+                                  name: nameInput.value,
+                                  email: emailInput.value
+                                })
+                              })()
+                            }}`,
+                          },
                         },
                         wait: {},
                         disabled: 'false',
@@ -410,35 +386,6 @@
                   },
                 },
                 {
-                  type: 'core/v1/fetch',
-                  properties: {
-                    name: 'updateUserQuery',
-                    url: 'https://61373521eac1410017c18209.mockapi.io/customers/{{saveButton.editingId}}',
-                    method: 'put',
-                    headers: [
-                      { key: 'Content-Type', value: 'application/json' },
-                    ],
-                    body: {
-                      name: '{{ nameInput.value }}',
-                      email: '{{ emailInput.value }}',
-                    },
-                    lazy: true,
-                    onComplete: [
-                      ...refresh,
-                      {
-                        componentId: 'saveButton',
-                        method: {
-                          name: 'setValue',
-                          parameters: {
-                            key: 'editingId',
-                            value: '-1',
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
                   type: 'core/v1/event',
                   parsedType: {
                     version: 'core/v1',
@@ -448,10 +395,61 @@
                     events: [
                       {
                         event: 'click',
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'listData',
+                            value: `{{
+                              (function() {
+                                const list = [...root.listData || []]
+                                let index = list.findIndex((item) => item.id == saveButton.editingId)
+                                list[index] = {
+                                  ...list[index],
+                                  name: nameInput.value,
+                                  email: emailInput.value
+                                }
+                                return list
+                              })()
+                            }}`,
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'click',
                         componentId: 'saveButton',
                         method: {
-                          name: 'triggerFetch',
-                          parameters: 'updateUserQuery',
+                          name: 'setValue',
+                          parameters: {
+                            key: 'editingId',
+                            value: '-1',
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'click',
+                        componentId: 'nameInput',
+                        method: {
+                          name: 'setInputValue',
+                          parameters: {
+                            value: ``,
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        event: 'click',
+                        componentId: 'emailInput',
+                        method: {
+                          name: 'setInputValue',
+                          parameters: {
+                            value: ``,
+                          },
                         },
                         wait: {},
                         disabled: 'false',
