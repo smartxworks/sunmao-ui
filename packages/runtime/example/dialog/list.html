@@ -246,7 +246,7 @@
                                 name: 'openDialog',
                                 parameters: {
                                   title: '编辑信息',
-                                }
+                                },
                               },
                               wait: {},
                               disabled: 'false',
@@ -306,7 +306,7 @@
                                 name: 'openDialog',
                                 parameters: {
                                   title: '删除信息',
-                                }
+                                },
                               },
                               wait: {},
                               disabled: 'false',
@@ -319,12 +319,13 @@
                                 name: 'setValue',
                                 parameters: {
                                   key: 'deleteContent',
-                                  value: '是否确认删除『{{ $listItem.name }}: {{ $listItem.email }}』',
+                                  value:
+                                    '是否确认删除『{{ $listItem.name }}: {{ $listItem.email }}』',
                                 },
                               },
                               wait: {
                                 type: 'delay',
-                                time: 1
+                                time: 1,
                               },
                               disabled: 'false',
                             },
@@ -364,11 +365,11 @@
                 title: 'This is a dialog',
                 confirmButton: {
                   text: 'save',
-                  colorScheme: 'purple'
+                  colorScheme: 'purple',
                 },
                 cancelButton: {
-                  text: 'cancel'
-                }
+                  text: 'cancel',
+                },
               },
               traits: [
                 {
@@ -394,7 +395,7 @@
                         event: 'confirmDialog',
                         componentId: 'editDialog',
                         method: {
-                          name: 'confirmDialog'
+                          name: 'confirmDialog',
                         },
                         wait: {},
                         disabled: 'false',
@@ -434,7 +435,7 @@
                           parameters: {
                             key: 'nameInputInitialValue',
                             value: '',
-                          }
+                          },
                         },
                         wait: {},
                         disabled: 'false',
@@ -447,7 +448,7 @@
                           parameters: {
                             key: 'emailInputInitialValue',
                             value: '',
-                          }
+                          },
                         },
                         wait: {},
                         disabled: 'false',
@@ -457,13 +458,13 @@
                         event: 'cancelDialog',
                         componentId: 'editDialog',
                         method: {
-                          name: 'cancelDialog'
+                          name: 'cancelDialog',
                         },
                         wait: {},
                         disabled: 'false',
                       },
-                    ]
-                  }
+                    ],
+                  },
                 },
               ],
             },
@@ -476,7 +477,7 @@
                   type: 'addon',
                   children: '姓名',
                 },
-                initialValue: '{{ root.nameInputInitialValue }}'
+                initialValue: '{{ root.nameInputInitialValue }}',
               },
               traits: [
                 {
@@ -499,7 +500,7 @@
                   type: 'addon',
                   children: '邮箱',
                 },
-                initialValue: '{{ root.emailInputInitialValue }}'
+                initialValue: '{{ root.emailInputInitialValue }}',
               },
               traits: [
                 {
@@ -520,11 +521,11 @@
               properties: {
                 title: 'This is a dialog',
                 confirmButton: {
-                  text: '确定'
+                  text: '确定',
                 },
                 cancelButton: {
-                  text: '取消'
-                }
+                  text: '取消',
+                },
               },
               traits: [
                 {
@@ -557,7 +558,7 @@
                         event: 'confirmDialog',
                         componentId: 'deleteDialog',
                         method: {
-                          name: 'confirmDialog'
+                          name: 'confirmDialog',
                         },
                         wait: {},
                         disabled: 'false',
@@ -581,14 +582,14 @@
                         event: 'cancelDialog',
                         componentId: 'deleteDialog',
                         method: {
-                          name: 'cancelDialog'
+                          name: 'cancelDialog',
                         },
                         wait: {},
                         disabled: 'false',
                       },
-                    ]
-                  }
-                }
+                    ],
+                  },
+                },
               ],
             },
             // delete content component
@@ -638,6 +639,9 @@
                         componentId: 'createDialog',
                         method: {
                           name: 'openDialog',
+                          parameters: {
+                            title: '编辑信息',
+                          },
                         },
                         wait: {},
                         disabled: 'false',
@@ -664,11 +668,11 @@
                 title: 'This is a dialog',
                 confirmButton: {
                   text: 'save',
-                  colorScheme: 'purple'
+                  colorScheme: 'purple',
                 },
                 cancelButton: {
-                  text: 'cancel'
-                }
+                  text: 'cancel',
+                },
               },
               traits: [
                 {
@@ -694,7 +698,7 @@
                         event: 'confirmDialog',
                         componentId: 'createDialog',
                         method: {
-                          name: 'confirmDialog'
+                          name: 'confirmDialog',
                         },
                         wait: {},
                         disabled: 'false',
@@ -729,13 +733,13 @@
                         event: 'cancelDialog',
                         componentId: 'createDialog',
                         method: {
-                          name: 'cancelDialog'
+                          name: 'cancelDialog',
                         },
                         wait: {},
                         disabled: 'false',
                       },
-                    ]
-                  }
+                    ],
+                  },
                 },
               ],
             },
@@ -748,7 +752,7 @@
                   type: 'addon',
                   children: '姓名',
                 },
-                initialValue: ''
+                initialValue: '',
               },
               traits: [
                 {
@@ -771,7 +775,7 @@
                   type: 'addon',
                   children: '邮箱',
                 },
-                initialValue: ''
+                initialValue: '',
               },
               traits: [
                 {

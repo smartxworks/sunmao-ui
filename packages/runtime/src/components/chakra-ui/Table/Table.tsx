@@ -81,10 +81,9 @@ export const TableImpl: ComponentImplementation<{
       }
       setSelectedItems(newSelectedItems);
       mergeState({ selectedItems: newSelectedItems });
-    } else {
-      setSelectedItem(item);
-      mergeState({ selectedItem: item });
     }
+    setSelectedItem(item);
+    mergeState({ selectedItem: item });
   }
 
   return (

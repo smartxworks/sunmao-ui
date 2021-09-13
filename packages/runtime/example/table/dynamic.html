@@ -87,6 +87,26 @@
                         wait: {},
                         disabled: 'false',
                       },
+                      {
+                        componentId: 'root',
+                        method: {
+                          name: 'setValue',
+                          parameters: {
+                            key: 'nameInputInitialValue',
+                            value: '',
+                          },
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                      {
+                        componentId: 'editDialog',
+                        method: {
+                          name: 'cancelDialog',
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
                     ],
                   },
                 },
@@ -96,7 +116,15 @@
               id: 'root',
               type: 'chakra_ui/v1/root',
               properties: {},
-              traits: [],
+              traits: [
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'nameInputInitialValue',
+                    initialValue: '',
+                  },
+                },
+              ],
             },
             {
               id: 'table',
@@ -164,10 +192,20 @@
                       text: 'Edit',
                       events: [
                         {
-                          componentId: 'nameInput',
+                          componentId: 'editDialog',
                           method: {
-                            name: 'setInputValue',
+                            name: 'openDialog',
                             parameters: {
+                              title: '编辑信息',
+                            },
+                          },
+                        },
+                        {
+                          componentId: 'root',
+                          method: {
+                            name: 'setValue',
+                            parameters: {
+                              key: 'nameInputInitialValue',
                               value: '{{table.selectedItem.name}}',
                             },
                           },
@@ -190,28 +228,6 @@
               ],
             },
             {
-              id: 'nameInput',
-              type: 'chakra_ui/v1/input',
-              properties: {
-                left: {
-                  type: 'addon',
-                  children: '姓名',
-                },
-              },
-              traits: [
-                {
-                  type: 'core/v1/slot',
-                  properties: {
-                    container: {
-                      id: 'root',
-                      slot: 'root',
-                    },
-                  },
-                },
-              ],
-            },
-
-            {
               id: 'selectedText',
               type: 'core/v1/text',
               properties: {
@@ -233,21 +249,39 @@
               ],
             },
             {
-              id: 'saveButton',
-              type: 'chakra_ui/v1/button',
+              id: 'editDialog',
+              type: 'chakra_ui/v1/dialog',
               properties: {
-                text: {
-                  raw: '保存',
-                  format: 'plain',
+                title: 'This is a dialog',
+                confirmButton: {
+                  text: 'save',
+                  colorScheme: 'purple',
+                },
+                cancelButton: {
+                  text: 'cancel',
                 },
               },
               traits: [
                 {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                // dialog events
+                {
                   type: 'core/v1/event',
+                  parsedType: {
+                    version: 'core/v1',
+                    name: 'event',
+                  },
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'confirmDialog',
                         componentId: 'updateUser',
                         method: {
                           name: 'triggerFetch',
@@ -256,15 +290,38 @@
                         wait: {},
                         disabled: 'false',
                       },
+                      // when cancel dialog
+                      {
+                        event: 'cancelDialog',
+                        componentId: 'editDialog',
+                        method: {
+                          name: 'cancelDialog',
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
                     ],
                   },
                 },
+              ],
+            },
+            {
+              id: 'nameInput',
+              type: 'chakra_ui/v1/input',
+              properties: {
+                left: {
+                  type: 'addon',
+                  children: '姓名',
+                },
+                initialValue: '{{ root.nameInputInitialValue }}',
+              },
+              traits: [
                 {
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: 'root',
-                      slot: 'root',
+                      id: 'editDialog',
+                      slot: 'content',
                     },
                   },
                 },
