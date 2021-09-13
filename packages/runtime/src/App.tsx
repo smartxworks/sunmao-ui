@@ -41,10 +41,6 @@ export const ImplWrapper = React.forwardRef<
     globalHandlerMap.set(c.id, {});
   }
 
-  if (!stateStore[c.id]) {
-    stateStore[c.id] = {};
-  }
-
   let handlerMap = globalHandlerMap.get(c.id)!;
   useEffect(() => {
     const handler = (s: {
