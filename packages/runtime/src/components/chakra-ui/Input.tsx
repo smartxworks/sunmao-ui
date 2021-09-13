@@ -34,6 +34,7 @@ const SizePropertySchema = Type.KeyOf(
 const FocusBorderColorPropertySchema = Type.Optional(Type.String());
 const IsDisabledPropertySchema = Type.Optional(Type.Boolean());
 const IsRequiredPropertySchema = Type.Optional(Type.Boolean());
+const InitValuePropertySchema = Type.Optional(Type.String());
 
 const AppendElementPropertySchema = Type.Union([
   Type.Object({
@@ -57,6 +58,7 @@ const Input: ComponentImplementation<{
   isRequired?: Static<typeof IsRequiredPropertySchema>;
   left?: Static<typeof AppendElementPropertySchema>;
   right?: Static<typeof AppendElementPropertySchema>;
+  initialValue?: Static<typeof InitValuePropertySchema>;
 }> = ({
   variant,
   placeholder,
@@ -69,8 +71,9 @@ const Input: ComponentImplementation<{
   mergeState,
   subscribeMethods,
   data,
+  initialValue,
 }) => {
-  const [value, setValue] = React.useState(''); // TODO: pin input
+  const [value, setValue] = React.useState(initialValue); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value);
 
@@ -172,6 +175,10 @@ export default {
         {
           name: 'right',
           ...AppendElementPropertySchema,
+        },
+        {
+          name: 'initialValue',
+          ...InitValuePropertySchema,
         },
       ],
       acceptTraits: [],
