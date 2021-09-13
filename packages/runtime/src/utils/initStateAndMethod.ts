@@ -7,12 +7,17 @@ import {
   Static,
   StringKind,
   TSchema,
+  OptionalModifier,
 } from '@sinclair/typebox';
 import { RuntimeApplication } from '../../../core/typings';
 import { registry } from '../registry';
 import { stateStore } from '../store';
 
 function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
+  if (tSchema.modifier === OptionalModifier) {
+    return undefined;
+  }
+
   switch (tSchema.kind) {
     case StringKind:
       return '';

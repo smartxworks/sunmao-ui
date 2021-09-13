@@ -1,6 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import { Table as BaseTable, Thead, Tr, Th, Tbody } from '@chakra-ui/react';
+import {
+  Table as BaseTable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Checkbox,
+  Td,
+} from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
 import { ComponentImplementation } from '../../../registry';
@@ -38,15 +46,34 @@ export const TableImpl: ComponentImplementation<{
   if (!data) {
     return <div>loading</div>;
   }
-
   const normalizedData = data;
-  const [selectedItem, setSelectedItem] = useState<Record<string, any>>();
+  const [selectedItem, setSelectedItem] = useState<
+    Record<string, any> | undefined
+  >();
   const [selectedItems, setSelectedItems] = useState<
     Array<Record<string, any>>
   >([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [sortRule, setSortRule] = useState<SortRule | undefined>();
   const pageNumber = Math.ceil(data.length / rowsPerPage);
+
+  useEffect(() => {
+    // reset table state when data source changes
+    updateSelectedItems([]);
+    updateSelectedItem(undefined);
+    setCurrentPage(0);
+    setSortRule(undefined);
+  }, [normalizedData]);
+
+  const updateSelectedItems = (items: Array<Record<string, any>>) => {
+    setSelectedItems(items);
+    mergeState({ selectedItems: items });
+  };
+
+  const updateSelectedItem = (item?: Record<string, any>) => {
+    setSelectedItem(item);
+    mergeState({ selectedItem: item });
+  };
 
   const sortedData = useMemo(() => {
     if (!sortRule) return normalizedData;
@@ -79,18 +106,40 @@ export const TableImpl: ComponentImplementation<{
       } else {
         newSelectedItems = selectedItems.concat(item);
       }
-      setSelectedItems(newSelectedItems);
-      mergeState({ selectedItems: newSelectedItems });
+      updateSelectedItems(newSelectedItems);
     }
-    setSelectedItem(item);
-    mergeState({ selectedItem: item });
+    updateSelectedItem(item);
   }
+
+  const allCheckbox = useMemo(() => {
+    const isAllChecked =
+      isMultiSelect && selectedItems.length === normalizedData.length;
+    const isIndeterminate =
+      selectedItems.length > 0 && selectedItems.length < normalizedData.length;
+    const onChange = (e: any) => {
+      if (e.target.checked) {
+        updateSelectedItems(normalizedData);
+      } else {
+        updateSelectedItems([]);
+      }
+    };
+    return (
+      <Th key="allCheckbox">
+        <Checkbox
+          size="lg"
+          isIndeterminate={isIndeterminate}
+          checked={isAllChecked}
+          onChange={onChange}></Checkbox>
+      </Th>
+    );
+  }, [selectedItems.length, normalizedData.length]);
 
   return (
     <div>
       <BaseTable size={size}>
         <Thead>
           <Tr>
+            {isMultiSelect ? allCheckbox : undefined}
             {columns.map(({ title, key }) => {
               let sortArrow;
               if (sortRule && sortRule.key === key) {
@@ -116,11 +165,30 @@ export const TableImpl: ComponentImplementation<{
         <Tbody>
           {currentPageData.map(item => {
             const isSelected = isItemSelected(item);
+            let onClickToggle = true;
+            const onClickCheckbox = (e: React.MouseEvent<HTMLElement>) => {
+              // chakra-ui checkbox has a bug which will trigger onClick twice
+              // so here I stopPropagation one of every two events
+              // https://github.com/chakra-ui/chakra-ui/issues/2854
+              if (onClickToggle) {
+                e.stopPropagation();
+              }
+              onClickToggle = !onClickToggle;
+            };
+            const checkbox = (
+              <Td key="$checkbox" onClick={onClickCheckbox}>
+                <Checkbox size="lg" isChecked={isSelected}></Checkbox>
+              </Td>
+            );
+
             return (
               <Tr
                 key={item[majorKey]}
                 bgColor={isSelected ? 'gray' : undefined}
-                onClick={() => selectItem(item)}>
+                onClick={() => {
+                  selectItem(item);
+                }}>
+                {isMultiSelect ? checkbox : undefined}
                 {columns.map(column => (
                   <TableTd
                     key={column.key}

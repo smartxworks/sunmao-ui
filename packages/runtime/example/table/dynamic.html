@@ -206,7 +206,8 @@
                             name: 'setValue',
                             parameters: {
                               key: 'nameInputInitialValue',
-                              value: '{{table.selectedItem.name}}',
+                              value:
+                                '{{table.selectedItem ? table.selectedItem.name : ""}}',
                             },
                           },
                         },
