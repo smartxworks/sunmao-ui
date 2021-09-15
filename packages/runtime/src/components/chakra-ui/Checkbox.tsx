@@ -15,7 +15,10 @@ export const SizePropertySchema = Type.KeyOf(
     lg: Type.String(),
   })
 );
+const IsFocusableSchema = Type.Optional(Type.Boolean());
 const IsInvalidSchema = Type.Optional(Type.Boolean());
+const IsReadOnlySchema = Type.Optional(Type.Boolean());
+const IsRequiredSchema = Type.Optional(Type.Boolean());
 const SpacingSchema = Type.Optional(Type.String());
 const IsCheckedSchema = Type.Optional(Type.Boolean());
 const IsIndeterminateSchema = Type.Optional(Type.Boolean());
@@ -25,6 +28,9 @@ const Checkbox: ComponentImplementation<{
   text: TextProps['value'];
   defaultIsChecked?: Static<typeof DefaultIsCheckedSchema>;
   isDisabled?: Static<typeof IsDisabledSchema>;
+  isFocusable?: Static<typeof IsFocusableSchema>;
+  isReadOnly?: Static<typeof IsReadOnlySchema>;
+  isRequired?: Static<typeof IsRequiredSchema>;
   colorScheme?: Static<typeof ColorSchemePropertySchema>;
   size?: Static<typeof SizePropertySchema>;
   isInValid?: Static<typeof IsInvalidSchema>;
@@ -36,6 +42,9 @@ const Checkbox: ComponentImplementation<{
   text,
   defaultIsChecked,
   isDisabled,
+  isFocusable,
+  isReadOnly,
+  isRequired,
   colorScheme,
   size,
   isInValid,
@@ -67,6 +76,9 @@ const Checkbox: ComponentImplementation<{
       {...args}
       defaultChecked={defaultIsChecked}
       isDisabled={isDisabled}
+      isFocusable={isFocusable}
+      isReadOnly={isReadOnly}
+      isRequired={isRequired}
       isInvalid={isInValid}
       spacing={spacing}
       isChecked={isChecked}
@@ -100,6 +112,18 @@ export default {
         {
           name: 'isDisabled',
           ...IsDisabledSchema,
+        },
+        {
+          name: 'isFocusable',
+          ...IsFocusableSchema,
+        },
+        {
+          name: 'isReadOnly',
+          ...IsReadOnlySchema,
+        },
+        {
+          name: 'isRequired',
+          ...IsReadOnlySchema,
         },
         {
           name: 'colorScheme',
