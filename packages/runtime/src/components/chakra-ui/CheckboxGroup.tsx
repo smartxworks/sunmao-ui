@@ -5,7 +5,6 @@ import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
-import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const DefaultValueSchema = Type.Optional(
   Type.Array(Type.Union([Type.String(), Type.Number()]))
@@ -16,12 +15,10 @@ const StateSchema = Type.Object({
 });
 
 const CheckboxGroup: ComponentImplementation<{
-  colorScheme?: Static<typeof ColorSchemePropertySchema>;
   size?: Static<typeof SizePropertySchema>;
   defaultValue?: Static<typeof DefaultValueSchema>;
   isDisabled?: Static<typeof IsDisabledSchema>;
 }> = ({
-  colorScheme,
   size,
   defaultValue,
   isDisabled,
@@ -35,7 +32,6 @@ const CheckboxGroup: ComponentImplementation<{
 
   return (
     <BaseCheckboxGroup
-      colorScheme={colorScheme}
       size={size}
       defaultValue={defaultValue}
       isDisabled={isDisabled}
@@ -54,10 +50,6 @@ export default {
     },
     spec: {
       properties: [
-        {
-          name: 'colorScheme',
-          ...ColorSchemePropertySchema,
-        },
         {
           name: 'size',
           ...SizePropertySchema,
