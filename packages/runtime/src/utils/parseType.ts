@@ -8,7 +8,7 @@ export function parseType(v: string) {
     throw new Error(`Invalid type string: "${v}"`);
   }
 
-  const [, version, name] = v.match(TYPE_REG)!;
+  const [, version, name] = v.match(TYPE_REG) ?? [];
   return {
     version,
     name,

@@ -24,7 +24,7 @@ export function makeMatcher(): MatcherFn {
     strict: boolean,
     sensitive: boolean
   ) => WouterPTR = (path, exact, strict, sensitive) => {
-    let keys: Key[] = [];
+    const keys: Key[] = [];
 
     const regexp = pathToRegexp(path, keys, { strict, end: exact, sensitive });
     return { keys, regexp };

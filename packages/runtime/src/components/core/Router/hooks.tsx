@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useCallback,
   useEffect,
@@ -7,7 +7,6 @@ import React, {
   useContext,
 } from 'react';
 import useWouterLocation, { LocationHook } from 'wouter/use-location';
-import { Wouter } from './component';
 
 // hash location and hash hook
 const currentLocation = (base: string, hash = location.hash) => {

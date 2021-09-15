@@ -3,7 +3,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { apiService } from '../../api-service';
 import { TraitImplementation } from '../../registry';
 
-let hasFetchedMap = new Map<string, boolean>();
+const hasFetchedMap = new Map<string, boolean>();
 
 const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   url,

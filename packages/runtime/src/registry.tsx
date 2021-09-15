@@ -103,7 +103,7 @@ class Registry {
     if (!this.components.has(c.version)) {
       this.components.set(c.version, new Map());
     }
-    this.components.get(c.version)!.set(c.metadata.name, c);
+    this.components.get(c.version)?.set(c.metadata.name, c);
   }
 
   getComponent(version: string, name: string): ImplementedRuntimeComponent {
@@ -123,7 +123,7 @@ class Registry {
     if (!this.traits.has(t.version)) {
       this.traits.set(t.version, new Map());
     }
-    this.traits.get(t.version)!.set(t.metadata.name, t);
+    this.traits.get(t.version)?.set(t.metadata.name, t);
   }
 
   getTrait(version: string, name: string): ImplementedRuntimeTrait {
