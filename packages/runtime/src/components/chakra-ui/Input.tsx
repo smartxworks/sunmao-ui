@@ -71,7 +71,6 @@ const Input: ComponentImplementation<{
   mergeState,
   subscribeMethods,
   initialValue,
-  data,
 }) => {
   const [value, setValue] = React.useState(initialValue || ''); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -80,10 +79,6 @@ const Input: ComponentImplementation<{
   useEffect(() => {
     mergeState({ value });
   }, [value]);
-
-  useEffect(() => {
-    mergeState(data);
-  }, [data]);
 
   useEffect(() => {
     subscribeMethods({

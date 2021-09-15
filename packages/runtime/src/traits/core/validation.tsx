@@ -1,5 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Type } from '@sinclair/typebox';
+import { isEqual } from 'lodash';
 import { TraitImplementation } from '../../registry';
 
 type ValidationResult = { isValid: boolean; errorMsg: string };
@@ -46,8 +47,10 @@ type ValidationProps = {
   rule: string;
 };
 
+const ValidationResultCache: Record<string, ValidationResult> = {};
+
 const ValidationTraitImpl: TraitImplementation<ValidationProps> = props => {
-  const { value, minLength, maxLength, rule } = props;
+  const { value, minLength, maxLength, mergeState, componentId, rule } = props;
   let result: ValidationResult = {
     isValid: true,
     errorMsg: '',
@@ -76,10 +79,13 @@ const ValidationTraitImpl: TraitImplementation<ValidationProps> = props => {
     }
   }
 
+  if (!isEqual(result, ValidationResultCache[componentId])) {
+    ValidationResultCache[componentId] = result;
+    mergeState(result);
+  }
+
   return {
-    props: {
-      data: result,
-    },
+    props: null,
   };
 };
 
