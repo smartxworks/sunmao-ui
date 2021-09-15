@@ -24,6 +24,10 @@ const IsCheckedSchema = Type.Optional(Type.Boolean());
 const IsIndeterminateSchema = Type.Optional(Type.Boolean());
 const ValueSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
 
+const StateSchema = Type.Object({
+  value: Type.String(),
+});
+
 const Checkbox: ComponentImplementation<{
   text: TextProps['value'];
   defaultIsChecked?: Static<typeof DefaultIsCheckedSchema>;
@@ -155,7 +159,7 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: {},
+      state: StateSchema,
       methods: [],
     },
   }),

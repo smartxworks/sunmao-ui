@@ -11,6 +11,10 @@ const DefaultValueSchema = Type.Optional(
   Type.Array(Type.Union([Type.String(), Type.Number()]))
 );
 
+const StateSchema = Type.Object({
+  value: Type.String(),
+});
+
 const CheckboxGroup: ComponentImplementation<{
   colorScheme?: Static<typeof ColorSchemePropertySchema>;
   size?: Static<typeof SizePropertySchema>;
@@ -68,7 +72,7 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: {},
+      state: StateSchema,
       methods: [],
     },
   }),
