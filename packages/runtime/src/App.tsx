@@ -157,6 +157,7 @@ export const ImplWrapper = React.forwardRef<
   const C = (
     <Impl
       key={c.id}
+      component={c}
       {...mergedProps}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
