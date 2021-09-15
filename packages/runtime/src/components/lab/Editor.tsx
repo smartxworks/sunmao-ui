@@ -9,7 +9,7 @@ import { ComponentImplementation } from '../../registry';
 import ErrorBoundary from '../_internal/ErrorBoundary';
 import App from '../../App';
 
-const Editor: ComponentImplementation<{}> = () => {
+const Editor: ComponentImplementation<Record<string, unknown>> = () => {
   const [code, setCode] = useState(
     JSON.stringify(
       {
@@ -57,7 +57,9 @@ const Editor: ComponentImplementation<{}> = () => {
             onClick={() => {
               try {
                 setCode(JSON.stringify(JSON.parse(code), null, 2));
-              } catch {}
+              } catch {
+                return;
+              }
             }}>
             format
           </Button>

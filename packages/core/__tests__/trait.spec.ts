@@ -1,25 +1,25 @@
-import { createTrait } from "../src/trait";
+import { createTrait } from '../src/trait';
 
-describe("trait", () => {
-  it("can create runtime trait", () => {
+describe('trait', () => {
+  it('can create runtime trait', () => {
     expect(
       createTrait({
-        version: "core/v1",
+        version: 'core/v1',
         metadata: {
-          name: "test_trait",
+          name: 'test_trait',
         },
 
         spec: {
-          properties: [{ name: "width", type: "number" }],
+          properties: [{ name: 'width', type: 'number' }],
           state: {
-            type: "string",
+            type: 'string',
           },
 
           methods: [
             {
-              name: "times",
+              name: 'times',
               parameters: {
-                type: "number",
+                type: 'number',
               },
             },
           ],

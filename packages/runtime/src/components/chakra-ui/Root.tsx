@@ -4,7 +4,9 @@ import { ComponentImplementation } from '../../registry';
 import { createComponent } from '@meta-ui/core';
 import Slot from '../_internal/Slot';
 
-const Root: ComponentImplementation<{}> = ({ slotsMap }) => {
+const Root: ComponentImplementation<Record<string, unknown>> = ({
+  slotsMap,
+}) => {
   return (
     <ChakraProvider>
       <Slot slotsMap={slotsMap} slot="root" />

@@ -141,7 +141,7 @@ export const mapValuesDeep = (
 };
 
 export function deepEval(
-  obj: object,
+  obj: Record<string, unknown>,
   watcher?: (params: { result: ReturnType<typeof mapValuesDeep> }) => void
 ) {
   const stops: ReturnType<typeof watch>[] = [];

@@ -11,7 +11,6 @@ import { apiService } from './api-service';
 import { ContainerPropertySchema } from './traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import { watch } from '@vue-reactivity/watch';
-import _ from 'lodash';
 import copy from 'copy-to-clipboard';
 import { globalHandlerMap } from './handler';
 import { initStateAndMethod } from './utils/initStateAndMethod';
@@ -144,7 +143,7 @@ export const ImplWrapper = React.forwardRef<
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
-  let C = (
+  const C = (
     <Impl
       key={c.id}
       {...mergedProps}

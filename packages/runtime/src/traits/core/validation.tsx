@@ -1,8 +1,6 @@
-import React from 'react';
 import { createTrait } from '@meta-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
-import { min } from 'lodash';
 
 type ValidationResult = { isValid: boolean; errorMsg: string };
 type ValidationRule = (text: string) => { isValid: boolean; errorMsg: string };
@@ -12,10 +10,9 @@ const rules = new Map<string, ValidationRule>();
 export function addValidationRule(name: string, rule: ValidationRule) {
   rules.set(name, rule);
 }
-(window as any).rules = rules;
 
 addValidationRule('email', text => {
-  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(text)) {
+  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(text)) {
     return {
       isValid: true,
       errorMsg: '',
@@ -50,7 +47,7 @@ type ValidationProps = {
 };
 
 const useValidationTrait: TraitImplementation<ValidationProps> = props => {
-  const { value, minLength, maxLength, rule, mergeState } = props;
+  const { value, minLength, maxLength, rule } = props;
   let result: ValidationResult = {
     isValid: true,
     errorMsg: '',

@@ -14,7 +14,6 @@ export function initStateAndMethod(
         t.parsedType.version,
         t.parsedType.name
       ).spec;
-      (window as any).parseTypeBox = parseTypeBox;
       state = { ...state, ...parseTypeBox(tSpec.state as TSchema) };
     });
     const cSpec = registry.getComponent(
