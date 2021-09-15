@@ -70,17 +70,20 @@ const Input: ComponentImplementation<{
   right,
   mergeState,
   subscribeMethods,
-  data,
   initialValue,
+  data,
 }) => {
-  const [value, setValue] = React.useState(initialValue); // TODO: pin input
+  const [value, setValue] = React.useState(initialValue || ''); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value);
 
   useEffect(() => {
     mergeState({ value });
-    mergeState({ ...data });
-  }, [value, data]);
+  }, [value]);
+
+  useEffect(() => {
+    mergeState(data);
+  }, [data]);
 
   useEffect(() => {
     subscribeMethods({

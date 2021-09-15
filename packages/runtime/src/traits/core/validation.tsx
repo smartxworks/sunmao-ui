@@ -46,7 +46,7 @@ type ValidationProps = {
   rule: string;
 };
 
-const useValidationTrait: TraitImplementation<ValidationProps> = props => {
+const ValidationTraitImpl: TraitImplementation<ValidationProps> = props => {
   const { value, minLength, maxLength, rule } = props;
   let result: ValidationResult = {
     isValid: true,
@@ -78,9 +78,7 @@ const useValidationTrait: TraitImplementation<ValidationProps> = props => {
 
   return {
     props: {
-      data: {
-        validationResult: result,
-      },
+      data: result,
     },
   };
 };
@@ -116,9 +114,12 @@ export default {
           ...ValidationMaxLengthPropertySchema,
         },
       ],
-      state: {},
+      state: Type.Object({
+        isValid: Type.Boolean(),
+        errorMsg: Type.String(),
+      }),
       methods: [],
     },
   }),
-  impl: useValidationTrait,
+  impl: ValidationTraitImpl,
 };
