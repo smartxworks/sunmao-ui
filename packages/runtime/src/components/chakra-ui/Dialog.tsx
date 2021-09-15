@@ -9,10 +9,10 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-} from '@chakra-ui/react';
-import { Static, Type } from '@sinclair/typebox';
-import Slot from '../_internal/Slot';
-import { ColorSchemePropertySchema } from './Types/ColorScheme';
+} from "@chakra-ui/react";
+import { Static, Type } from "@sinclair/typebox";
+import Slot from "../_internal/Slot";
+import { ColorSchemePropertySchema } from "./Types/ColorScheme";
 
 const TitlePropertySchema = Type.Optional(Type.String());
 
