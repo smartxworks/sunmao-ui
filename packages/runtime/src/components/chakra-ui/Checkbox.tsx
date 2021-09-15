@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { Checkbox as BaseCheckbox } from '@chakra-ui/react';
+import {
+  Checkbox as BaseCheckbox,
+  useCheckboxGroupContext,
+} from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
+import _ from 'lodash';
 
+const ValueSchema = Type.Union([Type.String(), Type.Number()]);
 const DefaultIsCheckedSchema = Type.Optional(Type.Boolean());
 export const IsDisabledSchema = Type.Optional(Type.Boolean());
+const IsFocusableSchema = Type.Optional(Type.Boolean());
+const IsInvalidSchema = Type.Optional(Type.Boolean());
+const IsReadOnlySchema = Type.Optional(Type.Boolean());
+const IsRequiredSchema = Type.Optional(Type.Boolean());
+const SpacingSchema = Type.Optional(Type.String());
 export const SizePropertySchema = Type.KeyOf(
   Type.Object({
     sm: Type.String(),
@@ -15,14 +25,6 @@ export const SizePropertySchema = Type.KeyOf(
     lg: Type.String(),
   })
 );
-const IsFocusableSchema = Type.Optional(Type.Boolean());
-const IsInvalidSchema = Type.Optional(Type.Boolean());
-const IsReadOnlySchema = Type.Optional(Type.Boolean());
-const IsRequiredSchema = Type.Optional(Type.Boolean());
-const SpacingSchema = Type.Optional(Type.String());
-const IsCheckedSchema = Type.Optional(Type.Boolean());
-const IsIndeterminateSchema = Type.Optional(Type.Boolean());
-const ValueSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -30,42 +32,49 @@ const StateSchema = Type.Object({
 
 const Checkbox: ComponentImplementation<{
   text: TextProps['value'];
+  value: Static<typeof ValueSchema>;
   defaultIsChecked?: Static<typeof DefaultIsCheckedSchema>;
   isDisabled?: Static<typeof IsDisabledSchema>;
   isFocusable?: Static<typeof IsFocusableSchema>;
+  isInValid?: Static<typeof IsInvalidSchema>;
   isReadOnly?: Static<typeof IsReadOnlySchema>;
   isRequired?: Static<typeof IsRequiredSchema>;
-  colorScheme?: Static<typeof ColorSchemePropertySchema>;
   size?: Static<typeof SizePropertySchema>;
-  isInValid?: Static<typeof IsInvalidSchema>;
   spacing?: Static<typeof SpacingSchema>;
-  isChecked?: Static<typeof IsCheckedSchema>;
-  isIndeterminate?: Static<typeof IsIndeterminateSchema>;
-  value?: Static<typeof ValueSchema>;
+  colorScheme?: Static<typeof ColorSchemePropertySchema>;
 }> = ({
   text,
+  value,
   defaultIsChecked,
   isDisabled,
   isFocusable,
+  isInValid,
   isReadOnly,
   isRequired,
-  colorScheme,
   size,
-  isInValid,
   spacing,
-  isChecked,
-  isIndeterminate,
-  value,
+  colorScheme,
   mergeState,
 }) => {
-  const [checked, setChecked] = useState(defaultIsChecked);
+  const groupContext = useCheckboxGroupContext();
+  let _defaultIsChecked = false;
+  if (typeof defaultIsChecked === 'boolean') {
+    _defaultIsChecked = defaultIsChecked;
+  } else if (groupContext) {
+    _defaultIsChecked = groupContext.value.some(val => val === value);
+  }
+  const [checked, setChecked] = useState(_defaultIsChecked);
 
   useEffect(() => {
-    mergeState({ value: text.raw });
+    mergeState({ text: text.raw });
   }, [text.raw]);
 
   useEffect(() => {
-    mergeState({ value: checked });
+    mergeState({ value });
+  }, [value]);
+
+  useEffect(() => {
+    mergeState({ checked });
   }, [checked]);
 
   const args: {
@@ -77,17 +86,16 @@ const Checkbox: ComponentImplementation<{
 
   return (
     <BaseCheckbox
-      {...args}
+      value={value}
       defaultChecked={defaultIsChecked}
       isDisabled={isDisabled}
       isFocusable={isFocusable}
+      isInvalid={isInValid}
       isReadOnly={isReadOnly}
       isRequired={isRequired}
-      isInvalid={isInValid}
+      size={size}
       spacing={spacing}
-      isChecked={isChecked}
-      isIndeterminate={isIndeterminate}
-      value={value}
+      colorScheme={colorScheme}
       onChange={e => {
         setChecked(e.target.checked);
       }}>
@@ -110,6 +118,10 @@ export default {
           ...TextPropertySchema,
         },
         {
+          name: 'value',
+          ...ValueSchema,
+        },
+        {
           name: 'defaultIsChecked',
           ...DefaultIsCheckedSchema,
         },
@@ -122,6 +134,10 @@ export default {
           ...IsFocusableSchema,
         },
         {
+          name: 'isInValid',
+          ...IsInvalidSchema,
+        },
+        {
           name: 'isReadOnly',
           ...IsReadOnlySchema,
         },
@@ -130,32 +146,16 @@ export default {
           ...IsReadOnlySchema,
         },
         {
-          name: 'colorScheme',
-          ...ColorSchemePropertySchema,
-        },
-        {
           name: 'size',
           ...SizePropertySchema,
-        },
-        {
-          name: 'isInValid',
-          ...IsInvalidSchema,
         },
         {
           name: 'spacing',
           ...SpacingSchema,
         },
         {
-          name: 'isChecked',
-          ...IsCheckedSchema,
-        },
-        {
-          name: 'isIndeterminate',
-          ...IsIndeterminateSchema,
-        },
-        {
-          name: 'value',
-          ...ValueSchema,
+          name: 'colorScheme',
+          ...ColorSchemePropertySchema,
         },
       ],
       acceptTraits: [],
