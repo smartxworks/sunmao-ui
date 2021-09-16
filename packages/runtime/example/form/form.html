@@ -22,7 +22,15 @@
               id: 'root',
               type: 'chakra_ui/v1/root',
               properties: {},
-              traits: [],
+              traits: [
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'index',
+                    initialValue: '{{[]}}',
+                  },
+                },
+              ],
             },
             {
               id: 'form',
@@ -77,8 +85,6 @@
                 label: '邮箱',
                 fieldName: 'email',
                 isRequired: true,
-                isValid: '{{emailInput.isValid}}',
-                errorMsg: '{{emailInput.errorMsg}}',
               },
               traits: [
                 {
@@ -106,15 +112,6 @@
                     },
                   },
                 },
-                {
-                  type: 'core/v1/validation',
-                  properties: {
-                    value: '{{ emailInput.value || "" }}',
-                    maxLength: 20,
-                    minLength: 10,
-                    rule: 'email',
-                  },
-                },
               ],
             },
             {
@@ -124,8 +121,6 @@
                 label: '手机',
                 fieldName: 'phone',
                 isRequired: true,
-                isValid: '{{phoneInput.isValid}}',
-                errorMsg: '{{phoneInput.errorMsg}}',
               },
               traits: [
                 {

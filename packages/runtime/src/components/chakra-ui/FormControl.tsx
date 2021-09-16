@@ -1,35 +1,64 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
-import { Type } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
+import { ValidResultSchema } from '../../types/ValidResultSchema';
+import { watch } from '@vue-reactivity/watch';
+import { stateStore } from '../../store';
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
   fieldName: string;
   isRequired: boolean;
-  isValid: boolean;
-  errorMsg: string;
-}> = ({
-  label,
-  fieldName,
-  isRequired,
-  slotsMap,
-  isValid,
-  errorMsg,
-  mergeState,
-}) => {
+  // validResult?: Static<typeof ValidResultSchema>;
+}> = ({ label, fieldName, isRequired, slotsMap, mergeState }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [validResult, setValidResult] = useState({
+    isInvalid: false,
+    errorMsg: '',
+  });
+  const { isInvalid, errorMsg } = validResult;
+
   useEffect(() => {
+    const inputId = _.first(slotsMap?.get('content'))?.id || '';
+    return watch(
+      () => {
+        return stateStore[inputId].value;
+      },
+      newV => {
+        setInputValue(newV);
+      }
+    );
+  }, [slotsMap, setInputValue]);
+
+  useEffect(() => {
+    const inputId = _.first(slotsMap?.get('content'))?.id || '';
+    return watch(
+      () => {
+        return stateStore[inputId].validResult;
+      },
+      newV => {
+        setValidResult(newV);
+      }
+    );
+  }, [slotsMap, setValidResult]);
+
+  useEffect(() => {
+    console.log('merge', !!(isInvalid || (!inputValue && isRequired)));
     mergeState({
       inputId: _.first(slotsMap?.get('content'))?.id || '',
       fieldName,
+      isInvalid: !!(isInvalid || (!inputValue && isRequired)),
     });
-  }, [slotsMap, fieldName]);
+  }, [slotsMap, fieldName, isInvalid, isRequired, inputValue]);
 
   return (
-    <FormControl isRequired={isRequired} isInvalid={!isValid}>
+    <FormControl
+      isRequired={isRequired}
+      isInvalid={isInvalid || (!inputValue && isRequired)}>
       <FormLabel>{label}</FormLabel>
       <Slot slotsMap={slotsMap} slot="content" />
       <FormErrorMessage>{errorMsg}</FormErrorMessage>
@@ -58,19 +87,12 @@ export default {
           name: 'isRequired',
           ...Type.Boolean(),
         },
-        {
-          name: 'isValid',
-          ...Type.Boolean(),
-        },
-        {
-          name: 'errorMsg',
-          ...Type.String(),
-        },
       ],
       acceptTraits: [],
       state: Type.Object({
         inputId: Type.String(),
         fieldName: Type.String(),
+        isInvalid: Type.Boolean(),
       }),
       methods: [],
     },
