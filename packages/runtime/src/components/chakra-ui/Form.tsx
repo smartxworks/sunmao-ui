@@ -14,11 +14,6 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
   slotsMap,
   callbackMap,
 }) => {
-  const [validArray, setValidArray] = useState(() => {
-    const inputsAmount = slotsMap?.get('content')?.length || 0;
-    return Array(inputsAmount).fill(false);
-  });
-
   // 理论上说slotsMap是永远不变的
   const formControlIds = useMemo<string[]>(() => {
     return (
@@ -27,6 +22,17 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
       }) || []
     );
   }, [slotsMap]);
+
+  const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    setInvalidArray(
+      formControlIds.map(fcid => {
+        console.log('stateStore[fcid]', stateStore[fcid].isInvalid);
+        return stateStore[fcid].isInvalid;
+      })
+    );
+  }, []);
 
   useEffect(() => {
     subscribeMethods({
@@ -47,12 +53,10 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
     formControlIds.forEach((fcId, i) => {
       const stop = watch(
         () => {
-          const inputId = stateStore[fcId].inputId;
-          const state = stateStore[inputId];
-          return state.isValid;
+          return stateStore[fcId].isInvalid;
         },
         newV => {
-          setValidArray(oldValidArray => {
+          setInvalidArray(oldValidArray => {
             const newValidArray = [...oldValidArray];
             newValidArray[i] = newV;
             return newValidArray;
@@ -85,7 +89,7 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
   return (
     <form>
       <Slot slotsMap={slotsMap} slot="content" />
-      <Button disabled={validArray.some(v => !v)} onClick={onSubmit}>
+      <Button disabled={invalidArray.some(v => v)} onClick={onSubmit}>
         提交
       </Button>
     </form>
