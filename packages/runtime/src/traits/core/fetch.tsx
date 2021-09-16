@@ -2,6 +2,7 @@ import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { apiService } from '../../api-service';
 import { TraitImplementation } from '../../registry';
+import { CallMethodSchema } from '../../types/CallMethodSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
 
@@ -107,15 +108,7 @@ const HeaderPropertySchema = Type.Array(
   Type.Object({ key: Type.String(), value: Type.String() })
 );
 const BodyPropertySchema = Type.Any(); // Type.String()?
-const OnCompletePropertySchema = Type.Array(
-  Type.Object({
-    componentId: Type.String(),
-    method: Type.Object({
-      name: Type.String(),
-      parameters: Type.Any(),
-    }),
-  })
-);
+const OnCompletePropertySchema = Type.Array(CallMethodSchema);
 
 type FetchPropertySchema = {
   url: Static<typeof UrlPropertySchema>;
