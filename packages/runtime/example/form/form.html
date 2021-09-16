@@ -25,10 +25,45 @@
               traits: [],
             },
             {
+              id: 'form',
+              type: 'chakra_ui/v1/form',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                {
+                  type: 'core/v1/event',
+                  properties: {
+                    events: [
+                      {
+                        event: 'onSubmit',
+                        componentId: '$utils',
+                        method: {
+                          name: 'alert',
+                          parameters:
+                            '邮箱：{{ form.data ? form.data.email : "" }} 手机：{{ form.data ? form.data.phone : "" }}',
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
               id: 'emailFormControl',
               type: 'chakra_ui/v1/formControl',
               properties: {
                 label: '邮箱',
+                fieldName: 'email',
                 isRequired: true,
                 isValid: '{{emailInput.isValid}}',
                 errorMsg: '{{emailInput.errorMsg}}',
@@ -38,8 +73,8 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: 'root',
-                      slot: 'root',
+                      id: 'form',
+                      slot: 'content',
                     },
                   },
                 },
@@ -70,70 +105,53 @@
                 },
               ],
             },
-            // {
-            //   id: 'phoneInput',
-            //   type: 'chakra_ui/v1/input',
-            //   properties: {
-            //     size: 'lg',
-            //     left: {
-            //       type: 'addon',
-            //       children: '手机',
-            //     },
-            //   },
-            //   traits: [
-            //     {
-            //       type: 'core/v1/validation',
-            //       properties: {
-            //         value: '{{ phoneInput.value || "" }}',
-            //         maxLength: 100,
-            //         minLength: 0,
-            //         rule: 'phoneNumber',
-            //       },
-            //     },
-            //   ],
-            // },
-            // {
-            //   id: 'phoneValidationText',
-            //   type: 'core/v1/text',
-            //   properties: {
-            //     value: {
-            //       raw: '{{ phoneInput.errorMsg }}',
-            //       format: 'plain',
-            //     },
-            //   },
-            //   traits: [],
-            // },
-            // {
-            //   id: 'submitButton',
-            //   type: 'plain/v1/button',
-            //   properties: {
-            //     text: {
-            //       raw: '提交',
-            //       format: 'plain',
-            //     },
-            //   },
-            //   traits: [
-            //     {
-            //       type: 'core/v1/event',
-            //       properties: {
-            //         events: [
-            //           {
-            //             event: 'click',
-            //             componentId: '$utils',
-            //             method: {
-            //               name: 'alert',
-            //               parameters:
-            //                 '{{ `邮箱：${ emailInput.value } 手机号：${ phoneInput.value }` }}',
-            //             },
-            //             wait: {},
-            //             disabled:
-            //               '{{ !emailInput.isValid || !phoneInput.isValid }}',
-            //           },
-            //         ],
-            //       },
-            //     },
-            //   ],
-            // },
+            {
+              id: 'phoneFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '手机',
+                fieldName: 'phone',
+                isRequired: true,
+                isValid: '{{phoneInput.isValid}}',
+                errorMsg: '{{phoneInput.errorMsg}}',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'phoneInput',
+              type: 'chakra_ui/v1/input',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'phoneFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+                {
+                  type: 'core/v1/validation',
+                  properties: {
+                    value: '{{ phoneInput.value || "" }}',
+                    maxLength: 100,
+                    minLength: 0,
+                    rule: 'phoneNumber',
+                  },
+                },
+              ],
+            },
           ],
         },
       });

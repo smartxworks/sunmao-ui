@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
 import { Type } from '@sinclair/typebox';
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
@@ -7,10 +8,26 @@ import Slot from '../_internal/Slot';
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
+  fieldName: string;
   isRequired: boolean;
   isValid: boolean;
   errorMsg: string;
-}> = ({ label, isRequired, slotsMap, isValid, errorMsg }) => {
+}> = ({
+  label,
+  fieldName,
+  isRequired,
+  slotsMap,
+  isValid,
+  errorMsg,
+  mergeState,
+}) => {
+  useEffect(() => {
+    mergeState({
+      inputId: _.first(slotsMap?.get('content'))?.id || '',
+      fieldName,
+    });
+  }, [slotsMap, fieldName]);
+
   return (
     <FormControl isRequired={isRequired} isInvalid={!isValid}>
       <FormLabel>{label}</FormLabel>
@@ -34,6 +51,10 @@ export default {
           ...Type.String(),
         },
         {
+          name: 'fieldName',
+          ...Type.String(),
+        },
+        {
           name: 'isRequired',
           ...Type.Boolean(),
         },
@@ -47,7 +68,10 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: {},
+      state: Type.Object({
+        inputId: Type.String(),
+        fieldName: Type.String(),
+      }),
       methods: [],
     },
   }),
