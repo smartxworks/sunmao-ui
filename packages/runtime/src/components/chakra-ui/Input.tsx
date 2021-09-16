@@ -85,6 +85,9 @@ const Input: ComponentImplementation<{
       setInputValue({ value }) {
         setValue(value);
       },
+      resetInputValue() {
+        setValue(initialValue || '');
+      },
     });
   }, []);
 
@@ -183,6 +186,9 @@ export default {
           parameters: Type.Object({
             value: Type.String(),
           }),
+        },
+        {
+          name: 'resetInputValue',
         },
       ],
     },
