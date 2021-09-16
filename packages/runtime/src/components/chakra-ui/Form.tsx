@@ -6,9 +6,11 @@ import Slot from '../_internal/Slot';
 import { Button } from '@chakra-ui/react';
 import { stateStore } from '../../store';
 import { watch } from '@vue-reactivity/watch';
+import { apiService } from '../../api-service';
 
 const FormImpl: ComponentImplementation<Record<string, string>> = ({
   mergeState,
+  subscribeMethods,
   slotsMap,
   callbackMap,
 }) => {
@@ -25,6 +27,20 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
       }) || []
     );
   }, [slotsMap]);
+
+  useEffect(() => {
+    subscribeMethods({
+      resetForm() {
+        formControlIds.forEach(fcId => {
+          const inputId = stateStore[fcId].inputId;
+          apiService.send('uiMethod', {
+            componentId: inputId,
+            name: 'resetInputValue',
+          });
+        });
+      },
+    });
+  }, [formControlIds]);
 
   useEffect(() => {
     const stops: ReturnType<typeof watch>[] = [];
@@ -89,7 +105,11 @@ export default {
       state: Type.Object({
         data: Type.Any(),
       }),
-      methods: [],
+      methods: [
+        {
+          name: 'resetForm',
+        },
+      ],
     },
   }),
   impl: FormImpl,
