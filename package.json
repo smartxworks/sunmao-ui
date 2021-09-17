@@ -2,9 +2,15 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "lerna": "lerna"
+    "lerna": "lerna",
+    "lint": "eslint packages --ext .ts --ext .tsx",
+    "fix-lint": "eslint --fix packages --ext .ts --ext .tsx"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.25.1",
     "husky": "^6.0.0",
     "lerna": "^4.0.0",
     "lint-staged": "^11.0.0",
@@ -19,8 +25,9 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx,html,json}": [
+    "*.{ts,tsx,html}": [
       "prettier --write",
+      "eslint --fix",
       "git add"
     ]
   }

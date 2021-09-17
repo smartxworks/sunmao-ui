@@ -18,7 +18,7 @@ type ApplicationComponent = {
   id: string;
   type: string;
   // do runtime type check
-  properties: object;
+  properties: Record<string, unknown>;
   traits: ComponentTrait[];
   // scopes TBD
 };
@@ -26,7 +26,7 @@ type ApplicationComponent = {
 type ComponentTrait = {
   type: string;
   // do runtime type check
-  properties: object;
+  properties: Record<string, unknown>;
 };
 
 type VersionAndName = {
@@ -60,7 +60,7 @@ function parseType(v: string): VersionAndName {
     throw new Error(`Invalid type string: "${v}"`);
   }
 
-  const [, version, name] = v.match(TYPE_REG)!;
+  const [, version, name] = v.match(TYPE_REG) ?? [];
   return {
     version,
     name,

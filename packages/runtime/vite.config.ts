@@ -10,7 +10,7 @@ export default defineConfig({
   },
   esbuild: {
     // https://dev.to/ajitsinghkamal/using-emotionjs-with-vite-2ndj
-    jsxFactory: `jsx`,
-    jsxInject: `import { jsx } from '@emotion/react'`,
+    jsxFactory: 'jsx',
+    jsxInject: 'import { jsx } from "@emotion/react"',
   },
 });

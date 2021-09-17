@@ -1,41 +1,41 @@
-import { createComponent } from "../src/component";
+import { createComponent } from '../src/component';
 
-describe("component", () => {
-  it("can create runtime component", () => {
+describe('component', () => {
+  it('can create runtime component', () => {
     expect(
       createComponent({
-        version: "core/v1",
+        version: 'core/v1',
         metadata: {
-          name: "test_component",
+          name: 'test_component',
         },
 
         spec: {
           properties: [
             {
-              name: "x",
-              type: "string",
+              name: 'x',
+              type: 'string',
             },
           ],
 
           acceptTraits: [
             {
-              name: "t1",
+              name: 't1',
             },
           ],
 
           state: {
-            type: "string",
+            type: 'string',
           },
 
           methods: [
             {
-              name: "reset",
+              name: 'reset',
             },
 
             {
-              name: "add",
+              name: 'add',
               parameters: {
-                type: "number",
+                type: 'number',
               },
             },
           ],

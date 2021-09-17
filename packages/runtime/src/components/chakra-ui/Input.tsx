@@ -94,13 +94,11 @@ const Input: ComponentImplementation<{
     <InputGroup size={size}>
       {left ? (
         left.type === 'addon' ? (
-          <InputLeftAddon children={left.children} />
+          <InputLeftAddon>{left.children}</InputLeftAddon>
         ) : (
-          <InputLeftElement
-            children={left.children}
-            fontSize={left.fontSize}
-            color={left.color}
-          />
+          <InputLeftElement fontSize={left.fontSize} color={left.color}>
+            {left.children}
+          </InputLeftElement>
         )
       ) : (
         <></>
@@ -116,13 +114,11 @@ const Input: ComponentImplementation<{
       />
       {right ? (
         right.type === 'addon' ? (
-          <InputRightAddon children={right.children} />
+          <InputRightAddon>{right.children}</InputRightAddon>
         ) : (
-          <InputRightElement
-            children={right.children}
-            fontSize={right.fontSize}
-            color={right.color}
-          />
+          <InputRightElement fontSize={right.fontSize} color={right.color}>
+            {right.children}
+          </InputRightElement>
         )
       ) : (
         <></>

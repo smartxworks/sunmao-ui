@@ -1,27 +1,27 @@
-import { createApplication } from "../src/application";
+import { createApplication } from '../src/application';
 
-describe("application", () => {
-  it("can create runtime application", () => {
+describe('application', () => {
+  it('can create runtime application', () => {
     expect(
       createApplication({
-        version: "demo/v1",
+        version: 'demo/v1',
         metadata: {
-          name: "test-app",
-          description: "first application",
+          name: 'test-app',
+          description: 'first application',
         },
 
         spec: {
           components: [
             {
-              id: "input1",
-              type: "core/v1/test_component",
+              id: 'input1',
+              type: 'core/v1/test_component',
               properties: {
-                x: "foo",
+                x: 'foo',
               },
 
               traits: [
                 {
-                  type: "core/v1/test_trait",
+                  type: 'core/v1/test_trait',
                   properties: {
                     width: 2,
                   },

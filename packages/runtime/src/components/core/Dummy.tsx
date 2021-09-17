@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 
 const Dummy = () => {
