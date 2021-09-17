@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
+import { Type } from '@sinclair/typebox';
+import {
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+} from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
-import { ValidResultSchema } from '../../types/ValidResultSchema';
 import { watch } from '@vue-reactivity/watch';
 import { stateStore } from '../../store';
 
@@ -13,8 +17,8 @@ const FormControlImpl: ComponentImplementation<{
   label: string;
   fieldName: string;
   isRequired: boolean;
-  // validResult?: Static<typeof ValidResultSchema>;
-}> = ({ label, fieldName, isRequired, slotsMap, mergeState }) => {
+  helperText: string;
+}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState }) => {
   const [inputValue, setInputValue] = useState('');
   const [validResult, setValidResult] = useState({
     isInvalid: false,
@@ -47,7 +51,6 @@ const FormControlImpl: ComponentImplementation<{
   }, [slotsMap, setValidResult]);
 
   useEffect(() => {
-    console.log('merge', !!(isInvalid || (!inputValue && isRequired)));
     mergeState({
       inputId: _.first(slotsMap?.get('content'))?.id || '',
       fieldName,
@@ -62,6 +65,7 @@ const FormControlImpl: ComponentImplementation<{
       <FormLabel>{label}</FormLabel>
       <Slot slotsMap={slotsMap} slot="content" />
       <FormErrorMessage>{errorMsg}</FormErrorMessage>
+      <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   );
 };
@@ -86,6 +90,10 @@ export default {
         {
           name: 'isRequired',
           ...Type.Boolean(),
+        },
+        {
+          name: 'helperText',
+          ...Type.String(),
         },
       ],
       acceptTraits: [],
