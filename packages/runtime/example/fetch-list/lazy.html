@@ -52,7 +52,7 @@
               type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: `{{fetch_list.query.loading? "Fetching": fetch_list.query.data? JSON.stringify(fetch_list.query.data): fetch_list.query.error? fetch_list.query.error.message: "No data"}}`,
+                  raw: `{{fetch_list.fetch.loading? "Fetching": fetch_list.fetch.data? JSON.stringify(fetch_list.fetch.data): fetch_list.fetch.error? fetch_list.fetch.error.message: "No data"}}`,
                   format: 'md',
                 },
               },

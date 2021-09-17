@@ -14,6 +14,7 @@ import { watch } from '@vue-reactivity/watch';
 import _ from 'lodash';
 import copy from 'copy-to-clipboard';
 import { globalHandlerMap } from './handler';
+import { initStateAndMethod } from './utils/initStateAndMethod';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
@@ -75,35 +76,44 @@ export const ImplWrapper = React.forwardRef<
   }, []);
 
   // result returned from traits
-  const [traitResults, setTraitResults] = useState<TraitResult[]>([]);
+  const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
+    return c.traits.map(trait =>
+      excecuteTrait(trait, deepEval(trait.properties).result)
+    );
+  });
+
+  function excecuteTrait(
+    trait: ApplicationTrait,
+    traitProperty: ApplicationTrait['properties']
+  ) {
+    const tImpl = registry.getTrait(
+      trait.parsedType.version,
+      trait.parsedType.name
+    ).impl;
+    return tImpl({
+      ...traitProperty,
+      componentId: c.id,
+      mergeState,
+      subscribeMethods,
+    });
+  }
 
   // eval traits' properties then excecute traits
   useEffect(() => {
-    function excecuteTrait(
-      trait: ApplicationTrait,
-      traitProperty: ApplicationTrait['properties']
-    ) {
-      const tImpl = registry.getTrait(
-        trait.parsedType.version,
-        trait.parsedType.name
-      ).impl;
-      const traitResult = tImpl({
-        ...traitProperty,
-        componentId: c.id,
-        mergeState,
-        subscribeMethods,
-      });
-      setTraitResults(results => results.concat(traitResult));
-    }
-
     const stops: ReturnType<typeof watch>[] = [];
-    for (const t of c.traits) {
-      const { stop, result } = deepEval(t.properties, ({ result }) => {
-        excecuteTrait(t, { ...result });
+    c.traits.forEach((t, i) => {
+      const { stop } = deepEval(t.properties, ({ result: property }) => {
+        const traitResult = excecuteTrait(t, property);
+        setTraitResults(oldResults => {
+          // assume traits number and order will not change
+          const newResults = [...oldResults];
+          newResults[i] = traitResult;
+          return newResults;
+        });
+        stops.push(stop);
       });
-      excecuteTrait(t, { ...result });
-      stops.push(stop);
-    }
+    });
+
     return () => stops.forEach(s => s());
   }, [c.traits]);
 
@@ -119,18 +129,18 @@ export const ImplWrapper = React.forwardRef<
 
   // component properties
   const [evaledComponentProperties, setEvaledComponentProperties] = useState(
-    merge(deepEval(c.properties).result, propsFromTraits)
+    () => {
+      return merge(deepEval(c.properties).result, propsFromTraits);
+    }
   );
 
   // eval component properties
   useEffect(() => {
-    const { stop, result } = deepEval(c.properties, ({ result }) => {
+    const { stop } = deepEval(c.properties, ({ result }) => {
       setEvaledComponentProperties({ ...result });
     });
-
-    setEvaledComponentProperties(result);
     return stop;
-  }, []);
+  }, [c.properties]);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
@@ -282,6 +292,8 @@ const App: React.FC<{
   debugEvent?: boolean;
 }> = ({ options, debugStore = true, debugEvent = true }) => {
   const app = createApplication(options);
+  initStateAndMethod(app.spec.components);
+
   const { topLevelComponents, slotComponentsMap } = useMemo(
     () => resolveAppComponents(app.spec.components, app),
     [app]
