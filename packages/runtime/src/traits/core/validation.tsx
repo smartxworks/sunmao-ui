@@ -54,27 +54,25 @@ const ValidationTraitImpl: TraitImplementation<ValidationProps> = props => {
   const { value, minLength, maxLength, mergeState, componentId, rule } = props;
 
   const result: ValidationResult = {
-    isInvalid: true,
+    isInvalid: false,
     errorMsg: '',
   };
 
-  if (value) {
-    if (value.length > maxLength) {
-      result.isInvalid = true;
-      result.errorMsg = `最长不能超过${maxLength}个字符`;
-    } else if (value.length < minLength) {
-      result.isInvalid = true;
-      result.errorMsg = `不能少于${minLength}个字符`;
-    }
-
-    const rulesArr = rule.split(',');
+  if (value.length > maxLength) {
+    result.isInvalid = true;
+    result.errorMsg = `最长不能超过${maxLength}个字符`;
+  } else if (value.length < minLength) {
+    result.isInvalid = true;
+    result.errorMsg = `不能少于${minLength}个字符`;
+  } else {
+    const rulesArr = rule ? rule.split(',') : [];
     for (const ruleName of rulesArr) {
       const validateFunc = rules.get(ruleName);
       if (validateFunc) {
         const { isInvalid, errorMsg } = validateFunc(value);
-        result.isInvalid = isInvalid;
-        result.errorMsg = errorMsg;
         if (isInvalid) {
+          result.isInvalid = true;
+          result.errorMsg = errorMsg;
           break;
         }
       }

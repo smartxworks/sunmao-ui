@@ -19,6 +19,22 @@
         spec: {
           components: [
             {
+              id: 'fetchVolumes',
+              type: 'core/v1/dummy',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/fetch',
+                  properties: {
+                    name: 'query',
+                    url: 'https://61373521eac1410017c18209.mockapi.io/Volume',
+                    method: 'get',
+                    lazy: false,
+                  },
+                },
+              ],
+            },
+            {
               id: 'createVolume',
               type: 'core/v1/dummy',
               properties: {},
@@ -42,6 +58,9 @@
                             id: 'createSuccessToast',
                             title: '太棒了',
                             description: '创建虚拟卷成功了',
+                            position: 'bottom-right',
+                            duration: null,
+                            isClosable: true,
                           },
                         },
                       },
@@ -50,6 +69,41 @@
                         method: {
                           name: 'resetForm',
                         },
+                      },
+                      {
+                        componentId: 'fetchVolumes',
+                        method: {
+                          name: 'triggerFetch',
+                          parameters: 'query',
+                        },
+                        wait: {},
+                        disabled: 'false',
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: 'deleteVolume',
+              type: 'core/v1/dummy',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/fetch',
+                  properties: {
+                    url: 'https://61373521eac1410017c18209.mockapi.io/Volume/{{ table.selectedItem ? table.selectedItem.id : "" }}',
+                    method: 'delete',
+                    lazy: true,
+                    onComplete: [
+                      {
+                        componentId: 'fetchVolumes',
+                        method: {
+                          name: 'triggerFetch',
+                          parameters: 'query',
+                        },
+                        wait: {},
+                        disabled: 'false',
                       },
                     ],
                   },
@@ -63,8 +117,8 @@
               traits: [],
             },
             {
-              id: 'form',
-              type: 'chakra_ui/v1/form',
+              id: 'hStack',
+              type: 'chakra_ui/v1/hstack',
               properties: {},
               traits: [
                 {
@@ -73,6 +127,94 @@
                     container: {
                       id: 'root',
                       slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'table',
+              type: 'chakra_ui/v1/table',
+              properties: {
+                data: '{{ fetchVolumes.fetch.data }}',
+                majorKey: 'id',
+                rowsPerPage: 5,
+                columns: [
+                  {
+                    key: 'id',
+                    title: 'ID',
+                    type: 'text',
+                  },
+                  {
+                    key: 'name',
+                    title: '名称',
+                    type: 'text',
+                  },
+                  {
+                    key: 'type',
+                    title: '类别',
+                    type: 'text',
+                    displayValue:
+                      '{{$listItem.type === "sharing" ? "共享虚拟卷" : "虚拟卷"}}',
+                  },
+                  {
+                    key: 'size',
+                    title: '容量',
+                    type: 'text',
+                    displayValue: '{{$listItem.size}} GiB',
+                  },
+                  {
+                    key: 'policy',
+                    title: '存储策略',
+                    type: 'text',
+                  },
+                  {
+                    key: 'isActive',
+                    title: '是否激活',
+                    type: 'text',
+                    displayValue: '{{$listItem.isActive ? "是" : "否"}}',
+                  },
+                  {
+                    key: 'operation',
+                    title: '操作',
+                    type: 'button',
+                    buttonConfig: {
+                      text: '删除',
+                      events: [
+                        {
+                          componentId: 'deleteVolume',
+                          method: {
+                            name: 'triggerFetch',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'hStack',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'form',
+              type: 'chakra_ui/v1/form',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'hStack',
+                      slot: 'content',
                     },
                   },
                 },
@@ -89,18 +231,6 @@
                         wait: {},
                         disabled: false,
                       },
-                      // {
-                      //   event: 'onSubmit',
-                      //   componentId: 'form',
-                      //   method: {
-                      //     name: 'resetForm',
-                      //   },
-                      //   wait: {
-                      //     type: 'delay',
-                      //     time: 1000,
-                      //   },
-                      //   disabled: false,
-                      // },
                     ],
                   },
                 },
@@ -129,7 +259,10 @@
             {
               id: 'nameInput',
               type: 'chakra_ui/v1/input',
-              properties: {},
+              properties: {
+                defaultValue:
+                  '{{ table.selectedItem ? table.selectedItem.name : "" }}',
+              },
               traits: [
                 {
                   type: 'core/v1/slot',
@@ -138,6 +271,14 @@
                       id: 'nameFormControl',
                       slot: 'content',
                     },
+                  },
+                },
+                {
+                  type: 'core/v1/validation',
+                  properties: {
+                    value: '{{ nameInput.value || "" }}',
+                    maxLength: 10,
+                    minLength: 2,
                   },
                 },
               ],
@@ -167,7 +308,8 @@
               id: 'typeRadioGroup',
               type: 'chakra_ui/v1/radio_group',
               properties: {
-                defaultValue: 'notSharing',
+                defaultValue:
+                  '{{ table.selectedItem ? table.selectedItem.type : "notSharing" }}',
               },
               traits: [
                 {
@@ -250,6 +392,8 @@
               id: 'sizeInput',
               type: 'chakra_ui/v1/number_input',
               properties: {
+                defaultValue:
+                  '{{ table.selectedItem ? table.selectedItem.size : 0 }}',
                 min: 0,
                 max: 100,
                 step: 5,
@@ -292,7 +436,8 @@
               id: 'policySelect',
               type: 'chakra_ui/v1/select',
               properties: {
-                defaultValue: '2thin',
+                defaultValue:
+                  '{{ table.selectedItem ? table.selectedItem.policy : "2thin" }}',
                 options: [
                   {
                     value: '2thin',
@@ -318,6 +463,49 @@
                   properties: {
                     container: {
                       id: 'policyFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'isActiveFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '激活',
+                fieldName: 'isActive',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'checkbox',
+              type: 'chakra_ui/v1/checkbox',
+              properties: {
+                value: 'isActive',
+                defaultIsChecked:
+                  '{{table.selectedItem ? !!table.selectedItem.isActive : false}}',
+                text: {
+                  raw: '激活',
+                  format: 'plain',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'isActiveFormControl',
                       slot: 'content',
                     },
                   },

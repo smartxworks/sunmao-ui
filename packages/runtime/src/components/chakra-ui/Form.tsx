@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Type } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
@@ -7,6 +7,7 @@ import { Button } from '@chakra-ui/react';
 import { stateStore } from '../../store';
 import { watch } from '@vue-reactivity/watch';
 import { apiService } from '../../api-service';
+import { CheckboxStateSchema } from './Checkbox';
 
 const FormImpl: ComponentImplementation<Record<string, string>> = ({
   mergeState,
@@ -73,11 +74,18 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
   }, []);
 
   const onSubmit = () => {
-    const data: Record<string, string> = {};
+    const data: Record<string, string | boolean> = {};
     formControlIds.forEach(fcId => {
       const fcState = stateStore[fcId];
       const fieldName = fcState.fieldName;
-      data[fieldName] = stateStore[fcState.inputId].value;
+      if (stateStore[fcState.inputId].checked !== undefined) {
+        // special treatment for checkbox
+        data[fieldName] = (
+          stateStore[fcState.inputId] as Static<typeof CheckboxStateSchema>
+        ).checked;
+      } else {
+        data[fieldName] = stateStore[fcState.inputId].value;
+      }
     });
     mergeState({
       data,

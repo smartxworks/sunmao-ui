@@ -20,6 +20,8 @@ const FormControlImpl: ComponentImplementation<{
   helperText: string;
 }> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState }) => {
   const [inputValue, setInputValue] = useState('');
+  // don't show Invalid state on component mount
+  const [hideInvalid, setHideInvalid] = useState(true);
   const [validResult, setValidResult] = useState({
     isInvalid: false,
     errorMsg: '',
@@ -51,6 +53,10 @@ const FormControlImpl: ComponentImplementation<{
   }, [slotsMap, setValidResult]);
 
   useEffect(() => {
+    if (inputValue) {
+      // After inputValue first change, begin to show Invalid state
+      setHideInvalid(false);
+    }
     mergeState({
       inputId: _.first(slotsMap?.get('content'))?.id || '',
       fieldName,
@@ -61,7 +67,7 @@ const FormControlImpl: ComponentImplementation<{
   return (
     <FormControl
       isRequired={isRequired}
-      isInvalid={isInvalid || (!inputValue && isRequired)}>
+      isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}>
       <FormLabel>{label}</FormLabel>
       <Slot slotsMap={slotsMap} slot="content" />
       <FormErrorMessage>{errorMsg}</FormErrorMessage>
