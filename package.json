@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "lerna": "lerna",
+    "build:ci": "lerna run build",
+    "test:ci": "jest -c config/jest.ci.js",
     "lint": "eslint packages --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix packages --ext .ts --ext .tsx"
   },
