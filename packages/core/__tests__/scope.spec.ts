@@ -1,12 +1,12 @@
-import { createScope } from "../src/scope";
+import { createScope } from '../src/scope';
 
-describe("scope", () => {
-  it("can create runtime scope", () => {
+describe('scope', () => {
+  it('can create runtime scope', () => {
     expect(
       createScope({
-        version: "core/v1",
+        version: 'core/v1',
         metadata: {
-          name: "test_scope",
+          name: 'test_scope',
         },
       })
     ).toMatchInlineSnapshot(`

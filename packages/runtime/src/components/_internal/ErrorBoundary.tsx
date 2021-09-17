@@ -1,7 +1,10 @@
 import React from 'react';
 
-class ErrorBoundary extends React.Component<{}, { error: unknown }> {
-  constructor(props: {}) {
+class ErrorBoundary extends React.Component<
+  Record<string, unknown>,
+  { error: unknown }
+> {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.state = { error: null };
   }

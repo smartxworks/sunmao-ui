@@ -33,10 +33,10 @@ const useEventTrait: TraitImplementation<{
       event.wait.type === 'debounce'
         ? debounce(handler, event.wait.time)
         : event.wait.type === 'throttle'
-        ? throttle(handler, event.wait.time)
-        : event.wait.type === 'delay'
-        ? () => delay(handler, event.wait.time)
-        : handler
+          ? throttle(handler, event.wait.time)
+          : event.wait.type === 'delay'
+            ? () => delay(handler, event.wait.time)
+            : handler
     );
   }
 

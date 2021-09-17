@@ -191,7 +191,7 @@ type NestedProps = RouteLikeElement & { base: string };
 // all route-like component must have path property, wouter use path to determined if a component match the route
 // but we need path to match both nested router itself and its child route, so we need to have an alternative property called base as the real path of the nested router
 // and used by its children
-export const Nested: React.FC<NestedProps> = ({ children, path, base }) => {
+export const Nested: React.FC<NestedProps> = ({ children, base }) => {
   const router = useRouter();
   const [parentLocation] = useLocation();
 
@@ -237,7 +237,7 @@ export const Redirect: React.FC<RedirectProps> = props => {
   // empty array means running the effect once, navRef is a ref so it never changes
   useLayoutEffect(() => {
     navRef.current!();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 };
@@ -253,11 +253,11 @@ const flattenChildren = (
   }
   return Array.isArray(children)
     ? ([] as ReactElement<RouteProps>[]).concat(
-        ...children.map(c =>
-          c.type === Fragment
-            ? flattenChildren(c.props.children as ReactElement<RouteProps>)
-            : flattenChildren(c)
-        )
+      ...children.map(c =>
+        c.type === Fragment
+          ? flattenChildren(c.props.children as ReactElement<RouteProps>)
+          : flattenChildren(c)
       )
+    )
     : [children];
 };

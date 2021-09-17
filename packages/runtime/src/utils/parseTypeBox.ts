@@ -29,7 +29,7 @@ export function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
 
     case ObjectKind:
       const obj: Static<typeof tSchema> = {};
-      for (let key in tSchema.properties) {
+      for (const key in tSchema.properties) {
         obj[key] = parseTypeBox(tSchema.properties[key]);
       }
       return obj;

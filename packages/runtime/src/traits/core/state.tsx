@@ -11,7 +11,7 @@ const useStateTrait: TraitImplementation<{
   initialValue: Static<typeof InitialValuePropertySchema>;
 }> = ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
   const hashId = `#${componentId}@${key}`;
-  let hasInitialized = HasInitializedMap.get(hashId);
+  const hasInitialized = HasInitializedMap.get(hashId);
 
   if (!hasInitialized) {
     mergeState({ [key]: initialValue });

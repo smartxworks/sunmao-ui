@@ -14,7 +14,7 @@ export function parseVersion(v: string): Version {
     throw new Error(`Invalid version string: "${v}"`);
   }
 
-  const [, category, value] = v.match(VERSION_REG)!;
+  const [, category, value] = v.match(VERSION_REG) || [];
   return {
     category,
     value,

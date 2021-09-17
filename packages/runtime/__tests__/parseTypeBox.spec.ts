@@ -1,5 +1,4 @@
 import { Type } from '@sinclair/typebox';
-import { m } from 'framer-motion';
 import { parseTypeBox } from '../src/utils/parseTypeBox';
 
 describe('parseTypeBox function', () => {
