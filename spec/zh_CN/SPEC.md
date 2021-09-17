@@ -63,7 +63,6 @@ Component 的模型定义了自身对外提供的配置项与可接受的 trait�
 | --------- | ------ | -------- | ------------- | ----------- |
 | name      | String | Y        |               | Trait 名称  |
 
-
 ### MethodSchema
 
 | Attribute  | Type       | Required | Default Value | Description |
@@ -255,15 +254,16 @@ Application 由平台使用者定义，描述了哪些 Component、Trait、Scope
 | Attribute  | Type                   | Required | Default Value | Description                     |
 | ---------- | ---------------------- | -------- | ------------- | ------------------------------- |
 | components | ApplicationComponent[] | Y        |               | Application 中的 Component 配置 |
+
 ### ApplicationComponent
 
-| Attribute  | Type                                | Required | Default Value | Description                                      |
-| ---------- | ----------------------------------- | -------- | ------------- | ------------------------------------------------ |
-| id         | String                              | Y        |               | Component 在应用中的唯一标识                     |
-| type       | String                              | Y        |               | 对应 Component `metadata` 中的 `name`            |
-| properties | JSON                                | Y        |               | 对应 Component `spec` 中 `properties` 定义的模型 |
-| traits     | [ComponentTrait](#ComponentTrait)[] | Y        |               | Component 使用的 Trait 定义                      |
-| scopes     |                                     | N        |               | TO_BE_DETERMINED                                 |
+| Attribute  | Type                                | Required | Default Value | Description                                                           |
+| ---------- | ----------------------------------- | -------- | ------------- | --------------------------------------------------------------------- |
+| id         | String                              | Y        |               | Component 在应用中的唯一标识，需满足正则：/[a-zA-Z\_$][0-9a-za-z_$]+/ |
+| type       | String                              | Y        |               | 对应 Component `metadata` 中的 `name`                                 |
+| properties | JSON                                | Y        |               | 对应 Component `spec` 中 `properties` 定义的模型                      |
+| traits     | [ComponentTrait](#ComponentTrait)[] | Y        |               | Component 使用的 Trait 定义                                           |
+| scopes     |                                     | N        |               | TO_BE_DETERMINED                                                      |
 
 ### ComponentTrait
 
@@ -326,4 +326,3 @@ Application 由平台使用者定义，描述了哪些 Component、Trait、Scope
   }
 }
 ```
-
