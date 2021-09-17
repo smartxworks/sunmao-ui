@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: input validation component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'api form',
+          description: 'api form example',
+        },
+        spec: {
+          components: [
+            {
+              id: 'createVolume',
+              type: 'core/v1/dummy',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/fetch',
+                  properties: {
+                    url: 'https://61373521eac1410017c18209.mockapi.io/Volume',
+                    method: 'post',
+                    lazy: true,
+                    headers: [
+                      { key: 'Content-Type', value: 'application/json' },
+                    ],
+                    body: '{{ form.data }}',
+                    onComplete: [
+                      {
+                        componentId: '$utils',
+                        method: {
+                          name: 'toast.open',
+                          parameters: {
+                            id: 'createSuccessToast',
+                            title: '太棒了',
+                            description: '创建虚拟卷成功了',
+                          },
+                        },
+                      },
+                      {
+                        componentId: 'form',
+                        method: {
+                          name: 'resetForm',
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: 'root',
+              type: 'chakra_ui/v1/root',
+              properties: {},
+              traits: [],
+            },
+            {
+              id: 'form',
+              type: 'chakra_ui/v1/form',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                {
+                  type: 'core/v1/event',
+                  properties: {
+                    events: [
+                      {
+                        event: 'onSubmit',
+                        componentId: 'createVolume',
+                        method: {
+                          name: 'triggerFetch',
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                      // {
+                      //   event: 'onSubmit',
+                      //   componentId: 'form',
+                      //   method: {
+                      //     name: 'resetForm',
+                      //   },
+                      //   wait: {
+                      //     type: 'delay',
+                      //     time: 1000,
+                      //   },
+                      //   disabled: false,
+                      // },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: 'nameFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '名称',
+                fieldName: 'name',
+                isRequired: true,
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'nameInput',
+              type: 'chakra_ui/v1/input',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'nameFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'typeFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '类型',
+                fieldName: 'type',
+                helperText:
+                  '共享虚拟卷支持被多台虚拟机同时挂载。类型创建后不可修改。',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'typeRadioGroup',
+              type: 'chakra_ui/v1/radio_group',
+              properties: {
+                defaultValue: 'notSharing',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'typeFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'radio1',
+              type: 'chakra_ui/v1/radio',
+              properties: {
+                text: {
+                  raw: '虚拟卷',
+                  format: 'plain',
+                },
+                value: 'notSharing',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'typeRadioGroup',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'radio2',
+              type: 'chakra_ui/v1/radio',
+              properties: {
+                text: {
+                  raw: '共享虚拟卷',
+                  format: 'plain',
+                },
+                value: 'sharing',
+                size: 'md',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'typeRadioGroup',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'sizeFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '容量',
+                fieldName: 'size',
+                isRequired: true,
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'sizeInput',
+              type: 'chakra_ui/v1/number_input',
+              properties: {
+                min: 0,
+                max: 100,
+                step: 5,
+                precision: 2,
+                clampValueOnBlur: false,
+                allowMouseWheel: true,
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'sizeFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'policyFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '存储策略',
+                fieldName: 'policy',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'policySelect',
+              type: 'chakra_ui/v1/select',
+              properties: {
+                defaultValue: '2thin',
+                options: [
+                  {
+                    value: '2thin',
+                    label: '2 副本，精简置备',
+                  },
+                  {
+                    value: '3thin',
+                    label: '3 副本，精简置备',
+                  },
+                  {
+                    value: '2thick',
+                    label: '2 副本，厚置备',
+                  },
+                  {
+                    value: '3thick',
+                    label: '3 副本，厚置备',
+                  },
+                ],
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'policyFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

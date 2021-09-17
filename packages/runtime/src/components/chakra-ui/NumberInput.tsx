@@ -56,18 +56,31 @@ const NumberInput: ComponentImplementation<{
   customerIncrement,
   customerDecrement,
   mergeState,
+  subscribeMethods,
 }) => {
   const [value, setValue] = useState(defaultValue);
-  const onChange = (valueAsString: string, valueAsNumber: number) =>
+  const onChange = (_: string, valueAsNumber: number) =>
     setValue(valueAsNumber);
 
   useEffect(() => {
     mergeState({ value });
   }, [value]);
 
+  useEffect(() => {
+    subscribeMethods({
+      setInputValue({ value }) {
+        setValue(value);
+      },
+      resetInputValue() {
+        setValue(defaultValue);
+      },
+    });
+  }, []);
+
   return (
     <BaseNumberInput
       defaultValue={defaultValue}
+      value={value}
       min={min}
       max={max}
       step={step}
@@ -141,7 +154,17 @@ export default {
       ],
       acceptTraits: [],
       state: StateSchema,
-      methods: [],
+      methods: [
+        {
+          name: 'setInputValue',
+          parameters: Type.Object({
+            value: Type.Number(),
+          }),
+        },
+        {
+          name: 'resetInputValue',
+        },
+      ],
     },
   }),
   impl: NumberInput,

@@ -28,7 +28,6 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
   useEffect(() => {
     setInvalidArray(
       formControlIds.map(fcid => {
-        console.log('stateStore[fcid]', stateStore[fcid].isInvalid);
         return stateStore[fcid].isInvalid;
       })
     );
