@@ -60,11 +60,15 @@ const NumberInput: ComponentImplementation<{
 }) => {
   const [value, setValue] = useState(defaultValue);
   const onChange = (_: string, valueAsNumber: number) =>
-    setValue(valueAsNumber);
+    setValue(valueAsNumber || 0);
 
   useEffect(() => {
     mergeState({ value });
   }, [value]);
+
+  useEffect(() => {
+    setValue(defaultValue || 0);
+  }, [defaultValue]);
 
   useEffect(() => {
     subscribeMethods({

@@ -16,9 +16,14 @@ const RadioGroup: ComponentImplementation<{
   isNumerical?: Static<typeof IsNumericalSchema>;
 }> = ({ defaultValue, isNumerical, slotsMap, mergeState }) => {
   const [value, setValue] = useState(defaultValue);
+
   useEffect(() => {
     mergeState({ value });
   }, [value]);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <BaseRadioGroup

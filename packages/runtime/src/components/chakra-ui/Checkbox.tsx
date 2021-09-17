@@ -8,7 +8,6 @@ import {
 import { ComponentImplementation } from '../../registry';
 import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
-import _ from 'lodash';
 
 const ValueSchema = Type.Union([Type.String(), Type.Number()]);
 const DefaultIsCheckedSchema = Type.Optional(Type.Boolean());
@@ -26,8 +25,10 @@ export const SizePropertySchema = Type.KeyOf(
   })
 );
 
-const StateSchema = Type.Object({
+export const CheckboxStateSchema = Type.Object({
   value: Type.String(),
+  Text: Type.String(),
+  checked: Type.Boolean(),
 });
 
 const Checkbox: ComponentImplementation<{
@@ -77,17 +78,22 @@ const Checkbox: ComponentImplementation<{
     mergeState({ checked });
   }, [checked]);
 
+  useEffect(() => {
+    setChecked(!!defaultIsChecked);
+  }, [setChecked, defaultIsChecked]);
+
   const args: {
     colorScheme?: Static<typeof ColorSchemePropertySchema>;
     size?: Static<typeof SizePropertySchema>;
   } = {};
+
   if (colorScheme) args.colorScheme = colorScheme;
   if (size) args.size = size;
 
   return (
     <BaseCheckbox
       value={value}
-      defaultChecked={defaultIsChecked}
+      isChecked={checked}
       isDisabled={isDisabled}
       isFocusable={isFocusable}
       isInvalid={isInValid}
@@ -159,7 +165,7 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: StateSchema,
+      state: CheckboxStateSchema,
       methods: [],
     },
   }),
