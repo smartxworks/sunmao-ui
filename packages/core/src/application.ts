@@ -67,6 +67,10 @@ function parseType(v: string): VersionAndName {
   };
 }
 
+function isValidId(id: string): boolean {
+  return /^[a-zA-Z_$][0-9a-zA-Z_$]+$/.test(id);
+}
+
 export function createApplication(
   options: Omit<Application, 'kind'>
 ): RuntimeApplication {
@@ -77,6 +81,9 @@ export function createApplication(
     spec: {
       ...options.spec,
       components: options.spec.components.map(c => {
+        if (!isValidId(c.id)) {
+          throw new Error(`Invalid id: "${c.id}"`);
+        }
         return {
           ...c,
           parsedType: parseType(c.type),

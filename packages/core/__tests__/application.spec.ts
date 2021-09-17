@@ -9,7 +9,6 @@ describe('application', () => {
           name: 'test-app',
           description: 'first application',
         },
-
         spec: {
           components: [
             {
@@ -72,5 +71,28 @@ describe('application', () => {
         "version": "demo/v1",
       }
     `);
+  });
+
+  it('will validate component id', () => {
+    expect(() =>
+      createApplication({
+        version: 'demo/v1',
+        metadata: {
+          name: 'test-app',
+          description: 'first application',
+        },
+
+        spec: {
+          components: [
+            {
+              id: 'input-1',
+              type: 'core/v1/test_component',
+              properties: {},
+              traits: [],
+            },
+          ],
+        },
+      })
+    ).toThrowErrorMatchingInlineSnapshot(`"Invalid id: \\"input-1\\""`);
   });
 });
