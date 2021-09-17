@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>meta-ui runtime example: select component</title>
+    <title>meta-ui runtime example: radio component</title>
   </head>
   <body>
     <div id="root"></div>
@@ -13,8 +13,8 @@
       renderApp({
         version: 'example/v1',
         metadata: {
-          name: 'select',
-          description: 'select',
+          name: 'radio',
+          description: 'radio',
         },
         spec: {
           components: [
@@ -25,9 +25,12 @@
               traits: [],
             },
             {
-              id: 'stack',
-              type: 'chakra_ui/v1/stack',
-              properties: {},
+              id: 'radio_group',
+              type: 'chakra_ui/v1/radio_group',
+              properties: {
+                defaultValue: 1,
+                isNumerical: true,
+              },
               traits: [
                 {
                   type: 'core/v1/slot',
@@ -41,32 +44,18 @@
               ],
             },
             {
-              id: 'select1',
-              type: 'chakra_ui/v1/select',
+              id: 'stack',
+              type: 'chakra_ui/v1/stack',
               properties: {
-                size: 'xs',
-                placeholder: 'Select option',
-                options: [
-                  {
-                    value: '1',
-                    label: 'Option 1',
-                  },
-                  {
-                    value: '2',
-                    label: 'Option 2',
-                  },
-                  {
-                    value: '3',
-                    label: 'Option 3',
-                  },
-                ],
+                direction: 'row',
+                spacing: 8,
               },
               traits: [
                 {
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: 'stack',
+                      id: 'radio_group',
                       slot: 'content',
                     },
                   },
@@ -74,26 +63,15 @@
               ],
             },
             {
-              id: 'select2',
-              type: 'chakra_ui/v1/select',
+              id: 'radio_1',
+              type: 'chakra_ui/v1/radio',
               properties: {
+                text: {
+                  raw: 'Radio1',
+                  format: 'plain',
+                },
+                value: 1,
                 size: 'sm',
-                placeholder: 'Select option',
-                defaultValue: '1',
-                options: [
-                  {
-                    value: '1',
-                    label: 'Option 1',
-                  },
-                  {
-                    value: '2',
-                    label: 'Option 2',
-                  },
-                  {
-                    value: '3',
-                    label: 'Option 3',
-                  },
-                ],
               },
               traits: [
                 {
@@ -108,26 +86,15 @@
               ],
             },
             {
-              id: 'select3',
-              type: 'chakra_ui/v1/select',
+              id: 'radio_2',
+              type: 'chakra_ui/v1/radio',
               properties: {
+                text: {
+                  raw: 'Radio2',
+                  format: 'plain',
+                },
+                value: 2,
                 size: 'md',
-                placeholder: 'Select option',
-                defaultValue: '2',
-                options: [
-                  {
-                    value: '1',
-                    label: 'Option 1',
-                  },
-                  {
-                    value: '2',
-                    label: 'Option 2',
-                  },
-                  {
-                    value: '3',
-                    label: 'Option 3',
-                  },
-                ],
               },
               traits: [
                 {
@@ -142,26 +109,16 @@
               ],
             },
             {
-              id: 'select4',
-              type: 'chakra_ui/v1/select',
+              id: 'radio_3',
+              type: 'chakra_ui/v1/radio',
               properties: {
+                text: {
+                  raw: 'Radio3',
+                  format: 'plain',
+                },
+                value: 3,
                 size: 'lg',
-                placeholder: 'Select option',
-                defaultValue: '3',
-                options: [
-                  {
-                    value: '1',
-                    label: 'Option 1',
-                  },
-                  {
-                    value: '2',
-                    label: 'Option 2',
-                  },
-                  {
-                    value: '3',
-                    label: 'Option 3',
-                  },
-                ],
+                isDisabled: true
               },
               traits: [
                 {

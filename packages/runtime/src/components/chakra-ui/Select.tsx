@@ -35,6 +35,10 @@ const VariantSchema = Type.KeyOf(
   })
 );
 
+const StateSchema = Type.Object({
+  value: Type.String(),
+});
+
 const Select: ComponentImplementation<{
   options: Static<typeof OptionsSchema>;
   placeholder?: Static<typeof PlaceholderSchema>;
@@ -144,7 +148,7 @@ export default {
         },
       ],
       acceptTraits: [],
-      state: {},
+      state: StateSchema,
       methods: [],
     },
   }),
