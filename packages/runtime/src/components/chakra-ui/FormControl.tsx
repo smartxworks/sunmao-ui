@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
-import { Type } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import {
   FormControl,
   FormErrorMessage,
@@ -12,6 +12,7 @@ import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
 import { watch } from '@vue-reactivity/watch';
 import { stateStore } from '../../store';
+import { CheckboxStateSchema } from './Checkbox';
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
@@ -30,14 +31,22 @@ const FormControlImpl: ComponentImplementation<{
 
   useEffect(() => {
     const inputId = _.first(slotsMap?.get('content'))?.id || '';
-    return watch(
+    const stop = watch(
       () => {
-        return stateStore[inputId].value;
+        if (stateStore[inputId].checked !== undefined) {
+          // special treatment for checkbox
+          return (stateStore[inputId] as Static<typeof CheckboxStateSchema>)
+            .checked;
+        } else {
+          return stateStore[inputId].value;
+        }
       },
       newV => {
         setInputValue(newV);
       }
     );
+    setInputValue(stateStore[inputId].value);
+    return stop;
   }, [slotsMap, setInputValue]);
 
   useEffect(() => {
@@ -61,6 +70,7 @@ const FormControlImpl: ComponentImplementation<{
       inputId: _.first(slotsMap?.get('content'))?.id || '',
       fieldName,
       isInvalid: !!(isInvalid || (!inputValue && isRequired)),
+      value: inputValue,
     });
   }, [slotsMap, fieldName, isInvalid, isRequired, inputValue]);
 
@@ -107,6 +117,7 @@ export default {
         inputId: Type.String(),
         fieldName: Type.String(),
         isInvalid: Type.Boolean(),
+        value: Type.Any(),
       }),
       methods: [],
     },
