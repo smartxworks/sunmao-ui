@@ -1,17 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import { ComponentImplementation } from '../../registry';
-import Slot from '../_internal/Slot';
+import Slot from '@components/_internal/Slot';
 import { Button } from '@chakra-ui/react';
-import { stateStore } from '../../store';
 import { watch } from '@vue-reactivity/watch';
-import { apiService } from '../../api-service';
+import { ComponentImplementation } from 'src/registry';
+import { stateStore } from 'src/store';
+import { apiService } from 'src/api-service';
 
 const FormImpl: ComponentImplementation<{
   hideSubmit?: boolean;
 }> = ({ mergeState, subscribeMethods, hideSubmit, slotsMap, callbackMap }) => {
-  // 理论上说slotsMap是永远不变的
+  const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
+  const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
+  const formDataRef = useRef<Record<string, any>>({});
   const formControlIds = useMemo<string[]>(() => {
     return (
       slotsMap?.get('content')?.map(slot => {
@@ -19,10 +21,6 @@ const FormImpl: ComponentImplementation<{
       }) || []
     );
   }, [slotsMap]);
-
-  const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
-  const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
-  const dataRef = useRef<Record<string, any>>({});
 
   useEffect(() => {
     setInvalidArray(
@@ -34,7 +32,7 @@ const FormImpl: ComponentImplementation<{
 
   useEffect(() => {
     const disable = invalidArray.some(v => v);
-    setDisableSubmit(disable);
+    setIsFormInvalid(disable);
     mergeState({
       disableSubmit: disable,
     });
@@ -79,8 +77,8 @@ const FormImpl: ComponentImplementation<{
         },
         newV => {
           const fcState = stateStore[fcId];
-          dataRef.current[fcState.fieldName] = newV;
-          mergeState({ data: { ...dataRef.current } });
+          formDataRef.current[fcState.fieldName] = newV;
+          mergeState({ data: { ...formDataRef.current } });
         }
       );
       stops.push(stop);
@@ -101,7 +99,7 @@ const FormImpl: ComponentImplementation<{
     <form>
       <Slot slotsMap={slotsMap} slot="content" />
       {hideSubmit ? undefined : (
-        <Button disabled={disableSubmit} onClick={onSubmit}>
+        <Button disabled={isFormInvalid} onClick={onSubmit}>
           提交
         </Button>
       )}

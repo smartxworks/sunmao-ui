@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
@@ -8,11 +8,17 @@ import {
   FormHelperText,
   FormLabel,
 } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
-import Slot from '../_internal/Slot';
 import { watch } from '@vue-reactivity/watch';
-import { stateStore } from '../../store';
-import { CheckboxStateSchema } from './Checkbox';
+import { ComponentImplementation } from 'src/registry';
+import { stateStore } from 'src/store';
+import { CheckboxStateSchema } from '@components/chakra-ui/Checkbox';
+import Slot from '@components/_internal/Slot';
+import {
+  FormControlContentCSS,
+  FormControlCSS,
+  FormItemCSS,
+  FormLabelCSS,
+} from './FormCSS';
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
@@ -23,6 +29,10 @@ const FormControlImpl: ComponentImplementation<{
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
+  const inputId = useMemo(
+    () => _.first(slotsMap?.get('content'))?.id || '',
+    []
+  );
   const [validResult, setValidResult] = useState({
     isInvalid: false,
     errorMsg: '',
@@ -30,7 +40,6 @@ const FormControlImpl: ComponentImplementation<{
   const { isInvalid, errorMsg } = validResult;
 
   useEffect(() => {
-    const inputId = _.first(slotsMap?.get('content'))?.id || '';
     const stop = watch(
       () => {
         if (stateStore[inputId].checked !== undefined) {
@@ -50,8 +59,7 @@ const FormControlImpl: ComponentImplementation<{
   }, [slotsMap, setInputValue]);
 
   useEffect(() => {
-    const inputId = _.first(slotsMap?.get('content'))?.id || '';
-    return watch(
+    const stop = watch(
       () => {
         return stateStore[inputId].validResult;
       },
@@ -59,6 +67,10 @@ const FormControlImpl: ComponentImplementation<{
         setValidResult(newV);
       }
     );
+    if (stateStore[inputId].validResult) {
+      setValidResult(stateStore[inputId].validResult);
+    }
+    return stop;
   }, [slotsMap, setValidResult]);
 
   useEffect(() => {
@@ -67,21 +79,28 @@ const FormControlImpl: ComponentImplementation<{
       setHideInvalid(false);
     }
     mergeState({
-      inputId: _.first(slotsMap?.get('content'))?.id || '',
+      inputId: inputId,
       fieldName,
       isInvalid: !!(isInvalid || (!inputValue && isRequired)),
       value: inputValue,
     });
-  }, [slotsMap, fieldName, isInvalid, isRequired, inputValue]);
+  }, [slotsMap, inputId, fieldName, isInvalid, isRequired, inputValue]);
 
   return (
     <FormControl
       isRequired={isRequired}
-      isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}>
-      <FormLabel>{label}</FormLabel>
-      <Slot slotsMap={slotsMap} slot="content" />
-      <FormErrorMessage>{errorMsg}</FormErrorMessage>
-      <FormHelperText>{helperText}</FormHelperText>
+      isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}
+      css={FormControlCSS}>
+      <div css={FormControlContentCSS}>
+        <FormLabel css={FormLabelCSS}>{label}</FormLabel>
+        <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />
+      </div>
+      {errorMsg ? (
+        <FormErrorMessage css={FormItemCSS}>{errorMsg}</FormErrorMessage>
+      ) : undefined}
+      {helperText ? (
+        <FormHelperText css={FormItemCSS}>{helperText}</FormHelperText>
+      ) : undefined}
     </FormControl>
   );
 };
