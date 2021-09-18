@@ -15,6 +15,7 @@ import Slot from '../_internal/Slot';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const TitlePropertySchema = Type.Optional(Type.String());
+const DisableConfirmPropertySchema = Type.Optional(Type.Boolean());
 
 const HandleButtonPropertySchema = Type.Object({
   text: Type.Optional(Type.String()),
@@ -25,11 +26,13 @@ const Dialog: ComponentImplementation<{
   title?: Static<typeof TitlePropertySchema>;
   confirmButton?: Static<typeof HandleButtonPropertySchema>;
   cancelButton?: Static<typeof HandleButtonPropertySchema>;
+  disableConfirm?: Static<typeof DisableConfirmPropertySchema>;
 }> = ({
   slotsMap,
   subscribeMethods,
   callbackMap: callbacks,
   title: customerTitle,
+  disableConfirm,
   confirmButton = {
     text: 'confirm',
     colorScheme: 'red',
@@ -80,6 +83,7 @@ const Dialog: ComponentImplementation<{
                 {cancelButton.text}
               </Button>
               <Button
+                disabled={disableConfirm}
                 colorScheme={confirmButton.colorScheme}
                 onClick={callbacks?.confirmDialog}
                 ml={3}>
@@ -113,6 +117,10 @@ export default {
         {
           name: 'cancelButton',
           ...HandleButtonPropertySchema,
+        },
+        {
+          name: 'disableConfirm',
+          ...DisableConfirmPropertySchema,
         },
       ],
       acceptTraits: [],

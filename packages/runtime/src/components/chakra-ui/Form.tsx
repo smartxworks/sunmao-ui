@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Static, Type } from '@sinclair/typebox';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
@@ -7,14 +7,10 @@ import { Button } from '@chakra-ui/react';
 import { stateStore } from '../../store';
 import { watch } from '@vue-reactivity/watch';
 import { apiService } from '../../api-service';
-import { CheckboxStateSchema } from './Checkbox';
 
-const FormImpl: ComponentImplementation<Record<string, string>> = ({
-  mergeState,
-  subscribeMethods,
-  slotsMap,
-  callbackMap,
-}) => {
+const FormImpl: ComponentImplementation<{
+  hideSubmit?: boolean;
+}> = ({ mergeState, subscribeMethods, hideSubmit, slotsMap, callbackMap }) => {
   // 理论上说slotsMap是永远不变的
   const formControlIds = useMemo<string[]>(() => {
     return (
@@ -25,6 +21,8 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
   }, [slotsMap]);
 
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
+  const dataRef = useRef<Record<string, any>>({});
 
   useEffect(() => {
     setInvalidArray(
@@ -33,6 +31,14 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
       })
     );
   }, []);
+
+  useEffect(() => {
+    const disable = invalidArray.some(v => v);
+    setDisableSubmit(disable);
+    mergeState({
+      disableSubmit: disable,
+    });
+  }, [invalidArray]);
 
   useEffect(() => {
     subscribeMethods({
@@ -51,7 +57,8 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
   useEffect(() => {
     const stops: ReturnType<typeof watch>[] = [];
     formControlIds.forEach((fcId, i) => {
-      const stop = watch(
+      // watch isInvalid
+      let stop = watch(
         () => {
           return stateStore[fcId].isInvalid;
         },
@@ -64,6 +71,19 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
         }
       );
       stops.push(stop);
+
+      // watch value
+      stop = watch(
+        () => {
+          return stateStore[fcId].value;
+        },
+        newV => {
+          const fcState = stateStore[fcId];
+          dataRef.current[fcState.fieldName] = newV;
+          mergeState({ data: { ...dataRef.current } });
+        }
+      );
+      stops.push(stop);
     });
 
     return () => {
@@ -71,34 +91,20 @@ const FormImpl: ComponentImplementation<Record<string, string>> = ({
         s();
       });
     };
-  }, []);
+  }, [formControlIds]);
 
   const onSubmit = () => {
-    const data: Record<string, string | boolean> = {};
-    formControlIds.forEach(fcId => {
-      const fcState = stateStore[fcId];
-      const fieldName = fcState.fieldName;
-      if (stateStore[fcState.inputId].checked !== undefined) {
-        // special treatment for checkbox
-        data[fieldName] = (
-          stateStore[fcState.inputId] as Static<typeof CheckboxStateSchema>
-        ).checked;
-      } else {
-        data[fieldName] = stateStore[fcState.inputId].value;
-      }
-    });
-    mergeState({
-      data,
-    });
     callbackMap?.onSubmit();
   };
 
   return (
     <form>
       <Slot slotsMap={slotsMap} slot="content" />
-      <Button disabled={invalidArray.some(v => v)} onClick={onSubmit}>
-        提交
-      </Button>
+      {hideSubmit ? undefined : (
+        <Button disabled={disableSubmit} onClick={onSubmit}>
+          提交
+        </Button>
+      )}
     </form>
   );
 };
@@ -111,10 +117,16 @@ export default {
       description: 'chakra-ui form',
     },
     spec: {
-      properties: [],
+      properties: [
+        {
+          name: 'hideSubmit',
+          ...Type.Boolean(),
+        },
+      ],
       acceptTraits: [],
       state: Type.Object({
         data: Type.Any(),
+        disableSubmit: Type.Boolean(),
       }),
       methods: [
         {
