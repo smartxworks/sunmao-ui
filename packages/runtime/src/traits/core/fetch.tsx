@@ -6,7 +6,7 @@ import { CallMethodSchema } from '../../types/CallMethodSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
 
-const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
+const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   url,
   method,
   lazy: _lazy,
@@ -101,23 +101,16 @@ const useFetchTrait: TraitImplementation<FetchPropertySchema> = ({
   };
 };
 
-const UrlPropertySchema = Type.String(); // {format:uri}?;
-const MethodPropertySchema = Type.String(); // {pattern: /^(get|post|put|delete)$/i}
-const LazyPropertySchema = Type.Boolean();
-const HeaderPropertySchema = Type.Array(
-  Type.Object({ key: Type.String(), value: Type.String() })
-);
-const BodyPropertySchema = Type.Any(); // Type.String()?
-const OnCompletePropertySchema = Type.Array(CallMethodSchema);
-
-type FetchPropertySchema = {
-  url: Static<typeof UrlPropertySchema>;
-  method: Static<typeof MethodPropertySchema>;
-  lazy?: Static<typeof LazyPropertySchema>;
-  headers?: Static<typeof HeaderPropertySchema>;
-  body?: Static<typeof BodyPropertySchema>;
-  onComplete?: Static<typeof OnCompletePropertySchema>;
-};
+const PropsSchema = Type.Object({
+  url: Type.String(), // {format:uri}?;
+  method: Type.String(), // {pattern: /^(get|post|put|delete)$/i}
+  lazy: Type.Boolean(),
+  headers: Type.Array(
+    Type.Object({ key: Type.String(), value: Type.String() })
+  ),
+  body: Type.Any(),
+  onComplete: Type.Array(CallMethodSchema),
+});
 
 export default {
   ...createTrait({
@@ -127,28 +120,7 @@ export default {
       description: 'fetch data to store',
     },
     spec: {
-      properties: [
-        {
-          name: 'url',
-          ...UrlPropertySchema,
-        },
-        {
-          name: 'method',
-          ...MethodPropertySchema,
-        },
-        {
-          name: 'lazy',
-          ...LazyPropertySchema,
-        },
-        {
-          name: 'headers',
-          ...HeaderPropertySchema,
-        },
-        {
-          name: 'body',
-          ...BodyPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: Type.Object({
         fetch: Type.Object({
           loading: Type.Boolean(),

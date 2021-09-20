@@ -14,20 +14,12 @@ import { Static, Type } from '@sinclair/typebox';
 import Slot from '../_internal/Slot';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
-const TitlePropertySchema = Type.Optional(Type.String());
-const DisableConfirmPropertySchema = Type.Optional(Type.Boolean());
-
 const HandleButtonPropertySchema = Type.Object({
   text: Type.Optional(Type.String()),
   colorScheme: ColorSchemePropertySchema,
 });
 
-const Dialog: ComponentImplementation<{
-  title?: Static<typeof TitlePropertySchema>;
-  confirmButton?: Static<typeof HandleButtonPropertySchema>;
-  cancelButton?: Static<typeof HandleButtonPropertySchema>;
-  disableConfirm?: Static<typeof DisableConfirmPropertySchema>;
-}> = ({
+const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
   subscribeMethods,
   callbackMap: callbacks,
@@ -97,6 +89,13 @@ const Dialog: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  title: Type.Optional(Type.String()),
+  confirmButton: HandleButtonPropertySchema,
+  cancelButton: HandleButtonPropertySchema,
+  disableConfirm: Type.Optional(Type.Boolean()),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -105,24 +104,7 @@ export default {
       description: 'chakra_ui dialog',
     },
     spec: {
-      properties: [
-        {
-          name: 'title',
-          ...TitlePropertySchema,
-        },
-        {
-          name: 'confirmButton',
-          ...HandleButtonPropertySchema,
-        },
-        {
-          name: 'cancelButton',
-          ...HandleButtonPropertySchema,
-        },
-        {
-          name: 'disableConfirm',
-          ...DisableConfirmPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: {},
       methods: [

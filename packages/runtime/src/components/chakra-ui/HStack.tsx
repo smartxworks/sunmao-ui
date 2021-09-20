@@ -1,6 +1,6 @@
 import React from 'react';
 import { createComponent } from '@meta-ui/core';
-import { Static } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
@@ -12,19 +12,28 @@ import {
   SpacingSchema,
 } from './Stack';
 
-const HStack: ComponentImplementation<{
-  direction?: Static<typeof DirectionSchema>;
-  wrap?: Static<typeof FlexWrapSchema>;
-  align?: Static<typeof AlignItemsSchema>;
-  justify?: Static<typeof JustifyContentSchema>;
-  spacing?: Static<typeof SpacingSchema>;
-}> = ({ direction, wrap, align, justify, spacing, slotsMap }) => {
+const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  direction,
+  wrap,
+  align,
+  justify,
+  spacing,
+  slotsMap,
+}) => {
   return (
     <BaseHStack {...{ direction, wrap, align, justify, spacing }}>
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseHStack>
   );
 };
+
+const PropsSchema = Type.Object({
+  direction: DirectionSchema,
+  wrap: FlexWrapSchema,
+  align: AlignItemsSchema,
+  justify: JustifyContentSchema,
+  spacing: SpacingSchema,
+});
 
 export default {
   ...createComponent({
@@ -34,28 +43,7 @@ export default {
       description: 'chakra-ui hstack',
     },
     spec: {
-      properties: [
-        {
-          name: 'diection',
-          ...DirectionSchema,
-        },
-        {
-          name: 'wrap',
-          ...FlexWrapSchema,
-        },
-        {
-          name: 'align',
-          ...AlignItemsSchema,
-        },
-        {
-          name: 'justify',
-          ...JustifyContentSchema,
-        },
-        {
-          name: 'spacing',
-          ...SpacingSchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: {},
       methods: [],

@@ -4,11 +4,6 @@ import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
 
-const SrcPropertySchema = Type.String();
-const OptionalStringPropertySchema = Type.Optional(Type.String());
-const IgnoreFallbackPropertySchema = Type.Optional(Type.Boolean());
-const HeightSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
-
 const BoxSizePropertySchema = Type.Optional(
   Type.Union([
     Type.KeyOf(
@@ -69,27 +64,7 @@ const BorderRadiusSchema = Type.Optional(
   ])
 );
 
-const CrossOriginSchema = Type.Optional(
-  Type.KeyOf(
-    Type.Object({
-      anonymous: Type.String(),
-      'use-credentials': Type.String(),
-    })
-  )
-);
-
-const Image: ComponentImplementation<{
-  boxSize?: Static<typeof BoxSizePropertySchema>;
-  src: Static<typeof SrcPropertySchema>;
-  fallbackSrc?: Static<typeof OptionalStringPropertySchema>;
-  alt?: Static<typeof OptionalStringPropertySchema>;
-  ignoreFallback?: Static<typeof IgnoreFallbackPropertySchema>;
-  objectFit?: Static<typeof ObjectFitSchema>;
-  borderRadius?: Static<typeof BorderRadiusSchema>;
-  htmlHeight?: Static<typeof HeightSchema>;
-  htmlWidth?: Static<typeof HeightSchema>;
-  crossOrigin?: Static<typeof CrossOriginSchema>;
-}> = ({
+const Image: ComponentImplementation<Static<typeof PropsSchema>> = ({
   boxSize,
   src,
   alt,
@@ -123,6 +98,26 @@ const StateSchema = Type.Object({
   value: Type.String(),
 });
 
+const PropsSchema = Type.Object({
+  src: Type.String(),
+  fallbackSrc: Type.Optional(Type.String()),
+  boxSize: BoxSizePropertySchema,
+  objectFit: ObjectFitSchema,
+  borderRadius: BorderRadiusSchema,
+  ignoreFallback: Type.Optional(Type.Boolean()),
+  alt: Type.Optional(Type.String()),
+  htmlHeight: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+  htmlWidth: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+  crossOrigin: Type.Optional(
+    Type.KeyOf(
+      Type.Object({
+        anonymous: Type.String(),
+        'use-credentials': Type.String(),
+      })
+    )
+  ),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -131,48 +126,7 @@ export default {
       description: 'chakra_ui image',
     },
     spec: {
-      properties: [
-        {
-          name: 'src',
-          ...SrcPropertySchema,
-        },
-        {
-          name: 'fallbackSrc',
-          ...OptionalStringPropertySchema,
-        },
-        {
-          name: 'boxSize',
-          ...BoxSizePropertySchema,
-        },
-        {
-          name: 'objectFit',
-          ...ObjectFitSchema,
-        },
-        {
-          name: 'borderRadius',
-          ...BorderRadiusSchema,
-        },
-        {
-          name: 'ignoreFallback',
-          ...IgnoreFallbackPropertySchema,
-        },
-        {
-          name: 'alt',
-          ...OptionalStringPropertySchema,
-        },
-        {
-          name: 'htmlHeight',
-          ...HeightSchema,
-        },
-        {
-          name: 'htmlWidth',
-          ...HeightSchema,
-        },
-        {
-          name: 'crossOrigin',
-          ...CrossOriginSchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [{ name: 'onLoad' }],

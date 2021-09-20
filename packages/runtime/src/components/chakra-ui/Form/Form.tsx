@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Type } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import Slot from '@components/_internal/Slot';
 import { Button } from '@chakra-ui/react';
@@ -8,9 +8,13 @@ import { ComponentImplementation } from 'src/registry';
 import { stateStore } from 'src/store';
 import { apiService } from 'src/api-service';
 
-const FormImpl: ComponentImplementation<{
-  hideSubmit?: boolean;
-}> = ({ mergeState, subscribeMethods, hideSubmit, slotsMap, callbackMap }) => {
+const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  mergeState,
+  subscribeMethods,
+  hideSubmit,
+  slotsMap,
+  callbackMap,
+}) => {
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
   const formDataRef = useRef<Record<string, any>>({});
@@ -107,6 +111,10 @@ const FormImpl: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  hideSubmit: Type.Boolean(),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -115,12 +123,7 @@ export default {
       description: 'chakra-ui form',
     },
     spec: {
-      properties: [
-        {
-          name: 'hideSubmit',
-          ...Type.Boolean(),
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: Type.Object({
         data: Type.Any(),

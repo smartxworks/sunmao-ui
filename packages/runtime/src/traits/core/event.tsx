@@ -4,9 +4,9 @@ import { debounce, throttle, delay } from 'lodash';
 import { CallbackMap, TraitImplementation } from '../../registry';
 import { apiService } from '../../api-service';
 
-const useEventTrait: TraitImplementation<{
-  events: Static<typeof EventsPropertySchema>;
-}> = ({ events }) => {
+const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+  events,
+}) => {
   const callbackQueueMap: Record<string, Array<() => void>> = {};
 
   // setup current handlers
@@ -33,10 +33,10 @@ const useEventTrait: TraitImplementation<{
       event.wait.type === 'debounce'
         ? debounce(handler, event.wait.time)
         : event.wait.type === 'throttle'
-          ? throttle(handler, event.wait.time)
-          : event.wait.type === 'delay'
-            ? () => delay(handler, event.wait.time)
-            : handler
+        ? throttle(handler, event.wait.time)
+        : event.wait.type === 'delay'
+        ? () => delay(handler, event.wait.time)
+        : handler
     );
   }
 
@@ -59,27 +59,29 @@ const useEventTrait: TraitImplementation<{
   };
 };
 
-const EventsPropertySchema = Type.Array(
-  Type.Object({
-    event: Type.String(),
-    componentId: Type.String(),
-    method: Type.Object({
-      name: Type.String(),
-      parameters: Type.Any(),
-    }),
-    wait: Type.Object({
-      type: Type.KeyOf(
-        Type.Object({
-          debounce: Type.String(),
-          throttle: Type.String(),
-          delay: Type.String(),
-        })
-      ),
-      time: Type.Number(),
-    }),
-    disabled: Type.Boolean(),
-  })
-);
+const PropsSchema = Type.Object({
+  events: Type.Array(
+    Type.Object({
+      event: Type.String(),
+      componentId: Type.String(),
+      method: Type.Object({
+        name: Type.String(),
+        parameters: Type.Any(),
+      }),
+      wait: Type.Object({
+        type: Type.KeyOf(
+          Type.Object({
+            debounce: Type.String(),
+            throttle: Type.String(),
+            delay: Type.String(),
+          })
+        ),
+        time: Type.Number(),
+      }),
+      disabled: Type.Boolean(),
+    })
+  ),
+});
 
 export default {
   ...createTrait({
@@ -89,12 +91,7 @@ export default {
       description: 'export component events with advance features',
     },
     spec: {
-      properties: [
-        {
-          name: 'events',
-          ...EventsPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: {},
       methods: [],
     },
