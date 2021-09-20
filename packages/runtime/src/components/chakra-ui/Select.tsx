@@ -4,54 +4,11 @@ import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 
-const OptionsSchema = Type.Array(
-  Type.Object({
-    label: Type.String(),
-    value: Type.String(),
-  })
-);
-const PlaceholderSchema = Type.Optional(Type.String());
-const DefaultValueSchema = Type.Optional(Type.String());
-const ErrorBorderColorSchema = Type.Optional(Type.String());
-const FocusBorderColorSchema = Type.Optional(Type.String());
-const IsDisabledSchema = Type.Optional(Type.Boolean());
-const IsInvalidSchema = Type.Optional(Type.Boolean());
-const IsReadOnlySchema = Type.Optional(Type.Boolean());
-const IsRequiredSchema = Type.Optional(Type.Boolean());
-const SizeSchema = Type.KeyOf(
-  Type.Object({
-    xs: Type.String(),
-    sm: Type.String(),
-    md: Type.String(),
-    lg: Type.String(),
-  })
-);
-const VariantSchema = Type.KeyOf(
-  Type.Object({
-    outline: Type.String(),
-    unstyled: Type.String(),
-    filled: Type.String(),
-    flushed: Type.String(),
-  })
-);
-
 const StateSchema = Type.Object({
   value: Type.String(),
 });
 
-const Select: ComponentImplementation<{
-  options: Static<typeof OptionsSchema>;
-  placeholder?: Static<typeof PlaceholderSchema>;
-  defaultValue?: Static<typeof DefaultValueSchema>;
-  errorBorderColor?: Static<typeof ErrorBorderColorSchema>;
-  focusBorderColor?: Static<typeof FocusBorderColorSchema>;
-  isDisabled?: Static<typeof IsDisabledSchema>;
-  isInvalid?: Static<typeof IsInvalidSchema>;
-  isReadOnly?: Static<typeof IsReadOnlySchema>;
-  isRequired?: Static<typeof IsRequiredSchema>;
-  size?: Static<typeof SizeSchema>;
-  variant?: Static<typeof VariantSchema>;
-}> = ({
+const Select: ComponentImplementation<Static<typeof PropsSchema>> = ({
   options,
   placeholder,
   defaultValue,
@@ -97,6 +54,39 @@ const Select: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  options: Type.Array(
+    Type.Object({
+      label: Type.String(),
+      value: Type.String(),
+    })
+  ),
+  placeholder: Type.Optional(Type.String()),
+  defaultValue: Type.Optional(Type.String()),
+  errorBorderColor: Type.Optional(Type.String()),
+  focusBorderColor: Type.Optional(Type.String()),
+  isDisabled: Type.Optional(Type.Boolean()),
+  isInvalid: Type.Optional(Type.Boolean()),
+  isReadOnly: Type.Optional(Type.Boolean()),
+  isRequired: Type.Optional(Type.Boolean()),
+  size: Type.KeyOf(
+    Type.Object({
+      xs: Type.String(),
+      sm: Type.String(),
+      md: Type.String(),
+      lg: Type.String(),
+    })
+  ),
+  variant: Type.KeyOf(
+    Type.Object({
+      outline: Type.String(),
+      unstyled: Type.String(),
+      filled: Type.String(),
+      flushed: Type.String(),
+    })
+  ),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -105,52 +95,7 @@ export default {
       description: 'chakra-ui select',
     },
     spec: {
-      properties: [
-        {
-          name: 'options',
-          ...OptionsSchema,
-        },
-        {
-          name: 'placeholder',
-          ...PlaceholderSchema,
-        },
-        {
-          name: 'defaultValue',
-          ...DefaultValueSchema,
-        },
-        {
-          name: 'errorBorderColor',
-          ...ErrorBorderColorSchema,
-        },
-        {
-          name: 'focusBorderColor',
-          ...FocusBorderColorSchema,
-        },
-        {
-          name: 'isDisabled',
-          ...IsDisabledSchema,
-        },
-        {
-          name: 'isInvalid',
-          ...IsInvalidSchema,
-        },
-        {
-          name: 'isReadOnly',
-          ...IsReadOnlySchema,
-        },
-        {
-          name: 'isRequired',
-          ...IsRequiredSchema,
-        },
-        {
-          name: 'size',
-          ...SizeSchema,
-        },
-        {
-          name: 'variant',
-          ...VariantSchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [],

@@ -90,7 +90,7 @@ export default {
       description: 'experimental app editor',
     },
     spec: {
-      properties: [],
+      properties: {},
       acceptTraits: [],
       state: {},
       methods: [],

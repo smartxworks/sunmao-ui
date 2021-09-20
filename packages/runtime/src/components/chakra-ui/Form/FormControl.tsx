@@ -105,6 +105,13 @@ const FormControlImpl: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  label: Type.String(),
+  fieldName: Type.String(),
+  isRequired: Type.Boolean(),
+  helperText: Type.String(),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -113,24 +120,7 @@ export default {
       description: 'chakra-ui formControl',
     },
     spec: {
-      properties: [
-        {
-          name: 'label',
-          ...Type.String(),
-        },
-        {
-          name: 'fieldName',
-          ...Type.String(),
-        },
-        {
-          name: 'isRequired',
-          ...Type.Boolean(),
-        },
-        {
-          name: 'helperText',
-          ...Type.String(),
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: Type.Object({
         inputId: Type.String(),

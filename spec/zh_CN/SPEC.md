@@ -50,12 +50,12 @@ Component 的模型定义了自身对外提供的配置项与可接受的 trait�
 
 ### ComponentSpec
 
-| Attribute    | Type           | Required | Default Value | Description                 |
-| ------------ | -------------- | -------- | ------------- | --------------------------- |
-| properties   | JSONSchema[]   | Y        | {}            | Component 配置项定义        |
-| acceptTraits | TraitSchema[]  | Y        | []            | Component 可适配的 Trait    |
-| state        | JSONSchema     | Y        | {}            | 外部可访问的 Component 状态 |
-| methods      | MethodSchema[] | Y        | []            | 外部可调用的 Component 方法 |
+| Attribute    | Type             | Required | Default Value | Description                 |
+| ------------ | ---------------- | -------- | ------------- | --------------------------- |
+| properties   | JSONSchemaObject | Y        | {}            | Component 配置项定义        |
+| acceptTraits | TraitSchema[]    | Y        | []            | Component 可适配的 Trait    |
+| state        | JSONSchema       | Y        | {}            | 外部可访问的 Component 状态 |
+| methods      | MethodSchema[]   | Y        | []            | 外部可调用的 Component 方法 |
 
 ### TraitSchema
 
@@ -148,11 +148,11 @@ Trait 定义了自身提供的 runtime 能力以及与 Component 交互的方式
 
 ### TraitSpec
 
-| Attribute  | Type           | Required | Default Value | Description                   |
-| ---------- | -------------- | -------- | ------------- | ----------------------------- |
-| properties | JSONSchema[]   | Y        | {}            | Trait 配置项定义              |
-| state      | JSONSchema     | Y        | {}            | Trait 为 Component 添加的状态 |
-| methods    | MethodSchema[] | Y        | []            | Trait 为 Component 添加的方法 |
+| Attribute  | Type             | Required | Default Value | Description                   |
+| ---------- | ---------------- | -------- | ------------- | ----------------------------- |
+| properties | JSONSchemaObject | Y        | {}            | Trait 配置项定义              |
+| state      | JSONSchema       | Y        | {}            | Trait 为 Component 添加的状态 |
+| methods    | MethodSchema[]   | Y        | []            | Trait 为 Component 添加的方法 |
 
 ### Example
 

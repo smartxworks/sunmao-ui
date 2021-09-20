@@ -10,41 +10,7 @@ import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
 
-const DefaultValuePropertySchema = Type.Optional(Type.Number());
-const MinPropertySchema = Type.Optional(Type.Number());
-const MaxPropertySchema = Type.Optional(Type.Number());
-const StepPropertySchema = Type.Optional(Type.Number());
-const PrecisionPropertySchema = Type.Optional(Type.Number());
-const ClampValueOnBlurPropertySchema = Type.Optional(Type.Boolean());
-const AllowMouseWheelPropertySchema = Type.Optional(Type.Boolean());
-
-const SizePropertySchema = Type.KeyOf(
-  Type.Object({
-    sm: Type.String(),
-    md: Type.String(),
-    lg: Type.String(),
-    xs: Type.String(),
-  })
-);
-
-const CustomerStepStylePropertySchema = Type.Object({
-  bg: Type.Optional(Type.String()),
-  children: Type.Optional(Type.String()),
-  _active: Type.Object(Type.Object({ bg: Type.String() })),
-});
-
-const NumberInput: ComponentImplementation<{
-  defaultValue?: Static<typeof DefaultValuePropertySchema>;
-  min?: Static<typeof MinPropertySchema>;
-  max?: Static<typeof MaxPropertySchema>;
-  step?: Static<typeof StepPropertySchema>;
-  precision?: Static<typeof PrecisionPropertySchema>;
-  clampValueOnBlur?: Static<typeof ClampValueOnBlurPropertySchema>;
-  allowMouseWheel?: Static<typeof AllowMouseWheelPropertySchema>;
-  size?: Static<typeof SizePropertySchema>;
-  customerIncrement?: Static<typeof CustomerStepStylePropertySchema>;
-  customerDecrement?: Static<typeof CustomerStepStylePropertySchema>;
-}> = ({
+const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
   defaultValue = 0,
   min,
   max,
@@ -102,6 +68,34 @@ const NumberInput: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  defaultValue: Type.Optional(Type.Number()),
+  min: Type.Optional(Type.Number()),
+  max: Type.Optional(Type.Number()),
+  step: Type.Optional(Type.Number()),
+  precision: Type.Optional(Type.Number()),
+  clampValueOnBlur: Type.Optional(Type.Boolean()),
+  allowMouseWheel: Type.Optional(Type.Boolean()),
+  size: Type.KeyOf(
+    Type.Object({
+      sm: Type.String(),
+      md: Type.String(),
+      lg: Type.String(),
+      xs: Type.String(),
+    })
+  ),
+  customerIncrement: Type.Object({
+    bg: Type.Optional(Type.String()),
+    children: Type.Optional(Type.String()),
+    _active: Type.Object(Type.Object({ bg: Type.String() })),
+  }),
+  customerDecrement: Type.Object({
+    bg: Type.Optional(Type.String()),
+    children: Type.Optional(Type.String()),
+    _active: Type.Object(Type.Object({ bg: Type.String() })),
+  }),
+});
+
 const StateSchema = Type.Object({
   value: Type.Number(),
 });
@@ -114,48 +108,7 @@ export default {
       description: 'chakra_ui number input',
     },
     spec: {
-      properties: [
-        {
-          name: 'defaultValue',
-          ...DefaultValuePropertySchema,
-        },
-        {
-          name: 'min',
-          ...MinPropertySchema,
-        },
-        {
-          name: 'max',
-          ...MaxPropertySchema,
-        },
-        {
-          name: 'step',
-          ...StepPropertySchema,
-        },
-        {
-          name: 'precision',
-          ...PrecisionPropertySchema,
-        },
-        {
-          name: 'clampValueOnBlur',
-          ...ClampValueOnBlurPropertySchema,
-        },
-        {
-          name: 'allowMouseWheel',
-          ...AllowMouseWheelPropertySchema,
-        },
-        {
-          name: 'size',
-          ...SizePropertySchema,
-        },
-        {
-          name: 'customerIncrement',
-          ...CustomerStepStylePropertySchema,
-        },
-        {
-          name: 'customerDecrement',
-          ...CustomerStepStylePropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [

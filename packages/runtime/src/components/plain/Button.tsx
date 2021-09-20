@@ -1,12 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
-import { Type } from '@sinclair/typebox';
-import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import { Type, Static } from '@sinclair/typebox';
+import Text, { TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../registry';
 
-const Button: ComponentImplementation<{
-  text: TextProps['value'];
-}> = ({ text, mergeState, subscribeMethods, callbackMap }) => {
+const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  text,
+  mergeState,
+  subscribeMethods,
+  callbackMap,
+}) => {
   useEffect(() => {
     mergeState({ value: text.raw });
   }, [text.raw]);
@@ -31,6 +34,10 @@ const StateSchema = Type.Object({
   value: Type.String(),
 });
 
+const PropsSchema = Type.Object({
+  text: TextPropertySchema,
+});
+
 export default {
   ...createComponent({
     version: 'plain/v1',
@@ -39,12 +46,7 @@ export default {
       description: 'plain button',
     },
     spec: {
-      properties: [
-        {
-          name: 'text',
-          ...TextPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [

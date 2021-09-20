@@ -22,7 +22,7 @@ export default {
       description: 'chakra-ui provider',
     },
     spec: {
-      properties: [],
+      properties: {},
       acceptTraits: [],
       state: {},
       methods: [],

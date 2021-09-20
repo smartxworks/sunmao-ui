@@ -14,11 +14,7 @@ const StateSchema = Type.Object({
   value: Type.String(),
 });
 
-const CheckboxGroup: ComponentImplementation<{
-  size?: Static<typeof SizePropertySchema>;
-  defaultValue?: Static<typeof DefaultValueSchema>;
-  isDisabled?: Static<typeof IsDisabledSchema>;
-}> = ({
+const CheckboxGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
   size,
   defaultValue,
   isDisabled,
@@ -41,6 +37,12 @@ const CheckboxGroup: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  size: SizePropertySchema,
+  isDisabled: IsDisabledSchema,
+  defaultValue: DefaultValueSchema,
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -49,20 +51,7 @@ export default {
       description: 'chakra-ui checkbox group',
     },
     spec: {
-      properties: [
-        {
-          name: 'size',
-          ...SizePropertySchema,
-        },
-        {
-          name: 'isDisabled',
-          ...IsDisabledSchema,
-        },
-        {
-          name: 'defaultValue',
-          ...DefaultValueSchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [],

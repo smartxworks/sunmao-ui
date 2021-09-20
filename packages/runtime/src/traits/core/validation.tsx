@@ -41,60 +41,57 @@ addValidationRule('phoneNumber', text => {
   }
 });
 
-type ValidationProps = {
-  value: string;
-  minLength: number;
-  maxLength: number;
-  rule: string;
-};
-
 const ValidationResultCache: Record<string, ValidationResult> = {};
 
-const ValidationTraitImpl: TraitImplementation<ValidationProps> = props => {
-  const { value, minLength, maxLength, mergeState, componentId, rule } = props;
+const ValidationTraitImpl: TraitImplementation<Static<typeof PropsSchema>> =
+  props => {
+    const { value, minLength, maxLength, mergeState, componentId, rule } =
+      props;
 
-  const result: ValidationResult = {
-    isInvalid: false,
-    errorMsg: '',
-  };
+    const result: ValidationResult = {
+      isInvalid: false,
+      errorMsg: '',
+    };
 
-  if (value.length > maxLength) {
-    result.isInvalid = true;
-    result.errorMsg = `最长不能超过${maxLength}个字符`;
-  } else if (value.length < minLength) {
-    result.isInvalid = true;
-    result.errorMsg = `不能少于${minLength}个字符`;
-  } else {
-    const rulesArr = rule ? rule.split(',') : [];
-    for (const ruleName of rulesArr) {
-      const validateFunc = rules.get(ruleName);
-      if (validateFunc) {
-        const { isInvalid, errorMsg } = validateFunc(value);
-        if (isInvalid) {
-          result.isInvalid = true;
-          result.errorMsg = errorMsg;
-          break;
+    if (value.length > maxLength) {
+      result.isInvalid = true;
+      result.errorMsg = `最长不能超过${maxLength}个字符`;
+    } else if (value.length < minLength) {
+      result.isInvalid = true;
+      result.errorMsg = `不能少于${minLength}个字符`;
+    } else {
+      const rulesArr = rule ? rule.split(',') : [];
+      for (const ruleName of rulesArr) {
+        const validateFunc = rules.get(ruleName);
+        if (validateFunc) {
+          const { isInvalid, errorMsg } = validateFunc(value);
+          if (isInvalid) {
+            result.isInvalid = true;
+            result.errorMsg = errorMsg;
+            break;
+          }
         }
       }
     }
-  }
 
-  if (!isEqual(result, ValidationResultCache[componentId])) {
-    ValidationResultCache[componentId] = result;
-    mergeState({
-      validResult: result,
-    });
-  }
+    if (!isEqual(result, ValidationResultCache[componentId])) {
+      ValidationResultCache[componentId] = result;
+      mergeState({
+        validResult: result,
+      });
+    }
 
-  return {
-    props: null,
+    return {
+      props: null,
+    };
   };
-};
 
-const ValidationValuePropertySchema = Type.String();
-const ValidationRulePropertySchema = Type.String();
-const ValidationMinLengthPropertySchema = Type.Integer();
-const ValidationMaxLengthPropertySchema = Type.Integer();
+const PropsSchema = Type.Object({
+  value: Type.String(),
+  rule: Type.String(),
+  maxLength: Type.Integer(),
+  minLength: Type.Integer(),
+});
 
 export default {
   ...createTrait({
@@ -104,24 +101,7 @@ export default {
       description: 'validation trait',
     },
     spec: {
-      properties: [
-        {
-          name: 'value',
-          ...ValidationValuePropertySchema,
-        },
-        {
-          name: 'rule',
-          ...ValidationRulePropertySchema,
-        },
-        {
-          name: 'minLength',
-          ...ValidationMinLengthPropertySchema,
-        },
-        {
-          name: 'maxLength',
-          ...ValidationMaxLengthPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: Type.Object({
         validResult: ValidResultSchema,
       }),

@@ -1,15 +1,22 @@
 import React from 'react';
 import { createComponent } from '@meta-ui/core';
-import { Type } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
-import _Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import _Text, { TextPropertySchema } from '../_internal/Text';
 
-const Text: ComponentImplementation<TextProps> = ({ value, style }) => {
+const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  value,
+  style,
+}) => {
   return <_Text value={value} style={style} />;
 };
 
 const StateSchema = Type.Object({
   value: Type.String(),
+});
+
+const PropsSchema = Type.Object({
+  value: TextPropertySchema,
 });
 
 export default {
@@ -20,12 +27,7 @@ export default {
       description: 'support plain and markdown formats',
     },
     spec: {
-      properties: [
-        {
-          name: 'value',
-          ...TextPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [],

@@ -3,11 +3,9 @@ import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
 
-type HiddenProps = {
-  hidden: Static<typeof HiddenPropertySchema>;
-};
-
-const useHiddenTrait: TraitImplementation<HiddenProps> = ({ hidden }) => {
+const useHiddenTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+  hidden,
+}) => {
   const style: CSSProperties = {};
   if (hidden) {
     style.display = 'none';
@@ -19,7 +17,9 @@ const useHiddenTrait: TraitImplementation<HiddenProps> = ({ hidden }) => {
   };
 };
 
-const HiddenPropertySchema = Type.Union([Type.Boolean(), Type.String()]);
+const PropsSchema = Type.Object({
+  hidden: Type.Boolean(),
+});
 
 export default {
   ...createTrait({
@@ -29,12 +29,7 @@ export default {
       description: 'render component with condition',
     },
     spec: {
-      properties: [
-        {
-          name: 'hidden',
-          ...HiddenPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: {},
       methods: [],
     },

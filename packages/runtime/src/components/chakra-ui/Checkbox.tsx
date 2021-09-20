@@ -6,17 +6,10 @@ import {
   useCheckboxGroupContext,
 } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
-import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import Text, { TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
-const ValueSchema = Type.Union([Type.String(), Type.Number()]);
-const DefaultIsCheckedSchema = Type.Optional(Type.Boolean());
 export const IsDisabledSchema = Type.Optional(Type.Boolean());
-const IsFocusableSchema = Type.Optional(Type.Boolean());
-const IsInvalidSchema = Type.Optional(Type.Boolean());
-const IsReadOnlySchema = Type.Optional(Type.Boolean());
-const IsRequiredSchema = Type.Optional(Type.Boolean());
-const SpacingSchema = Type.Optional(Type.String());
 export const SizePropertySchema = Type.KeyOf(
   Type.Object({
     sm: Type.String(),
@@ -31,19 +24,7 @@ export const CheckboxStateSchema = Type.Object({
   checked: Type.Boolean(),
 });
 
-const Checkbox: ComponentImplementation<{
-  text: TextProps['value'];
-  value: Static<typeof ValueSchema>;
-  defaultIsChecked?: Static<typeof DefaultIsCheckedSchema>;
-  isDisabled?: Static<typeof IsDisabledSchema>;
-  isFocusable?: Static<typeof IsFocusableSchema>;
-  isInValid?: Static<typeof IsInvalidSchema>;
-  isReadOnly?: Static<typeof IsReadOnlySchema>;
-  isRequired?: Static<typeof IsRequiredSchema>;
-  size?: Static<typeof SizePropertySchema>;
-  spacing?: Static<typeof SpacingSchema>;
-  colorScheme?: Static<typeof ColorSchemePropertySchema>;
-}> = ({
+const Checkbox: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
   value,
   defaultIsChecked,
@@ -110,6 +91,20 @@ const Checkbox: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  text: TextPropertySchema,
+  value: Type.Union([Type.String(), Type.Number()]),
+  defaultIsChecked: Type.Optional(Type.Boolean()),
+  isDisabled: IsDisabledSchema,
+  isFocusable: Type.Optional(Type.Boolean()),
+  isInValid: Type.Optional(Type.Boolean()),
+  isReadOnly: Type.Optional(Type.Boolean()),
+  isRequired: Type.Optional(Type.Boolean()),
+  size: SizePropertySchema,
+  spacing: Type.Optional(Type.String()),
+  colorScheme: ColorSchemePropertySchema,
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -118,52 +113,7 @@ export default {
       description: 'chakra-ui checkbox',
     },
     spec: {
-      properties: [
-        {
-          name: 'text',
-          ...TextPropertySchema,
-        },
-        {
-          name: 'value',
-          ...ValueSchema,
-        },
-        {
-          name: 'defaultIsChecked',
-          ...DefaultIsCheckedSchema,
-        },
-        {
-          name: 'isDisabled',
-          ...IsDisabledSchema,
-        },
-        {
-          name: 'isFocusable',
-          ...IsFocusableSchema,
-        },
-        {
-          name: 'isInValid',
-          ...IsInvalidSchema,
-        },
-        {
-          name: 'isReadOnly',
-          ...IsReadOnlySchema,
-        },
-        {
-          name: 'isRequired',
-          ...IsReadOnlySchema,
-        },
-        {
-          name: 'size',
-          ...SizePropertySchema,
-        },
-        {
-          name: 'spacing',
-          ...SpacingSchema,
-        },
-        {
-          name: 'colorScheme',
-          ...ColorSchemePropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: CheckboxStateSchema,
       methods: [],

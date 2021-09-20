@@ -2,15 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
-import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import Text, { TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../registry';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
-const Button: ComponentImplementation<{
-  text: TextProps['value'];
-  colorScheme?: Static<typeof ColorSchemePropertySchema>;
-  isLoading?: Static<typeof IsLoadingPropertySchema>;
-}> = ({
+const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
   mergeState,
   subscribeMethods,
@@ -41,10 +37,14 @@ const Button: ComponentImplementation<{
   );
 };
 
-const IsLoadingPropertySchema = Type.Optional(Type.Boolean());
-
 const StateSchema = Type.Object({
   value: Type.String(),
+});
+
+const PropsSchema = Type.Object({
+  text: TextPropertySchema,
+  colorScheme: ColorSchemePropertySchema,
+  isLoading: Type.Optional(Type.Boolean()),
 });
 
 export default {
@@ -55,20 +55,7 @@ export default {
       description: 'chakra-ui button',
     },
     spec: {
-      properties: [
-        {
-          name: 'text',
-          ...TextPropertySchema,
-        },
-        {
-          name: 'colorScheme',
-          ...ColorSchemePropertySchema,
-        },
-        {
-          name: 'isLoading',
-          ...IsLoadingPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [

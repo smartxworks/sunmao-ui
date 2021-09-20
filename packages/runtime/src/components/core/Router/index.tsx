@@ -37,6 +37,21 @@ const SwitchPolicyPropertySchema = Type.Array(
   })
 );
 
+const PropsSchema = Type.Object({
+  switchPolicy: Type.Array(
+    Type.Object({
+      type: Type.Enum(RouteType), // redirect, route
+      default: Type.Boolean(), //only the first one with default will be treated as default component;
+      path: Type.String(),
+      slotId: Type.String(),
+      href: Type.Optional(Type.String()), // work for redirect
+      strict: Type.Optional(Type.Boolean()),
+      exact: Type.Optional(Type.Boolean()),
+      sensitive: Type.Optional(Type.Boolean()),
+    })
+  ),
+});
+
 export default {
   ...createComponent({
     version: 'core/v1',
@@ -45,12 +60,7 @@ export default {
       description: 'create a router-controlled component',
     },
     spec: {
-      properties: [
-        {
-          name: 'switchPolicy',
-          ...SwitchPolicyPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: {},
       methods: [],
