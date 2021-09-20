@@ -1,4 +1,5 @@
 import { Type } from '@sinclair/typebox';
+import { CallMethodSchema } from '../../../types/CallMethodSchema';
 
 export const MajorKeyPropertySchema = Type.String();
 export const RowsPerPagePropertySchema = Type.Number();
@@ -25,15 +26,7 @@ export const ColumnSchema = Type.Object({
   type: TdTypeSchema,
   buttonConfig: Type.Object({
     text: Type.String(),
-    events: Type.Array(
-      Type.Object({
-        componentId: Type.String(),
-        method: Type.Object({
-          name: Type.String(),
-          parameters: Type.Any(),
-        }),
-      })
-    ),
+    events: Type.Array(CallMethodSchema),
   }),
 });
 

@@ -45,7 +45,7 @@
               type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: '{{ emailInput.validationResult.errorMsg }}',
+                  raw: '{{ emailInput.validResult.errorMsg }}',
                   format: 'plain',
                 },
               },
@@ -78,7 +78,7 @@
               type: 'core/v1/text',
               properties: {
                 value: {
-                  raw: '{{ phoneInput.validationResult.errorMsg }}',
+                  raw: '{{ phoneInput.validResult.errorMsg }}',
                   format: 'plain',
                 },
               },
@@ -108,7 +108,7 @@
                         },
                         wait: {},
                         disabled:
-                          '{{ !emailInput.validationResult.isValid || !phoneInput.validationResult.isValid }}',
+                          '{{ emailInput.validResult.isInvalid || phoneInput.validResult.isInvalid }}',
                       },
                     ],
                   },

@@ -34,7 +34,7 @@ const SizePropertySchema = Type.KeyOf(
 const FocusBorderColorPropertySchema = Type.Optional(Type.String());
 const IsDisabledPropertySchema = Type.Optional(Type.Boolean());
 const IsRequiredPropertySchema = Type.Optional(Type.Boolean());
-const InitValuePropertySchema = Type.Optional(Type.String());
+const DefaultValuePropertySchema = Type.Optional(Type.String());
 
 const AppendElementPropertySchema = Type.Union([
   Type.Object({
@@ -58,7 +58,7 @@ const Input: ComponentImplementation<{
   isRequired?: Static<typeof IsRequiredPropertySchema>;
   left?: Static<typeof AppendElementPropertySchema>;
   right?: Static<typeof AppendElementPropertySchema>;
-  initialValue?: Static<typeof InitValuePropertySchema>;
+  defaultValue?: Static<typeof DefaultValuePropertySchema>;
 }> = ({
   variant,
   placeholder,
@@ -70,22 +70,27 @@ const Input: ComponentImplementation<{
   right,
   mergeState,
   subscribeMethods,
-  data,
-  initialValue,
+  defaultValue,
 }) => {
-  const [value, setValue] = React.useState(initialValue); // TODO: pin input
+  const [value, setValue] = React.useState(defaultValue || ''); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value);
 
   useEffect(() => {
     mergeState({ value });
-    mergeState({ ...data });
-  }, [value, data]);
+  }, [value]);
+
+  useEffect(() => {
+    setValue(defaultValue || '');
+  }, [defaultValue]);
 
   useEffect(() => {
     subscribeMethods({
       setInputValue({ value }) {
         setValue(value);
+      },
+      resetInputValue() {
+        setValue(defaultValue || '');
       },
     });
   }, []);
@@ -173,8 +178,8 @@ export default {
           ...AppendElementPropertySchema,
         },
         {
-          name: 'initialValue',
-          ...InitValuePropertySchema,
+          name: 'defaultValue',
+          ...DefaultValuePropertySchema,
         },
       ],
       acceptTraits: [],
@@ -185,6 +190,9 @@ export default {
           parameters: Type.Object({
             value: Type.String(),
           }),
+        },
+        {
+          name: 'resetInputValue',
         },
       ],
     },

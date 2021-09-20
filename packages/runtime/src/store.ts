@@ -130,13 +130,13 @@ export const mapValuesDeep = (
   return _.mapValues(obj, (val, key) => {
     return _.isArray(val)
       ? val.map((innerVal, idx) => {
-          return _.isPlainObject(innerVal)
-            ? mapValuesDeep(innerVal, fn, path.concat(key, idx))
-            : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
-        })
+        return _.isPlainObject(innerVal)
+          ? mapValuesDeep(innerVal, fn, path.concat(key, idx))
+          : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
+      })
       : _.isPlainObject(val)
-      ? mapValuesDeep(val, fn, path.concat(key))
-      : fn({ value: val, key, obj, path: path.concat(key) });
+        ? mapValuesDeep(val, fn, path.concat(key))
+        : fn({ value: val, key, obj, path: path.concat(key) });
   });
 };
 
