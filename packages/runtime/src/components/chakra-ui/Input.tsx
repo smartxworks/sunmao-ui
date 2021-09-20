@@ -11,31 +11,6 @@ import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
 
-const VariantPropertySchema = Type.KeyOf(
-  Type.Object({
-    outline: Type.String(),
-    unstyled: Type.String(),
-    filled: Type.String(),
-    flushed: Type.String(),
-  })
-);
-
-const PlaceholderPropertySchema = Type.Optional(Type.String());
-
-const SizePropertySchema = Type.KeyOf(
-  Type.Object({
-    sm: Type.String(),
-    md: Type.String(),
-    lg: Type.String(),
-    xs: Type.String(),
-  })
-);
-
-const FocusBorderColorPropertySchema = Type.Optional(Type.String());
-const IsDisabledPropertySchema = Type.Optional(Type.Boolean());
-const IsRequiredPropertySchema = Type.Optional(Type.Boolean());
-const DefaultValuePropertySchema = Type.Optional(Type.String());
-
 const AppendElementPropertySchema = Type.Union([
   Type.Object({
     type: Type.KeyOf(Type.Object({ addon: Type.String() })),
@@ -49,17 +24,7 @@ const AppendElementPropertySchema = Type.Union([
   }),
 ]);
 
-const Input: ComponentImplementation<{
-  variant?: Static<typeof VariantPropertySchema>;
-  placeholder?: Static<typeof PlaceholderPropertySchema>;
-  size?: Static<typeof SizePropertySchema>;
-  focusBorderColor?: Static<typeof FocusBorderColorPropertySchema>;
-  isDisabled?: Static<typeof IsDisabledPropertySchema>;
-  isRequired?: Static<typeof IsRequiredPropertySchema>;
-  left?: Static<typeof AppendElementPropertySchema>;
-  right?: Static<typeof AppendElementPropertySchema>;
-  defaultValue?: Static<typeof DefaultValuePropertySchema>;
-}> = ({
+const Input: ComponentImplementation<Static<typeof PropsSchema>> = ({
   variant,
   placeholder,
   size,
@@ -136,6 +101,32 @@ const StateSchema = Type.Object({
   value: Type.String(),
 });
 
+const PropsSchema = Type.Object({
+  variant: Type.KeyOf(
+    Type.Object({
+      outline: Type.String(),
+      unstyled: Type.String(),
+      filled: Type.String(),
+      flushed: Type.String(),
+    })
+  ),
+  placeholder: Type.Optional(Type.String()),
+  size: Type.KeyOf(
+    Type.Object({
+      sm: Type.String(),
+      md: Type.String(),
+      lg: Type.String(),
+      xs: Type.String(),
+    })
+  ),
+  focusBorderColor: Type.Optional(Type.String()),
+  isDisabled: Type.Optional(Type.Boolean()),
+  isRequired: Type.Optional(Type.Boolean()),
+  left: AppendElementPropertySchema,
+  right: AppendElementPropertySchema,
+  defaultValue: Type.Optional(Type.String()),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -144,44 +135,7 @@ export default {
       description: 'chakra_ui input',
     },
     spec: {
-      properties: [
-        {
-          name: 'variant',
-          ...VariantPropertySchema,
-        },
-        {
-          name: 'placeholder',
-          ...PlaceholderPropertySchema,
-        },
-        {
-          name: 'size',
-          ...SizePropertySchema,
-        },
-        {
-          name: 'focusBorderColor',
-          ...FocusBorderColorPropertySchema,
-        },
-        {
-          name: 'isDisabled',
-          ...IsDisabledPropertySchema,
-        },
-        {
-          name: 'isRequired',
-          ...IsRequiredPropertySchema,
-        },
-        {
-          name: 'left',
-          ...AppendElementPropertySchema,
-        },
-        {
-          name: 'right',
-          ...AppendElementPropertySchema,
-        },
-        {
-          name: 'defaultValue',
-          ...DefaultValuePropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [

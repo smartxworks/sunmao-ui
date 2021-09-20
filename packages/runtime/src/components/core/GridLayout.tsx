@@ -3,15 +3,16 @@ import { ComponentImplementation } from '../../registry';
 import { createComponent } from '@meta-ui/core';
 import { getSlots } from '../_internal/Slot';
 import { LayoutPropertySchema } from '../../components/_internal/GridLayout';
-import { Static } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 
 const BaseGridLayout = React.lazy(
   () => import('../../components/_internal/GridLayout')
 );
 
-const GridLayout: ComponentImplementation<{
-  layout: Static<typeof LayoutPropertySchema>;
-}> = ({ slotsMap, layout = [] }) => {
+const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  slotsMap,
+  layout = [],
+}) => {
   return (
     <Suspense fallback={null}>
       <BaseGridLayout layout={layout}>
@@ -21,6 +22,10 @@ const GridLayout: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  layout: LayoutPropertySchema,
+});
+
 export default {
   ...createComponent({
     version: 'core/v1',
@@ -29,7 +34,7 @@ export default {
       description: 'drag and drop to layout in a grid',
     },
     spec: {
-      properties: [{ name: 'layout', ...LayoutPropertySchema }],
+      properties: PropsSchema,
       acceptTraits: [],
       state: {},
       methods: [],

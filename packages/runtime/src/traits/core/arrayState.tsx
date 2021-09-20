@@ -7,10 +7,13 @@ const HasInitializedMap = new Map<string, boolean>();
 
 type KeyValue = { key: string; value: unknown };
 
-const ArrayStateTrait: TraitImplementation<{
-  key: Static<typeof KeyPropertySchema>;
-  initialValue: Static<typeof InitialValuePropertySchema>;
-}> = ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
+const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+  key,
+  initialValue,
+  componentId,
+  mergeState,
+  subscribeMethods,
+}) => {
   const hashId = `#${componentId}@${key}`;
   const hasInitialized = HasInitializedMap.get(hashId);
 
@@ -50,8 +53,10 @@ const ArrayStateTrait: TraitImplementation<{
   };
 };
 
-const KeyPropertySchema = Type.String();
-const InitialValuePropertySchema = Type.Array(Type.Any());
+const PropsSchema = Type.Object({
+  key: Type.String(),
+  initialValue: Type.Array(Type.Any()),
+});
 
 export default {
   ...createTrait({
@@ -61,16 +66,7 @@ export default {
       description: 'add array state to component',
     },
     spec: {
-      properties: [
-        {
-          name: 'key',
-          ...KeyPropertySchema,
-        },
-        {
-          name: 'initialValue',
-          ...InitialValuePropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: Type.Any(),
       methods: [
         {

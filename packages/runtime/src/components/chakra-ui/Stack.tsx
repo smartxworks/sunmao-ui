@@ -36,19 +36,28 @@ export const AlignItemsSchema = Type.String();
 export const JustifyContentSchema = Type.String();
 export const SpacingSchema = Type.Union([Type.String(), Type.Number()]);
 
-const Stack: ComponentImplementation<{
-  direction?: Static<typeof DirectionSchema>;
-  wrap?: Static<typeof FlexWrapSchema>;
-  align?: Static<typeof AlignItemsSchema>;
-  justify?: Static<typeof JustifyContentSchema>;
-  spacing?: Static<typeof SpacingSchema>;
-}> = ({ direction, wrap, align, justify, spacing, slotsMap }) => {
+const Stack: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  direction,
+  wrap,
+  align,
+  justify,
+  spacing,
+  slotsMap,
+}) => {
   return (
     <BaseStack {...{ direction, wrap, align, justify, spacing }}>
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseStack>
   );
 };
+
+const PropsSchema = Type.Object({
+  direction: DirectionSchema,
+  wrap: FlexWrapSchema,
+  align: AlignItemsSchema,
+  justify: JustifyContentSchema,
+  spacing: SpacingSchema,
+});
 
 export default {
   ...createComponent({
@@ -58,28 +67,7 @@ export default {
       description: 'chakra-ui stack',
     },
     spec: {
-      properties: [
-        {
-          name: 'diection',
-          ...DirectionSchema,
-        },
-        {
-          name: 'wrap',
-          ...FlexWrapSchema,
-        },
-        {
-          name: 'align',
-          ...AlignItemsSchema,
-        },
-        {
-          name: 'justify',
-          ...JustifyContentSchema,
-        },
-        {
-          name: 'spacing',
-          ...SpacingSchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: {},
       methods: [],

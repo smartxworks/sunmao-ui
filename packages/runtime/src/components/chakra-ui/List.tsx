@@ -28,11 +28,11 @@ export function parseTypeComponents(
   };
 }
 
-const List: ComponentImplementation<{
-  listData: Static<typeof ListDataPropertySchema>;
-  template: Static<typeof TemplatePropertySchema>;
-  onClick?: () => void;
-}> = ({ listData, template, app }) => {
+const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  listData,
+  template,
+  app,
+}) => {
   if (!listData) {
     return null;
   }
@@ -90,13 +90,10 @@ const List: ComponentImplementation<{
   return <BaseList>{listItems}</BaseList>;
 };
 
-const ListDataPropertySchema = Type.Array(
-  Type.Object(Type.String(), Type.String())
-);
-const TemplatePropertySchema = Type.Object(
-  Type.String(),
-  Type.Array(Type.Object(Type.String()))
-);
+const PropsSchema = Type.Object({
+  listData: Type.Array(Type.Object(Type.String(), Type.String())),
+  template: Type.Object(Type.String(), Type.Array(Type.Object(Type.String()))),
+});
 
 export default {
   ...createComponent({
@@ -106,16 +103,7 @@ export default {
       description: 'chakra-ui list',
     },
     spec: {
-      properties: [
-        {
-          name: 'listData',
-          ...ListDataPropertySchema,
-        },
-        {
-          name: 'template',
-          ...TemplatePropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       methods: [],
       state: {},

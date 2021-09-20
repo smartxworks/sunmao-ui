@@ -1,4 +1,4 @@
-import { JSONSchema7 } from 'json-schema';
+import { JSONSchema7, JSONSchema7Object } from 'json-schema';
 import { Metadata } from './metadata';
 import { MethodSchema } from './method';
 import { parseVersion, Version } from './version';
@@ -13,7 +13,7 @@ export type Trait = {
 };
 
 type TraitSpec = {
-  properties: Array<JSONSchema7 & { name: string }>;
+  properties: JSONSchema7Object;
   state: JSONSchema7;
   methods: MethodSchema[];
 };

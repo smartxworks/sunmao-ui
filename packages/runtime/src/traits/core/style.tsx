@@ -3,7 +3,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from '../../registry';
 
 const StyleTrait: TraitImplementation<{
-  style: Static<typeof StylesPropertySchema>;
+  style: Static<typeof PropsSchema>;
 }> = ({ style }) => {
   return {
     props: {
@@ -12,7 +12,9 @@ const StyleTrait: TraitImplementation<{
   };
 };
 
-const StylesPropertySchema = Type.Array(Type.Object(Type.String()));
+const PropsSchema = Type.Object({
+  string: Type.Object(Type.String()),
+});
 export default {
   ...createTrait({
     version: 'core/v1',
@@ -21,12 +23,7 @@ export default {
       description: 'add style to component',
     },
     spec: {
-      properties: [
-        {
-          name: 'style',
-          ...StylesPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: {},
       methods: [],
     },

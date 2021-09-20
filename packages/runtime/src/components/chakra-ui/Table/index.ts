@@ -1,4 +1,5 @@
 import { createComponent } from '@meta-ui/core';
+import { Type } from '@sinclair/typebox';
 import { TableImpl } from './Table';
 import {
   ColumnsPropertySchema,
@@ -10,6 +11,15 @@ import {
   IsMultiSelectPropertySchema,
 } from './TableTypes';
 
+const PropsSchema = Type.Object({
+  data: DataPropertySchema,
+  majorKey: MajorKeyPropertySchema,
+  rowsPerPage: RowsPerPagePropertySchema,
+  size: TableSizePropertySchema,
+  columns: ColumnsPropertySchema,
+  isMultiSelect: IsMultiSelectPropertySchema,
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -18,32 +28,7 @@ export default {
       description: 'chakra-ui table',
     },
     spec: {
-      properties: [
-        {
-          name: 'data',
-          ...DataPropertySchema,
-        },
-        {
-          name: 'majorKey',
-          ...MajorKeyPropertySchema,
-        },
-        {
-          name: 'rowsPerPage',
-          ...RowsPerPagePropertySchema,
-        },
-        {
-          name: 'size',
-          ...TableSizePropertySchema,
-        },
-        {
-          name: 'columns',
-          ...ColumnsPropertySchema,
-        },
-        {
-          name: 'isMultiSelect',
-          ...IsMultiSelectPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: TableStateSchema,
       methods: [],

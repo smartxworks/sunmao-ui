@@ -293,12 +293,7 @@ export default {
       description: 'chakra-ui box',
     },
     spec: {
-      properties: Object.entries(StyleSchema.properties).map(
-        ([key, value]) => ({
-          name: key,
-          ...value,
-        })
-      ),
+      properties: StyleSchema,
       acceptTraits: [],
       state: {},
       methods: [],
