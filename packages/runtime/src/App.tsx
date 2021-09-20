@@ -138,7 +138,7 @@ export const ImplWrapper = React.forwardRef<
   // component properties
   const [evaledComponentProperties, setEvaledComponentProperties] = useState(
     () => {
-      return merge(deepEval(c.properties).result, propsFromTraits);
+      return merge(c.properties, propsFromTraits);
     }
   );
 
