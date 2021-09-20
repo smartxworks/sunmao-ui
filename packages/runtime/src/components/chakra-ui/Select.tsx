@@ -65,16 +65,20 @@ const Select: ComponentImplementation<{
   variant,
   mergeState,
 }) => {
-  const [state, setState] = useState<string | undefined>(defaultValue);
+  const [value, setValue] = useState<string | undefined>(defaultValue);
 
   useEffect(() => {
-    mergeState({ value: state });
-  }, [state]);
+    setValue(defaultValue);
+  }, [defaultValue]);
+
+  useEffect(() => {
+    mergeState({ value: value });
+  }, [value]);
 
   return (
     <BaseSelect
       placeholder={placeholder}
-      defaultValue={state}
+      value={value}
       errorBorderColor={errorBorderColor}
       focusBorderColor={focusBorderColor}
       isDisabled={isDisabled}
@@ -83,7 +87,7 @@ const Select: ComponentImplementation<{
       isRequired={isRequired}
       size={size}
       variant={variant}
-      onChange={e => setState(e.target.value)}>
+      onChange={e => setValue(e.target.value)}>
       {options.map(opt => (
         <option key={opt.value} value={opt.value}>
           {opt.label}

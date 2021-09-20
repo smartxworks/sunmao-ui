@@ -1,9 +1,11 @@
 import { createTrait } from '@meta-ui/core';
-import { Type } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
+import { isEqual } from 'lodash';
 import { TraitImplementation } from '../../registry';
+import { ValidResultSchema } from '../../types/ValidResultSchema';
 
-type ValidationResult = { isValid: boolean; errorMsg: string };
-type ValidationRule = (text: string) => { isValid: boolean; errorMsg: string };
+type ValidationResult = Static<typeof ValidResultSchema>;
+type ValidationRule = (text: string) => ValidationResult;
 
 const rules = new Map<string, ValidationRule>();
 
@@ -14,12 +16,12 @@ export function addValidationRule(name: string, rule: ValidationRule) {
 addValidationRule('email', text => {
   if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(text)) {
     return {
-      isValid: true,
+      isInvalid: false,
       errorMsg: '',
     };
   } else {
     return {
-      isValid: false,
+      isInvalid: true,
       errorMsg: '请输入正确的 email',
     };
   }
@@ -28,12 +30,12 @@ addValidationRule('email', text => {
 addValidationRule('phoneNumber', text => {
   if (/^1[3456789]\d{9}$/.test(text)) {
     return {
-      isValid: true,
+      isInvalid: false,
       errorMsg: '',
     };
   } else {
     return {
-      isValid: false,
+      isInvalid: true,
       errorMsg: '请输入正确的手机号码',
     };
   }
@@ -46,42 +48,46 @@ type ValidationProps = {
   rule: string;
 };
 
-const useValidationTrait: TraitImplementation<ValidationProps> = props => {
-  const { value, minLength, maxLength, rule } = props;
-  let result: ValidationResult = {
-    isValid: true,
+const ValidationResultCache: Record<string, ValidationResult> = {};
+
+const ValidationTraitImpl: TraitImplementation<ValidationProps> = props => {
+  const { value, minLength, maxLength, mergeState, componentId, rule } = props;
+
+  const result: ValidationResult = {
+    isInvalid: false,
     errorMsg: '',
   };
 
   if (value.length > maxLength) {
-    result = {
-      isValid: false,
-      errorMsg: `最长不能超过${maxLength}个字符`,
-    };
+    result.isInvalid = true;
+    result.errorMsg = `最长不能超过${maxLength}个字符`;
   } else if (value.length < minLength) {
-    result = {
-      isValid: false,
-      errorMsg: `不能少于${minLength}个字符`,
-    };
-  }
-
-  const rulesArr = rule.split(',');
-  for (const ruleName of rulesArr) {
-    const validateFunc = rules.get(ruleName);
-    if (validateFunc) {
-      result = validateFunc(value);
-      if (!result.isValid) {
-        break;
+    result.isInvalid = true;
+    result.errorMsg = `不能少于${minLength}个字符`;
+  } else {
+    const rulesArr = rule ? rule.split(',') : [];
+    for (const ruleName of rulesArr) {
+      const validateFunc = rules.get(ruleName);
+      if (validateFunc) {
+        const { isInvalid, errorMsg } = validateFunc(value);
+        if (isInvalid) {
+          result.isInvalid = true;
+          result.errorMsg = errorMsg;
+          break;
+        }
       }
     }
   }
 
+  if (!isEqual(result, ValidationResultCache[componentId])) {
+    ValidationResultCache[componentId] = result;
+    mergeState({
+      validResult: result,
+    });
+  }
+
   return {
-    props: {
-      data: {
-        validationResult: result,
-      },
-    },
+    props: null,
   };
 };
 
@@ -116,9 +122,11 @@ export default {
           ...ValidationMaxLengthPropertySchema,
         },
       ],
-      state: {},
+      state: Type.Object({
+        validResult: ValidResultSchema,
+      }),
       methods: [],
     },
   }),
-  impl: useValidationTrait,
+  impl: ValidationTraitImpl,
 };

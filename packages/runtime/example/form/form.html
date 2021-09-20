@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: input validation component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'Form',
+          description: 'Form example',
+        },
+        spec: {
+          components: [
+            {
+              id: 'root',
+              type: 'chakra_ui/v1/root',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/state',
+                  properties: {
+                    key: 'index',
+                    initialValue: '{{[]}}',
+                  },
+                },
+              ],
+            },
+            {
+              id: 'form',
+              type: 'chakra_ui/v1/form',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+                {
+                  type: 'core/v1/event',
+                  properties: {
+                    events: [
+                      {
+                        event: 'onSubmit',
+                        componentId: '$utils',
+                        method: {
+                          name: 'alert',
+                          parameters:
+                            '邮箱：{{ form.data ? form.data.email : "" }} 手机：{{ form.data ? form.data.phone : "" }}',
+                        },
+                        wait: {},
+                        disabled: false,
+                      },
+                      {
+                        event: 'onSubmit',
+                        componentId: 'form',
+                        method: {
+                          name: 'resetForm',
+                        },
+                        wait: {
+                          type: 'delay',
+                          time: 1000,
+                        },
+                        disabled: false,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              id: 'emailFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '邮箱',
+                fieldName: 'email',
+                isRequired: true,
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'emailInput',
+              type: 'chakra_ui/v1/input',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'emailFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'phoneFormControl',
+              type: 'chakra_ui/v1/formControl',
+              properties: {
+                label: '手机',
+                fieldName: 'phone',
+                isRequired: true,
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'form',
+                      slot: 'content',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'phoneInput',
+              type: 'chakra_ui/v1/input',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'phoneFormControl',
+                      slot: 'content',
+                    },
+                  },
+                },
+                {
+                  type: 'core/v1/validation',
+                  properties: {
+                    value: '{{ phoneInput.value || "" }}',
+                    maxLength: 100,
+                    minLength: 0,
+                    rule: 'phoneNumber',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

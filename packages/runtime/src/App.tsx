@@ -100,19 +100,28 @@ export const ImplWrapper = React.forwardRef<
   // eval traits' properties then excecute traits
   useEffect(() => {
     const stops: ReturnType<typeof watch>[] = [];
+    const properties: Array<ApplicationTrait['properties']> = [];
     c.traits.forEach((t, i) => {
-      const { stop } = deepEval(t.properties, ({ result: property }) => {
-        const traitResult = excecuteTrait(t, property);
-        setTraitResults(oldResults => {
-          // assume traits number and order will not change
-          const newResults = [...oldResults];
-          newResults[i] = traitResult;
-          return newResults;
-        });
-        stops.push(stop);
-      });
+      const { result, stop } = deepEval(
+        t.properties,
+        ({ result: property }) => {
+          const traitResult = excecuteTrait(t, property);
+          setTraitResults(oldResults => {
+            // assume traits number and order will not change
+            const newResults = [...oldResults];
+            newResults[i] = traitResult;
+            return newResults;
+          });
+          stops.push(stop);
+        }
+      );
+      properties.push(result);
     });
-
+    // although traitResults has initialized in useState, it must be set here again
+    // because mergeState will be called during the first render of component, and state will change
+    setTraitResults(
+      c.traits.map((trait, i) => excecuteTrait(trait, properties[i]))
+    );
     return () => stops.forEach(s => s());
   }, [c.traits]);
 
@@ -135,9 +144,11 @@ export const ImplWrapper = React.forwardRef<
 
   // eval component properties
   useEffect(() => {
-    const { stop } = deepEval(c.properties, ({ result }) => {
-      setEvaledComponentProperties({ ...result });
+    const { result, stop } = deepEval(c.properties, ({ result: newResult }) => {
+      setEvaledComponentProperties({ ...newResult });
     });
+    // must keep this line, reason is the same as above
+    setEvaledComponentProperties({ ...result });
     return stop;
   }, [c.properties]);
 
@@ -146,6 +157,7 @@ export const ImplWrapper = React.forwardRef<
   const C = (
     <Impl
       key={c.id}
+      component={c}
       {...mergedProps}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}

@@ -41,6 +41,7 @@
     "babel-jest": "^27.1.0",
     "jest": "^27.1.0",
     "typescript": "^4.3.2",
-    "vite": "^2.3.8"
+    "vite": "^2.3.8",
+    "vite-tsconfig-paths": "^3.3.14"
   }
 }

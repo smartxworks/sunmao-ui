@@ -1,18 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
 import _Text, { TextProps, TextPropertySchema } from '../_internal/Text';
 
-const Text: ComponentImplementation<TextProps> = ({
-  value,
-  mergeState,
-  style,
-}) => {
-  useEffect(() => {
-    mergeState({ value: value.raw });
-  }, [value.raw]);
-
+const Text: ComponentImplementation<TextProps> = ({ value, style }) => {
   return <_Text value={value} style={style} />;
 };
 
