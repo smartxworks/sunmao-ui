@@ -12,7 +12,7 @@ export default {
       description: 'Dummy Invisible component',
     },
     spec: {
-      properties: [],
+      properties: {},
       acceptTraits: [],
       state: {},
       methods: [],

@@ -5,16 +5,16 @@ import { RadioGroup as BaseRadioGroup } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import Slot from '../_internal/Slot';
 
-const DefaultValueSchema = Type.Union([Type.String(), Type.Number()]);
-const IsNumericalSchema = Type.Optional(Type.Boolean());
 const StateSchema = Type.Object({
   value: Type.String(),
 });
 
-const RadioGroup: ComponentImplementation<{
-  defaultValue?: Static<typeof DefaultValueSchema>;
-  isNumerical?: Static<typeof IsNumericalSchema>;
-}> = ({ defaultValue, isNumerical, slotsMap, mergeState }) => {
+const RadioGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  defaultValue,
+  isNumerical,
+  slotsMap,
+  mergeState,
+}) => {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
@@ -34,6 +34,11 @@ const RadioGroup: ComponentImplementation<{
   );
 };
 
+const PropsSchema = Type.Object({
+  defaultValue: Type.Union([Type.String(), Type.Number()]),
+  isNumerical: Type.Optional(Type.Boolean()),
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -42,16 +47,7 @@ export default {
       description: 'chakra-ui radio group',
     },
     spec: {
-      properties: [
-        {
-          name: 'defaultValue',
-          ...DefaultValueSchema,
-        },
-        {
-          name: 'isNumerical',
-          ...IsNumericalSchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [],

@@ -6,6 +6,10 @@ export const ContainerPropertySchema = Type.Object({
   slot: Type.String(),
 });
 
+const PropsSchema = Type.Object({
+  container: ContainerPropertySchema,
+});
+
 export default {
   ...createTrait({
     version: 'core/v1',
@@ -14,12 +18,7 @@ export default {
       description: 'nested components by slots',
     },
     spec: {
-      properties: [
-        {
-          name: 'container',
-          ...ContainerPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       state: {},
       methods: [],
     },

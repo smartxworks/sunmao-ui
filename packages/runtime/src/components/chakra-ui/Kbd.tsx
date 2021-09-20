@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { Kbd as BaseKbd } from '@chakra-ui/react';
-import { Type } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import { ComponentImplementation } from '../../registry';
-import Text, { TextProps, TextPropertySchema } from '../_internal/Text';
+import Text, { TextPropertySchema } from '../_internal/Text';
 
-const Kbd: ComponentImplementation<{
-  text: TextProps['value'];
-}> = ({ text, mergeState }) => {
+const Kbd: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  text,
+  mergeState,
+}) => {
   useEffect(() => {
     mergeState({ value: text.raw });
   }, [text.raw]);
@@ -23,6 +24,10 @@ const StateSchema = Type.Object({
   value: Type.String(),
 });
 
+const PropsSchema = Type.Object({
+  text: TextPropertySchema,
+});
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -31,12 +36,7 @@ export default {
       description: 'chakra-ui keyboard',
     },
     spec: {
-      properties: [
-        {
-          name: 'text',
-          ...TextPropertySchema,
-        },
-      ],
+      properties: PropsSchema,
       acceptTraits: [],
       state: StateSchema,
       methods: [],
