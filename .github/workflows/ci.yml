@@ -18,4 +18,4 @@ jobs:
       - name: run test
         run: yarn run test:ci
       - name: run build
-        run: yarn run prepublish:ci
+        run: yarn run prepublish
