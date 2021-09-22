@@ -72,6 +72,7 @@ export type ComponentMergedProps = {
   style?: Record<string, any>;
   data?: Record<string, unknown>;
   callbackMap?: CallbackMap;
+  effects?: Array<() => void>;
   app?: RuntimeApplication;
 };
 
@@ -84,6 +85,7 @@ export type TraitResult = {
     data?: unknown;
     style?: Record<string, any>;
     callbackMap?: CallbackMap;
+    effects?: Array<() => void>;
   } | null;
 };
 

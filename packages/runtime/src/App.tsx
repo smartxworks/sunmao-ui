@@ -126,12 +126,24 @@ export const ImplWrapper = React.forwardRef<
   }, [c.traits]);
 
   // reduce traitResults
-  const propsFromTraits: TraitResult = useMemo(() => {
+  const propsFromTraits: TraitResult['props'] = useMemo(() => {
     return Array.from(traitResults.values()).reduce(
       (prevProps, result: TraitResult) => {
-        return { ...prevProps, ...result.props };
+        if (!result.props) {
+          return prevProps;
+        }
+
+        let effects = prevProps?.effects || [];
+        if (result.props?.effects) {
+          effects = effects?.concat(result.props?.effects);
+        }
+        return {
+          ...prevProps,
+          ...result.props,
+          effects,
+        };
       },
-      { props: null }
+      {} as TraitResult['props']
     );
   }, [traitResults]);
 

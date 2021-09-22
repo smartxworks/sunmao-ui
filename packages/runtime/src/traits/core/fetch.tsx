@@ -97,7 +97,13 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   });
 
   return {
-    props: null,
+    props: {
+      effects: [
+        () => {
+          hasFetchedMap.set(hashId, false);
+        },
+      ],
+    },
   };
 };
 
