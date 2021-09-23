@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createComponent } from '@meta-ui/core';
 import {
   Tabs as BaseTabs,

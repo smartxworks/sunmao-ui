@@ -1,17 +1,26 @@
 import { defineConfig } from 'vite';
-import reactRefresh from '@vitejs/plugin-react-refresh';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh(), tsconfigPaths()],
+  plugins: [
+    react({
+      babel: {
+        plugins: [
+          [
+            '@babel/plugin-transform-react-jsx',
+            {
+              throwIfNamespace: false, // defaults to true
+              runtime: 'automatic',
+              importSource: '@emotion/react',
+            },
+          ],
+        ],
+      },
+    }),
+  ],
   define: {
     // https://github.com/satya164/react-simple-code-editor/issues/86
     global: 'globalThis',
-  },
-  esbuild: {
-    // https://dev.to/ajitsinghkamal/using-emotionjs-with-vite-2ndj
-    jsxFactory: 'jsx',
-    jsxInject: 'import { jsx } from "@emotion/react"',
   },
 });

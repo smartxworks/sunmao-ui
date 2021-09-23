@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import { createComponent } from '@meta-ui/core';

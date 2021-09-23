@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image as BaseImage } from '@chakra-ui/react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';

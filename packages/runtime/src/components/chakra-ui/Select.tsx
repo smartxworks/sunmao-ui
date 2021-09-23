@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Box as BaseBox } from '@chakra-ui/react';

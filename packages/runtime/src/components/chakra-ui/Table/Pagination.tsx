@@ -1,5 +1,3 @@
-import React from 'react';
-
 type TablePaginationProps = {
   pageNumber: number;
   currentPage: number; // start from 0

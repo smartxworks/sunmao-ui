@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
