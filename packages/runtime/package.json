@@ -5,7 +5,7 @@
     "dev": "vite",
     "test": "jest",
     "build": "tsc -b .",
-    "typings": "tsc -d --emitDeclarationOnly --declarationDir typings",
+    "typings": "tsc -d",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
   },
@@ -13,7 +13,7 @@
     "lib"
   ],
   "module": "lib/index.js",
-  "typings": "typings/index.d.ts",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@chakra-ui/react": "^1.6.5",
     "@emotion/react": "^11",

@@ -97,7 +97,7 @@ export type TraitImplementation<T = any> = (
   }
 ) => TraitResult;
 
-class Registry {
+export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
   traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
 

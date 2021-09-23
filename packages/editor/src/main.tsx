@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from '@meta-ui/runtime';
+import { App } from './metaUI';
 import { DialogFormSchema } from './constants';
 
 export default function renderApp() {
