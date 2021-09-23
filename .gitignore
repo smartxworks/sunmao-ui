@@ -12,3 +12,6 @@ node_modules
 lib
 tsconfig.tsbuildinfo
 typings
+
+# jest test coverage
+coverage
