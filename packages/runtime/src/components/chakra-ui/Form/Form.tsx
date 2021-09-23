@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import Slot from '@components/_internal/Slot';
 import { Button } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
-import { ComponentImplementation } from 'src/registry';
-import { stateStore } from 'src/store';
-import { apiService } from 'src/api-service';
+import { ComponentImplementation } from '../../../registry';
+import { stateStore } from '../../../store';
+import { apiService } from '../../../api-service';
+import Slot from '../../_internal/Slot';
 
 const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   mergeState,

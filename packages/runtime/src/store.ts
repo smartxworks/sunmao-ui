@@ -106,7 +106,7 @@ export function maskedEval(
         ...scopeObject,
       });
       return result;
-    } catch (e) {
+    } catch (e: any) {
       console.error(
         Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`)
       );

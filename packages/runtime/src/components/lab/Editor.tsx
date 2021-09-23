@@ -7,7 +7,7 @@ import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
 import { ComponentImplementation } from '../../registry';
 import ErrorBoundary from '../_internal/ErrorBoundary';
-import App from '../../App';
+import { App } from '../../App';
 
 const Editor: ComponentImplementation<Record<string, unknown>> = () => {
   const [code, setCode] = useState(

@@ -3,8 +3,17 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -b .",
+    "typings": "tsc -d --emitDeclarationOnly --declarationDir typings",
+    "lint": "eslint src --ext .ts",
+    "prepublish": "npm run build && npm run typings"
   },
+  "files": [
+    "lib"
+  ],
+  "module": "lib/index.js",
+  "typings": "typings/index.d.ts",
   "dependencies": {
     "@chakra-ui/react": "^1.6.5",
     "@emotion/react": "^11",

@@ -17,7 +17,6 @@ export function parseTypeComponents(
 ): RuntimeApplication['spec']['components'][0] {
   return {
     ...c,
-    children: [],
     parsedType: parseType(c.type),
     traits: c.traits.map(t => {
       return {

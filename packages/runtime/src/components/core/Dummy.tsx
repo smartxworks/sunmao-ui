@@ -1,6 +1,6 @@
 import { createComponent } from '@meta-ui/core';
 import { useEffect } from 'react';
-import { ComponentImplementation } from 'src/registry';
+import { ComponentImplementation } from '../../registry';
 
 const Dummy: ComponentImplementation<Record<string, unknown>> = ({
   effects,

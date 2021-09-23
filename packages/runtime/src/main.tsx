@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Application } from '@meta-ui/core';
-import App from './App';
+import { App } from './App';
 import { mountUtilMethods } from './util-methods';
 
 mountUtilMethods();
