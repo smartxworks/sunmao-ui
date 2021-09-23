@@ -16,6 +16,9 @@ jobs:
       - name: install dependencies
         run: yarn install
       - name: run test
-        run: yarn run test:ci
-      - name: run build
-        run: yarn run prepublish
+        uses: mattallty/jest-github-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          test-command: "yarn test:ci"
+          coverage-comment: ${{ github.event.name == 'pull_request'}}
