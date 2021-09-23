@@ -309,7 +309,7 @@ export function resolveAppComponents(
   };
 }
 
-const App: React.FC<{
+export const App: React.FC<{
   options: Application;
   debugStore?: boolean;
   debugEvent?: boolean;
@@ -340,5 +340,3 @@ const App: React.FC<{
     </div>
   );
 };
-
-export default App;

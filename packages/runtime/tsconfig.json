@@ -1,9 +1,11 @@
 {
+  "extends": "../../config/tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "outDir": "./lib",
     "allowJs": false,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -12,18 +14,12 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "types": ["@emotion/react/types/css-prop"],
-    "baseUrl": ".",
-    "paths": {
-      "@components/*": ["src/components/*"],
-      "@traits/*": ["src/traits/*"],
-      "@types/*": ["src/types/*"],
-      "@utils/*": ["src/utils/*"],
-    },
+    "baseUrl": "./",
   },
   "include": ["./src"]
 }

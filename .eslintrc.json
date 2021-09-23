@@ -29,5 +29,5 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "react/display-name": "off"
   },
-  "ignorePatterns": ["node_modules", "*.d.ts", "package.json", "*.html"]
+  "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html"]
 }

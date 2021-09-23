@@ -9,16 +9,16 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
-import { ComponentImplementation } from 'src/registry';
-import { stateStore } from 'src/store';
-import { CheckboxStateSchema } from '@components/chakra-ui/Checkbox';
-import Slot from '@components/_internal/Slot';
 import {
   FormControlContentCSS,
   FormControlCSS,
   FormItemCSS,
   FormLabelCSS,
 } from './FormCSS';
+import { ComponentImplementation } from '../../../registry';
+import { stateStore } from '../../../store';
+import Slot from '../../_internal/Slot';
+import { CheckboxStateSchema } from '../Checkbox';
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
