@@ -1,5 +1,5 @@
+import { RuntimeApplication } from '@meta-ui/core';
 import { TSchema } from '@sinclair/typebox';
-import { RuntimeApplication } from '../../../core/typings';
 import { registry } from '../registry';
 import { stateStore } from '../store';
 import { parseTypeBox } from './parseTypeBox';
