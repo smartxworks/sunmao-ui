@@ -1,33 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Application, createComponent, createApplication } from '@meta-ui/core';
+import { Application, createApplication } from '@meta-ui/core';
 import { Box, Button } from '@chakra-ui/react';
 import CodeEditor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
-import { ComponentImplementation } from '../../registry';
-import ErrorBoundary from '../_internal/ErrorBoundary';
-import { App } from '../../App';
+import { DialogFormSchema } from '../constants';
+import { App } from '../metaUI';
 
-const Editor: ComponentImplementation<Record<string, unknown>> = () => {
-  const [code, setCode] = useState(
-    JSON.stringify(
-      {
-        version: 'example/v1',
-        kind: 'Application',
-        metadata: {
-          name: 'live_edit',
-          description:
-            'build meta-ui app with a editor component based on meta-ui',
-        },
-        spec: {
-          components: [],
-        },
-      },
-      null,
-      2
-    )
-  );
+export const Editor = () => {
+  const [code, setCode] = useState(JSON.stringify(DialogFormSchema));
   const [codeError, setCodeError] = useState('');
   const [app, setApp] = useState<Application>(() => JSON.parse(code));
   useEffect(() => {
@@ -46,9 +28,7 @@ const Editor: ComponentImplementation<Record<string, unknown>> = () => {
   return (
     <Box display="flex" height="100vh">
       <Box flex="1" borderRight="2px solid black">
-        <ErrorBoundary key={JSON.stringify(app)}>
-          <App debugStore={false} debugEvent={false} options={app} />
-        </ErrorBoundary>
+        <App debugStore={false} debugEvent={false} options={app} />
       </Box>
       <Box width="400px">
         <Box py={1}>
@@ -80,21 +60,4 @@ const Editor: ComponentImplementation<Record<string, unknown>> = () => {
       </Box>
     </Box>
   );
-};
-
-export default {
-  ...createComponent({
-    version: 'lab/v1',
-    metadata: {
-      name: 'editor',
-      description: 'experimental app editor',
-    },
-    spec: {
-      properties: {},
-      acceptTraits: [],
-      state: {},
-      methods: [],
-    },
-  }),
-  impl: Editor,
 };

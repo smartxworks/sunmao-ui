@@ -1,14 +1,13 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './metaUI';
-import { DialogFormSchema } from './constants';
+import { Editor } from './components/Editor';
 
 export default function renderApp() {
   ReactDOM.render(
-    <React.StrictMode>
+    <StrictMode>
       <div>Hello, editor</div>
-      <App options={DialogFormSchema} />
-    </React.StrictMode>,
+      <Editor />
+    </StrictMode>,
     document.getElementById('root')
   );
 }

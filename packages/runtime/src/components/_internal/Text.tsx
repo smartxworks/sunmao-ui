@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 

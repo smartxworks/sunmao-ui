@@ -1,4 +1,3 @@
-import React from 'react';
 import { Static } from '@sinclair/typebox';
 import { apiService } from '../../../api-service';
 import { ColumnSchema } from './TableTypes';

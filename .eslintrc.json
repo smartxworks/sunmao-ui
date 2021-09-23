@@ -27,7 +27,9 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off"
   },
   "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html"]
 }

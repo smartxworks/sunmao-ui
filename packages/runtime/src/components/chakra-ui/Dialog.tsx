@@ -54,7 +54,7 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <>
+    <React.Fragment>
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
@@ -85,7 +85,7 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-    </>
+    </React.Fragment>
   );
 };
 

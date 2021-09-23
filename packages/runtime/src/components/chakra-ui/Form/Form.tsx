@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import { Button } from '@chakra-ui/react';

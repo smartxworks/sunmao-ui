@@ -1,5 +1,4 @@
 import { Static, Type } from '@sinclair/typebox';
-import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { ComponentImplementation } from '../../../registry';
 import { Switch } from './component';

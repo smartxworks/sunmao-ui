@@ -1,4 +1,3 @@
-import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../registry';
