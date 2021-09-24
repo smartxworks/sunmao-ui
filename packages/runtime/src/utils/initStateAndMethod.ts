@@ -8,6 +8,9 @@ export function initStateAndMethod(
   components: RuntimeApplication['spec']['components']
 ) {
   components.forEach(c => {
+    if (stateStore[c.id]) {
+      return false;
+    }
     let state = {};
     c.traits.forEach(t => {
       const tSpec = registry.getTrait(

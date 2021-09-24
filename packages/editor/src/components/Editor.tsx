@@ -7,6 +7,7 @@ import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
 import { DialogFormSchema } from '../constants';
 import { App } from '../metaUI';
+import { StructureTree } from './StructureTree';
 
 export const Editor = () => {
   const [code, setCode] = useState(JSON.stringify(DialogFormSchema));
@@ -27,7 +28,10 @@ export const Editor = () => {
 
   return (
     <Box display="flex" height="100vh">
-      <Box flex="1" borderRight="2px solid black">
+      <Box flex="1">
+        <StructureTree app={JSON.parse(code)} />
+      </Box>
+      <Box flex="3" borderRight="2px solid black">
         <App debugStore={false} debugEvent={false} options={app} />
       </Box>
       <Box width="400px">
@@ -40,7 +44,8 @@ export const Editor = () => {
               } catch {
                 return;
               }
-            }}>
+            }}
+          >
             format
           </Button>
         </Box>
