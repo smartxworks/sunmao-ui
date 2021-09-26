@@ -32,6 +32,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   app,
   registry,
   stateManager,
+  globalHandlerMap,
 }) => {
   if (!listData) {
     return null;
@@ -63,6 +64,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
       registry,
       stateManager,
+      globalHandlerMap,
       evaledTemplate,
       app
     );
@@ -76,6 +78,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           targetSlot={null}
           registry={registry}
           stateManager={stateManager}
+          globalHandlerMap={globalHandlerMap}
           app={app}
         />
       );

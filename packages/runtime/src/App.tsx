@@ -12,7 +12,7 @@ import { ContainerPropertySchema } from './traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import { watch } from '@vue-reactivity/watch';
 import copy from 'copy-to-clipboard';
-import { globalHandlerMap } from './handler';
+import { GlobalHandlerMap } from './handler';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
@@ -30,6 +30,7 @@ export const ImplWrapper = React.forwardRef<
     app?: RuntimeApplication;
     registry: Registry;
     stateManager: StateManager;
+    globalHandlerMap: GlobalHandlerMap;
     // [key: string]: any;
   }
 >(
@@ -41,6 +42,7 @@ export const ImplWrapper = React.forwardRef<
       app,
       registry,
       stateManager,
+      globalHandlerMap,
       children,
       ...props
     },
@@ -195,6 +197,7 @@ export const ImplWrapper = React.forwardRef<
         {...mergedProps}
         registry={registry}
         stateManager={stateManager}
+        globalHandlerMap={globalHandlerMap}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
         slotsMap={slotsMap}
@@ -289,6 +292,7 @@ export type SlotsMap = Map<
 export function resolveAppComponents(
   registry: Registry,
   stateManager: StateManager,
+  globalHandlerMap: GlobalHandlerMap,
   components: RuntimeApplication['spec']['components'],
   app?: RuntimeApplication
 ): {
@@ -320,6 +324,7 @@ export function resolveAppComponents(
           targetSlot={{ id, slot }}
           registry={registry}
           stateManager={stateManager}
+          globalHandlerMap={globalHandlerMap}
           app={app}
           {...props}
           ref={ref}
@@ -346,13 +351,27 @@ type AppProps = {
   options: Application;
   registry: Registry;
   stateManager: StateManager;
+  globalHandlerMap: GlobalHandlerMap;
   debugStore?: boolean;
   debugEvent?: boolean;
 };
 
-export function genApp(registry: Registry, stateManager: StateManager) {
-  return (props: Omit<AppProps, 'registry' | 'stateStore'>) => {
-    return <App {...props} registry={registry} stateManager={stateManager} />;
+export function genApp(
+  registry: Registry,
+  stateManager: StateManager,
+  globalHandlerMap: GlobalHandlerMap
+) {
+  return (
+    props: Omit<AppProps, 'registry' | 'stateStore' | 'globalHandlerMap'>
+  ) => {
+    return (
+      <App
+        {...props}
+        registry={registry}
+        stateManager={stateManager}
+        globalHandlerMap={globalHandlerMap}
+      />
+    );
   };
 }
 
@@ -360,6 +379,7 @@ export const App: React.FC<AppProps> = ({
   options,
   registry,
   stateManager,
+  globalHandlerMap,
   debugStore = true,
   debugEvent = true,
 }) => {
@@ -369,7 +389,13 @@ export const App: React.FC<AppProps> = ({
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
     () =>
-      resolveAppComponents(registry, stateManager, app.spec.components, app),
+      resolveAppComponents(
+        registry,
+        stateManager,
+        globalHandlerMap,
+        app.spec.components,
+        app
+      ),
     [app]
   );
 
@@ -382,6 +408,7 @@ export const App: React.FC<AppProps> = ({
             component={c}
             registry={registry}
             stateManager={stateManager}
+            globalHandlerMap={globalHandlerMap}
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
