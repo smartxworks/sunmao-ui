@@ -1,10 +1,14 @@
 import { stateStore } from './store';
-import { App } from './App';
-import { registry } from './registry';
+import { genApp } from './App';
+import { initRegistry } from './registry';
+import { mountUtilMethods } from './util-methods';
 
 export function InitMetaUI() {
+  const registry = initRegistry();
+  mountUtilMethods();
+
   return {
-    App,
+    App: genApp(registry),
     stateStore,
     registry,
   };

@@ -1,10 +1,11 @@
 import { RuntimeApplication } from '@meta-ui/core';
 import { TSchema } from '@sinclair/typebox';
-import { registry } from '../registry';
+import { Registry } from 'src/registry';
 import { stateStore } from '../store';
 import { parseTypeBox } from './parseTypeBox';
 
 export function initStateAndMethod(
+  registry: Registry,
   components: RuntimeApplication['spec']['components']
 ) {
   components.forEach(c => {

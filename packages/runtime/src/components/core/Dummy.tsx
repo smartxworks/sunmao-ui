@@ -6,7 +6,9 @@ const Dummy: ComponentImplementation<Record<string, unknown>> = ({
   effects,
 }) => {
   useEffect(() => {
-    effects?.forEach(e => e());
+    return () => {
+      effects?.forEach(e => e());
+    };
   }, []);
 
   return null;

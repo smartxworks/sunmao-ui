@@ -54,11 +54,9 @@ type ImplementedRuntimeTrait = RuntimeTrait & {
   impl: TraitImplementation;
 };
 
-type SubscribeMethods = <U>(
-  map: {
-    [K in keyof U]: (parameters: U[K]) => void;
-  }
-) => void;
+type SubscribeMethods = <U>(map: {
+  [K in keyof U]: (parameters: U[K]) => void;
+}) => void;
 type MergeState = (partialState: any) => void;
 
 export type CallbackMap = Record<string, () => void>;
@@ -73,6 +71,7 @@ export type ComponentMergedProps = {
   callbackMap?: CallbackMap;
   effects?: Array<() => void>;
   app?: RuntimeApplication;
+  registry: Registry;
 };
 
 export type ComponentImplementation<T = any> = React.FC<
@@ -141,42 +140,44 @@ export class Registry {
   }
 }
 
-export const registry = new Registry();
+export function initRegistry(): Registry {
+  const registry = new Registry();
+  registry.registerComponent(PlainButton);
+  registry.registerComponent(CoreText);
+  registry.registerComponent(CoreGridLayout);
+  registry.registerComponent(ChakraUIRoot);
+  registry.registerComponent(ChakraUIButton);
+  registry.registerComponent(ChakraUITabs);
+  registry.registerComponent(ChakraUITable);
+  registry.registerComponent(ChakraUIInput);
+  registry.registerComponent(ChakraUIBox);
+  registry.registerComponent(ChakraUIFormControl);
+  registry.registerComponent(ChakraUIForm);
+  registry.registerComponent(ChakraUIKbd);
+  registry.registerComponent(ChakraUIList);
+  registry.registerComponent(ChakraUINumberInput);
+  registry.registerComponent(ChakraUICheckbox);
+  registry.registerComponent(ChakraUICheckboxGroup);
+  registry.registerComponent(ChakraUIStack);
+  registry.registerComponent(ChakraUITooltip);
+  registry.registerComponent(ChakraUIHStack);
+  registry.registerComponent(ChakraUIVStack);
+  registry.registerComponent(ChakraUIImage);
+  registry.registerComponent(ChakraUIDialog);
+  registry.registerComponent(ChakraUISelect);
+  registry.registerComponent(ChakraUIRadioGroup);
+  registry.registerComponent(ChakraUIRadio);
+  registry.registerComponent(LabEditor);
+  registry.registerComponent(CoreRouter);
+  registry.registerComponent(CoreDummy);
 
-registry.registerComponent(PlainButton);
-registry.registerComponent(CoreText);
-registry.registerComponent(CoreGridLayout);
-registry.registerComponent(ChakraUIRoot);
-registry.registerComponent(ChakraUIButton);
-registry.registerComponent(ChakraUITabs);
-registry.registerComponent(ChakraUITable);
-registry.registerComponent(ChakraUIInput);
-registry.registerComponent(ChakraUIBox);
-registry.registerComponent(ChakraUIFormControl);
-registry.registerComponent(ChakraUIForm);
-registry.registerComponent(ChakraUIKbd);
-registry.registerComponent(ChakraUIList);
-registry.registerComponent(ChakraUINumberInput);
-registry.registerComponent(ChakraUICheckbox);
-registry.registerComponent(ChakraUICheckboxGroup);
-registry.registerComponent(ChakraUIStack);
-registry.registerComponent(ChakraUITooltip);
-registry.registerComponent(ChakraUIHStack);
-registry.registerComponent(ChakraUIVStack);
-registry.registerComponent(ChakraUIImage);
-registry.registerComponent(ChakraUIDialog);
-registry.registerComponent(ChakraUISelect);
-registry.registerComponent(ChakraUIRadioGroup);
-registry.registerComponent(ChakraUIRadio);
-registry.registerComponent(LabEditor);
-registry.registerComponent(CoreRouter);
-registry.registerComponent(CoreDummy);
-
-registry.registerTrait(CoreState);
-registry.registerTrait(CoreArrayState);
-registry.registerTrait(CoreEvent);
-registry.registerTrait(CoreSlot);
-registry.registerTrait(CoreStyle);
-registry.registerTrait(CoreHidden);
-registry.registerTrait(CoreFetch);
-registry.registerTrait(CoreValidation);
+  registry.registerTrait(CoreState);
+  registry.registerTrait(CoreArrayState);
+  registry.registerTrait(CoreEvent);
+  registry.registerTrait(CoreSlot);
+  registry.registerTrait(CoreStyle);
+  registry.registerTrait(CoreHidden);
+  registry.registerTrait(CoreFetch);
+  registry.registerTrait(CoreValidation);
+  return registry;
+}

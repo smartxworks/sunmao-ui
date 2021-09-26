@@ -5,7 +5,7 @@ import {
   RuntimeApplication,
 } from '@meta-ui/core';
 import { merge } from 'lodash';
-import { registry, TraitResult } from './registry';
+import { Registry, TraitResult } from './registry';
 import { stateStore, deepEval } from './store';
 import { apiService } from './api-service';
 import { ContainerPropertySchema } from './traits/core/slot';
@@ -27,176 +27,185 @@ export const ImplWrapper = React.forwardRef<
     component: ApplicationComponent;
     slotsMap: SlotsMap | undefined;
     targetSlot: { id: string; slot: string } | null;
-    app: RuntimeApplication;
-    [key: string]: any;
+    app?: RuntimeApplication;
+    registry: Registry;
+    // [key: string]: any;
   }
->(({ component: c, slotsMap, targetSlot, app, children, ...props }, ref) => {
-  const Impl = registry.getComponent(
-    c.parsedType.version,
-    c.parsedType.name
-  ).impl;
-
-  if (!globalHandlerMap.has(c.id)) {
-    globalHandlerMap.set(c.id, {});
-  }
-
-  let handlerMap = globalHandlerMap.get(c.id)!;
-  useEffect(() => {
-    const handler = (s: {
-      componentId: string;
-      name: string;
-      parameters?: any;
-    }) => {
-      if (s.componentId !== c.id) {
-        return;
-      }
-      if (!handlerMap[s.name]) {
-        // maybe log?
-        return;
-      }
-      handlerMap[s.name](s.parameters);
-    };
-    apiService.on('uiMethod', handler);
-    return () => {
-      apiService.off('uiMethod', handler);
-      globalHandlerMap.delete(c.id);
-    };
-  }, []);
-
-  const mergeState = useCallback(
-    (partial: any) => {
-      stateStore[c.id] = { ...stateStore[c.id], ...partial };
-    },
-    [c.id]
-  );
-  const subscribeMethods = useCallback((map: any) => {
-    handlerMap = { ...handlerMap, ...map };
-    globalHandlerMap.set(c.id, handlerMap);
-  }, []);
-
-  // result returned from traits
-  const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
-    return c.traits.map(trait =>
-      excecuteTrait(trait, deepEval(trait.properties).result)
-    );
-  });
-
-  function excecuteTrait(
-    trait: ApplicationTrait,
-    traitProperty: ApplicationTrait['properties']
-  ) {
-    const tImpl = registry.getTrait(
-      trait.parsedType.version,
-      trait.parsedType.name
+>(
+  (
+    { component: c, slotsMap, targetSlot, app, registry, children, ...props },
+    ref
+  ) => {
+    const Impl = registry.getComponent(
+      c.parsedType.version,
+      c.parsedType.name
     ).impl;
-    return tImpl({
-      ...traitProperty,
-      componentId: c.id,
-      mergeState,
-      subscribeMethods,
-    });
-  }
 
-  // eval traits' properties then excecute traits
-  useEffect(() => {
-    const stops: ReturnType<typeof watch>[] = [];
-    const properties: Array<ApplicationTrait['properties']> = [];
-    c.traits.forEach((t, i) => {
-      const { result, stop } = deepEval(
-        t.properties,
-        ({ result: property }) => {
-          const traitResult = excecuteTrait(t, property);
-          setTraitResults(oldResults => {
-            // assume traits number and order will not change
-            const newResults = [...oldResults];
-            newResults[i] = traitResult;
-            return newResults;
-          });
-          stops.push(stop);
-        }
-      );
-      properties.push(result);
-    });
-    // although traitResults has initialized in useState, it must be set here again
-    // because mergeState will be called during the first render of component, and state will change
-    setTraitResults(
-      c.traits.map((trait, i) => excecuteTrait(trait, properties[i]))
-    );
-    return () => stops.forEach(s => s());
-  }, [c.traits]);
+    if (!globalHandlerMap.has(c.id)) {
+      globalHandlerMap.set(c.id, {});
+    }
 
-  // reduce traitResults
-  const propsFromTraits: TraitResult['props'] = useMemo(() => {
-    return Array.from(traitResults.values()).reduce(
-      (prevProps, result: TraitResult) => {
-        if (!result.props) {
-          return prevProps;
+    let handlerMap = globalHandlerMap.get(c.id)!;
+    useEffect(() => {
+      const handler = (s: {
+        componentId: string;
+        name: string;
+        parameters?: any;
+      }) => {
+        if (s.componentId !== c.id) {
+          return;
         }
+        if (!handlerMap[s.name]) {
+          // maybe log?
+          return;
+        }
+        handlerMap[s.name](s.parameters);
+      };
+      apiService.on('uiMethod', handler);
+      return () => {
+        apiService.off('uiMethod', handler);
+        globalHandlerMap.delete(c.id);
+      };
+    }, []);
 
-        let effects = prevProps?.effects || [];
-        if (result.props?.effects) {
-          effects = effects?.concat(result.props?.effects);
-        }
-        return {
-          ...prevProps,
-          ...result.props,
-          effects,
-        };
+    const mergeState = useCallback(
+      (partial: any) => {
+        stateStore[c.id] = { ...stateStore[c.id], ...partial };
       },
-      {} as TraitResult['props']
+      [c.id]
     );
-  }, [traitResults]);
+    const subscribeMethods = useCallback((map: any) => {
+      handlerMap = { ...handlerMap, ...map };
+      globalHandlerMap.set(c.id, handlerMap);
+    }, []);
 
-  // component properties
-  const [evaledComponentProperties, setEvaledComponentProperties] = useState(
-    () => {
-      return merge(deepEval(c.properties).result, propsFromTraits);
-    }
-  );
-
-  // eval component properties
-  useEffect(() => {
-    const { result, stop } = deepEval(c.properties, ({ result: newResult }) => {
-      setEvaledComponentProperties({ ...newResult });
-    });
-    // must keep this line, reason is the same as above
-    setEvaledComponentProperties({ ...result });
-    return stop;
-  }, [c.properties]);
-
-  const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
-
-  const C = (
-    <Impl
-      key={c.id}
-      component={c}
-      {...mergedProps}
-      mergeState={mergeState}
-      subscribeMethods={subscribeMethods}
-      slotsMap={slotsMap}
-      app={app}
-    />
-  );
-
-  if (targetSlot && app) {
-    const targetC = app.spec.components.find(c => c.id === targetSlot.id);
-    if (targetC?.parsedType.name === 'grid_layout') {
-      return (
-        <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
-          {C}
-          {children}
-        </div>
+    // result returned from traits
+    const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
+      return c.traits.map(trait =>
+        excecuteTrait(trait, deepEval(trait.properties).result)
       );
-    }
-  }
+    });
 
-  return (
-    <React.Fragment key={c.id}>
-      {C}
-      {children}
-    </React.Fragment>
-  );
-});
+    function excecuteTrait(
+      trait: ApplicationTrait,
+      traitProperty: ApplicationTrait['properties']
+    ) {
+      const tImpl = registry.getTrait(
+        trait.parsedType.version,
+        trait.parsedType.name
+      ).impl;
+      return tImpl({
+        ...traitProperty,
+        componentId: c.id,
+        mergeState,
+        subscribeMethods,
+      });
+    }
+
+    // eval traits' properties then excecute traits
+    useEffect(() => {
+      const stops: ReturnType<typeof watch>[] = [];
+      const properties: Array<ApplicationTrait['properties']> = [];
+      c.traits.forEach((t, i) => {
+        const { result, stop } = deepEval(
+          t.properties,
+          ({ result: property }) => {
+            const traitResult = excecuteTrait(t, property);
+            setTraitResults(oldResults => {
+              // assume traits number and order will not change
+              const newResults = [...oldResults];
+              newResults[i] = traitResult;
+              return newResults;
+            });
+            stops.push(stop);
+          }
+        );
+        properties.push(result);
+      });
+      // although traitResults has initialized in useState, it must be set here again
+      // because mergeState will be called during the first render of component, and state will change
+      setTraitResults(
+        c.traits.map((trait, i) => excecuteTrait(trait, properties[i]))
+      );
+      return () => stops.forEach(s => s());
+    }, [c.traits]);
+
+    // reduce traitResults
+    const propsFromTraits: TraitResult['props'] = useMemo(() => {
+      return Array.from(traitResults.values()).reduce(
+        (prevProps, result: TraitResult) => {
+          if (!result.props) {
+            return prevProps;
+          }
+
+          let effects = prevProps?.effects || [];
+          if (result.props?.effects) {
+            effects = effects?.concat(result.props?.effects);
+          }
+          return {
+            ...prevProps,
+            ...result.props,
+            effects,
+          };
+        },
+        {} as TraitResult['props']
+      );
+    }, [traitResults]);
+
+    // component properties
+    const [evaledComponentProperties, setEvaledComponentProperties] = useState(
+      () => {
+        return merge(deepEval(c.properties).result, propsFromTraits);
+      }
+    );
+
+    // eval component properties
+    useEffect(() => {
+      const { result, stop } = deepEval(
+        c.properties,
+        ({ result: newResult }) => {
+          setEvaledComponentProperties({ ...newResult });
+        }
+      );
+      // must keep this line, reason is the same as above
+      setEvaledComponentProperties({ ...result });
+      return stop;
+    }, [c.properties]);
+
+    const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
+
+    const C = (
+      <Impl
+        key={c.id}
+        component={c}
+        {...mergedProps}
+        mergeState={mergeState}
+        subscribeMethods={subscribeMethods}
+        slotsMap={slotsMap}
+        app={app}
+      />
+    );
+
+    if (targetSlot && app) {
+      const targetC = app.spec.components.find(c => c.id === targetSlot.id);
+      if (targetC?.parsedType.name === 'grid_layout') {
+        return (
+          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+            {C}
+            {children}
+          </div>
+        );
+      }
+    }
+
+    return (
+      <React.Fragment key={c.id}>
+        {C}
+        {children}
+      </React.Fragment>
+    );
+  }
+);
 
 const DebugStore: React.FC = () => {
   const [store, setStore] = useState(stateStore);
@@ -229,7 +238,8 @@ const DebugEvent: React.FC = () => {
         <button
           onClick={() => {
             copy(JSON.stringify(events));
-          }}>
+          }}
+        >
           copy test case
         </button>
       </div>
@@ -239,7 +249,8 @@ const DebugEvent: React.FC = () => {
           border: '2px solid black',
           maxHeight: '200px',
           overflow: 'auto',
-        }}>
+        }}
+      >
         {events.map((event, idx) => (
           <pre key={idx}>{JSON.stringify(event)}</pre>
         ))}
@@ -258,6 +269,7 @@ export type SlotsMap = Map<
 >;
 
 export function resolveAppComponents(
+  registry: Registry,
   components: RuntimeApplication['spec']['components'],
   app?: RuntimeApplication
 ): {
@@ -287,6 +299,7 @@ export function resolveAppComponents(
           component={c}
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={{ id, slot }}
+          registry={registry}
           app={app}
           {...props}
           ref={ref}
@@ -309,16 +322,31 @@ export function resolveAppComponents(
   };
 }
 
-export const App: React.FC<{
+type AppProps = {
   options: Application;
+  registry: Registry;
   debugStore?: boolean;
   debugEvent?: boolean;
-}> = ({ options, debugStore = true, debugEvent = true }) => {
+};
+
+export function genApp(registry: Registry) {
+  return (props: Omit<AppProps, 'registry'>) => {
+    return <App {...props} registry={registry} />;
+  };
+}
+
+export const App: React.FC<AppProps> = ({
+  options,
+  registry,
+  debugStore = true,
+  debugEvent = true,
+}) => {
   const app = createApplication(options);
-  initStateAndMethod(app.spec.components);
+
+  initStateAndMethod(registry, app.spec.components);
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
-    () => resolveAppComponents(app.spec.components, app),
+    () => resolveAppComponents(registry, app.spec.components, app),
     [app]
   );
 
@@ -329,6 +357,7 @@ export const App: React.FC<{
           <ImplWrapper
             key={c.id}
             component={c}
+            registry={registry}
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
