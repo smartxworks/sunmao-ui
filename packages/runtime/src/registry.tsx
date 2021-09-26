@@ -46,6 +46,7 @@ import CoreHidden from './traits/core/hidden';
 import CoreFetch from './traits/core/fetch';
 import CoreValidation from './traits/core/validation';
 import { StateManager } from './store';
+import { GlobalHandlerMap } from './handler';
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -74,6 +75,7 @@ export type ComponentMergedProps = {
   app?: RuntimeApplication;
   registry: Registry;
   stateManager: StateManager;
+  globalHandlerMap: GlobalHandlerMap;
 };
 
 export type ComponentImplementation<T = any> = React.FC<
