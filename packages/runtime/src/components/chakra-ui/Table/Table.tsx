@@ -42,6 +42,7 @@ export const TableImpl: ComponentImplementation<{
   columns,
   isMultiSelect,
   mergeState,
+  stateManager,
 }) => {
   if (!data) {
     return <div>loading</div>;
@@ -129,7 +130,8 @@ export const TableImpl: ComponentImplementation<{
           size="lg"
           isIndeterminate={isIndeterminate}
           checked={isAllChecked}
-          onChange={onChange}></Checkbox>
+          onChange={onChange}
+        ></Checkbox>
       </Th>
     );
   }, [selectedItems.length, normalizedData.length]);
@@ -187,7 +189,8 @@ export const TableImpl: ComponentImplementation<{
                 bgColor={isSelected ? 'gray' : undefined}
                 onClick={() => {
                   selectItem(item);
-                }}>
+                }}
+              >
                 {isMultiSelect ? checkbox : undefined}
                 {columns.map(column => (
                   <TableTd
@@ -195,6 +198,7 @@ export const TableImpl: ComponentImplementation<{
                     item={item}
                     column={column}
                     onClickItem={() => selectItem(item)}
+                    stateManager={stateManager}
                   />
                 ))}
               </Tr>

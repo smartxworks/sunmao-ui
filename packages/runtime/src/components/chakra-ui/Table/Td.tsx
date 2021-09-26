@@ -2,19 +2,22 @@ import { Static } from '@sinclair/typebox';
 import { apiService } from '../../../api-service';
 import { ColumnSchema } from './TableTypes';
 import { Button, Td } from '@chakra-ui/react';
-import { maskedEval } from '../../../store';
 import { LIST_ITEM_EXP } from '../../../constants';
+import { StateManager } from 'src/store';
 
 export const TableTd: React.FC<{
   item: any;
   column: Static<typeof ColumnSchema>;
   onClickItem: () => void;
+  stateManager: StateManager;
 }> = props => {
-  const { item, column, onClickItem } = props;
+  const { item, column, onClickItem, stateManager } = props;
   let value = item[column.key];
 
   if (column.displayValue) {
-    value = maskedEval(column.displayValue, true, { [LIST_ITEM_EXP]: item });
+    value = stateManager.maskedEval(column.displayValue, true, {
+      [LIST_ITEM_EXP]: item,
+    });
   }
 
   switch (column.type) {

@@ -8,7 +8,6 @@ import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../registry';
 import { ImplWrapper, resolveAppComponents } from '../../App';
-import { mapValuesDeep, maskedEval } from '../../store';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
 
@@ -32,6 +31,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   template,
   app,
   registry,
+  stateManager,
 }) => {
   if (!listData) {
     return null;
@@ -47,18 +47,22 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       }
     }
 
-    const evaledTemplate = mapValuesDeep({ parsedtemplete }, ({ value }) => {
-      if (typeof value === 'string') {
-        return maskedEval(value, true, {
-          [LIST_ITEM_EXP]: listItem,
-          [LIST_ITEM_INDEX_EXP]: i,
-        });
+    const evaledTemplate = stateManager.mapValuesDeep(
+      { parsedtemplete },
+      ({ value }) => {
+        if (typeof value === 'string') {
+          return stateManager.maskedEval(value, true, {
+            [LIST_ITEM_EXP]: listItem,
+            [LIST_ITEM_INDEX_EXP]: i,
+          });
+        }
+        return value;
       }
-      return value;
-    }).parsedtemplete;
+    ).parsedtemplete;
 
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
       registry,
+      stateManager,
       evaledTemplate,
       app
     );
@@ -71,6 +75,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={null}
           registry={registry}
+          stateManager={stateManager}
           app={app}
         />
       );

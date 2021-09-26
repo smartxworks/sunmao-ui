@@ -6,7 +6,7 @@ import {
 } from '@meta-ui/core';
 import { merge } from 'lodash';
 import { Registry, TraitResult } from './registry';
-import { stateStore, deepEval } from './store';
+import { StateManager } from './store';
 import { apiService } from './api-service';
 import { ContainerPropertySchema } from './traits/core/slot';
 import { Static } from '@sinclair/typebox';
@@ -29,11 +29,21 @@ export const ImplWrapper = React.forwardRef<
     targetSlot: { id: string; slot: string } | null;
     app?: RuntimeApplication;
     registry: Registry;
+    stateManager: StateManager;
     // [key: string]: any;
   }
 >(
   (
-    { component: c, slotsMap, targetSlot, app, registry, children, ...props },
+    {
+      component: c,
+      slotsMap,
+      targetSlot,
+      app,
+      registry,
+      stateManager,
+      children,
+      ...props
+    },
     ref
   ) => {
     const Impl = registry.getComponent(
@@ -70,7 +80,7 @@ export const ImplWrapper = React.forwardRef<
 
     const mergeState = useCallback(
       (partial: any) => {
-        stateStore[c.id] = { ...stateStore[c.id], ...partial };
+        stateManager.store[c.id] = { ...stateManager.store[c.id], ...partial };
       },
       [c.id]
     );
@@ -82,7 +92,7 @@ export const ImplWrapper = React.forwardRef<
     // result returned from traits
     const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
       return c.traits.map(trait =>
-        excecuteTrait(trait, deepEval(trait.properties).result)
+        excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
       );
     });
 
@@ -99,6 +109,7 @@ export const ImplWrapper = React.forwardRef<
         componentId: c.id,
         mergeState,
         subscribeMethods,
+        stateManager: stateManager,
       });
     }
 
@@ -107,9 +118,9 @@ export const ImplWrapper = React.forwardRef<
       const stops: ReturnType<typeof watch>[] = [];
       const properties: Array<ApplicationTrait['properties']> = [];
       c.traits.forEach((t, i) => {
-        const { result, stop } = deepEval(
+        const { result, stop } = stateManager.deepEval(
           t.properties,
-          ({ result: property }) => {
+          ({ result: property }: any) => {
             const traitResult = excecuteTrait(t, property);
             setTraitResults(oldResults => {
               // assume traits number and order will not change
@@ -155,15 +166,18 @@ export const ImplWrapper = React.forwardRef<
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(
       () => {
-        return merge(deepEval(c.properties).result, propsFromTraits);
+        return merge(
+          stateManager.deepEval(c.properties).result,
+          propsFromTraits
+        );
       }
     );
 
     // eval component properties
     useEffect(() => {
-      const { result, stop } = deepEval(
+      const { result, stop } = stateManager.deepEval(
         c.properties,
-        ({ result: newResult }) => {
+        ({ result: newResult }: any) => {
           setEvaledComponentProperties({ ...newResult });
         }
       );
@@ -179,6 +193,8 @@ export const ImplWrapper = React.forwardRef<
         key={c.id}
         component={c}
         {...mergedProps}
+        registry={registry}
+        stateManager={stateManager}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
         slotsMap={slotsMap}
@@ -207,11 +223,13 @@ export const ImplWrapper = React.forwardRef<
   }
 );
 
-const DebugStore: React.FC = () => {
-  const [store, setStore] = useState(stateStore);
+const DebugStore: React.FC<{ stateManager: StateManager }> = ({
+  stateManager,
+}) => {
+  const [store, setStore] = useState(stateManager.store);
   useEffect(() => {
-    setStore({ ...stateStore });
-    watch(stateStore, newValue => {
+    setStore({ ...stateManager.store });
+    watch(stateManager.store, newValue => {
       setTimeout(() => {
         setStore({ ...newValue });
       }, 0);
@@ -270,6 +288,7 @@ export type SlotsMap = Map<
 
 export function resolveAppComponents(
   registry: Registry,
+  stateManager: StateManager,
   components: RuntimeApplication['spec']['components'],
   app?: RuntimeApplication
 ): {
@@ -300,6 +319,7 @@ export function resolveAppComponents(
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={{ id, slot }}
           registry={registry}
+          stateManager={stateManager}
           app={app}
           {...props}
           ref={ref}
@@ -325,28 +345,31 @@ export function resolveAppComponents(
 type AppProps = {
   options: Application;
   registry: Registry;
+  stateManager: StateManager;
   debugStore?: boolean;
   debugEvent?: boolean;
 };
 
-export function genApp(registry: Registry) {
-  return (props: Omit<AppProps, 'registry'>) => {
-    return <App {...props} registry={registry} />;
+export function genApp(registry: Registry, stateManager: StateManager) {
+  return (props: Omit<AppProps, 'registry' | 'stateStore'>) => {
+    return <App {...props} registry={registry} stateManager={stateManager} />;
   };
 }
 
 export const App: React.FC<AppProps> = ({
   options,
   registry,
+  stateManager,
   debugStore = true,
   debugEvent = true,
 }) => {
   const app = createApplication(options);
 
-  initStateAndMethod(registry, app.spec.components);
+  initStateAndMethod(registry, stateManager, app.spec.components);
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
-    () => resolveAppComponents(registry, app.spec.components, app),
+    () =>
+      resolveAppComponents(registry, stateManager, app.spec.components, app),
     [app]
   );
 
@@ -358,13 +381,14 @@ export const App: React.FC<AppProps> = ({
             key={c.id}
             component={c}
             registry={registry}
+            stateManager={stateManager}
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
           />
         );
       })}
-      {debugStore && <DebugStore />}
+      {debugStore && <DebugStore stateManager={stateManager} />}
       {debugEvent && <DebugEvent />}
     </div>
   );
