@@ -7,7 +7,7 @@ import {
 import { merge } from 'lodash';
 import { Registry, TraitResult } from './registry';
 import { StateManager } from './store';
-import { apiService } from './api-service';
+import { ApiService } from './api-service';
 import { ContainerPropertySchema } from './traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import { watch } from '@vue-reactivity/watch';
@@ -31,6 +31,7 @@ export const ImplWrapper = React.forwardRef<
     registry: Registry;
     stateManager: StateManager;
     globalHandlerMap: GlobalHandlerMap;
+    apiService: ApiService;
     // [key: string]: any;
   }
 >(
@@ -43,6 +44,7 @@ export const ImplWrapper = React.forwardRef<
       registry,
       stateManager,
       globalHandlerMap,
+      apiService,
       children,
       ...props
     },
@@ -111,7 +113,8 @@ export const ImplWrapper = React.forwardRef<
         componentId: c.id,
         mergeState,
         subscribeMethods,
-        stateManager: stateManager,
+        stateManager,
+        apiService,
       });
     }
 
@@ -198,6 +201,7 @@ export const ImplWrapper = React.forwardRef<
         registry={registry}
         stateManager={stateManager}
         globalHandlerMap={globalHandlerMap}
+        apiService={apiService}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
         slotsMap={slotsMap}
@@ -242,7 +246,7 @@ const DebugStore: React.FC<{ stateManager: StateManager }> = ({
   return <pre>{JSON.stringify(store, null, 2)}</pre>;
 };
 
-const DebugEvent: React.FC = () => {
+const DebugEvent: React.FC<{ apiService: ApiService }> = ({ apiService }) => {
   const [events, setEvents] = useState<unknown[]>([]);
 
   useEffect(() => {
@@ -293,6 +297,7 @@ export function resolveAppComponents(
   registry: Registry,
   stateManager: StateManager,
   globalHandlerMap: GlobalHandlerMap,
+  apiService: ApiService,
   components: RuntimeApplication['spec']['components'],
   app?: RuntimeApplication
 ): {
@@ -325,6 +330,7 @@ export function resolveAppComponents(
           registry={registry}
           stateManager={stateManager}
           globalHandlerMap={globalHandlerMap}
+          apiService={apiService}
           app={app}
           {...props}
           ref={ref}
@@ -352,6 +358,7 @@ type AppProps = {
   registry: Registry;
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
+  apiService: ApiService;
   debugStore?: boolean;
   debugEvent?: boolean;
 };
@@ -359,10 +366,14 @@ type AppProps = {
 export function genApp(
   registry: Registry,
   stateManager: StateManager,
-  globalHandlerMap: GlobalHandlerMap
+  globalHandlerMap: GlobalHandlerMap,
+  apiService: ApiService
 ) {
   return (
-    props: Omit<AppProps, 'registry' | 'stateStore' | 'globalHandlerMap'>
+    props: Omit<
+      AppProps,
+      'registry' | 'stateManager' | 'globalHandlerMap' | 'apiService'
+    >
   ) => {
     return (
       <App
@@ -370,6 +381,7 @@ export function genApp(
         registry={registry}
         stateManager={stateManager}
         globalHandlerMap={globalHandlerMap}
+        apiService={apiService}
       />
     );
   };
@@ -380,6 +392,7 @@ export const App: React.FC<AppProps> = ({
   registry,
   stateManager,
   globalHandlerMap,
+  apiService,
   debugStore = true,
   debugEvent = true,
 }) => {
@@ -393,6 +406,7 @@ export const App: React.FC<AppProps> = ({
         registry,
         stateManager,
         globalHandlerMap,
+        apiService,
         app.spec.components,
         app
       ),
@@ -409,6 +423,7 @@ export const App: React.FC<AppProps> = ({
             registry={registry}
             stateManager={stateManager}
             globalHandlerMap={globalHandlerMap}
+            apiService={apiService}
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
@@ -416,7 +431,7 @@ export const App: React.FC<AppProps> = ({
         );
       })}
       {debugStore && <DebugStore stateManager={stateManager} />}
-      {debugEvent && <DebugEvent />}
+      {debugEvent && <DebugEvent apiService={apiService} />}
     </div>
   );
 };

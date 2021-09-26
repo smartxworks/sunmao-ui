@@ -33,6 +33,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   registry,
   stateManager,
   globalHandlerMap,
+  apiService,
 }) => {
   if (!listData) {
     return null;
@@ -65,6 +66,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       registry,
       stateManager,
       globalHandlerMap,
+      apiService,
       evaledTemplate,
       app
     );
@@ -79,6 +81,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           registry={registry}
           stateManager={stateManager}
           globalHandlerMap={globalHandlerMap}
+          apiService={apiService}
           app={app}
         />
       );

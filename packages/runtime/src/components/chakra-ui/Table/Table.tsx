@@ -43,6 +43,7 @@ export const TableImpl: ComponentImplementation<{
   isMultiSelect,
   mergeState,
   stateManager,
+  apiService,
 }) => {
   if (!data) {
     return <div>loading</div>;
@@ -199,6 +200,7 @@ export const TableImpl: ComponentImplementation<{
                     column={column}
                     onClickItem={() => selectItem(item)}
                     stateManager={stateManager}
+                    apiService={apiService}
                   />
                 ))}
               </Tr>

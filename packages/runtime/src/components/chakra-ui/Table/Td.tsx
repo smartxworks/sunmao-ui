@@ -1,5 +1,5 @@
 import { Static } from '@sinclair/typebox';
-import { apiService } from '../../../api-service';
+import { ApiService } from '../../../api-service';
 import { ColumnSchema } from './TableTypes';
 import { Button, Td } from '@chakra-ui/react';
 import { LIST_ITEM_EXP } from '../../../constants';
@@ -10,8 +10,9 @@ export const TableTd: React.FC<{
   column: Static<typeof ColumnSchema>;
   onClickItem: () => void;
   stateManager: StateManager;
+  apiService: ApiService;
 }> = props => {
-  const { item, column, onClickItem, stateManager } = props;
+  const { item, column, onClickItem, stateManager, apiService } = props;
   let value = item[column.key];
 
   if (column.displayValue) {

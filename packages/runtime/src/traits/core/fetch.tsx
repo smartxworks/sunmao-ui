@@ -1,6 +1,5 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { apiService } from '../../api-service';
 import { TraitImplementation } from '../../registry';
 import { CallMethodSchema } from '../../types/CallMethodSchema';
 
@@ -13,6 +12,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   headers: _headers,
   body,
   mergeState,
+  apiService,
   subscribeMethods,
   componentId,
   onComplete,

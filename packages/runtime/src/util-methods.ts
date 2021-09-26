@@ -1,4 +1,4 @@
-import { apiService } from './api-service';
+import { ApiService } from './api-service';
 import { createStandaloneToast } from '@chakra-ui/react';
 import {
   ToastCloseParameterSchema,
@@ -6,7 +6,7 @@ import {
 } from './components/chakra-ui/Types/Toast';
 import { pickProperty } from './utils/pickProperty';
 
-export function mountUtilMethods() {
+export function mountUtilMethods(apiService: ApiService) {
   let toast: ReturnType<typeof createStandaloneToast> | undefined = undefined;
   apiService.on('uiMethod', ({ componentId, name, parameters }) => {
     if (componentId !== '$utils') {

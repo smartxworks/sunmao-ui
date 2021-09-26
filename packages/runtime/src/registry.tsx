@@ -34,8 +34,6 @@ import ChakraUIDialog from './components/chakra-ui/Dialog';
 import ChakraUISelect from './components/chakra-ui/Select';
 import ChakraUIRadioGroup from './components/chakra-ui/RadioGroup';
 import ChakraUIRadio from './components/chakra-ui/Radio';
-/* --- lab --- */
-import LabEditor from './components/lab/Editor';
 // traits
 import CoreArrayState from './traits/core/arrayState';
 import CoreState from './traits/core/state';
@@ -47,6 +45,7 @@ import CoreFetch from './traits/core/fetch';
 import CoreValidation from './traits/core/validation';
 import { StateManager } from './store';
 import { GlobalHandlerMap } from './handler';
+import { ApiService } from './api-service';
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -76,6 +75,7 @@ export type ComponentMergedProps = {
   registry: Registry;
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
+  apiService: ApiService;
 };
 
 export type ComponentImplementation<T = any> = React.FC<
@@ -97,6 +97,7 @@ export type TraitImplementation<T = any> = (
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
     stateManager: StateManager;
+    apiService: ApiService;
   }
 ) => TraitResult;
 
@@ -172,7 +173,6 @@ export function initRegistry(): Registry {
   registry.registerComponent(ChakraUISelect);
   registry.registerComponent(ChakraUIRadioGroup);
   registry.registerComponent(ChakraUIRadio);
-  registry.registerComponent(LabEditor);
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
 

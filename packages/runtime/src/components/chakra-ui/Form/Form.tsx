@@ -4,7 +4,6 @@ import { createComponent } from '@meta-ui/core';
 import { Button } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
 import { ComponentImplementation } from '../../../registry';
-import { apiService } from '../../../api-service';
 import Slot from '../../_internal/Slot';
 
 const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
@@ -14,6 +13,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
   callbackMap,
   stateManager,
+  apiService,
 }) => {
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
