@@ -16,7 +16,6 @@ import {
   FormLabelCSS,
 } from './FormCSS';
 import { ComponentImplementation } from '../../../registry';
-import { stateStore } from '../../../store';
 import Slot from '../../_internal/Slot';
 import { CheckboxStateSchema } from '../Checkbox';
 
@@ -25,7 +24,15 @@ const FormControlImpl: ComponentImplementation<{
   fieldName: string;
   isRequired: boolean;
   helperText: string;
-}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState }) => {
+}> = ({
+  label,
+  fieldName,
+  isRequired,
+  helperText,
+  slotsMap,
+  mergeState,
+  stateManager,
+}) => {
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
@@ -42,33 +49,34 @@ const FormControlImpl: ComponentImplementation<{
   useEffect(() => {
     const stop = watch(
       () => {
-        if (stateStore[inputId].checked !== undefined) {
+        if (stateManager.store[inputId].checked !== undefined) {
           // special treatment for checkbox
-          return (stateStore[inputId] as Static<typeof CheckboxStateSchema>)
-            .checked;
+          return (
+            stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
+          ).checked;
         } else {
-          return stateStore[inputId].value;
+          return stateManager.store[inputId].value;
         }
       },
       newV => {
         setInputValue(newV);
       }
     );
-    setInputValue(stateStore[inputId].value);
+    setInputValue(stateManager.store[inputId].value);
     return stop;
   }, [slotsMap, setInputValue]);
 
   useEffect(() => {
     const stop = watch(
       () => {
-        return stateStore[inputId].validResult;
+        return stateManager.store[inputId].validResult;
       },
       newV => {
         setValidResult(newV);
       }
     );
-    if (stateStore[inputId].validResult) {
-      setValidResult(stateStore[inputId].validResult);
+    if (stateManager.store[inputId].validResult) {
+      setValidResult(stateManager.store[inputId].validResult);
     }
     return stop;
   }, [slotsMap, setValidResult]);
@@ -90,7 +98,8 @@ const FormControlImpl: ComponentImplementation<{
     <FormControl
       isRequired={isRequired}
       isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}
-      css={FormControlCSS}>
+      css={FormControlCSS}
+    >
       <div css={FormControlContentCSS}>
         <FormLabel css={FormLabelCSS}>{label}</FormLabel>
         <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />

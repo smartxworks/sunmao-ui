@@ -1,15 +1,16 @@
 import { RuntimeApplication } from '@meta-ui/core';
 import { TSchema } from '@sinclair/typebox';
 import { Registry } from 'src/registry';
-import { stateStore } from '../store';
+import { StateManager } from 'src/store';
 import { parseTypeBox } from './parseTypeBox';
 
 export function initStateAndMethod(
   registry: Registry,
+  stateManager: StateManager,
   components: RuntimeApplication['spec']['components']
 ) {
   components.forEach(c => {
-    if (stateStore[c.id]) {
+    if (stateManager.store[c.id]) {
       return false;
     }
     let state = {};
@@ -25,6 +26,6 @@ export function initStateAndMethod(
       c.parsedType.name
     ).spec;
     state = { ...state, ...parseTypeBox(cSpec.state as TSchema) };
-    stateStore[c.id] = state;
+    stateManager.store[c.id] = state;
   });
 }

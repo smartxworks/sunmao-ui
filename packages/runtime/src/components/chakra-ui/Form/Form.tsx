@@ -4,7 +4,6 @@ import { createComponent } from '@meta-ui/core';
 import { Button } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
 import { ComponentImplementation } from '../../../registry';
-import { stateStore } from '../../../store';
 import { apiService } from '../../../api-service';
 import Slot from '../../_internal/Slot';
 
@@ -14,6 +13,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   hideSubmit,
   slotsMap,
   callbackMap,
+  stateManager,
 }) => {
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   useEffect(() => {
     setInvalidArray(
       formControlIds.map(fcid => {
-        return stateStore[fcid].isInvalid;
+        return stateManager.store[fcid].isInvalid;
       })
     );
   }, []);
@@ -46,7 +46,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
     subscribeMethods({
       resetForm() {
         formControlIds.forEach(fcId => {
-          const inputId = stateStore[fcId].inputId;
+          const inputId = stateManager.store[fcId].inputId;
           apiService.send('uiMethod', {
             componentId: inputId,
             name: 'resetInputValue',
@@ -62,7 +62,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       // watch isInvalid
       let stop = watch(
         () => {
-          return stateStore[fcId].isInvalid;
+          return stateManager.store[fcId].isInvalid;
         },
         newV => {
           setInvalidArray(oldValidArray => {
@@ -77,10 +77,10 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       // watch value
       stop = watch(
         () => {
-          return stateStore[fcId].value;
+          return stateManager.store[fcId].value;
         },
         newV => {
-          const fcState = stateStore[fcId];
+          const fcState = stateManager.store[fcId];
           formDataRef.current[fcState.fieldName] = newV;
           mergeState({ data: { ...formDataRef.current } });
         }

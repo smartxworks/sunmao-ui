@@ -45,6 +45,7 @@ import CoreStyle from './traits/core/style';
 import CoreHidden from './traits/core/hidden';
 import CoreFetch from './traits/core/fetch';
 import CoreValidation from './traits/core/validation';
+import { StateManager } from './store';
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -72,6 +73,7 @@ export type ComponentMergedProps = {
   effects?: Array<() => void>;
   app?: RuntimeApplication;
   registry: Registry;
+  stateManager: StateManager;
 };
 
 export type ComponentImplementation<T = any> = React.FC<
@@ -92,6 +94,7 @@ export type TraitImplementation<T = any> = (
     componentId: string;
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
+    stateManager: StateManager;
   }
 ) => TraitResult;
 
