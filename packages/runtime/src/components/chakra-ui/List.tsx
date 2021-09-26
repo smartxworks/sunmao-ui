@@ -31,6 +31,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
   template,
   app,
+  registry,
 }) => {
   if (!listData) {
     return null;
@@ -57,6 +58,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     }).parsedtemplete;
 
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
+      registry,
       evaledTemplate,
       app
     );
@@ -68,6 +70,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           component={c}
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={null}
+          registry={registry}
           app={app}
         />
       );
