@@ -2,7 +2,7 @@ import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
 import { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import Slot from '../_internal/Slot';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
@@ -28,7 +28,8 @@ const TooltipImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       hasArrow={hasArrow}
       isDisabled={isDisabled}
       defaultIsOpen={defaultIsOpen}
-      shouldWrapChildren={shouldWrapChildren}>
+      shouldWrapChildren={shouldWrapChildren}
+    >
       <Slot slotsMap={slotsMap} slot="trigger" />
     </Tooltip>
   );

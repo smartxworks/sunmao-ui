@@ -3,7 +3,7 @@ import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
@@ -28,10 +28,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <BaseButton
-      {...{ colorScheme, isLoading }}
-      ref={ref}
-      onClick={callbacks?.click}>
+    <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={callbacks?.click}>
       <Text value={text} />
     </BaseButton>
   );

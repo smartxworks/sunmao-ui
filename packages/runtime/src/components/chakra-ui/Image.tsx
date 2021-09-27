@@ -1,7 +1,7 @@
 import { Image as BaseImage } from '@chakra-ui/react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 
 const BoxSizePropertySchema = Type.Optional(
   Type.Union([
@@ -89,7 +89,8 @@ const Image: ComponentImplementation<Static<typeof PropsSchema>> = ({
       onError={callbackMap?.onError}
       ignoreFallback={ignoreFallback}
       borderRadius={borderRadius}
-      fallbackSrc={fallbackSrc}></BaseImage>
+      fallbackSrc={fallbackSrc}
+    ></BaseImage>
   );
 };
 

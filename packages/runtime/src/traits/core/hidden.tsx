@@ -1,11 +1,9 @@
 import { CSSProperties } from 'react';
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../registry';
+import { TraitImplementation } from '../../modules/registry';
 
-const useHiddenTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
-  hidden,
-}) => {
+const useHiddenTrait: TraitImplementation<Static<typeof PropsSchema>> = ({ hidden }) => {
   const style: CSSProperties = {};
   if (hidden) {
     style.display = 'none';

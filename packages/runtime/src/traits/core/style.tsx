@@ -1,6 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../registry';
+import { TraitImplementation } from '../../modules/registry';
 
 const StyleTrait: TraitImplementation<{
   style: Static<typeof PropsSchema>;

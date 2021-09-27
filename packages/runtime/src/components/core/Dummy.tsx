@@ -1,10 +1,8 @@
 import { createComponent } from '@meta-ui/core';
 import { useEffect } from 'react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 
-const Dummy: ComponentImplementation<Record<string, unknown>> = ({
-  effects,
-}) => {
+const Dummy: ComponentImplementation<Record<string, unknown>> = ({ effects }) => {
   useEffect(() => {
     return () => {
       effects?.forEach(e => e());

@@ -1,51 +1,44 @@
-import {
-  RuntimeApplication,
-  RuntimeComponent,
-  RuntimeTrait,
-} from '@meta-ui/core';
-import { SlotsMap } from './App';
+import { RuntimeApplication, RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
 // components
 /* --- plain --- */
-import PlainButton from './components/plain/Button';
-import CoreText from './components/core/Text';
-import CoreGridLayout from './components/core/GridLayout';
-import CoreRouter from './components/core/Router';
-import CoreDummy from './components/core/Dummy';
+import PlainButton from '../components/plain/Button';
+import CoreText from '../components/core/Text';
+import CoreGridLayout from '../components/core/GridLayout';
+import CoreRouter from '../components/core/Router';
+import CoreDummy from '../components/core/Dummy';
 /* --- chakra-ui --- */
-import ChakraUIRoot from './components/chakra-ui/Root';
-import ChakraUIButton from './components/chakra-ui/Button';
-import ChakraUITabs from './components/chakra-ui/Tabs';
-import ChakraUITable from './components/chakra-ui/Table';
-import ChakraUIInput from './components/chakra-ui/Input';
-import ChakraUIBox from './components/chakra-ui/Box';
-import ChakraUIFormControl from './components/chakra-ui/Form/FormControl';
-import ChakraUIForm from './components/chakra-ui/Form/Form';
-import ChakraUIKbd from './components/chakra-ui/Kbd';
-import ChakraUIList from './components/chakra-ui/List';
-import ChakraUINumberInput from './components/chakra-ui/NumberInput';
-import ChakraUICheckboxGroup from './components/chakra-ui/CheckboxGroup';
-import ChakraUICheckbox from './components/chakra-ui/Checkbox';
-import ChakraUIStack from './components/chakra-ui/Stack';
-import ChakraUITooltip from './components/chakra-ui/Tooltip';
-import ChakraUIHStack from './components/chakra-ui/HStack';
-import ChakraUIVStack from './components/chakra-ui/VStack';
-import ChakraUIImage from './components/chakra-ui/Image';
-import ChakraUIDialog from './components/chakra-ui/Dialog';
-import ChakraUISelect from './components/chakra-ui/Select';
-import ChakraUIRadioGroup from './components/chakra-ui/RadioGroup';
-import ChakraUIRadio from './components/chakra-ui/Radio';
+import ChakraUIRoot from '../components/chakra-ui/Root';
+import ChakraUIButton from '../components/chakra-ui/Button';
+import ChakraUITabs from '../components/chakra-ui/Tabs';
+import ChakraUITable from '../components/chakra-ui/Table';
+import ChakraUIInput from '../components/chakra-ui/Input';
+import ChakraUIBox from '../components/chakra-ui/Box';
+import ChakraUIFormControl from '../components/chakra-ui/Form/FormControl';
+import ChakraUIForm from '../components/chakra-ui/Form/Form';
+import ChakraUIKbd from '../components/chakra-ui/Kbd';
+import ChakraUIList from '../components/chakra-ui/List';
+import ChakraUINumberInput from '../components/chakra-ui/NumberInput';
+import ChakraUICheckboxGroup from '../components/chakra-ui/CheckboxGroup';
+import ChakraUICheckbox from '../components/chakra-ui/Checkbox';
+import ChakraUIStack from '../components/chakra-ui/Stack';
+import ChakraUITooltip from '../components/chakra-ui/Tooltip';
+import ChakraUIHStack from '../components/chakra-ui/HStack';
+import ChakraUIVStack from '../components/chakra-ui/VStack';
+import ChakraUIImage from '../components/chakra-ui/Image';
+import ChakraUIDialog from '../components/chakra-ui/Dialog';
+import ChakraUISelect from '../components/chakra-ui/Select';
+import ChakraUIRadioGroup from '../components/chakra-ui/RadioGroup';
+import ChakraUIRadio from '../components/chakra-ui/Radio';
 // traits
-import CoreArrayState from './traits/core/arrayState';
-import CoreState from './traits/core/state';
-import CoreEvent from './traits/core/event';
-import CoreSlot from './traits/core/slot';
-import CoreStyle from './traits/core/style';
-import CoreHidden from './traits/core/hidden';
-import CoreFetch from './traits/core/fetch';
-import CoreValidation from './traits/core/validation';
-import { StateManager } from './store';
-import { GlobalHandlerMap } from './handler';
-import { ApiService } from './api-service';
+import CoreArrayState from '../traits/core/arrayState';
+import CoreState from '../traits/core/state';
+import CoreEvent from '../traits/core/event';
+import CoreSlot from '../traits/core/slot';
+import CoreStyle from '../traits/core/style';
+import CoreHidden from '../traits/core/hidden';
+import CoreFetch from '../traits/core/fetch';
+import CoreValidation from '../traits/core/validation';
+import { ApplicationComponent, MetaUIModules, SlotsMap } from 'src/types/RuntimeSchema';
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -63,7 +56,7 @@ type MergeState = (partialState: any) => void;
 export type CallbackMap = Record<string, () => void>;
 
 export type ComponentMergedProps = {
-  component: RuntimeApplication['spec']['components'][0];
+  component: ApplicationComponent;
   mergeState: MergeState;
   subscribeMethods: SubscribeMethods;
   slotsMap: SlotsMap | undefined;
@@ -72,15 +65,10 @@ export type ComponentMergedProps = {
   callbackMap?: CallbackMap;
   effects?: Array<() => void>;
   app?: RuntimeApplication;
-  registry: Registry;
-  stateManager: StateManager;
-  globalHandlerMap: GlobalHandlerMap;
-  apiService: ApiService;
+  mModules: MetaUIModules;
 };
 
-export type ComponentImplementation<T = any> = React.FC<
-  T & ComponentMergedProps
->;
+export type ComponentImplementation<T = any> = React.FC<T & ComponentMergedProps>;
 
 export type TraitResult = {
   props: {
@@ -96,8 +84,7 @@ export type TraitImplementation<T = any> = (
     componentId: string;
     mergeState: MergeState;
     subscribeMethods: SubscribeMethods;
-    stateManager: StateManager;
-    apiService: ApiService;
+    mModules: MetaUIModules;
   }
 ) => TraitResult;
 

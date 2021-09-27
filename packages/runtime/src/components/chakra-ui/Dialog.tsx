@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -58,7 +58,8 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
-        onClose={() => setIsOpen(false)}>
+        onClose={() => setIsOpen(false)}
+      >
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader>{title}</AlertDialogHeader>
@@ -71,14 +72,16 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
               <Button
                 ref={cancelRef}
                 colorScheme={cancelButton.colorScheme}
-                onClick={callbacks?.cancelDialog}>
+                onClick={callbacks?.cancelDialog}
+              >
                 {cancelButton.text}
               </Button>
               <Button
                 disabled={disableConfirm}
                 colorScheme={confirmButton.colorScheme}
                 onClick={callbacks?.confirmDialog}
-                ml={3}>
+                ml={3}
+              >
                 {confirmButton.text}
               </Button>
             </AlertDialogFooter>

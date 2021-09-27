@@ -1,22 +1,20 @@
 import { Static } from '@sinclair/typebox';
-import { ApiService } from '../../../api-service';
 import { ColumnSchema } from './TableTypes';
 import { Button, Td } from '@chakra-ui/react';
 import { LIST_ITEM_EXP } from '../../../constants';
-import { StateManager } from 'src/store';
+import { MetaUIModules } from 'src/types/RuntimeSchema';
 
 export const TableTd: React.FC<{
   item: any;
   column: Static<typeof ColumnSchema>;
   onClickItem: () => void;
-  stateManager: StateManager;
-  apiService: ApiService;
+  mModules: MetaUIModules;
 }> = props => {
-  const { item, column, onClickItem, stateManager, apiService } = props;
+  const { item, column, onClickItem, mModules } = props;
   let value = item[column.key];
 
   if (column.displayValue) {
-    value = stateManager.maskedEval(column.displayValue, true, {
+    value = mModules.stateManager.maskedEval(column.displayValue, true, {
       [LIST_ITEM_EXP]: item,
     });
   }
@@ -32,7 +30,7 @@ export const TableTd: React.FC<{
       const onClick = () => {
         onClickItem();
         column.buttonConfig.events.forEach(event => {
-          apiService.send('uiMethod', {
+          mModules.apiService.send('uiMethod', {
             componentId: event.componentId,
             name: event.method.name,
             parameters: event.method.parameters,

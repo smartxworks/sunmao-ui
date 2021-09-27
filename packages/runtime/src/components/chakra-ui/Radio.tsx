@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Radio as BaseRadio } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
@@ -43,7 +43,8 @@ const Radio: ComponentImplementation<Static<typeof PropsSchema>> = ({
       name={name}
       size={size}
       spacing={spacing}
-      colorScheme={colorScheme}>
+      colorScheme={colorScheme}
+    >
       <Text value={text} />
     </BaseRadio>
   );
