@@ -1,31 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Application, createApplication } from '@meta-ui/core';
-import { Box, Button } from '@chakra-ui/react';
-import CodeEditor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs';
-import 'prismjs/components/prism-json';
-import 'prismjs/themes/prism.css';
+import { useCallback, useMemo, useState } from 'react';
+import { Application } from '@meta-ui/core';
+import { Box } from '@chakra-ui/react';
 import { DialogFormSchema } from '../constants';
 import { App } from '../metaUI';
 import { StructureTree } from './StructureTree';
+import { OperationManager } from '../operations/OperationManager';
+import { CreateComponentOperation } from '../operations/Operations';
+
+const operationManager = new OperationManager(DialogFormSchema);
 
 export const Editor = () => {
-  const [code, setCode] = useState(JSON.stringify(DialogFormSchema));
-  const [codeError, setCodeError] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('');
-  const [app, setApp] = useState<Application>(() => JSON.parse(code));
-  useEffect(() => {
-    try {
-      const newApp = JSON.parse(code);
-      // as validation
-      createApplication(newApp);
-      setApp(newApp);
-      setCodeError('');
-    } catch (error) {
-      console.warn(error);
-      setCodeError(String(error));
-    }
-  }, [code]);
+  const [app, setApp] = useState<Application>(DialogFormSchema);
 
   const Wrapper: React.FC<{ id: string }> = useMemo(() => {
     return props => {
@@ -36,13 +22,25 @@ export const Editor = () => {
     };
   }, [selectedComponent]);
 
+  const addComponent = useCallback(() => {
+    const newApp = operationManager.apply(
+      new CreateComponentOperation('root', 'root', 'chakra_ui/v1/input')
+    );
+
+    setApp(newApp!);
+  }, [app, setApp]);
+
+  const onClickUndo = useCallback(() => {
+    const newApp = operationManager.undo();
+    setApp(newApp!);
+  }, [app, setApp]);
+
   return (
     <Box display="flex" height="100vh">
+      <button onClick={addComponent}>添加</button>
+      <button onClick={onClickUndo}>撤销</button>
       <Box flex="1">
-        <StructureTree
-          app={JSON.parse(code)}
-          onSelectComponent={id => setSelectedComponent(id)}
-        />
+        <StructureTree app={app} onSelectComponent={id => setSelectedComponent(id)} />
       </Box>
       <Box flex="3" borderRight="2px solid black">
         <App
@@ -51,35 +49,6 @@ export const Editor = () => {
           options={app}
           componentWrapper={Wrapper}
         />
-      </Box>
-      <Box width="400px">
-        <Box py={1}>
-          <Button
-            size="sm"
-            onClick={() => {
-              try {
-                setCode(JSON.stringify(JSON.parse(code), null, 2));
-              } catch {
-                return;
-              }
-            }}
-          >
-            format
-          </Button>
-        </Box>
-        <Box background={codeError ? 'red.50' : 'blue.50'}>
-          <CodeEditor
-            value={code}
-            onValueChange={code => setCode(code)}
-            highlight={code => highlight(code, languages.json, 'JSON')}
-            padding={10}
-            style={{
-              fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 12,
-            }}
-          />
-        </Box>
-        {codeError && <Box>{codeError}</Box>}
       </Box>
     </Box>
   );
