@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Application, createApplication } from '@meta-ui/core';
 import { Box, Button } from '@chakra-ui/react';
 import CodeEditor from 'react-simple-code-editor';
@@ -12,6 +12,7 @@ import { StructureTree } from './StructureTree';
 export const Editor = () => {
   const [code, setCode] = useState(JSON.stringify(DialogFormSchema));
   const [codeError, setCodeError] = useState('');
+  const [selectedComponent, setSelectedComponent] = useState('');
   const [app, setApp] = useState<Application>(() => JSON.parse(code));
   useEffect(() => {
     try {
@@ -26,13 +27,30 @@ export const Editor = () => {
     }
   }, [code]);
 
+  const Wrapper: React.FC<{ id: string }> = useMemo(() => {
+    return props => {
+      if (props.id === selectedComponent) {
+        return <div style={{ boxShadow: '0 0 1px red' }}>{props.children}</div>;
+      }
+      return <>{props.children}</>;
+    };
+  }, [selectedComponent]);
+
   return (
     <Box display="flex" height="100vh">
       <Box flex="1">
-        <StructureTree app={JSON.parse(code)} />
+        <StructureTree
+          app={JSON.parse(code)}
+          onSelectComponent={id => setSelectedComponent(id)}
+        />
       </Box>
       <Box flex="3" borderRight="2px solid black">
-        <App debugStore={false} debugEvent={false} options={app} />
+        <App
+          debugStore={false}
+          debugEvent={false}
+          options={app}
+          componentWrapper={Wrapper}
+        />
       </Box>
       <Box width="400px">
         <Box py={1}>

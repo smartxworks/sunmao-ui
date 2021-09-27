@@ -5,7 +5,7 @@ import { mountUtilMethods } from './util-methods';
 import { initGlobalHandlerMap } from './handler';
 import { initApiService } from './api-service';
 
-export function InitMetaUI() {
+export function initMetaUI() {
   const registry = initRegistry();
   const stateManager = initStateManager();
   const globalHandlerMap = initGlobalHandlerMap();

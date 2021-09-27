@@ -1,6 +1,6 @@
-import { InitMetaUI } from '@meta-ui/runtime';
+import { initMetaUI } from '@meta-ui/runtime';
 
-const metaUI = InitMetaUI();
+const metaUI = initMetaUI();
 
 export const App = metaUI.App;
 export const registry = metaUI.registry;

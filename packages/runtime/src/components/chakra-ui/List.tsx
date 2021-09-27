@@ -68,6 +68,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       globalHandlerMap,
       apiService,
       evaledTemplate,
+      undefined,
       app
     );
 

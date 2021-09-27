@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Application } from '@meta-ui/core';
-import { InitMetaUI } from './index';
+import { initMetaUI } from './index';
 
-const { App } = InitMetaUI();
+const { App } = initMetaUI();
 
 export default function renderApp(options: Application) {
   ReactDOM.render(

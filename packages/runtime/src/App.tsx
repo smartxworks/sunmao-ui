@@ -21,6 +21,8 @@ type ArrayElement<ArrayType extends readonly unknown[]> =
 type ApplicationComponent = RuntimeApplication['spec']['components'][0];
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
+type ComponentWrapperType = React.FC<{ id: string }>;
+
 export const ImplWrapper = React.forwardRef<
   HTMLDivElement,
   {
@@ -32,6 +34,7 @@ export const ImplWrapper = React.forwardRef<
     stateManager: StateManager;
     globalHandlerMap: GlobalHandlerMap;
     apiService: ApiService;
+    componentWrapper?: ComponentWrapperType;
     // [key: string]: any;
   }
 >(
@@ -46,6 +49,7 @@ export const ImplWrapper = React.forwardRef<
       globalHandlerMap,
       apiService,
       children,
+      componentWrapper: ComponentWrapper,
       ...props
     },
     ref
@@ -221,12 +225,23 @@ export const ImplWrapper = React.forwardRef<
       }
     }
 
-    return (
-      <React.Fragment key={c.id}>
-        {C}
-        {children}
-      </React.Fragment>
-    );
+    if (ComponentWrapper) {
+      return (
+        <React.Fragment key={c.id}>
+          <ComponentWrapper id={c.id}>
+            {C}
+            {children}
+          </ComponentWrapper>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment key={c.id}>
+          {C}
+          {children}
+        </React.Fragment>
+      );
+    }
   }
 );
 
@@ -299,6 +314,7 @@ export function resolveAppComponents(
   globalHandlerMap: GlobalHandlerMap,
   apiService: ApiService,
   components: RuntimeApplication['spec']['components'],
+  componentWrapper?: ComponentWrapperType,
   app?: RuntimeApplication
 ): {
   topLevelComponents: RuntimeApplication['spec']['components'];
@@ -332,6 +348,7 @@ export function resolveAppComponents(
           globalHandlerMap={globalHandlerMap}
           apiService={apiService}
           app={app}
+          componentWrapper={componentWrapper}
           {...props}
           ref={ref}
         />
@@ -359,6 +376,7 @@ type AppProps = {
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
   apiService: ApiService;
+  componentWrapper?: ComponentWrapperType;
   debugStore?: boolean;
   debugEvent?: boolean;
 };
@@ -393,6 +411,7 @@ export const App: React.FC<AppProps> = ({
   stateManager,
   globalHandlerMap,
   apiService,
+  componentWrapper,
   debugStore = true,
   debugEvent = true,
 }) => {
@@ -408,6 +427,7 @@ export const App: React.FC<AppProps> = ({
         globalHandlerMap,
         apiService,
         app.spec.components,
+        componentWrapper,
         app
       ),
     [app]
@@ -427,6 +447,7 @@ export const App: React.FC<AppProps> = ({
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
+            componentWrapper={componentWrapper}
           />
         );
       })}
