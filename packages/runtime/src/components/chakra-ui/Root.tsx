@@ -1,11 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import { createComponent } from '@meta-ui/core';
 import Slot from '../_internal/Slot';
 
-const Root: ComponentImplementation<Record<string, unknown>> = ({
-  slotsMap,
-}) => {
+const Root: ComponentImplementation<Record<string, unknown>> = ({ slotsMap }) => {
   return (
     <ChakraProvider>
       <Slot slotsMap={slotsMap} slot="root" />

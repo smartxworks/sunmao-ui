@@ -12,7 +12,6 @@ import {
 } from 'react';
 import { DefaultParams, Match } from 'wouter';
 import { RouteType, SwitchPolicy } from '.';
-import { SlotsMap } from '../../../App';
 import { makeMatcher } from './matcher';
 import {
   useRouter,
@@ -22,6 +21,7 @@ import {
   RouterCtx,
   useNavigate,
 } from './hooks';
+import { SlotsMap } from 'src/types/RuntimeSchema';
 
 export type RouteLikeElement = PropsWithChildren<{
   path?: string;
@@ -35,11 +35,7 @@ export type RouteProps = RouteLikeElement & {
   mergeState: (params: any) => void;
 };
 
-export const Route: React.FC<RouteProps> = ({
-  match,
-  children,
-  mergeState,
-}) => {
+export const Route: React.FC<RouteProps> = ({ match, children, mergeState }) => {
   const [matches, params] = match || [false, null];
   useEffect(() => {
     // if match router, merge the parameter of the route
@@ -83,16 +79,7 @@ export const Switch: React.FC<SwitchProps> = ({
   const routes = useMemo(() => {
     let defaultPath: string | undefined = undefined;
     const result = switchPolicy.map(
-      ({
-        type,
-        path,
-        slotId,
-        href,
-        default: _default,
-        exact,
-        strict,
-        sensitive,
-      }) => {
+      ({ type, path, slotId, href, default: _default, exact, strict, sensitive }) => {
         const componentsArr = slotMap && slotMap.get(slotId);
         if (defaultPath === undefined && _default) {
           defaultPath = path;
@@ -106,7 +93,8 @@ export const Switch: React.FC<SwitchProps> = ({
                 strict={strict}
                 sensitive={sensitive}
                 path={path}
-                mergeState={mergeState}>
+                mergeState={mergeState}
+              >
                 <Redirect href={href || path} />
               </Route>
             );
@@ -134,7 +122,8 @@ export const Switch: React.FC<SwitchProps> = ({
                 sensitive={sensitive}
                 key={path}
                 path={path}
-                mergeState={mergeState}>
+                mergeState={mergeState}
+              >
                 <C key={slotId}></C>
               </Route>
             );
@@ -179,8 +168,7 @@ export const Switch: React.FC<SwitchProps> = ({
       ? matcher(location || originalLocation, element.props)
       : [true, {}];
 
-    if (isValidElement(element) && match[0])
-      return cloneElement(element, { match });
+    if (isValidElement(element) && match[0]) return cloneElement(element, { match });
   }
 
   return null;
@@ -219,10 +207,13 @@ export const Wouter = (props: React.PropsWithChildren<WouterProps>) => {
 
   const value = ref.current || (ref.current = { v: buildRouter(props) });
 
-  return createElement(RouterCtx.Provider, {
-    value,
-    children: props.children,
-  });
+  return createElement(
+    RouterCtx.Provider,
+    {
+      value,
+    },
+    props.children
+  );
 };
 
 type RedirectProps = {
@@ -243,10 +234,7 @@ export const Redirect: React.FC<RedirectProps> = props => {
 };
 
 const flattenChildren = (
-  children:
-    | Array<ReactElement<RouteProps>>
-    | ReactElement<RouteProps>
-    | undefined
+  children: Array<ReactElement<RouteProps>> | ReactElement<RouteProps> | undefined
 ): ReactElement<RouteProps>[] => {
   if (!children) {
     return [];

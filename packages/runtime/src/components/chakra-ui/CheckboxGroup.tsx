@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import Slot from '../_internal/Slot';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
 
@@ -31,7 +31,8 @@ const CheckboxGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
       size={size}
       defaultValue={defaultValue}
       isDisabled={isDisabled}
-      onChange={val => setValue(val)}>
+      onChange={val => setValue(val)}
+    >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseCheckboxGroup>
   );

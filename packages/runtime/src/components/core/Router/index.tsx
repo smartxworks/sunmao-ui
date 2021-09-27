@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import { ComponentImplementation } from '../../../registry';
+import { ComponentImplementation } from '../../../modules/registry';
 import { Switch } from './component';
 
 const Router: ComponentImplementation<{
@@ -12,7 +12,8 @@ const Router: ComponentImplementation<{
       slotMap={slotsMap}
       switchPolicy={switchPolicy}
       subscribeMethods={subscribeMethods}
-      mergeState={mergeState}></Switch>
+      mergeState={mergeState}
+    ></Switch>
   );
 };
 

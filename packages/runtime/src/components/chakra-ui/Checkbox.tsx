@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import {
-  Checkbox as BaseCheckbox,
-  useCheckboxGroupContext,
-} from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
+import { Checkbox as BaseCheckbox, useCheckboxGroupContext } from '@chakra-ui/react';
+import { ComponentImplementation } from '../../modules/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
@@ -85,7 +82,8 @@ const Checkbox: ComponentImplementation<Static<typeof PropsSchema>> = ({
       colorScheme={colorScheme}
       onChange={e => {
         setChecked(e.target.checked);
-      }}>
+      }}
+    >
       <Text value={text} />
     </BaseCheckbox>
   );

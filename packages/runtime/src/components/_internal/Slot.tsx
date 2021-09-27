@@ -1,5 +1,5 @@
 import React from 'react';
-import { SlotsMap } from '../../App';
+import { SlotsMap } from 'src/types/RuntimeSchema';
 
 export function getSlots(slotsMap: SlotsMap | undefined, slot: string) {
   return (slotsMap?.get(slot) || []).map(({ component: ImplWrapper, id }) => (

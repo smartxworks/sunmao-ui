@@ -15,7 +15,7 @@ import {
   FormItemCSS,
   FormLabelCSS,
 } from './FormCSS';
-import { ComponentImplementation } from '../../../registry';
+import { ComponentImplementation } from '../../../modules/registry';
 import Slot from '../../_internal/Slot';
 import { CheckboxStateSchema } from '../Checkbox';
 
@@ -24,22 +24,11 @@ const FormControlImpl: ComponentImplementation<{
   fieldName: string;
   isRequired: boolean;
   helperText: string;
-}> = ({
-  label,
-  fieldName,
-  isRequired,
-  helperText,
-  slotsMap,
-  mergeState,
-  stateManager,
-}) => {
+}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState, mModules }) => {
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
-  const inputId = useMemo(
-    () => _.first(slotsMap?.get('content'))?.id || '',
-    []
-  );
+  const inputId = useMemo(() => _.first(slotsMap?.get('content'))?.id || '', []);
   const [validResult, setValidResult] = useState({
     isInvalid: false,
     errorMsg: '',
@@ -49,34 +38,34 @@ const FormControlImpl: ComponentImplementation<{
   useEffect(() => {
     const stop = watch(
       () => {
-        if (stateManager.store[inputId].checked !== undefined) {
+        if (mModules.stateManager.store[inputId].checked !== undefined) {
           // special treatment for checkbox
           return (
-            stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
+            mModules.stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
           ).checked;
         } else {
-          return stateManager.store[inputId].value;
+          return mModules.stateManager.store[inputId].value;
         }
       },
       newV => {
         setInputValue(newV);
       }
     );
-    setInputValue(stateManager.store[inputId].value);
+    setInputValue(mModules.stateManager.store[inputId].value);
     return stop;
   }, [slotsMap, setInputValue]);
 
   useEffect(() => {
     const stop = watch(
       () => {
-        return stateManager.store[inputId].validResult;
+        return mModules.stateManager.store[inputId].validResult;
       },
       newV => {
         setValidResult(newV);
       }
     );
-    if (stateManager.store[inputId].validResult) {
-      setValidResult(stateManager.store[inputId].validResult);
+    if (mModules.stateManager.store[inputId].validResult) {
+      setValidResult(mModules.stateManager.store[inputId].validResult);
     }
     return stop;
   }, [slotsMap, setValidResult]);

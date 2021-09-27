@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reactive } from '@vue/reactivity';
 import { watch } from '@vue-reactivity/watch';
-import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from './constants';
+import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
 
 dayjs.extend(relativeTime);
 
@@ -55,8 +55,7 @@ export class StateManager {
         // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
         // unless explicitly pass parseListItem as true
         if (
-          (substr.includes(LIST_ITEM_EXP) ||
-            substr.includes(LIST_ITEM_INDEX_EXP)) &&
+          (substr.includes(LIST_ITEM_EXP) || substr.includes(LIST_ITEM_INDEX_EXP)) &&
           !parseListItem
         ) {
           chunk.expression = `{{${substr}}}`;
@@ -105,9 +104,7 @@ export class StateManager {
         });
         return result;
       } catch (e: any) {
-        console.error(
-          Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`)
-        );
+        console.error(Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`));
         return undefined;
       }
     });
@@ -138,10 +135,7 @@ export class StateManager {
     });
   }
 
-  deepEval(
-    obj: Record<string, unknown>,
-    watcher?: (params: { result: any }) => void
-  ) {
+  deepEval(obj: Record<string, unknown>, watcher?: (params: { result: any }) => void) {
     const stops: ReturnType<typeof watch>[] = [];
 
     const evaluated = this.mapValuesDeep(obj, ({ value: v, path }) => {

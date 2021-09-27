@@ -1,19 +1,17 @@
 import { useRef } from 'react';
-import {
-  Application,
-  createComponent,
-  RuntimeApplication,
-} from '@meta-ui/core';
+import { Application, createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
-import { ImplWrapper, resolveAppComponents } from '../../App';
+import { ComponentImplementation } from '../../modules/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
+import { ImplWrapper } from '../../modules/ImplWrapper';
+import { resolveAppComponents } from '../../modules/resolveAppComponents';
+import { ApplicationComponent } from 'src/types/RuntimeSchema';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
-): RuntimeApplication['spec']['components'][0] {
+): ApplicationComponent {
   return {
     ...c,
     parsedType: parseType(c.type),
@@ -30,10 +28,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
   template,
   app,
-  registry,
-  stateManager,
-  globalHandlerMap,
-  apiService,
+  mModules,
 }) => {
   if (!listData) {
     return null;
@@ -49,11 +44,11 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       }
     }
 
-    const evaledTemplate = stateManager.mapValuesDeep(
+    const evaledTemplate = mModules.stateManager.mapValuesDeep(
       { parsedtemplete },
       ({ value }) => {
         if (typeof value === 'string') {
-          return stateManager.maskedEval(value, true, {
+          return mModules.stateManager.maskedEval(value, true, {
             [LIST_ITEM_EXP]: listItem,
             [LIST_ITEM_INDEX_EXP]: i,
           });
@@ -63,10 +58,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     ).parsedtemplete;
 
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-      registry,
-      stateManager,
-      globalHandlerMap,
-      apiService,
+      mModules,
       evaledTemplate,
       undefined,
       app
@@ -79,10 +71,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           component={c}
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={null}
-          registry={registry}
-          stateManager={stateManager}
-          globalHandlerMap={globalHandlerMap}
-          apiService={apiService}
+          mModules={mModules}
           app={app}
         />
       );

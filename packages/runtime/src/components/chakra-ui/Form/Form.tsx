@@ -3,7 +3,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import { Button } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
-import { ComponentImplementation } from '../../../registry';
+import { ComponentImplementation } from '../../../modules/registry';
 import Slot from '../../_internal/Slot';
 
 const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
@@ -12,8 +12,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   hideSubmit,
   slotsMap,
   callbackMap,
-  stateManager,
-  apiService,
+  mModules,
 }) => {
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
@@ -29,7 +28,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   useEffect(() => {
     setInvalidArray(
       formControlIds.map(fcid => {
-        return stateManager.store[fcid].isInvalid;
+        return mModules.stateManager.store[fcid].isInvalid;
       })
     );
   }, []);
@@ -46,8 +45,8 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
     subscribeMethods({
       resetForm() {
         formControlIds.forEach(fcId => {
-          const inputId = stateManager.store[fcId].inputId;
-          apiService.send('uiMethod', {
+          const inputId = mModules.stateManager.store[fcId].inputId;
+          mModules.apiService.send('uiMethod', {
             componentId: inputId,
             name: 'resetInputValue',
           });
@@ -62,7 +61,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       // watch isInvalid
       let stop = watch(
         () => {
-          return stateManager.store[fcId].isInvalid;
+          return mModules.stateManager.store[fcId].isInvalid;
         },
         newV => {
           setInvalidArray(oldValidArray => {
@@ -77,10 +76,10 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       // watch value
       stop = watch(
         () => {
-          return stateManager.store[fcId].value;
+          return mModules.stateManager.store[fcId].value;
         },
         newV => {
-          const fcState = stateManager.store[fcId];
+          const fcState = mModules.stateManager.store[fcId];
           formDataRef.current[fcState.fieldName] = newV;
           mergeState({ data: { ...formDataRef.current } });
         }

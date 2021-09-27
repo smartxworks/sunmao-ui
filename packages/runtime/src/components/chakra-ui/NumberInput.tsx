@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 
 const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
   defaultValue = 0,
@@ -25,8 +25,7 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
   subscribeMethods,
 }) => {
   const [value, setValue] = useState(defaultValue);
-  const onChange = (_: string, valueAsNumber: number) =>
-    setValue(valueAsNumber || 0);
+  const onChange = (_: string, valueAsNumber: number) => setValue(valueAsNumber || 0);
 
   useEffect(() => {
     mergeState({ value });
@@ -58,7 +57,8 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
       clampValueOnBlur={clampValueOnBlur}
       allowMouseWheel={allowMouseWheel}
       size={size}
-      onChange={onChange}>
+      onChange={onChange}
+    >
       <NumberInputField />
       <NumberInputStepper>
         <NumberIncrementStepper {...customerIncrement} />

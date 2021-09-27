@@ -1,13 +1,11 @@
 import React, { Suspense } from 'react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import { createComponent } from '@meta-ui/core';
 import { getSlots } from '../_internal/Slot';
 import { LayoutPropertySchema } from '../../components/_internal/GridLayout';
 import { Static, Type } from '@sinclair/typebox';
 
-const BaseGridLayout = React.lazy(
-  () => import('../../components/_internal/GridLayout')
-);
+const BaseGridLayout = React.lazy(() => import('../../components/_internal/GridLayout'));
 
 const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
@@ -15,9 +13,7 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
 }) => {
   return (
     <Suspense fallback={null}>
-      <BaseGridLayout layout={layout}>
-        {getSlots(slotsMap, 'container')}
-      </BaseGridLayout>
+      <BaseGridLayout layout={layout}>{getSlots(slotsMap, 'container')}</BaseGridLayout>
     </Suspense>
   );
 };
