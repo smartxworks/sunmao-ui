@@ -20,3 +20,6 @@ export function initMetaUI() {
     apiService,
   };
 }
+
+export * from './utils/parseType';
+export * from './utils/parseTypeBox';
