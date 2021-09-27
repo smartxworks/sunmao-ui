@@ -5,8 +5,13 @@ type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, Array<Application['spec']['components'][0]>>;
 type Component = Application['spec']['components'][0];
 
-export const StructureTree: React.FC<{ app: Application }> = props => {
-  const { app } = props;
+type Props = {
+  app: Application;
+  onSelectComponent: (id: string) => void;
+};
+
+export const StructureTree: React.FC<Props> = props => {
+  const { app, onSelectComponent } = props;
   const topLevelComponents: Component[] = [];
   const childrenMap: ChildrenMap = new Map();
 
@@ -43,7 +48,13 @@ export const StructureTree: React.FC<{ app: Application }> = props => {
     }
     return (
       <div key={component.id} style={{ paddingLeft: '16px' }}>
-        <strong>{component.id}</strong>
+        <strong
+          onClick={() => {
+            onSelectComponent(component.id);
+          }}
+        >
+          {component.id}
+        </strong>
         {slotsEle}
       </div>
     );
