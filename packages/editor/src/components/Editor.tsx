@@ -7,21 +7,29 @@ import { StructureTree } from './StructureTree';
 import { OperationManager } from '../operations/OperationManager';
 import { CreateComponentOperation } from '../operations/Operations';
 import { eventBus } from '../eventBus';
+import { ComponentForm } from './ComponentForm';
 
 const operationManager = new OperationManager(DialogFormSchema);
 
 export const Editor = () => {
-  const [selectedComponent, setSelectedComponent] = useState('');
+  const [selectedComponentId, setSelectedComponentId] = useState('');
   const [app, setApp] = useState<Application>(operationManager.getApp());
 
   const Wrapper: React.FC<{ id: string }> = useMemo(() => {
     return props => {
-      if (props.id === selectedComponent) {
-        return <div style={{ boxShadow: '0 0 1px red' }}>{props.children}</div>;
-      }
-      return <>{props.children}</>;
+      const style =
+        props.id === selectedComponentId ? { boxShadow: '0 0 1px red' } : undefined;
+      const onClick = (e: React.MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        setSelectedComponentId(() => props.id);
+      };
+      return (
+        <div onClick={onClick} style={style}>
+          {props.children}
+        </div>
+      );
     };
-  }, [selectedComponent]);
+  }, [selectedComponentId]);
 
   useEffect(() => {
     const onAppChange = (app: Application) => {
@@ -47,18 +55,16 @@ export const Editor = () => {
 
   return (
     <Box display="flex" height="100vh">
-      <button onClick={onClickAdd}>添加</button>
-      <button onClick={onClickUndo}>撤销</button>
       <Box flex="1">
-        <StructureTree app={app} onSelectComponent={id => setSelectedComponent(id)} />
+        <button onClick={onClickAdd}>添加</button>
+        <button onClick={onClickUndo}>撤销</button>
+        <StructureTree app={app} onSelectComponent={id => setSelectedComponentId(id)} />
       </Box>
       <Box flex="3" borderRight="2px solid black">
-        <App
-          debugStore={false}
-          debugEvent={false}
-          options={app}
-          componentWrapper={Wrapper}
-        />
+        <App options={app} componentWrapper={Wrapper} />
+      </Box>
+      <Box flex="1" borderRight="2px solid black">
+        <ComponentForm app={app} selectedId={selectedComponentId} />
       </Box>
     </Box>
   );
