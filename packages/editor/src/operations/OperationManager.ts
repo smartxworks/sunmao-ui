@@ -4,6 +4,7 @@ import {
   Operations,
   CreateComponentOperation,
   RemoveComponentOperation,
+  ModifyComponentPropertyOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
@@ -64,7 +65,6 @@ export class OperationManager {
   }
 
   apply(o: Operations, noEffect = false) {
-    console.log('apply');
     let newApp = this.app;
     switch (o.kind) {
       case 'createComponent':
@@ -87,6 +87,16 @@ export class OperationManager {
         newApp = produce(this.app, draft => {
           const i = draft.spec.components.findIndex(c => c.id === removeO.componentId);
           draft.spec.components.splice(i, 1);
+        });
+        break;
+      case 'modifyComponentProperty':
+        const mo = o as ModifyComponentPropertyOperation;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === mo.componentId) {
+              c.properties[mo.propertyKey] = mo.propertyValue;
+            }
+          });
         });
         break;
     }
