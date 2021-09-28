@@ -1,23 +1,13 @@
 import { Application, ComponentTrait, ApplicationComponent } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
 import {
-  BaseOperation,
+  Operations,
   CreateComponentOperation,
-  OperationKind,
   RemoveComponentOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
-
-// function genTrait(type: string): ComponentTrait {
-//   const { version, name } = parseType(type);
-//   const traitImpl = registry.getTrait(version, name);
-//   const initProperties = parseTypeBox(traitImpl.spec.properties as any);
-//   return {
-//     type,
-//     properties: initProperties,
-//   };
-// }
+import { eventBus } from '../eventBus';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -49,22 +39,35 @@ function genComponent(
 }
 
 export class OperationManager {
-  private undoStack: BaseOperation[] = [];
+  private undoStack: Operations[] = [];
 
-  constructor(public app: Application) {}
+  constructor(private app: Application) {
+    eventBus.on('undo', () => this.undo());
+    eventBus.on('operation', o => this.apply(o));
+  }
 
-  undo(): Application {
+  getApp() {
+    return this.app;
+  }
+
+  updateApp(app: Application) {
+    eventBus.send('appChange', app);
+    this.app = app;
+  }
+
+  undo() {
     if (this.undoStack.length === 0) {
       return this.app;
     }
     const o = this.undoStack.pop()!;
-    return this.apply(o, true);
+    this.apply(o, true);
   }
 
-  apply(o: BaseOperation, noEffect = false): Application {
-    let newApp;
+  apply(o: Operations, noEffect = false) {
+    console.log('apply');
+    let newApp = this.app;
     switch (o.kind) {
-      case OperationKind.createComponent:
+      case 'createComponent':
         const createO = o as CreateComponentOperation;
         const newComponent = genComponent(
           createO.componentType,
@@ -79,7 +82,7 @@ export class OperationManager {
           draft.spec.components.push(newComponent);
         });
         break;
-      case OperationKind.removeComponent:
+      case 'removeComponent':
         const removeO = o as RemoveComponentOperation;
         newApp = produce(this.app, draft => {
           const i = draft.spec.components.findIndex(c => c.id === removeO.componentId);
@@ -87,7 +90,6 @@ export class OperationManager {
         });
         break;
     }
-    this.app = newApp;
-    return newApp;
+    this.updateApp(newApp);
   }
 }
