@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import RGL from 'react-grid-layout';
 import { ComponentImplementation } from '../../modules/registry';
 import { createComponent } from '@meta-ui/core';
 import { getSlots } from '../_internal/Slot';
@@ -10,10 +11,17 @@ const BaseGridLayout = React.lazy(() => import('../../components/_internal/GridL
 const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
   layout = [],
+  onLayoutChange,
+  component,
 }) => {
+  const _onLayoutChange = (layout: RGL.Layout[]) => {
+    onLayoutChange && onLayoutChange(component.id, layout);
+  };
   return (
     <Suspense fallback={null}>
-      <BaseGridLayout layout={layout}>{getSlots(slotsMap, 'container')}</BaseGridLayout>
+      <BaseGridLayout onLayoutChange={_onLayoutChange} layout={layout}>
+        {getSlots(slotsMap, 'container')}
+      </BaseGridLayout>
     </Suspense>
   );
 };

@@ -1,4 +1,4 @@
-import { ChakraProvider, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { Application } from '@meta-ui/core';
 import React from 'react';
 import { eventBus } from '../../eventBus';
@@ -31,11 +31,9 @@ export const ComponentForm: React.FC<Props> = props => {
   });
 
   return (
-    <ChakraProvider>
-      <div>
-        <div>选中{selectedComponent?.id}</div>
-        <form>{fields}</form>
-      </div>
-    </ChakraProvider>
+    <div>
+      <div>选中{selectedComponent?.id}</div>
+      <form>{fields}</form>
+    </div>
   );
 };

@@ -60,7 +60,6 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
       mModules,
       evaledTemplate,
-      undefined,
       app
     );
 

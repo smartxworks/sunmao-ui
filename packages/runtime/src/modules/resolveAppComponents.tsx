@@ -12,8 +12,9 @@ import { ImplWrapper } from './ImplWrapper';
 export function resolveAppComponents(
   mModules: MetaUIModules,
   components: RuntimeApplication['spec']['components'],
+  app?: RuntimeApplication,
   componentWrapper?: ComponentWrapperType,
-  app?: RuntimeApplication
+  onLayoutChange?: (id: string, layout: any) => void
 ): {
   topLevelComponents: RuntimeApplication['spec']['components'];
   slotComponentsMap: SlotComponentMap;
@@ -44,6 +45,7 @@ export function resolveAppComponents(
           mModules={mModules}
           app={app}
           componentWrapper={componentWrapper}
+          onLayoutChange={onLayoutChange}
           {...props}
           ref={ref}
         />

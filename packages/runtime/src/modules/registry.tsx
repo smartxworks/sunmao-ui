@@ -66,6 +66,7 @@ export type ComponentMergedProps = {
   effects?: Array<() => void>;
   app?: RuntimeApplication;
   mModules: MetaUIModules;
+  onLayoutChange?: (id: string, layout: any) => void;
 };
 
 export type ComponentImplementation<T = any> = React.FC<T & ComponentMergedProps>;

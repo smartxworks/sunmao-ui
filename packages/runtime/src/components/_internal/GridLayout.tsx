@@ -12,14 +12,29 @@ export const LayoutPropertySchema = Type.Array(
     w: Type.Number(),
     h: Type.Number(),
     i: Type.String(),
+    isResizable: Type.Optional(Type.Boolean()),
   })
 );
 
 const GridLayout: React.FC<{
   layout: Static<typeof LayoutPropertySchema>;
-}> = ({ children, layout }) => {
+  onLayoutChange?: (layout: RGL.Layout[]) => void;
+}> = ({ children, layout, onLayoutChange }) => {
   return (
-    <ReactGridLayout rowHeight={30} layout={layout}>
+    <ReactGridLayout
+      isDraggable={!!onLayoutChange}
+      isResizable={!!onLayoutChange}
+      compactType={null}
+      preventCollision={true}
+      rowHeight={30}
+      layout={layout}
+      onLayoutChange={onLayoutChange}
+      onDragStart={() => {
+        console.log('dragstart');
+      }}
+      // onDrop={onLayoutChange}
+      isDroppable={true}
+    >
       {children}
     </ReactGridLayout>
   );
