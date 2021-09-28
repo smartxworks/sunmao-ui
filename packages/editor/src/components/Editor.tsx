@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Application } from '@meta-ui/core';
 import { Box } from '@chakra-ui/react';
-import { DialogFormSchema } from '../constants';
+import { DefaultAppSchema } from '../constants';
 import { App } from '../metaUI';
 import { StructureTree } from './StructureTree';
 import { OperationManager } from '../operations/OperationManager';
-import { CreateComponentOperation } from '../operations/Operations';
+import {
+  CreateComponentOperation,
+  ModifyComponentPropertyOperation,
+} from '../operations/Operations';
 import { eventBus } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
+import { ComponentList } from './ComponentsList';
 
-const operationManager = new OperationManager(DialogFormSchema);
+const operationManager = new OperationManager(DefaultAppSchema);
 
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
@@ -45,7 +49,7 @@ export const Editor = () => {
   const onClickAdd = useCallback(() => {
     eventBus.send(
       'operation',
-      new CreateComponentOperation('root', 'root', 'chakra_ui/v1/input')
+      new CreateComponentOperation('root', 'container', 'chakra_ui/v1/input')
     );
   }, [app, setApp]);
 
@@ -54,14 +58,31 @@ export const Editor = () => {
   }, [app, setApp]);
 
   return (
-    <Box display="flex" height="100vh">
+    <Box display="flex" height="100vh" width="100vw">
       <Box flex="1">
+        <div className="droppable-element" draggable={true} unselectable="on">
+          hhhhh
+        </div>
         <button onClick={onClickAdd}>添加</button>
         <button onClick={onClickUndo}>撤销</button>
         <StructureTree app={app} onSelectComponent={id => setSelectedComponentId(id)} />
       </Box>
+      <Box flex="1">
+        <ComponentList />{' '}
+      </Box>
       <Box flex="3" borderRight="2px solid black">
-        <App options={app} componentWrapper={Wrapper} />
+        <App
+          options={app}
+          debugEvent={false}
+          debugStore={false}
+          onLayoutChange={(id, layout) => {
+            eventBus.send(
+              'operation',
+              new ModifyComponentPropertyOperation(id, 'layout', layout)
+            );
+            console.log('layout变啦！！', id, layout);
+          }}
+        />
       </Box>
       <Box flex="1" borderRight="2px solid black">
         <ComponentForm app={app} selectedId={selectedComponentId} />

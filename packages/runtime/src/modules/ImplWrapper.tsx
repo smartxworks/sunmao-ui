@@ -22,6 +22,7 @@ type ImplWrapperProps = {
   mModules: MetaUIModules;
   app?: RuntimeApplication;
   componentWrapper?: ComponentWrapperType;
+  onLayoutChange?: (id: string, layout: any) => void;
 };
 
 export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
@@ -34,6 +35,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       children,
       componentWrapper: ComponentWrapper,
       mModules,
+      onLayoutChange,
     } = props;
 
     const { registry, stateManager, globalHandlerMap, apiService } = props.mModules;
@@ -174,6 +176,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         mModules={mModules}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
+        onLayoutChange={onLayoutChange}
         slotsMap={slotsMap}
         app={app}
       />

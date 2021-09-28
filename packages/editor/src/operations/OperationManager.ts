@@ -41,8 +41,16 @@ function genComponent(
 
 export class OperationManager {
   private undoStack: Operations[] = [];
+  private app: Application;
 
-  constructor(private app: Application) {
+  constructor(app: Application) {
+    const appFromLS = localStorage.getItem('schema');
+    if (appFromLS) {
+      this.app = JSON.parse(appFromLS);
+    } else {
+      this.app = app;
+    }
+
     eventBus.on('undo', () => this.undo());
     eventBus.on('operation', o => this.apply(o));
   }
@@ -53,6 +61,7 @@ export class OperationManager {
 
   updateApp(app: Application) {
     eventBus.send('appChange', app);
+    localStorage.setItem('schema', JSON.stringify(app));
     this.app = app;
   }
 

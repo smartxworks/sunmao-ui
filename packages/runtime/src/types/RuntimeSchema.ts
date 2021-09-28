@@ -16,6 +16,7 @@ export type MetaUIModules = {
 export type AppProps = {
   options: Application;
   mModules: MetaUIModules;
+  onLayoutChange?: (id: string, layout: any) => void;
   componentWrapper?: ComponentWrapperType;
   debugStore?: boolean;
   debugEvent?: boolean;
