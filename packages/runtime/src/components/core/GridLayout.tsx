@@ -11,15 +11,15 @@ const BaseGridLayout = React.lazy(() => import('../../components/_internal/GridL
 const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
   layout = [],
-  onLayoutChange,
+  gridCallbacks,
   component,
 }) => {
-  const _onLayoutChange = (layout: RGL.Layout[]) => {
-    onLayoutChange && onLayoutChange(component.id, layout);
+  const onLayoutChange = (layout: RGL.Layout[]) => {
+    gridCallbacks?.onLayoutChange && gridCallbacks?.onLayoutChange(component.id, layout);
   };
   return (
     <Suspense fallback={null}>
-      <BaseGridLayout onLayoutChange={_onLayoutChange} layout={layout}>
+      <BaseGridLayout onLayoutChange={onLayoutChange} layout={layout}>
         {getSlots(slotsMap, 'container')}
       </BaseGridLayout>
     </Suspense>

@@ -38,9 +38,12 @@ import CoreStyle from '../traits/core/style';
 import CoreHidden from '../traits/core/hidden';
 import CoreFetch from '../traits/core/fetch';
 import CoreValidation from '../traits/core/validation';
-import { ComponentMergedProps, TraitImplementation } from 'src/types/RuntimeSchema';
+import {
+  ComponentImplementationProps,
+  TraitImplementation,
+} from 'src/types/RuntimeSchema';
 
-export type ComponentImplementation<T = any> = React.FC<T & ComponentMergedProps>;
+export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
