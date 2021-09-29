@@ -1,29 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { watch } from '@vue-reactivity/watch';
-import { RuntimeApplication } from '@meta-ui/core';
 import { merge } from 'lodash';
-import { TraitResult } from '../modules/registry';
 import {
   ApplicationComponent,
-  ComponentWrapperType,
-  MetaUIModules,
-  SlotsMap,
+  ImplWrapperProps,
+  TraitResult,
 } from '../types/RuntimeSchema';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
-
-type ImplWrapperProps = {
-  component: ApplicationComponent;
-  slotsMap: SlotsMap | undefined;
-  targetSlot: { id: string; slot: string } | null;
-  mModules: MetaUIModules;
-  app?: RuntimeApplication;
-  componentWrapper?: ComponentWrapperType;
-  onLayoutChange?: (id: string, layout: any) => void;
-};
 
 export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {

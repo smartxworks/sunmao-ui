@@ -1,4 +1,4 @@
-import { RuntimeApplication, RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
+import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';
@@ -38,7 +38,9 @@ import CoreStyle from '../traits/core/style';
 import CoreHidden from '../traits/core/hidden';
 import CoreFetch from '../traits/core/fetch';
 import CoreValidation from '../traits/core/validation';
-import { ApplicationComponent, MetaUIModules, SlotsMap } from 'src/types/RuntimeSchema';
+import { ComponentMergedProps, TraitImplementation } from 'src/types/RuntimeSchema';
+
+export type ComponentImplementation<T = any> = React.FC<T & ComponentMergedProps>;
 
 type ImplementedRuntimeComponent = RuntimeComponent & {
   impl: ComponentImplementation;
@@ -47,47 +49,6 @@ type ImplementedRuntimeComponent = RuntimeComponent & {
 type ImplementedRuntimeTrait = RuntimeTrait & {
   impl: TraitImplementation;
 };
-
-type SubscribeMethods = <U>(map: {
-  [K in keyof U]: (parameters: U[K]) => void;
-}) => void;
-type MergeState = (partialState: any) => void;
-
-export type CallbackMap = Record<string, () => void>;
-
-export type ComponentMergedProps = {
-  component: ApplicationComponent;
-  mergeState: MergeState;
-  subscribeMethods: SubscribeMethods;
-  slotsMap: SlotsMap | undefined;
-  style?: Record<string, any>;
-  data?: Record<string, unknown>;
-  callbackMap?: CallbackMap;
-  effects?: Array<() => void>;
-  app?: RuntimeApplication;
-  mModules: MetaUIModules;
-  onLayoutChange?: (id: string, layout: any) => void;
-};
-
-export type ComponentImplementation<T = any> = React.FC<T & ComponentMergedProps>;
-
-export type TraitResult = {
-  props: {
-    data?: unknown;
-    style?: Record<string, any>;
-    callbackMap?: CallbackMap;
-    effects?: Array<() => void>;
-  } | null;
-};
-
-export type TraitImplementation<T = any> = (
-  props: T & {
-    componentId: string;
-    mergeState: MergeState;
-    subscribeMethods: SubscribeMethods;
-    mModules: MetaUIModules;
-  }
-) => TraitResult;
 
 export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();

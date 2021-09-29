@@ -1,6 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../modules/registry';
+import { TraitImplementation } from 'src/types/RuntimeSchema';
 
 const HasInitializedMap = new Map<string, boolean>();
 
