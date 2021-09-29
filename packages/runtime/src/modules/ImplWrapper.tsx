@@ -16,13 +16,11 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {
     const {
       component: c,
-      slotsMap,
       targetSlot,
       app,
       children,
       componentWrapper: ComponentWrapper,
       mModules,
-      onLayoutChange,
     } = props;
 
     const { registry, stateManager, globalHandlerMap, apiService } = props.mModules;
@@ -158,14 +156,10 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     const C = (
       <Impl
         key={c.id}
-        component={c}
         {...mergedProps}
-        mModules={mModules}
+        {...props}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
-        onLayoutChange={onLayoutChange}
-        slotsMap={slotsMap}
-        app={app}
       />
     );
 

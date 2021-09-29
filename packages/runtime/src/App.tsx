@@ -18,7 +18,7 @@ export const App: React.FC<AppProps> = props => {
     options,
     mModules,
     componentWrapper,
-    onLayoutChange,
+    gridCallbacks,
     debugStore = true,
     debugEvent = true,
   } = props;
@@ -28,13 +28,13 @@ export const App: React.FC<AppProps> = props => {
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
     () =>
-      resolveAppComponents(
+      resolveAppComponents({
         mModules,
-        app.spec.components,
+        components: app.spec.components,
         app,
         componentWrapper,
-        onLayoutChange
-      ),
+        gridCallbacks,
+      }),
     [app]
   );
 
@@ -50,7 +50,7 @@ export const App: React.FC<AppProps> = props => {
             targetSlot={null}
             app={app}
             componentWrapper={componentWrapper}
-            onLayoutChange={onLayoutChange}
+            gridCallbacks={gridCallbacks}
           />
         );
       })}

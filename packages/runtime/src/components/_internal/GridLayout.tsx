@@ -32,7 +32,7 @@ const GridLayout: React.FC<{
       onDragStart={() => {
         console.log('dragstart');
       }}
-      // onDrop={onLayoutChange}
+      onDrop={onLayoutChange}
       isDroppable={true}
     >
       {children}

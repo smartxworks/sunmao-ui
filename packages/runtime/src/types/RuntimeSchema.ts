@@ -1,3 +1,4 @@
+import RGL from 'react-grid-layout';
 import { ApiService } from 'src/modules/apiService';
 import { GlobalHandlerMap } from 'src/modules/handler';
 import { Registry } from 'src/modules/registry';
@@ -15,8 +16,13 @@ export type MetaUIModules = {
 
 export type ComponentWrapperType = React.FC<{ id: string }>;
 
+export type GridCallbacks = {
+  onLayoutChange?: (id: string, layout: RGL.Layout[]) => void;
+  onDrop?: (id: string, layout: RGL.Layout[], item?: RGL.Layout) => void;
+};
+
 export type ComponentParamsFromApp = {
-  onLayoutChange?: (id: string, layout: any) => void;
+  gridCallbacks?: GridCallbacks;
   componentWrapper?: ComponentWrapperType;
 };
 
@@ -56,7 +62,7 @@ type RuntimeFunctions = {
   subscribeMethods: SubscribeMethods;
 };
 
-export type ComponentMergedProps = ImplWrapperProps &
+export type ComponentImplementationProps = ImplWrapperProps &
   TraitResult['props'] &
   RuntimeFunctions;
 

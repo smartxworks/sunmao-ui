@@ -57,11 +57,11 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       }
     ).parsedtemplete;
 
-    const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
+    const { topLevelComponents, slotComponentsMap } = resolveAppComponents({
       mModules,
-      evaledTemplate,
-      app
-    );
+      components: evaledTemplate,
+      app,
+    });
 
     const componentElements = topLevelComponents.map(c => {
       return (
