@@ -25,14 +25,15 @@ let count = 0;
 function genComponent(
   type: string,
   parentId: string,
-  slot: string
+  slot: string,
+  id?: string
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = parseTypeBox(cImpl.spec.properties as any);
   count++;
   return {
-    id: `${name}${count}`,
+    id: id || `${name}${count}`,
     type: type,
     properties: initProperties,
     traits: [genSlotTrait(parentId, slot)],
@@ -81,7 +82,8 @@ export class OperationManager {
         const newComponent = genComponent(
           createO.componentType,
           createO.parentId,
-          createO.slot
+          createO.slot,
+          createO.componentId
         );
         if (!noEffect) {
           const undoOperation = new RemoveComponentOperation(newComponent.id);

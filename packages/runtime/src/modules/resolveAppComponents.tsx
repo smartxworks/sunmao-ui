@@ -10,8 +10,8 @@ import {
 import { ImplWrapper } from './ImplWrapper';
 
 export function resolveAppComponents(
+  components: RuntimeApplication['spec']['components'],
   params: {
-    components: RuntimeApplication['spec']['components'];
     mModules: MetaUIModules;
     app?: RuntimeApplication;
   } & ComponentParamsFromApp
@@ -19,7 +19,6 @@ export function resolveAppComponents(
   topLevelComponents: RuntimeApplication['spec']['components'];
   slotComponentsMap: SlotComponentMap;
 } {
-  const { components } = params;
   const topLevelComponents: RuntimeApplication['spec']['components'] = [];
   const slotComponentsMap: SlotComponentMap = new Map();
 
