@@ -12,9 +12,10 @@ import {
 import { eventBus } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
+import { GridCallbacks } from '../../../runtime/lib/types/RuntimeSchema';
 
 const operationManager = new OperationManager(DefaultAppSchema);
-
+let count = 0;
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
   const [app, setApp] = useState<Application>(operationManager.getApp());
@@ -57,31 +58,56 @@ export const Editor = () => {
     eventBus.send('undo');
   }, [app, setApp]);
 
+  const gridCallbacks: GridCallbacks = {
+    onDragStop(id, layout) {
+      eventBus.send(
+        'operation',
+        new ModifyComponentPropertyOperation(id, 'layout', layout)
+      );
+      console.log('onDragStop', id, layout);
+    },
+    onDrop(id, layout, item, e) {
+      const component = e.dataTransfer?.getData('component') || '';
+      const componentId = `component${count++}`;
+      eventBus.send(
+        'operation',
+        new CreateComponentOperation(id, 'container', component, componentId)
+      );
+
+      const newLayout = [
+        ...layout,
+        {
+          ...item,
+          w: 3,
+          i: componentId,
+        },
+      ];
+
+      eventBus.send(
+        'operation',
+        new ModifyComponentPropertyOperation(id, 'layout', newLayout)
+      );
+      console.log('onDragStop', id, layout);
+      console.log('onDrop', id, layout, item);
+    },
+  };
+
   return (
     <Box display="flex" height="100vh" width="100vw">
       <Box flex="1">
-        <div className="droppable-element" draggable={true} unselectable="on">
-          hhhhh
-        </div>
         <button onClick={onClickAdd}>添加</button>
         <button onClick={onClickUndo}>撤销</button>
         <StructureTree app={app} onSelectComponent={id => setSelectedComponentId(id)} />
       </Box>
       <Box flex="1">
-        <ComponentList />{' '}
+        <ComponentList />
       </Box>
       <Box flex="3" borderRight="2px solid black">
         <App
           options={app}
           debugEvent={false}
           debugStore={false}
-          onLayoutChange={(id, layout) => {
-            eventBus.send(
-              'operation',
-              new ModifyComponentPropertyOperation(id, 'layout', layout)
-            );
-            console.log('layout变啦！！', id, layout);
-          }}
+          gridCallbacks={gridCallbacks}
         />
       </Box>
       <Box flex="1" borderRight="2px solid black">

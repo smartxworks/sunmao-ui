@@ -14,14 +14,19 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   gridCallbacks,
   component,
 }) => {
-  const onLayoutChange = (layout: RGL.Layout[]) => {
-    gridCallbacks?.onLayoutChange && gridCallbacks?.onLayoutChange(component.id, layout);
+  const onDragStop = (layout: RGL.Layout[]) => {
+    gridCallbacks?.onDragStop && gridCallbacks?.onDragStop(component.id, layout);
+  };
+  const onDrop = (layout: RGL.Layout[], item: RGL.Layout, e: DragEvent) => {
+    gridCallbacks?.onDrop && gridCallbacks?.onDrop(component.id, layout, item, e);
   };
   return (
     <Suspense fallback={null}>
-      <BaseGridLayout onLayoutChange={onLayoutChange} layout={layout}>
-        {getSlots(slotsMap, 'container')}
-      </BaseGridLayout>
+      <div style={{ boxShadow: '0 0 1px red' }}>
+        <BaseGridLayout onDragStop={onDragStop} onDrop={onDrop} layout={layout}>
+          {getSlots(slotsMap, 'container')}
+        </BaseGridLayout>
+      </div>
     </Suspense>
   );
 };

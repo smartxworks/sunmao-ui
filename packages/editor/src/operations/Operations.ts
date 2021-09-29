@@ -8,7 +8,8 @@ export class CreateComponentOperation {
   constructor(
     public parentId: string,
     public slot: string,
-    public componentType: string
+    public componentType: string,
+    public componentId?: string
   ) {}
 }
 

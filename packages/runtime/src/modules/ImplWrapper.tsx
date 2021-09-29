@@ -166,8 +166,21 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     if (targetSlot && app) {
       const targetC = app.spec.components.find(c => c.id === targetSlot.id);
       if (targetC?.parsedType.name === 'grid_layout') {
+        // prevent react componentWrapper
+        /* eslint-disable */
+        const {
+          component,
+          mModules,
+          targetSlot,
+          app,
+          slotsMap,
+          componentWrapper,
+          gridCallbacks,
+          ...restProps
+        } = props;
+        /* eslint-enable */
         return (
-          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...restProps}>
             {C}
             {children}
           </div>

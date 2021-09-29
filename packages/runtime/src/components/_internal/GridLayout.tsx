@@ -18,21 +18,19 @@ export const LayoutPropertySchema = Type.Array(
 
 const GridLayout: React.FC<{
   layout: Static<typeof LayoutPropertySchema>;
-  onLayoutChange?: (layout: RGL.Layout[]) => void;
-}> = ({ children, layout, onLayoutChange }) => {
+  onDragStop?: (layout: RGL.Layout[]) => void;
+  onDrop?: (layout: RGL.Layout[], item: RGL.Layout, event: DragEvent) => void;
+}> = ({ children, layout, onDragStop, onDrop }) => {
   return (
     <ReactGridLayout
-      isDraggable={!!onLayoutChange}
-      isResizable={!!onLayoutChange}
+      isDraggable={!!onDragStop}
+      isResizable={!!onDragStop}
       compactType={null}
       preventCollision={true}
       rowHeight={30}
       layout={layout}
-      onLayoutChange={onLayoutChange}
-      onDragStart={() => {
-        console.log('dragstart');
-      }}
-      onDrop={onLayoutChange}
+      onDragStop={onDragStop}
+      onDrop={onDrop}
       isDroppable={true}
     >
       {children}

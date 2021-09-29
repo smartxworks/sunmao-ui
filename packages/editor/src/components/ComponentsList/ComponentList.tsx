@@ -7,8 +7,19 @@ export const ComponentList: React.FC = () => {
     registry.components.forEach((componentMap, version) => {
       const components: ReactElement[] = [];
       componentMap.forEach(c => {
+        const onDragStart = (e: any) => {
+          e.dataTransfer.setData('component', `${c.version}/${c.metadata.name}`);
+        };
         const cEle = (
-          <div key={c.metadata.name}>{`${c.version}/${c.metadata.name}`}</div>
+          <div
+            key={c.metadata.name}
+            className="droppable-element"
+            draggable={true}
+            unselectable="on"
+            onDragStart={onDragStart}
+          >
+            {`${c.version}/${c.metadata.name}`}
+          </div>
         );
 
         components.push(cEle);

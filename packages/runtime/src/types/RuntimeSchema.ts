@@ -17,8 +17,8 @@ export type MetaUIModules = {
 export type ComponentWrapperType = React.FC<{ id: string }>;
 
 export type GridCallbacks = {
-  onLayoutChange?: (id: string, layout: RGL.Layout[]) => void;
-  onDrop?: (id: string, layout: RGL.Layout[], item?: RGL.Layout) => void;
+  onDragStop?: (id: string, layout: RGL.Layout[]) => void;
+  onDrop?: (id: string, layout: RGL.Layout[], item: RGL.Layout, event: DragEvent) => void;
 };
 
 export type ComponentParamsFromApp = {

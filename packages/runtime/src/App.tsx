@@ -28,9 +28,8 @@ export const App: React.FC<AppProps> = props => {
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
     () =>
-      resolveAppComponents({
+      resolveAppComponents(app.spec.components, {
         mModules,
-        components: app.spec.components,
         app,
         componentWrapper,
         gridCallbacks,
