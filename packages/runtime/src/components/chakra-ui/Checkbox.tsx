@@ -109,6 +109,19 @@ export default {
     metadata: {
       name: 'checkbox',
       description: 'chakra-ui checkbox',
+      displayName: 'Checkbox',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        text: {
+          raw: 'Checkbox',
+          format: 'plain',
+        },
+        value: 'checkbox 1',
+        defaultIsChecked: true,
+        isDisabled: false,
+        size: 'md',
+      },
     },
     spec: {
       properties: PropsSchema,

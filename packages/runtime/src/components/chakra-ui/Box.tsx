@@ -289,6 +289,9 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'box',
+      displayName: 'Box',
+      isDraggable: true,
+      isResizable: true,
       description: 'chakra-ui box',
     },
     spec: {

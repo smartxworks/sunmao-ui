@@ -40,6 +40,12 @@ export default {
     metadata: {
       name: 'hstack',
       description: 'chakra-ui hstack',
+      displayName: 'HStack',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        spacing: '24px',
+      },
     },
     spec: {
       properties: PropsSchema,

@@ -75,7 +75,19 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'radio',
+      displayName: 'Radio',
       description: 'chakra-ui radio',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        text: {
+          raw: 'Radio',
+          format: 'plain',
+        },
+        value: 'Radio 1',
+        isDisabled: false,
+        size: 'md',
+      },
     },
     spec: {
       properties: PropsSchema,

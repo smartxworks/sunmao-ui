@@ -119,7 +119,13 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'form',
+      displayName: 'Form',
       description: 'chakra-ui form',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        hideSubmit: false,
+      },
     },
     spec: {
       properties: PropsSchema,

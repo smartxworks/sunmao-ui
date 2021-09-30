@@ -63,7 +63,10 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'stack',
+      displayName: 'Stack',
       description: 'chakra-ui stack',
+      isResizable: true,
+      isDraggable: true,
     },
     spec: {
       properties: PropsSchema,

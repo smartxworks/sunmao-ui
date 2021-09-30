@@ -33,7 +33,16 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'kbd',
+      displayName: 'Kbd',
       description: 'chakra-ui keyboard',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        text: {
+          raw: 'enter',
+          format: 'plain',
+        },
+      },
     },
     spec: {
       properties: PropsSchema,

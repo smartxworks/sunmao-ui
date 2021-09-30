@@ -132,7 +132,18 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'input',
+      displayName: 'Input',
       description: 'chakra_ui input',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        variant: 'outline',
+        placeholder: 'Please input value',
+        size: 'md',
+        isDisabled: false,
+        isRequired: false,
+        defaultValue: '',
+      },
     },
     spec: {
       properties: PropsSchema,

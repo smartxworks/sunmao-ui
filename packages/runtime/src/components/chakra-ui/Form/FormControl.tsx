@@ -115,6 +115,9 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'formControl',
+      isResizable: false,
+      isDraggable: true,
+      displayName: 'FormControl',
       description: 'chakra-ui formControl',
     },
     spec: {

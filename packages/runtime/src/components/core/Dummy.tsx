@@ -16,7 +16,11 @@ export default {
     version: 'core/v1',
     metadata: {
       name: 'dummy',
+      displayName: 'Dummy',
       description: 'Dummy Invisible component',
+      isDraggable: false,
+      isResizable: false,
+      defaultProperties: {},
     },
     spec: {
       properties: {},

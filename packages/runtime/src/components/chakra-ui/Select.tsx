@@ -93,7 +93,10 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'select',
+      displayName: 'Select',
       description: 'chakra-ui select',
+      isResizable: true,
+      isDraggable: true,
     },
     spec: {
       properties: PropsSchema,

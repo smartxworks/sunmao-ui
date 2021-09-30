@@ -104,7 +104,16 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'dialog',
+      displayName: 'Dialog',
       description: 'chakra_ui dialog',
+      isDraggable: false,
+      isResizable: false,
+      defaultProperties: {
+        title: 'Dialog',
+        confirmButton: 'Confirm',
+        cancelButton: 'Cancel',
+        disableConfirm: false,
+      },
     },
     spec: {
       properties: PropsSchema,
