@@ -1,4 +1,4 @@
-import { StateManager } from '../src/modules/stateStore';
+import { StateManager } from '../src/services/stateStore';
 
 describe('parseExpression function', () => {
   const parseExpression = new StateManager().parseExpression;

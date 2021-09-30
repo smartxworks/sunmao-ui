@@ -1,10 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
+import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
+
+const style = css`
+  width: 100%;
+  height: 100%;
+`;
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
@@ -28,7 +34,12 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <BaseButton {...{ colorScheme, isLoading }} ref={ref} onClick={callbacks?.click}>
+    <BaseButton
+      css={style}
+      {...{ colorScheme, isLoading }}
+      ref={ref}
+      onClick={callbacks?.click}
+    >
       <Text value={text} />
     </BaseButton>
   );

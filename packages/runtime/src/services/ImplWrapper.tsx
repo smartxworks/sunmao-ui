@@ -1,13 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { watch } from '@vue-reactivity/watch';
-import { RuntimeApplication } from '@meta-ui/core';
 import { merge } from 'lodash';
-import { TraitResult } from '../modules/registry';
 import {
   ApplicationComponent,
-  ComponentWrapperType,
-  MetaUIModules,
-  SlotsMap,
+  ImplWrapperProps,
+  TraitResult,
 } from '../types/RuntimeSchema';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
@@ -15,28 +12,18 @@ type ArrayElement<ArrayType extends readonly unknown[]> =
 
 type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
 
-type ImplWrapperProps = {
-  component: ApplicationComponent;
-  slotsMap: SlotsMap | undefined;
-  targetSlot: { id: string; slot: string } | null;
-  mModules: MetaUIModules;
-  app?: RuntimeApplication;
-  componentWrapper?: ComponentWrapperType;
-};
-
 export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {
     const {
       component: c,
-      slotsMap,
       targetSlot,
       app,
       children,
       componentWrapper: ComponentWrapper,
-      mModules,
+      services,
     } = props;
 
-    const { registry, stateManager, globalHandlerMap, apiService } = props.mModules;
+    const { registry, stateManager, globalHandlerMap, apiService } = props.services;
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
@@ -94,7 +81,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         componentId: c.id,
         mergeState,
         subscribeMethods,
-        mModules,
+        services,
       });
     }
 
@@ -169,21 +156,31 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     const C = (
       <Impl
         key={c.id}
-        component={c}
         {...mergedProps}
-        mModules={mModules}
+        {...props}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
-        slotsMap={slotsMap}
-        app={app}
       />
     );
 
     if (targetSlot && app) {
       const targetC = app.spec.components.find(c => c.id === targetSlot.id);
       if (targetC?.parsedType.name === 'grid_layout') {
+        // prevent react componentWrapper
+        /* eslint-disable */
+        const {
+          component,
+          services,
+          targetSlot,
+          app,
+          slotsMap,
+          componentWrapper,
+          gridCallbacks,
+          ...restProps
+        } = props;
+        /* eslint-enable */
         return (
-          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...props}>
+          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...restProps}>
             {C}
             {children}
           </div>

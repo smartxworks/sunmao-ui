@@ -1,7 +1,7 @@
 import { RuntimeApplication } from '@meta-ui/core';
 import { TSchema } from '@sinclair/typebox';
-import { Registry } from 'src/modules/registry';
-import { StateManager } from 'src/modules/stateStore';
+import { Registry } from 'src/services/registry';
+import { StateManager } from 'src/services/stateStore';
 import { parseTypeBox } from './parseTypeBox';
 
 export function initStateAndMethod(

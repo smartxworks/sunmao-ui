@@ -1,5 +1,9 @@
 import React from 'react';
 import { Application } from '@meta-ui/core';
+import { IconButton } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { eventBus } from '../../eventBus';
+import { RemoveComponentOperation } from '../../operations/Operations';
 
 type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, Array<Application['spec']['components'][0]>>;
@@ -46,6 +50,11 @@ export const StructureTree: React.FC<Props> = props => {
         );
       });
     }
+
+    const onClickRemove = () => {
+      eventBus.send('operation', new RemoveComponentOperation(component.id));
+    };
+
     return (
       <div key={component.id} style={{ paddingLeft: '16px' }}>
         <strong
@@ -55,6 +64,7 @@ export const StructureTree: React.FC<Props> = props => {
         >
           {component.id}
         </strong>
+        <IconButton aria-label="remove" icon={<DeleteIcon />} onClick={onClickRemove} />
         {slotsEle}
       </div>
     );

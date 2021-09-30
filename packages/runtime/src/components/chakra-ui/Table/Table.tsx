@@ -3,7 +3,7 @@ import { sortBy } from 'lodash';
 import { Table as BaseTable, Thead, Tr, Th, Tbody, Checkbox, Td } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
-import { ComponentImplementation } from '../../../modules/registry';
+import { ComponentImplementation } from '../../../services/registry';
 import {
   ColumnsPropertySchema,
   DataPropertySchema,
@@ -34,7 +34,7 @@ export const TableImpl: ComponentImplementation<{
   columns,
   isMultiSelect,
   mergeState,
-  mModules,
+  services,
 }) => {
   if (!data) {
     return <div>loading</div>;
@@ -182,7 +182,7 @@ export const TableImpl: ComponentImplementation<{
                     item={item}
                     column={column}
                     onClickItem={() => selectItem(item)}
-                    mModules={mModules}
+                    services={services}
                   />
                 ))}
               </Tr>
