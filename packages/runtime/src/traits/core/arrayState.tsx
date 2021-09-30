@@ -12,7 +12,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   componentId,
   mergeState,
   subscribeMethods,
-  mModules,
+  services,
 }) => {
   const hashId = `#${componentId}@${key}`;
   const hasInitialized = HasInitializedMap.get(hashId);
@@ -25,7 +25,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         mergeState({ [key]: value });
       },
       deleteItemByIndex({ key, index }: { key: string; index: number }) {
-        const _arr = [...mModules.stateManager.store[componentId][key]];
+        const _arr = [...services.stateManager.store[componentId][key]];
         _arr.splice(index, 1);
         mergeState({ [key]: _arr });
       },
@@ -38,7 +38,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         itemIdKey: string;
         itemId: string;
       }) {
-        const _arr = [...mModules.stateManager.store[componentId][key]].filter(item => {
+        const _arr = [...services.stateManager.store[componentId][key]].filter(item => {
           return item[itemIdKey] !== itemId;
         });
         mergeState({ [key]: _arr });

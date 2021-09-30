@@ -4,7 +4,7 @@ import { ContainerPropertySchema } from '../traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import {
   ComponentParamsFromApp,
-  MetaUIModules,
+  MetaUIServices,
   SlotComponentMap,
 } from 'src/types/RuntimeSchema';
 import { ImplWrapper } from './ImplWrapper';
@@ -12,7 +12,7 @@ import { ImplWrapper } from './ImplWrapper';
 export function resolveAppComponents(
   components: RuntimeApplication['spec']['components'],
   params: {
-    mModules: MetaUIModules;
+    services: MetaUIServices;
     app?: RuntimeApplication;
   } & ComponentParamsFromApp
 ): {

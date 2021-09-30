@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Type, Static } from '@sinclair/typebox';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,

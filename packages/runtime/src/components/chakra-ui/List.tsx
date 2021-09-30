@@ -2,11 +2,11 @@ import { useRef } from 'react';
 import { Application, createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
-import { ImplWrapper } from '../../modules/ImplWrapper';
-import { resolveAppComponents } from '../../modules/resolveAppComponents';
+import { ImplWrapper } from '../../services/ImplWrapper';
+import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { ApplicationComponent } from 'src/types/RuntimeSchema';
 
 export function parseTypeComponents(
@@ -28,7 +28,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
   template,
   app,
-  mModules,
+  services,
 }) => {
   if (!listData) {
     return null;
@@ -44,11 +44,11 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       }
     }
 
-    const evaledTemplate = mModules.stateManager.mapValuesDeep(
+    const evaledTemplate = services.stateManager.mapValuesDeep(
       { parsedtemplete },
       ({ value }) => {
         if (typeof value === 'string') {
-          return mModules.stateManager.maskedEval(value, true, {
+          return services.stateManager.maskedEval(value, true, {
             [LIST_ITEM_EXP]: listItem,
             [LIST_ITEM_INDEX_EXP]: i,
           });
@@ -60,7 +60,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
       evaledTemplate,
       {
-        mModules,
+        services,
         app,
       }
     );
@@ -72,7 +72,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           component={c}
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={null}
-          mModules={mModules}
+          services={services}
           app={app}
         />
       );

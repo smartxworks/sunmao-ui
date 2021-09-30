@@ -1,7 +1,7 @@
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Stack as BaseStack } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
 
 export const DirectionSchema = Type.Union([

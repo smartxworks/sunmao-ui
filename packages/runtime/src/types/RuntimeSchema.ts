@@ -1,13 +1,13 @@
 import RGL from 'react-grid-layout';
-import { ApiService } from 'src/modules/apiService';
-import { GlobalHandlerMap } from 'src/modules/handler';
-import { Registry } from 'src/modules/registry';
-import { StateManager } from 'src/modules/stateStore';
-import { Application, RuntimeApplication } from '../../../core/lib';
+import { ApiService } from 'src/services/apiService';
+import { GlobalHandlerMap } from 'src/services/handler';
+import { Registry } from 'src/services/registry';
+import { StateManager } from 'src/services/stateStore';
+import { Application, RuntimeApplication } from '@meta-ui/core';
 
 export type ApplicationComponent = RuntimeApplication['spec']['components'][0];
 
-export type MetaUIModules = {
+export type MetaUIServices = {
   registry: Registry;
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
@@ -28,7 +28,7 @@ export type ComponentParamsFromApp = {
 
 export type AppProps = {
   options: Application;
-  mModules: MetaUIModules;
+  services: MetaUIServices;
   debugStore?: boolean;
   debugEvent?: boolean;
 } & ComponentParamsFromApp;
@@ -37,7 +37,7 @@ export type ImplWrapperProps = {
   component: ApplicationComponent;
   slotsMap: SlotsMap | undefined;
   targetSlot: { id: string; slot: string } | null;
-  mModules: MetaUIModules;
+  services: MetaUIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
 
@@ -79,6 +79,6 @@ export type TraitImplementation<T = any> = (
   props: T &
     RuntimeFunctions & {
       componentId: string;
-      mModules: MetaUIModules;
+      services: MetaUIServices;
     }
 ) => TraitResult;

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
 
 const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({

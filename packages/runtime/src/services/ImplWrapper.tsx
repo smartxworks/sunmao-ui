@@ -20,10 +20,10 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       app,
       children,
       componentWrapper: ComponentWrapper,
-      mModules,
+      services,
     } = props;
 
-    const { registry, stateManager, globalHandlerMap, apiService } = props.mModules;
+    const { registry, stateManager, globalHandlerMap, apiService } = props.services;
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
@@ -81,7 +81,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         componentId: c.id,
         mergeState,
         subscribeMethods,
-        mModules,
+        services,
       });
     }
 
@@ -170,7 +170,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         /* eslint-disable */
         const {
           component,
-          mModules,
+          services,
           targetSlot,
           app,
           slotsMap,
