@@ -15,7 +15,7 @@ import {
   FormItemCSS,
   FormLabelCSS,
 } from './FormCSS';
-import { ComponentImplementation } from '../../../modules/registry';
+import { ComponentImplementation } from '../../../services/registry';
 import Slot from '../../_internal/Slot';
 import { CheckboxStateSchema } from '../Checkbox';
 
@@ -24,7 +24,7 @@ const FormControlImpl: ComponentImplementation<{
   fieldName: string;
   isRequired: boolean;
   helperText: string;
-}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState, mModules }) => {
+}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState, services }) => {
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
@@ -38,34 +38,34 @@ const FormControlImpl: ComponentImplementation<{
   useEffect(() => {
     const stop = watch(
       () => {
-        if (mModules.stateManager.store[inputId].checked !== undefined) {
+        if (services.stateManager.store[inputId].checked !== undefined) {
           // special treatment for checkbox
           return (
-            mModules.stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
+            services.stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
           ).checked;
         } else {
-          return mModules.stateManager.store[inputId].value;
+          return services.stateManager.store[inputId].value;
         }
       },
       newV => {
         setInputValue(newV);
       }
     );
-    setInputValue(mModules.stateManager.store[inputId].value);
+    setInputValue(services.stateManager.store[inputId].value);
     return stop;
   }, [slotsMap, setInputValue]);
 
   useEffect(() => {
     const stop = watch(
       () => {
-        return mModules.stateManager.store[inputId].validResult;
+        return services.stateManager.store[inputId].validResult;
       },
       newV => {
         setValidResult(newV);
       }
     );
-    if (mModules.stateManager.store[inputId].validResult) {
-      setValidResult(mModules.stateManager.store[inputId].validResult);
+    if (services.stateManager.store[inputId].validResult) {
+      setValidResult(services.stateManager.store[inputId].validResult);
     }
     return stop;
   }, [slotsMap, setValidResult]);

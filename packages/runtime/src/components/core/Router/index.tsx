@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import { ComponentImplementation } from '../../../modules/registry';
+import { ComponentImplementation } from '../../../services/registry';
 import { Switch } from './component';
 
 const Router: ComponentImplementation<{

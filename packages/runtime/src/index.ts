@@ -1,9 +1,9 @@
-import { initStateManager } from './modules/stateStore';
+import { initStateManager } from './services/stateStore';
 import { genApp } from './App';
-import { initRegistry } from './modules/registry';
-import { initApiService } from './modules/apiService';
-import { mountUtilMethods } from './modules/util-methods';
-import { initGlobalHandlerMap } from './modules/handler';
+import { initRegistry } from './services/registry';
+import { initApiService } from './services/apiService';
+import { mountUtilMethods } from './services/util-methods';
+import { initGlobalHandlerMap } from './services/handler';
 
 export function initMetaUI() {
   const registry = initRegistry();

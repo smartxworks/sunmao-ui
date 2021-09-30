@@ -1,22 +1,22 @@
 import React, { useMemo } from 'react';
 import { createApplication } from '@meta-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
-import { ImplWrapper } from './modules/ImplWrapper';
-import { resolveAppComponents } from './modules/resolveAppComponents';
-import { AppProps, MetaUIModules } from './types/RuntimeSchema';
-import { DebugEvent, DebugStore } from './modules/DebugComponents';
+import { ImplWrapper } from './services/ImplWrapper';
+import { resolveAppComponents } from './services/resolveAppComponents';
+import { AppProps, MetaUIServices } from './types/RuntimeSchema';
+import { DebugEvent, DebugStore } from './services/DebugComponents';
 
 // inject modules to App
-export function genApp(mModules: MetaUIModules) {
-  return (props: Omit<AppProps, 'mModules'>) => {
-    return <App {...props} mModules={mModules} />;
+export function genApp(services: MetaUIServices) {
+  return (props: Omit<AppProps, 'services'>) => {
+    return <App {...props} services={services} />;
   };
 }
 
 export const App: React.FC<AppProps> = props => {
   const {
     options,
-    mModules,
+    services,
     componentWrapper,
     gridCallbacks,
     debugStore = true,
@@ -24,12 +24,12 @@ export const App: React.FC<AppProps> = props => {
   } = props;
   const app = createApplication(options);
 
-  initStateAndMethod(mModules.registry, mModules.stateManager, app.spec.components);
+  initStateAndMethod(services.registry, services.stateManager, app.spec.components);
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
     () =>
       resolveAppComponents(app.spec.components, {
-        mModules,
+        services,
         app,
         componentWrapper,
         gridCallbacks,
@@ -44,7 +44,7 @@ export const App: React.FC<AppProps> = props => {
           <ImplWrapper
             key={c.id}
             component={c}
-            mModules={mModules}
+            services={services}
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
@@ -53,8 +53,8 @@ export const App: React.FC<AppProps> = props => {
           />
         );
       })}
-      {debugStore && <DebugStore stateManager={mModules.stateManager} />}
-      {debugEvent && <DebugEvent apiService={mModules.apiService} />}
+      {debugStore && <DebugStore stateManager={services.stateManager} />}
+      {debugEvent && <DebugEvent apiService={services.apiService} />}
     </div>
   );
 };

@@ -12,7 +12,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   headers: _headers,
   body,
   mergeState,
-  mModules,
+  services,
   subscribeMethods,
   componentId,
   onComplete,
@@ -51,7 +51,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
             },
           });
           onComplete?.forEach(event => {
-            mModules.apiService.send('uiMethod', {
+            services.apiService.send('uiMethod', {
               componentId: event.componentId,
               name: event.method.name,
               parameters: event.method.parameters,

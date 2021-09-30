@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 import {
   AlertDialog,
   AlertDialogBody,

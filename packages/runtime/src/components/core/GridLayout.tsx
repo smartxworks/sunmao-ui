@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import RGL from 'react-grid-layout';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 import { createComponent } from '@meta-ui/core';
 import { getSlots } from '../_internal/Slot';
 import { LayoutPropertySchema } from '../../components/_internal/GridLayout';
