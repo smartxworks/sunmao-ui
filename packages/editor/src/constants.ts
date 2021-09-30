@@ -3,110 +3,81 @@ import { Application } from '@meta-ui/core';
 export const DefaultAppSchema: Application = {
   kind: 'Application',
   version: 'example/v1',
-  metadata: {
-    name: 'basic_grid_layout',
-    description: 'basic grid layout example',
-  },
+  metadata: { name: 'basic_grid_layout', description: 'basic grid layout example' },
   spec: {
     components: [
       {
-        id: 'root',
+        id: 'grid',
         type: 'core/v1/grid_layout',
         properties: {
           layout: [
             {
+              w: 10,
+              h: 2,
               x: 0,
               y: 0,
-              w: 5,
-              h: 2,
+              i: 'image',
+              moved: false,
+              static: false,
+              isDraggable: true,
+            },
+            {
+              w: 3,
+              h: 1,
+              x: 7,
+              y: 2,
+              i: 'button',
+              moved: false,
+              static: false,
+              isDraggable: true,
+            },
+            {
+              w: 3,
+              h: 1,
+              x: 0,
+              y: 2,
               i: 'input',
-              isResizable: false,
-            },
-            {
-              x: 4,
-              y: 0,
-              w: 4,
-              h: 9,
-              i: 'box1',
-            },
-            {
-              x: 8,
-              y: 0,
-              w: 2,
-              h: 12,
-              i: 'box2',
+              moved: false,
+              static: false,
+              isDraggable: true,
             },
           ],
         },
         traits: [],
       },
       {
-        id: 'input',
-        type: 'chakra_ui/v1/input',
+        id: 'image',
+        type: 'chakra_ui/v1/image',
         properties: {
-          variant: 'filled',
-          placeholder: 'This a example',
-          size: 'lg',
-          colorScheme: 'pink',
-          focusBorderColor: 'pink.500',
-          isDisabled: false,
-          isRequired: true,
-          left: {
-            type: 'addon',
-            children: 'https://',
-          },
-          right: {
-            type: 'element',
-            children: '.com',
-            color: 'red',
-            fontSize: '16px',
-          },
+          src: 'https://www.smartx.com/img/smartx-logo-horizontal.ff708dd4.svg',
+          objectFit: '',
         },
         traits: [
           {
             type: 'core/v1/slot',
-            properties: {
-              container: {
-                id: 'root',
-                slot: 'container',
-              },
-            },
+            properties: { container: { id: 'grid', slot: 'container' } },
           },
         ],
       },
       {
-        id: 'box1',
-        type: 'chakra_ui/v1/box',
+        id: 'button',
+        type: 'chakra_ui/v1/button',
+        properties: { text: { raw: '确认' } },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: { container: { id: 'grid', slot: 'container' } },
+          },
+        ],
+      },
+      {
+        id: 'input',
+        type: 'chakra_ui/v1/input',
         properties: {},
         traits: [
           {
             type: 'core/v1/slot',
-            properties: {
-              container: {
-                id: 'root',
-                slot: 'container',
-              },
-            },
-          },
-        ],
-      },
-      {
-        id: 'box2',
-        type: 'chakra_ui/v1/box',
-        properties: {
-          bgColor: 'pink',
-          w: '100%',
-          h: '100%',
-        },
-        traits: [
-          {
-            type: 'core/v1/slot',
-            properties: {
-              container: {
-                id: 'root',
-                slot: 'container',
-              },
-            },
+            properties: { container: { id: 'grid', slot: 'container' } },
           },
         ],
       },
