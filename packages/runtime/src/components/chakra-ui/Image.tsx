@@ -123,7 +123,17 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'image',
+      displayName: 'Image',
       description: 'chakra_ui image',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        src: 'https://bit.ly/dan-abramov',
+        alt: 'dan-abramov',
+        objectFit: 'cover',
+        borderRadius: 5,
+        fallbackSrc: 'https://via.placeholder.com/150',
+      },
     },
     spec: {
       properties: PropsSchema,

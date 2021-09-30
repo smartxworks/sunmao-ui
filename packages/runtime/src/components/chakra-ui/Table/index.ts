@@ -25,7 +25,17 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'table',
+      displayName: 'Table',
       description: 'chakra-ui table',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        data: [],
+        columns: [],
+        majorKey: 'id',
+        rowsPerPage: 5,
+        isMultiSelect: false,
+      },
     },
     spec: {
       properties: PropsSchema,

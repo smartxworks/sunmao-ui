@@ -55,7 +55,14 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'tabs',
+      displayName: 'Tabs',
       description: 'chakra-ui tabs',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        tabNames: [],
+        initialSelectedTabIndex: 0,
+      },
     },
     spec: {
       properties: PropsSchema,

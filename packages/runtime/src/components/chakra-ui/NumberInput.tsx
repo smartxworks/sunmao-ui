@@ -106,6 +106,12 @@ export default {
     metadata: {
       name: 'number_input',
       description: 'chakra_ui number input',
+      displayName: 'NumberInput',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        defaultValue: 0,
+      },
     },
     spec: {
       properties: PropsSchema,

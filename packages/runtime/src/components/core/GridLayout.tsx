@@ -40,7 +40,13 @@ export default {
     version: 'core/v1',
     metadata: {
       name: 'grid_layout',
+      displayName: 'Grid Layout',
       description: 'drag and drop to layout in a grid',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        layout: [],
+      },
     },
     spec: {
       properties: PropsSchema,

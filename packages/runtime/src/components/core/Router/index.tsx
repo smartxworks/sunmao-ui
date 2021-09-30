@@ -57,7 +57,13 @@ export default {
     version: 'core/v1',
     metadata: {
       name: 'router',
+      displayName: 'Router',
       description: 'create a router-controlled component',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        switchPolicy: [],
+      },
     },
     spec: {
       properties: PropsSchema,

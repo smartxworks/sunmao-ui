@@ -16,7 +16,11 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'root',
+      displayName: 'Root',
       description: 'chakra-ui provider',
+      isDraggable: false,
+      isResizable: true,
+      defaultProperties: {},
     },
     spec: {
       properties: {},

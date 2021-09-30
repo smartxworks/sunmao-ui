@@ -60,7 +60,18 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'button',
+      displayName: 'Button',
       description: 'chakra-ui button',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        text: {
+          raw: 'text',
+          format: 'plain',
+        },
+        colorScheme: 'blue',
+        isLoading: false,
+      },
     },
     spec: {
       properties: PropsSchema,

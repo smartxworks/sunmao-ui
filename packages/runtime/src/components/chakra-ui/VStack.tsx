@@ -39,7 +39,10 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'vstack',
+      displayName: 'VStack',
       description: 'chakra-ui vstack',
+      isDraggable: true,
+      isResizable: true,
     },
     spec: {
       properties: PropsSchema,

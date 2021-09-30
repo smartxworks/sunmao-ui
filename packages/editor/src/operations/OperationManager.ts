@@ -30,7 +30,8 @@ function genComponent(
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
-  const initProperties = parseTypeBox(cImpl.spec.properties as any);
+  const initProperties =
+    cImpl.metadata.defaultProperties || parseTypeBox(cImpl.spec.properties as any);
   count++;
   return {
     id: id || `${name}${count}`,

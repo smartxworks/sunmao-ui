@@ -43,7 +43,14 @@ export default {
     version: 'plain/v1',
     metadata: {
       name: 'button',
+      displayName: 'Button',
       description: 'plain button',
+      isDraggable: true,
+      isResizable: true,
+      defaultProperties: {
+        raw: 'confirm',
+        format: 'plain',
+      },
     },
     spec: {
       properties: PropsSchema,

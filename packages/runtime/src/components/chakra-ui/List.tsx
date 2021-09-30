@@ -105,6 +105,9 @@ export default {
     metadata: {
       name: 'list',
       description: 'chakra-ui list',
+      displayName: 'List',
+      isDraggable: true,
+      isResizable: true,
     },
     spec: {
       properties: PropsSchema,
