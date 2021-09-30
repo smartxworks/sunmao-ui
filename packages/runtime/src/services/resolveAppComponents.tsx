@@ -3,17 +3,18 @@ import { RuntimeApplication } from '@meta-ui/core';
 import { ContainerPropertySchema } from '../traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import {
-  ComponentWrapperType,
-  MetaUIModules,
+  ComponentParamsFromApp,
+  MetaUIServices,
   SlotComponentMap,
 } from 'src/types/RuntimeSchema';
 import { ImplWrapper } from './ImplWrapper';
 
 export function resolveAppComponents(
-  mModules: MetaUIModules,
   components: RuntimeApplication['spec']['components'],
-  componentWrapper?: ComponentWrapperType,
-  app?: RuntimeApplication
+  params: {
+    services: MetaUIServices;
+    app?: RuntimeApplication;
+  } & ComponentParamsFromApp
 ): {
   topLevelComponents: RuntimeApplication['spec']['components'];
   slotComponentsMap: SlotComponentMap;
@@ -41,9 +42,7 @@ export function resolveAppComponents(
           component={c}
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={{ id, slot }}
-          mModules={mModules}
-          app={app}
-          componentWrapper={componentWrapper}
+          {...params}
           {...props}
           ref={ref}
         />

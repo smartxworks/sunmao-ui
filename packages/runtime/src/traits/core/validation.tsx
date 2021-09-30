@@ -1,7 +1,7 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash';
-import { TraitImplementation } from '../../modules/registry';
+import { TraitImplementation } from 'src/types/RuntimeSchema';
 import { ValidResultSchema } from '../../types/ValidResultSchema';
 
 type ValidationResult = Static<typeof ValidResultSchema>;

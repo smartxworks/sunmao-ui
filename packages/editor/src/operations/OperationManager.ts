@@ -25,14 +25,15 @@ let count = 0;
 function genComponent(
   type: string,
   parentId: string,
-  slot: string
+  slot: string,
+  id?: string
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = parseTypeBox(cImpl.spec.properties as any);
   count++;
   return {
-    id: `${name}${count}`,
+    id: id || `${name}${count}`,
     type: type,
     properties: initProperties,
     traits: [genSlotTrait(parentId, slot)],
@@ -41,8 +42,16 @@ function genComponent(
 
 export class OperationManager {
   private undoStack: Operations[] = [];
+  private app: Application;
 
-  constructor(private app: Application) {
+  constructor(app: Application) {
+    const appFromLS = localStorage.getItem('schema');
+    if (appFromLS) {
+      this.app = JSON.parse(appFromLS);
+    } else {
+      this.app = app;
+    }
+
     eventBus.on('undo', () => this.undo());
     eventBus.on('operation', o => this.apply(o));
   }
@@ -53,6 +62,7 @@ export class OperationManager {
 
   updateApp(app: Application) {
     eventBus.send('appChange', app);
+    localStorage.setItem('schema', JSON.stringify(app));
     this.app = app;
   }
 
@@ -72,7 +82,8 @@ export class OperationManager {
         const newComponent = genComponent(
           createO.componentType,
           createO.parentId,
-          createO.slot
+          createO.slot,
+          createO.componentId
         );
         if (!noEffect) {
           const undoOperation = new RemoveComponentOperation(newComponent.id);
@@ -92,12 +103,22 @@ export class OperationManager {
       case 'modifyComponentProperty':
         const mo = o as ModifyComponentPropertyOperation;
         newApp = produce(this.app, draft => {
-          draft.spec.components.forEach(c => {
+          return draft.spec.components.forEach(c => {
             if (c.id === mo.componentId) {
               c.properties[mo.propertyKey] = mo.propertyValue;
             }
           });
         });
+        if (!noEffect) {
+          const oldValue = this.app.spec.components.find(c => c.id === mo.componentId)
+            ?.properties[mo.propertyKey];
+          const undoOperation = new ModifyComponentPropertyOperation(
+            mo.componentId,
+            mo.propertyKey,
+            oldValue
+          );
+          this.undoStack.push(undoOperation);
+        }
         break;
     }
     this.updateApp(newApp);

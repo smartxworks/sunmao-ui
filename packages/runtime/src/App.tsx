@@ -1,32 +1,39 @@
 import React, { useMemo } from 'react';
 import { createApplication } from '@meta-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
-import { ImplWrapper } from './modules/ImplWrapper';
-import { resolveAppComponents } from './modules/resolveAppComponents';
-import { AppProps, MetaUIModules } from './types/RuntimeSchema';
-import { DebugEvent, DebugStore } from './modules/DebugComponents';
+import { ImplWrapper } from './services/ImplWrapper';
+import { resolveAppComponents } from './services/resolveAppComponents';
+import { AppProps, MetaUIServices } from './types/RuntimeSchema';
+import { DebugEvent, DebugStore } from './services/DebugComponents';
 
 // inject modules to App
-export function genApp(mModules: MetaUIModules) {
-  return (props: Omit<AppProps, 'mModules'>) => {
-    return <App {...props} mModules={mModules} />;
+export function genApp(services: MetaUIServices) {
+  return (props: Omit<AppProps, 'services'>) => {
+    return <App {...props} services={services} />;
   };
 }
 
 export const App: React.FC<AppProps> = props => {
   const {
     options,
-    mModules,
+    services,
     componentWrapper,
+    gridCallbacks,
     debugStore = true,
     debugEvent = true,
   } = props;
   const app = createApplication(options);
 
-  initStateAndMethod(mModules.registry, mModules.stateManager, app.spec.components);
+  initStateAndMethod(services.registry, services.stateManager, app.spec.components);
 
   const { topLevelComponents, slotComponentsMap } = useMemo(
-    () => resolveAppComponents(mModules, app.spec.components, componentWrapper, app),
+    () =>
+      resolveAppComponents(app.spec.components, {
+        services,
+        app,
+        componentWrapper,
+        gridCallbacks,
+      }),
     [app]
   );
 
@@ -37,16 +44,17 @@ export const App: React.FC<AppProps> = props => {
           <ImplWrapper
             key={c.id}
             component={c}
-            mModules={mModules}
+            services={services}
             slotsMap={slotComponentsMap.get(c.id)}
             targetSlot={null}
             app={app}
             componentWrapper={componentWrapper}
+            gridCallbacks={gridCallbacks}
           />
         );
       })}
-      {debugStore && <DebugStore stateManager={mModules.stateManager} />}
-      {debugEvent && <DebugEvent apiService={mModules.apiService} />}
+      {debugStore && <DebugStore stateManager={services.stateManager} />}
+      {debugEvent && <DebugEvent apiService={services.apiService} />}
     </div>
   );
 };

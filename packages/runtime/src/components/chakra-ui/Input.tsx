@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../modules/registry';
+import { ComponentImplementation } from '../../services/registry';
 
 const AppendElementPropertySchema = Type.Union([
   Type.Object({
