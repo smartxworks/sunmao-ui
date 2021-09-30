@@ -1,13 +1,9 @@
-import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Type, Static } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import _Text, { TextPropertySchema } from '../_internal/Text';
 
-const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  value,
-  style,
-}) => {
+const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({ value, style }) => {
   return <_Text value={value} style={style} />;
 };
 

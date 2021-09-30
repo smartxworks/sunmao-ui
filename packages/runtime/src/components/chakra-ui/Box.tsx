@@ -1,8 +1,7 @@
-import React from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Box as BaseBox } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import Slot from '../_internal/Slot';
 import { pick } from 'lodash';
 

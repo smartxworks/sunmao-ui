@@ -1,7 +1,7 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash';
-import { TraitImplementation } from '../../registry';
+import { TraitImplementation } from '../../modules/registry';
 import { ValidResultSchema } from '../../types/ValidResultSchema';
 
 type ValidationResult = Static<typeof ValidResultSchema>;
@@ -43,48 +43,46 @@ addValidationRule('phoneNumber', text => {
 
 const ValidationResultCache: Record<string, ValidationResult> = {};
 
-const ValidationTraitImpl: TraitImplementation<Static<typeof PropsSchema>> =
-  props => {
-    const { value, minLength, maxLength, mergeState, componentId, rule } =
-      props;
+const ValidationTraitImpl: TraitImplementation<Static<typeof PropsSchema>> = props => {
+  const { value, minLength, maxLength, mergeState, componentId, rule } = props;
 
-    const result: ValidationResult = {
-      isInvalid: false,
-      errorMsg: '',
-    };
+  const result: ValidationResult = {
+    isInvalid: false,
+    errorMsg: '',
+  };
 
-    if (value.length > maxLength) {
-      result.isInvalid = true;
-      result.errorMsg = `最长不能超过${maxLength}个字符`;
-    } else if (value.length < minLength) {
-      result.isInvalid = true;
-      result.errorMsg = `不能少于${minLength}个字符`;
-    } else {
-      const rulesArr = rule ? rule.split(',') : [];
-      for (const ruleName of rulesArr) {
-        const validateFunc = rules.get(ruleName);
-        if (validateFunc) {
-          const { isInvalid, errorMsg } = validateFunc(value);
-          if (isInvalid) {
-            result.isInvalid = true;
-            result.errorMsg = errorMsg;
-            break;
-          }
+  if (value.length > maxLength) {
+    result.isInvalid = true;
+    result.errorMsg = `最长不能超过${maxLength}个字符`;
+  } else if (value.length < minLength) {
+    result.isInvalid = true;
+    result.errorMsg = `不能少于${minLength}个字符`;
+  } else {
+    const rulesArr = rule ? rule.split(',') : [];
+    for (const ruleName of rulesArr) {
+      const validateFunc = rules.get(ruleName);
+      if (validateFunc) {
+        const { isInvalid, errorMsg } = validateFunc(value);
+        if (isInvalid) {
+          result.isInvalid = true;
+          result.errorMsg = errorMsg;
+          break;
         }
       }
     }
+  }
 
-    if (!isEqual(result, ValidationResultCache[componentId])) {
-      ValidationResultCache[componentId] = result;
-      mergeState({
-        validResult: result,
-      });
-    }
+  if (!isEqual(result, ValidationResultCache[componentId])) {
+    ValidationResultCache[componentId] = result;
+    mergeState({
+      validResult: result,
+    });
+  }
 
-    return {
-      props: null,
-    };
+  return {
+    props: null,
   };
+};
 
 const PropsSchema = Type.Object({
   value: Type.String(),

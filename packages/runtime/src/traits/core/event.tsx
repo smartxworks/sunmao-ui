@@ -1,11 +1,11 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
-import { CallbackMap, TraitImplementation } from '../../registry';
-import { apiService } from '../../api-service';
+import { CallbackMap, TraitImplementation } from '../../modules/registry';
 
 const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   events,
+  mModules,
 }) => {
   const callbackQueueMap: Record<string, Array<() => void>> = {};
 
@@ -20,7 +20,7 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         return;
       }
 
-      apiService.send('uiMethod', {
+      mModules.apiService.send('uiMethod', {
         componentId: event.componentId,
         name: event.method.name,
         parameters: event.method.parameters,
@@ -33,10 +33,10 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
       event.wait.type === 'debounce'
         ? debounce(handler, event.wait.time)
         : event.wait.type === 'throttle'
-        ? throttle(handler, event.wait.time)
-        : event.wait.type === 'delay'
-        ? () => delay(handler, event.wait.time)
-        : handler
+          ? throttle(handler, event.wait.time)
+          : event.wait.type === 'delay'
+            ? () => delay(handler, event.wait.time)
+            : handler
     );
   }
 

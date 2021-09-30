@@ -6,7 +6,7 @@
   "homepage": "https://github.com/webzard-io/meta-ui#readme",
   "license": "MIT",
   "module": "lib/index.js",
-  "typings": "typings/index.d.ts",
+  "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "tsc -b .",
-    "typings": "tsc -d --emitDeclarationOnly --declarationDir typings",
+    "typings": "tsc -d",
     "test": "jest",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"

@@ -9,11 +9,12 @@ describe('Text component', () => {
         value={{
           raw: 'plain text',
           format: 'plain',
-        }}></Text>
+        }}
+      ></Text>
     );
     const ele = queryByText(/text/i);
     expect(ele).toBeTruthy();
-    expect(ele.innerHTML).toMatchInlineSnapshot(`"plain text"`);
+    expect(ele.innerHTML).toMatchInlineSnapshot('"plain text"');
   });
   it('should render markdown text', () => {
     const { queryByText } = render(
@@ -21,12 +22,11 @@ describe('Text component', () => {
         value={{
           raw: '**plain** text',
           format: 'md',
-        }}></Text>
+        }}
+      ></Text>
     );
     const ele = queryByText(/text/i);
     expect(ele).toBeTruthy();
-    expect(ele.innerHTML).toMatchInlineSnapshot(
-      `"<strong>plain</strong> text"`
-    );
+    expect(ele.innerHTML).toMatchInlineSnapshot('"<strong>plain</strong> text"');
   });
 });

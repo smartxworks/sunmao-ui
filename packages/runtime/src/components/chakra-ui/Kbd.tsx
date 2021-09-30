@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Kbd as BaseKbd } from '@chakra-ui/react';
 import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 
 const Kbd: ComponentImplementation<Static<typeof PropsSchema>> = ({
