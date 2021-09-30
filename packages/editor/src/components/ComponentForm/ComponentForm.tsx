@@ -32,7 +32,8 @@ export const ComponentForm: React.FC<Props> = props => {
 
   return (
     <div>
-      <div>选中{selectedComponent?.id}</div>
+      <div>Component Form</div>
+      <div>ID: {selectedComponent?.id}</div>
       <form>{fields}</form>
     </div>
   );

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Application } from '@meta-ui/core';
+import { IconButton } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import { eventBus } from '../../eventBus';
 import { RemoveComponentOperation } from '../../operations/Operations';
 
@@ -62,7 +64,7 @@ export const StructureTree: React.FC<Props> = props => {
         >
           {component.id}
         </strong>
-        <span onClick={onClickRemove}>删除</span>
+        <IconButton aria-label="remove" icon={<DeleteIcon />} onClick={onClickRemove} />
         {slotsEle}
       </div>
     );

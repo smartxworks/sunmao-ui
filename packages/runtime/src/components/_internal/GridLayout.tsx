@@ -27,7 +27,7 @@ const GridLayout: React.FC<{
       isResizable={!!onDragStop}
       compactType={null}
       preventCollision={true}
-      rowHeight={30}
+      rowHeight={40}
       layout={layout}
       onDragStop={onDragStop}
       onDrop={onDrop}

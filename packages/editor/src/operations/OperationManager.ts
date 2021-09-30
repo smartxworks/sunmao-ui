@@ -103,12 +103,22 @@ export class OperationManager {
       case 'modifyComponentProperty':
         const mo = o as ModifyComponentPropertyOperation;
         newApp = produce(this.app, draft => {
-          draft.spec.components.forEach(c => {
+          return draft.spec.components.forEach(c => {
             if (c.id === mo.componentId) {
               c.properties[mo.propertyKey] = mo.propertyValue;
             }
           });
         });
+        if (!noEffect) {
+          const oldValue = this.app.spec.components.find(c => c.id === mo.componentId)
+            ?.properties[mo.propertyKey];
+          const undoOperation = new ModifyComponentPropertyOperation(
+            mo.componentId,
+            mo.propertyKey,
+            oldValue
+          );
+          this.undoStack.push(undoOperation);
+        }
         break;
     }
     this.updateApp(newApp);
