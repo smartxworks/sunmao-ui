@@ -1,8 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../registry';
-import { stateStore } from '../../store';
-
+import { TraitImplementation } from '../../modules/registry';
 const HasInitializedMap = new Map<string, boolean>();
 
 type KeyValue = { key: string; value: unknown };
@@ -13,6 +11,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   componentId,
   mergeState,
   subscribeMethods,
+  mModules,
 }) => {
   const hashId = `#${componentId}@${key}`;
   const hasInitialized = HasInitializedMap.get(hashId);
@@ -25,7 +24,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         mergeState({ [key]: value });
       },
       deleteItemByIndex({ key, index }: { key: string; index: number }) {
-        const _arr = [...stateStore[componentId][key]];
+        const _arr = [...mModules.stateManager.store[componentId][key]];
         _arr.splice(index, 1);
         mergeState({ [key]: _arr });
       },
@@ -38,7 +37,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         itemIdKey: string;
         itemId: string;
       }) {
-        const _arr = [...stateStore[componentId][key]].filter(item => {
+        const _arr = [...mModules.stateManager.store[componentId][key]].filter(item => {
           return item[itemIdKey] !== itemId;
         });
         mergeState({ [key]: _arr });

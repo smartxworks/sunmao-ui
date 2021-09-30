@@ -1,12 +1,12 @@
-import { apiService } from './api-service';
+import { ApiService } from './apiService';
 import { createStandaloneToast } from '@chakra-ui/react';
 import {
   ToastCloseParameterSchema,
   ToastOpenParamterSchema,
-} from './components/chakra-ui/Types/Toast';
-import { pickProperty } from './utils/pickProperty';
+} from '../components/chakra-ui/Types/Toast';
+import { pickProperty } from '../utils/pickProperty';
 
-export function mountUtilMethods() {
+export function mountUtilMethods(apiService: ApiService) {
   let toast: ReturnType<typeof createStandaloneToast> | undefined = undefined;
   apiService.on('uiMethod', ({ componentId, name, parameters }) => {
     if (componentId !== '$utils') {
@@ -31,10 +31,7 @@ export function mountUtilMethods() {
         if (!parameters) {
           toast.closeAll();
         } else {
-          const closeParameters = pickProperty(
-            ToastCloseParameterSchema,
-            parameters
-          );
+          const closeParameters = pickProperty(ToastCloseParameterSchema, parameters);
           if (closeParameters.id !== undefined) {
             toast.close(closeParameters.id);
           } else {

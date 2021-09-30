@@ -1,7 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { apiService } from '../../api-service';
-import { TraitImplementation } from '../../registry';
+import { TraitImplementation } from '../../modules/registry';
 import { CallMethodSchema } from '../../types/CallMethodSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
@@ -13,6 +12,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   headers: _headers,
   body,
   mergeState,
+  mModules,
   subscribeMethods,
   componentId,
   onComplete,
@@ -51,7 +51,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
             },
           });
           onComplete?.forEach(event => {
-            apiService.send('uiMethod', {
+            mModules.apiService.send('uiMethod', {
               componentId: event.componentId,
               name: event.method.name,
               parameters: event.method.parameters,
@@ -59,9 +59,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
           });
         } else {
           // TODO: Add FetchError class and remove console info
-          const error = new Error(
-            `HTTP${response.status}: ${response.statusText}`
-          );
+          const error = new Error(`HTTP${response.status}: ${response.statusText}`);
           console.warn(error);
           mergeState({
             fetch: {
@@ -97,7 +95,13 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   });
 
   return {
-    props: null,
+    props: {
+      effects: [
+        () => {
+          hasFetchedMap.set(hashId, false);
+        },
+      ],
+    },
   };
 };
 
@@ -105,9 +109,7 @@ const PropsSchema = Type.Object({
   url: Type.String(), // {format:uri}?;
   method: Type.String(), // {pattern: /^(get|post|put|delete)$/i}
   lazy: Type.Boolean(),
-  headers: Type.Array(
-    Type.Object({ key: Type.String(), value: Type.String() })
-  ),
+  headers: Type.Array(Type.Object({ key: Type.String(), value: Type.String() })),
   body: Type.Any(),
   onComplete: Type.Array(CallMethodSchema),
 });

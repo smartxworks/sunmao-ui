@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -44,7 +44,8 @@ const Select: ComponentImplementation<Static<typeof PropsSchema>> = ({
       isRequired={isRequired}
       size={size}
       variant={variant}
-      onChange={e => setValue(e.target.value)}>
+      onChange={e => setValue(e.target.value)}
+    >
       {options.map(opt => (
         <option key={opt.value} value={opt.value}>
           {opt.label}

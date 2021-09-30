@@ -1,23 +1,19 @@
-import React, { useRef } from 'react';
-import {
-  Application,
-  createComponent,
-  RuntimeApplication,
-} from '@meta-ui/core';
+import { useRef } from 'react';
+import { Application, createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../registry';
-import { ImplWrapper, resolveAppComponents } from '../../App';
-import { mapValuesDeep, maskedEval } from '../../store';
+import { ComponentImplementation } from '../../modules/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
+import { ImplWrapper } from '../../modules/ImplWrapper';
+import { resolveAppComponents } from '../../modules/resolveAppComponents';
+import { ApplicationComponent } from 'src/types/RuntimeSchema';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
-): RuntimeApplication['spec']['components'][0] {
+): ApplicationComponent {
   return {
     ...c,
-    children: [],
     parsedType: parseType(c.type),
     traits: c.traits.map(t => {
       return {
@@ -32,6 +28,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
   template,
   app,
+  mModules,
 }) => {
   if (!listData) {
     return null;
@@ -47,18 +44,23 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       }
     }
 
-    const evaledTemplate = mapValuesDeep({ parsedtemplete }, ({ value }) => {
-      if (typeof value === 'string') {
-        return maskedEval(value, true, {
-          [LIST_ITEM_EXP]: listItem,
-          [LIST_ITEM_INDEX_EXP]: i,
-        });
+    const evaledTemplate = mModules.stateManager.mapValuesDeep(
+      { parsedtemplete },
+      ({ value }) => {
+        if (typeof value === 'string') {
+          return mModules.stateManager.maskedEval(value, true, {
+            [LIST_ITEM_EXP]: listItem,
+            [LIST_ITEM_INDEX_EXP]: i,
+          });
+        }
+        return value;
       }
-      return value;
-    }).parsedtemplete;
+    ).parsedtemplete;
 
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
+      mModules,
       evaledTemplate,
+      undefined,
       app
     );
 
@@ -69,6 +71,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
           component={c}
           slotsMap={slotComponentsMap.get(c.id)}
           targetSlot={null}
+          mModules={mModules}
           app={app}
         />
       );

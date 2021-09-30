@@ -1,6 +1,6 @@
 module.exports = {
   rootDir: process.cwd(),
-  projects: ['<rootDir>/packages/core', '<rootDir>/packages/runtime'],
+  projects: ['<rootDir>/packages/core', '<rootDir>/packages/runtime', '<rootDir>/packages/editor'],
   collectCoverage: true,
   collectCoverageFrom: ['**/src/**/*.[jt]s?(x)'],
   coveragePathIgnorePatterns: [],

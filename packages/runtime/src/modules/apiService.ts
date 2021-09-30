@@ -12,8 +12,12 @@ const emitter = mitt<{
   };
 }>();
 
-export const apiService = {
-  on: emitter.on,
-  off: emitter.off,
-  send: emitter.emit,
-};
+export type ApiService = ReturnType<typeof initApiService>;
+
+export function initApiService() {
+  return {
+    on: emitter.on,
+    off: emitter.off,
+    send: emitter.emit,
+  };
+}

@@ -1,17 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import {
-  Table as BaseTable,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Checkbox,
-  Td,
-} from '@chakra-ui/react';
+import { Table as BaseTable, Thead, Tr, Th, Tbody, Checkbox, Td } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
-import { ComponentImplementation } from '../../../registry';
+import { ComponentImplementation } from '../../../modules/registry';
 import {
   ColumnsPropertySchema,
   DataPropertySchema,
@@ -42,17 +34,14 @@ export const TableImpl: ComponentImplementation<{
   columns,
   isMultiSelect,
   mergeState,
+  mModules,
 }) => {
   if (!data) {
     return <div>loading</div>;
   }
   const normalizedData = data;
-  const [selectedItem, setSelectedItem] = useState<
-    Record<string, any> | undefined
-  >();
-  const [selectedItems, setSelectedItems] = useState<
-    Array<Record<string, any>>
-  >([]);
+  const [selectedItem, setSelectedItem] = useState<Record<string, any> | undefined>();
+  const [selectedItems, setSelectedItems] = useState<Array<Record<string, any>>>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [sortRule, setSortRule] = useState<SortRule | undefined>();
   const pageNumber = Math.ceil(data.length / rowsPerPage);
@@ -88,10 +77,7 @@ export const TableImpl: ComponentImplementation<{
 
   function isItemSelected(target: any) {
     if (isMultiSelect) {
-      return (
-        selectedItems.findIndex(item => item[majorKey] === target[majorKey]) >
-        -1
-      );
+      return selectedItems.findIndex(item => item[majorKey] === target[majorKey]) > -1;
     }
     return selectedItem && selectedItem[majorKey] === target[majorKey];
   }
@@ -112,8 +98,7 @@ export const TableImpl: ComponentImplementation<{
   }
 
   const allCheckbox = useMemo(() => {
-    const isAllChecked =
-      isMultiSelect && selectedItems.length === normalizedData.length;
+    const isAllChecked = isMultiSelect && selectedItems.length === normalizedData.length;
     const isIndeterminate =
       selectedItems.length > 0 && selectedItems.length < normalizedData.length;
     const onChange = (e: any) => {
@@ -129,7 +114,8 @@ export const TableImpl: ComponentImplementation<{
           size="lg"
           isIndeterminate={isIndeterminate}
           checked={isAllChecked}
-          onChange={onChange}></Checkbox>
+          onChange={onChange}
+        ></Checkbox>
       </Th>
     );
   }, [selectedItems.length, normalizedData.length]);
@@ -187,7 +173,8 @@ export const TableImpl: ComponentImplementation<{
                 bgColor={isSelected ? 'gray' : undefined}
                 onClick={() => {
                   selectItem(item);
-                }}>
+                }}
+              >
                 {isMultiSelect ? checkbox : undefined}
                 {columns.map(column => (
                   <TableTd
@@ -195,6 +182,7 @@ export const TableImpl: ComponentImplementation<{
                     item={item}
                     column={column}
                     onClickItem={() => selectItem(item)}
+                    mModules={mModules}
                   />
                 ))}
               </Tr>

@@ -1,6 +1,7 @@
-import { parseExpression } from '../src/store';
+import { StateManager } from '../src/modules/stateStore';
 
 describe('parseExpression function', () => {
+  const parseExpression = new StateManager().parseExpression;
   it('can parse {{}} expression', () => {
     expect(parseExpression('{{ value }}')).toMatchObject([
       { expression: 'value', isDynamic: true },

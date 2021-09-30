@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import Slot from '@components/_internal/Slot';
 import { Button } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
-import { ComponentImplementation } from 'src/registry';
-import { stateStore } from 'src/store';
-import { apiService } from 'src/api-service';
+import { ComponentImplementation } from '../../../modules/registry';
+import Slot from '../../_internal/Slot';
 
 const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   mergeState,
@@ -14,6 +12,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   hideSubmit,
   slotsMap,
   callbackMap,
+  mModules,
 }) => {
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
@@ -29,7 +28,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   useEffect(() => {
     setInvalidArray(
       formControlIds.map(fcid => {
-        return stateStore[fcid].isInvalid;
+        return mModules.stateManager.store[fcid].isInvalid;
       })
     );
   }, []);
@@ -46,8 +45,8 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
     subscribeMethods({
       resetForm() {
         formControlIds.forEach(fcId => {
-          const inputId = stateStore[fcId].inputId;
-          apiService.send('uiMethod', {
+          const inputId = mModules.stateManager.store[fcId].inputId;
+          mModules.apiService.send('uiMethod', {
             componentId: inputId,
             name: 'resetInputValue',
           });
@@ -62,7 +61,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       // watch isInvalid
       let stop = watch(
         () => {
-          return stateStore[fcId].isInvalid;
+          return mModules.stateManager.store[fcId].isInvalid;
         },
         newV => {
           setInvalidArray(oldValidArray => {
@@ -77,10 +76,10 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       // watch value
       stop = watch(
         () => {
-          return stateStore[fcId].value;
+          return mModules.stateManager.store[fcId].value;
         },
         newV => {
-          const fcState = stateStore[fcId];
+          const fcState = mModules.stateManager.store[fcId];
           formDataRef.current[fcState.fieldName] = newV;
           mergeState({ data: { ...formDataRef.current } });
         }

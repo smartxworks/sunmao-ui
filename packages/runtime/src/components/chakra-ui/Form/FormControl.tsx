@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
@@ -9,30 +9,26 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
-import { ComponentImplementation } from 'src/registry';
-import { stateStore } from 'src/store';
-import { CheckboxStateSchema } from '@components/chakra-ui/Checkbox';
-import Slot from '@components/_internal/Slot';
 import {
   FormControlContentCSS,
   FormControlCSS,
   FormItemCSS,
   FormLabelCSS,
 } from './FormCSS';
+import { ComponentImplementation } from '../../../modules/registry';
+import Slot from '../../_internal/Slot';
+import { CheckboxStateSchema } from '../Checkbox';
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
   fieldName: string;
   isRequired: boolean;
   helperText: string;
-}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState }) => {
+}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState, mModules }) => {
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
-  const inputId = useMemo(
-    () => _.first(slotsMap?.get('content'))?.id || '',
-    []
-  );
+  const inputId = useMemo(() => _.first(slotsMap?.get('content'))?.id || '', []);
   const [validResult, setValidResult] = useState({
     isInvalid: false,
     errorMsg: '',
@@ -42,33 +38,34 @@ const FormControlImpl: ComponentImplementation<{
   useEffect(() => {
     const stop = watch(
       () => {
-        if (stateStore[inputId].checked !== undefined) {
+        if (mModules.stateManager.store[inputId].checked !== undefined) {
           // special treatment for checkbox
-          return (stateStore[inputId] as Static<typeof CheckboxStateSchema>)
-            .checked;
+          return (
+            mModules.stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
+          ).checked;
         } else {
-          return stateStore[inputId].value;
+          return mModules.stateManager.store[inputId].value;
         }
       },
       newV => {
         setInputValue(newV);
       }
     );
-    setInputValue(stateStore[inputId].value);
+    setInputValue(mModules.stateManager.store[inputId].value);
     return stop;
   }, [slotsMap, setInputValue]);
 
   useEffect(() => {
     const stop = watch(
       () => {
-        return stateStore[inputId].validResult;
+        return mModules.stateManager.store[inputId].validResult;
       },
       newV => {
         setValidResult(newV);
       }
     );
-    if (stateStore[inputId].validResult) {
-      setValidResult(stateStore[inputId].validResult);
+    if (mModules.stateManager.store[inputId].validResult) {
+      setValidResult(mModules.stateManager.store[inputId].validResult);
     }
     return stop;
   }, [slotsMap, setValidResult]);
@@ -90,7 +87,8 @@ const FormControlImpl: ComponentImplementation<{
     <FormControl
       isRequired={isRequired}
       isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}
-      css={FormControlCSS}>
+      css={FormControlCSS}
+    >
       <div css={FormControlContentCSS}>
         <FormLabel css={FormLabelCSS}>{label}</FormLabel>
         <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />

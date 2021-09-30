@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Type, Static } from '@sinclair/typebox';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../registry';
+import { ComponentImplementation } from '../../modules/registry';
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,

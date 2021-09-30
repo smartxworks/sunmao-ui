@@ -23,7 +23,7 @@ type ApplicationComponent = {
   // scopes TBD
 };
 
-type ComponentTrait = {
+export type ComponentTrait = {
   type: string;
   // do runtime type check
   properties: Record<string, unknown>;
