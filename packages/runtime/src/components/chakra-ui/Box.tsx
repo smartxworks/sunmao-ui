@@ -4,6 +4,7 @@ import { Box as BaseBox } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
 import { pick } from 'lodash';
+import { GRID_HEIGHT } from '../../constants';
 
 const CssGlobals = Type.KeyOf(
   Type.Object({
@@ -293,6 +294,11 @@ export default {
       isDraggable: true,
       isResizable: true,
       description: 'chakra-ui box',
+      defaultProperties: {
+        w: GRID_HEIGHT,
+        h: GRID_HEIGHT,
+        border: '1px solid black',
+      },
     },
     spec: {
       properties: StyleSchema,

@@ -43,6 +43,10 @@ export default {
       description: 'chakra-ui vstack',
       isDraggable: true,
       isResizable: true,
+      defaultProperties: {
+        spacing: 4,
+        align: 'stretch',
+      },
     },
     spec: {
       properties: PropsSchema,

@@ -88,6 +88,23 @@ const PropsSchema = Type.Object({
   ),
 });
 
+const defaultProperties = {
+  options: [
+    {
+      label: 'value1',
+      value: 'value1',
+    },
+    {
+      label: 'value2',
+      value: 'value2',
+    },
+    {
+      label: 'value3',
+      value: 'value3',
+    },
+  ],
+};
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -97,6 +114,7 @@ export default {
       description: 'chakra-ui select',
       isResizable: true,
       isDraggable: true,
+      defaultProperties,
     },
     spec: {
       properties: PropsSchema,

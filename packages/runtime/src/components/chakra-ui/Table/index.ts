@@ -20,6 +20,25 @@ const PropsSchema = Type.Object({
   isMultiSelect: IsMultiSelectPropertySchema,
 });
 
+const defaultProperties = {
+  data: [
+    {
+      id: '1',
+      name: 'Bowen Tan',
+    },
+  ],
+  columns: [
+    {
+      key: 'name',
+      title: 'Name',
+      type: 'text',
+    },
+  ],
+  majorKey: 'id',
+  rowsPerPage: 5,
+  isMultiSelect: false,
+};
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -29,13 +48,7 @@ export default {
       description: 'chakra-ui table',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
-        data: [],
-        columns: [],
-        majorKey: 'id',
-        rowsPerPage: 5,
-        isMultiSelect: false,
-      },
+      defaultProperties,
     },
     spec: {
       properties: PropsSchema,

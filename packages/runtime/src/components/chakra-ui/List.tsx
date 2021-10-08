@@ -99,6 +99,28 @@ const PropsSchema = Type.Object({
   template: Type.Object(Type.String(), Type.Array(Type.Object(Type.String()))),
 });
 
+const defaultProperties = {
+  listData: [
+    {
+      id: '1',
+      name: 'Bowen Tan',
+    },
+  ],
+  template: [
+    {
+      id: 'listItemName-{{$listItem.id}}',
+      type: 'core/v1/text',
+      properties: {
+        value: {
+          raw: 'Name：{{$listItem.name}}',
+          format: 'plain',
+        },
+      },
+      traits: [],
+    },
+  ],
+};
+
 export default {
   ...createComponent({
     version: 'chakra_ui/v1',
@@ -108,6 +130,7 @@ export default {
       displayName: 'List',
       isDraggable: true,
       isResizable: true,
+      defaultProperties,
     },
     spec: {
       properties: PropsSchema,

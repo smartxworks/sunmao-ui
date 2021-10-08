@@ -119,6 +119,12 @@ export default {
       isDraggable: true,
       displayName: 'FormControl',
       description: 'chakra-ui formControl',
+      defaultProperties: {
+        label: 'name',
+        fieldName: 'name',
+        isRequired: false,
+        helperText: '',
+      },
     },
     spec: {
       properties: PropsSchema,
