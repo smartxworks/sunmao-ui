@@ -8,5 +8,5 @@ export type ComponentMetadata = Metadata & {
   isResizable: boolean;
   displayName: string;
   icon?: string;
-  defaultProperties?: Record<string, unknown>;
+  defaultProperties: Record<string, unknown>;
 };

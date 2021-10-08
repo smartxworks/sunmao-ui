@@ -49,6 +49,10 @@ export default {
       description: 'chakra-ui radio group',
       isDraggable: true,
       isResizable: true,
+      defaultProperties: {
+        defaultValue: 0,
+        isNumerical: true,
+      },
     },
     spec: {
       properties: PropsSchema,

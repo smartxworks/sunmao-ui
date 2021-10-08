@@ -75,6 +75,9 @@ export default {
       displayName: 'Tooltip',
       isDraggable: false,
       isResizable: false,
+      defaultProperties: {
+        text: 'tooltip',
+      },
     },
     spec: {
       properties: PropsSchema,
