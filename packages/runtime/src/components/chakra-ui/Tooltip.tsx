@@ -75,7 +75,7 @@ export default {
       displayName: 'Tooltip',
       isDraggable: false,
       isResizable: false,
-      defaultProperties: {
+      exampleProperties: {
         text: 'tooltip',
       },
     },

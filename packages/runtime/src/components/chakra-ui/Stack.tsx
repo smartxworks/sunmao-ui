@@ -67,7 +67,7 @@ export default {
       description: 'chakra-ui stack',
       isResizable: true,
       isDraggable: true,
-      defaultProperties: {
+      exampleProperties: {
         direction: 'column',
         spacing: 10,
       },

@@ -294,7 +294,7 @@ export default {
       isDraggable: true,
       isResizable: true,
       description: 'chakra-ui box',
-      defaultProperties: {
+      exampleProperties: {
         w: GRID_HEIGHT,
         h: GRID_HEIGHT,
         border: '1px solid black',

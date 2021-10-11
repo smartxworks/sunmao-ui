@@ -37,7 +37,7 @@ export default {
       description: 'chakra-ui keyboard',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         text: {
           raw: 'enter',
           format: 'plain',

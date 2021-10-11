@@ -112,7 +112,7 @@ export default {
       displayName: 'Checkbox',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         text: {
           raw: 'Checkbox',
           format: 'plain',

@@ -1,5 +1,5 @@
 import { Application, ComponentTrait, ApplicationComponent } from '@meta-ui/core';
-import { parseType, parseTypeBox } from '@meta-ui/runtime';
+import { parseType } from '@meta-ui/runtime';
 import {
   Operations,
   CreateComponentOperation,
@@ -30,8 +30,7 @@ function genComponent(
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
-  const initProperties =
-    cImpl.metadata.defaultProperties || parseTypeBox(cImpl.spec.properties as any);
+  const initProperties = cImpl.metadata.defaultProperties;
   count++;
   return {
     id: id || `${name}${count}`,

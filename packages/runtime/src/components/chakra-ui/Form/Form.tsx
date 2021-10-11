@@ -123,7 +123,7 @@ export default {
       description: 'chakra-ui form',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         hideSubmit: false,
       },
     },

@@ -127,7 +127,7 @@ export default {
       description: 'chakra_ui image',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         src: 'https://bit.ly/dan-abramov',
         alt: 'dan-abramov',
         objectFit: 'cover',

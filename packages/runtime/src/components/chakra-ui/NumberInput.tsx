@@ -109,7 +109,7 @@ export default {
       displayName: 'NumberInput',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         defaultValue: 0,
       },
     },

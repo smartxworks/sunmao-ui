@@ -88,7 +88,7 @@ const PropsSchema = Type.Object({
   ),
 });
 
-const defaultProperties = {
+const exampleProperties = {
   options: [
     {
       label: 'value1',
@@ -114,7 +114,7 @@ export default {
       description: 'chakra-ui select',
       isResizable: true,
       isDraggable: true,
-      defaultProperties,
+      exampleProperties,
     },
     spec: {
       properties: PropsSchema,
