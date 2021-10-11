@@ -23,3 +23,4 @@ export function initMetaUI() {
 
 export * from './utils/parseType';
 export * from './utils/parseTypeBox';
+export * from './types/RuntimeSchema';
