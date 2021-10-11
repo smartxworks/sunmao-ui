@@ -66,9 +66,12 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [],
+      // tab slot is dynamic
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Tabs,

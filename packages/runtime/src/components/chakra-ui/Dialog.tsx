@@ -117,7 +117,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [
         {
@@ -133,6 +132,9 @@ export default {
           name: 'cancelDialog',
         },
       ],
+      slots: ['content'],
+      styleSlots: [],
+      events: ['cancelDialog', 'confirmDialog'],
     },
   }),
   impl: Dialog,

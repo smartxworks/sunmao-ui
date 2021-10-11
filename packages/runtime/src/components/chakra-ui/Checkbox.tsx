@@ -125,9 +125,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: CheckboxStateSchema,
       methods: [],
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Checkbox,

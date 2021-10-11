@@ -24,9 +24,11 @@ export default {
     },
     spec: {
       properties: {},
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Dummy,
