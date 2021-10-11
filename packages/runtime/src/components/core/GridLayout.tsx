@@ -44,7 +44,7 @@ export default {
       description: 'drag and drop to layout in a grid',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         layout: [],
       },
     },

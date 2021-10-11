@@ -59,7 +59,7 @@ export default {
       description: 'chakra-ui tabs',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         tabNames: [],
         initialSelectedTabIndex: 0,
       },

@@ -24,7 +24,7 @@ export default {
       description: 'support plain and markdown formats',
       isDraggable: true,
       isResizable: false,
-      defaultProperties: {
+      exampleProperties: {
         raw: 'text',
         format: 'plain',
       },

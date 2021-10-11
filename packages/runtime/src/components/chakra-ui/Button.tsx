@@ -64,7 +64,7 @@ export default {
       description: 'chakra-ui button',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         text: {
           raw: 'text',
           format: 'plain',

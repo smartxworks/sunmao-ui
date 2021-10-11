@@ -20,7 +20,7 @@ export default {
       description: 'chakra-ui provider',
       isDraggable: false,
       isResizable: true,
-      defaultProperties: {},
+      exampleProperties: {},
     },
     spec: {
       properties: {},

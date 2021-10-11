@@ -61,7 +61,7 @@ export default {
       description: 'create a router-controlled component',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         switchPolicy: [],
       },
     },

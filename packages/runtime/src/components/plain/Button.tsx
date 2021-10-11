@@ -47,7 +47,7 @@ export default {
       description: 'plain button',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         raw: 'confirm',
         format: 'plain',
       },

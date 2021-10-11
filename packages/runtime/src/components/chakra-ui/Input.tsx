@@ -136,7 +136,7 @@ export default {
       description: 'chakra_ui input',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         variant: 'outline',
         placeholder: 'Please input value',
         size: 'md',

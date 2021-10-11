@@ -43,7 +43,7 @@ export default {
       displayName: 'HStack',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         spacing: '24px',
       },
     },

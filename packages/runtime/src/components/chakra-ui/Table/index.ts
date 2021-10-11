@@ -20,7 +20,7 @@ const PropsSchema = Type.Object({
   isMultiSelect: IsMultiSelectPropertySchema,
 });
 
-const defaultProperties = {
+const exampleProperties = {
   data: [
     {
       id: '1',
@@ -48,7 +48,7 @@ export default {
       description: 'chakra-ui table',
       isDraggable: true,
       isResizable: true,
-      defaultProperties,
+      exampleProperties,
     },
     spec: {
       properties: PropsSchema,

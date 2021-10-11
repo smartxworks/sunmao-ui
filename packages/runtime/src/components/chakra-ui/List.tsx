@@ -99,7 +99,7 @@ const PropsSchema = Type.Object({
   template: Type.Object(Type.String(), Type.Array(Type.Object(Type.String()))),
 });
 
-const defaultProperties = {
+const exampleProperties = {
   listData: [
     {
       id: '1',
@@ -130,7 +130,7 @@ export default {
       displayName: 'List',
       isDraggable: true,
       isResizable: true,
-      defaultProperties,
+      exampleProperties,
     },
     spec: {
       properties: PropsSchema,

@@ -79,7 +79,7 @@ export default {
       description: 'chakra-ui radio',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         text: {
           raw: 'Radio',
           format: 'plain',

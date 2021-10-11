@@ -53,7 +53,7 @@ export default {
       description: 'chakra-ui checkbox group',
       isDraggable: true,
       isResizable: true,
-      defaultProperties: {
+      exampleProperties: {
         defaultValue: [],
       },
     },

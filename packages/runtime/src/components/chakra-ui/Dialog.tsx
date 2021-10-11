@@ -108,7 +108,7 @@ export default {
       description: 'chakra_ui dialog',
       isDraggable: false,
       isResizable: false,
-      defaultProperties: {
+      exampleProperties: {
         title: 'Dialog',
         confirmButton: 'Confirm',
         cancelButton: 'Cancel',

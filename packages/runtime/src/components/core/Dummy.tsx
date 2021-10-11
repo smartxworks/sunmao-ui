@@ -20,7 +20,7 @@ export default {
       description: 'Dummy Invisible component',
       isDraggable: false,
       isResizable: false,
-      defaultProperties: {},
+      exampleProperties: {},
     },
     spec: {
       properties: {},
