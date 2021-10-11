@@ -163,6 +163,18 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       />
     );
 
+    let result = (
+      <React.Fragment key={c.id}>
+        {C}
+        {children}
+      </React.Fragment>
+    );
+
+    // wrap component, but grid_layout is root component and cannot be chosen, so don't wrap it
+    if (ComponentWrapper && c.parsedType.name !== 'grid_layout') {
+      result = <ComponentWrapper id={c.id}>{result}</ComponentWrapper>;
+    }
+
     if (targetSlot && app) {
       const targetC = app.spec.components.find(c => c.id === targetSlot.id);
       if (targetC?.parsedType.name === 'grid_layout') {
@@ -179,24 +191,12 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
           ...restProps
         } = props;
         /* eslint-enable */
-        return (
+        result = (
           <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...restProps}>
-            {C}
-            {children}
+            {result}
           </div>
         );
       }
-    }
-
-    const result = (
-      <React.Fragment key={c.id}>
-        {C}
-        {children}
-      </React.Fragment>
-    );
-
-    if (ComponentWrapper) {
-      return <ComponentWrapper id={c.id}>{result}</ComponentWrapper>;
     }
 
     return result;
