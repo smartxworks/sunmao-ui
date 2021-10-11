@@ -302,9 +302,11 @@ export default {
     },
     spec: {
       properties: StyleSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Box,

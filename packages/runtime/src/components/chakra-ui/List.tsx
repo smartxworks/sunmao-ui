@@ -134,9 +134,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       methods: [],
       state: {},
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: List,

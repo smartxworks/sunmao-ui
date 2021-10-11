@@ -115,7 +115,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [
         {
@@ -128,6 +127,9 @@ export default {
           name: 'resetInputValue',
         },
       ],
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: NumberInput,

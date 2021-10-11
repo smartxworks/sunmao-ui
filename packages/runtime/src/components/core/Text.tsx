@@ -31,9 +31,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [],
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Text,

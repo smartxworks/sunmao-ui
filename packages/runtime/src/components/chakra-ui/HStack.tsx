@@ -49,9 +49,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: HStack,

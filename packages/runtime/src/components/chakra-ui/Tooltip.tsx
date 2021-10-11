@@ -81,9 +81,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: ['trigger'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: TooltipImpl,

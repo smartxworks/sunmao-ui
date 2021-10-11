@@ -67,9 +67,12 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      // route slots are dynamic
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Router,

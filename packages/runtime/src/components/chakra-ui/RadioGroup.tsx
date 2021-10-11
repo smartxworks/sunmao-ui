@@ -56,9 +56,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: RadioGroup,

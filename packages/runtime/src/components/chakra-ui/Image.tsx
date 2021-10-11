@@ -137,9 +137,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
-      methods: [{ name: 'onLoad' }],
+      methods: [],
+      slots: [],
+      styleSlots: [],
+      events: ['onLoad', 'onError'],
     },
   }),
   impl: Image,

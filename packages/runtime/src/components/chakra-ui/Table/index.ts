@@ -52,9 +52,11 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: TableStateSchema,
       methods: [],
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: TableImpl,

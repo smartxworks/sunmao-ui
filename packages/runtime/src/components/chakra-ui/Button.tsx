@@ -75,13 +75,15 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [
         {
           name: 'click',
         },
       ],
+      slots: [],
+      styleSlots: [],
+      events: ['click'],
     },
   }),
   impl: Button,

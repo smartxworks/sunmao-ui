@@ -128,7 +128,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: Type.Object({
         inputId: Type.String(),
         fieldName: Type.String(),
@@ -136,6 +135,9 @@ export default {
         value: Type.Any(),
       }),
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: FormControlImpl,

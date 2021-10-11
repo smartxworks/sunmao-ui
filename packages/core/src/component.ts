@@ -15,13 +15,11 @@ export type Component = {
 
 type ComponentSpec = {
   properties: JSONSchema7Object;
-  acceptTraits: TraitSchema[];
   state: JSONSchema7;
   methods: MethodSchema[];
-};
-
-type TraitSchema = {
-  name: string;
+  styleSlots: string[];
+  slots: string[];
+  events: string[];
 };
 
 // extended runtime

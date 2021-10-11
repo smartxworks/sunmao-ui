@@ -129,7 +129,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: Type.Object({
         data: Type.Any(),
         disableSubmit: Type.Boolean(),
@@ -139,6 +138,9 @@ export default {
           name: 'resetForm',
         },
       ],
+      slots: ['content'],
+      styleSlots: [],
+      events: ['onSubmit'],
     },
   }),
   impl: FormImpl,
