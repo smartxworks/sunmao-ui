@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Application } from '@meta-ui/core';
+import { useCallback, useMemo, useState } from 'react';
 import { GridCallbacks } from '@meta-ui/runtime';
 import { Box, Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { DefaultAppSchema } from '../constants';
 import { App } from '../metaUI';
 import { StructureTree } from './StructureTree';
-import { OperationManager } from '../operations/OperationManager';
 import {
   CreateComponentOperation,
   ModifyComponentPropertyOperation,
@@ -14,12 +11,12 @@ import {
 import { eventBus } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
+import { useAppModel } from '../operations/useAppModel';
 
-const operationManager = new OperationManager(DefaultAppSchema);
 let count = 0;
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
-  const [app, setApp] = useState<Application>(operationManager.getApp());
+  const { app } = useAppModel();
 
   const Wrapper: React.FC<{ id: string }> = useMemo(() => {
     return props => {
@@ -39,20 +36,9 @@ export const Editor = () => {
     };
   }, [selectedComponentId]);
 
-  useEffect(() => {
-    const onAppChange = (app: Application) => {
-      setApp(() => app);
-    };
-    eventBus.on('appChange', onAppChange);
-
-    return () => {
-      eventBus.off('appChange', onAppChange);
-    };
-  }, []);
-
   const onClickUndo = useCallback(() => {
     eventBus.send('undo');
-  }, [app, setApp]);
+  }, []);
 
   const gridCallbacks: GridCallbacks = {
     onDragStop(id, layout) {

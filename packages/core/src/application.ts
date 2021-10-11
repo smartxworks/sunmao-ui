@@ -14,7 +14,7 @@ type ApplicationSpec = {
   components: ApplicationComponent[];
 };
 
-type ApplicationComponent = {
+export type ApplicationComponent = {
   id: string;
   type: string;
   // do runtime type check

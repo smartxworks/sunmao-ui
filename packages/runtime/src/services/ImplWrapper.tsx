@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { watch } from '@vue-reactivity/watch';
 import { merge } from 'lodash';
 import {
-  ApplicationComponent,
+  RuntimeApplicationComponent,
   ImplWrapperProps,
   TraitResult,
 } from '../types/RuntimeSchema';
@@ -10,7 +10,7 @@ import {
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-type ApplicationTrait = ArrayElement<ApplicationComponent['traits']>;
+type ApplicationTrait = ArrayElement<RuntimeApplicationComponent['traits']>;
 
 export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {
