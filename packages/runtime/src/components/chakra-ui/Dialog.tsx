@@ -114,6 +114,7 @@ export default {
         cancelButton: 'Cancel',
         disableConfirm: false,
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,

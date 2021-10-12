@@ -78,6 +78,7 @@ export default {
       exampleProperties: {
         text: 'tooltip',
       },
+      exampleSize: [2, 1],
     },
     spec: {
       properties: PropsSchema,

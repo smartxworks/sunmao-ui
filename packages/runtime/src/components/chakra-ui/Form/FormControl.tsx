@@ -125,6 +125,7 @@ export default {
         isRequired: false,
         helperText: '',
       },
+      exampleSize: [4, 2],
     },
     spec: {
       properties: PropsSchema,

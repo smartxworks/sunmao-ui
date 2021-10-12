@@ -64,6 +64,7 @@ export default {
       exampleProperties: {
         switchPolicy: [],
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,

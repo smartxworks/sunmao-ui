@@ -72,6 +72,7 @@ export default {
         colorScheme: 'blue',
         isLoading: false,
       },
+      exampleSize: [2, 1],
     },
     spec: {
       properties: PropsSchema,

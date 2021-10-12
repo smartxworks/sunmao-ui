@@ -122,6 +122,7 @@ export default {
         isDisabled: false,
         size: 'md',
       },
+      exampleSize: [3, 1],
     },
     spec: {
       properties: PropsSchema,

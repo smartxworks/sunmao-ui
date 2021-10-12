@@ -299,6 +299,7 @@ export default {
         h: GRID_HEIGHT,
         border: '1px solid black',
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: StyleSchema,

@@ -63,6 +63,7 @@ export default {
         tabNames: [],
         initialSelectedTabIndex: 0,
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,

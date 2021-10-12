@@ -51,6 +51,7 @@ export default {
         raw: 'confirm',
         format: 'plain',
       },
+      exampleSize: [2, 1],
     },
     spec: {
       properties: PropsSchema,

@@ -21,6 +21,7 @@ export default {
       isDraggable: false,
       isResizable: true,
       exampleProperties: {},
+      exampleSize: [6, 6],
     },
     spec: {
       properties: {},

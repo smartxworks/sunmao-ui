@@ -144,6 +144,7 @@ export default {
         isRequired: false,
         defaultValue: '',
       },
+      exampleSize: [4, 1],
     },
     spec: {
       properties: PropsSchema,

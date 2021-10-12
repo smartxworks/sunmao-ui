@@ -47,6 +47,7 @@ export default {
       exampleProperties: {
         layout: [],
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,
