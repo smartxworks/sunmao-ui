@@ -22,7 +22,7 @@
               id: 'root',
               type: 'chakra_ui/v1/root',
               properties: {},
-              traits: []
+              traits: [],
             },
             {
               id: 'btn',
@@ -32,7 +32,7 @@
                   raw: `**Open Dialog**`,
                   format: 'md',
                 },
-                colorScheme: 'red'
+                colorScheme: 'red',
               },
               traits: [
                 {
@@ -49,16 +49,16 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'dialog',
                         method: {
                           name: 'openDialog',
                           parameters: {
                             title: 'hi',
-                          }
+                          },
                         },
-                        wait: {}
-                      }
+                        wait: {},
+                      },
                     ],
                   },
                 },
@@ -71,11 +71,11 @@
                 title: 'This is a dialog',
                 confirmButton: {
                   text: 'hello',
-                  colorScheme: 'pink'
+                  colorScheme: 'pink',
                 },
                 cancelButton: {
-                  text: 'thanks'
-                }
+                  text: 'thanks',
+                },
               },
               traits: [
                 {
@@ -101,7 +101,7 @@
                         event: 'confirmDialog',
                         componentId: 'dialog',
                         method: {
-                          name: 'confirmDialog'
+                          name: 'confirmDialog',
                         },
                         wait: {},
                         disabled: 'false',
@@ -111,14 +111,14 @@
                         event: 'cancelDialog',
                         componentId: 'dialog',
                         method: {
-                          name: 'cancelDialog'
+                          name: 'cancelDialog',
                         },
                         wait: {},
                         disabled: 'false',
                       },
-                    ]
-                  }
-                }
+                    ],
+                  },
+                },
               ],
             },
             {

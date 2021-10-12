@@ -55,14 +55,13 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'test_btn',
                         method: {
                           name: 'setValue',
                           parameters: {
                             key: 'count',
-                            value:
-                              '{{ test_btn.count > 0 ? 0 : test_btn.count + 1 }}',
+                            value: '{{ test_btn.count > 0 ? 0 : test_btn.count + 1 }}',
                           },
                         },
                         wait: {},
@@ -104,14 +103,13 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'size_btn',
                         method: {
                           name: 'setValue',
                           parameters: {
                             key: 'count',
-                            value:
-                              '{{ size_btn.count > 0 ? 0 : size_btn.count + 1 }}',
+                            value: '{{ size_btn.count > 0 ? 0 : size_btn.count + 1 }}',
                           },
                         },
                         wait: {},
@@ -153,14 +151,13 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'err_btn',
                         method: {
                           name: 'setValue',
                           parameters: {
                             key: 'count',
-                            value:
-                              '{{ err_btn.count > 0 ? 0 : err_btn.count + 1 }}',
+                            value: '{{ err_btn.count > 0 ? 0 : err_btn.count + 1 }}',
                           },
                         },
                         wait: {},
@@ -181,8 +178,7 @@
                 objectFit: 'cover',
                 borderRadius: '{{ test_btn.count % 2 === 0 ?  "full" : ""}}',
                 fallbackSrc: 'https://via.placeholder.com/150',
-                crossOrigin:
-                  '{{ err_btn.count === 1 ? "anonymous" : undefined}}',
+                crossOrigin: '{{ err_btn.count === 1 ? "anonymous" : undefined}}',
               },
               traits: [
                 {
