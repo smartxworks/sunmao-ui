@@ -28,6 +28,7 @@ export default {
         raw: 'text',
         format: 'plain',
       },
+      exampleSize: [4, 1],
     },
     spec: {
       properties: PropsSchema,

@@ -71,6 +71,7 @@ export default {
         direction: 'column',
         spacing: 10,
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,

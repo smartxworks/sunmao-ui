@@ -134,6 +134,7 @@ export default {
         borderRadius: 5,
         fallbackSrc: 'https://via.placeholder.com/150',
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,

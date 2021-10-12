@@ -53,6 +53,7 @@ export default {
         defaultValue: 0,
         isNumerical: true,
       },
+      exampleSize: [3, 3],
     },
     spec: {
       properties: PropsSchema,

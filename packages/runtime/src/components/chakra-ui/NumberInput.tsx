@@ -112,6 +112,7 @@ export default {
       exampleProperties: {
         defaultValue: 0,
       },
+      exampleSize: [4, 1],
     },
     spec: {
       properties: PropsSchema,

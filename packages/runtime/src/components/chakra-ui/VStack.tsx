@@ -47,6 +47,7 @@ export default {
         spacing: 4,
         align: 'stretch',
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,

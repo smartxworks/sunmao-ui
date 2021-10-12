@@ -56,6 +56,7 @@ export default {
       exampleProperties: {
         defaultValue: [],
       },
+      exampleSize: [3, 3],
     },
     spec: {
       properties: PropsSchema,

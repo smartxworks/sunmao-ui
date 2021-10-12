@@ -126,6 +126,7 @@ export default {
       exampleProperties: {
         hideSubmit: false,
       },
+      exampleSize: [4, 6],
     },
     spec: {
       properties: PropsSchema,

@@ -49,6 +49,7 @@ export default {
       isDraggable: true,
       isResizable: true,
       exampleProperties,
+      exampleSize: [8, 6],
     },
     spec: {
       properties: PropsSchema,
