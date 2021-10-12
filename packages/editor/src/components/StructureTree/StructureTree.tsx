@@ -7,6 +7,7 @@ import {
   CreateComponentOperation,
   RemoveComponentOperation,
 } from '../../operations/Operations';
+import { css } from '@emotion/react';
 
 type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, Array<Application['spec']['components'][0]>>;
@@ -14,11 +15,12 @@ type Component = Application['spec']['components'][0];
 
 type Props = {
   app: Application;
+  selectedComponentId: string;
   onSelectComponent: (id: string) => void;
 };
 
 export const StructureTree: React.FC<Props> = props => {
-  const { app, onSelectComponent } = props;
+  const { app, selectedComponentId, onSelectComponent } = props;
   const topLevelComponents: Component[] = [];
   const childrenMap: ChildrenMap = new Map();
 
@@ -70,6 +72,9 @@ export const StructureTree: React.FC<Props> = props => {
     return (
       <div key={component.id} style={{ paddingLeft: '16px' }}>
         <strong
+          css={css`
+            color: ${component.id === selectedComponentId ? 'red' : 'black'};
+          `}
           onClick={() => {
             onSelectComponent(component.id);
           }}
