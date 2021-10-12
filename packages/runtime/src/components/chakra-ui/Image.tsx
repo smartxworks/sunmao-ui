@@ -1,4 +1,5 @@
 import { Image as BaseImage } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
@@ -76,8 +77,15 @@ const Image: ComponentImplementation<Static<typeof PropsSchema>> = ({
   crossOrigin,
   callbackMap,
 }) => {
+  const style = boxSize
+    ? undefined
+    : css`
+        height: 100%;
+        width: 100%;
+      `;
   return (
     <BaseImage
+      css={style}
       src={src}
       alt={alt}
       objectFit={objectFit}
