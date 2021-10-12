@@ -84,7 +84,11 @@ export const Editor = () => {
     <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
       <Box display="flex" height="100vh" width="100vw">
         <Box flex="1">
-          <StructureTree app={app} onSelectComponent={id => setSelectedComponentId(id)} />
+          <StructureTree
+            app={app}
+            selectedComponentId={selectedComponentId}
+            onSelectComponent={id => setSelectedComponentId(id)}
+          />
         </Box>
         <Box flex="1">
           <strong>Drag Component to canvas!</strong>
