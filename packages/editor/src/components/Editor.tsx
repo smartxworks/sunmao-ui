@@ -13,29 +13,57 @@ import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
 import { useAppModel } from '../operations/useAppModel';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
+import { genComponentWrapper } from './ComponentWrapper';
 
 let count = 0;
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
+  const [hoverComponentId, setHoverComponentId] = useState('');
   const { app } = useAppModel();
 
-  const Wrapper: React.FC<{ id: string }> = useMemo(() => {
-    return props => {
-      const style = css`
-        height: 100%;
-        box-shadow: 0 0 ${props.id === selectedComponentId ? 1 : 0}px red;
-      `;
-      const onClick = (e: React.MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        setSelectedComponentId(() => props.id);
-      };
-      return (
-        <div onClick={onClick} css={style}>
-          {props.children}
-        </div>
-      );
+  const Wrapper = useMemo(() => {
+    const onClick = (id: string) => {
+      setSelectedComponentId(() => id);
     };
-  }, [selectedComponentId]);
+    const onMouseOver = (id: string) => {
+      setHoverComponentId(() => id);
+    };
+    const onMouseLeave = (id: string) => {
+      if (hoverComponentId === id) {
+        setHoverComponentId(() => '');
+      }
+    };
+    return genComponentWrapper(
+      selectedComponentId,
+      hoverComponentId,
+      onClick,
+      onMouseOver,
+      onMouseLeave
+    );
+  }, [
+    selectedComponentId,
+    setSelectedComponentId,
+    hoverComponentId,
+    setHoverComponentId,
+  ]);
+
+  // const Wrapper: React.FC<{ id: string }> = useMemo(() => {
+  //   return props => {
+  //     const style = css`
+  //       height: 100%;
+  //       box-shadow: 0 0 ${props.id === selectedComponentId ? 1 : 0}px red;
+  //     `;
+  //     const onClick = (e: React.MouseEvent<HTMLElement>) => {
+  //       e.stopPropagation();
+  //       setSelectedComponentId(() => props.id);
+  //     };
+  //     return (
+  //       <div onClick={onClick} css={style}>
+  //         {props.children}
+  //       </div>
+  //     );
+  //   };
+  // }, [selectedComponentId]);
 
   const gridCallbacks: GridCallbacks = {
     onDragStop(id, layout) {
