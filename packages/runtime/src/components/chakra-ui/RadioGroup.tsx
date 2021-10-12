@@ -45,7 +45,14 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'radio_group',
+      displayName: 'RadioGroup',
       description: 'chakra-ui radio group',
+      isDraggable: true,
+      isResizable: true,
+      exampleProperties: {
+        defaultValue: 0,
+        isNumerical: true,
+      },
     },
     spec: {
       properties: PropsSchema,

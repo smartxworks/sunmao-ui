@@ -2,6 +2,7 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import { Static, Type } from '@sinclair/typebox';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import { GRID_HEIGHT } from '../../constants';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -27,7 +28,7 @@ const GridLayout: React.FC<{
       isResizable={!!onDragStop}
       compactType={null}
       preventCollision={true}
-      rowHeight={40}
+      rowHeight={GRID_HEIGHT}
       layout={layout}
       onDragStop={onDragStop}
       onDrop={onDrop}

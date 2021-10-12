@@ -49,7 +49,13 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'checkbox_group',
+      displayName: 'Checkbox Group',
       description: 'chakra-ui checkbox group',
+      isDraggable: true,
+      isResizable: true,
+      exampleProperties: {
+        defaultValue: [],
+      },
     },
     spec: {
       properties: PropsSchema,
