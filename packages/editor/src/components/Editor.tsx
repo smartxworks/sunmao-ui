@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { GridCallbacks } from '@meta-ui/runtime';
 import { Box } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import produce from 'immer';
 import { App } from '../metaUI';
 import { StructureTree } from './StructureTree';
 import {
@@ -15,7 +15,6 @@ import { useAppModel } from '../operations/useAppModel';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { genComponentWrapper } from './ComponentWrapper';
 
-let count = 0;
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
   const [hoverComponentId, setHoverComponentId] = useState('');
@@ -47,55 +46,38 @@ export const Editor = () => {
     setHoverComponentId,
   ]);
 
-  // const Wrapper: React.FC<{ id: string }> = useMemo(() => {
-  //   return props => {
-  //     const style = css`
-  //       height: 100%;
-  //       box-shadow: 0 0 ${props.id === selectedComponentId ? 1 : 0}px red;
-  //     `;
-  //     const onClick = (e: React.MouseEvent<HTMLElement>) => {
-  //       e.stopPropagation();
-  //       setSelectedComponentId(() => props.id);
-  //     };
-  //     return (
-  //       <div onClick={onClick} css={style}>
-  //         {props.children}
-  //       </div>
-  //     );
-  //   };
-  // }, [selectedComponentId]);
+  const gridCallbacks: GridCallbacks = useMemo(() => {
+    return {
+      onDragStop(id, layout) {
+        console.log('dragstop');
+        eventBus.send(
+          'operation',
+          new ModifyComponentPropertyOperation(id, 'layout', layout)
+        );
+      },
+      onDrop(id, layout, _, e) {
+        const component = e.dataTransfer?.getData('component') || '';
+        const componentId = `component${layout.length++}`;
+        eventBus.send(
+          'operation',
+          new CreateComponentOperation(id, 'container', component, componentId)
+        );
 
-  const gridCallbacks: GridCallbacks = {
-    onDragStop(id, layout) {
-      console.log('dragstop');
-      eventBus.send(
-        'operation',
-        new ModifyComponentPropertyOperation(id, 'layout', layout)
-      );
-    },
-    onDrop(id, layout, item, e) {
-      const component = e.dataTransfer?.getData('component') || '';
-      const componentId = `component${count++}`;
-      eventBus.send(
-        'operation',
-        new CreateComponentOperation(id, 'container', component, componentId)
-      );
+        const newLayout = produce(layout, draft => {
+          draft.forEach(l => {
+            if (l.i === '__dropping-elem__') {
+              l.i = componentId;
+            }
+          });
+        }).filter(v => !!v); // there is unknown empty in array
 
-      const newLayout = [
-        ...layout,
-        {
-          ...item,
-          w: 3,
-          i: componentId,
-        },
-      ];
-
-      eventBus.send(
-        'operation',
-        new ModifyComponentPropertyOperation(id, 'layout', newLayout)
-      );
-    },
-  };
+        eventBus.send(
+          'operation',
+          new ModifyComponentPropertyOperation(id, 'layout', newLayout)
+        );
+      },
+    };
+  }, []);
 
   return (
     <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
