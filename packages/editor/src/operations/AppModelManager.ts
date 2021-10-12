@@ -21,19 +21,18 @@ function genSlotTrait(parentId: string, slot: string): ComponentTrait {
     },
   };
 }
-let count = 0;
+
 function genComponent(
   type: string,
   parentId: string,
   slot: string,
-  id?: string
+  id: string
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = cImpl.metadata.exampleProperties;
-  count++;
   return {
-    id: id || `${name}${count}`,
+    id,
     type: type,
     properties: initProperties,
     traits: [genSlotTrait(parentId, slot)],
@@ -60,6 +59,14 @@ export class AppModelManager {
     return this.app;
   }
 
+  genId(componentType: string) {
+    const { name } = parseType(componentType);
+    const componentsCount = this.app.spec.components.filter(
+      c => c.type === componentType
+    ).length;
+    return `${name}${componentsCount + 1}`;
+  }
+
   updateApp(app: Application) {
     eventBus.send('appChange', app);
     localStorage.setItem('schema', JSON.stringify(app));
@@ -83,7 +90,7 @@ export class AppModelManager {
           createO.componentType,
           createO.parentId,
           createO.slot,
-          createO.componentId
+          createO.componentId || this.genId(createO.componentType)
         );
         if (!noEffect) {
           const undoOperation = new RemoveComponentOperation(newComponent.id);

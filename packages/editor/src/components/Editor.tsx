@@ -11,7 +11,7 @@ import {
 import { eventBus } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
-import { useAppModel } from '../operations/useAppModel';
+import { appModelManager, useAppModel } from '../operations/useAppModel';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { genComponentWrapper } from './ComponentWrapper';
 
@@ -58,7 +58,7 @@ export const Editor = () => {
       },
       onDrop(id, layout, _, e) {
         const component = e.dataTransfer?.getData('component') || '';
-        const componentId = `component${layout.length++}`;
+        const componentId = appModelManager.genId(component);
         eventBus.send(
           'operation',
           new CreateComponentOperation(id, 'container', component, componentId)

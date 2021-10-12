@@ -4,7 +4,7 @@ import { DefaultAppSchema } from '../constants';
 import { eventBus } from '../eventBus';
 import { AppModelManager } from './AppModelManager';
 
-const appModelManager = new AppModelManager(DefaultAppSchema);
+export const appModelManager = new AppModelManager(DefaultAppSchema);
 
 export function useAppModel() {
   const [app, setApp] = useState<Application>(appModelManager.getApp());
