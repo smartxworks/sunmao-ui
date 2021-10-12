@@ -20,7 +20,14 @@ export default {
     version: 'core/v1',
     metadata: {
       name: 'text',
+      displayName: 'Text',
       description: 'support plain and markdown formats',
+      isDraggable: true,
+      isResizable: false,
+      exampleProperties: {
+        raw: 'text',
+        format: 'plain',
+      },
     },
     spec: {
       properties: PropsSchema,

@@ -115,7 +115,16 @@ export default {
     version: 'chakra_ui/v1',
     metadata: {
       name: 'formControl',
+      isResizable: false,
+      isDraggable: true,
+      displayName: 'FormControl',
       description: 'chakra-ui formControl',
+      exampleProperties: {
+        label: 'name',
+        fieldName: 'name',
+        isRequired: false,
+        helperText: '',
+      },
     },
     spec: {
       properties: PropsSchema,

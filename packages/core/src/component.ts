@@ -1,6 +1,6 @@
 import { JSONSchema7, JSONSchema7Object } from 'json-schema';
 import { parseVersion } from './version';
-import { Metadata } from './metadata';
+import { ComponentMetadata } from './metadata';
 import { MethodSchema } from './method';
 import { Version } from './version';
 
@@ -9,7 +9,7 @@ import { Version } from './version';
 export type Component = {
   version: string;
   kind: 'Component';
-  metadata: Metadata;
+  metadata: ComponentMetadata;
   spec: ComponentSpec;
 };
 
@@ -29,9 +29,7 @@ export type RuntimeComponent = Component & {
   parsedVersion: Version;
 };
 
-export function createComponent(
-  options: Omit<Component, 'kind'>
-): RuntimeComponent {
+export function createComponent(options: Omit<Component, 'kind'>): RuntimeComponent {
   return {
     ...options,
     kind: 'Component',

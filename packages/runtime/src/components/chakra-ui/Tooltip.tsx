@@ -72,6 +72,12 @@ export default {
     metadata: {
       name: 'tooltip',
       description: 'chakra-ui tooltip',
+      displayName: 'Tooltip',
+      isDraggable: false,
+      isResizable: false,
+      exampleProperties: {
+        text: 'tooltip',
+      },
     },
     spec: {
       properties: PropsSchema,
