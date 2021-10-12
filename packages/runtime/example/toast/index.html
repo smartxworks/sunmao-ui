@@ -55,7 +55,7 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'open_button',
                         method: {
                           name: 'setValue',
@@ -67,7 +67,7 @@
                         wait: {},
                       },
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: '$utils',
                         method: {
                           name: 'toast.open',
@@ -111,7 +111,7 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: '$utils',
                         method: {
                           name: 'toast.close',
@@ -123,7 +123,7 @@
                         disabled: '{{!open_button.lastToast}}',
                       },
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'open_button',
                         method: {
                           name: 'setValue',
@@ -164,7 +164,7 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: '$utils',
                         method: {
                           name: 'toast.close',

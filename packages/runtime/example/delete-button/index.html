@@ -39,7 +39,7 @@
                   properties: {
                     events: [
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: '$utils',
                         method: {
                           name: 'alert',
@@ -49,21 +49,20 @@
                         disabled: '{{ del_btn.count === 0 }}',
                       },
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'del_btn',
                         method: {
                           name: 'setValue',
                           parameters: {
                             key: 'count',
-                            value:
-                              '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
+                            value: '{{ del_btn.count > 0 ? 0 : del_btn.count + 1 }}',
                           },
                         },
                         wait: {},
                         disabled: false,
                       },
                       {
-                        event: 'click',
+                        event: 'onClick',
                         componentId: 'del_btn',
                         method: {
                           name: 'setValue',

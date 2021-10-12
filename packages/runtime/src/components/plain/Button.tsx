@@ -24,7 +24,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <button ref={ref} onClick={callbackMap?.click}>
+    <button ref={ref} onClick={callbackMap?.onClick}>
       <Text value={text} />
     </button>
   );
@@ -62,7 +62,7 @@ export default {
       ],
       slots: [],
       styleSlots: [],
-      events: ['click'],
+      events: ['onClick'],
     },
   }),
   impl: Button,
