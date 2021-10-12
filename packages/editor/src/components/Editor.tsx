@@ -27,10 +27,11 @@ export const Editor = () => {
     const onMouseOver = (id: string) => {
       setHoverComponentId(() => id);
     };
-    const onMouseLeave = (id: string) => {
-      if (hoverComponentId === id) {
-        setHoverComponentId(() => '');
-      }
+    const onMouseLeave = () => {
+      // TODO: it will cause bug that can not resize grid component
+      // if (hoverComponentId === id) {
+      //   setHoverComponentId(() => '');
+      // }
     };
     return genComponentWrapper(
       selectedComponentId,

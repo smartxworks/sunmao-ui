@@ -15,18 +15,26 @@ export const genComponentWrapper = (
   return props => {
     const isHover = hoverComponentId === props.id;
     const isSelected = selectedComponentId === props.id;
-    let shadowColor = 'transparent';
-    console.log('hoverComponentId', hoverComponentId, props.id);
+    let borderColor = 'transparent';
     if (isSelected) {
-      shadowColor = 'red';
+      borderColor = 'red';
     } else if (isHover) {
-      shadowColor = 'black';
+      borderColor = 'black';
     }
 
-    console.log('shadowColor', shadowColor);
     const style = css`
       height: 100%;
-      box-shadow: 0 0 1px ${shadowColor};
+      position: relative;
+      &:after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        bottom: -4px;
+        left: -4px;
+        right: -4px;
+        border: 1px solid ${borderColor};
+        pointer-events: none;
+      }
     `;
     const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
