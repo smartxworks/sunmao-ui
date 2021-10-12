@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { GridCallbacks } from '@meta-ui/runtime';
-import { Box, Button } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { App } from '../metaUI';
 import { StructureTree } from './StructureTree';
@@ -12,6 +12,7 @@ import { eventBus } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
 import { useAppModel } from '../operations/useAppModel';
+import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 
 let count = 0;
 export const Editor = () => {
@@ -35,10 +36,6 @@ export const Editor = () => {
       );
     };
   }, [selectedComponentId]);
-
-  const onClickUndo = useCallback(() => {
-    eventBus.send('undo');
-  }, []);
 
   const gridCallbacks: GridCallbacks = {
     onDragStop(id, layout) {
@@ -73,27 +70,28 @@ export const Editor = () => {
   };
 
   return (
-    <Box display="flex" height="100vh" width="100vw">
-      <Box flex="1">
-        <StructureTree app={app} onSelectComponent={id => setSelectedComponentId(id)} />
-        <Button onClick={onClickUndo}>撤销</Button>
+    <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
+      <Box display="flex" height="100vh" width="100vw">
+        <Box flex="1">
+          <StructureTree app={app} onSelectComponent={id => setSelectedComponentId(id)} />
+        </Box>
+        <Box flex="1">
+          <strong>Drag Component to canvas!</strong>
+          <ComponentList />
+        </Box>
+        <Box flex="3" borderRight="2px solid black">
+          <App
+            options={app}
+            debugEvent={false}
+            debugStore={false}
+            gridCallbacks={gridCallbacks}
+            componentWrapper={Wrapper}
+          />
+        </Box>
+        <Box flex="1" borderRight="2px solid black">
+          <ComponentForm app={app} selectedId={selectedComponentId} />
+        </Box>
       </Box>
-      <Box flex="1">
-        <strong>Drag Component to canvas!</strong>
-        <ComponentList />
-      </Box>
-      <Box flex="3" borderRight="2px solid black">
-        <App
-          options={app}
-          debugEvent={false}
-          debugStore={false}
-          gridCallbacks={gridCallbacks}
-          componentWrapper={Wrapper}
-        />
-      </Box>
-      <Box flex="1" borderRight="2px solid black">
-        <ComponentForm app={app} selectedId={selectedComponentId} />
-      </Box>
-    </Box>
+    </KeyboardEventWrapper>
   );
 };
