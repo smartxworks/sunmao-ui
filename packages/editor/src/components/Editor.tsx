@@ -24,7 +24,7 @@ export const Editor = () => {
     const onClick = (id: string) => {
       setSelectedComponentId(() => id);
     };
-    const onMouseOver = (id: string) => {
+    const onMouseEnter = (id: string) => {
       setHoverComponentId(() => id);
     };
     const onMouseLeave = () => {
@@ -33,13 +33,13 @@ export const Editor = () => {
       //   setHoverComponentId(() => '');
       // }
     };
-    return genComponentWrapper(
+    return genComponentWrapper({
       selectedComponentId,
       hoverComponentId,
       onClick,
-      onMouseOver,
-      onMouseLeave
-    );
+      onMouseEnter,
+      onMouseLeave,
+    });
   }, [
     selectedComponentId,
     setSelectedComponentId,

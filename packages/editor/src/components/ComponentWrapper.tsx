@@ -1,17 +1,19 @@
 import { css } from '@emotion/react';
+import { ComponentWrapperType } from '@meta-ui/runtime';
 import React from 'react';
 
-type ComponentWrapperProps = {
-  id: string;
-};
+// children of components in this list should render height as 100%
+const fullHeightList = ['core/v1/grid_layout'];
 
-export const genComponentWrapper = (
-  selectedComponentId: string,
-  hoverComponentId: string,
-  onClick: (id: string) => void,
-  onMouseEnter: (id: string) => void,
-  onMouseLeave: (id: string) => void
-): React.FC<ComponentWrapperProps> => {
+export const genComponentWrapper = (wrapperProps: {
+  selectedComponentId: string;
+  hoverComponentId: string;
+  onClick: (id: string) => void;
+  onMouseEnter: (id: string) => void;
+  onMouseLeave: (id: string) => void;
+}): ComponentWrapperType => {
+  const { selectedComponentId, hoverComponentId, onClick, onMouseEnter, onMouseLeave } =
+    wrapperProps;
   return props => {
     const isHover = hoverComponentId === props.id;
     const isSelected = selectedComponentId === props.id;
@@ -21,9 +23,9 @@ export const genComponentWrapper = (
     } else if (isHover) {
       borderColor = 'black';
     }
-
     const style = css`
-      height: 100%;
+      height: ${fullHeightList.includes(props.parentType) ? '100%' : 'auto'};
+      width: 100%;
       position: relative;
       &:after {
         content: '';
