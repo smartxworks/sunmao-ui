@@ -277,9 +277,16 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
   ...restProps
 }) => {
   const styleProps = pick(restProps, StyleProps);
-
   return (
-    <BaseBox {...styleProps}>
+    <BaseBox
+      {...styleProps}
+      width="full"
+      height="full"
+      background="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="base"
+    >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseBox>
   );

@@ -34,6 +34,7 @@ const Select: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseSelect
+      background="white"
       placeholder={placeholder}
       value={value}
       errorBorderColor={errorBorderColor}

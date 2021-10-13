@@ -34,6 +34,7 @@ const Radio: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseRadio
+      height="10"
       value={value}
       isDisabled={isDisabled}
       isFocusable={isFocusable}

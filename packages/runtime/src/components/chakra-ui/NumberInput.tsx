@@ -48,6 +48,7 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseNumberInput
+      background="white"
       defaultValue={defaultValue}
       value={value}
       min={min}
