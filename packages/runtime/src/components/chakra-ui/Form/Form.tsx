@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
-import { Button } from '@chakra-ui/react';
+import { Button, VStack } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
 import { ComponentImplementation } from '../../../services/registry';
 import Slot from '../../_internal/Slot';
@@ -111,14 +111,18 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   `;
 
   return (
-    <form css={style}>
+    <VStack css={style} spacing="5">
       <Slot slotsMap={slotsMap} slot="content" />
       {hideSubmit ? undefined : (
-        <Button marginLeft="auto" disabled={isFormInvalid} onClick={onSubmit}>
+        <Button
+          marginInlineStart="auto !important"
+          disabled={isFormInvalid}
+          onClick={onSubmit}
+        >
           提交
         </Button>
       )}
-    </form>
+    </VStack>
   );
 };
 
