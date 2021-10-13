@@ -26,3 +26,13 @@ export class ModifyComponentPropertyOperation {
     public propertyValue: unknown
   ) {}
 }
+
+export class ModifyTraitPropertyOperation {
+  kind = 'modifyTraitProperty';
+  constructor(
+    public componentId: string,
+    public traitType: string,
+    public propertyKey: string,
+    public propertyValue: unknown
+  ) {}
+}

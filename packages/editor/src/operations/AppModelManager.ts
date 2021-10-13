@@ -5,6 +5,7 @@ import {
   CreateComponentOperation,
   RemoveComponentOperation,
   ModifyComponentPropertyOperation,
+  ModifyTraitPropertyOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
@@ -122,6 +123,31 @@ export class AppModelManager {
           const undoOperation = new ModifyComponentPropertyOperation(
             mo.componentId,
             mo.propertyKey,
+            oldValue
+          );
+          this.undoStack.push(undoOperation);
+        }
+        break;
+      case 'modifyTraitProperty':
+        const mto = o as ModifyTraitPropertyOperation;
+        let oldValue;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === mto.componentId) {
+              c.traits.forEach(t => {
+                if (t.type === mto.traitType) {
+                  oldValue = t.properties[mto.propertyKey];
+                  t.properties[mto.propertyKey] = mto.propertyValue;
+                }
+              });
+            }
+          });
+        });
+        if (!noEffect) {
+          const undoOperation = new ModifyTraitPropertyOperation(
+            mto.componentId,
+            mto.traitType,
+            mto.propertyKey,
             oldValue
           );
           this.undoStack.push(undoOperation);

@@ -171,7 +171,11 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     );
 
     // wrap component, but grid_layout is root component and cannot be chosen, so don't wrap it
-    if (ComponentWrapper && c.parsedType.name !== 'grid_layout') {
+    if (
+      ComponentWrapper &&
+      c.parsedType.name !== 'dummy' &&
+      c.parsedType.name !== 'grid_layout'
+    ) {
       result = <ComponentWrapper id={c.id}>{result}</ComponentWrapper>;
     }
 
