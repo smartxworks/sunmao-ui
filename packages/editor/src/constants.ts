@@ -7,6 +7,22 @@ export const DefaultAppSchema: Application = {
   spec: {
     components: [
       {
+        id: 'fetchVolumes',
+        type: 'core/v1/dummy',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/fetch',
+            properties: {
+              name: 'query',
+              url: 'https://61373521eac1410017c18209.mockapi.io/Volume',
+              method: 'get',
+              lazy: false,
+            },
+          },
+        ],
+      },
+      {
         id: 'grid',
         type: 'core/v1/grid_layout',
         properties: {

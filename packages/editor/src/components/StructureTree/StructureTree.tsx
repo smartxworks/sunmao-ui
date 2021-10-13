@@ -24,8 +24,11 @@ export const StructureTree: React.FC<Props> = props => {
   const topLevelComponents: Component[] = [];
   const childrenMap: ChildrenMap = new Map();
 
+  const components = app.spec.components.filter(c => c.type !== 'core/v1/dummy');
+  const dataSources = app.spec.components.filter(c => c.type === 'core/v1/dummy');
+
   // parse components array to slotsMap
-  app.spec.components.forEach(c => {
+  components.forEach(c => {
     const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
     if (slotTrait) {
       const { id: parentId, slot } = slotTrait.properties.container as any;
@@ -88,6 +91,14 @@ export const StructureTree: React.FC<Props> = props => {
   }
 
   const topEles = topLevelComponents.map(genTreeItem);
+  const dataSourcesEles = dataSources.map(genTreeItem);
 
-  return <div>{topEles}</div>;
+  return (
+    <div>
+      <strong>Components</strong>
+      {topEles}
+      <strong>DataSources</strong>
+      {dataSourcesEles}
+    </div>
+  );
 };
