@@ -53,7 +53,7 @@ export const ComponentTree: React.FC<Props> = props => {
 
         eventBus.send(
           'operation',
-          new CreateComponentOperation(component.id, slot, creatingComponent)
+          new CreateComponentOperation(creatingComponent, component.id, slot)
         );
       };
       return (

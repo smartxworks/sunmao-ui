@@ -46,7 +46,7 @@ export const Editor = () => {
         const componentId = `${componentName}_${count++}`;
         eventBus.send(
           'operation',
-          new CreateComponentOperation(id, 'container', component, componentId)
+          new CreateComponentOperation(component, id, 'container', componentId)
         );
 
         const newLayout = produce(layout, draft => {

@@ -1,7 +1,10 @@
 import React from 'react';
 import { Application, ApplicationComponent } from '@meta-ui/core';
 import { eventBus } from '../../eventBus';
-import { RemoveComponentOperation } from '../../operations/Operations';
+import {
+  CreateComponentOperation,
+  RemoveComponentOperation,
+} from '../../operations/Operations';
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { Text, VStack } from '@chakra-ui/react';
@@ -72,6 +75,7 @@ export const StructureTree: React.FC<Props> = props => {
       <Text fontSize="lg" fontWeight="bold">
         Components
       </Text>
+      <RootItem />
       {topEles}
       <Text fontSize="lg" fontWeight="bold">
         DataSources
@@ -80,3 +84,16 @@ export const StructureTree: React.FC<Props> = props => {
     </VStack>
   );
 };
+
+function RootItem() {
+  const onDrop = (e: React.DragEvent) => {
+    const creatingComponent = e.dataTransfer?.getData('component') || '';
+
+    eventBus.send('operation', new CreateComponentOperation(creatingComponent));
+  };
+  return (
+    <Text onDrop={onDrop} width="full">
+      Root
+    </Text>
+  );
+}
