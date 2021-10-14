@@ -92,8 +92,7 @@ export const Editor = () => {
               height="100%"
               display="flex"
               flexDirection="column"
-              textAlign="left"
-            >
+              textAlign="left">
               <TabList background="gray.50">
                 <Tab>UI Tree</Tab>
                 <Tab>State</Tab>
@@ -102,6 +101,7 @@ export const Editor = () => {
                 <TabPanel p={0}>
                   <StructureTree
                     app={app}
+                    selectedComponentId={selectedComponentId}
                     onSelectComponent={id => setSelectedComponentId(id)}
                   />
                 </TabPanel>
@@ -116,8 +116,7 @@ export const Editor = () => {
               widht="100%"
               height="100%"
               background="white"
-              transform={`scale(${scale / 100})`}
-            >
+              transform={`scale(${scale / 100})`}>
               {appComponent}
             </Box>
           </Box>
@@ -127,8 +126,7 @@ export const Editor = () => {
               textAlign="left"
               height="100%"
               display="flex"
-              flexDirection="column"
-            >
+              flexDirection="column">
               <TabList background="gray.50">
                 <Tab>Inspect</Tab>
                 <Tab>Insert</Tab>
