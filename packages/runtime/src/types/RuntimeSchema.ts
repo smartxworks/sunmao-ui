@@ -5,7 +5,7 @@ import { Registry } from 'src/services/registry';
 import { StateManager } from 'src/services/stateStore';
 import { Application, RuntimeApplication } from '@meta-ui/core';
 
-export type ApplicationComponent = RuntimeApplication['spec']['components'][0];
+export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 
 export type MetaUIServices = {
   registry: Registry;
@@ -34,7 +34,7 @@ export type AppProps = {
 } & ComponentParamsFromApp;
 
 export type ImplWrapperProps = {
-  component: ApplicationComponent;
+  component: RuntimeApplicationComponent;
   slotsMap: SlotsMap | undefined;
   targetSlot: { id: string; slot: string } | null;
   services: MetaUIServices;

@@ -7,11 +7,11 @@ import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
 import { ImplWrapper } from '../../services/ImplWrapper';
 import { resolveAppComponents } from '../../services/resolveAppComponents';
-import { ApplicationComponent } from 'src/types/RuntimeSchema';
+import { RuntimeApplicationComponent } from 'src/types/RuntimeSchema';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
-): ApplicationComponent {
+): RuntimeApplicationComponent {
   return {
     ...c,
     parsedType: parseType(c.type),
