@@ -42,6 +42,7 @@ import {
   ComponentImplementationProps,
   TraitImplementation,
 } from 'src/types/RuntimeSchema';
+import { parseType } from '../utils/parseType';
 
 export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
 
@@ -75,6 +76,11 @@ export class Registry {
       throw new Error(`Component ${version}/${name} has not registered yet.`);
     }
     return c;
+  }
+
+  getComponentByType(type: string): ImplementedRuntimeComponent {
+    const { version, name } = parseType(type);
+    return this.getComponent(version, name);
   }
 
   registerTrait(t: ImplementedRuntimeTrait) {
