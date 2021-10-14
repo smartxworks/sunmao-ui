@@ -11,8 +11,6 @@ import { produce } from 'immer';
 import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
 
-let count = 0;
-
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
     type: 'core/v1/slot',
@@ -27,19 +25,19 @@ function genSlotTrait(parentId: string, slot: string): ComponentTrait {
 
 function genComponent(
   type: string,
-  parentId: string,
-  slot: string,
-  id: string
+  id: string,
+  parentId?: string,
+  slot?: string
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = cImpl.metadata.exampleProperties;
-  count++;
+  const traits = parentId && slot ? [genSlotTrait(parentId, slot)] : [];
   return {
-    id: id || `${name}_${count}`,
+    id,
     type: type,
     properties: initProperties,
-    traits: [genSlotTrait(parentId, slot)],
+    traits: traits,
   };
 }
 
@@ -92,9 +90,9 @@ export class AppModelManager {
         const createO = o as CreateComponentOperation;
         const newComponent = genComponent(
           createO.componentType,
+          createO.componentId || this.genId(createO.componentType),
           createO.parentId,
-          createO.slot,
-          createO.componentId || this.genId(createO.componentType)
+          createO.slot
         );
         if (!noEffect) {
           const undoOperation = new RemoveComponentOperation(newComponent.id);

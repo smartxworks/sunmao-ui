@@ -6,9 +6,9 @@ export class CreateComponentOperation {
   kind = 'createComponent';
 
   constructor(
-    public parentId: string,
-    public slot: string,
     public componentType: string,
+    public parentId?: string,
+    public slot?: string,
     public componentId?: string
   ) {}
 }
