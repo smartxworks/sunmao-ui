@@ -26,6 +26,13 @@ export class ModifyComponentPropertyOperation {
     public propertyValue: unknown
   ) {}
 }
+export class ModifyComponentIdOperation {
+  kind = 'modifyComponentId';
+  constructor(
+    public componentId: string,
+    public value: string
+  ) {}
+}
 
 export class ModifyTraitPropertyOperation {
   kind = 'modifyTraitProperty';
