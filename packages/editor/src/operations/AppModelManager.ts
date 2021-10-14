@@ -40,7 +40,7 @@ function genComponent(
   };
 }
 
-export class OperationManager {
+export class AppModelManager {
   private undoStack: Operations[] = [];
   private app: Application;
 

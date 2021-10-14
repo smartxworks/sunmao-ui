@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { DragEvent } from 'react';
 import { Application } from '@meta-ui/core';
 import { IconButton } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { eventBus } from '../../eventBus';
-import { RemoveComponentOperation } from '../../operations/Operations';
+import {
+  CreateComponentOperation,
+  RemoveComponentOperation,
+} from '../../operations/Operations';
 
 type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, Array<Application['spec']['components'][0]>>;
@@ -19,6 +22,7 @@ export const StructureTree: React.FC<Props> = props => {
   const topLevelComponents: Component[] = [];
   const childrenMap: ChildrenMap = new Map();
 
+  // parse components array to slotsMap
   app.spec.components.forEach(c => {
     const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
     if (slotTrait) {
@@ -42,9 +46,17 @@ export const StructureTree: React.FC<Props> = props => {
     if (slots) {
       slotsEle = Array.from(slots.keys()).map(slot => {
         const children = slots.get(slot)!.map(genTreeItem);
+        const onDrop = (e: DragEvent) => {
+          const creatingComponent = e.dataTransfer?.getData('component') || '';
+          console.log('createComponent', component.id, slot, creatingComponent);
+          eventBus.send(
+            'operation',
+            new CreateComponentOperation(component.id, slot, creatingComponent)
+          );
+        };
         return (
           <div key={slot}>
-            <div>slot: {slot}</div>
+            <div onDrop={onDrop}>slot: {slot}</div>
             {children}
           </div>
         );
