@@ -6,10 +6,12 @@ import {
   RemoveComponentOperation,
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
+  ModifyComponentIdOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
+import _ from 'lodash';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -22,6 +24,16 @@ function genSlotTrait(parentId: string, slot: string): ComponentTrait {
     },
   };
 }
+// TODO JSONSchema7Type
+const genInitProps = (init: Record<string, never>, properties: any, fullKey?: string) => {
+  for (const key of Object.keys(properties)) {
+    if (properties[key]?.type === 'object') {
+      genInitProps(init, properties[key].properties, fullKey ? `${fullKey}.${key}` : key);
+    } else {
+      _.set(init, fullKey ? `${fullKey}.${key}` : key, undefined);
+    }
+  }
+};
 
 function genComponent(
   type: string,
@@ -31,8 +43,12 @@ function genComponent(
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
-  const initProperties = cImpl.metadata.exampleProperties;
   const traits = parentId && slot ? [genSlotTrait(parentId, slot)] : [];
+
+  const initProps = {};
+  genInitProps(initProps, cImpl.spec.properties.properties);
+  const initProperties = Object.assign(initProps, cImpl.metadata.exampleProperties);
+
   return {
     id,
     type: type,
@@ -114,7 +130,7 @@ export class AppModelManager {
         newApp = produce(this.app, draft => {
           return draft.spec.components.forEach(c => {
             if (c.id === mo.componentId) {
-              c.properties[mo.propertyKey] = mo.propertyValue;
+              _.set(c.properties, mo.propertyKey, mo.propertyValue);
             }
           });
         });
@@ -129,6 +145,23 @@ export class AppModelManager {
           this.undoStack.push(undoOperation);
         }
         break;
+      case 'modifyComponentId':
+        const mIdo = o as ModifyComponentIdOperation;
+        newApp = produce(this.app, draft => {
+          return draft.spec.components.forEach(c => {
+            if (c.id === mIdo.componentId) {
+              c.id = mIdo.value;
+            }
+          });
+        });
+        if (!noEffect) {
+          const undoOperation = new ModifyComponentIdOperation(
+            mIdo.value,
+            mIdo.componentId
+          );
+          this.undoStack.push(undoOperation);
+        }
+        break;
       case 'modifyTraitProperty':
         const mto = o as ModifyTraitPropertyOperation;
         let oldValue;
@@ -138,7 +171,7 @@ export class AppModelManager {
               c.traits.forEach(t => {
                 if (t.type === mto.traitType) {
                   oldValue = t.properties[mto.propertyKey];
-                  t.properties[mto.propertyKey] = mto.propertyValue;
+                  _.set(t.properties, mto.propertyKey, mto.propertyValue);
                 }
               });
             }
