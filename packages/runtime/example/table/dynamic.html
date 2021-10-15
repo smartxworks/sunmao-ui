@@ -72,9 +72,7 @@
                     name: 'query',
                     url: 'https://61373521eac1410017c18209.mockapi.io/users/{{ table.selectedItem ? table.selectedItem.id : "" }}',
                     method: 'put',
-                    headers: [
-                      { key: 'Content-Type', value: 'application/json' },
-                    ],
+                    headers: [{ key: 'Content-Type', value: 'application/json' }],
                     body: '{{ {...table.selectedItem, name: nameInput.value } }}',
                     lazy: true,
                     onComplete: [
@@ -173,7 +171,7 @@
                     type: 'button',
                     buttonConfig: {
                       text: 'Delete',
-                      events: [
+                      handlers: [
                         {
                           componentId: 'deleteUser',
                           method: {
@@ -190,7 +188,7 @@
                     type: 'button',
                     buttonConfig: {
                       text: 'Edit',
-                      events: [
+                      handlers: [
                         {
                           componentId: 'editDialog',
                           method: {
@@ -280,9 +278,9 @@
                     name: 'event',
                   },
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'updateUser',
                         method: {
                           name: 'triggerFetch',
@@ -293,7 +291,7 @@
                       },
                       // when cancel dialog
                       {
-                        event: 'cancelDialog',
+                        type: 'cancelDialog',
                         componentId: 'editDialog',
                         method: {
                           name: 'cancelDialog',

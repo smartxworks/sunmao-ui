@@ -195,10 +195,10 @@
                           name: 'event',
                         },
                         properties: {
-                          events: [
+                          handlers: [
                             // set root state of editingId
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'root',
                               method: {
                                 name: 'setValue',
@@ -212,7 +212,7 @@
                             },
                             // set root state of nameInputInitialValue
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'root',
                               method: {
                                 name: 'setValue',
@@ -226,7 +226,7 @@
                             },
                             // set root state of emailInputInitialValue
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'root',
                               method: {
                                 name: 'setValue',
@@ -240,7 +240,7 @@
                             },
                             // open dialog and prop value
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'editDialog',
                               method: {
                                 name: 'openDialog',
@@ -283,10 +283,10 @@
                           name: 'event',
                         },
                         properties: {
-                          events: [
+                          handlers: [
                             // set delete id
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'root',
                               method: {
                                 name: 'setValue',
@@ -300,7 +300,7 @@
                             },
                             // open dialog and prop value
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'deleteDialog',
                               method: {
                                 name: 'openDialog',
@@ -313,7 +313,7 @@
                             },
                             // set delete info value
                             {
-                              event: 'onClick',
+                              type: 'onClick',
                               componentId: 'deleteDialog',
                               method: {
                                 name: 'setValue',
@@ -389,10 +389,10 @@
                     name: 'event',
                   },
                   properties: {
-                    events: [
+                    handlers: [
                       // when click confirm
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'editDialog',
                         method: {
                           name: 'confirmDialog',
@@ -401,7 +401,7 @@
                         disabled: 'false',
                       },
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'root',
                         method: {
                           name: 'setValue',
@@ -428,7 +428,7 @@
                       },
                       // reset initialValue
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'root',
                         method: {
                           name: 'setValue',
@@ -441,7 +441,7 @@
                         disabled: 'false',
                       },
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'root',
                         method: {
                           name: 'setValue',
@@ -455,7 +455,7 @@
                       },
                       // when cancel dialog
                       {
-                        event: 'cancelDialog',
+                        type: 'cancelDialog',
                         componentId: 'editDialog',
                         method: {
                           name: 'cancelDialog',
@@ -552,10 +552,10 @@
                     name: 'event',
                   },
                   properties: {
-                    events: [
+                    handlers: [
                       // when confirm dialog
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'deleteDialog',
                         method: {
                           name: 'confirmDialog',
@@ -564,7 +564,7 @@
                         disabled: 'false',
                       },
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'root',
                         method: {
                           name: 'deleteItemById',
@@ -579,7 +579,7 @@
                       },
                       // when cancel dialog
                       {
-                        event: 'cancelDialog',
+                        type: 'cancelDialog',
                         componentId: 'deleteDialog',
                         method: {
                           name: 'cancelDialog',
@@ -632,10 +632,10 @@
                     name: 'event',
                   },
                   properties: {
-                    events: [
+                    handlers: [
                       // open dialog and prop value
                       {
-                        event: 'onClick',
+                        type: 'onClick',
                         componentId: 'createDialog',
                         method: {
                           name: 'openDialog',
@@ -692,10 +692,10 @@
                     name: 'event',
                   },
                   properties: {
-                    events: [
+                    handlers: [
                       // when click confirm
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'createDialog',
                         method: {
                           name: 'confirmDialog',
@@ -704,7 +704,7 @@
                         disabled: 'false',
                       },
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'root',
                         method: {
                           name: 'setValue',
@@ -730,7 +730,7 @@
                       },
                       // when cancel dialog
                       {
-                        event: 'cancelDialog',
+                        type: 'cancelDialog',
                         componentId: 'createDialog',
                         method: {
                           name: 'cancelDialog',

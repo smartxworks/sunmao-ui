@@ -4,39 +4,39 @@ import { debounce, throttle, delay } from 'lodash';
 import { CallbackMap, TraitImplementation } from 'src/types/RuntimeSchema';
 
 const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
-  events,
+  handlers,
   services,
 }) => {
   const callbackQueueMap: Record<string, Array<() => void>> = {};
 
   // setup current handlers
-  for (const event of events) {
-    const handler = () => {
+  for (const handler of handlers) {
+    const cb = () => {
       let disabled = false;
-      if (typeof event.disabled === 'boolean') {
-        disabled = event.disabled;
+      if (typeof handler.disabled === 'boolean') {
+        disabled = handler.disabled;
       }
       if (disabled) {
         return;
       }
 
       services.apiService.send('uiMethod', {
-        componentId: event.componentId,
-        name: event.method.name,
-        parameters: event.method.parameters,
+        componentId: handler.componentId,
+        name: handler.method.name,
+        parameters: handler.method.parameters,
       });
     };
-    if (!callbackQueueMap[event.event]) {
-      callbackQueueMap[event.event] = [];
+    if (!callbackQueueMap[handler.type]) {
+      callbackQueueMap[handler.type] = [];
     }
-    callbackQueueMap[event.event].push(
-      event.wait.type === 'debounce'
-        ? debounce(handler, event.wait.time)
-        : event.wait.type === 'throttle'
-          ? throttle(handler, event.wait.time)
-          : event.wait.type === 'delay'
-            ? () => delay(handler, event.wait.time)
-            : handler
+    callbackQueueMap[handler.type].push(
+      handler.wait.type === 'debounce'
+        ? debounce(cb, handler.wait.time)
+        : handler.wait.type === 'throttle'
+          ? throttle(cb, handler.wait.time)
+          : handler.wait.type === 'delay'
+            ? () => delay(cb, handler.wait.time)
+            : cb
     );
   }
 
@@ -60,9 +60,9 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
 };
 
 const PropsSchema = Type.Object({
-  events: Type.Array(
+  handlers: Type.Array(
     Type.Object({
-      event: Type.String(),
+      type: Type.String(),
       componentId: Type.String(),
       method: Type.Object({
         name: Type.String(),
