@@ -181,7 +181,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       c.parsedType.name !== 'grid_layout'
     ) {
       result = (
-        <ComponentWrapper id={c.id} parentType={parentComponent?.type || ''}>
+        <ComponentWrapper component={c} parentType={parentComponent?.type || ''}>
           {result}
         </ComponentWrapper>
       );

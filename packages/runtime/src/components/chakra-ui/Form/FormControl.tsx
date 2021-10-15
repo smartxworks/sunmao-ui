@@ -7,6 +7,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
+  Text,
 } from '@chakra-ui/react';
 import { watch } from '@vue-reactivity/watch';
 import {
@@ -36,15 +37,16 @@ const FormControlImpl: ComponentImplementation<{
   const { isInvalid, errorMsg } = validResult;
 
   useEffect(() => {
+    if (!inputId) return;
     const stop = watch(
       () => {
-        if (services.stateManager.store[inputId].checked !== undefined) {
+        const inputState = services.stateManager.store[inputId];
+        if (!inputState) return '';
+        if (inputState.checked !== undefined) {
           // special treatment for checkbox
-          return (
-            services.stateManager.store[inputId] as Static<typeof CheckboxStateSchema>
-          ).checked;
+          return (inputState as Static<typeof CheckboxStateSchema>).checked;
         } else {
-          return services.stateManager.store[inputId].value;
+          return inputState.value;
         }
       },
       newV => {
@@ -53,24 +55,26 @@ const FormControlImpl: ComponentImplementation<{
     );
     setInputValue(services.stateManager.store[inputId].value);
     return stop;
-  }, [slotsMap, setInputValue]);
+  }, [inputId, setInputValue]);
 
   useEffect(() => {
+    if (!inputId) return;
     const stop = watch(
       () => {
-        return services.stateManager.store[inputId].validResult;
+        return services.stateManager.store[inputId]?.validResult;
       },
       newV => {
         setValidResult(newV);
       }
     );
-    if (services.stateManager.store[inputId].validResult) {
+    if (services.stateManager.store[inputId]?.validResult) {
       setValidResult(services.stateManager.store[inputId].validResult);
     }
     return stop;
-  }, [slotsMap, setValidResult]);
+  }, [inputId, setValidResult]);
 
   useEffect(() => {
+    if (!inputId) return;
     if (inputValue) {
       // After inputValue first change, begin to show Invalid state
       setHideInvalid(false);
@@ -81,7 +85,10 @@ const FormControlImpl: ComponentImplementation<{
       isInvalid: !!(isInvalid || (!inputValue && isRequired)),
       value: inputValue,
     });
-  }, [slotsMap, inputId, fieldName, isInvalid, isRequired, inputValue]);
+  }, [inputId, inputId, fieldName, isInvalid, isRequired, inputValue]);
+
+  const placeholder = <Text color="gray.200">Please Add Input Here</Text>;
+  const slotView = <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />;
 
   return (
     <FormControl
@@ -91,7 +98,7 @@ const FormControlImpl: ComponentImplementation<{
     >
       <div css={FormControlContentCSS}>
         <FormLabel css={FormLabelCSS}>{label}</FormLabel>
-        <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />
+        {inputId ? slotView : placeholder}
       </div>
       {errorMsg ? (
         <FormErrorMessage css={FormItemCSS}>{errorMsg}</FormErrorMessage>
