@@ -37,9 +37,9 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'onClick',
+                        type: 'onClick',
                         componentId: '$utils',
                         method: {
                           name: 'alert',
@@ -49,7 +49,7 @@
                         disabled: '{{ del_btn.count === 0 }}',
                       },
                       {
-                        event: 'onClick',
+                        type: 'onClick',
                         componentId: 'del_btn',
                         method: {
                           name: 'setValue',
@@ -62,7 +62,7 @@
                         disabled: false,
                       },
                       {
-                        event: 'onClick',
+                        type: 'onClick',
                         componentId: 'del_btn',
                         method: {
                           name: 'setValue',

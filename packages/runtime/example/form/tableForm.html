@@ -45,9 +45,7 @@
                     url: 'https://61373521eac1410017c18209.mockapi.io/Volume',
                     method: 'post',
                     lazy: true,
-                    headers: [
-                      { key: 'Content-Type', value: 'application/json' },
-                    ],
+                    headers: [{ key: 'Content-Type', value: 'application/json' }],
                     body: '{{ form.data }}',
                     onComplete: [
                       {
@@ -180,7 +178,7 @@
                     type: 'button',
                     buttonConfig: {
                       text: '删除',
-                      events: [
+                      handlers: [
                         {
                           componentId: 'deleteVolume',
                           method: {
@@ -221,9 +219,9 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'onSubmit',
+                        type: 'onSubmit',
                         componentId: 'createVolume',
                         method: {
                           name: 'triggerFetch',
@@ -260,8 +258,7 @@
               id: 'nameInput',
               type: 'chakra_ui/v1/input',
               properties: {
-                defaultValue:
-                  '{{ table.selectedItem ? table.selectedItem.name : "" }}',
+                defaultValue: '{{ table.selectedItem ? table.selectedItem.name : "" }}',
               },
               traits: [
                 {
@@ -289,8 +286,7 @@
               properties: {
                 label: '类型',
                 fieldName: 'type',
-                helperText:
-                  '共享虚拟卷支持被多台虚拟机同时挂载。类型创建后不可修改。',
+                helperText: '共享虚拟卷支持被多台虚拟机同时挂载。类型创建后不可修改。',
               },
               traits: [
                 {
@@ -392,8 +388,7 @@
               id: 'sizeInput',
               type: 'chakra_ui/v1/number_input',
               properties: {
-                defaultValue:
-                  '{{ table.selectedItem ? table.selectedItem.size : 0 }}',
+                defaultValue: '{{ table.selectedItem ? table.selectedItem.size : 0 }}',
                 min: 0,
                 max: 100,
                 step: 5,
