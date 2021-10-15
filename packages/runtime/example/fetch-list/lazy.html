@@ -31,9 +31,9 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'fetch_list',
                         method: {
                           name: 'triggerFetch',
@@ -68,8 +68,7 @@
                   type: 'core/v1/state',
                   properties: {
                     key: 'token',
-                    initialValue:
-                      '01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2',
+                    initialValue: '01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2',
                   },
                 },
                 {
@@ -82,8 +81,7 @@
                       { key: 'x-rapidapi-key', value: `{{fetch_list.token}}` },
                       {
                         key: 'x-rapidapi-host',
-                        value:
-                          'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
+                        value: 'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
                       },
                     ],
                     lazy: true,

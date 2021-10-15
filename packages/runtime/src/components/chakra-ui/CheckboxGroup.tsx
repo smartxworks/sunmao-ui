@@ -56,12 +56,15 @@ export default {
       exampleProperties: {
         defaultValue: [],
       },
+      exampleSize: [3, 3],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: CheckboxGroup,

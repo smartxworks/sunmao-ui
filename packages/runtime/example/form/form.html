@@ -49,9 +49,9 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'onSubmit',
+                        type: 'onSubmit',
                         componentId: '$utils',
                         method: {
                           name: 'alert',
@@ -62,7 +62,7 @@
                         disabled: false,
                       },
                       {
-                        event: 'onSubmit',
+                        type: 'onSubmit',
                         componentId: 'form',
                         method: {
                           name: 'resetForm',

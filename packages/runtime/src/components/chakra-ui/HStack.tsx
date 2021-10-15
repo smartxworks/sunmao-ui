@@ -46,12 +46,15 @@ export default {
       exampleProperties: {
         spacing: '24px',
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: HStack,

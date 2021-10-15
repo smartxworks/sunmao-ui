@@ -114,10 +114,10 @@ export default {
         cancelButton: 'Cancel',
         disableConfirm: false,
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [
         {
@@ -133,6 +133,9 @@ export default {
           name: 'cancelDialog',
         },
       ],
+      slots: ['content'],
+      styleSlots: [],
+      events: ['cancelDialog', 'confirmDialog'],
     },
   }),
   impl: Dialog,

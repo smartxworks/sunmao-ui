@@ -38,7 +38,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
       css={style}
       {...{ colorScheme, isLoading }}
       ref={ref}
-      onClick={callbacks?.click}
+      onClick={callbacks?.onClick}
     >
       <Text value={text} />
     </BaseButton>
@@ -72,16 +72,19 @@ export default {
         colorScheme: 'blue',
         isLoading: false,
       },
+      exampleSize: [2, 1],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [
         {
           name: 'click',
         },
       ],
+      slots: [],
+      styleSlots: [],
+      events: ['onClick'],
     },
   }),
   impl: Button,
