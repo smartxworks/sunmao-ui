@@ -144,10 +144,10 @@ export default {
         isRequired: false,
         defaultValue: '',
       },
+      exampleSize: [4, 1],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [
         {
@@ -160,6 +160,9 @@ export default {
           name: 'resetInputValue',
         },
       ],
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Input,

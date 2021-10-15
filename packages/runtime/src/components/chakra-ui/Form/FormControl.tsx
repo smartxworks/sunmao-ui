@@ -125,10 +125,10 @@ export default {
         isRequired: false,
         helperText: '',
       },
+      exampleSize: [4, 2],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: Type.Object({
         inputId: Type.String(),
         fieldName: Type.String(),
@@ -136,6 +136,9 @@ export default {
         value: Type.Any(),
       }),
       methods: [],
+      slots: ['content'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: FormControlImpl,

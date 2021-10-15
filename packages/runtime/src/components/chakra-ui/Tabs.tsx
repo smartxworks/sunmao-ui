@@ -63,12 +63,16 @@ export default {
         tabNames: [],
         initialSelectedTabIndex: 0,
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: StateSchema,
       methods: [],
+      // tab slot is dynamic
+      slots: [],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: Tabs,

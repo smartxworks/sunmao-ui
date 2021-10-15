@@ -78,12 +78,15 @@ export default {
       exampleProperties: {
         text: 'tooltip',
       },
+      exampleSize: [2, 1],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: ['trigger'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: TooltipImpl,

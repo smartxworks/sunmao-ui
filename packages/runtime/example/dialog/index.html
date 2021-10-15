@@ -22,7 +22,7 @@
               id: 'root',
               type: 'chakra_ui/v1/root',
               properties: {},
-              traits: []
+              traits: [],
             },
             {
               id: 'btn',
@@ -32,7 +32,7 @@
                   raw: `**Open Dialog**`,
                   format: 'md',
                 },
-                colorScheme: 'red'
+                colorScheme: 'red',
               },
               traits: [
                 {
@@ -47,18 +47,18 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'dialog',
                         method: {
                           name: 'openDialog',
                           parameters: {
                             title: 'hi',
-                          }
+                          },
                         },
-                        wait: {}
-                      }
+                        wait: {},
+                      },
                     ],
                   },
                 },
@@ -71,11 +71,11 @@
                 title: 'This is a dialog',
                 confirmButton: {
                   text: 'hello',
-                  colorScheme: 'pink'
+                  colorScheme: 'pink',
                 },
                 cancelButton: {
-                  text: 'thanks'
-                }
+                  text: 'thanks',
+                },
               },
               traits: [
                 {
@@ -95,30 +95,30 @@
                     name: 'event',
                   },
                   properties: {
-                    events: [
+                    handlers: [
                       // when click confirm
                       {
-                        event: 'confirmDialog',
+                        type: 'confirmDialog',
                         componentId: 'dialog',
                         method: {
-                          name: 'confirmDialog'
+                          name: 'confirmDialog',
                         },
                         wait: {},
                         disabled: 'false',
                       },
                       // when cancel confirm
                       {
-                        event: 'cancelDialog',
+                        type: 'cancelDialog',
                         componentId: 'dialog',
                         method: {
-                          name: 'cancelDialog'
+                          name: 'cancelDialog',
                         },
                         wait: {},
                         disabled: 'false',
                       },
-                    ]
-                  }
-                }
+                    ],
+                  },
+                },
               ],
             },
             {

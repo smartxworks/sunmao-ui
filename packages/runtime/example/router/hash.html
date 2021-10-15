@@ -136,9 +136,9 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'router',
                         method: {
                           name: 'setValue',
@@ -151,12 +151,11 @@
                         disabled: false,
                       },
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'router',
                         method: {
                           name: 'navigate',
-                          parameters:
-                            "{{['/','/vue','/angular'][router.index%3]}}",
+                          parameters: "{{['/','/vue','/angular'][router.index%3]}}",
                         },
                         wait: {},
                         disabled: false,
@@ -179,9 +178,9 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'router',
                         method: {
                           name: 'setValue',
@@ -194,7 +193,7 @@
                         disabled: false,
                       },
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'router',
                         method: {
                           name: 'navigate',

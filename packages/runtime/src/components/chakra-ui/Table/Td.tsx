@@ -29,11 +29,11 @@ export const TableTd: React.FC<{
     case 'button':
       const onClick = () => {
         onClickItem();
-        column.buttonConfig.events.forEach(event => {
+        column.buttonConfig.handlers.forEach(handler => {
           services.apiService.send('uiMethod', {
-            componentId: event.componentId,
-            name: event.method.name,
-            parameters: event.method.parameters,
+            componentId: handler.componentId,
+            name: handler.method.name,
+            parameters: handler.method.parameters,
           });
         });
       };

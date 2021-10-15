@@ -38,16 +38,15 @@
                 {
                   type: 'core/v1/event',
                   properties: {
-                    events: [
+                    handlers: [
                       {
-                        event: 'click',
+                        type: 'onClick',
                         componentId: 'test_btn',
                         method: {
                           name: 'setValue',
                           parameters: {
                             key: 'count',
-                            value:
-                              '{{ test_btn.count > 0 ? 0 : test_btn.count + 1 }}',
+                            value: '{{ test_btn.count > 0 ? 0 : test_btn.count + 1 }}',
                           },
                         },
                         wait: {},

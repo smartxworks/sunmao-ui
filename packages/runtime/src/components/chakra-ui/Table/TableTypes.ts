@@ -26,7 +26,7 @@ export const ColumnSchema = Type.Object({
   type: TdTypeSchema,
   buttonConfig: Type.Object({
     text: Type.String(),
-    events: Type.Array(CallMethodSchema),
+    handlers: Type.Array(CallMethodSchema),
   }),
 });
 

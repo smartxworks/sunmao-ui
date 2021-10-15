@@ -47,12 +47,15 @@ export default {
       exampleProperties: {
         layout: [],
       },
+      exampleSize: [6, 6],
     },
     spec: {
       properties: PropsSchema,
-      acceptTraits: [],
       state: {},
       methods: [],
+      slots: ['container'],
+      styleSlots: [],
+      events: [],
     },
   }),
   impl: GridLayout,

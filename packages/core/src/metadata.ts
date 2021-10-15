@@ -9,4 +9,5 @@ export type ComponentMetadata = Metadata & {
   displayName: string;
   icon?: string;
   exampleProperties: Record<string, unknown>;
+  exampleSize: [number, number];
 };
