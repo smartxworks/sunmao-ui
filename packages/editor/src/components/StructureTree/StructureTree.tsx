@@ -66,12 +66,13 @@ export const StructureTree: React.FC<Props> = props => {
           onSelectComponent(dummy.id);
         }}
         onClickRemove={onClickRemove}
+        noChevron={true}
       />
     );
   });
 
   return (
-    <VStack spacing="2" padding="4" alignItems="start">
+    <VStack spacing="2" padding="5" alignItems="start">
       <Text fontSize="lg" fontWeight="bold">
         Components
       </Text>
