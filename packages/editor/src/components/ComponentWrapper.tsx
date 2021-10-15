@@ -1,67 +1,76 @@
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { ComponentWrapperType } from '@meta-ui/runtime';
-import React from 'react';
+import { eventBus, HoverComponentEvent, SelectComponentEvent } from '../eventBus';
 
 // children of components in this list should render height as 100%
 const fullHeightList = ['core/v1/grid_layout'];
 const inlineList = ['chakra_ui/v1/checkbox', 'chakra_ui/v1/radio'];
 
-export const genComponentWrapper = (wrapperProps: {
-  selectedComponentId: string;
-  hoverComponentId: string;
-  onClick: (id: string) => void;
-  onMouseEnter: (id: string) => void;
-  onMouseLeave: (id: string) => void;
-}): ComponentWrapperType => {
-  const { selectedComponentId, hoverComponentId, onClick, onMouseEnter, onMouseLeave } =
-    wrapperProps;
-  return props => {
-    const componentId = props.component.id;
-    const isHover = hoverComponentId === componentId;
-    const isSelected = selectedComponentId === componentId;
-    let borderColor = 'transparent';
-    if (isSelected) {
-      borderColor = 'red';
-    } else if (isHover) {
-      borderColor = 'black';
-    }
-    const style = css`
-      display: ${inlineList.includes(props.component.type) ? 'inline-block' : 'block'};
-      height: ${fullHeightList.includes(props.parentType) ? '100%' : 'auto'};
-      width: ${inlineList.includes(props.component.type) ? 'auto' : '100%'};
-      position: relative;
-      &:after {
-        content: '';
-        position: absolute;
-        top: -4px;
-        bottom: -4px;
-        left: -4px;
-        right: -4px;
-        border: 1px solid ${borderColor};
-        pointer-events: none;
+export const ComponentWrapper: ComponentWrapperType = props => {
+  const { component, parentType } = props;
+  const [selectedComponentId, setSelectedComponentId] = useState('');
+  const [hoverComponentId, setHoverComponentId] = useState('');
+
+  useEffect(() => {
+    const handler = (event: string, payload: any) => {
+      switch (event) {
+        case SelectComponentEvent:
+          setSelectedComponentId(payload);
+          break;
+        case HoverComponentEvent:
+          setHoverComponentId(payload);
+          break;
       }
-    `;
-    const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
-      e.stopPropagation();
-      onClick(componentId);
     };
-    const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
-      e.stopPropagation();
-      onMouseEnter(componentId);
-    };
-    const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
-      e.stopPropagation();
-      onMouseLeave(componentId);
-    };
-    return (
-      <div
-        onClick={onClickWrapper}
-        onMouseEnter={onMouseEnterWrapper}
-        onMouseLeave={onMouseLeaveWrapper}
-        css={style}
-      >
-        {props.children}
-      </div>
-    );
+    eventBus.on('*', handler);
+    return () => eventBus.off('*', handler);
+  }, [setSelectedComponentId, setHoverComponentId]);
+
+  const isHover = hoverComponentId === component.id;
+  const isSelected = selectedComponentId === component.id;
+  let borderColor = 'transparent';
+  if (isSelected) {
+    borderColor = 'red';
+  } else if (isHover) {
+    borderColor = 'black';
+  }
+  const style = css`
+    display: ${inlineList.includes(component.type) ? 'inline-block' : 'block'};
+    height: ${fullHeightList.includes(parentType) ? '100%' : 'auto'};
+    width: ${inlineList.includes(component.type) ? 'auto' : '100%'};
+    position: relative;
+    &:after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: -4px;
+      right: -4px;
+      border: 1px solid ${borderColor};
+      pointer-events: none;
+    }
+  `;
+  const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    eventBus.send(SelectComponentEvent as any, component.id);
   };
+  const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    eventBus.send(HoverComponentEvent as any, component.id);
+  };
+  const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    eventBus.send(HoverComponentEvent as any, '');
+  };
+  return (
+    <div
+      onClick={onClickWrapper}
+      onMouseEnter={onMouseEnterWrapper}
+      onMouseLeave={onMouseLeaveWrapper}
+      css={style}
+    >
+      {props.children}
+    </div>
+  );
 };
