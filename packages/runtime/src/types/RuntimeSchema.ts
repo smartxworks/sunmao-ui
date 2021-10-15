@@ -15,8 +15,8 @@ export type MetaUIServices = {
 };
 
 export type ComponentWrapperProps = {
-  id: string;
   parentType: string;
+  component: RuntimeApplicationComponent;
 };
 
 export type ComponentWrapperType = React.FC<ComponentWrapperProps>;

@@ -4,6 +4,7 @@ import React from 'react';
 
 // children of components in this list should render height as 100%
 const fullHeightList = ['core/v1/grid_layout'];
+const inlineList = ['chakra_ui/v1/checkbox', 'chakra_ui/v1/radio'];
 
 export const genComponentWrapper = (wrapperProps: {
   selectedComponentId: string;
@@ -15,8 +16,9 @@ export const genComponentWrapper = (wrapperProps: {
   const { selectedComponentId, hoverComponentId, onClick, onMouseEnter, onMouseLeave } =
     wrapperProps;
   return props => {
-    const isHover = hoverComponentId === props.id;
-    const isSelected = selectedComponentId === props.id;
+    const componentId = props.component.id;
+    const isHover = hoverComponentId === componentId;
+    const isSelected = selectedComponentId === componentId;
     let borderColor = 'transparent';
     if (isSelected) {
       borderColor = 'red';
@@ -24,8 +26,9 @@ export const genComponentWrapper = (wrapperProps: {
       borderColor = 'black';
     }
     const style = css`
+      display: ${inlineList.includes(props.component.type) ? 'inline-block' : 'block'};
       height: ${fullHeightList.includes(props.parentType) ? '100%' : 'auto'};
-      width: 100%;
+      width: ${inlineList.includes(props.component.type) ? 'auto' : '100%'};
       position: relative;
       &:after {
         content: '';
@@ -40,15 +43,15 @@ export const genComponentWrapper = (wrapperProps: {
     `;
     const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      onClick(props.id);
+      onClick(componentId);
     };
     const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      onMouseEnter(props.id);
+      onMouseEnter(componentId);
     };
     const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      onMouseLeave(props.id);
+      onMouseLeave(componentId);
     };
     return (
       <div
