@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { GridCallbacks } from '@meta-ui/runtime';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { last } from 'lodash';
 import { App } from '../metaUI';
 import { StructureTree } from './StructureTree';
 import {
@@ -39,7 +40,6 @@ export const Editor = () => {
 
   const gridCallbacks: GridCallbacks = {
     onDragStop(id, layout) {
-      console.log('dragstop');
       eventBus.send(
         'operation',
         new ModifyComponentPropertyOperation(id, 'layout', layout)
@@ -47,7 +47,8 @@ export const Editor = () => {
     },
     onDrop(id, layout, item, e) {
       const component = e.dataTransfer?.getData('component') || '';
-      const componentId = `component${count++}`;
+      const componentName = last(component.split('/'));
+      const componentId = `${componentName}_${count++}`;
       eventBus.send(
         'operation',
         new CreateComponentOperation(id, 'container', component, componentId)

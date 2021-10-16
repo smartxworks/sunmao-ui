@@ -48,8 +48,10 @@ export default {
       isDraggable: true,
       isResizable: true,
       exampleProperties: {
-        raw: 'confirm',
-        format: 'plain',
+        text: {
+          raw: 'text',
+          format: 'plain',
+        },
       },
       exampleSize: [2, 1],
     },
