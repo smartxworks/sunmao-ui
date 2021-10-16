@@ -43,8 +43,7 @@ const Radio: ComponentImplementation<Static<typeof PropsSchema>> = ({
       name={name}
       size={size}
       spacing={spacing}
-      colorScheme={colorScheme}
-    >
+      colorScheme={colorScheme}>
       <Text value={text} />
     </BaseRadio>
   );
