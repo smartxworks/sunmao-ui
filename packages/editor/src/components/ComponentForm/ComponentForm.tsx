@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Box } from '@chakra-ui/react';
 import { Application } from '@meta-ui/core';
 import React from 'react';
 import { eventBus } from '../../eventBus';
@@ -31,10 +31,10 @@ export const ComponentForm: React.FC<Props> = props => {
   });
 
   return (
-    <div>
+    <Box p={4}>
       <div>Component Form</div>
       <div>ID: {selectedComponent?.id}</div>
       <form>{fields}</form>
-    </div>
+    </Box>
   );
 };
