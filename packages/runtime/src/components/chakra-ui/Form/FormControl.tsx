@@ -87,8 +87,7 @@ const FormControlImpl: ComponentImplementation<{
     <FormControl
       isRequired={isRequired}
       isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}
-      css={FormControlCSS}
-    >
+      css={FormControlCSS}>
       <div css={FormControlContentCSS}>
         <FormLabel css={FormLabelCSS}>{label}</FormLabel>
         <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />
@@ -117,7 +116,7 @@ export default {
       name: 'formControl',
       isResizable: false,
       isDraggable: true,
-      displayName: 'FormControl',
+      displayName: 'Form Control',
       description: 'chakra-ui formControl',
       exampleProperties: {
         label: 'name',
