@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import {
   Tabs,
   TabList,
@@ -21,7 +21,7 @@ export const ComponentList: React.FC = () => {
       </TabList>
       <TabPanels>
         {Array.from(registry.components.keys()).map(version => (
-          <TabPanel key={version}>
+          <TabPanel key={version} overflow="auto">
             <SimpleGrid columns={4} spacing={1}>
               {Array.from(registry.components.get(version)!.values()).map(c => {
                 const onDragStart = (e: any) => {
@@ -38,11 +38,12 @@ export const ComponentList: React.FC = () => {
                       background="gray.100"
                       width="60px"
                       height="60px"
+                      borderRadius="md"
                       align="center"
                       justify="center"
                       transition="ease 0.2s"
                       _hover={{
-                        transform: 'scale(1.1)',
+                        transform: 'scale(1.05)',
                         background: 'gray.200',
                       }}
                       p={2}
