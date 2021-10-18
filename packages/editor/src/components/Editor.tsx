@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { GridCallbacks } from '@meta-ui/runtime';
+import { GridCallbacks, DIALOG_CONTAINER_ID } from '@meta-ui/runtime';
 import produce from 'immer';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
-import { last } from 'lodash';
 import { App, stateStore } from '../metaUI';
 import { StructureTree } from './StructureTree';
 import {
@@ -116,6 +115,12 @@ export const Editor = () => {
               background="white"
               transform={`scale(${scale / 100})`}
             >
+              <Box
+                id={DIALOG_CONTAINER_ID}
+                width="full"
+                height="full"
+                position="absolute"
+              />
               {appComponent}
             </Box>
           </Box>
