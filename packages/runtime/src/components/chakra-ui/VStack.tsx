@@ -20,7 +20,16 @@ const VStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
 }) => {
   return (
-    <BaseVStack {...{ direction, wrap, align, justify, spacing }}>
+    <BaseVStack
+      width="full"
+      height="full"
+      padding="4"
+      background="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="4"
+      {...{ direction, wrap, align, justify, spacing }}
+    >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseVStack>
   );
