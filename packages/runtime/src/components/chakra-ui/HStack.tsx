@@ -20,7 +20,16 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
 }) => {
   return (
-    <BaseHStack {...{ direction, wrap, align, justify, spacing }}>
+    <BaseHStack
+      height="full"
+      width="full"
+      padding="4"
+      background="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="4"
+      {...{ direction, wrap, align, justify, spacing }}
+    >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseHStack>
   );

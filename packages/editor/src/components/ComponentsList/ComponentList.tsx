@@ -9,6 +9,7 @@ import {
   Flex,
   Box,
 } from '@chakra-ui/react';
+import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@meta-ui/runtime';
 import { registry } from '../../metaUI';
 
 export const ComponentList: React.FC = () => {
@@ -26,6 +27,15 @@ export const ComponentList: React.FC = () => {
               {Array.from(registry.components.get(version)!.values()).map(c => {
                 const onDragStart = (e: any) => {
                   e.dataTransfer.setData('component', `${c.version}/${c.metadata.name}`);
+                  // pass the exampleSize to gridlayout to render placeholder
+                  e.dataTransfer.setData(
+                    encodeDragDataTransfer(
+                      `${DROP_EXAMPLE_SIZE_PREFIX}${JSON.stringify(
+                        c.metadata.exampleSize
+                      )}`
+                    ),
+                    ''
+                  );
                 };
                 const cEle = (
                   <Flex
