@@ -1,17 +1,16 @@
-import React, { DragEvent } from 'react';
-import { Application } from '@meta-ui/core';
-import { IconButton } from '@chakra-ui/react';
-import { DeleteIcon } from '@chakra-ui/icons';
+import React from 'react';
+import { Application, ApplicationComponent } from '@meta-ui/core';
 import { eventBus } from '../../eventBus';
 import {
   CreateComponentOperation,
   RemoveComponentOperation,
 } from '../../operations/Operations';
-import { css } from '@emotion/react';
+import { ComponentItemView } from './ComponentItemView';
+import { ComponentTree } from './ComponentTree';
+import { Box, Text, VStack } from '@chakra-ui/react';
 
-type ChildrenMap = Map<string, SlotsMap>;
-type SlotsMap = Map<string, Array<Application['spec']['components'][0]>>;
-type Component = Application['spec']['components'][0];
+export type ChildrenMap = Map<string, SlotsMap>;
+type SlotsMap = Map<string, ApplicationComponent[]>;
 
 type Props = {
   app: Application;
@@ -21,7 +20,7 @@ type Props = {
 
 export const StructureTree: React.FC<Props> = props => {
   const { app, selectedComponentId, onSelectComponent } = props;
-  const topLevelComponents: Component[] = [];
+  const topLevelComponents: ApplicationComponent[] = [];
   const childrenMap: ChildrenMap = new Map();
 
   const components = app.spec.components.filter(c => c.type !== 'core/v1/dummy');
@@ -45,60 +44,63 @@ export const StructureTree: React.FC<Props> = props => {
     }
   });
 
-  function genTreeItem(component: Component) {
-    const slots = childrenMap.get(component.id);
-    let slotsEle;
-    if (slots) {
-      slotsEle = Array.from(slots.keys()).map(slot => {
-        const children = slots.get(slot)!.map(genTreeItem);
-        const onDrop = (e: DragEvent) => {
-          const creatingComponent = e.dataTransfer?.getData('component') || '';
-          console.log('createComponent', component.id, slot, creatingComponent);
-          eventBus.send(
-            'operation',
-            new CreateComponentOperation(component.id, slot, creatingComponent)
-          );
-        };
-        return (
-          <div key={slot}>
-            <div onDrop={onDrop}>slot: {slot}</div>
-            {children}
-          </div>
-        );
-      });
-    }
-
+  const topEles = topLevelComponents.map(c => (
+    <ComponentTree
+      key={c.id}
+      component={c}
+      childrenMap={childrenMap}
+      selectedComponentId={selectedComponentId}
+      onSelectComponent={onSelectComponent}
+    />
+  ));
+  const dataSourcesEles = dataSources.map(dummy => {
     const onClickRemove = () => {
-      eventBus.send('operation', new RemoveComponentOperation(component.id));
+      eventBus.send('operation', new RemoveComponentOperation(dummy.id));
     };
-
     return (
-      <div key={component.id} style={{ paddingLeft: '16px' }}>
-        <strong
-          css={css`
-            color: ${component.id === selectedComponentId ? 'red' : 'black'};
-          `}
-          onClick={() => {
-            onSelectComponent(component.id);
-          }}
-        >
-          {component.id}
-        </strong>
-        <IconButton aria-label="remove" icon={<DeleteIcon />} onClick={onClickRemove} />
-        {slotsEle}
-      </div>
+      <ComponentItemView
+        key={dummy.id}
+        title={dummy.id}
+        isSelected={dummy.id === selectedComponentId}
+        onClick={() => {
+          onSelectComponent(dummy.id);
+        }}
+        onClickRemove={onClickRemove}
+        noChevron={true}
+      />
     );
-  }
-
-  const topEles = topLevelComponents.map(genTreeItem);
-  const dataSourcesEles = dataSources.map(genTreeItem);
+  });
 
   return (
-    <div>
-      <strong>Components</strong>
+    <VStack spacing="2" padding="5" alignItems="start">
+      <Text fontSize="lg" fontWeight="bold">
+        Components
+      </Text>
+      <RootItem />
       {topEles}
-      <strong>DataSources</strong>
+      <Text fontSize="lg" fontWeight="bold">
+        DataSources
+      </Text>
       {dataSourcesEles}
-    </div>
+    </VStack>
   );
 };
+
+function RootItem() {
+  const onDrop = (e: React.DragEvent) => {
+    const creatingComponent = e.dataTransfer?.getData('component') || '';
+
+    eventBus.send('operation', new CreateComponentOperation(creatingComponent));
+  };
+  return (
+    <Box onDrop={onDrop} width="full">
+      <ComponentItemView
+        title="Root"
+        isSelected={false}
+        onClick={() => undefined}
+        isDroppable={true}
+        noChevron={true}
+      />
+    </Box>
+  );
+}
