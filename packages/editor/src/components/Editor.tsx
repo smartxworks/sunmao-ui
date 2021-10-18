@@ -12,13 +12,11 @@ import {
 import { eventBus, SelectComponentEvent } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
-import { useAppModel } from '../operations/useAppModel';
+import { appModelManager, useAppModel } from '../operations/useAppModel';
 import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
-
-let count = 0;
 
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
@@ -42,11 +40,10 @@ export const Editor = () => {
       },
       onDrop(id, layout, _, e) {
         const component = e.dataTransfer?.getData('component') || '';
-        const componentName = last(component.split('/'));
-        const componentId = `${componentName}_${count++}`;
+        const componentId = appModelManager.genId(component);
         eventBus.send(
           'operation',
-          new CreateComponentOperation(component, id, 'container', componentId)
+          new CreateComponentOperation(component, id, 'container')
         );
 
         const newLayout = produce(layout, draft => {
@@ -92,7 +89,8 @@ export const Editor = () => {
               height="100%"
               display="flex"
               flexDirection="column"
-              textAlign="left">
+              textAlign="left"
+            >
               <TabList background="gray.50">
                 <Tab>UI Tree</Tab>
                 <Tab>State</Tab>
@@ -116,7 +114,8 @@ export const Editor = () => {
               widht="100%"
               height="100%"
               background="white"
-              transform={`scale(${scale / 100})`}>
+              transform={`scale(${scale / 100})`}
+            >
               {appComponent}
             </Box>
           </Box>
@@ -126,7 +125,8 @@ export const Editor = () => {
               textAlign="left"
               height="100%"
               display="flex"
-              flexDirection="column">
+              flexDirection="column"
+            >
               <TabList background="gray.50">
                 <Tab>Inspect</Tab>
                 <Tab>Insert</Tab>
