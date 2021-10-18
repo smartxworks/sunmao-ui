@@ -6,7 +6,7 @@ type Props = {
   title: string;
   isSelected: boolean;
   onClick: () => void;
-  onClickRemove: () => void;
+  onClickRemove?: () => void;
   noChevron: boolean;
   isExpanded?: boolean;
   onToggleExpanded?: () => void;
@@ -60,13 +60,15 @@ export const ComponentItemView: React.FC<Props> = props => {
         <Text color={isSelected ? 'red.500' : 'black'} onClick={onClick} cursor="pointer">
           {title}
         </Text>
-        <IconButton
-          variant="ghost"
-          size="smx"
-          aria-label="remove"
-          icon={<DeleteIcon />}
-          onClick={onClickRemove}
-        />
+        {onClickRemove ? (
+          <IconButton
+            variant="ghost"
+            size="smx"
+            aria-label="remove"
+            icon={<DeleteIcon />}
+            onClick={onClickRemove}
+          />
+        ) : null}
       </HStack>
     </Box>
   );
