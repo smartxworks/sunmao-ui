@@ -12,13 +12,11 @@ import {
 import { eventBus, SelectComponentEvent } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
-import { useAppModel } from '../operations/useAppModel';
+import { appModelManager, useAppModel } from '../operations/useAppModel';
 import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
-
-let count = 0;
 
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
@@ -42,11 +40,10 @@ export const Editor = () => {
       },
       onDrop(id, layout, _, e) {
         const component = e.dataTransfer?.getData('component') || '';
-        const componentName = last(component.split('/'));
-        const componentId = `${componentName}_${count++}`;
+        const componentId = appModelManager.genId(component);
         eventBus.send(
           'operation',
-          new CreateComponentOperation(id, 'container', component, componentId)
+          new CreateComponentOperation(component, id, 'content')
         );
 
         const newLayout = produce(layout, draft => {
@@ -102,6 +99,7 @@ export const Editor = () => {
                 <TabPanel p={0}>
                   <StructureTree
                     app={app}
+                    selectedComponentId={selectedComponentId}
                     onSelectComponent={id => setSelectedComponentId(id)}
                   />
                 </TabPanel>

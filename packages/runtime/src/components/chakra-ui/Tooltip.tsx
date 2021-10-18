@@ -30,7 +30,7 @@ const TooltipImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       defaultIsOpen={defaultIsOpen}
       shouldWrapChildren={shouldWrapChildren}
     >
-      <Slot slotsMap={slotsMap} slot="trigger" />
+      <Slot slotsMap={slotsMap} slot="content" />
     </Tooltip>
   );
 };
@@ -84,7 +84,7 @@ export default {
       properties: PropsSchema,
       state: {},
       methods: [],
-      slots: ['trigger'],
+      slots: ['content'],
       styleSlots: [],
       events: [],
     },

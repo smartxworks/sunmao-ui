@@ -71,7 +71,7 @@ export const DefaultAppSchema: Application = {
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'grid', slot: 'container' } },
+            properties: { container: { id: 'grid', slot: 'content' } },
           },
         ],
       },
@@ -82,7 +82,7 @@ export const DefaultAppSchema: Application = {
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'grid', slot: 'container' } },
+            properties: { container: { id: 'grid', slot: 'content' } },
           },
         ],
       },
@@ -93,7 +93,7 @@ export const DefaultAppSchema: Application = {
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'grid', slot: 'container' } },
+            properties: { container: { id: 'grid', slot: 'content' } },
           },
         ],
       },
