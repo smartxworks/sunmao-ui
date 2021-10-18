@@ -43,7 +43,7 @@ export const Editor = () => {
         const componentId = appModelManager.genId(component);
         eventBus.send(
           'operation',
-          new CreateComponentOperation(component, id, 'container')
+          new CreateComponentOperation(component, id, 'content')
         );
 
         const newLayout = produce(layout, draft => {

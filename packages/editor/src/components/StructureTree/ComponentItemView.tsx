@@ -50,7 +50,6 @@ export const ComponentItemView: React.FC<Props> = props => {
   return (
     <Box
       width="full"
-      cursor="pointer"
       onDragOver={onDragOver}
       onDragLeave={() => setIsDragOver(false)}
       onDrop={() => setIsDragOver(false)}
@@ -58,7 +57,7 @@ export const ComponentItemView: React.FC<Props> = props => {
     >
       {noChevron ? null : expandIcon}
       <HStack width="full" justify="space-between">
-        <Text color={isSelected ? 'red.500' : 'black'} onClick={onClick}>
+        <Text color={isSelected ? 'red.500' : 'black'} onClick={onClick} cursor="pointer">
           {title}
         </Text>
         <IconButton
