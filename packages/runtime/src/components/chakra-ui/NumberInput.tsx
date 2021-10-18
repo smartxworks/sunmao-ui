@@ -57,8 +57,7 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
       clampValueOnBlur={clampValueOnBlur}
       allowMouseWheel={allowMouseWheel}
       size={size}
-      onChange={onChange}
-    >
+      onChange={onChange}>
       <NumberInputField />
       <NumberInputStepper>
         <NumberIncrementStepper {...customerIncrement} />
@@ -106,7 +105,7 @@ export default {
     metadata: {
       name: 'number_input',
       description: 'chakra_ui number input',
-      displayName: 'NumberInput',
+      displayName: 'Number Input',
       isDraggable: true,
       isResizable: true,
       exampleProperties: {
