@@ -9,10 +9,13 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  ModalContentProps,
+  ModalOverlayProps,
 } from '@chakra-ui/react';
 import { Static, Type } from '@sinclair/typebox';
 import Slot from '../_internal/Slot';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
+import { DIALOG_CONTAINER_ID } from '../../constants';
 
 const HandleButtonPropertySchema = Type.Object({
   text: Type.Optional(Type.String()),
@@ -37,6 +40,11 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(customerTitle || '');
   const cancelRef = useRef(null);
+  const containerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    containerRef.current = document.getElementById(DIALOG_CONTAINER_ID);
+  }, [containerRef]);
 
   useEffect(() => {
     subscribeMethods({
@@ -53,17 +61,34 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
     });
   }, []);
 
+  const dialogContentProps: ModalContentProps = {
+    position: 'absolute',
+    width: 'full',
+    containerProps: { position: 'absolute', width: 'full', height: 'full' },
+  };
+
+  const dialogOverlayProps: ModalOverlayProps = {
+    position: 'absolute',
+    width: 'full',
+    height: 'full',
+  };
+
+  const portalProps = {
+    appendToParentPortal: true,
+    containerRef,
+  };
+
   return (
     <React.Fragment>
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
         onClose={() => setIsOpen(false)}
+        portalProps={containerRef.current ? portalProps : undefined}
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
+        <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>
+          <AlertDialogContent {...(containerRef.current ? dialogContentProps : {})}>
             <AlertDialogHeader>{title}</AlertDialogHeader>
-
             <AlertDialogBody>
               <Slot slotsMap={slotsMap} slot="content" />
             </AlertDialogBody>
