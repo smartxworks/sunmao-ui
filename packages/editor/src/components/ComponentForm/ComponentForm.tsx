@@ -1,9 +1,7 @@
-import { FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Box } from '@chakra-ui/react';
 import { Application } from '@meta-ui/core';
 import React from 'react';
-import { parseType } from '../../../../runtime/lib';
 import { eventBus } from '../../eventBus';
-import { registry } from '../../metaUI';
 import {
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
@@ -21,9 +19,6 @@ export const ComponentForm: React.FC<Props> = props => {
   }
 
   const properties = selectedComponent.properties;
-
-  const { name, version } = parseType(selectedComponent.type);
-  const spec = registry.getComponent(version, name).spec;
 
   const fields = Object.keys(properties || []).map(key => {
     const value = properties![key];
@@ -69,12 +64,12 @@ export const ComponentForm: React.FC<Props> = props => {
   });
 
   return (
-    <div>
-      <strong>Component Fields</strong>
+    <Box p={4}>
+      <div>Component Form</div>
       <div>ID: {selectedComponent?.id}</div>
       <form>{fields}</form>
       <strong>Trait Fields</strong>
       <div>{traitForms}</div>
-    </div>
+    </Box>
   );
 };
