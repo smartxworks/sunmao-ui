@@ -23,7 +23,7 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   return (
     <Suspense fallback={null}>
       <BaseGridLayout onDragStop={onDragStop} onDrop={onDrop} layout={layout}>
-        {getSlots(slotsMap, 'container')}
+        {getSlots(slotsMap, 'content')}
       </BaseGridLayout>
     </Suspense>
   );
@@ -60,7 +60,7 @@ export default {
       properties: PropsSchema,
       state: {},
       methods: [],
-      slots: ['container'],
+      slots: ['content'],
       styleSlots: [],
       events: [],
     },
