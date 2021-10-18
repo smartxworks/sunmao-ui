@@ -124,7 +124,7 @@ export default {
       name: 'formControl',
       isResizable: false,
       isDraggable: true,
-      displayName: 'FormControl',
+      displayName: 'Form Control',
       description: 'chakra-ui formControl',
       exampleProperties: {
         label: 'name',

@@ -11,6 +11,8 @@ import { produce } from 'immer';
 import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
 
+let count = 0;
+
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
     type: 'core/v1/slot',
@@ -32,8 +34,9 @@ function genComponent(
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = cImpl.metadata.exampleProperties;
+  count++;
   return {
-    id,
+    id: id || `${name}_${count}`,
     type: type,
     properties: initProperties,
     traits: [genSlotTrait(parentId, slot)],
