@@ -70,6 +70,7 @@ const Checkbox: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseCheckbox
+      height="10"
       value={value}
       isChecked={checked}
       isDisabled={isDisabled}

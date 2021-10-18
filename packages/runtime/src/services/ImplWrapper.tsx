@@ -170,33 +170,42 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       </React.Fragment>
     );
 
+    let parentComponent;
+    if (targetSlot && app) {
+      parentComponent = app.spec.components.find(c => c.id === targetSlot.id);
+    }
     // wrap component, but grid_layout is root component and cannot be chosen, so don't wrap it
-    if (ComponentWrapper && c.parsedType.name !== 'grid_layout') {
-      result = <ComponentWrapper id={c.id}>{result}</ComponentWrapper>;
+    if (
+      ComponentWrapper &&
+      c.parsedType.name !== 'dummy' &&
+      c.parsedType.name !== 'grid_layout'
+    ) {
+      result = (
+        <ComponentWrapper component={c} parentType={parentComponent?.type || ''}>
+          {result}
+        </ComponentWrapper>
+      );
     }
 
-    if (targetSlot && app) {
-      const targetC = app.spec.components.find(c => c.id === targetSlot.id);
-      if (targetC?.parsedType.name === 'grid_layout') {
-        // prevent react componentWrapper
-        /* eslint-disable */
-        const {
-          component,
-          services,
-          targetSlot,
-          app,
-          slotsMap,
-          componentWrapper,
-          gridCallbacks,
-          ...restProps
-        } = props;
-        /* eslint-enable */
-        result = (
-          <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...restProps}>
-            {result}
-          </div>
-        );
-      }
+    if (parentComponent?.parsedType.name === 'grid_layout') {
+      // prevent react componentWrapper
+      /* eslint-disable */
+      const {
+        component,
+        services,
+        targetSlot,
+        app,
+        slotsMap,
+        componentWrapper,
+        gridCallbacks,
+        ...restProps
+      } = props;
+      /* eslint-enable */
+      result = (
+        <div key={c.id} data-meta-ui-id={c.id} ref={ref} {...restProps}>
+          {result}
+        </div>
+      );
     }
 
     return result;

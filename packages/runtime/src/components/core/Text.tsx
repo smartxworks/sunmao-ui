@@ -3,8 +3,8 @@ import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
 import _Text, { TextPropertySchema } from '../_internal/Text';
 
-const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({ value, style }) => {
-  return <_Text value={value} style={style} />;
+const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({ value }) => {
+  return <_Text value={value} />;
 };
 
 const StateSchema = Type.Object({
@@ -25,8 +25,10 @@ export default {
       isDraggable: true,
       isResizable: false,
       exampleProperties: {
-        raw: 'text',
-        format: 'plain',
+        value: {
+          raw: 'text',
+          format: 'plain',
+        },
       },
       exampleSize: [4, 1],
     },

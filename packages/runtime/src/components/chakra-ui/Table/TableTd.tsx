@@ -19,13 +19,12 @@ export const TableTd: React.FC<{
     });
   }
 
+  let content = value;
+
   switch (column.type) {
     case 'image':
-      return (
-        <Td>
-          <img src={value} />
-        </Td>
-      );
+      content = <img src={value} />;
+      break;
     case 'button':
       const onClick = () => {
         onClickItem();
@@ -37,13 +36,13 @@ export const TableTd: React.FC<{
           });
         });
       };
-      return (
-        <Td>
-          <Button onClick={onClick}>{column.buttonConfig.text}</Button>
-        </Td>
-      );
-
-    default:
-      return <Td>{value}</Td>;
+      content = <Button onClick={onClick}>{column.buttonConfig.text}</Button>;
+      break;
   }
+
+  return (
+    <Td paddingX="4" paddingY="2">
+      {content}
+    </Td>
+  );
 };

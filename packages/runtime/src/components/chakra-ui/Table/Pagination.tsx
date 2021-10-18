@@ -1,3 +1,6 @@
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Box, Button, IconButton } from '@chakra-ui/react';
+
 type TablePaginationProps = {
   pageNumber: number;
   currentPage: number; // start from 0
@@ -10,25 +13,29 @@ export const TablePagination: React.FC<TablePaginationProps> = props => {
   const pageEles = Array(pageNumber)
     .fill(1)
     .map((_, i) => {
-      const isCurrent = currentPage === i;
       const onClick = () => onChange(i);
       return (
-        <span
-          key={i}
-          style={{ fontWeight: isCurrent ? 'bold' : 'normal' }}
-          onClick={onClick}>
+        <Button key={i} margin="1" disabled={currentPage === i} onClick={onClick}>
           {i + 1}
-        </span>
+        </Button>
       );
     });
 
   return (
-    <div>
-      <span onClick={() => onChange(Math.max(0, currentPage - 1))}>prev</span>
+    <Box margin="4">
+      <IconButton
+        aria-label="prev"
+        icon={<ChevronLeftIcon />}
+        disabled={currentPage === 0}
+        onClick={() => onChange(Math.max(0, currentPage - 1))}
+      />
       {pageEles}
-      <span onClick={() => onChange(Math.min(pageNumber - 1, currentPage + 1))}>
-        next
-      </span>
-    </div>
+      <IconButton
+        aria-label="next"
+        icon={<ChevronRightIcon />}
+        disabled={currentPage === pageNumber - 1}
+        onClick={() => onChange(Math.min(pageNumber - 1, currentPage + 1))}
+      />
+    </Box>
   );
 };

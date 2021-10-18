@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GridCallbacks } from '@meta-ui/runtime';
+import produce from 'immer';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import { last } from 'lodash';
 import { App, stateStore } from '../metaUI';
 import { StructureTree } from './StructureTree';
@@ -9,72 +9,73 @@ import {
   CreateComponentOperation,
   ModifyComponentPropertyOperation,
 } from '../operations/Operations';
-import { eventBus } from '../eventBus';
+import { eventBus, SelectComponentEvent } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
+import { useAppModel } from '../operations/useAppModel';
 import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
-import { useAppModel } from '../operations/useAppModel';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
+import { ComponentWrapper } from './ComponentWrapper';
 
 let count = 0;
+
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
   const [scale, setScale] = useState(100);
   const [preview, setPreview] = useState(false);
   const { app } = useAppModel();
 
-  const Wrapper: React.FC<{ id: string }> = useMemo(() => {
-    return props => {
-      const style = css`
-        height: 100%;
-      `;
-      const onClick = (e: React.MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        setSelectedComponentId(() => props.id);
-      };
-      return (
-        <Box
-          onClick={onClick}
-          css={style}
-          boxShadow={props.id === selectedComponentId ? 'outline' : undefined}>
-          {props.children}
-        </Box>
-      );
+  useEffect(() => {
+    eventBus.on(SelectComponentEvent, id => {
+      setSelectedComponentId(id);
+    });
+  }, [setSelectedComponentId]);
+
+  const gridCallbacks: GridCallbacks = useMemo(() => {
+    return {
+      onDragStop(id, layout) {
+        eventBus.send(
+          'operation',
+          new ModifyComponentPropertyOperation(id, 'layout', layout)
+        );
+      },
+      onDrop(id, layout, _, e) {
+        const component = e.dataTransfer?.getData('component') || '';
+        const componentName = last(component.split('/'));
+        const componentId = `${componentName}_${count++}`;
+        eventBus.send(
+          'operation',
+          new CreateComponentOperation(id, 'container', component, componentId)
+        );
+
+        const newLayout = produce(layout, draft => {
+          draft.forEach(l => {
+            if (l.i === '__dropping-elem__') {
+              l.i = componentId;
+            }
+          });
+        }).filter(v => !!v); // there is unknown empty in array
+
+        eventBus.send(
+          'operation',
+          new ModifyComponentPropertyOperation(id, 'layout', newLayout)
+        );
+      },
     };
-  }, [selectedComponentId]);
+  }, []);
 
-  const gridCallbacks: GridCallbacks = {
-    onDragStop(id, layout) {
-      eventBus.send(
-        'operation',
-        new ModifyComponentPropertyOperation(id, 'layout', layout)
-      );
-    },
-    onDrop(id, layout, item, e) {
-      const component = e.dataTransfer?.getData('component') || '';
-      const componentName = last(component.split('/'));
-      const componentId = `${componentName}_${count++}`;
-      eventBus.send(
-        'operation',
-        new CreateComponentOperation(id, 'container', component, componentId)
-      );
-
-      const newLayout = [
-        ...layout,
-        {
-          ...item,
-          w: 3,
-          i: componentId,
-        },
-      ];
-
-      eventBus.send(
-        'operation',
-        new ModifyComponentPropertyOperation(id, 'layout', newLayout)
-      );
-    },
-  };
+  const appComponent = useMemo(() => {
+    return (
+      <App
+        options={app}
+        debugEvent={false}
+        debugStore={false}
+        gridCallbacks={gridCallbacks}
+        componentWrapper={ComponentWrapper}
+      />
+    );
+  }, [app, gridCallbacks]);
 
   return (
     <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
@@ -91,7 +92,8 @@ export const Editor = () => {
               height="100%"
               display="flex"
               flexDirection="column"
-              textAlign="left">
+              textAlign="left"
+            >
               <TabList background="gray.50">
                 <Tab>UI Tree</Tab>
                 <Tab>State</Tab>
@@ -114,14 +116,9 @@ export const Editor = () => {
               widht="100%"
               height="100%"
               background="white"
-              transform={`scale(${scale / 100})`}>
-              <App
-                options={app}
-                debugEvent={false}
-                debugStore={false}
-                gridCallbacks={gridCallbacks}
-                componentWrapper={Wrapper}
-              />
+              transform={`scale(${scale / 100})`}
+            >
+              {appComponent}
             </Box>
           </Box>
           <Box width="320px" borderLeftWidth="1px" borderColor="gray.200">
@@ -130,7 +127,8 @@ export const Editor = () => {
               textAlign="left"
               height="100%"
               display="flex"
-              flexDirection="column">
+              flexDirection="column"
+            >
               <TabList background="gray.50">
                 <Tab>Inspect</Tab>
                 <Tab>Insert</Tab>

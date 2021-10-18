@@ -3,12 +3,7 @@ import { css } from '@emotion/react';
 export const FormControlCSS = css`
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
   align-items: end;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 `;
 
 export const FormControlContentCSS = css`

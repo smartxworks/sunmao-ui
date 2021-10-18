@@ -7,6 +7,7 @@ import {
   CreateComponentOperation,
   RemoveComponentOperation,
 } from '../../operations/Operations';
+import { css } from '@emotion/react';
 
 type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, Array<Application['spec']['components'][0]>>;
@@ -14,16 +15,20 @@ type Component = Application['spec']['components'][0];
 
 type Props = {
   app: Application;
+  selectedComponentId: string;
   onSelectComponent: (id: string) => void;
 };
 
 export const StructureTree: React.FC<Props> = props => {
-  const { app, onSelectComponent } = props;
+  const { app, selectedComponentId, onSelectComponent } = props;
   const topLevelComponents: Component[] = [];
   const childrenMap: ChildrenMap = new Map();
 
+  const components = app.spec.components.filter(c => c.type !== 'core/v1/dummy');
+  const dataSources = app.spec.components.filter(c => c.type === 'core/v1/dummy');
+
   // parse components array to slotsMap
-  app.spec.components.forEach(c => {
+  components.forEach(c => {
     const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
     if (slotTrait) {
       const { id: parentId, slot } = slotTrait.properties.container as any;
@@ -70,6 +75,9 @@ export const StructureTree: React.FC<Props> = props => {
     return (
       <div key={component.id} style={{ paddingLeft: '16px' }}>
         <strong
+          css={css`
+            color: ${component.id === selectedComponentId ? 'red' : 'black'};
+          `}
           onClick={() => {
             onSelectComponent(component.id);
           }}
@@ -83,6 +91,14 @@ export const StructureTree: React.FC<Props> = props => {
   }
 
   const topEles = topLevelComponents.map(genTreeItem);
+  const dataSourcesEles = dataSources.map(genTreeItem);
 
-  return <div>{topEles}</div>;
+  return (
+    <div>
+      <strong>Components</strong>
+      {topEles}
+      <strong>DataSources</strong>
+      {dataSourcesEles}
+    </div>
+  );
 };

@@ -61,7 +61,7 @@ const Input: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <InputGroup size={size}>
+    <InputGroup size={size} background="white">
       {left ? (
         left.type === 'addon' ? (
           <InputLeftAddon>{left.children}</InputLeftAddon>

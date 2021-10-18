@@ -14,7 +14,12 @@ export type MetaUIServices = {
   apiService: ApiService;
 };
 
-export type ComponentWrapperType = React.FC<{ id: string }>;
+export type ComponentWrapperProps = {
+  parentType: string;
+  component: RuntimeApplicationComponent;
+};
+
+export type ComponentWrapperType = React.FC<ComponentWrapperProps>;
 
 export type GridCallbacks = {
   onDragStop?: (id: string, layout: RGL.Layout[]) => void;

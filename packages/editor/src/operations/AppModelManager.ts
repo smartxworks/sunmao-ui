@@ -5,10 +5,13 @@ import {
   CreateComponentOperation,
   RemoveComponentOperation,
   ModifyComponentPropertyOperation,
+  ModifyTraitPropertyOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
+
+let count = 0;
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -21,12 +24,12 @@ function genSlotTrait(parentId: string, slot: string): ComponentTrait {
     },
   };
 }
-let count = 0;
+
 function genComponent(
   type: string,
   parentId: string,
   slot: string,
-  id?: string
+  id: string
 ): ApplicationComponent {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
@@ -60,6 +63,14 @@ export class AppModelManager {
     return this.app;
   }
 
+  genId(componentType: string) {
+    const { name } = parseType(componentType);
+    const componentsCount = this.app.spec.components.filter(
+      c => c.type === componentType
+    ).length;
+    return `${name}${componentsCount + 1}`;
+  }
+
   updateApp(app: Application) {
     eventBus.send('appChange', app);
     localStorage.setItem('schema', JSON.stringify(app));
@@ -83,7 +94,7 @@ export class AppModelManager {
           createO.componentType,
           createO.parentId,
           createO.slot,
-          createO.componentId
+          createO.componentId || this.genId(createO.componentType)
         );
         if (!noEffect) {
           const undoOperation = new RemoveComponentOperation(newComponent.id);
@@ -115,6 +126,31 @@ export class AppModelManager {
           const undoOperation = new ModifyComponentPropertyOperation(
             mo.componentId,
             mo.propertyKey,
+            oldValue
+          );
+          this.undoStack.push(undoOperation);
+        }
+        break;
+      case 'modifyTraitProperty':
+        const mto = o as ModifyTraitPropertyOperation;
+        let oldValue;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === mto.componentId) {
+              c.traits.forEach(t => {
+                if (t.type === mto.traitType) {
+                  oldValue = t.properties[mto.propertyKey];
+                  t.properties[mto.propertyKey] = mto.propertyValue;
+                }
+              });
+            }
+          });
+        });
+        if (!noEffect) {
+          const undoOperation = new ModifyTraitPropertyOperation(
+            mto.componentId,
+            mto.traitType,
+            mto.propertyKey,
             oldValue
           );
           this.undoStack.push(undoOperation);
