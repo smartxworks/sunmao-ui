@@ -115,6 +115,7 @@ export const ComponentTree: React.FC<Props> = props => {
         noChevron={slots.length === 0}
         isExpanded={isExpanded}
         onToggleExpanded={() => setIsExpanded(prev => !prev)}
+        isDroppable={slots.length > 0}
       />
       {isExpanded ? slotsEle : null}
     </VStack>
