@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import { Table as BaseTable, Thead, Tr, Th, Tbody, Checkbox, Td } from '@chakra-ui/react';
+import {
+  Table as BaseTable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Checkbox,
+  Td,
+  Box,
+  Spinner,
+} from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
 import { ComponentImplementation } from '../../../services/registry';
@@ -12,7 +22,7 @@ import {
   RowsPerPagePropertySchema,
   TableSizePropertySchema,
 } from './TableTypes';
-import { TableTd } from './Td';
+import { TableTd } from './TableTd';
 
 type SortRule = {
   key: string;
@@ -36,15 +46,11 @@ export const TableImpl: ComponentImplementation<{
   mergeState,
   services,
 }) => {
-  if (!data) {
-    return <div>loading</div>;
-  }
-  const normalizedData = data;
   const [selectedItem, setSelectedItem] = useState<Record<string, any> | undefined>();
   const [selectedItems, setSelectedItems] = useState<Array<Record<string, any>>>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [sortRule, setSortRule] = useState<SortRule | undefined>();
-  const pageNumber = Math.ceil(data.length / rowsPerPage);
+  const pageNumber = Math.ceil((data?.length || 0) / rowsPerPage);
 
   useEffect(() => {
     // reset table state when data source changes
@@ -52,7 +58,7 @@ export const TableImpl: ComponentImplementation<{
     updateSelectedItem(undefined);
     setCurrentPage(0);
     setSortRule(undefined);
-  }, [normalizedData]);
+  }, [data]);
 
   const updateSelectedItems = (items: Array<Record<string, any>>) => {
     setSelectedItems(items);
@@ -65,12 +71,12 @@ export const TableImpl: ComponentImplementation<{
   };
 
   const sortedData = useMemo(() => {
-    if (!sortRule) return normalizedData;
-    const sorted = sortBy(normalizedData, sortRule.key);
+    if (!sortRule) return data;
+    const sorted = sortBy(data, sortRule.key);
     return sortRule.desc ? sorted.reverse() : sorted;
-  }, [sortRule, normalizedData]);
+  }, [sortRule, data]);
 
-  const currentPageData = sortedData.slice(
+  const currentPageData = sortedData?.slice(
     currentPage * rowsPerPage,
     currentPage * rowsPerPage + rowsPerPage
   );
@@ -98,18 +104,19 @@ export const TableImpl: ComponentImplementation<{
   }
 
   const allCheckbox = useMemo(() => {
-    const isAllChecked = isMultiSelect && selectedItems.length === normalizedData.length;
+    if (!data) return null;
+    const isAllChecked = isMultiSelect && selectedItems.length === data.length;
     const isIndeterminate =
-      selectedItems.length > 0 && selectedItems.length < normalizedData.length;
+      selectedItems.length > 0 && selectedItems.length < data.length;
     const onChange = (e: any) => {
       if (e.target.checked) {
-        updateSelectedItems(normalizedData);
+        updateSelectedItems(data);
       } else {
         updateSelectedItems([]);
       }
     };
     return (
-      <Th key="allCheckbox">
+      <Th paddingX="4" paddingY="2" width="10" key="allCheckbox">
         <Checkbox
           size="lg"
           isIndeterminate={isIndeterminate}
@@ -118,13 +125,13 @@ export const TableImpl: ComponentImplementation<{
         ></Checkbox>
       </Th>
     );
-  }, [selectedItems.length, normalizedData.length]);
+  }, [selectedItems.length, data]);
 
-  return (
-    <div>
+  const tableContent = (
+    <>
       <BaseTable size={size}>
         <Thead>
-          <Tr>
+          <Tr height="10">
             {isMultiSelect ? allCheckbox : undefined}
             {columns.map(({ title, key }) => {
               let sortArrow;
@@ -140,7 +147,7 @@ export const TableImpl: ComponentImplementation<{
                 }
               };
               return (
-                <Th key={key} onClick={onClick}>
+                <Th paddingX="4" paddingY="2" key={key} onClick={onClick}>
                   {title}
                   {sortArrow}
                 </Th>
@@ -149,7 +156,7 @@ export const TableImpl: ComponentImplementation<{
           </Tr>
         </Thead>
         <Tbody>
-          {currentPageData.map(item => {
+          {currentPageData?.map(item => {
             const isSelected = isItemSelected(item);
             let onClickToggle = true;
             const onClickCheckbox = (e: React.MouseEvent<HTMLElement>) => {
@@ -162,7 +169,13 @@ export const TableImpl: ComponentImplementation<{
               onClickToggle = !onClickToggle;
             };
             const checkbox = (
-              <Td key="$checkbox" onClick={onClickCheckbox}>
+              <Td
+                paddingX="4"
+                paddingY="2"
+                width="10"
+                key="$checkbox"
+                onClick={onClickCheckbox}
+              >
                 <Checkbox size="lg" isChecked={isSelected}></Checkbox>
               </Td>
             );
@@ -170,7 +183,8 @@ export const TableImpl: ComponentImplementation<{
             return (
               <Tr
                 key={item[majorKey]}
-                bgColor={isSelected ? 'gray' : undefined}
+                height="10"
+                bgColor={isSelected ? 'yellow.100' : undefined}
                 onClick={() => {
                   selectItem(item);
                 }}
@@ -195,6 +209,26 @@ export const TableImpl: ComponentImplementation<{
         currentPage={currentPage}
         onChange={v => setCurrentPage(v)}
       />
-    </div>
+    </>
+  );
+
+  const loadingSpinner = (
+    <Box display="flex" height="full">
+      <Spinner size="xl" margin="auto" />
+    </Box>
+  );
+
+  return (
+    <Box
+      width="full"
+      height="full"
+      background="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="base"
+      overflow="auto"
+    >
+      {!data ? loadingSpinner : tableContent}
+    </Box>
   );
 };

@@ -48,6 +48,7 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseNumberInput
+      background="white"
       defaultValue={defaultValue}
       value={value}
       min={min}
@@ -57,7 +58,8 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
       clampValueOnBlur={clampValueOnBlur}
       allowMouseWheel={allowMouseWheel}
       size={size}
-      onChange={onChange}>
+      onChange={onChange}
+    >
       <NumberInputField />
       <NumberInputStepper>
         <NumberIncrementStepper {...customerIncrement} />
