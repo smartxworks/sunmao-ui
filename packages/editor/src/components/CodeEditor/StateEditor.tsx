@@ -29,6 +29,7 @@ export const StateEditor: React.FC<{ code: string }> = ({ code }) => {
           name: 'javascript',
           json: true,
         },
+        readOnly: true,
         foldGutter: true,
         lineWrapping: true,
         lineNumbers: true,
