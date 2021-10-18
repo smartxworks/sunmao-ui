@@ -7,7 +7,7 @@ import {
 } from '../../operations/Operations';
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
-import { Text, VStack } from '@chakra-ui/react';
+import { Box, Text, VStack } from '@chakra-ui/react';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -93,8 +93,14 @@ function RootItem() {
     eventBus.send('operation', new CreateComponentOperation(creatingComponent));
   };
   return (
-    <Text onDrop={onDrop} width="full">
-      Root
-    </Text>
+    <Box onDrop={onDrop} width="full">
+      <ComponentItemView
+        title="Root"
+        isSelected={false}
+        onClick={() => undefined}
+        isDroppable={true}
+        noChevron={true}
+      />
+    </Box>
   );
 }
