@@ -1,7 +1,7 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from 'src/types/RuntimeSchema';
-import { CallMethodSchema } from '../../types/CallMethodSchema';
+import { EventHandlerSchema } from '../../types/EventHandlerSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
 
@@ -111,7 +111,7 @@ const PropsSchema = Type.Object({
   lazy: Type.Boolean(),
   headers: Type.Array(Type.Object({ key: Type.String(), value: Type.String() })),
   body: Type.Any(),
-  onComplete: Type.Array(CallMethodSchema),
+  onComplete: Type.Array(EventHandlerSchema),
 });
 
 export default {
