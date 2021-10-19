@@ -1,14 +1,17 @@
 import { FormControl, FormLabel, Input, Box } from '@chakra-ui/react';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { Application } from '@meta-ui/core';
+import { parseType, parseTypeBox } from '@meta-ui/runtime';
 import _ from 'lodash';
 import React from 'react';
 import { eventBus } from '../../eventBus';
+import { registry } from '../../metaUI';
 import {
   ModifyComponentIdOperation,
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
 } from '../../operations/Operations';
+import { TSchema } from '@sinclair/typebox';
 
 type Props = { selectedId: string; app: Application };
 
@@ -59,22 +62,22 @@ const renderField = (properties: {
 };
 
 const changeCompId = (selectedId: string, value: string) => {
-  eventBus.send(
-    'operation',
-    new ModifyComponentIdOperation(selectedId, value)
-  );
+  eventBus.send('operation', new ModifyComponentIdOperation(selectedId, value));
 };
 
 export const ComponentForm: React.FC<Props> = props => {
   const { selectedId, app } = props;
 
   const selectedComponent = app.spec.components.find(c => c.id === selectedId);
-
   if (!selectedComponent) {
     return <div>cannot find component with id: {selectedId}</div>;
   }
-
-  const properties = selectedComponent.properties;
+  const { version, name } = parseType(selectedComponent.type);
+  const cImpl = registry.getComponent(version, name);
+  const properties =  Object.assign(
+    parseTypeBox(cImpl.spec.properties as TSchema),
+    selectedComponent.properties,
+  );
   const fields = Object.keys(properties || []).map(key => {
     const value = properties![key];
     return renderField({ key, value, fullKey: key, selectedId });
