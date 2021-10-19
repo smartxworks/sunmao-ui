@@ -3,97 +3,129 @@ import { Application } from '@meta-ui/core';
 export const DefaultAppSchema: Application = {
   kind: 'Application',
   version: 'example/v1',
-  metadata: { name: 'basic_grid_layout', description: 'basic grid layout example' },
+  metadata: {
+    name: 'dialog_component',
+    description: 'dialog component example',
+  },
   spec: {
     components: [
       {
-        id: 'fetchVolumes',
-        type: 'core/v1/dummy',
+        id: 'root',
+        type: 'chakra_ui/v1/root',
         properties: {},
-        traits: [
-          {
-            type: 'core/v1/fetch',
-            properties: {
-              name: 'query',
-              url: 'https://61373521eac1410017c18209.mockapi.io/Volume',
-              method: 'get',
-              lazy: false,
-            },
-          },
-        ],
-      },
-      {
-        id: 'grid',
-        type: 'core/v1/grid_layout',
-        properties: {
-          layout: [
-            {
-              w: 10,
-              h: 2,
-              x: 0,
-              y: 0,
-              i: 'image',
-              moved: false,
-              static: false,
-              isDraggable: true,
-            },
-            {
-              w: 3,
-              h: 1,
-              x: 7,
-              y: 2,
-              i: 'button',
-              moved: false,
-              static: false,
-              isDraggable: true,
-            },
-            {
-              w: 3,
-              h: 1,
-              x: 0,
-              y: 2,
-              i: 'input',
-              moved: false,
-              static: false,
-              isDraggable: true,
-            },
-          ],
-        },
         traits: [],
       },
       {
-        id: 'image',
-        type: 'chakra_ui/v1/image',
+        id: 'btn',
+        type: 'plain/v1/button',
         properties: {
-          src: 'https://www.smartx.com/img/smartx-logo-horizontal.ff708dd4.svg',
-          objectFit: '',
+          text: {
+            raw: '**Open Dialog**',
+            format: 'md',
+          },
+          colorScheme: 'red',
         },
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'grid', slot: 'content' } },
+            properties: {
+              container: {
+                id: 'root',
+                slot: 'root',
+              },
+            },
+          },
+          {
+            type: 'core/v1/event',
+            properties: {
+              handlers: [
+                {
+                  type: 'onClick',
+                  componentId: 'dialog',
+                  method: {
+                    name: 'openDialog',
+                    parameters: {
+                      title: 'hi',
+                    },
+                  },
+                  wait: {},
+                },
+              ],
+            },
           },
         ],
       },
       {
-        id: 'button',
-        type: 'chakra_ui/v1/button',
-        properties: { text: { raw: '确认' }, isLoading: false, colorScheme: 'blue' },
+        id: 'dialog',
+        type: 'chakra_ui/v1/dialog',
+        properties: {
+          title: 'This is a dialog',
+          confirmButton: {
+            text: 'hello',
+            colorScheme: 'pink',
+          },
+          cancelButton: {
+            text: 'thanks',
+          },
+        },
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'grid', slot: 'content' } },
+            properties: {
+              container: {
+                id: 'root',
+                slot: 'root',
+              },
+            },
+          },
+          // dialog events
+          {
+            type: 'core/v1/event',
+            properties: {
+              handlers: [
+                // when click confirm
+                {
+                  type: 'confirmDialog',
+                  componentId: 'dialog',
+                  method: {
+                    name: 'confirmDialog',
+                  },
+                  wait: {},
+                  disabled: 'false',
+                },
+                // when cancel confirm
+                {
+                  type: 'cancelDialog',
+                  componentId: 'dialog',
+                  method: {
+                    name: 'cancelDialog',
+                  },
+                  wait: {},
+                  disabled: 'false',
+                },
+              ],
+            },
           },
         ],
       },
       {
-        id: 'input',
-        type: 'chakra_ui/v1/input',
-        properties: {},
+        id: 'dialogContent',
+        type: 'core/v1/text',
+        properties: {
+          value: {
+            raw: '**This is a dialog**',
+            format: 'md',
+          },
+        },
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'grid', slot: 'content' } },
+            properties: {
+              container: {
+                id: 'dialog',
+                slot: 'content',
+              },
+            },
           },
         ],
       },

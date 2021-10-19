@@ -2,6 +2,7 @@ import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
 import { CallbackMap, TraitImplementation } from 'src/types/RuntimeSchema';
+import { EventHandlerSchema } from '../../types/EventHandlerSchema';
 
 const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   handlers,
@@ -29,15 +30,19 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
     if (!callbackQueueMap[handler.type]) {
       callbackQueueMap[handler.type] = [];
     }
-    callbackQueueMap[handler.type].push(
-      handler.wait.type === 'debounce'
-        ? debounce(cb, handler.wait.time)
-        : handler.wait.type === 'throttle'
-          ? throttle(cb, handler.wait.time)
-          : handler.wait.type === 'delay'
-            ? () => delay(cb, handler.wait.time)
-            : cb
-    );
+    if (!handler.wait) {
+      callbackQueueMap[handler.type].push(cb);
+    } else {
+      callbackQueueMap[handler.type].push(
+        handler.wait.type === 'debounce'
+          ? debounce(cb, handler.wait.time)
+          : handler.wait.type === 'throttle'
+            ? throttle(cb, handler.wait.time)
+            : handler.wait.type === 'delay'
+              ? () => delay(cb, handler.wait!.time)
+              : cb
+      );
+    }
   }
 
   const callbackMap: CallbackMap = {};
@@ -60,27 +65,7 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
 };
 
 const PropsSchema = Type.Object({
-  handlers: Type.Array(
-    Type.Object({
-      type: Type.String(),
-      componentId: Type.String(),
-      method: Type.Object({
-        name: Type.String(),
-        parameters: Type.Any(),
-      }),
-      wait: Type.Object({
-        type: Type.KeyOf(
-          Type.Object({
-            debounce: Type.String(),
-            throttle: Type.String(),
-            delay: Type.String(),
-          })
-        ),
-        time: Type.Number(),
-      }),
-      disabled: Type.Boolean(),
-    })
-  ),
+  handlers: Type.Array(EventHandlerSchema),
 });
 
 export default {
