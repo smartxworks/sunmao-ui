@@ -2804,15 +2804,10 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@sinclair/typebox@^0.19.2":
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.19.2.tgz#3a526594d6f652ada78e6c00be84463ae48047e4"
-  integrity sha512-0U/RVPZQw1QxhrbKV0o281ZWI1Ve3osJnyEYnwOp3slydIQHyXumbJANJeNv9BqABDiHWlmzsxSVopPHMvt3Aw==
-
 "@sinclair/typebox@^0.20.5":
   version "0.20.5"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.20.5.tgz#d5828bbb8237876d7937dd229e3dac71d1220771"
-  integrity sha512-WNiVFcS1rdz5KyEutpl3Wmp/AwSQHBUFTyJz7KqMLkpLhOXCj1dnvMytBM6uMS5OTwhwwq877T7EC4vDGrX5Eg==
+  resolved "https://registry.nlark.com/@sinclair/typebox/download/@sinclair/typebox-0.20.5.tgz#d5828bbb8237876d7937dd229e3dac71d1220771"
+  integrity sha1-1YKLu4I3h215N90inj2scdEiB3E=
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"

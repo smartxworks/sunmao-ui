@@ -24,16 +24,6 @@ function genSlotTrait(parentId: string, slot: string): ComponentTrait {
     },
   };
 }
-// TODO JSONSchema7Type
-const genInitProps = (init: Record<string, never>, properties: any, fullKey?: string) => {
-  for (const key of Object.keys(properties)) {
-    if (properties[key]?.type === 'object') {
-      genInitProps(init, properties[key].properties, fullKey ? `${fullKey}.${key}` : key);
-    } else {
-      _.set(init, fullKey ? `${fullKey}.${key}` : key, undefined);
-    }
-  }
-};
 
 function genComponent(
   type: string,
@@ -44,11 +34,7 @@ function genComponent(
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const traits = parentId && slot ? [genSlotTrait(parentId, slot)] : [];
-
-  const initProps = {};
-  genInitProps(initProps, cImpl.spec.properties.properties);
-  const initProperties = Object.assign(initProps, cImpl.metadata.exampleProperties);
-
+  const initProperties = cImpl.metadata.exampleProperties;
   return {
     id,
     type: type,
