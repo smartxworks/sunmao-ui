@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: link component</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from '../../src/main.tsx';
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'link_component',
+          description: 'list component example',
+        },
+        spec: {
+          components: [
+            {
+              id: 'root',
+              type: 'chakra_ui/v1/root',
+              properties: {},
+              traits: [
+                {
+                  type: 'core/v1/state',
+                },
+              ],
+            },
+            {
+              id: 'link',
+              type: 'chakra_ui/v1/link',
+              properties: {
+                href: 'https://github.com/webzard-io/meta-ui/',
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'text',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '**link**',
+                  format: 'md',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'link',
+                      slot: 'text',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'linkColor',
+              type: 'chakra_ui/v1/link',
+              properties: {
+                href: 'https://github.com/webzard-io/meta-ui/',
+                color: 'teal',
+                isExternal: true,
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'root',
+                      slot: 'root',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              id: 'text',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '**color link**',
+                  format: 'md',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/slot',
+                  properties: {
+                    container: {
+                      id: 'linkColor',
+                      slot: 'text',
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
