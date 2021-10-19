@@ -16,6 +16,7 @@ import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
+import { StateEditor } from './CodeEditor';
 
 export const Editor = () => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
@@ -89,6 +90,7 @@ export const Editor = () => {
               display="flex"
               flexDirection="column"
               textAlign="left"
+              isLazy
             >
               <TabList background="gray.50">
                 <Tab>UI Tree</Tab>
@@ -102,8 +104,8 @@ export const Editor = () => {
                     onSelectComponent={id => setSelectedComponentId(id)}
                   />
                 </TabPanel>
-                <TabPanel p={0}>
-                  <pre>{JSON.stringify(stateStore, null, 2)}</pre>
+                <TabPanel p={0} height="100%">
+                  <StateEditor code={JSON.stringify(stateStore, null, 2)} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
