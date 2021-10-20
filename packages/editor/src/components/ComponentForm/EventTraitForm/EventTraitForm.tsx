@@ -36,6 +36,11 @@ export const EventTraitForm: React.FC<Props> = props => {
         name: '',
         parameters: {},
       },
+      disabled: false,
+      wait: {
+        type: 'delay',
+        time: 0,
+      },
     };
 
     if (!handlers) {

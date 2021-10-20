@@ -6,6 +6,7 @@ import {
   IconButton,
   Input,
   Select,
+  Switch,
   VStack,
 } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
@@ -138,6 +139,46 @@ export const EventHandlerForm: React.FC<Props> = props => {
     </FormControl>
   );
 
+  const waitTypeField = (
+    <FormControl>
+      <FormLabel>Wait Type</FormLabel>
+      <Select
+        name="wait.type"
+        onChange={formik.handleChange}
+        onBlur={() => formik.submitForm()}
+        value={formik.values.wait?.type}
+      >
+        <option value="delay">delay</option>
+        <option value="debounce">debounce</option>
+        <option value="throttle">throttle</option>
+      </Select>
+    </FormControl>
+  );
+
+  const waitTimeField = (
+    <FormControl>
+      <FormLabel>Wait Time</FormLabel>
+      <Input
+        name="wait.time"
+        onChange={formik.handleChange}
+        onBlur={() => formik.submitForm()}
+        value={formik.values.wait?.time}
+      />
+    </FormControl>
+  );
+
+  const disabledField = (
+    <FormControl>
+      <FormLabel>Disabled</FormLabel>
+      <Switch
+        name="disabled"
+        isChecked={formik.values.disabled}
+        onChange={formik.handleChange}
+        onBlur={() => formik.submitForm()}
+      />
+    </FormControl>
+  );
+
   return (
     <Box position="relative">
       <VStack css={formWrapperCSS}>
@@ -145,6 +186,9 @@ export const EventHandlerForm: React.FC<Props> = props => {
         {targetField}
         {methodField}
         {parametersField}
+        {waitTypeField}
+        {waitTimeField}
+        {disabledField}
       </VStack>
       <IconButton
         position="absolute"

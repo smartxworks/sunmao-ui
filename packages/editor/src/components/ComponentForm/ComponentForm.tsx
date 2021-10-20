@@ -2,9 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
-import { TSchema } from '@sinclair/typebox';
+import { Static, TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
-import { parseType, parseTypeBox } from '@meta-ui/runtime';
+import { EventHandlerSchema, parseType, parseTypeBox } from '@meta-ui/runtime';
 import { eventBus } from '../../eventBus';
 import { registry } from '../../metaUI';
 import {
@@ -88,7 +88,7 @@ export const ComponentForm: React.FC<Props> = props => {
   });
 
   const eventHandlers = selectedComponent.traits.find(t => t.type === 'core/v1/event')
-    ?.properties.handlers;
+    ?.properties.handlers as Array<Static<typeof EventHandlerSchema>>;
 
   return (
     <VStack p={4} spacing="4" background="gray.50">
