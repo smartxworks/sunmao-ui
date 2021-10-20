@@ -35,12 +35,10 @@ export class AddTraitOperation {
     public properties: any
   ) {}
 }
+
 export class ModifyComponentIdOperation {
   kind = 'modifyComponentId';
-  constructor(
-    public componentId: string,
-    public value: string
-  ) {}
+  constructor(public componentId: string, public value: string) {}
 }
 
 export class ModifyTraitPropertyOperation {

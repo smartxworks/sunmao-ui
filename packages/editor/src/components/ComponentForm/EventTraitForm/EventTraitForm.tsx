@@ -1,7 +1,8 @@
-import { AddIcon } from '@chakra-ui/icons';
-import { Box, HStack, IconButton, VStack } from '@chakra-ui/react';
-import { Static } from '@sinclair/typebox';
 import { useMemo } from 'react';
+import { AddIcon } from '@chakra-ui/icons';
+import { HStack, IconButton, VStack } from '@chakra-ui/react';
+import { Static } from '@sinclair/typebox';
+import produce from 'immer';
 import { ApplicationComponent } from '@meta-ui/core';
 import { EventHandlerSchema } from '@meta-ui/runtime';
 import { eventBus } from '../../../eventBus';
@@ -11,14 +12,12 @@ import {
   ModifyTraitPropertyOperation,
 } from '../../../operations/Operations';
 import { EventHandlerForm } from './EventHandlerForm';
-import produce from 'immer';
-import { formWrapperCSS } from '../style';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
   component: ApplicationComponent;
-  handlers: EventHandler[];
+  handlers?: EventHandler[];
 };
 
 export const EventTraitForm: React.FC<Props> = props => {
@@ -39,7 +38,7 @@ export const EventTraitForm: React.FC<Props> = props => {
       },
     };
 
-    if (handlers.length === 0) {
+    if (!handlers) {
       eventBus.send(
         'operation',
         new AddTraitOperation(component.id, 'core/v1/event', { handlers: [newHandler] })
@@ -55,9 +54,9 @@ export const EventTraitForm: React.FC<Props> = props => {
     }
   };
 
-  const handlerForms = handlers.map((h, i) => {
+  const handlerForms = (handlers || []).map((h, i) => {
     const onChange = (handler: EventHandler) => {
-      const newHanlders = produce(handlers, draft => {
+      const newHanlders = produce(handlers!, draft => {
         draft[i] = handler;
       });
       eventBus.send(
@@ -70,8 +69,29 @@ export const EventTraitForm: React.FC<Props> = props => {
         )
       );
     };
+
+    const onRemove = () => {
+      const newHanlders = produce(handlers!, draft => {
+        draft.splice(i, 1);
+      });
+      eventBus.send(
+        'operation',
+        new ModifyTraitPropertyOperation(
+          component.id,
+          'core/v1/event',
+          'handlers',
+          newHanlders
+        )
+      );
+    };
     return (
-      <EventHandlerForm key={i} handler={h} eventTypes={eventTypes} onChange={onChange} />
+      <EventHandlerForm
+        key={i}
+        handler={h}
+        eventTypes={eventTypes}
+        onChange={onChange}
+        onRemove={onRemove}
+      />
     );
   });
 
@@ -83,6 +103,7 @@ export const EventTraitForm: React.FC<Props> = props => {
           aria-label="add event"
           size="sm"
           variant="ghost"
+          colorScheme="blue"
           icon={<AddIcon />}
           onClick={onClickAddHandler}
         />

@@ -1,8 +1,18 @@
-import { FormControl, FormLabel, Input, Select, VStack } from '@chakra-ui/react';
-import { Static } from '@sinclair/typebox';
 import { useEffect, useState } from 'react';
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  IconButton,
+  Input,
+  Select,
+  VStack,
+} from '@chakra-ui/react';
+import { Static } from '@sinclair/typebox';
+import { CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { EventHandlerSchema } from '@meta-ui/runtime';
+
 import { registry } from '../../../metaUI';
 import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
@@ -11,10 +21,11 @@ type Props = {
   eventTypes: string[];
   handler: Static<typeof EventHandlerSchema>;
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
+  onRemove: () => void;
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
-  const { handler, eventTypes, onChange } = props;
+  const { handler, eventTypes, onChange, onRemove } = props;
   const { app } = useAppModel();
   const [methods, setMethods] = useState<string[]>([]);
 
@@ -113,11 +124,24 @@ export const EventHandlerForm: React.FC<Props> = props => {
   );
 
   return (
-    <VStack css={formWrapperCSS}>
-      {typeField}
-      {targetField}
-      {methodField}
-      {parametersField}
-    </VStack>
+    <Box position="relative">
+      <VStack css={formWrapperCSS}>
+        {typeField}
+        {targetField}
+        {methodField}
+        {parametersField}
+      </VStack>
+      <IconButton
+        position="absolute"
+        right="4"
+        top="4"
+        aria-label="remove event handler"
+        variant="ghost"
+        colorScheme="red"
+        size="xs"
+        icon={<CloseIcon />}
+        onClick={onRemove}
+      />
+    </Box>
   );
 };
