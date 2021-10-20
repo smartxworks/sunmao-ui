@@ -82,7 +82,7 @@ export const Editor = () => {
           setScale={setScale}
           onPreview={() => setPreview(true)}
         />
-        <Box display="flex" flex="1">
+        <Box display="flex" flex="1" overflow="auto">
           <Box width="280px" borderRightWidth="1px" borderColor="gray.200">
             <Tabs
               align="center"
@@ -96,7 +96,7 @@ export const Editor = () => {
                 <Tab>UI Tree</Tab>
                 <Tab>State</Tab>
               </TabList>
-              <TabPanels flex="1" overflow="auto">
+              <TabPanels flex="1">
                 <TabPanel p={0}>
                   <StructureTree
                     app={app}
@@ -112,7 +112,7 @@ export const Editor = () => {
           </Box>
           <Box flex="1" background="gray.50" p={4}>
             <Box
-              widht="100%"
+              width="100%"
               height="100%"
               background="white"
               transform={`scale(${scale / 100})`}
@@ -126,7 +126,7 @@ export const Editor = () => {
               {appComponent}
             </Box>
           </Box>
-          <Box width="320px" borderLeftWidth="1px" borderColor="gray.200">
+          <Box width="320px" borderLeftWidth="1px" borderColor="gray.200" overflow="auto">
             <Tabs
               align="center"
               textAlign="left"

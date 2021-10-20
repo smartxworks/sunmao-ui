@@ -16,6 +16,8 @@ import { EventTraitForm } from './EventTraitForm';
 
 type Props = { selectedId: string; app: Application };
 
+const ignoreTraitsList = ['core/v1/slot', 'core/v1/event'];
+
 const renderField = (properties: {
   key: string;
   value: unknown;
@@ -78,6 +80,7 @@ export const ComponentForm: React.FC<Props> = props => {
   });
 
   const traitForms = selectedComponent.traits.map(t => {
+    if (ignoreTraitsList.includes(t.type)) return null;
     return Object.keys(t.properties || []).map(key => {
       const value = t.properties[key];
       return renderField({ key, value, fullKey: key, type: t.type, selectedId });
@@ -100,8 +103,8 @@ export const ComponentForm: React.FC<Props> = props => {
         />
       </div>
       <form>{fields}</form>
-      <strong>Trait Fields</strong>
       <EventTraitForm component={selectedComponent} handlers={eventHandlers} />
+      <strong>Trait Fields</strong>
       <div>{traitForms}</div>
     </Box>
   );
