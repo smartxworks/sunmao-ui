@@ -74,12 +74,12 @@ export const ComponentForm: React.FC<Props> = props => {
     parseTypeBox(cImpl.spec.properties as TSchema),
     selectedComponent.properties
   );
-  const fields = Object.keys(properties || []).map(key => {
+  const propertyFields = Object.keys(properties || []).map(key => {
     const value = properties![key];
     return renderField({ key, value, fullKey: key, selectedId });
   });
 
-  const traitForms = selectedComponent.traits.map(t => {
+  const traitFields = selectedComponent.traits.map(t => {
     if (ignoreTraitsList.includes(t.type)) return null;
     return Object.keys(t.properties || []).map(key => {
       const value = t.properties[key];
@@ -89,6 +89,38 @@ export const ComponentForm: React.FC<Props> = props => {
 
   const eventHandlers = selectedComponent.traits.find(t => t.type === 'core/v1/event')
     ?.properties.handlers as Array<Static<typeof EventHandlerSchema>>;
+
+  const propertyForm = (
+    <VStack width="full" alignItems="start">
+      <strong>Properties</strong>
+      <VStack
+        width="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+      >
+        {propertyFields}
+      </VStack>
+    </VStack>
+  );
+
+  const traitForm = (
+    <VStack width="full" alignItems="start">
+      <strong>Trait Fields</strong>
+      <VStack
+        width="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+      >
+        {traitFields}
+      </VStack>
+    </VStack>
+  );
 
   return (
     <VStack p={4} spacing="4" background="gray.50">
@@ -103,34 +135,9 @@ export const ComponentForm: React.FC<Props> = props => {
           onBlur={e => changeCompId(selectedComponent?.id, e.target.value)}
         />
       </FormControl>
-      <VStack width="full" alignItems="start">
-        <strong>Properties</strong>
-        <VStack
-          width="full"
-          padding="4"
-          background="white"
-          border="1px solid"
-          borderColor="gray.200"
-          borderRadius="4"
-        >
-          {fields}
-        </VStack>
-      </VStack>
+      {propertyFields.length > 0 ? propertyForm : null}
       <EventTraitForm component={selectedComponent} handlers={eventHandlers} />
-
-      <VStack width="full" alignItems="start">
-        <strong>Trait Fields</strong>
-        <VStack
-          width="full"
-          padding="4"
-          background="white"
-          border="1px solid"
-          borderColor="gray.200"
-          borderRadius="4"
-        >
-          {traitForms}
-        </VStack>
-      </VStack>
+      {traitFields.length > 0 ? traitForm : null}
     </VStack>
   );
 };
