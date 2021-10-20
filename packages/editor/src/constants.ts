@@ -78,7 +78,7 @@ export const DefaultAppSchema: Application = {
       {
         id: 'button',
         type: 'chakra_ui/v1/button',
-        properties: { text: { raw: '确认' } },
+        properties: { text: { raw: '确认' }, isLoading: false, colorScheme: 'blue' },
         traits: [
           {
             type: 'core/v1/slot',

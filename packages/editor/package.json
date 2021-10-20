@@ -27,7 +27,6 @@
     "@emotion/styled": "^11",
     "@meta-ui/core": "^0.1.0",
     "@meta-ui/runtime": "^0.0.0",
-    "@sinclair/typebox": "^0.20.5",
     "codemirror": "^5.63.3",
     "framer-motion": "^4",
     "immer": "^9.0.6",
