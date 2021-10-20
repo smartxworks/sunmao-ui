@@ -12,6 +12,7 @@ import {
 } from '../../../operations/Operations';
 import { EventHandlerForm } from './EventHandlerForm';
 import produce from 'immer';
+import { formWrapperCSS } from '../style';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
@@ -86,7 +87,7 @@ export const EventTraitForm: React.FC<Props> = props => {
           onClick={onClickAddHandler}
         />
       </HStack>
-      <Box width="full">{handlerForms}</Box>
+      <VStack width="full">{handlerForms}</VStack>
     </VStack>
   );
 };
