@@ -1,7 +1,15 @@
 import React from 'react';
-import _ from 'lodash';
+import _, { startCase } from 'lodash';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
-import { FormControl, FormLabel, Input, Box } from '@chakra-ui/react';
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Box,
+  Divider,
+  VStack,
+  HStack,
+} from '@chakra-ui/react';
 import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
@@ -92,20 +100,46 @@ export const ComponentForm: React.FC<Props> = props => {
     ([] as any);
 
   return (
-    <Box p={4}>
-      <div>Component Form</div>
-      <div>
-        ID:
+    <VStack p={4} spacing="4" background="gray.50">
+      <FormControl>
+        <FormLabel>
+          <strong>Component ID</strong>
+        </FormLabel>
         <Input
           key={selectedComponent?.id}
           defaultValue={selectedComponent?.id}
+          background="white"
           onBlur={e => changeCompId(selectedComponent?.id, e.target.value)}
         />
-      </div>
-      <form>{fields}</form>
+      </FormControl>
+      <VStack width="full" alignItems="start">
+        <strong>Properties</strong>
+        <VStack
+          width="full"
+          padding="4"
+          background="white"
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="4"
+        >
+          {fields}
+        </VStack>
+      </VStack>
       <EventTraitForm component={selectedComponent} handlers={eventHandlers} />
-      <strong>Trait Fields</strong>
-      <div>{traitForms}</div>
-    </Box>
+
+      <VStack width="full" alignItems="start">
+        <strong>Trait Fields</strong>
+        <VStack
+          width="full"
+          padding="4"
+          background="white"
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="4"
+        >
+          {traitForms}
+        </VStack>
+      </VStack>
+    </VStack>
   );
 };

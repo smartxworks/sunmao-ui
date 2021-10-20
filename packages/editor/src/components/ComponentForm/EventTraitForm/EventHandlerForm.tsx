@@ -1,10 +1,11 @@
-import { FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Select, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { EventHandlerSchema } from '@meta-ui/runtime';
 import { registry } from '../../../metaUI';
 import { useAppModel } from '../../../operations/useAppModel';
+import { formWrapperCSS } from '../style';
 
 type Props = {
   eventTypes: string[];
@@ -112,12 +113,11 @@ export const EventHandlerForm: React.FC<Props> = props => {
   );
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <VStack css={formWrapperCSS}>
       {typeField}
       {targetField}
       {methodField}
       {parametersField}
-      <button type="submit">Submit</button>
-    </form>
+    </VStack>
   );
 };
