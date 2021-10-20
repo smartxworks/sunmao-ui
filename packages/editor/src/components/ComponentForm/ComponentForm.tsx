@@ -87,9 +87,8 @@ export const ComponentForm: React.FC<Props> = props => {
     });
   });
 
-  const eventHandlers =
-    selectedComponent.traits.find(t => t.type === 'core/v1/event')?.properties.handlers ||
-    ([] as any);
+  const eventHandlers = selectedComponent.traits.find(t => t.type === 'core/v1/event')
+    ?.properties.handlers;
 
   return (
     <VStack p={4} spacing="4" background="gray.50">

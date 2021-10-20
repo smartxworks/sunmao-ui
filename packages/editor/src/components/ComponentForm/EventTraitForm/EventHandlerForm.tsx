@@ -12,10 +12,10 @@ import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { EventHandlerSchema } from '@meta-ui/runtime';
-
 import { registry } from '../../../metaUI';
 import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
+import produce from 'immer';
 
 type Props = {
   eventTypes: string[];
@@ -47,10 +47,25 @@ export const EventHandlerForm: React.FC<Props> = props => {
     updateMethods(e.target.value);
   };
 
+  // because parameters is object, so it has to be converted to string to edit
+  const initialValues = produce(handler, draft => {
+    draft.method.parameters = JSON.stringify(draft.method.parameters);
+  });
+
   const formik = useFormik({
-    initialValues: handler,
+    initialValues,
     onSubmit: values => {
-      onChange(values);
+      try {
+        const newHandler = produce(values, draft => {
+          draft.method.parameters = JSON.parse(draft.method.parameters);
+        });
+        onChange(newHandler);
+      } catch (e) {
+        console.error(
+          `Error happened when parsing method parameters. Cannot parse ${values.method.parameters} as JSON.`
+        );
+        return;
+      }
     },
   });
 
