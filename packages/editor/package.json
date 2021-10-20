@@ -28,6 +28,7 @@
     "@meta-ui/core": "^0.1.0",
     "@meta-ui/runtime": "^0.0.0",
     "codemirror": "^5.63.3",
+    "formik": "^2.2.9",
     "framer-motion": "^4",
     "immer": "^9.0.6",
     "lodash": "^4.17.21",
