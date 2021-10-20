@@ -1,15 +1,7 @@
 import React from 'react';
-import _, { startCase } from 'lodash';
+import _ from 'lodash';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Box,
-  Divider,
-  VStack,
-  HStack,
-} from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
