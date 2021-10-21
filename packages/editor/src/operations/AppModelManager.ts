@@ -7,6 +7,7 @@ import {
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
   ModifyComponentIdOperation,
+  AddTraitOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
@@ -171,6 +172,22 @@ export class AppModelManager {
             oldValue
           );
           this.undoStack.push(undoOperation);
+        }
+        break;
+      case 'addTraitOperation':
+        const ato = o as AddTraitOperation;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === ato.componentId) {
+              c.traits.push({
+                type: ato.traitType,
+                properties: ato.properties,
+              });
+            }
+          });
+        });
+        if (!noEffect) {
+          // TODO: there is no delete trait operation now
         }
         break;
     }

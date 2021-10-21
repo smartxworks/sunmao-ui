@@ -1,9 +1,10 @@
-import { FormControl, FormLabel, Input, Box } from '@chakra-ui/react';
+import React from 'react';
+import _ from 'lodash';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
+import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
-import _ from 'lodash';
-import React from 'react';
 import { eventBus } from '../../eventBus';
 import { registry } from '../../metaUI';
 import {
@@ -11,9 +12,11 @@ import {
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
 } from '../../operations/Operations';
-import { TSchema } from '@sinclair/typebox';
+import { EventTraitForm } from './EventTraitForm';
 
 type Props = { selectedId: string; app: Application };
+
+const ignoreTraitsList = ['core/v1/slot', 'core/v1/event'];
 
 const renderField = (properties: {
   key: string;
@@ -26,17 +29,10 @@ const renderField = (properties: {
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLInputElement>();
     const onBlur = () => {
-      eventBus.send(
-        'operation',
-        type
-          ? new ModifyTraitPropertyOperation(
-            selectedId,
-            type,
-            fullKey,
-            ref.current?.value
-          )
-          : new ModifyComponentPropertyOperation(selectedId, fullKey, ref.current?.value)
-      );
+      const operation = type
+        ? new ModifyTraitPropertyOperation(selectedId, type, fullKey, ref.current?.value)
+        : new ModifyComponentPropertyOperation(selectedId, fullKey, ref.current?.value);
+      eventBus.send('operation', operation);
     };
     return (
       <FormControl key={`${selectedId}-${fullKey}`}>
@@ -74,43 +70,71 @@ export const ComponentForm: React.FC<Props> = props => {
   }
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
-  const properties =  Object.assign(
+  const properties = Object.assign(
     parseTypeBox(cImpl.spec.properties as TSchema),
-    selectedComponent.properties,
+    selectedComponent.properties
   );
-  const fields = Object.keys(properties || []).map(key => {
+  const propertyFields = Object.keys(properties || []).map(key => {
     const value = properties![key];
     return renderField({ key, value, fullKey: key, selectedId });
   });
 
-  const traitForms = selectedComponent.traits.map(t => {
-    const traitForm = Object.keys(t.properties || []).map(key => {
+  const traitFields = selectedComponent.traits.map(t => {
+    if (ignoreTraitsList.includes(t.type)) return null;
+    return Object.keys(t.properties || []).map(key => {
       const value = t.properties[key];
       return renderField({ key, value, fullKey: key, type: t.type, selectedId });
     });
-
-    return (
-      <form key={t.type}>
-        <strong>{t.type}</strong>
-        {traitForm}
-      </form>
-    );
   });
 
+  const propertyForm = (
+    <VStack width="full" alignItems="start">
+      <strong>Properties</strong>
+      <VStack
+        width="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+      >
+        {propertyFields}
+      </VStack>
+    </VStack>
+  );
+
+  const traitForm = (
+    <VStack width="full" alignItems="start">
+      <strong>Trait Fields</strong>
+      <VStack
+        width="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+      >
+        {traitFields}
+      </VStack>
+    </VStack>
+  );
+
   return (
-    <Box p={4}>
-      <div>Component Form</div>
-      <div>
-        ID:
+    <VStack p={4} spacing="4" background="gray.50">
+      <FormControl>
+        <FormLabel>
+          <strong>Component ID</strong>
+        </FormLabel>
         <Input
           key={selectedComponent?.id}
           defaultValue={selectedComponent?.id}
+          background="white"
           onBlur={e => changeCompId(selectedComponent?.id, e.target.value)}
         />
-      </div>
-      <form>{fields}</form>
-      <strong>Trait Fields</strong>
-      <div>{traitForms}</div>
-    </Box>
+      </FormControl>
+      {propertyFields.length > 0 ? propertyForm : null}
+      <EventTraitForm component={selectedComponent} />
+      {traitFields.length > 0 ? traitForm : null}
+    </VStack>
   );
 };
