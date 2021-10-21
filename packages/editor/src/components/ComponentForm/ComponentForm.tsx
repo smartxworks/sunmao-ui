@@ -2,9 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
-import { Static, TSchema } from '@sinclair/typebox';
+import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
-import { EventHandlerSchema, parseType, parseTypeBox } from '@meta-ui/runtime';
+import { parseType, parseTypeBox } from '@meta-ui/runtime';
 import { eventBus } from '../../eventBus';
 import { registry } from '../../metaUI';
 import {
@@ -87,9 +87,6 @@ export const ComponentForm: React.FC<Props> = props => {
     });
   });
 
-  const eventHandlers = selectedComponent.traits.find(t => t.type === 'core/v1/event')
-    ?.properties.handlers as Array<Static<typeof EventHandlerSchema>>;
-
   const propertyForm = (
     <VStack width="full" alignItems="start">
       <strong>Properties</strong>
@@ -136,7 +133,7 @@ export const ComponentForm: React.FC<Props> = props => {
         />
       </FormControl>
       {propertyFields.length > 0 ? propertyForm : null}
-      <EventTraitForm component={selectedComponent} handlers={eventHandlers} />
+      <EventTraitForm component={selectedComponent} />
       {traitFields.length > 0 ? traitForm : null}
     </VStack>
   );

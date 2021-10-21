@@ -17,11 +17,15 @@ type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
   component: ApplicationComponent;
-  handlers?: EventHandler[];
 };
 
 export const EventTraitForm: React.FC<Props> = props => {
-  const { component, handlers } = props;
+  const { component } = props;
+
+  const handlers: EventHandler[] = useMemo(() => {
+    return component.traits.find(t => t.type === 'core/v1/event')?.properties
+      .handlers as Array<Static<typeof EventHandlerSchema>>;
+  }, [component]);
 
   const eventTypes = useMemo(() => {
     return registry.getComponentByType(component.type).spec.events;
