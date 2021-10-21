@@ -14,7 +14,9 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
     }
   `;
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.target instanceof Element && e.target.id !== 'keyboard-event-wrapper')
+      return false;
     switch (e.key) {
       case 'Delete':
       case 'Backspace':
@@ -31,7 +33,7 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
   };
 
   return (
-    <div css={style} onKeyDown={onKeyDown} tabIndex={-1}>
+    <div id="keyboard-event-wrapper" css={style} onKeyDown={onKeyDown} tabIndex={-1}>
       {props.children}
     </div>
   );

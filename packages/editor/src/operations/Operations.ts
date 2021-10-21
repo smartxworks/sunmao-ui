@@ -23,15 +23,22 @@ export class ModifyComponentPropertyOperation {
   constructor(
     public componentId: string,
     public propertyKey: string,
-    public propertyValue: unknown
+    public propertyValue: any
   ) {}
 }
-export class ModifyComponentIdOperation {
-  kind = 'modifyComponentId';
+
+export class AddTraitOperation {
+  kind = 'addTraitOperation';
   constructor(
     public componentId: string,
-    public value: string
+    public traitType: string,
+    public properties: any
   ) {}
+}
+
+export class ModifyComponentIdOperation {
+  kind = 'modifyComponentId';
+  constructor(public componentId: string, public value: string) {}
 }
 
 export class ModifyTraitPropertyOperation {
@@ -40,6 +47,6 @@ export class ModifyTraitPropertyOperation {
     public componentId: string,
     public traitType: string,
     public propertyKey: string,
-    public propertyValue: unknown
+    public propertyValue: any
   ) {}
 }
