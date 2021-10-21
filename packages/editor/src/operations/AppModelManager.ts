@@ -8,6 +8,7 @@ import {
   ModifyTraitPropertyOperation,
   ModifyComponentIdOperation,
   AddTraitOperation,
+  RemoveTraitOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
@@ -176,6 +177,7 @@ export class AppModelManager {
         break;
       case 'addTraitOperation':
         const ato = o as AddTraitOperation;
+        let i = 0;
         newApp = produce(this.app, draft => {
           draft.spec.components.forEach(c => {
             if (c.id === ato.componentId) {
@@ -183,11 +185,27 @@ export class AppModelManager {
                 type: ato.traitType,
                 properties: ato.properties,
               });
+              i = c.traits.length - 1;
             }
           });
         });
         if (!noEffect) {
-          // TODO: there is no delete trait operation now
+          const removeTraitOperation = new RemoveTraitOperation(ato.componentId, i);
+          this.undoStack.push(removeTraitOperation);
+        }
+        break;
+      case 'removeTraitOperation':
+        const rto = o as RemoveTraitOperation;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === rto.componentId) {
+              c.traits.splice(rto.traitIndex, 1);
+            }
+          });
+        });
+        if (!noEffect) {
+          // const removeTraitOperation = new AddTraitOperation(rto.componentId, trait.type);
+          // this.undoStack.push(removeTraitOperation);
         }
         break;
     }

@@ -1,15 +1,17 @@
 import { ApplicationComponent, ComponentTrait } from '@meta-ui/core';
-import { VStack } from '@chakra-ui/react';
+import { HStack, IconButton, VStack } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
 import { renderField } from '../ComponentForm';
 import { formWrapperCSS } from '../style';
 
 type Props = {
   component: ApplicationComponent;
   trait: ComponentTrait;
+  onRemove: () => void;
 };
 
 export const GeneralTraitForm: React.FC<Props> = props => {
-  const { trait, component } = props;
+  const { trait, component, onRemove } = props;
 
   const fields = Object.keys(trait.properties || []).map(key => {
     const value = trait.properties[key];
@@ -23,7 +25,17 @@ export const GeneralTraitForm: React.FC<Props> = props => {
   });
   return (
     <VStack key={trait.type} css={formWrapperCSS}>
-      <strong>{trait.type}</strong>
+      <HStack width="full" justifyContent="space-between">
+        <strong>{trait.type}</strong>
+        <IconButton
+          aria-label="remove trait"
+          variant="ghost"
+          colorScheme="red"
+          size="xs"
+          icon={<CloseIcon />}
+          onClick={onRemove}
+        />
+      </HStack>
       {fields}
     </VStack>
   );
