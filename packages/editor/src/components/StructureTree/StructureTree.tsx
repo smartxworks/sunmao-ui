@@ -1,5 +1,6 @@
 import React from 'react';
 import { Application, ApplicationComponent } from '@meta-ui/core';
+import { Box, Text, VStack } from '@chakra-ui/react';
 import { eventBus } from '../../eventBus';
 import {
   CreateComponentOperation,
@@ -7,7 +8,7 @@ import {
 } from '../../operations/Operations';
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { DropComponentWrapper } from './DropComponentWrapper';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -87,20 +88,20 @@ export const StructureTree: React.FC<Props> = props => {
 };
 
 function RootItem() {
-  const onDrop = (e: React.DragEvent) => {
-    const creatingComponent = e.dataTransfer?.getData('component') || '';
-
+  const onDrop = (creatingComponent: string) => {
     eventBus.send('operation', new CreateComponentOperation(creatingComponent));
   };
   return (
-    <Box onDrop={onDrop} width="full">
-      <ComponentItemView
-        title="Root"
-        isSelected={false}
-        onClick={() => undefined}
-        isDroppable={true}
-        noChevron={true}
-      />
+    <Box width="full">
+      <DropComponentWrapper onDrop={onDrop}>
+        <ComponentItemView
+          title="Root"
+          isSelected={false}
+          onClick={() => undefined}
+          isDroppable={true}
+          noChevron={true}
+        />
+      </DropComponentWrapper>
     </Box>
   );
 }

@@ -8,6 +8,7 @@ import {
   RemoveComponentOperation,
 } from '../../operations/Operations';
 import { ComponentItemView } from './ComponentItemView';
+import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
 
 type Props = {
@@ -49,25 +50,22 @@ export const ComponentTree: React.FC<Props> = props => {
           </Text>
         );
       }
-      const onDrop = (e: React.DragEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        const creatingComponent = e.dataTransfer?.getData('component') || '';
-
+      const onDrop = (creatingComponent: string) => {
         eventBus.send(
           'operation',
           new CreateComponentOperation(creatingComponent, component.id, slot)
         );
       };
-
       const slotName = (
-        <Text color="gray.500" fontWeight="medium" onDrop={onDrop}>
-          Slot: {slot}
-        </Text>
+        <DropComponentWrapper onDrop={onDrop}>
+          <Text color="gray.500" fontWeight="medium">
+            Slot: {slot}
+          </Text>
+        </DropComponentWrapper>
       );
 
       return (
-        <Box key={slot} paddingLeft="5" width="full" onDrop={onDrop}>
+        <Box key={slot} paddingLeft="5" width="full">
           {/* although component can have multiple slots, but for now, most components have only one slot
           so we hide slot name to save more view area */}
           {slots.length > 1 ? slotName : null}
@@ -83,13 +81,8 @@ export const ComponentTree: React.FC<Props> = props => {
     eventBus.send('operation', new RemoveComponentOperation(component.id));
   };
 
-  const onDropInComponent = (e: React.DragEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
+  const onDrop = (creatingComponent: string) => {
     if (slots.length === 0) return;
-
-    const creatingComponent = e.dataTransfer?.getData('component') || '';
-
     eventBus.send(
       'operation',
       new CreateComponentOperation(creatingComponent, component.id, 'content')
@@ -103,20 +96,21 @@ export const ComponentTree: React.FC<Props> = props => {
       spacing="2"
       width="full"
       alignItems="start"
-      onDrop={onDropInComponent}
     >
-      <ComponentItemView
-        title={component.id}
-        isSelected={component.id === selectedComponentId}
-        onClick={() => {
-          onSelectComponent(component.id);
-        }}
-        onClickRemove={onClickRemove}
-        noChevron={slots.length === 0}
-        isExpanded={isExpanded}
-        onToggleExpanded={() => setIsExpanded(prev => !prev)}
-        isDroppable={slots.length > 0}
-      />
+      <DropComponentWrapper onDrop={onDrop}>
+        <ComponentItemView
+          title={component.id}
+          isSelected={component.id === selectedComponentId}
+          onClick={() => {
+            onSelectComponent(component.id);
+          }}
+          onClickRemove={onClickRemove}
+          noChevron={slots.length === 0}
+          isExpanded={isExpanded}
+          onToggleExpanded={() => setIsExpanded(prev => !prev)}
+          isDroppable={slots.length > 0}
+        />
+      </DropComponentWrapper>
       {isExpanded ? slotsEle : null}
     </VStack>
   );
