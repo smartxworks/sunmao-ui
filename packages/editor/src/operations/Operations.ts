@@ -64,3 +64,10 @@ export class ModifyTraitPropertiesOperation {
     public properties: Record<string, any>
   ) {}
 }
+export class SortComponentOperation {
+  kind = 'sortComponent';
+  constructor(
+    public componentId: string,
+    public direction: 'up' | 'down'
+  ) {}
+}
