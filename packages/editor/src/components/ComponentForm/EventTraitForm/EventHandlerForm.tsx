@@ -17,6 +17,7 @@ import { registry } from '../../../metaUI';
 import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
 import produce from 'immer';
+import { KeyValueEditor } from '../../KeyValueEditor';
 
 type Props = {
   eventTypes: string[];
@@ -48,25 +49,10 @@ export const EventHandlerForm: React.FC<Props> = props => {
     updateMethods(e.target.value);
   };
 
-  // because parameters is object, so it has to be converted to string to edit
-  const initialValues = produce(handler, draft => {
-    draft.method.parameters = JSON.stringify(draft.method.parameters);
-  });
-
   const formik = useFormik({
-    initialValues,
+    initialValues: handler,
     onSubmit: values => {
-      try {
-        const newHandler = produce(values, draft => {
-          draft.method.parameters = JSON.parse(draft.method.parameters);
-        });
-        onChange(newHandler);
-      } catch (e) {
-        console.error(
-          `Error happened when parsing method parameters. Cannot parse ${values.method.parameters} as JSON.`
-        );
-        return;
-      }
+      onChange(values);
     },
   });
 
@@ -130,11 +116,12 @@ export const EventHandlerForm: React.FC<Props> = props => {
   const parametersField = (
     <FormControl>
       <FormLabel>Parameters</FormLabel>
-      <Input
-        name="method.parameters"
-        onChange={formik.handleChange}
-        onBlur={() => formik.submitForm()}
-        value={formik.values.method.parameters}
+      <KeyValueEditor
+        initValue={handler.method.parameters}
+        onChange={json => {
+          formik.setFieldValue('method.parameters', json);
+          formik.submitForm();
+        }}
       />
     </FormControl>
   );
