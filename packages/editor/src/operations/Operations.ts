@@ -36,6 +36,11 @@ export class AddTraitOperation {
   ) {}
 }
 
+export class RemoveTraitOperation {
+  kind = 'removeTraitOperation';
+  constructor(public componentId: string, public traitIndex: number) {}
+}
+
 export class ModifyComponentIdOperation {
   kind = 'modifyComponentId';
   constructor(public componentId: string, public value: string) {}
@@ -48,5 +53,14 @@ export class ModifyTraitPropertyOperation {
     public traitType: string,
     public propertyKey: string,
     public propertyValue: any
+  ) {}
+}
+
+export class ModifyTraitPropertiesOperation {
+  kind = 'modifyTraitProperties';
+  constructor(
+    public componentId: string,
+    public traitType: string,
+    public properties: Record<string, any>
   ) {}
 }

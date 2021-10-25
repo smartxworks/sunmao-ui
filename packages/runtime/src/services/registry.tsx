@@ -102,6 +102,21 @@ export class Registry {
     }
     return t;
   }
+
+  getTraitByType(type: string): ImplementedRuntimeTrait {
+    const { version, name } = parseType(type);
+    return this.getTrait(version, name);
+  }
+
+  getAllTraitTypes(): string[] {
+    const res: string[] = [];
+    for (const version of this.traits.keys()) {
+      for (const name of this.traits.get(version)!.keys()) {
+        res.push(`${version}/${name}`);
+      }
+    }
+    return res;
+  }
 }
 
 export function initRegistry(): Registry {
@@ -142,5 +157,6 @@ export function initRegistry(): Registry {
   registry.registerTrait(CoreHidden);
   registry.registerTrait(CoreFetch);
   registry.registerTrait(CoreValidation);
+
   return registry;
 }

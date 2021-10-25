@@ -72,7 +72,9 @@
                     name: 'query',
                     url: 'https://61373521eac1410017c18209.mockapi.io/users/{{ table.selectedItem ? table.selectedItem.id : "" }}',
                     method: 'put',
-                    headers: [{ key: 'Content-Type', value: 'application/json' }],
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
                     body: '{{ {...table.selectedItem, name: nameInput.value } }}',
                     lazy: true,
                     onComplete: [
