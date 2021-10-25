@@ -8,6 +8,8 @@ import {
   ModifyTraitPropertyOperation,
   ModifyComponentIdOperation,
   AddTraitOperation,
+  RemoveTraitOperation,
+  ModifyTraitPropertiesOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
@@ -174,8 +176,33 @@ export class AppModelManager {
           this.undoStack.push(undoOperation);
         }
         break;
+      case 'modifyTraitProperties':
+        const mtpo = o as ModifyTraitPropertiesOperation;
+        let oldProperties;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === mtpo.componentId) {
+              c.traits.forEach(t => {
+                if (t.type === mtpo.traitType) {
+                  oldProperties = t.properties;
+                  t.properties = mtpo.properties;
+                }
+              });
+            }
+          });
+        });
+        if (!noEffect) {
+          const undoOperation = new ModifyTraitPropertiesOperation(
+            mtpo.componentId,
+            mtpo.traitType,
+            oldProperties || {}
+          );
+          this.undoStack.push(undoOperation);
+        }
+        break;
       case 'addTraitOperation':
         const ato = o as AddTraitOperation;
+        let i = 0;
         newApp = produce(this.app, draft => {
           draft.spec.components.forEach(c => {
             if (c.id === ato.componentId) {
@@ -183,12 +210,24 @@ export class AppModelManager {
                 type: ato.traitType,
                 properties: ato.properties,
               });
+              i = c.traits.length - 1;
             }
           });
         });
         if (!noEffect) {
-          // TODO: there is no delete trait operation now
+          const removeTraitOperation = new RemoveTraitOperation(ato.componentId, i);
+          this.undoStack.push(removeTraitOperation);
         }
+        break;
+      case 'removeTraitOperation':
+        const rto = o as RemoveTraitOperation;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === rto.componentId) {
+              c.traits.splice(rto.traitIndex, 1);
+            }
+          });
+        });
         break;
     }
     this.updateApp(newApp);

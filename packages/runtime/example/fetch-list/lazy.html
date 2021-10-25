@@ -77,13 +77,11 @@
                     name: 'query',
                     url: `{{ "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/"+fetch_list.country+"/CNY/zh-CN/CSHA/SZX/anytime/anytime"}}`,
                     method: 'get',
-                    headers: [
-                      { key: 'x-rapidapi-key', value: `{{fetch_list.token}}` },
-                      {
-                        key: 'x-rapidapi-host',
-                        value: 'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
-                      },
-                    ],
+                    headers: {
+                      'x-rapidapi-key': `{{fetch_list.token}}`,
+                      'x-rapidapi-host':
+                        'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
+                    },
                     lazy: true,
                   },
                 },

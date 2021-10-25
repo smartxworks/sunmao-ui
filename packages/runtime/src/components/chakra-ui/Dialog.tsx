@@ -84,6 +84,7 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
         onClose={() => setIsOpen(false)}
+        trapFocus={false}
         portalProps={containerRef.current ? portalProps : undefined}
       >
         <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>

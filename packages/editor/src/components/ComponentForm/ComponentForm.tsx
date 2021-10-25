@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
-import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
@@ -13,12 +13,12 @@ import {
   ModifyTraitPropertyOperation,
 } from '../../operations/Operations';
 import { EventTraitForm } from './EventTraitForm';
+import { GeneralTraitFormList } from './GeneralTraitFormList';
+import { FetchTraitForm } from './FetchTraitForm';
 
 type Props = { selectedId: string; app: Application };
 
-const ignoreTraitsList = ['core/v1/slot', 'core/v1/event'];
-
-const renderField = (properties: {
+export const renderField = (properties: {
   key: string;
   value: unknown;
   type?: string;
@@ -57,10 +57,6 @@ const renderField = (properties: {
   }
 };
 
-const changeCompId = (selectedId: string, value: string) => {
-  eventBus.send('operation', new ModifyComponentIdOperation(selectedId, value));
-};
-
 export const ComponentForm: React.FC<Props> = props => {
   const { selectedId, app } = props;
 
@@ -74,18 +70,15 @@ export const ComponentForm: React.FC<Props> = props => {
     parseTypeBox(cImpl.spec.properties as TSchema),
     selectedComponent.properties
   );
+
   const propertyFields = Object.keys(properties || []).map(key => {
     const value = properties![key];
     return renderField({ key, value, fullKey: key, selectedId });
   });
 
-  const traitFields = selectedComponent.traits.map(t => {
-    if (ignoreTraitsList.includes(t.type)) return null;
-    return Object.keys(t.properties || []).map(key => {
-      const value = t.properties[key];
-      return renderField({ key, value, fullKey: key, type: t.type, selectedId });
-    });
-  });
+  const changeComponentId = (selectedId: string, value: string) => {
+    eventBus.send('operation', new ModifyComponentIdOperation(selectedId, value));
+  };
 
   const propertyForm = (
     <VStack width="full" alignItems="start">
@@ -103,22 +96,6 @@ export const ComponentForm: React.FC<Props> = props => {
     </VStack>
   );
 
-  const traitForm = (
-    <VStack width="full" alignItems="start">
-      <strong>Trait Fields</strong>
-      <VStack
-        width="full"
-        padding="4"
-        background="white"
-        border="1px solid"
-        borderColor="gray.200"
-        borderRadius="4"
-      >
-        {traitFields}
-      </VStack>
-    </VStack>
-  );
-
   return (
     <VStack p={4} spacing="4" background="gray.50">
       <FormControl>
@@ -129,12 +106,13 @@ export const ComponentForm: React.FC<Props> = props => {
           key={selectedComponent?.id}
           defaultValue={selectedComponent?.id}
           background="white"
-          onBlur={e => changeCompId(selectedComponent?.id, e.target.value)}
+          onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
         />
       </FormControl>
       {propertyFields.length > 0 ? propertyForm : null}
       <EventTraitForm component={selectedComponent} />
-      {traitFields.length > 0 ? traitForm : null}
+      <FetchTraitForm component={selectedComponent} />
+      <GeneralTraitFormList component={selectedComponent} />
     </VStack>
   );
 };

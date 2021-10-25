@@ -35,6 +35,6 @@ export function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
       return obj;
 
     default:
-      return undefined;
+      return {};
   }
 }

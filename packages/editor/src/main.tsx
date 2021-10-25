@@ -1,5 +1,4 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import 'react-grid-layout/css/styles.css';
@@ -11,13 +10,7 @@ export default function renderApp() {
   ReactDOM.render(
     <StrictMode>
       <ChakraProvider>
-        <div
-          css={css`
-            display: flex;
-          `}
-        >
-          <Editor />
-        </div>
+        <Editor />
       </ChakraProvider>
     </StrictMode>,
     document.getElementById('root')
