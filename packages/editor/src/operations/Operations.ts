@@ -55,3 +55,12 @@ export class ModifyTraitPropertyOperation {
     public propertyValue: any
   ) {}
 }
+
+export class ModifyTraitPropertiesOperation {
+  kind = 'modifyTraitProperties';
+  constructor(
+    public componentId: string,
+    public traitType: string,
+    public properties: Record<string, any>
+  ) {}
+}

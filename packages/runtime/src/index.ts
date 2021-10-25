@@ -25,5 +25,5 @@ export * from './utils/parseType';
 export * from './utils/parseTypeBox';
 export * from './utils/encodeDragDataTransfer';
 export * from './types/RuntimeSchema';
-export * from './types/EventHandlerSchema';
+export * from './types/TraitPropertiesSchema';
 export * from './constants';

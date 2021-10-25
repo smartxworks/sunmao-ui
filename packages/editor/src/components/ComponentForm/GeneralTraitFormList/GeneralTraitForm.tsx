@@ -1,8 +1,11 @@
 import { ApplicationComponent, ComponentTrait } from '@meta-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
+import { parseTypeBox } from '@meta-ui/runtime';
 import { CloseIcon } from '@chakra-ui/icons';
+import { TSchema } from '@sinclair/typebox';
 import { renderField } from '../ComponentForm';
 import { formWrapperCSS } from '../style';
+import { registry } from '../../../metaUI';
 
 type Props = {
   component: ApplicationComponent;
@@ -13,7 +16,13 @@ type Props = {
 export const GeneralTraitForm: React.FC<Props> = props => {
   const { trait, component, onRemove } = props;
 
-  const fields = Object.keys(trait.properties || []).map(key => {
+  const tImpl = registry.getTraitByType(trait.type);
+  const properties = Object.assign(
+    parseTypeBox(tImpl.spec.properties as TSchema),
+    trait.properties
+  );
+
+  const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
     return renderField({
       key,

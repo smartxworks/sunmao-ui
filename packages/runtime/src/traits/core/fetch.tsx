@@ -1,11 +1,11 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from 'src/types/RuntimeSchema';
-import { EventHandlerSchema } from '../../types/EventHandlerSchema';
+import { FetchTraitPropertiesSchema } from '../../types/TraitPropertiesSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
 
-const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+const useFetchTrait: TraitImplementation<Static<typeof FetchTraitPropertiesSchema>> = ({
   url,
   method,
   lazy: _lazy,
@@ -27,9 +27,8 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
     // FIXME: listen to the header change
     const headers = new Headers();
     if (_headers) {
-      for (let i = 0; i < _headers.length; i++) {
-        const header = _headers[i];
-        headers.append(header.key, _headers[i].value);
+      for (const key in _headers) {
+        headers.append(key, _headers[key]);
       }
     }
 
@@ -37,7 +36,7 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
     fetch(url, {
       method,
       headers,
-      body: JSON.stringify(body),
+      body: method === 'get' ? undefined : JSON.stringify(body),
     }).then(
       async response => {
         if (response.ok) {
@@ -105,15 +104,6 @@ const useFetchTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   };
 };
 
-const PropsSchema = Type.Object({
-  url: Type.String(), // {format:uri}?;
-  method: Type.String(), // {pattern: /^(get|post|put|delete)$/i}
-  lazy: Type.Boolean(),
-  headers: Type.Array(Type.Object({ key: Type.String(), value: Type.String() })),
-  body: Type.Any(),
-  onComplete: Type.Array(EventHandlerSchema),
-});
-
 export default {
   ...createTrait({
     version: 'core/v1',
@@ -122,7 +112,7 @@ export default {
       description: 'fetch data to store',
     },
     spec: {
-      properties: PropsSchema,
+      properties: FetchTraitPropertiesSchema,
       state: Type.Object({
         fetch: Type.Object({
           loading: Type.Boolean(),

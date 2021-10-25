@@ -1,6 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Button, Flex, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import { Button, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
+import { fromPairs, toPairs } from 'lodash';
 import React, { useState } from 'react';
 
 type Props = {
@@ -10,21 +11,11 @@ type Props = {
 
 export const KeyValueEditor: React.FC<Props> = props => {
   const [rows, setRows] = useState<Array<[string, string]>>(() => {
-    if (!props.initValue) return [];
-    const res: Array<[string, string]> = [];
-    for (const key in props.initValue) {
-      res.push([key, props.initValue[key]]);
-    }
-    return res;
+    return toPairs(props.initValue);
   });
 
   const emitDataChange = (newRows: Array<[string, string]>) => {
-    const json = newRows.reduce<Record<string, string>>((res, curr) => {
-      if (curr[0]) {
-        res[curr[0]] = curr[1];
-      }
-      return res;
-    }, {});
+    const json = fromPairs(newRows);
     props.onChange(json);
   };
 
