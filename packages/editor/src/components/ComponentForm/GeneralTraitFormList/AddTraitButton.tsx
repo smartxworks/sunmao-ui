@@ -1,7 +1,6 @@
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useMemo } from 'react';
-import { ignoreTraitsList } from '../../../constants';
 import { registry } from '../../../metaUI';
 
 type Props = {
@@ -12,7 +11,7 @@ export const AddTraitButton: React.FC<Props> = props => {
   const { onAddTrait } = props;
 
   const traitTypes = useMemo(() => {
-    return registry.getAllTraitTypes().filter(type => !ignoreTraitsList.includes(type));
+    return registry.getAllTraitTypes();
   }, []);
 
   const menuItems = traitTypes.map(type => {

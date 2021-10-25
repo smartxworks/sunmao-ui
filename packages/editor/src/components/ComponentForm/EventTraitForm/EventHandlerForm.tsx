@@ -16,7 +16,6 @@ import { EventHandlerSchema } from '@meta-ui/runtime';
 import { registry } from '../../../metaUI';
 import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
-import produce from 'immer';
 import { KeyValueEditor } from '../../KeyValueEditor';
 
 type Props = {
@@ -24,10 +23,11 @@ type Props = {
   handler: Static<typeof EventHandlerSchema>;
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
+  hideEventType?: boolean;
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
-  const { handler, eventTypes, onChange, onRemove } = props;
+  const { handler, eventTypes, onChange, onRemove, hideEventType } = props;
   const { app } = useAppModel();
   const [methods, setMethods] = useState<string[]>([]);
 
@@ -117,7 +117,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
     <FormControl>
       <FormLabel>Parameters</FormLabel>
       <KeyValueEditor
-        initValue={handler.method.parameters}
+        initValue={formik.values.method.parameters}
         onChange={json => {
           formik.setFieldValue('method.parameters', json);
           formik.submitForm();
@@ -169,7 +169,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
   return (
     <Box position="relative">
       <VStack css={formWrapperCSS}>
-        {typeField}
+        {hideEventType ? null : typeField}
         {targetField}
         {methodField}
         {parametersField}

@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { EventHandlerSchema } from '../../../types/EventHandlerSchema';
+import { EventHandlerSchema } from '../../../types/TraitPropertiesSchema';
 
 export const MajorKeyPropertySchema = Type.String();
 export const RowsPerPagePropertySchema = Type.Number();

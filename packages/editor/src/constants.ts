@@ -1,6 +1,6 @@
 import { Application } from '@meta-ui/core';
 
-export const ignoreTraitsList = ['core/v1/slot', 'core/v1/event'];
+export const ignoreTraitsList = ['core/v1/slot', 'core/v1/event', 'core/v1/fetch'];
 
 export const DefaultAppSchema: Application = {
   kind: 'Application',

@@ -9,6 +9,7 @@ import {
   ModifyComponentIdOperation,
   AddTraitOperation,
   RemoveTraitOperation,
+  ModifyTraitPropertiesOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { registry } from '../metaUI';
@@ -175,6 +176,30 @@ export class AppModelManager {
           this.undoStack.push(undoOperation);
         }
         break;
+      case 'modifyTraitProperties':
+        const mtpo = o as ModifyTraitPropertiesOperation;
+        let oldProperties;
+        newApp = produce(this.app, draft => {
+          draft.spec.components.forEach(c => {
+            if (c.id === mtpo.componentId) {
+              c.traits.forEach(t => {
+                if (t.type === mtpo.traitType) {
+                  oldProperties = t.properties;
+                  t.properties = mtpo.properties;
+                }
+              });
+            }
+          });
+        });
+        if (!noEffect) {
+          const undoOperation = new ModifyTraitPropertiesOperation(
+            mtpo.componentId,
+            mtpo.traitType,
+            oldProperties || {}
+          );
+          this.undoStack.push(undoOperation);
+        }
+        break;
       case 'addTraitOperation':
         const ato = o as AddTraitOperation;
         let i = 0;
@@ -203,10 +228,6 @@ export class AppModelManager {
             }
           });
         });
-        if (!noEffect) {
-          // const removeTraitOperation = new AddTraitOperation(rto.componentId, trait.type);
-          // this.undoStack.push(removeTraitOperation);
-        }
         break;
     }
     this.updateApp(newApp);

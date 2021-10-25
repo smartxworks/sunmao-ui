@@ -2,7 +2,7 @@ import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
 import { CallbackMap, TraitImplementation } from 'src/types/RuntimeSchema';
-import { EventHandlerSchema } from '../../types/EventHandlerSchema';
+import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 
 const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   handlers,

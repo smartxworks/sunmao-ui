@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
-import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
@@ -14,6 +14,7 @@ import {
 } from '../../operations/Operations';
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
+import { FetchTraitForm } from './FetchTraitForm';
 
 type Props = { selectedId: string; app: Application };
 
@@ -69,6 +70,7 @@ export const ComponentForm: React.FC<Props> = props => {
     parseTypeBox(cImpl.spec.properties as TSchema),
     selectedComponent.properties
   );
+
   const propertyFields = Object.keys(properties || []).map(key => {
     const value = properties![key];
     return renderField({ key, value, fullKey: key, selectedId });
@@ -109,6 +111,7 @@ export const ComponentForm: React.FC<Props> = props => {
       </FormControl>
       {propertyFields.length > 0 ? propertyForm : null}
       <EventTraitForm component={selectedComponent} />
+      <FetchTraitForm component={selectedComponent} />
       <GeneralTraitFormList component={selectedComponent} />
     </VStack>
   );
