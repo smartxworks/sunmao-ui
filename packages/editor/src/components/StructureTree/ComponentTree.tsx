@@ -6,6 +6,7 @@ import { registry } from '../../metaUI';
 import {
   CreateComponentOperation,
   RemoveComponentOperation,
+  SortComponentOperation,
 } from '../../operations/Operations';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
@@ -89,6 +90,14 @@ export const ComponentTree: React.FC<Props> = props => {
     );
   };
 
+  const onMoveUp = () => {
+    eventBus.send('operation', new SortComponentOperation(component.id, 'up'));
+  };
+
+  const onMoveDown = () => {
+    eventBus.send('operation', new SortComponentOperation(component.id, 'down'));
+  };
+
   return (
     <VStack
       key={component.id}
@@ -109,6 +118,9 @@ export const ComponentTree: React.FC<Props> = props => {
           isExpanded={isExpanded}
           onToggleExpanded={() => setIsExpanded(prev => !prev)}
           isDroppable={slots.length > 0}
+          isSortable={true}
+          onMoveUp={onMoveUp}
+          onMoveDown={onMoveDown}
         />
       </DropComponentWrapper>
       {isExpanded ? slotsEle : null}

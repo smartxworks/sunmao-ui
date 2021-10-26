@@ -7,6 +7,7 @@ import {
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
   ModifyComponentIdOperation,
+  SortComponentOperation,
   AddTraitOperation,
   RemoveTraitOperation,
   ModifyTraitPropertiesOperation,
@@ -227,6 +228,29 @@ export class AppModelManager {
               c.traits.splice(rto.traitIndex, 1);
             }
           });
+        break;
+      case 'sortComponent':
+        const sortO = o as SortComponentOperation;
+        newApp = produce(this.app, draft => {
+          const iIndex = draft.spec.components.findIndex(c => c.id === sortO.componentId);
+          const iComponent = this.app.spec.components[iIndex];
+          const iSlotTrait = iComponent.traits.find(t => t.type === 'core/v1/slot');
+          if (!iSlotTrait) return;
+
+          const findArray = sortO.direction === 'up' ? this.app.spec.components.slice(0, iIndex).reverse() : this.app.spec.components.slice(iIndex + 1);
+
+          const jComponent = findArray.find(c => {
+            const jSlotTrait = c.traits.find(t => t.type === 'core/v1/slot');
+            if (jSlotTrait){
+              return _.isEqual(jSlotTrait, iSlotTrait);
+            }
+          });
+          if (!jComponent) return;
+
+          const jIndex = this.app.spec.components.findIndex(c => c.id === jComponent.id);
+          if (jIndex > -1) {
+            [draft.spec.components[iIndex],draft.spec.components[jIndex]] = [draft.spec.components[jIndex],draft.spec.components[iIndex]];
+          }
         });
         break;
     }
