@@ -1,4 +1,4 @@
-import { ChevronDownIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
+import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -11,6 +11,9 @@ type Props = {
   isExpanded?: boolean;
   onToggleExpanded?: () => void;
   isDroppable?: boolean;
+  isSortable?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 };
 
 export const ComponentItemView: React.FC<Props> = props => {
@@ -23,6 +26,9 @@ export const ComponentItemView: React.FC<Props> = props => {
     onToggleExpanded,
     onClickRemove,
     isDroppable,
+    isSortable = false,
+    onMoveUp,
+    onMoveDown
   } = props;
 
   const [isDragOver, setIsDragOver] = useState(false);
@@ -60,15 +66,37 @@ export const ComponentItemView: React.FC<Props> = props => {
         <Text color={isSelected ? 'red.500' : 'black'} onClick={onClick} cursor="pointer">
           {title}
         </Text>
-        {onClickRemove ? (
-          <IconButton
-            variant="ghost"
-            size="smx"
-            aria-label="remove"
-            icon={<DeleteIcon />}
-            onClick={onClickRemove}
-          />
-        ) : null}
+        <Box display="flex" alignItems="center">
+          {onClickRemove ? (
+            <Box>
+              <IconButton
+                variant="ghost"
+                size="smx"
+                aria-label="remove"
+                icon={<DeleteIcon />}
+                onClick={onClickRemove}
+              />
+            </Box>
+          ) : null}
+          {isSortable ? (
+            <Box>
+              <IconButton
+                variant="ghost"
+                size="smx"
+                aria-label="remove"
+                icon={<ArrowUpIcon />}
+                onClick={onMoveUp}
+              />
+              <IconButton
+                variant="ghost"
+                size="smx"
+                aria-label="remove"
+                icon={<ArrowDownIcon />}
+                onClick={onMoveDown}
+              />
+            </Box>
+          ) : null}
+        </Box>
       </HStack>
     </Box>
   );
