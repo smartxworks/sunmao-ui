@@ -4,4 +4,4 @@ export * from './scope';
 export * from './application';
 export * from './method';
 
-export const test = 2;
+export const test = 3;
