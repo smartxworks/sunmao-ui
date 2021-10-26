@@ -6,7 +6,8 @@
     "prepublish": "lerna run prepublish",
     "test:ci": "jest -c config/jest.ci.config.js",
     "lint": "eslint packages --ext .ts --ext .tsx",
-    "fix-lint": "eslint --fix packages --ext .ts --ext .tsx"
+    "fix-lint": "eslint --fix packages --ext .ts --ext .tsx",
+    "release:dev": "lerna publish --canary --preid dev --dist-tag next"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.31.1",
