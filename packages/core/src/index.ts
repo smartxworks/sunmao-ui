@@ -3,3 +3,5 @@ export * from './trait';
 export * from './scope';
 export * from './application';
 export * from './method';
+
+export const test = 2;
