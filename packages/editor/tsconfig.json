@@ -1,7 +1,7 @@
 {
   "extends": "../../config/tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES6",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": false,
@@ -18,7 +18,7 @@
     "noUnusedParameters": true,
     "types": ["@emotion/react/types/css-prop"],
     "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react",
+    "jsxImportSource": "@emotion/react"
   },
   "include": ["./src"]
 }
