@@ -56,6 +56,5 @@
       "eslint --fix",
       "git add"
     ]
-  },
-  "gitHead": "eb88345ad82e8f3207cb2f2272791824060168ef"
+  }
 }
