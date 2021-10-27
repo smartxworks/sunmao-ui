@@ -10,6 +10,7 @@ node_modules
 
 # dist
 lib
+dist
 tsconfig.tsbuildinfo
 typings
 

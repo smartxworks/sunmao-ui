@@ -12,14 +12,18 @@
     "type": "git",
     "url": "git+https://github.com/webzard-io/meta-ui.git"
   },
-  "module": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "typings/index.d.ts",
   "files": [
-    "lib"
+    "dist",
+    "typings"
   ],
   "scripts": {
-    "build": "tsc -b .",
-    "typings": "tsc -d",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output",
+    "dev": "npm run build -- --watch",
+    "typings": "tsc --emitDeclarationOnly --declarationDir typings",
     "test": "jest",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
@@ -35,6 +39,7 @@
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
+    "tsup": "^5.5.0",
     "typescript": "^4.3.5"
   },
   "dependencies": {
