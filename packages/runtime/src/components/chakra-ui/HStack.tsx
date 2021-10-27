@@ -18,6 +18,7 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
   justify,
   spacing,
   slotsMap,
+  hideBorder,
 }) => {
   return (
     <BaseHStack
@@ -25,7 +26,7 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
       width="full"
       padding="4"
       background="white"
-      border="1px solid"
+      border={hideBorder ? '0' : '1px solid'}
       borderColor="gray.200"
       borderRadius="4"
       {...{ direction, wrap, align, justify, spacing }}
@@ -41,6 +42,7 @@ const PropsSchema = Type.Object({
   align: AlignItemsSchema,
   justify: JustifyContentSchema,
   spacing: SpacingSchema,
+  hideBorder: Type.Optional(Type.Boolean()),
 });
 
 export default {
