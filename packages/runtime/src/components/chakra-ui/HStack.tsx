@@ -1,4 +1,5 @@
 import { createComponent } from '@meta-ui/core';
+import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
@@ -18,7 +19,7 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
   justify,
   spacing,
   slotsMap,
-  hideBorder,
+  customStyle,
 }) => {
   return (
     <BaseHStack
@@ -26,9 +27,12 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
       width="full"
       padding="4"
       background="white"
-      border={hideBorder ? '0' : '1px solid'}
+      border="1px solid"
       borderColor="gray.200"
       borderRadius="4"
+      css={css`
+        ${customStyle?.content}
+      `}
       {...{ direction, wrap, align, justify, spacing }}
     >
       <Slot slotsMap={slotsMap} slot="content" />
@@ -42,7 +46,6 @@ const PropsSchema = Type.Object({
   align: AlignItemsSchema,
   justify: JustifyContentSchema,
   spacing: SpacingSchema,
-  hideBorder: Type.Optional(Type.Boolean()),
 });
 
 export default {

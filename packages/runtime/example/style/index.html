@@ -43,18 +43,15 @@
                 {
                   type: 'core/v1/style',
                   properties: {
-                    style: {
-                      tabItem: {
-                        '&:hover': {
-                          color: 'red',
-                        },
-                      },
-                      tabContent: {
-                        '&:hover': {
-                          color: 'green',
-                        },
-                      },
-                    },
+                    slot: 'tabItem',
+                    style: `color: red`,
+                  },
+                },
+                {
+                  type: 'core/v1/style',
+                  properties: {
+                    slot: 'tabContent',
+                    style: `color: green`,
                   },
                 },
               ],

@@ -74,7 +74,7 @@ export type ComponentImplementationProps = ImplWrapperProps &
 export type TraitResult = {
   props: {
     data?: unknown;
-    style?: Record<string, any>;
+    customStyle?: Record<string, string>;
     callbackMap?: CallbackMap;
     effects?: Array<() => void>;
   } | null;

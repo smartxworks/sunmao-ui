@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { css } from '@emotion/react';
 import { createComponent } from '@meta-ui/core';
 import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
@@ -10,14 +11,13 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
   mergeState,
   initialSelectedTabIndex,
   slotsMap,
-  style,
+  customStyle,
 }) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialSelectedTabIndex ?? 0);
 
   useEffect(() => {
     mergeState({ selectedTabIndex });
   }, [selectedTabIndex]);
-
   return (
     <BaseTabs
       defaultIndex={initialSelectedTabIndex}
@@ -25,14 +25,19 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
     >
       <TabList>
         {tabNames.map((name, idx) => (
-          <Tab key={idx} css={style?.tabItem}>
+          <Tab key={idx} css={css`${customStyle?.tabItem}}`}>
             {name}
           </Tab>
         ))}
       </TabList>
       <TabPanels>
         {tabNames.map((_, idx) => (
-          <TabPanel key={idx} css={style?.tabContent}>
+          <TabPanel
+            key={idx}
+            css={css`
+              ${customStyle?.tabContent}
+            `}
+          >
             <Slot slotsMap={slotsMap} slot={`tab_content_${idx}`} />
           </TabPanel>
         ))}
