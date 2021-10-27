@@ -1,6 +1,6 @@
 {
   "name": "@meta-ui/runtime",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "meta-ui runtime",
   "author": "meta-ui developers",
   "homepage": "https://github.com/webzard-io/meta-ui#readme",
@@ -33,7 +33,7 @@
     "@chakra-ui/react": "^1.6.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@meta-ui/core": "^0.2.0",
+    "@meta-ui/core": "^0.2.1",
     "@sinclair/typebox": "^0.20.5",
     "@vue-reactivity/watch": "^0.1.6",
     "@vue/reactivity": "^3.1.5",

@@ -1,6 +1,6 @@
 {
   "name": "@meta-ui/editor",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "meta-ui editor",
   "author": "meta-ui developers",
   "homepage": "https://github.com/webzard-io/meta-ui#readme",
@@ -25,8 +25,8 @@
     "@chakra-ui/react": "^1.6.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@meta-ui/core": "^0.2.0",
-    "@meta-ui/runtime": "^0.2.1",
+    "@meta-ui/core": "^0.2.1",
+    "@meta-ui/runtime": "^0.2.2",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "framer-motion": "^4",
