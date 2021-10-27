@@ -1,6 +1,6 @@
 import { Static } from '@sinclair/typebox';
 import { ColumnSchema } from './TableTypes';
-import { Button, Td } from '@chakra-ui/react';
+import { Button, Link, Td } from '@chakra-ui/react';
 import { LIST_ITEM_EXP } from '../../../constants';
 import { MetaUIServices } from 'src/types/RuntimeSchema';
 
@@ -20,10 +20,16 @@ export const TableTd: React.FC<{
   }
 
   let content = value;
-
   switch (column.type) {
     case 'image':
       content = <img src={value} />;
+      break;
+    case 'link':
+      content = (
+        <Link href={value} color="blue.600">
+          {value}
+        </Link>
+      );
       break;
     case 'button':
       const onClick = () => {
