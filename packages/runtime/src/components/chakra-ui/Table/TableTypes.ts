@@ -16,6 +16,7 @@ export const TdTypeSchema = Type.KeyOf(
   Type.Object({
     text: Type.String(),
     image: Type.String(),
+    link: Type.String(),
     button: Type.String(),
   })
 );
