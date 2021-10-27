@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@meta-ui/core';
 import { Button, VStack } from '@chakra-ui/react';
-import { watch } from '@vue-reactivity/watch';
+import { watch } from '../../../utils/watchReactivity';
 import { ComponentImplementation } from '../../../services/registry';
 import Slot from '../../_internal/Slot';
 
