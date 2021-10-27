@@ -13,6 +13,7 @@ import ChakraUITabs from '../components/chakra-ui/Tabs';
 import ChakraUITable from '../components/chakra-ui/Table';
 import ChakraUIInput from '../components/chakra-ui/Input';
 import ChakraUIBox from '../components/chakra-ui/Box';
+import ChakraUIDivider from '../components/chakra-ui/Divider';
 import ChakraUIFormControl from '../components/chakra-ui/Form/FormControl';
 import ChakraUIForm from '../components/chakra-ui/Form/Form';
 import ChakraUIKbd from '../components/chakra-ui/Kbd';
@@ -130,6 +131,7 @@ export function initRegistry(): Registry {
   registry.registerComponent(ChakraUITable);
   registry.registerComponent(ChakraUIInput);
   registry.registerComponent(ChakraUIBox);
+  registry.registerComponent(ChakraUIDivider);
   registry.registerComponent(ChakraUIFormControl);
   registry.registerComponent(ChakraUIForm);
   registry.registerComponent(ChakraUIKbd);
