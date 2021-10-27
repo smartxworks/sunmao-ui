@@ -26,7 +26,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@meta-ui/core": "^0.2.0",
-    "@meta-ui/runtime": "^0.0.0",
+    "@meta-ui/runtime": "^0.2.1",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "framer-motion": "^4",
