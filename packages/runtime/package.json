@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
     "typings": "tsc --emitDeclarationOnly --declarationDir typings",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
@@ -35,8 +35,8 @@
     "@emotion/styled": "^11",
     "@meta-ui/core": "^0.2.1",
     "@sinclair/typebox": "^0.20.5",
-    "@vue-reactivity/watch": "^0.1.6",
     "@vue/reactivity": "^3.1.5",
+    "@vue/shared": "^3.2.20",
     "copy-to-clipboard": "^3.3.1",
     "dayjs": "^1.10.6",
     "framer-motion": "^4",
