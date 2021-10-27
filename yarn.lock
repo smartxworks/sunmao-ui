@@ -3168,11 +3168,6 @@
     react-refresh "^0.10.0"
     resolve "^1.20.0"
 
-"@vue-reactivity/watch@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@vue-reactivity/watch/-/watch-0.1.6.tgz#631c91319dee62724eb020e89dc2f868b480cb6d"
-  integrity sha512-Se4D+1LAnn8B49MuRzWyZv2syb+9FTuxXKA8FF6gjZD08PdVwoVZG3ncZzqFFG2lVlzx03+rjOCtIJb+VkD3Qg==
-
 "@vue/reactivity@^3.1.5":
   version "3.2.16"
   resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.2.16.tgz#0d4253443d580c906508b0b05b2cd136d46bf4a2"
@@ -3184,6 +3179,11 @@
   version "3.2.16"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.16.tgz#a7f5e37e07ac68d4b7ea8ebeba515b46d205c524"
   integrity sha512-zpv8lxuatl3ruCJCsGzrO/F4+IlLug4jbu3vaIi/wJVZKQgnsW1R/xSRJMQS6K57cl4fT/2zkrYsWh1/6H7Esw==
+
+"@vue/shared@^3.2.20":
+  version "3.2.20"
+  resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.20.tgz#53746961f731a8ea666e3316271e944238dc31db"
+  integrity sha512-FbpX+hD5BvXCQerEYO7jtAGHlhAkhTQ4KIV73kmLWNlawWhTiVuQxizgVb0BOkX5oG9cIRZ42EG++d/k/Efp0w==
 
 JSONStream@^1.0.4:
   version "1.3.5"

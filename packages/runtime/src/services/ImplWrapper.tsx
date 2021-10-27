@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { watch } from '@vue-reactivity/watch';
+import { watch } from '../utils/watchReactivity';
 import { merge } from 'lodash';
 import {
   RuntimeApplicationComponent,

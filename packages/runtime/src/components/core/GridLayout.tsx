@@ -5,7 +5,7 @@ import { getSlots } from '../_internal/Slot';
 import { Static, Type } from '@sinclair/typebox';
 import { partial } from 'lodash';
 
-const BaseGridLayout = React.lazy(() => import('../../components/_internal/GridLayout'));
+const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 
 const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,

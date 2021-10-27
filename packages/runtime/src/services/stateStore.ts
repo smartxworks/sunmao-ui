@@ -2,7 +2,7 @@ import _ from 'lodash';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reactive } from '@vue/reactivity';
-import { watch } from '@vue-reactivity/watch';
+import { watch } from '../utils/watchReactivity';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
 
 dayjs.extend(relativeTime);
@@ -125,13 +125,13 @@ export class StateManager {
     return _.mapValues(obj, (val, key) => {
       return _.isArray(val)
         ? val.map((innerVal, idx) => {
-          return _.isPlainObject(innerVal)
-            ? this.mapValuesDeep(innerVal, fn, path.concat(key, idx))
-            : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
-        })
+            return _.isPlainObject(innerVal)
+              ? this.mapValuesDeep(innerVal, fn, path.concat(key, idx))
+              : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
+          })
         : _.isPlainObject(val)
-          ? this.mapValuesDeep(val, fn, path.concat(key))
-          : fn({ value: val, key, obj, path: path.concat(key) });
+        ? this.mapValuesDeep(val, fn, path.concat(key))
+        : fn({ value: val, key, obj, path: path.concat(key) });
     });
   }
 
