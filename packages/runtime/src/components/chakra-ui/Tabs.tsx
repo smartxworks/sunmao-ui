@@ -4,7 +4,7 @@ import { createComponent } from '@meta-ui/core';
 import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
-import Slot from '../_internal/Slot';
+import { getSlots } from '../_internal/Slot';
 
 const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
   tabNames,
@@ -31,16 +31,18 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
         ))}
       </TabList>
       <TabPanels>
-        {tabNames.map((_, idx) => (
-          <TabPanel
-            key={idx}
-            css={css`
-              ${customStyle?.tabContent}
-            `}
-          >
-            <Slot slotsMap={slotsMap} slot={`tab_content_${idx}`} />
-          </TabPanel>
-        ))}
+        {getSlots(slotsMap, 'content').map((content, idx) => {
+          return (
+            <TabPanel
+              key={idx}
+              css={css`
+                ${customStyle?.tabContent}
+              `}
+            >
+              {content}
+            </TabPanel>
+          );
+        })}
       </TabPanels>
     </BaseTabs>
   );
@@ -75,8 +77,8 @@ export default {
       state: StateSchema,
       methods: [],
       // tab slot is dynamic
-      slots: [],
-      styleSlots: [],
+      slots: ['content'],
+      styleSlots: ['tabItem', 'tabContent'],
       events: [],
     },
   }),
