@@ -1,4 +1,4 @@
-import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
+import { RuntimeComponent, RuntimeTrait, RuntimeModule } from '@meta-ui/core';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';
@@ -56,9 +56,77 @@ type ImplementedRuntimeTrait = RuntimeTrait & {
   impl: TraitImplementation;
 };
 
+const exampleModule: RuntimeModule = {
+  version: 'core/v1',
+  kind: 'Module',
+  parsedVersion: {
+    category: 'core/v1',
+    value: 'littleItem',
+  },
+  metadata: {
+    name: 'littleItem',
+  },
+  // name: 'littleItem',
+  spec: {
+    components: [
+      {
+        id: '{{$id}}hstack',
+        type: 'chakra_ui/v1/hstack',
+        properties: {},
+        traits: [],
+      },
+      {
+        id: '{{$id}}1',
+        type: 'core/v1/text',
+        properties: {
+          value: {
+            raw: '**{{value}}**',
+            format: 'md',
+          },
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: '{{$id}}hstack',
+                slot: 'content',
+              },
+            },
+          },
+        ],
+      },
+      {
+        id: '{{$id}}2',
+        type: 'core/v1/text',
+        properties: {
+          value: {
+            raw: '**{{value2}}**',
+            format: 'md',
+          },
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: '{{$id}}hstack',
+                slot: 'content',
+              },
+            },
+          },
+        ],
+      },
+    ],
+    properties: {},
+    events: [],
+  },
+};
+
 export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
   traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
+  modules: Map<string, Map<string, RuntimeModule>> = new Map();
 
   registerComponent(c: ImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
@@ -119,6 +187,31 @@ export class Registry {
     }
     return res;
   }
+
+  registerModule(c: RuntimeModule) {
+    if (this.modules.get(c.version)?.has(c.metadata.name)) {
+      throw new Error(
+        `Already has module ${c.version}/${c.metadata.name} in this registry.`
+      );
+    }
+    if (!this.modules.has(c.version)) {
+      this.modules.set(c.version, new Map());
+    }
+    this.modules.get(c.version)?.set(c.metadata.name, c);
+  }
+
+  getModule(version: string, name: string): RuntimeModule {
+    const m = this.modules.get(version)?.get(name);
+    if (!m) {
+      throw new Error(`Module ${version}/${name} has not registered yet.`);
+    }
+    return m;
+  }
+
+  getModuleByType(type: string): RuntimeModule {
+    const { version, name } = parseType(type);
+    return this.getModule(version, name);
+  }
 }
 
 export function initRegistry(): Registry {
@@ -161,6 +254,8 @@ export function initRegistry(): Registry {
   registry.registerTrait(CoreHidden);
   registry.registerTrait(CoreFetch);
   registry.registerTrait(CoreValidation);
+
+  registry.registerModule(exampleModule);
 
   return registry;
 }
