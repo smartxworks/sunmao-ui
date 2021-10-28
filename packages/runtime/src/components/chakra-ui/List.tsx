@@ -34,7 +34,8 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     return null;
   }
   const itemElementMemo = useRef(new Map());
-  const parsedtemplete = template.map(parseTypeComponents);
+  const moduleTemplate = services.registry.getModuleByType(template.type);
+  const parsedtemplete = moduleTemplate.spec.components.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
     // this memo only diff listItem, dosen't compare expressions
@@ -44,8 +45,8 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       }
     }
 
-    const evaledTemplate = services.stateManager.mapValuesDeep(
-      { parsedtemplete },
+    const evaledModuleProperties = services.stateManager.mapValuesDeep(
+      template.properties,
       ({ value }) => {
         if (typeof value === 'string') {
           return services.stateManager.maskedEval(value, true, {
@@ -55,10 +56,20 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
         }
         return value;
       }
-    ).parsedtemplete;
+    );
+
+    const eventModuleTemplate = services.stateManager.mapValuesDeep(
+      { template: parsedtemplete },
+      ({ value }) => {
+        if (typeof value === 'string') {
+          return services.stateManager.maskedEval(value, true, evaledModuleProperties);
+        }
+        return value;
+      }
+    ).template;
 
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-      evaledTemplate,
+      eventModuleTemplate,
       {
         services,
         app,
@@ -96,7 +107,10 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
 const PropsSchema = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String())),
-  template: Type.Array(Type.Any()),
+  template: Type.Object({
+    type: Type.String(),
+    properties: Type.Object({}),
+  }),
 });
 
 const exampleProperties = {
