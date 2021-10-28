@@ -5,9 +5,8 @@ import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
-import { ImplWrapper } from '../../services/ImplWrapper';
-import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { RuntimeApplicationComponent } from 'src/types/RuntimeSchema';
+import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
@@ -34,8 +33,6 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     return null;
   }
   const itemElementMemo = useRef(new Map());
-  const moduleTemplate = services.registry.getModuleByType(template.type);
-  const parsedtemplete = moduleTemplate.spec.components.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
     // this memo only diff listItem, dosen't compare expressions
@@ -44,54 +41,21 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
         return itemElementMemo.current.get(listItem.id).ele;
       }
     }
-
-    const evaledModuleProperties = services.stateManager.mapValuesDeep(
-      template.properties,
-      ({ value }) => {
-        if (typeof value === 'string') {
-          return services.stateManager.maskedEval(value, true, {
-            [LIST_ITEM_EXP]: listItem,
-            [LIST_ITEM_INDEX_EXP]: i,
-          });
-        }
-        return value;
-      }
-    );
-
-    const eventModuleTemplate = services.stateManager.mapValuesDeep(
-      { template: parsedtemplete },
-      ({ value }) => {
-        if (typeof value === 'string') {
-          return services.stateManager.maskedEval(value, true, evaledModuleProperties);
-        }
-        return value;
-      }
-    ).template;
-
-    const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-      eventModuleTemplate,
-      {
-        services,
-        app,
-      }
-    );
-
-    const componentElements = topLevelComponents.map(c => {
-      return (
-        <ImplWrapper
-          key={c.id}
-          component={c}
-          slotsMap={slotComponentsMap.get(c.id)}
-          targetSlot={null}
-          services={services}
-          app={app}
-        />
-      );
-    });
+    const evalScope = {
+      [LIST_ITEM_EXP]: listItem,
+      [LIST_ITEM_INDEX_EXP]: i,
+    };
 
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
-        {componentElements}
+        <ModuleRenderer
+          type={template.type}
+          properties={template.properties}
+          handlers={[]}
+          services={services}
+          evalScope={evalScope}
+          app={app}
+        />
       </BaseListItem>
     );
 
