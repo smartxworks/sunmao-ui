@@ -17,6 +17,7 @@ type ModuleSpec = {
   components: ApplicationComponent[];
   properties: JSONSchema7Object;
   events: string[];
+  stateMap: Record<string, string>;
 };
 
 // extended runtime
