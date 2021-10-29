@@ -66,7 +66,6 @@ const exampleModule: RuntimeModule = {
   metadata: {
     name: 'littleItem',
   },
-  // name: 'littleItem',
   spec: {
     components: [
       {
@@ -97,14 +96,9 @@ const exampleModule: RuntimeModule = {
         ],
       },
       {
-        id: '{{$id}}2',
-        type: 'core/v1/text',
-        properties: {
-          value: {
-            raw: '**{{value2}}**',
-            format: 'md',
-          },
-        },
+        id: '{{$id}}input',
+        type: 'chakra_ui/v1/input',
+        properties: {},
         traits: [
           {
             type: 'core/v1/slot',
@@ -120,6 +114,9 @@ const exampleModule: RuntimeModule = {
     ],
     properties: {},
     events: [],
+    stateMap: {
+      value: '{{$id}}input.value',
+    },
   },
 };
 

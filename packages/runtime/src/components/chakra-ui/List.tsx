@@ -24,6 +24,7 @@ export function parseTypeComponents(
 }
 
 const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  component,
   listData,
   template,
   app,
@@ -49,6 +50,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
         <ModuleRenderer
+          id={`${component.id}ListItem${i}`}
           type={template.type}
           properties={template.properties}
           handlers={[]}
