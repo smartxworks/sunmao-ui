@@ -18,6 +18,7 @@ import ChakraUIFormControl from '../components/chakra-ui/Form/FormControl';
 import ChakraUIForm from '../components/chakra-ui/Form/Form';
 import ChakraUIKbd from '../components/chakra-ui/Kbd';
 import ChakraUIList from '../components/chakra-ui/List';
+import ChakraUILink from '../components/chakra-ui/Link';
 import ChakraUINumberInput from '../components/chakra-ui/NumberInput';
 import ChakraUICheckboxGroup from '../components/chakra-ui/CheckboxGroup';
 import ChakraUICheckbox from '../components/chakra-ui/Checkbox';
@@ -136,6 +137,7 @@ export function initRegistry(): Registry {
   registry.registerComponent(ChakraUIForm);
   registry.registerComponent(ChakraUIKbd);
   registry.registerComponent(ChakraUIList);
+  registry.registerComponent(ChakraUILink);
   registry.registerComponent(ChakraUINumberInput);
   registry.registerComponent(ChakraUICheckbox);
   registry.registerComponent(ChakraUICheckboxGroup);

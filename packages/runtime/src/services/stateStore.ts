@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import LocalizedFormat from 'dayjs/plugin/LocalizedFormat';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { reactive } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
