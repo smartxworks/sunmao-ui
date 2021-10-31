@@ -21,7 +21,8 @@
     "types": ["@emotion/react/types/css-prop"],
     "baseUrl": "./",
     "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react"
+    "jsxImportSource": "@emotion/react",
+    "rootDir": "src"
   },
   "include": ["./src"]
 }

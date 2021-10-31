@@ -3,7 +3,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Box as BaseBox } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 import { GRID_HEIGHT } from '../../constants';
 
 const CssGlobals = Type.KeyOf(

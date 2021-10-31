@@ -15,15 +15,15 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/iife/index.js",
-  "types": "typings/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "typings"
+    "lib"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output",
     "dev": "npm run build -- --watch",
-    "typings": "tsc --emitDeclarationOnly --declarationDir typings",
+    "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
+    "@types/lodash-es": "^4.17.5",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "eslint": "^7.29.0",
@@ -43,6 +44,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@types/json-schema": "^7.0.7"
+    "@types/json-schema": "^7.0.7",
+    "lodash-es": "^4.17.21"
   }
 }
