@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import {
   Table as BaseTable,
   Thead,

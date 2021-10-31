@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { watch } from '../utils/watchReactivity';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import {
   RuntimeApplicationComponent,
   ImplWrapperProps,

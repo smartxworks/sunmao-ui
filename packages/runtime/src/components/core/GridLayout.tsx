@@ -3,7 +3,7 @@ import { ComponentImplementation } from '../../services/registry';
 import { createComponent } from '@meta-ui/core';
 import { getSlots } from '../_internal/Slot';
 import { Static, Type } from '@sinclair/typebox';
-import { partial } from 'lodash';
+import { partial } from 'lodash-es';
 
 const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 

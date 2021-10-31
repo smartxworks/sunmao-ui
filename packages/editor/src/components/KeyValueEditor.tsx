@@ -1,7 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Button, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
-import { fromPairs, toPairs } from 'lodash';
+import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState } from 'react';
 
 type Props = {
