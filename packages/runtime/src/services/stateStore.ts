@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reactive } from '@vue/reactivity';
@@ -82,7 +82,7 @@ export class StateManager {
 
   maskedEval(raw: string, evalListItem = false, scopeObject = {}) {
     if (isNumeric(raw)) {
-      return _.toNumber(raw);
+      return toNumber(raw);
     }
     if (raw === 'true') {
       return true;
@@ -122,14 +122,14 @@ export class StateManager {
     }) => void,
     path: Array<string | number> = []
   ): any {
-    return _.mapValues(obj, (val, key) => {
-      return _.isArray(val)
+    return mapValues(obj, (val, key) => {
+      return isArray(val)
         ? val.map((innerVal, idx) => {
-            return _.isPlainObject(innerVal)
+            return isPlainObject(innerVal)
               ? this.mapValuesDeep(innerVal, fn, path.concat(key, idx))
               : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
           })
-        : _.isPlainObject(val)
+        : isPlainObject(val)
         ? this.mapValuesDeep(val, fn, path.concat(key))
         : fn({ value: val, key, obj, path: path.concat(key) });
     });
@@ -150,7 +150,7 @@ export class StateManager {
               return this.maskedEval(v);
             },
             newV => {
-              _.set(evaluated, path, newV);
+              set(evaluated, path, newV);
               watcher({ result: evaluated });
             }
           );

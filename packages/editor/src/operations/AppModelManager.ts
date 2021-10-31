@@ -15,7 +15,7 @@ import {
 import { produce } from 'immer';
 import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
-import _ from 'lodash';
+import { set, isEqual } from 'lodash-es';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -120,7 +120,7 @@ export class AppModelManager {
         newApp = produce(this.app, draft => {
           return draft.spec.components.forEach(c => {
             if (c.id === mo.componentId) {
-              _.set(c.properties, mo.propertyKey, mo.propertyValue);
+              set(c.properties, mo.propertyKey, mo.propertyValue);
             }
           });
         });
@@ -161,7 +161,7 @@ export class AppModelManager {
               c.traits.forEach(t => {
                 if (t.type === mto.traitType) {
                   oldValue = t.properties[mto.propertyKey];
-                  _.set(t.properties, mto.propertyKey, mto.propertyValue);
+                  set(t.properties, mto.propertyKey, mto.propertyValue);
                 }
               });
             }
@@ -228,6 +228,7 @@ export class AppModelManager {
               c.traits.splice(rto.traitIndex, 1);
             }
           });
+        });
         break;
       case 'sortComponent':
         const sortO = o as SortComponentOperation;
@@ -237,19 +238,25 @@ export class AppModelManager {
           const iSlotTrait = iComponent.traits.find(t => t.type === 'core/v1/slot');
           if (!iSlotTrait) return;
 
-          const findArray = sortO.direction === 'up' ? this.app.spec.components.slice(0, iIndex).reverse() : this.app.spec.components.slice(iIndex + 1);
+          const findArray =
+            sortO.direction === 'up'
+              ? this.app.spec.components.slice(0, iIndex).reverse()
+              : this.app.spec.components.slice(iIndex + 1);
 
           const jComponent = findArray.find(c => {
             const jSlotTrait = c.traits.find(t => t.type === 'core/v1/slot');
-            if (jSlotTrait){
-              return _.isEqual(jSlotTrait, iSlotTrait);
+            if (jSlotTrait) {
+              return isEqual(jSlotTrait, iSlotTrait);
             }
           });
           if (!jComponent) return;
 
           const jIndex = this.app.spec.components.findIndex(c => c.id === jComponent.id);
           if (jIndex > -1) {
-            [draft.spec.components[iIndex],draft.spec.components[jIndex]] = [draft.spec.components[jIndex],draft.spec.components[iIndex]];
+            [draft.spec.components[iIndex], draft.spec.components[jIndex]] = [
+              draft.spec.components[jIndex],
+              draft.spec.components[iIndex],
+            ];
           }
         });
         break;

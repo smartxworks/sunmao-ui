@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import _ from 'lodash';
+import { first } from 'lodash-es';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import {
@@ -29,7 +29,7 @@ const FormControlImpl: ComponentImplementation<{
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
-  const inputId = useMemo(() => _.first(slotsMap?.get('content'))?.id || '', []);
+  const inputId = useMemo(() => first(slotsMap?.get('content'))?.id || '', []);
   const [validResult, setValidResult] = useState({
     isInvalid: false,
     errorMsg: '',

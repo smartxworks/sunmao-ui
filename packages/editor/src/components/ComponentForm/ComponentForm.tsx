@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { flatten } from 'lodash-es';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
@@ -41,7 +41,7 @@ export const renderField = (properties: {
       </FormControl>
     );
   } else {
-    const fieldArray: EmotionJSX.Element[] = _.flatten(
+    const fieldArray: EmotionJSX.Element[] = flatten(
       Object.keys(value || []).map(childKey => {
         const childValue = (value as any)[childKey];
         return renderField({

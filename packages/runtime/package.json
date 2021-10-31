@@ -15,16 +15,16 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/iife/index.js",
-  "types": "typings/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "typings"
+    "lib"
   ],
   "scripts": {
     "dev": "vite",
     "test": "jest",
     "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
-    "typings": "tsc --emitDeclarationOnly --declarationDir typings",
+    "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
   },
@@ -40,14 +40,14 @@
     "copy-to-clipboard": "^3.3.1",
     "dayjs": "^1.10.6",
     "framer-motion": "^4",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "nanoid": "^3.1.23",
     "path-to-regexp": "^6.2.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-grid-layout": "^1.3.0",
-    "react-markdown": "^6.0.2",
+    "react-markdown": "^7.1.0",
     "react-resize-detector": "^6.7.6",
     "react-simple-code-editor": "^0.11.0",
     "wouter": "^2.7.4"
@@ -59,6 +59,7 @@
     "@babel/preset-typescript": "^7.15.0",
     "@testing-library/react": "^12.1.0",
     "@types/lodash": "^4.14.170",
+    "@types/lodash-es": "^4.17.5",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-grid-layout": "^1.1.2",
