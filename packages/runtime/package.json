@@ -15,16 +15,16 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/iife/index.js",
-  "types": "typings/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "typings"
+    "lib"
   ],
   "scripts": {
     "dev": "vite",
     "test": "jest",
     "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
-    "typings": "tsc --emitDeclarationOnly --declarationDir typings",
+    "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
   },

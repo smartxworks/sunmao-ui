@@ -228,6 +228,7 @@ export class AppModelManager {
               c.traits.splice(rto.traitIndex, 1);
             }
           });
+        });
         break;
       case 'sortComponent':
         const sortO = o as SortComponentOperation;
@@ -237,11 +238,14 @@ export class AppModelManager {
           const iSlotTrait = iComponent.traits.find(t => t.type === 'core/v1/slot');
           if (!iSlotTrait) return;
 
-          const findArray = sortO.direction === 'up' ? this.app.spec.components.slice(0, iIndex).reverse() : this.app.spec.components.slice(iIndex + 1);
+          const findArray =
+            sortO.direction === 'up'
+              ? this.app.spec.components.slice(0, iIndex).reverse()
+              : this.app.spec.components.slice(iIndex + 1);
 
           const jComponent = findArray.find(c => {
             const jSlotTrait = c.traits.find(t => t.type === 'core/v1/slot');
-            if (jSlotTrait){
+            if (jSlotTrait) {
               return _.isEqual(jSlotTrait, iSlotTrait);
             }
           });
@@ -249,7 +253,10 @@ export class AppModelManager {
 
           const jIndex = this.app.spec.components.findIndex(c => c.id === jComponent.id);
           if (jIndex > -1) {
-            [draft.spec.components[iIndex],draft.spec.components[jIndex]] = [draft.spec.components[jIndex],draft.spec.components[iIndex]];
+            [draft.spec.components[iIndex], draft.spec.components[jIndex]] = [
+              draft.spec.components[jIndex],
+              draft.spec.components[iIndex],
+            ];
           }
         });
         break;
