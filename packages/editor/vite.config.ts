@@ -14,6 +14,7 @@ export default defineConfig({
               runtime: 'automatic',
               importSource: '@emotion/react',
             },
+            'emotion-react',
           ],
         ],
       },
