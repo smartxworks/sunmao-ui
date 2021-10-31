@@ -15,7 +15,7 @@ import {
 import { produce } from 'immer';
 import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
-import _ from 'lodash';
+import { set, isEqual } from 'lodash-es';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -120,7 +120,7 @@ export class AppModelManager {
         newApp = produce(this.app, draft => {
           return draft.spec.components.forEach(c => {
             if (c.id === mo.componentId) {
-              _.set(c.properties, mo.propertyKey, mo.propertyValue);
+              set(c.properties, mo.propertyKey, mo.propertyValue);
             }
           });
         });
@@ -161,7 +161,7 @@ export class AppModelManager {
               c.traits.forEach(t => {
                 if (t.type === mto.traitType) {
                   oldValue = t.properties[mto.propertyKey];
-                  _.set(t.properties, mto.propertyKey, mto.propertyValue);
+                  set(t.properties, mto.propertyKey, mto.propertyValue);
                 }
               });
             }
@@ -246,7 +246,7 @@ export class AppModelManager {
           const jComponent = findArray.find(c => {
             const jSlotTrait = c.traits.find(t => t.type === 'core/v1/slot');
             if (jSlotTrait) {
-              return _.isEqual(jSlotTrait, iSlotTrait);
+              return isEqual(jSlotTrait, iSlotTrait);
             }
           });
           if (!jComponent) return;

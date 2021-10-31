@@ -1,6 +1,6 @@
 import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { debounce, throttle, delay } from 'lodash';
+import { debounce, throttle, delay } from 'lodash-es';
 import { CallbackMap, TraitImplementation } from 'src/types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 
@@ -37,10 +37,10 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         handler.wait.type === 'debounce'
           ? debounce(cb, handler.wait.time)
           : handler.wait.type === 'throttle'
-            ? throttle(cb, handler.wait.time)
-            : handler.wait.type === 'delay'
-              ? () => delay(cb, handler.wait!.time)
-              : cb
+          ? throttle(cb, handler.wait.time)
+          : handler.wait.type === 'delay'
+          ? () => delay(cb, handler.wait!.time)
+          : cb
       );
     }
   }
