@@ -15,15 +15,15 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/iife/index.js",
-  "types": "typings/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "typings"
+    "lib"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output",
     "dev": "npm run build -- --watch",
-    "typings": "tsc --emitDeclarationOnly --declarationDir typings",
+    "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
