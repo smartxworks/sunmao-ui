@@ -1,4 +1,5 @@
 import { createComponent } from '@meta-ui/core';
+import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { VStack as BaseVStack } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
@@ -18,6 +19,7 @@ const VStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
   justify,
   spacing,
   slotsMap,
+  customStyle,
 }) => {
   return (
     <BaseVStack
@@ -28,6 +30,9 @@ const VStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
       border="1px solid"
       borderColor="gray.200"
       borderRadius="4"
+      css={css`
+        ${customStyle?.content}
+      `}
       {...{ direction, wrap, align, justify, spacing }}
     >
       <Slot slotsMap={slotsMap} slot="content" />

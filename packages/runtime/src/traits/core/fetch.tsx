@@ -32,6 +32,14 @@ const useFetchTrait: TraitImplementation<Static<typeof FetchTraitPropertiesSchem
       }
     }
 
+    mergeState({
+      fetch: {
+        loading: true,
+        data: undefined,
+        error: undefined,
+      },
+    });
+
     // fetch data
     fetch(url, {
       method,

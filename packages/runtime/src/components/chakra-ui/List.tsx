@@ -95,8 +95,8 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
 };
 
 const PropsSchema = Type.Object({
-  listData: Type.Array(Type.Object(Type.String(), Type.String())),
-  template: Type.Object(Type.String(), Type.Array(Type.Object(Type.String()))),
+  listData: Type.Array(Type.Record(Type.String(), Type.String())),
+  template: Type.Array(Type.Any()),
 });
 
 const exampleProperties = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { flatten } from 'lodash-es';
-import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
@@ -27,7 +27,7 @@ export const renderField = (properties: {
 }) => {
   const { value, type, fullKey, selectedId } = properties;
   if (typeof value !== 'object') {
-    const ref = React.createRef<HTMLInputElement>();
+    const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
       const operation = type
         ? new ModifyTraitPropertyOperation(selectedId, type, fullKey, ref.current?.value)
@@ -37,7 +37,7 @@ export const renderField = (properties: {
     return (
       <FormControl key={`${selectedId}-${fullKey}`}>
         <FormLabel>{fullKey}</FormLabel>
-        <Input ref={ref} onBlur={onBlur} defaultValue={value as string} />
+        <Textarea ref={ref} onBlur={onBlur} defaultValue={value as string} />
       </FormControl>
     );
   } else {
