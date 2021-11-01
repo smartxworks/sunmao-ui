@@ -21,11 +21,11 @@ type ModuleSpec = {
 };
 
 // extended runtime
-export type RuntimeModule = Module & {
+export type RuntimeModuleSpec = Module & {
   parsedVersion: Version;
 };
 
-export function createModule(options: Omit<Module, 'kind'>): RuntimeModule {
+export function createModule(options: Omit<Module, 'kind'>): RuntimeModuleSpec {
   return {
     ...options,
     kind: 'Module',

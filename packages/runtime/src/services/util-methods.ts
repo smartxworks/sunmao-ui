@@ -9,38 +9,46 @@ import { pickProperty } from '../utils/pickProperty';
 export function mountUtilMethods(apiService: ApiService) {
   let toast: ReturnType<typeof createStandaloneToast> | undefined = undefined;
   apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-    if (componentId !== '$utils') {
-      return;
-    }
-    switch (name) {
-      case 'alert':
-        window.alert(parameters);
-        break;
-      case 'toast.open':
-        if (!toast) {
-          toast = createStandaloneToast();
-        }
-        if (parameters) {
-          toast(pickProperty(ToastOpenParamterSchema, parameters));
-        }
-        break;
-      case 'toast.close':
-        if (!toast) {
+    console.log('uiMethod', componentId, name, parameters);
+    if (componentId === '$utils') {
+      switch (name) {
+        case 'alert':
+          window.alert(parameters);
           break;
-        }
-        if (!parameters) {
-          toast.closeAll();
-        } else {
-          const closeParameters = pickProperty(ToastCloseParameterSchema, parameters);
-          if (closeParameters.id !== undefined) {
-            toast.close(closeParameters.id);
-          } else {
-            toast.closeAll(closeParameters);
+        case 'toast.open':
+          if (!toast) {
+            toast = createStandaloneToast();
           }
-        }
-        break;
-      default:
-        break;
+          if (parameters) {
+            toast(pickProperty(ToastOpenParamterSchema, parameters));
+          }
+          break;
+        case 'toast.close':
+          if (!toast) {
+            break;
+          }
+          if (!parameters) {
+            toast.closeAll();
+          } else {
+            const closeParameters = pickProperty(ToastCloseParameterSchema, parameters);
+            if (closeParameters.id !== undefined) {
+              toast.close(closeParameters.id);
+            } else {
+              toast.closeAll(closeParameters);
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (componentId === '$module') {
+      console.log('send moduleEvent', componentId, name, parameters);
+      apiService.send('moduleEvent', {
+        fromId: parameters.moduleId,
+        eventType: name,
+      });
     }
   });
 }

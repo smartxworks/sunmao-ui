@@ -7,6 +7,7 @@ import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
 import { RuntimeApplicationComponent } from 'src/types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
+import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
@@ -50,10 +51,10 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
         <ModuleRenderer
-          id={`${component.id}ListItem${i}`}
+          moduleId={`${component.id}ListItem${i}`}
           type={template.type}
           properties={template.properties}
-          handlers={[]}
+          handlers={template.handlers}
           services={services}
           evalScope={evalScope}
           app={app}
@@ -76,6 +77,7 @@ const PropsSchema = Type.Object({
   template: Type.Object({
     type: Type.String(),
     properties: Type.Object({}),
+    handlers: Type.Array(EventHandlerSchema),
   }),
 });
 

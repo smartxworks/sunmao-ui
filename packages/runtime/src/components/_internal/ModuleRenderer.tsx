@@ -1,7 +1,7 @@
 import { Static } from '@sinclair/typebox';
 import React from 'react';
 import { RuntimeApplication } from '@meta-ui/core';
-import { MetaUIServices, RuntimeApplicationComponent } from '../../types/RuntimeSchema';
+import { MetaUIServices } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 import { parseTypeComponents } from '../chakra-ui/List';
 import { resolveAppComponents } from '../../services/resolveAppComponents';
@@ -11,7 +11,7 @@ import { get } from 'lodash';
 import { useEffect } from 'react';
 
 export type RuntimeModuleSchema = {
-  id: string;
+  moduleId: string;
   type: string;
   properties: Record<string, string>;
   handlers: Array<Static<typeof EventHandlerSchema>>;
@@ -24,10 +24,10 @@ type Props = RuntimeModuleSchema & {
 };
 
 export const ModuleRenderer: React.FC<Props> = props => {
-  const { id, type, properties, handlers, evalScope, services, app } = props;
+  const { moduleId, type, properties, handlers, evalScope, services, app } = props;
 
   // first eval the property of module
-  const { properties: moduleProperties, handlers: modulesHandlers } =
+  const { properties: moduleProperties, handlers: moduleHandlers } =
     services.stateManager.mapValuesDeep({ properties, handlers }, ({ value }) => {
       if (typeof value === 'string') {
         return services.stateManager.maskedEval(value, true, evalScope);
@@ -43,7 +43,10 @@ export const ModuleRenderer: React.FC<Props> = props => {
       { parsedtemplete, stateMap: runtimeModule.spec.stateMap },
       ({ value }) => {
         if (typeof value === 'string') {
-          return services.stateManager.maskedEval(value, true, moduleProperties);
+          return services.stateManager.maskedEval(value, true, {
+            ...moduleProperties,
+            $moduleId: moduleId,
+          });
         }
         return value;
       }
@@ -58,8 +61,8 @@ export const ModuleRenderer: React.FC<Props> = props => {
           return get(services.stateManager.store, evaledStateMap[stateKey]);
         },
         newV => {
-          services.stateManager.store[id] = {
-            ...services.stateManager.store[id],
+          services.stateManager.store[moduleId] = {
+            ...services.stateManager.store[moduleId],
             [stateKey]: newV,
           };
         }
@@ -70,6 +73,34 @@ export const ModuleRenderer: React.FC<Props> = props => {
       stops.forEach(s => s());
     };
   }, [evaledStateMap, services]);
+
+  // listen module event
+  useEffect(() => {
+    const _handlers = moduleHandlers as Array<Static<typeof EventHandlerSchema>>;
+    const moduleEventHanlders: any[] = [];
+    _handlers.forEach(h => {
+      console.log('开始监听moduleEvent', h.type, moduleId);
+      const moduleEventHanlder = ({ fromId, eventType }: Record<string, string>) => {
+        console.log('收到module event', fromId, eventType);
+        console.log('实际', moduleId, h.type);
+        if (eventType === h.type && fromId === moduleId) {
+          services.apiService.send('uiMethod', {
+            componentId: h.componentId,
+            name: h.method.name,
+            parameters: h.method.parameters,
+          });
+        }
+      };
+
+      services.apiService.on('moduleEvent', moduleEventHanlder);
+    });
+
+    return () => {
+      moduleEventHanlders.forEach(h => {
+        services.apiService.off('moduleEvent', h);
+      });
+    };
+  }, [moduleHandlers]);
 
   const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
     evaledModuleTemplate,
