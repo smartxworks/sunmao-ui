@@ -123,11 +123,8 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
           if (result.props?.effects) {
             effects = effects?.concat(result.props?.effects);
           }
-          return {
-            ...prevProps,
-            ...result.props,
-            effects,
-          };
+
+          return merge(prevProps, result.props, { effects });
         },
         {} as TraitResult['props']
       );

@@ -96,7 +96,7 @@ export const Editor = () => {
                 <Tab>UI Tree</Tab>
                 <Tab>State</Tab>
               </TabList>
-              <TabPanels flex="1">
+              <TabPanels flex="1" overflow="auto">
                 <TabPanel p={0}>
                   <StructureTree
                     app={app}

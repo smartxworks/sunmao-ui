@@ -2,19 +2,24 @@ import { createTrait } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplementation } from 'src/types/RuntimeSchema';
 
-const StyleTrait: TraitImplementation<{
-  style: Static<typeof PropsSchema>;
-}> = ({ style }) => {
+const StyleTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+  styleSlot,
+  style,
+}) => {
   return {
     props: {
-      style: style,
+      customStyle: {
+        [styleSlot]: style,
+      },
     },
   };
 };
 
 const PropsSchema = Type.Object({
-  string: Type.Object(Type.String()),
+  styleSlot: Type.String(),
+  style: Type.String(),
 });
+
 export default {
   ...createTrait({
     version: 'core/v1',
