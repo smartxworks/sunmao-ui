@@ -79,10 +79,7 @@ export const ModuleRenderer: React.FC<Props> = props => {
     const _handlers = moduleHandlers as Array<Static<typeof EventHandlerSchema>>;
     const moduleEventHanlders: any[] = [];
     _handlers.forEach(h => {
-      console.log('开始监听moduleEvent', h.type, moduleId);
       const moduleEventHanlder = ({ fromId, eventType }: Record<string, string>) => {
-        console.log('收到module event', fromId, eventType);
-        console.log('实际', moduleId, h.type);
         if (eventType === h.type && fromId === moduleId) {
           services.apiService.send('uiMethod', {
             componentId: h.componentId,

@@ -9,7 +9,6 @@ import { pickProperty } from '../utils/pickProperty';
 export function mountUtilMethods(apiService: ApiService) {
   let toast: ReturnType<typeof createStandaloneToast> | undefined = undefined;
   apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-    console.log('uiMethod', componentId, name, parameters);
     if (componentId === '$utils') {
       switch (name) {
         case 'alert':
@@ -44,7 +43,6 @@ export function mountUtilMethods(apiService: ApiService) {
     }
 
     if (componentId === '$module') {
-      console.log('send moduleEvent', componentId, name, parameters);
       apiService.send('moduleEvent', {
         fromId: parameters.moduleId,
         eventType: name,

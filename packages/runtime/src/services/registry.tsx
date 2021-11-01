@@ -56,110 +56,6 @@ type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
 };
 
-const exampleModule: RuntimeModuleSpec = {
-  version: 'core/v1',
-  kind: 'Module',
-  parsedVersion: {
-    category: 'core/v1',
-    value: 'littleItem',
-  },
-  metadata: {
-    name: 'littleItem',
-  },
-  spec: {
-    components: [
-      {
-        id: '{{$id}}hstack',
-        type: 'chakra_ui/v1/hstack',
-        properties: {},
-        traits: [],
-      },
-      {
-        id: '{{$id}}1',
-        type: 'core/v1/text',
-        properties: {
-          value: {
-            raw: '**{{value}}**',
-            format: 'md',
-          },
-        },
-        traits: [
-          {
-            type: 'core/v1/slot',
-            properties: {
-              container: {
-                id: '{{$id}}hstack',
-                slot: 'content',
-              },
-            },
-          },
-        ],
-      },
-      {
-        id: '{{$id}}input',
-        type: 'chakra_ui/v1/input',
-        properties: {},
-        traits: [
-          {
-            type: 'core/v1/slot',
-            properties: {
-              container: {
-                id: '{{$id}}hstack',
-                slot: 'content',
-              },
-            },
-          },
-        ],
-      },
-      {
-        id: '{{$id}}button',
-        type: 'chakra_ui/v1/button',
-        properties: {
-          text: {
-            raw: 'click',
-            format: 'md',
-          },
-        },
-        traits: [
-          {
-            type: 'core/v1/event',
-            properties: {
-              handlers: [
-                {
-                  type: 'onClick',
-                  componentId: '$module',
-                  method: {
-                    name: 'onEdit',
-                    parameters: {
-                      moduleId: '{{$moduleId}}',
-                    },
-                  },
-                  wait: {},
-                  disabled: false,
-                },
-              ],
-            },
-          },
-          {
-            type: 'core/v1/slot',
-            properties: {
-              container: {
-                id: '{{$id}}hstack',
-                slot: 'content',
-              },
-            },
-          },
-        ],
-      },
-    ],
-    properties: {},
-    events: ['onEdit'],
-    stateMap: {
-      value: '{{$id}}input.value',
-    },
-  },
-};
-
 export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
   traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
@@ -291,8 +187,6 @@ export function initRegistry(): Registry {
   registry.registerTrait(CoreHidden);
   registry.registerTrait(CoreFetch);
   registry.registerTrait(CoreValidation);
-
-  registry.registerModule(exampleModule);
 
   return registry;
 }

@@ -4,7 +4,7 @@ import { Application } from '@meta-ui/core';
 import { initMetaUI } from './index';
 import { ChakraProvider } from '@chakra-ui/react';
 
-const { App } = initMetaUI();
+const { App, registry: _registry } = initMetaUI();
 
 export default function renderApp(options: Application) {
   ReactDOM.render(
@@ -16,3 +16,5 @@ export default function renderApp(options: Application) {
     document.getElementById('root')
   );
 }
+
+export const registry = _registry;

@@ -47,7 +47,6 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       [LIST_ITEM_EXP]: listItem,
       [LIST_ITEM_INDEX_EXP]: i,
     };
-
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
         <ModuleRenderer
