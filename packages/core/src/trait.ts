@@ -19,11 +19,11 @@ type TraitSpec = {
 };
 
 // extended runtime
-export type RuntimeTrait = Trait & {
+export type RuntimeTraitSpec = Trait & {
   parsedVersion: Version;
 };
 
-export function createTrait(options: Omit<Trait, 'kind'>): RuntimeTrait {
+export function createTrait(options: Omit<Trait, 'kind'>): RuntimeTraitSpec {
   return {
     ...options,
     kind: 'Trait',

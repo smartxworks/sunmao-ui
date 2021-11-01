@@ -10,6 +10,10 @@ const emitter = mitt<{
     name: string;
     parameters?: any;
   };
+  moduleEvent: {
+    fromId: string;
+    eventType: string;
+  };
 }>();
 
 export type ApiService = ReturnType<typeof initApiService>;

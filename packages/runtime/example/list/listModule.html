@@ -78,6 +78,18 @@
                     value: '{{$listItem.name}}',
                     value2: '{{$listItem.email}}',
                   },
+                  handlers: [
+                    {
+                      type: 'onEdit',
+                      componentId: '$utils',
+                      method: {
+                        name: 'alert',
+                        parameters: '监听到模块事件了：{{ $listItem.name }}！',
+                      },
+                      wait: {},
+                      disabled: false,
+                    },
+                  ],
                 },
               },
               traits: [
