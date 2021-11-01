@@ -7,10 +7,6 @@ import 'react-resizable/css/styles.css';
 import { DROP_EXAMPLE_SIZE_PREFIX, GRID_HEIGHT } from '../../constants';
 import { decodeDragDataTransfer } from '../../utils/encodeDragDataTransfer';
 
-// hack: add onDropDragOver to ReactGridLayoutProps definition
-const ReactGridLayout: React.FC<RGL.ReactGridLayoutProps & { onDropDragOver: any }> =
-  RGL as any;
-
 const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
   const { children } = props;
   const spacing = 10;
@@ -25,12 +21,12 @@ const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
     background-position: 0px ${spacing / 2}px;
   `;
 
-  const onDropDragOver = (e: React.DragEvent) => {
+  const onDropDragOver = (e: any) => {
     // Here we need to get data in dataTransfer
     // but normally we cannot access dataTransfer in onDragOver, so I use a hack
     // I use the key of dataTransfer to store data, the key will look like 'exampleSize: [1,4]'
     // https://stackoverflow.com/questions/28487352/dragndrop-datatransfer-getdata-empty
-    const key = e.dataTransfer.types
+    const key = (e as React.DragEvent).dataTransfer.types
       .map(decodeDragDataTransfer)
       .find(t => t.startsWith(DROP_EXAMPLE_SIZE_PREFIX));
     const componentSize = JSON.parse(key?.replace(DROP_EXAMPLE_SIZE_PREFIX, '') || '');
@@ -39,7 +35,7 @@ const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
 
   return (
     <div ref={ref} css={bgCss}>
-      <ReactGridLayout
+      <RGL
         cols={12}
         compactType={null}
         preventCollision={true}
@@ -51,7 +47,7 @@ const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
         {...props}
       >
         {children}
-      </ReactGridLayout>
+      </RGL>
     </div>
   );
 };
