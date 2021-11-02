@@ -1,16 +1,21 @@
+import { RuntimeApplication } from '@meta-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSchema } from './TableTypes';
 import { Button, Link, Td } from '@chakra-ui/react';
-import { LIST_ITEM_EXP } from '../../../constants';
+import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../../constants';
 import { MetaUIServices } from 'src/types/RuntimeSchema';
+import { ModuleRenderer } from '../../_internal/ModuleRenderer';
 
 export const TableTd: React.FC<{
+  tableId: string;
+  index: number;
   item: any;
   column: Static<typeof ColumnSchema>;
   onClickItem: () => void;
   services: MetaUIServices;
+  app?: RuntimeApplication;
 }> = props => {
-  const { item, column, onClickItem, services } = props;
+  const { tableId, item, index, column, onClickItem, services, app } = props;
   let value = item[column.key];
 
   if (column.displayValue) {
@@ -43,6 +48,23 @@ export const TableTd: React.FC<{
         });
       };
       content = <Button onClick={onClick}>{column.buttonConfig.text}</Button>;
+      break;
+    case 'module':
+      const evalScope = {
+        [LIST_ITEM_EXP]: item,
+        [LIST_ITEM_INDEX_EXP]: index,
+      };
+      content = (
+        <ModuleRenderer
+          id={`${tableId}tdItem${column.key}`}
+          type={column.module.type}
+          properties={column.module.properties}
+          handlers={column.module.handlers}
+          services={services}
+          evalScope={evalScope}
+          app={app}
+        />
+      );
       break;
   }
 

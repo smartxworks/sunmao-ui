@@ -8,7 +8,51 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import renderApp from '../../src/main.tsx';
+      import { Type } from '@sinclair/typebox';
+      import renderApp, { registry } from '../../src/main.tsx';
+
+      const tdModule = {
+        version: 'core/v1',
+        kind: 'Module',
+        parsedVersion: {
+          category: 'core/v1',
+          value: 'customTd',
+        },
+        metadata: {
+          name: 'customTd',
+        },
+        spec: {
+          properties: {
+            isActive: Type.Boolean(),
+          },
+          events: [],
+          stateMap: {},
+          components: [
+            // list item
+            {
+              id: '{{$moduleId}}name',
+              type: 'core/v1/text',
+              properties: {
+                value: {
+                  raw: '{{ isActive ? "yes" : "no" }}',
+                  format: 'plain',
+                },
+              },
+              traits: [
+                {
+                  type: 'core/v1/style',
+                  properties: {
+                    styleSlot: 'content',
+                    style: 'color: {{isActive ? "green" : "red"}}',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      registry.registerModule(tdModule);
 
       renderApp({
         version: 'example/v1',
@@ -159,8 +203,12 @@
                   {
                     key: 'isActive',
                     title: 'IsActive',
-                    type: 'text',
-                    displayValue: '{{ $listItem.isActive ? "yes" : "no" }}',
+                    type: 'module',
+                    module: {
+                      id: 'tableIsActiveTd{{$i}}',
+                      type: 'core/v1/customTd',
+                      properties: { isActive: '{{$listItem.isActive}}' },
+                    },
                   },
                   {
                     key: 'email',

@@ -1,30 +1,11 @@
 import { useRef } from 'react';
-import { Application, createComponent } from '@meta-ui/core';
+import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
-import { parseType } from '../../utils/parseType';
-import {
-  RuntimeApplicationComponent,
-  RuntimeModuleSchema,
-} from '../../types/RuntimeSchema';
+import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
-
-export function parseTypeComponents(
-  c: Application['spec']['components'][0]
-): RuntimeApplicationComponent {
-  return {
-    ...c,
-    parsedType: parseType(c.type),
-    traits: c.traits.map(t => {
-      return {
-        ...t,
-        parsedType: parseType(t.type),
-      };
-    }),
-  };
-}
 
 const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   component,

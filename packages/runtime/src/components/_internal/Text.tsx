@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { css } from '@emotion/react';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 
@@ -14,14 +14,22 @@ export const TextPropertySchema = Type.Object({
 
 export type TextProps = {
   value: Static<typeof TextPropertySchema>;
-  style?: CSSProperties;
+  cssStyle?: string;
 };
 
-const Text: React.FC<TextProps> = ({ value, style }) => {
+const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   if (value.format === 'md') {
     return <ReactMarkdown>{value.raw}</ReactMarkdown>;
   }
-  return <span style={style}>{value.raw}</span>;
+  return (
+    <span
+      css={css`
+        ${cssStyle}
+      `}
+    >
+      {value.raw}
+    </span>
+  );
 };
 
 export default Text;
