@@ -66,7 +66,7 @@ export const ComponentTree: React.FC<Props> = props => {
       );
 
       return (
-        <Box key={slot} paddingLeft="5" width="full">
+        <Box key={slot} paddingLeft="3" width="full">
           {/* although component can have multiple slots, but for now, most components have only one slot
           so we hide slot name to save more view area */}
           {slots.length > 1 ? slotName : null}
