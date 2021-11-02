@@ -3,8 +3,11 @@ import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
 import _Text, { TextPropertySchema } from '../_internal/Text';
 
-const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({ value }) => {
-  return <_Text value={value} />;
+const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({
+  value,
+  customStyle,
+}) => {
+  return <_Text value={value} cssStyle={customStyle?.content} />;
 };
 
 const StateSchema = Type.Object({

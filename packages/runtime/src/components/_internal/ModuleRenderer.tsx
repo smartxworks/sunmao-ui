@@ -1,14 +1,13 @@
 import { Static } from '@sinclair/typebox';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { get } from 'lodash';
 import { RuntimeApplication } from '@meta-ui/core';
 import { MetaUIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
-import { parseTypeComponents } from '../chakra-ui/List';
 import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { ImplWrapper } from '../../services/ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
-import { get } from 'lodash';
-import { useEffect } from 'react';
+import { parseTypeComponents } from '../../utils/parseType';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope: Record<string, any>;
@@ -53,6 +52,7 @@ export const ModuleRenderer: React.FC<Props> = props => {
 
   // listen component state change
   useEffect(() => {
+    if (!evaledStateMap) return;
     const stops: ReturnType<typeof watch>[] = [];
     for (const stateKey in evaledStateMap) {
       const stop = watch(
@@ -75,6 +75,7 @@ export const ModuleRenderer: React.FC<Props> = props => {
 
   // listen module event
   useEffect(() => {
+    if (!moduleHandlers) return;
     const _handlers = moduleHandlers as Array<Static<typeof EventHandlerSchema>>;
     const moduleEventHanlders: any[] = [];
     _handlers.forEach(h => {

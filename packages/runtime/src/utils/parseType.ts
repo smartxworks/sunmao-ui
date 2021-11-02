@@ -1,3 +1,6 @@
+import { Application } from '@meta-ui/core';
+import { RuntimeApplicationComponent } from '../types/RuntimeSchema';
+
 // parse component Type
 export function parseType(v: string) {
   const TYPE_REG = /^([a-zA-Z0-9_\d]+\/[a-zA-Z0-9_\d]+)\/([a-zA-Z0-9_\d]+)$/;
@@ -12,5 +15,20 @@ export function parseType(v: string) {
   return {
     version,
     name,
+  };
+}
+
+export function parseTypeComponents(
+  c: Application['spec']['components'][0]
+): RuntimeApplicationComponent {
+  return {
+    ...c,
+    parsedType: parseType(c.type),
+    traits: c.traits.map(t => {
+      return {
+        ...t,
+        parsedType: parseType(t.type),
+      };
+    }),
   };
 }

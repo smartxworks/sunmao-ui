@@ -1,4 +1,5 @@
 import { Type } from '@sinclair/typebox';
+import { RuntimeModuleSchema } from '../../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../../types/TraitPropertiesSchema';
 
 export const MajorKeyPropertySchema = Type.String();
@@ -18,6 +19,7 @@ export const TdTypeSchema = Type.KeyOf(
     image: Type.String(),
     link: Type.String(),
     button: Type.String(),
+    module: Type.String(),
   })
 );
 export const ColumnSchema = Type.Object({
@@ -29,6 +31,7 @@ export const ColumnSchema = Type.Object({
     text: Type.String(),
     handlers: Type.Array(EventHandlerSchema),
   }),
+  module: RuntimeModuleSchema,
 });
 
 export const ColumnsPropertySchema = Type.Array(ColumnSchema);
