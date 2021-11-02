@@ -1,7 +1,7 @@
 import { Static } from '@sinclair/typebox';
 import React from 'react';
 import { RuntimeApplication } from '@meta-ui/core';
-import { MetaUIServices } from '../../types/RuntimeSchema';
+import { MetaUIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 import { parseTypeComponents } from '../chakra-ui/List';
 import { resolveAppComponents } from '../../services/resolveAppComponents';
@@ -10,30 +10,29 @@ import { watch } from '../../utils/watchReactivity';
 import { get } from 'lodash';
 import { useEffect } from 'react';
 
-export type RuntimeModuleSchema = {
-  moduleId: string;
-  type: string;
-  properties: Record<string, string>;
-  handlers: Array<Static<typeof EventHandlerSchema>>;
-};
-
-type Props = RuntimeModuleSchema & {
+type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope: Record<string, any>;
   services: MetaUIServices;
   app?: RuntimeApplication;
 };
 
 export const ModuleRenderer: React.FC<Props> = props => {
-  const { moduleId, type, properties, handlers, evalScope, services, app } = props;
+  const { type, properties, handlers, evalScope, services, app } = props;
 
   // first eval the property of module
-  const { properties: moduleProperties, handlers: moduleHandlers } =
-    services.stateManager.mapValuesDeep({ properties, handlers }, ({ value }) => {
+  const {
+    properties: moduleProperties,
+    handlers: moduleHandlers,
+    moduleId,
+  } = services.stateManager.mapValuesDeep(
+    { properties, handlers, moduleId: props.id },
+    ({ value }) => {
       if (typeof value === 'string') {
         return services.stateManager.maskedEval(value, true, evalScope);
       }
       return value;
-    });
+    }
+  );
 
   const runtimeModule = services.registry.getModuleByType(type);
   const parsedtemplete = runtimeModule.spec.components.map(parseTypeComponents);

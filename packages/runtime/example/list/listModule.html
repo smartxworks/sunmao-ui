@@ -22,13 +22,13 @@
         spec: {
           components: [
             {
-              id: '{{$id}}hstack',
+              id: '{{$moduleId}}hstack',
               type: 'chakra_ui/v1/hstack',
               properties: {},
               traits: [],
             },
             {
-              id: '{{$id}}1',
+              id: '{{$moduleId}}1',
               type: 'core/v1/text',
               properties: {
                 value: {
@@ -41,7 +41,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -49,7 +49,7 @@
               ],
             },
             {
-              id: '{{$id}}input',
+              id: '{{$moduleId}}input',
               type: 'chakra_ui/v1/input',
               properties: {},
               traits: [
@@ -57,7 +57,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -65,7 +65,7 @@
               ],
             },
             {
-              id: '{{$id}}button',
+              id: '{{$moduleId}}button',
               type: 'chakra_ui/v1/button',
               properties: {
                 text: {
@@ -97,7 +97,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -108,7 +108,7 @@
           properties: {},
           events: ['onEdit'],
           stateMap: {
-            value: '{{$id}}input.value',
+            value: '{{$moduleId}}input.value',
           },
         },
       };
@@ -179,7 +179,7 @@
                 template: {
                   type: 'core/v1/littleItem',
                   properties: {
-                    $id: '{{$listItem.id}}{{$i}}',
+                    $moduleId: '{{$listItem.id}}{{$i}}',
                     value: '{{$listItem.name}}',
                   },
                   handlers: [

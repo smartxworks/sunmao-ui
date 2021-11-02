@@ -22,7 +22,6 @@
         },
         spec: {
           properties: {
-            $id: '',
             name: '',
             email: '',
           },
@@ -31,7 +30,7 @@
           components: [
             // list item
             {
-              id: '{{$id}}hstack',
+              id: '{{$moduleId}}hstack',
               type: 'chakra_ui/v1/hstack',
               properties: {
                 spacing: '24px',
@@ -40,7 +39,7 @@
             },
             // name
             {
-              id: '{{$id}}name',
+              id: '{{$moduleId}}name',
               type: 'core/v1/text',
               properties: {
                 value: {
@@ -53,7 +52,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -62,7 +61,7 @@
             },
             // email
             {
-              id: '{{$id}}email',
+              id: '{{$moduleId}}email',
               type: 'core/v1/text',
               properties: {
                 value: {
@@ -75,7 +74,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -84,7 +83,7 @@
             },
             // delete button
             {
-              id: '{{$id}}deleteButton',
+              id: '{{$moduleId}}deleteButton',
               type: 'chakra_ui/v1/button',
               properties: {
                 text: {
@@ -121,7 +120,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -130,7 +129,7 @@
             },
             // edit button
             {
-              id: '{{$id}}editButton',
+              id: '{{$moduleId}}editButton',
               type: 'chakra_ui/v1/button',
               properties: {
                 text: {
@@ -167,7 +166,7 @@
                   type: 'core/v1/slot',
                   properties: {
                     container: {
-                      id: '{{$id}}hstack',
+                      id: '{{$moduleId}}hstack',
                       slot: 'content',
                     },
                   },
@@ -295,9 +294,9 @@
               properties: {
                 listData: '{{ root.listData }}',
                 template: {
+                  id: 'list{{$listItem.id}}',
                   type: 'core/v1/listItem',
                   properties: {
-                    $id: 'list{{$listItem.id}}',
                     name: '{{$listItem.name}}',
                     email: '{{$listItem.email}}',
                   },

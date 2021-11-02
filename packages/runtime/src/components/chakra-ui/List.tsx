@@ -5,9 +5,11 @@ import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { parseType } from '../../utils/parseType';
-import { RuntimeApplicationComponent } from 'src/types/RuntimeSchema';
+import {
+  RuntimeApplicationComponent,
+  RuntimeModuleSchema,
+} from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
-import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 
 export function parseTypeComponents(
   c: Application['spec']['components'][0]
@@ -50,7 +52,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
         <ModuleRenderer
-          moduleId={`${component.id}ListItem${i}`}
+          id={`${component.id}ListItem${i}`}
           type={template.type}
           properties={template.properties}
           handlers={template.handlers}
@@ -73,11 +75,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
 const PropsSchema = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String())),
-  template: Type.Object({
-    type: Type.String(),
-    properties: Type.Object({}),
-    handlers: Type.Array(EventHandlerSchema),
-  }),
+  template: RuntimeModuleSchema,
 });
 
 const exampleProperties = {
