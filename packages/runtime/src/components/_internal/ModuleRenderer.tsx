@@ -18,42 +18,40 @@ type Props = Static<typeof RuntimeModuleSchema> & {
 export const ModuleRenderer: React.FC<Props> = props => {
   const { type, properties, handlers, evalScope, services, app } = props;
 
-  // first eval the property of module
-  const {
-    properties: moduleProperties,
-    handlers: moduleHandlers,
-    moduleId,
-  } = services.stateManager.mapValuesDeep(
-    { properties, handlers, moduleId: props.id },
-    ({ value }) => {
+  function evalObject<T extends Record<string, any>>(
+    obj: T,
+    scope?: Record<string, any>
+  ): T {
+    return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {
-        return services.stateManager.maskedEval(value, true, evalScope);
+        return services.stateManager.maskedEval(value, true, scope || evalScope);
       }
       return value;
-    }
-  );
+    }).obj;
+  }
 
-  const runtimeModule = services.registry.getModuleByType(type);
-  const parsedtemplete = runtimeModule.spec.components.map(parseTypeComponents);
+  // first eval the property, handlers, id of module
+  // TODO: maybe can useMemo here
+  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope);
+  const evaledProperties = evalObject(properties);
+  const evaledHanlders = evalObject(handlers);
+
+  const moduleSpec = services.registry.getModuleByType(type);
+  const parsedtemplete = moduleSpec.spec.components.map(parseTypeComponents);
+  const moduleInnerScope = {
+    ...evaledProperties,
+    $moduleId: moduleId,
+  };
   // then eval the template and stateMap of module
-  const { parsedtemplete: evaledModuleTemplate, stateMap: evaledStateMap } =
-    services.stateManager.mapValuesDeep(
-      { parsedtemplete, stateMap: runtimeModule.spec.stateMap },
-      ({ value }) => {
-        if (typeof value === 'string') {
-          return services.stateManager.maskedEval(value, true, {
-            ...moduleProperties,
-            $moduleId: moduleId,
-          });
-        }
-        return value;
-      }
-    );
+  const evaledModuleTemplate = evalObject(parsedtemplete, moduleInnerScope);
+  const evaledStateMap = evalObject(moduleSpec.spec.stateMap, moduleInnerScope);
 
   // listen component state change
   useEffect(() => {
     if (!evaledStateMap) return;
+
     const stops: ReturnType<typeof watch>[] = [];
+
     for (const stateKey in evaledStateMap) {
       const stop = watch(
         () => {
@@ -68,6 +66,7 @@ export const ModuleRenderer: React.FC<Props> = props => {
       );
       stops.push(stop);
     }
+
     return () => {
       stops.forEach(s => s());
     };
@@ -75,8 +74,8 @@ export const ModuleRenderer: React.FC<Props> = props => {
 
   // listen module event
   useEffect(() => {
-    if (!moduleHandlers) return;
-    const _handlers = moduleHandlers as Array<Static<typeof EventHandlerSchema>>;
+    if (!evaledHanlders) return;
+    const _handlers = evaledHanlders as Array<Static<typeof EventHandlerSchema>>;
     const moduleEventHanlders: any[] = [];
     _handlers.forEach(h => {
       const moduleEventHanlder = ({ fromId, eventType }: Record<string, string>) => {
@@ -97,7 +96,7 @@ export const ModuleRenderer: React.FC<Props> = props => {
         services.apiService.off('moduleEvent', h);
       });
     };
-  }, [moduleHandlers]);
+  }, [evaledHanlders]);
 
   const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
     evaledModuleTemplate,
