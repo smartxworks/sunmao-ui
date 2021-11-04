@@ -37,7 +37,6 @@ export const TableImpl: ComponentImplementation<{
   columns: Static<typeof ColumnsPropertySchema>;
   isMultiSelect: Static<typeof IsMultiSelectPropertySchema>;
 }> = ({
-  component,
   data,
   majorKey,
   rowsPerPage,
@@ -194,7 +193,6 @@ export const TableImpl: ComponentImplementation<{
                 {isMultiSelect ? checkbox : undefined}
                 {columns.map(column => (
                   <TableTd
-                    tableId={component.id}
                     index={i}
                     key={column.key}
                     item={item}

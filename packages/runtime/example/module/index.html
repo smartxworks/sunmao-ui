@@ -21,70 +21,6 @@
           name: 'littleForm',
         },
         spec: {
-          components: [
-            {
-              id: '{{$moduleId}}__hstack',
-              type: 'chakra_ui/v1/hstack',
-              properties: {},
-              traits: [],
-            },
-            {
-              id: '{{$moduleId}}__input',
-              type: 'chakra_ui/v1/input',
-              properties: {},
-              traits: [
-                {
-                  type: 'core/v1/slot',
-                  properties: {
-                    container: {
-                      id: '{{$moduleId}}__hstack',
-                      slot: 'content',
-                    },
-                  },
-                },
-              ],
-            },
-            {
-              id: '{{$moduleId}}__button',
-              type: 'chakra_ui/v1/button',
-              properties: {
-                text: {
-                  raw: '{{littleFormModule__input.value}}',
-                  format: 'md',
-                },
-              },
-              traits: [
-                {
-                  type: 'core/v1/event',
-                  properties: {
-                    handlers: [
-                      {
-                        type: 'onClick',
-                        componentId: '$module',
-                        method: {
-                          name: 'onSubmit',
-                          parameters: {
-                            moduleId: '{{$moduleId}}',
-                          },
-                        },
-                        wait: {},
-                        disabled: false,
-                      },
-                    ],
-                  },
-                },
-                {
-                  type: 'core/v1/slot',
-                  properties: {
-                    container: {
-                      id: '{{$moduleId}}__hstack',
-                      slot: 'content',
-                    },
-                  },
-                },
-              ],
-            },
-          ],
           properties: {
             btnText: Type.String(),
           },
@@ -93,6 +29,70 @@
             value: '{{$moduleId}}__input.value',
           },
         },
+        components: [
+          {
+            id: '{{$moduleId}}__hstack',
+            type: 'chakra_ui/v1/hstack',
+            properties: {},
+            traits: [],
+          },
+          {
+            id: '{{$moduleId}}__input',
+            type: 'chakra_ui/v1/input',
+            properties: {},
+            traits: [
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}__hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: '{{$moduleId}}__button',
+            type: 'chakra_ui/v1/button',
+            properties: {
+              text: {
+                raw: '{{littleFormModule__input.value}}',
+                format: 'md',
+              },
+            },
+            traits: [
+              {
+                type: 'core/v1/event',
+                properties: {
+                  handlers: [
+                    {
+                      type: 'onClick',
+                      componentId: '$module',
+                      method: {
+                        name: 'onSubmit',
+                        parameters: {
+                          moduleId: '{{$moduleId}}',
+                        },
+                      },
+                      wait: {},
+                      disabled: false,
+                    },
+                  ],
+                },
+              },
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}__hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+        ],
       };
 
       registry.registerModule(exampleModule);

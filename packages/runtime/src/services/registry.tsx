@@ -1,4 +1,9 @@
-import { RuntimeComponentSpec, RuntimeTraitSpec, RuntimeModuleSpec } from '@meta-ui/core';
+import {
+  RuntimeComponentSpec,
+  RuntimeTraitSpec,
+  RuntimeModuleSpec,
+  ApplicationComponent,
+} from '@meta-ui/core';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';
@@ -57,10 +62,14 @@ type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
 };
 
+type ImplementedRuntimeModule = RuntimeModuleSpec & {
+  components: ApplicationComponent[];
+};
+
 export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
   traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
-  modules: Map<string, Map<string, RuntimeModuleSpec>> = new Map();
+  modules: Map<string, Map<string, ImplementedRuntimeModule>> = new Map();
 
   registerComponent(c: ImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
@@ -122,7 +131,7 @@ export class Registry {
     return res;
   }
 
-  registerModule(c: RuntimeModuleSpec) {
+  registerModule(c: ImplementedRuntimeModule) {
     if (this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`
@@ -134,7 +143,7 @@ export class Registry {
     this.modules.get(c.version)?.set(c.metadata.name, c);
   }
 
-  getModule(version: string, name: string): RuntimeModuleSpec {
+  getModule(version: string, name: string): ImplementedRuntimeModule {
     const m = this.modules.get(version)?.get(name);
     if (!m) {
       throw new Error(`Module ${version}/${name} has not registered yet.`);
@@ -142,7 +151,7 @@ export class Registry {
     return m;
   }
 
-  getModuleByType(type: string): RuntimeModuleSpec {
+  getModuleByType(type: string): ImplementedRuntimeModule {
     const { version, name } = parseType(type);
     return this.getModule(version, name);
   }

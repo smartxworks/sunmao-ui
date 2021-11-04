@@ -14,7 +14,6 @@ const ModuleContainer: ComponentImplementation<Props> = ({
   services,
   app,
 }) => {
-  console.log('render');
   return (
     <ModuleRenderer
       id={id}
