@@ -6,6 +6,7 @@ import CoreText from '../components/core/Text';
 import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
+import CoreModuleContainer from '../components/core/ModuleContainer';
 /* --- chakra-ui --- */
 import ChakraUIRoot from '../components/chakra-ui/Root';
 import ChakraUIButton from '../components/chakra-ui/Button';
@@ -178,6 +179,7 @@ export function initRegistry(): Registry {
   registry.registerComponent(ChakraUIRadio);
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
+  registry.registerComponent(CoreModuleContainer);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);
