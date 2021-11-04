@@ -1,6 +1,7 @@
 import { Static } from '@sinclair/typebox';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { get } from 'lodash';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import { RuntimeApplication } from '@meta-ui/core';
 import { MetaUIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
@@ -10,41 +11,63 @@ import { watch } from '../../utils/watchReactivity';
 import { parseTypeComponents } from '../../utils/parseType';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
-  evalScope: Record<string, any>;
+  evalScope?: Record<string, any>;
   services: MetaUIServices;
   app?: RuntimeApplication;
 };
 
 export const ModuleRenderer: React.FC<Props> = props => {
   const { type, properties, handlers, evalScope, services, app } = props;
+  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string;
 
-  function evalObject<T extends Record<string, any>>(
-    obj: T,
-    scope?: Record<string, any>
-  ): T {
+  function evalObject<T extends Record<string, any>>(obj: T): T {
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {
-        return services.stateManager.maskedEval(value, true, scope || evalScope);
+        return services.stateManager.maskedEval(value, true, evalScope);
+      }
+      return value;
+    }).obj;
+  }
+
+  function evalWithScope<T extends Record<string, any>>(
+    obj: T,
+    scope: Record<string, any>
+  ): T {
+    const hasScopeKey = (exp: string) => {
+      return Object.keys(scope).some(key => exp.includes('{{') && exp.includes(key));
+    };
+    return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
+      if (typeof value === 'string' && hasScopeKey(value)) {
+        return services.stateManager.maskedEval(value, true, scope);
       }
       return value;
     }).obj;
   }
 
   // first eval the property, handlers, id of module
-  // TODO: maybe can useMemo here
-  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope);
   const evaledProperties = evalObject(properties);
   const evaledHanlders = evalObject(handlers);
 
-  const moduleSpec = services.registry.getModuleByType(type);
-  const parsedtemplete = moduleSpec.spec.components.map(parseTypeComponents);
-  const moduleInnerScope = {
-    ...evaledProperties,
-    $moduleId: moduleId,
-  };
+  const moduleSpec = useMemo(() => services.registry.getModuleByType(type), [type]);
+  const parsedtemplete = useMemo(
+    () => moduleSpec.spec.components.map(parseTypeComponents),
+    [moduleSpec]
+  );
+
   // then eval the template and stateMap of module
-  const evaledModuleTemplate = evalObject(parsedtemplete, moduleInnerScope);
-  const evaledStateMap = evalObject(moduleSpec.spec.stateMap, moduleInnerScope);
+  const evaledStateMap = useDeepCompareMemo(() => {
+    // stateMap only use state i
+    return evalWithScope(moduleSpec.spec.stateMap, { $moduleId: moduleId });
+  }, [moduleSpec, moduleId]);
+
+  const evaledModuleTemplate = useDeepCompareMemo(() => {
+    // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
+    // so we can asumme that template will not change if evaledProperties is the same
+    return evalWithScope(parsedtemplete, {
+      ...evaledProperties,
+      $moduleId: moduleId,
+    });
+  }, [parsedtemplete, evaledProperties, moduleId]);
 
   // listen component state change
   useEffect(() => {
@@ -53,6 +76,12 @@ export const ModuleRenderer: React.FC<Props> = props => {
     const stops: ReturnType<typeof watch>[] = [];
 
     for (const stateKey in evaledStateMap) {
+      // init state
+      services.stateManager.store[moduleId][stateKey] = get(
+        services.stateManager.store,
+        evaledStateMap[stateKey]
+      );
+      // watch state
       const stop = watch(
         () => {
           return get(services.stateManager.store, evaledStateMap[stateKey]);
@@ -87,8 +116,8 @@ export const ModuleRenderer: React.FC<Props> = props => {
           });
         }
       };
-
       services.apiService.on('moduleEvent', moduleEventHanlder);
+      moduleEventHanlders.push(moduleEventHanlder);
     });
 
     return () => {
@@ -98,16 +127,15 @@ export const ModuleRenderer: React.FC<Props> = props => {
     };
   }, [evaledHanlders]);
 
-  const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-    evaledModuleTemplate,
-    {
-      services,
-      app,
-    }
-  );
-
-  const results = topLevelComponents.map(c => {
-    return (
+  const result = useMemo(() => {
+    const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
+      evaledModuleTemplate,
+      {
+        services,
+        app,
+      }
+    );
+    return topLevelComponents.map(c => (
       <ImplWrapper
         key={c.id}
         component={c}
@@ -116,8 +144,8 @@ export const ModuleRenderer: React.FC<Props> = props => {
         services={services}
         app={app}
       />
-    );
-  });
+    ));
+  }, [evaledModuleTemplate, services, app]);
 
-  return <>{results}</>;
+  return <>{result}</>;
 };
