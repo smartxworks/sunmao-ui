@@ -27,29 +27,29 @@
           },
           events: [],
           stateMap: {},
-          components: [
-            // list item
-            {
-              id: '{{$moduleId}}name',
-              type: 'core/v1/text',
-              properties: {
-                value: {
-                  raw: '{{ isActive ? "yes" : "no" }}',
-                  format: 'plain',
+        },
+        components: [
+          // list item
+          {
+            id: '{{$moduleId}}name',
+            type: 'core/v1/text',
+            properties: {
+              value: {
+                raw: '{{ isActive ? "yes" : "no" }}',
+                format: 'plain',
+              },
+            },
+            traits: [
+              {
+                type: 'core/v1/style',
+                properties: {
+                  styleSlot: 'content',
+                  style: 'color: {{isActive ? "green" : "red"}}',
                 },
               },
-              traits: [
-                {
-                  type: 'core/v1/style',
-                  properties: {
-                    styleSlot: 'content',
-                    style: 'color: {{isActive ? "green" : "red"}}',
-                  },
-                },
-              ],
-            },
-          ],
-        },
+            ],
+          },
+        ],
       };
 
       registry.registerModule(tdModule);

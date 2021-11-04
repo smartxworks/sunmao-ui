@@ -7,7 +7,6 @@ import { MetaUIServices } from 'src/types/RuntimeSchema';
 import { ModuleRenderer } from '../../_internal/ModuleRenderer';
 
 export const TableTd: React.FC<{
-  tableId: string;
   index: number;
   item: any;
   column: Static<typeof ColumnSchema>;
@@ -15,7 +14,7 @@ export const TableTd: React.FC<{
   services: MetaUIServices;
   app?: RuntimeApplication;
 }> = props => {
-  const { tableId, item, index, column, onClickItem, services, app } = props;
+  const { item, index, column, onClickItem, services, app } = props;
   let value = item[column.key];
 
   if (column.displayValue) {
@@ -56,7 +55,7 @@ export const TableTd: React.FC<{
       };
       content = (
         <ModuleRenderer
-          id={`${tableId}tdItem${column.key}`}
+          id={column.module.id}
           type={column.module.type}
           properties={column.module.properties}
           handlers={column.module.handlers}

@@ -20,97 +20,97 @@
           name: 'littleItem',
         },
         spec: {
-          components: [
-            {
-              id: '{{$moduleId}}hstack',
-              type: 'chakra_ui/v1/hstack',
-              properties: {},
-              traits: [],
-            },
-            {
-              id: '{{$moduleId}}1',
-              type: 'core/v1/text',
-              properties: {
-                value: {
-                  raw: '**{{value}}**',
-                  format: 'md',
-                },
-              },
-              traits: [
-                {
-                  type: 'core/v1/slot',
-                  properties: {
-                    container: {
-                      id: '{{$moduleId}}hstack',
-                      slot: 'content',
-                    },
-                  },
-                },
-              ],
-            },
-            {
-              id: '{{$moduleId}}input',
-              type: 'chakra_ui/v1/input',
-              properties: {},
-              traits: [
-                {
-                  type: 'core/v1/slot',
-                  properties: {
-                    container: {
-                      id: '{{$moduleId}}hstack',
-                      slot: 'content',
-                    },
-                  },
-                },
-              ],
-            },
-            {
-              id: '{{$moduleId}}button',
-              type: 'chakra_ui/v1/button',
-              properties: {
-                text: {
-                  raw: 'click',
-                  format: 'md',
-                },
-              },
-              traits: [
-                {
-                  type: 'core/v1/event',
-                  properties: {
-                    handlers: [
-                      {
-                        type: 'onClick',
-                        componentId: '$module',
-                        method: {
-                          name: 'onEdit',
-                          parameters: {
-                            moduleId: '{{$moduleId}}',
-                          },
-                        },
-                        wait: {},
-                        disabled: false,
-                      },
-                    ],
-                  },
-                },
-                {
-                  type: 'core/v1/slot',
-                  properties: {
-                    container: {
-                      id: '{{$moduleId}}hstack',
-                      slot: 'content',
-                    },
-                  },
-                },
-              ],
-            },
-          ],
           properties: {},
           events: ['onEdit'],
           stateMap: {
             value: '{{$moduleId}}input.value',
           },
         },
+        components: [
+          {
+            id: '{{$moduleId}}hstack',
+            type: 'chakra_ui/v1/hstack',
+            properties: {},
+            traits: [],
+          },
+          {
+            id: '{{$moduleId}}1',
+            type: 'core/v1/text',
+            properties: {
+              value: {
+                raw: '**{{value}}**',
+                format: 'md',
+              },
+            },
+            traits: [
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: '{{$moduleId}}input',
+            type: 'chakra_ui/v1/input',
+            properties: {},
+            traits: [
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: '{{$moduleId}}button',
+            type: 'chakra_ui/v1/button',
+            properties: {
+              text: {
+                raw: 'click{{value}}',
+                format: 'md',
+              },
+            },
+            traits: [
+              {
+                type: 'core/v1/event',
+                properties: {
+                  handlers: [
+                    {
+                      type: 'onClick',
+                      componentId: '$module',
+                      method: {
+                        name: 'onEdit',
+                        parameters: {
+                          moduleId: '{{$moduleId}}',
+                        },
+                      },
+                      wait: {},
+                      disabled: false,
+                    },
+                  ],
+                },
+              },
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+        ],
       };
 
       registry.registerModule(exampleModule);
@@ -177,9 +177,9 @@
               properties: {
                 listData: '{{ root.listData }}',
                 template: {
+                  id: 'littleItem{{$listItem.id}}',
                   type: 'core/v1/littleItem',
                   properties: {
-                    $moduleId: '{{$listItem.id}}{{$i}}',
                     value: '{{$listItem.name}}',
                   },
                   handlers: [
@@ -188,7 +188,7 @@
                       componentId: '$utils',
                       method: {
                         name: 'alert',
-                        parameters: '监听到模块事件了：{{ $listItem.name }}！',
+                        parameters: 'listen module vent：{{ littleItem1.value }}！',
                       },
                       wait: {},
                       disabled: false,

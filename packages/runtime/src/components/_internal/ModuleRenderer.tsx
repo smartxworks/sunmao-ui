@@ -50,12 +50,12 @@ export const ModuleRenderer: React.FC<Props> = props => {
 
   const moduleSpec = useMemo(() => services.registry.getModuleByType(type), [type]);
   const parsedtemplete = useMemo(
-    () => moduleSpec.spec.components.map(parseTypeComponents),
+    () => moduleSpec.components.map(parseTypeComponents),
     [moduleSpec]
   );
 
   // then eval the template and stateMap of module
-  const evaledStateMap = useDeepCompareMemo(() => {
+  const evaledStateMap = useMemo(() => {
     // stateMap only use state i
     return evalWithScope(moduleSpec.spec.stateMap, { $moduleId: moduleId });
   }, [moduleSpec, moduleId]);
@@ -75,6 +75,9 @@ export const ModuleRenderer: React.FC<Props> = props => {
 
     const stops: ReturnType<typeof watch>[] = [];
 
+    if (!services.stateManager.store[moduleId]) {
+      services.stateManager.store[moduleId] = {};
+    }
     for (const stateKey in evaledStateMap) {
       // init state
       services.stateManager.store[moduleId][stateKey] = get(

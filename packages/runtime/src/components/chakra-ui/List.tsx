@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
@@ -8,7 +7,6 @@ import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
 const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  component,
   listData,
   template,
   app,
@@ -17,15 +15,8 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   if (!listData) {
     return null;
   }
-  const itemElementMemo = useRef(new Map());
 
   const listItems = listData.map((listItem, i) => {
-    // this memo only diff listItem, dosen't compare expressions
-    if (itemElementMemo.current.has(listItem.id)) {
-      if (itemElementMemo.current.get(listItem.id).value === listItem) {
-        return itemElementMemo.current.get(listItem.id).ele;
-      }
-    }
     const evalScope = {
       [LIST_ITEM_EXP]: listItem,
       [LIST_ITEM_INDEX_EXP]: i,
@@ -33,7 +24,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
         <ModuleRenderer
-          id={`${component.id}ListItem${i}`}
+          id={template.id}
           type={template.type}
           properties={template.properties}
           handlers={template.handlers}
@@ -44,10 +35,6 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       </BaseListItem>
     );
 
-    itemElementMemo.current.set(listItem.id, {
-      value: listItem,
-      ele: listItemEle,
-    });
     return listItemEle;
   });
 
