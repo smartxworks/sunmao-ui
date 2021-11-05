@@ -14,6 +14,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   slotsMap,
   callbackMap,
   services,
+  customStyle,
 }) => {
   const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
@@ -99,19 +100,20 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
     callbackMap?.onSubmit();
   };
 
-  const style = css`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: var(--chakra-space-4);
-    background: white;
-    border: 1px solid var(--chakra-colors-gray-200);
-    border-radius: 4px;
-  `;
-
   return (
-    <VStack css={style} spacing="5">
+    <VStack
+      width="full"
+      height="full"
+      padding="4"
+      background="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="4"
+      spacing="5"
+      css={css`
+        ${customStyle?.content}
+      `}
+    >
       <Slot slotsMap={slotsMap} slot="content" />
       {hideSubmit ? undefined : (
         <Button
@@ -156,7 +158,7 @@ export default {
         },
       ],
       slots: ['content'],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: ['onSubmit'],
     },
   }),

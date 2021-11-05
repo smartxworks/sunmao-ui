@@ -25,6 +25,7 @@ export default function renderApp(
 
   const App = metaUI.App;
   const registry = metaUI.registry;
+  const apiService = metaUI.apiService;
   const stateStore = metaUI.stateManager.store;
   const appModelManager = new AppModelManager(app, registry);
 
@@ -41,6 +42,7 @@ export default function renderApp(
           registry={registry}
           stateStore={stateStore}
           appModelManager={appModelManager}
+          apiService={apiService}
         />
       </ChakraProvider>
     </StrictMode>,

@@ -128,7 +128,11 @@ export default {
           error: Type.Any(),
         }),
       }),
-      methods: [],
+      methods: [
+        {
+          name: 'triggerFetch',
+        },
+      ],
     },
   }),
   impl: useFetchTrait,
