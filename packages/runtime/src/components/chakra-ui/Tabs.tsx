@@ -25,7 +25,12 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
     >
       <TabList>
         {tabNames.map((name, idx) => (
-          <Tab key={idx} css={css`${customStyle?.tabItem}}`}>
+          <Tab
+            key={idx}
+            css={css`
+              ${customStyle?.tabItem}
+            `}
+          >
             {name}
           </Tab>
         ))}

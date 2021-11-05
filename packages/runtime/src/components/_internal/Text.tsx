@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import ReactMarkdown from 'react-markdown';
+import { Text as BaseText } from '@chakra-ui/react';
 import { Static, Type } from '@sinclair/typebox';
 
 export const TextPropertySchema = Type.Object({
@@ -22,13 +23,13 @@ const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
     return <ReactMarkdown>{value.raw}</ReactMarkdown>;
   }
   return (
-    <span
+    <BaseText
       css={css`
         ${cssStyle}
       `}
     >
       {value.raw}
-    </span>
+    </BaseText>
   );
 };
 

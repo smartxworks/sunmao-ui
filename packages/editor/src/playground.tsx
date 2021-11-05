@@ -21,13 +21,14 @@ type Example = {
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
 
-  const { App, registry, stateStore, appModelManager } = useMemo(() => {
+  const { App, registry, stateStore, appModelManager, apiService } = useMemo(() => {
     if (!example) {
       return {};
     }
     const metaUI = initMetaUI();
     const App = metaUI.App;
     const registry = metaUI.registry;
+    const apiService = metaUI.apiService;
     const stateStore = metaUI.stateManager.store;
 
     const { app, modules = [] } = example.value;
@@ -42,6 +43,7 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
       registry,
       stateStore,
       appModelManager,
+      apiService,
     };
   }, [example]);
 
@@ -86,6 +88,7 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
             registry={registry!}
             stateStore={stateStore!}
             appModelManager={appModelManager}
+            apiService={apiService!}
           />
         )}
       </Box>
