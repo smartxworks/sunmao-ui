@@ -64,6 +64,8 @@ export class AppModelManager {
 
     eventBus.on('undo', () => this.undo());
     eventBus.on('operation', o => this.apply(o));
+
+    this.updateApp(this.app);
   }
 
   getApp() {

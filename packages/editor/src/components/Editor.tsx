@@ -90,7 +90,7 @@ export const Editor: React.FC<Props> = ({
 
   return (
     <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
-      <Box display="flex" height="100vh" width="100vw" flexDirection="column">
+      <Box display="flex" height="100%" width="100%" flexDirection="column">
         <EditorHeader
           scale={scale}
           setScale={setScale}
