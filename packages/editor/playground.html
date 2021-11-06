@@ -8,8 +8,9 @@
   <body>
     <div id="root"></div>
     <script type="module">
+      import renderPlayground from './src/playground.tsx';
       import examples from '@example.json';
-      console.log(examples);
+      renderPlayground(examples);
     </script>
   </body>
 </html>
