@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime examples</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp from './src/main.tsx';
+      import examples from '@example.json';
+      console.log(examples);
+
+      const example = examples[0];
+
+      renderApp(example.value.app);
+    </script>
+  </body>
+</html>
