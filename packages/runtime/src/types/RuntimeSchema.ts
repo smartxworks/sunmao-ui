@@ -4,6 +4,8 @@ import { GlobalHandlerMap } from 'src/services/handler';
 import { Registry } from 'src/services/registry';
 import { StateManager } from 'src/services/stateStore';
 import { Application, RuntimeApplication } from '@meta-ui/core';
+import { EventHandlerSchema } from './TraitPropertiesSchema';
+import { Type } from '@sinclair/typebox';
 
 export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 
@@ -87,3 +89,10 @@ export type TraitImplementation<T = any> = (
       services: MetaUIServices;
     }
 ) => TraitResult;
+
+export const RuntimeModuleSchema = Type.Object({
+  id: Type.String(),
+  type: Type.String(),
+  properties: Type.Record(Type.String(), Type.Any()),
+  handlers: Type.Array(EventHandlerSchema),
+});

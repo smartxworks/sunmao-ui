@@ -1,4 +1,10 @@
-import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  DeleteIcon,
+} from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -28,7 +34,7 @@ export const ComponentItemView: React.FC<Props> = props => {
     isDroppable,
     isSortable = false,
     onMoveUp,
-    onMoveDown
+    onMoveDown,
   } = props;
 
   const [isDragOver, setIsDragOver] = useState(false);
@@ -63,23 +69,28 @@ export const ComponentItemView: React.FC<Props> = props => {
     >
       {noChevron ? null : expandIcon}
       <HStack width="full" justify="space-between">
-        <Text color={isSelected ? 'red.500' : 'black'} onClick={onClick} cursor="pointer">
+        <Text
+          color={isSelected ? 'red.500' : 'black'}
+          onClick={onClick}
+          cursor="pointer"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+        >
           {title}
         </Text>
-        <Box display="flex" alignItems="center">
+        <HStack spacing="1">
           {onClickRemove ? (
-            <Box>
-              <IconButton
-                variant="ghost"
-                size="smx"
-                aria-label="remove"
-                icon={<DeleteIcon />}
-                onClick={onClickRemove}
-              />
-            </Box>
+            <IconButton
+              variant="ghost"
+              size="smx"
+              aria-label="remove"
+              icon={<DeleteIcon />}
+              onClick={onClickRemove}
+            />
           ) : null}
           {isSortable ? (
-            <Box>
+            <>
               <IconButton
                 variant="ghost"
                 size="smx"
@@ -94,9 +105,9 @@ export const ComponentItemView: React.FC<Props> = props => {
                 icon={<ArrowDownIcon />}
                 onClick={onMoveDown}
               />
-            </Box>
+            </>
           ) : null}
-        </Box>
+        </HStack>
       </HStack>
     </Box>
   );

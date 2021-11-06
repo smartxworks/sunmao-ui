@@ -1,28 +1,10 @@
-import { useRef } from 'react';
-import { Application, createComponent } from '@meta-ui/core';
+import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
-import { parseType } from '../../utils/parseType';
-import { ImplWrapper } from '../../services/ImplWrapper';
-import { resolveAppComponents } from '../../services/resolveAppComponents';
-import { RuntimeApplicationComponent } from 'src/types/RuntimeSchema';
-
-export function parseTypeComponents(
-  c: Application['spec']['components'][0]
-): RuntimeApplicationComponent {
-  return {
-    ...c,
-    parsedType: parseType(c.type),
-    traits: c.traits.map(t => {
-      return {
-        ...t,
-        parsedType: parseType(t.type),
-      };
-    }),
-  };
-}
+import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
+import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
 const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
@@ -33,61 +15,26 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   if (!listData) {
     return null;
   }
-  const itemElementMemo = useRef(new Map());
-  const parsedtemplete = template.map(parseTypeComponents);
 
   const listItems = listData.map((listItem, i) => {
-    // this memo only diff listItem, dosen't compare expressions
-    if (itemElementMemo.current.has(listItem.id)) {
-      if (itemElementMemo.current.get(listItem.id).value === listItem) {
-        return itemElementMemo.current.get(listItem.id).ele;
-      }
-    }
-
-    const evaledTemplate = services.stateManager.mapValuesDeep(
-      { parsedtemplete },
-      ({ value }) => {
-        if (typeof value === 'string') {
-          return services.stateManager.maskedEval(value, true, {
-            [LIST_ITEM_EXP]: listItem,
-            [LIST_ITEM_INDEX_EXP]: i,
-          });
-        }
-        return value;
-      }
-    ).parsedtemplete;
-
-    const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-      evaledTemplate,
-      {
-        services,
-        app,
-      }
-    );
-
-    const componentElements = topLevelComponents.map(c => {
-      return (
-        <ImplWrapper
-          key={c.id}
-          component={c}
-          slotsMap={slotComponentsMap.get(c.id)}
-          targetSlot={null}
-          services={services}
-          app={app}
-        />
-      );
-    });
-
+    const evalScope = {
+      [LIST_ITEM_EXP]: listItem,
+      [LIST_ITEM_INDEX_EXP]: i,
+    };
     const listItemEle = (
       <BaseListItem key={listItem.id} spacing={3}>
-        {componentElements}
+        <ModuleRenderer
+          id={template.id}
+          type={template.type}
+          properties={template.properties}
+          handlers={template.handlers}
+          services={services}
+          evalScope={evalScope}
+          app={app}
+        />
       </BaseListItem>
     );
 
-    itemElementMemo.current.set(listItem.id, {
-      value: listItem,
-      ele: listItemEle,
-    });
     return listItemEle;
   });
 
@@ -96,7 +43,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
 const PropsSchema = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String())),
-  template: Type.Array(Type.Any()),
+  template: RuntimeModuleSchema,
 });
 
 const exampleProperties = {

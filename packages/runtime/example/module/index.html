@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime example: nested components</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import renderApp, { registry } from '../../src/main.tsx';
+      import { Type } from '@sinclair/typebox';
+      const exampleModule = {
+        version: 'core/v1',
+        kind: 'Module',
+        parsedVersion: {
+          category: 'core/v1',
+          value: 'littleForm',
+        },
+        metadata: {
+          name: 'littleForm',
+        },
+        spec: {
+          properties: {
+            btnText: Type.String(),
+          },
+          events: ['onSubmit'],
+          stateMap: {
+            value: '{{$moduleId}}__input.value',
+          },
+        },
+        components: [
+          {
+            id: '{{$moduleId}}__hstack',
+            type: 'chakra_ui/v1/hstack',
+            properties: {},
+            traits: [],
+          },
+          {
+            id: '{{$moduleId}}__input',
+            type: 'chakra_ui/v1/input',
+            properties: {},
+            traits: [
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}__hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: '{{$moduleId}}__button',
+            type: 'chakra_ui/v1/button',
+            properties: {
+              text: {
+                raw: '{{littleFormModule__input.value}}',
+                format: 'md',
+              },
+            },
+            traits: [
+              {
+                type: 'core/v1/event',
+                properties: {
+                  handlers: [
+                    {
+                      type: 'onClick',
+                      componentId: '$module',
+                      method: {
+                        name: 'onSubmit',
+                        parameters: {
+                          moduleId: '{{$moduleId}}',
+                        },
+                      },
+                      wait: {},
+                      disabled: false,
+                    },
+                  ],
+                },
+              },
+              {
+                type: 'core/v1/slot',
+                properties: {
+                  container: {
+                    id: '{{$moduleId}}__hstack',
+                    slot: 'content',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      registry.registerModule(exampleModule);
+      renderApp({
+        version: 'example/v1',
+        metadata: {
+          name: 'module',
+          description: 'module demo',
+        },
+        spec: {
+          components: [
+            {
+              id: 'form',
+              type: 'core/v1/moduleContainer',
+              properties: {
+                id: 'littleFormModule',
+                type: 'core/v1/littleForm',
+                properties: {
+                  btnText: 'Submit!',
+                },
+                handlers: [
+                  {
+                    type: 'onSubmit',
+                    componentId: '$utils',
+                    method: {
+                      name: 'alert',
+                      parameters:
+                        'Submit: {{ littleFormModule ? littleFormModule.value : 0 }}！',
+                    },
+                    wait: {},
+                    disabled: false,
+                  },
+                ],
+              },
+              traits: [],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
