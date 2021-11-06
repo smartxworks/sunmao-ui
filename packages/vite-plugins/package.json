@@ -1,0 +1,21 @@
+{
+  "name": "@meta-ui/vite-plugins",
+  "version": "1.0.0",
+  "description": "vite plugins for meta-ui",
+  "author": "meta-ui developers",
+  "homepage": "https://github.com/webzard-io/meta-ui#readme",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "index.js",
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webzard-io/meta-ui.git"
+  },
+  "scripts": {
+  }
+}

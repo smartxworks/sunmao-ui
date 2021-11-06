@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { GridCallbacks, DIALOG_CONTAINER_ID } from '@meta-ui/runtime';
+import { GridCallbacks, DIALOG_CONTAINER_ID, initMetaUI } from '@meta-ui/runtime';
 import produce from 'immer';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
-import { App, stateStore } from '../metaUI';
 import { StructureTree } from './StructureTree';
 import {
   CreateComponentOperation,
@@ -11,14 +10,29 @@ import {
 import { eventBus, SelectComponentEvent } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
-import { appModelManager, useAppModel } from '../operations/useAppModel';
+import { useAppModel } from '../operations/useAppModel';
 import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor } from './CodeEditor';
+import { AppModelManager } from '../operations/AppModelManager';
 
-export const Editor = () => {
+type ReturnOfInit = ReturnType<typeof initMetaUI>;
+
+type Props = {
+  App: ReturnOfInit['App'];
+  registry: ReturnOfInit['registry'];
+  stateStore: ReturnOfInit['stateManager']['store'];
+  appModelManager: AppModelManager;
+};
+
+export const Editor: React.FC<Props> = ({
+  App,
+  registry,
+  stateStore,
+  appModelManager,
+}) => {
   const [selectedComponentId, setSelectedComponentId] = useState('');
   const [scale, setScale] = useState(100);
   const [preview, setPreview] = useState(false);
@@ -76,7 +90,7 @@ export const Editor = () => {
 
   return (
     <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
-      <Box display="flex" height="100vh" width="100vw" flexDirection="column">
+      <Box display="flex" height="100%" width="100%" flexDirection="column">
         <EditorHeader
           scale={scale}
           setScale={setScale}
@@ -102,6 +116,7 @@ export const Editor = () => {
                     app={app}
                     selectedComponentId={selectedComponentId}
                     onSelectComponent={id => setSelectedComponentId(id)}
+                    registry={registry}
                   />
                 </TabPanel>
                 <TabPanel p={0} height="100%">
@@ -140,10 +155,14 @@ export const Editor = () => {
               </TabList>
               <TabPanels flex="1" overflow="auto">
                 <TabPanel p={0}>
-                  <ComponentForm app={app} selectedId={selectedComponentId} />
+                  <ComponentForm
+                    app={app}
+                    selectedId={selectedComponentId}
+                    registry={registry}
+                  />
                 </TabPanel>
                 <TabPanel p={0}>
-                  <ComponentList />
+                  <ComponentList registry={registry} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

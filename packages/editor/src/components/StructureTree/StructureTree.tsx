@@ -9,18 +9,20 @@ import {
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
 
 type Props = {
+  registry: Registry;
   app: Application;
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
 };
 
 export const StructureTree: React.FC<Props> = props => {
-  const { app, selectedComponentId, onSelectComponent } = props;
+  const { app, selectedComponentId, onSelectComponent, registry } = props;
   const topLevelComponents: ApplicationComponent[] = [];
   const childrenMap: ChildrenMap = new Map();
 
@@ -52,6 +54,7 @@ export const StructureTree: React.FC<Props> = props => {
       childrenMap={childrenMap}
       selectedComponentId={selectedComponentId}
       onSelectComponent={onSelectComponent}
+      registry={registry}
     />
   ));
   const dataSourcesEles = dataSources.map(dummy => {

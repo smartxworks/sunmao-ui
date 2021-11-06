@@ -13,12 +13,13 @@ import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { EventHandlerSchema } from '@meta-ui/runtime';
-import { registry } from '../../../metaUI';
 import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 type Props = {
+  registry: Registry;
   eventTypes: string[];
   handler: Static<typeof EventHandlerSchema>;
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
@@ -27,7 +28,7 @@ type Props = {
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
-  const { handler, eventTypes, onChange, onRemove, hideEventType } = props;
+  const { handler, eventTypes, onChange, onRemove, hideEventType, registry } = props;
   const { app } = useAppModel();
   const [methods, setMethods] = useState<string[]>([]);
 

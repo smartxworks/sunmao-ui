@@ -13,9 +13,9 @@ import {
   ModifyTraitPropertiesOperation,
 } from './Operations';
 import { produce } from 'immer';
-import { registry } from '../metaUI';
 import { eventBus } from '../eventBus';
 import { set, isEqual } from 'lodash-es';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -30,6 +30,7 @@ function genSlotTrait(parentId: string, slot: string): ComponentTrait {
 }
 
 function genComponent(
+  registry: Registry,
   type: string,
   id: string,
   parentId?: string,
@@ -50,17 +51,21 @@ function genComponent(
 export class AppModelManager {
   private undoStack: Operations[] = [];
   private app: Application;
+  private registry: Registry;
 
-  constructor(app: Application) {
+  constructor(app: Application, registry: Registry) {
     const appFromLS = localStorage.getItem('schema');
     if (appFromLS) {
       this.app = JSON.parse(appFromLS);
     } else {
       this.app = app;
     }
+    this.registry = registry;
 
     eventBus.on('undo', () => this.undo());
     eventBus.on('operation', o => this.apply(o));
+
+    this.updateApp(this.app);
   }
 
   getApp() {
@@ -95,6 +100,7 @@ export class AppModelManager {
       case 'createComponent':
         const createO = o as CreateComponentOperation;
         const newComponent = genComponent(
+          this.registry,
           createO.componentType,
           createO.componentId || this.genId(createO.componentType),
           createO.parentId,

@@ -6,21 +6,22 @@ import produce from 'immer';
 import { ApplicationComponent } from '@meta-ui/core';
 import { EventHandlerSchema } from '@meta-ui/runtime';
 import { eventBus } from '../../../eventBus';
-import { registry } from '../../../metaUI';
 import {
   AddTraitOperation,
   ModifyTraitPropertyOperation,
 } from '../../../operations/Operations';
 import { EventHandlerForm } from './EventHandlerForm';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
+  registry: Registry;
   component: ApplicationComponent;
 };
 
 export const EventTraitForm: React.FC<Props> = props => {
-  const { component } = props;
+  const { component, registry } = props;
 
   const handlers: EventHandler[] = useMemo(() => {
     return component.traits.find(t => t.type === 'core/v1/event')?.properties
@@ -63,46 +64,48 @@ export const EventTraitForm: React.FC<Props> = props => {
     }
   };
 
-  const handlerForms = (handlers || []).map((h, i) => {
-    const onChange = (handler: EventHandler) => {
-      const newHanlders = produce(handlers!, draft => {
-        draft[i] = handler;
-      });
-      eventBus.send(
-        'operation',
-        new ModifyTraitPropertyOperation(
-          component.id,
-          'core/v1/event',
-          'handlers',
-          newHanlders
-        )
-      );
-    };
+  const handlerForms = () =>
+    (handlers || []).map((h, i) => {
+      const onChange = (handler: EventHandler) => {
+        const newHanlders = produce(handlers!, draft => {
+          draft[i] = handler;
+        });
+        eventBus.send(
+          'operation',
+          new ModifyTraitPropertyOperation(
+            component.id,
+            'core/v1/event',
+            'handlers',
+            newHanlders
+          )
+        );
+      };
 
-    const onRemove = () => {
-      const newHanlders = produce(handlers!, draft => {
-        draft.splice(i, 1);
-      });
-      eventBus.send(
-        'operation',
-        new ModifyTraitPropertyOperation(
-          component.id,
-          'core/v1/event',
-          'handlers',
-          newHanlders
-        )
+      const onRemove = () => {
+        const newHanlders = produce(handlers!, draft => {
+          draft.splice(i, 1);
+        });
+        eventBus.send(
+          'operation',
+          new ModifyTraitPropertyOperation(
+            component.id,
+            'core/v1/event',
+            'handlers',
+            newHanlders
+          )
+        );
+      };
+      return (
+        <EventHandlerForm
+          key={i}
+          handler={h}
+          eventTypes={eventTypes}
+          onChange={onChange}
+          onRemove={onRemove}
+          registry={registry}
+        />
       );
-    };
-    return (
-      <EventHandlerForm
-        key={i}
-        handler={h}
-        eventTypes={eventTypes}
-        onChange={onChange}
-        onRemove={onRemove}
-      />
-    );
-  });
+    });
 
   return (
     <VStack width="full">
