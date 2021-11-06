@@ -5,16 +5,17 @@ import { TSchema } from '@sinclair/typebox';
 import { AddTraitButton } from './AddTraitButton';
 import { GeneralTraitForm } from './GeneralTraitForm';
 import { eventBus } from '../../../eventBus';
-import { registry } from '../../../metaUI';
 import { AddTraitOperation, RemoveTraitOperation } from '../../../operations/Operations';
 import { ignoreTraitsList } from '../../../constants';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 type Props = {
+  registry: Registry;
   component: ApplicationComponent;
 };
 
 export const GeneralTraitFormList: React.FC<Props> = props => {
-  const { component } = props;
+  const { component, registry } = props;
 
   const onAddTrait = (type: string) => {
     const traitSpec = registry.getTraitByType(type).spec;
@@ -36,6 +37,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
           component={component}
           trait={t}
           onRemove={onRemoveTrait}
+          registry={registry}
         />
       );
     });
@@ -44,7 +46,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     <VStack width="full" alignItems="start">
       <HStack width="full" justify="space-between">
         <strong>Traits</strong>
-        <AddTraitButton onAddTrait={onAddTrait} />
+        <AddTraitButton onAddTrait={onAddTrait} registry={registry} />
       </HStack>
       {traitFields}
     </VStack>

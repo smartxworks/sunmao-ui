@@ -1,8 +1,8 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ApplicationComponent } from '@meta-ui/core';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 import React, { useMemo, useState } from 'react';
 import { eventBus } from '../../eventBus';
-import { registry } from '../../metaUI';
 import {
   CreateComponentOperation,
   RemoveComponentOperation,
@@ -13,6 +13,7 @@ import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
 
 type Props = {
+  registry: Registry;
   component: ApplicationComponent;
   childrenMap: ChildrenMap;
   selectedComponentId: string;
@@ -20,7 +21,8 @@ type Props = {
 };
 
 export const ComponentTree: React.FC<Props> = props => {
-  const { component, childrenMap, selectedComponentId, onSelectComponent } = props;
+  const { component, childrenMap, selectedComponentId, onSelectComponent, registry } =
+    props;
   const slots = registry.getComponentByType(component.type).spec.slots;
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -41,6 +43,7 @@ export const ComponentTree: React.FC<Props> = props => {
               childrenMap={childrenMap}
               selectedComponentId={selectedComponentId}
               onSelectComponent={onSelectComponent}
+              registry={registry}
             />
           );
         });

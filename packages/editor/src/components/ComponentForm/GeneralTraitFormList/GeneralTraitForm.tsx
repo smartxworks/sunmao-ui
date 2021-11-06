@@ -5,16 +5,17 @@ import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
 import { renderField } from '../ComponentForm';
 import { formWrapperCSS } from '../style';
-import { registry } from '../../../metaUI';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 type Props = {
+  registry: Registry;
   component: ApplicationComponent;
   trait: ComponentTrait;
   onRemove: () => void;
 };
 
 export const GeneralTraitForm: React.FC<Props> = props => {
-  const { trait, component, onRemove } = props;
+  const { trait, component, onRemove, registry } = props;
 
   const tImpl = registry.getTraitByType(trait.type);
   const properties = Object.assign(
