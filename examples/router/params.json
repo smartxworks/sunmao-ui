@@ -1,0 +1,88 @@
+{
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "params_router",
+      "description": "params router example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "router",
+          "type": "core/v1/router",
+          "properties": {
+            "switchPolicy": [
+              {
+                "type": "route",
+                "path": "/:value",
+                "slotId": "text",
+                "default": false
+              }
+            ]
+          },
+          "traits": []
+        },
+        {
+          "id": "text",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "{{ router.value }}",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "router",
+                  "slot": "text"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "url",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "left": {
+              "type": "addon",
+              "children": "Go to "
+            }
+          },
+          "traits": []
+        },
+        {
+          "id": "nav_btn",
+          "type": "plain/v1/button",
+          "properties": {
+            "text": {
+              "raw": "navigate",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "router",
+                    "method": {
+                      "name": "navigate",
+                      "parameters": "{{`/${url.value}`}}"
+                    },
+                    "wait": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
