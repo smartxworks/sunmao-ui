@@ -1,0 +1,170 @@
+{
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "select",
+      "description": "select"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "root",
+          "type": "chakra_ui/v1/root",
+          "properties": {},
+          "traits": []
+        },
+        {
+          "id": "stack",
+          "type": "chakra_ui/v1/stack",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "select1",
+          "type": "chakra_ui/v1/select",
+          "properties": {
+            "size": "xs",
+            "placeholder": "Select option",
+            "options": [
+              {
+                "value": "1",
+                "label": "Option 1"
+              },
+              {
+                "value": "2",
+                "label": "Option 2"
+              },
+              {
+                "value": "3",
+                "label": "Option 3"
+              }
+            ]
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "stack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "select2",
+          "type": "chakra_ui/v1/select",
+          "properties": {
+            "size": "sm",
+            "placeholder": "Select option",
+            "defaultValue": "1",
+            "options": [
+              {
+                "value": "1",
+                "label": "Option 1"
+              },
+              {
+                "value": "2",
+                "label": "Option 2"
+              },
+              {
+                "value": "3",
+                "label": "Option 3"
+              }
+            ]
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "stack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "select3",
+          "type": "chakra_ui/v1/select",
+          "properties": {
+            "size": "md",
+            "placeholder": "Select option",
+            "defaultValue": "2",
+            "options": [
+              {
+                "value": "1",
+                "label": "Option 1"
+              },
+              {
+                "value": "2",
+                "label": "Option 2"
+              },
+              {
+                "value": "3",
+                "label": "Option 3"
+              }
+            ]
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "stack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "select4",
+          "type": "chakra_ui/v1/select",
+          "properties": {
+            "size": "lg",
+            "placeholder": "Select option",
+            "defaultValue": "3",
+            "options": [
+              {
+                "value": "1",
+                "label": "Option 1"
+              },
+              {
+                "value": "2",
+                "label": "Option 2"
+              },
+              {
+                "value": "3",
+                "label": "Option 3"
+              }
+            ]
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "stack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -12,12 +12,14 @@ function virtualExamplePlugin(): Plugin {
   function walk(dirOrFile: string, frags: string[]) {
     if (fs.statSync(dirOrFile).isDirectory()) {
       for (const subDir of fs.readdirSync(dirOrFile)) {
-        frags.push(subDir);
-        walk(path.join(dirOrFile, subDir), frags);
+        walk(path.join(dirOrFile, subDir), frags.concat(subDir));
       }
     } else {
+      if (path.extname(dirOrFile) !== '.json') {
+        return;
+      }
       const value = JSON.parse(fs.readFileSync(dirOrFile, 'utf-8'));
-      const name = frags.filter(frag => frag !== 'index.json').join('_');
+      const name = frags.join('/');
       examples.push({ name, value });
     }
   }
