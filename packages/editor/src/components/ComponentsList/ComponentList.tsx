@@ -10,9 +10,13 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@meta-ui/runtime';
-import { registry } from '../../metaUI';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
-export const ComponentList: React.FC = () => {
+type Props = {
+  registry: Registry;
+};
+
+export const ComponentList: React.FC<Props> = ({ registry }) => {
   return (
     <Tabs>
       <TabList>

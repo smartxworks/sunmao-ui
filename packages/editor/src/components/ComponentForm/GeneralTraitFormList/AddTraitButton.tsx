@@ -1,14 +1,15 @@
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 import { useMemo } from 'react';
-import { registry } from '../../../metaUI';
 
 type Props = {
+  registry: Registry;
   onAddTrait: (traitType: string) => void;
 };
 
 export const AddTraitButton: React.FC<Props> = props => {
-  const { onAddTrait } = props;
+  const { onAddTrait, registry } = props;
 
   const traitTypes = useMemo(() => {
     return registry.getAllTraitTypes();
