@@ -6,7 +6,6 @@ import { TSchema } from '@sinclair/typebox';
 import { Application } from '@meta-ui/core';
 import { parseType, parseTypeBox } from '@meta-ui/runtime';
 import { eventBus } from '../../eventBus';
-import { registry } from '../../metaUI';
 import {
   ModifyComponentIdOperation,
   ModifyComponentPropertyOperation,
@@ -15,8 +14,13 @@ import {
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
-type Props = { selectedId: string; app: Application };
+type Props = {
+  registry: Registry;
+  selectedId: string;
+  app: Application;
+};
 
 export const renderField = (properties: {
   key: string;
@@ -58,7 +62,7 @@ export const renderField = (properties: {
 };
 
 export const ComponentForm: React.FC<Props> = props => {
-  const { selectedId, app } = props;
+  const { selectedId, app, registry } = props;
 
   const selectedComponent = app.spec.components.find(c => c.id === selectedId);
   if (!selectedComponent) {
@@ -110,9 +114,9 @@ export const ComponentForm: React.FC<Props> = props => {
         />
       </FormControl>
       {propertyFields.length > 0 ? propertyForm : null}
-      <EventTraitForm component={selectedComponent} />
+      <EventTraitForm component={selectedComponent} registry={registry} />
       <FetchTraitForm component={selectedComponent} />
-      <GeneralTraitFormList component={selectedComponent} />
+      <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );
 };

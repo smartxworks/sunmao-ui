@@ -12,6 +12,9 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
     &:focus {
       outline: none;
     }
+
+    width: 100%;
+    height: 100%;
   `;
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
