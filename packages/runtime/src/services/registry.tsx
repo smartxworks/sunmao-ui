@@ -1,4 +1,9 @@
-import { RuntimeComponent, RuntimeTrait } from '@meta-ui/core';
+import {
+  RuntimeComponentSpec,
+  RuntimeTraitSpec,
+  RuntimeModuleSpec,
+  ApplicationComponent,
+} from '@meta-ui/core';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';
@@ -6,6 +11,7 @@ import CoreText from '../components/core/Text';
 import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
+import CoreModuleContainer from '../components/core/ModuleContainer';
 /* --- chakra-ui --- */
 import ChakraUIRoot from '../components/chakra-ui/Root';
 import ChakraUIButton from '../components/chakra-ui/Button';
@@ -48,17 +54,22 @@ import { parseType } from '../utils/parseType';
 
 export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
 
-type ImplementedRuntimeComponent = RuntimeComponent & {
+type ImplementedRuntimeComponent = RuntimeComponentSpec & {
   impl: ComponentImplementation;
 };
 
-type ImplementedRuntimeTrait = RuntimeTrait & {
+type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
+};
+
+type ImplementedRuntimeModule = RuntimeModuleSpec & {
+  components: ApplicationComponent[];
 };
 
 export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
   traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
+  modules: Map<string, Map<string, ImplementedRuntimeModule>> = new Map();
 
   registerComponent(c: ImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
@@ -119,6 +130,31 @@ export class Registry {
     }
     return res;
   }
+
+  registerModule(c: ImplementedRuntimeModule) {
+    if (this.modules.get(c.version)?.has(c.metadata.name)) {
+      throw new Error(
+        `Already has module ${c.version}/${c.metadata.name} in this registry.`
+      );
+    }
+    if (!this.modules.has(c.version)) {
+      this.modules.set(c.version, new Map());
+    }
+    this.modules.get(c.version)?.set(c.metadata.name, c);
+  }
+
+  getModule(version: string, name: string): ImplementedRuntimeModule {
+    const m = this.modules.get(version)?.get(name);
+    if (!m) {
+      throw new Error(`Module ${version}/${name} has not registered yet.`);
+    }
+    return m;
+  }
+
+  getModuleByType(type: string): ImplementedRuntimeModule {
+    const { version, name } = parseType(type);
+    return this.getModule(version, name);
+  }
 }
 
 export function initRegistry(): Registry {
@@ -152,6 +188,7 @@ export function initRegistry(): Registry {
   registry.registerComponent(ChakraUIRadio);
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
+  registry.registerComponent(CoreModuleContainer);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);

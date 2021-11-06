@@ -23,11 +23,11 @@ type ComponentSpec = {
 };
 
 // extended runtime
-export type RuntimeComponent = Component & {
+export type RuntimeComponentSpec = Component & {
   parsedVersion: Version;
 };
 
-export function createComponent(options: Omit<Component, 'kind'>): RuntimeComponent {
+export function createComponent(options: Omit<Component, 'kind'>): RuntimeComponentSpec {
   return {
     ...options,
     kind: 'Component',

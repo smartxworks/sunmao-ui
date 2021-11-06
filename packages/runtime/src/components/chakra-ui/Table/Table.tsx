@@ -45,6 +45,7 @@ export const TableImpl: ComponentImplementation<{
   isMultiSelect,
   mergeState,
   services,
+  app,
 }) => {
   const [selectedItem, setSelectedItem] = useState<Record<string, any> | undefined>();
   const [selectedItems, setSelectedItems] = useState<Array<Record<string, any>>>([]);
@@ -156,7 +157,7 @@ export const TableImpl: ComponentImplementation<{
           </Tr>
         </Thead>
         <Tbody>
-          {currentPageData?.map(item => {
+          {currentPageData?.map((item, i) => {
             const isSelected = isItemSelected(item);
             let onClickToggle = true;
             const onClickCheckbox = (e: React.MouseEvent<HTMLElement>) => {
@@ -192,11 +193,13 @@ export const TableImpl: ComponentImplementation<{
                 {isMultiSelect ? checkbox : undefined}
                 {columns.map(column => (
                   <TableTd
+                    index={i}
                     key={column.key}
                     item={item}
                     column={column}
                     onClickItem={() => selectItem(item)}
                     services={services}
+                    app={app}
                   />
                 ))}
               </Tr>
