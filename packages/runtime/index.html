@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meta-ui runtime examples</title>
+  </head>
+  <body>
+    <select></select>
+    <div id="root"></div>
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+      import { initMetaUI } from './src';
+      import { ChakraProvider } from '@chakra-ui/react';
+      import examples from '@example.json';
+
+      const selectEl = document.querySelector('select');
+      for (const example of examples) {
+        const optionEl = document.createElement('option');
+        optionEl.innerText = example.name;
+        selectEl.appendChild(optionEl);
+      }
+      selectEl.addEventListener('change', () => {
+        render(examples.find(e => e.name === selectEl.value));
+      });
+
+      const rootEl = document.querySelector('#root');
+      const render = example => {
+        ReactDOM.unmountComponentAtNode(rootEl);
+        const { App, registry } = initMetaUI();
+        const { app, modules = [] } = example.value;
+        modules.forEach(m => {
+          registry.registerModule(m);
+        });
+        ReactDOM.render(
+          React.createElement(
+            React.StrictMode,
+            null,
+            React.createElement(
+              ChakraProvider,
+              null,
+              React.createElement(App, { options: app }, null)
+            )
+          ),
+          rootEl
+        );
+      };
+
+      render(examples[0]);
+    </script>
+  </body>
+</html>

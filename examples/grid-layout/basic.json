@@ -1,0 +1,124 @@
+{
+  "app": {
+    "kind": "Application",
+    "version": "example/v1",
+    "metadata": {
+      "name": "basic_grid_layout",
+      "description": "basic grid layout example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "root",
+          "type": "chakra_ui/v1/root",
+          "properties": {},
+          "traits": []
+        },
+        {
+          "id": "grid",
+          "type": "core/v1/grid_layout",
+          "properties": {
+            "layout": [
+              {
+                "w": 8,
+                "h": 1,
+                "x": 0,
+                "y": 0,
+                "i": "input"
+              },
+              {
+                "w": 4,
+                "h": 9,
+                "x": 0,
+                "y": 2,
+                "i": "box1",
+                "moved": false,
+                "static": false
+              },
+              {
+                "w": 2,
+                "h": 12,
+                "x": 8,
+                "y": 0,
+                "i": "box2",
+                "moved": false,
+                "static": false
+              },
+              {
+                "w": 3,
+                "h": 1,
+                "x": 3,
+                "y": 11,
+                "i": "component0"
+              }
+            ]
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": { "container": { "id": "root", "slot": "root" } }
+            }
+          ]
+        },
+        {
+          "id": "input",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "variant": "filled",
+            "placeholder": "This a example",
+            "colorScheme": "pink",
+            "focusBorderColor": "pink.500",
+            "isDisabled": false,
+            "isRequired": true,
+            "left": { "type": "addon", "children": "https://" },
+            "right": {
+              "type": "element",
+              "children": ".com",
+              "color": "red",
+              "fontSize": "16px"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": { "container": { "id": "grid", "slot": "content" } }
+            }
+          ]
+        },
+        {
+          "id": "box1",
+          "type": "chakra_ui/v1/box",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": { "container": { "id": "grid", "slot": "content" } }
+            }
+          ]
+        },
+        {
+          "id": "box2",
+          "type": "chakra_ui/v1/box",
+          "properties": { "bgColor": "pink", "w": "100%", "h": "100%" },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": { "container": { "id": "grid", "slot": "content" } }
+            }
+          ]
+        },
+        {
+          "id": "component0",
+          "type": "chakra_ui/v1/button",
+          "properties": { "text": { "raw": "提交" } },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": { "container": { "id": "grid", "slot": "content" } }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

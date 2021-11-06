@@ -1,0 +1,108 @@
+{
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "inputValidation",
+      "description": "input validation example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "emailInput",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "size": "lg",
+            "left": {
+              "type": "addon",
+              "children": "邮箱"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "value": "{{ emailInput.value || \"\" }}",
+                "maxLength": 20,
+                "minLength": 10,
+                "rule": "email"
+              }
+            }
+          ]
+        },
+        {
+          "id": "emailValidationText",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "{{ emailInput.validResult.errorMsg }}",
+              "format": "plain"
+            }
+          },
+          "traits": []
+        },
+        {
+          "id": "phoneInput",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "size": "lg",
+            "left": {
+              "type": "addon",
+              "children": "手机"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "value": "{{ phoneInput.value || \"\" }}",
+                "maxLength": 100,
+                "minLength": 0,
+                "rule": "phoneNumber"
+              }
+            }
+          ]
+        },
+        {
+          "id": "phoneValidationText",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "{{ phoneInput.validResult.errorMsg }}",
+              "format": "plain"
+            }
+          },
+          "traits": []
+        },
+        {
+          "id": "submitButton",
+          "type": "plain/v1/button",
+          "properties": {
+            "text": {
+              "raw": "提交",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "$utils",
+                    "method": {
+                      "name": "alert",
+                      "parameters": "{{ `邮箱：${ emailInput.value } 手机号：${ phoneInput.value }` }}"
+                    },
+                    "wait": {},
+                    "disabled": "{{ emailInput.validResult.isInvalid || phoneInput.validResult.isInvalid }}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

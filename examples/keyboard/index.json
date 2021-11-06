@@ -1,0 +1,123 @@
+{
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "chakra-ui keyboard",
+      "description": "keyboard example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "root",
+          "type": "chakra_ui/v1/root",
+          "properties": {},
+          "traits": []
+        },
+        {
+          "id": "key_shift",
+          "type": "chakra_ui/v1/kbd",
+          "properties": {
+            "text": {
+              "format": "plain",
+              "raw": "shift"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "plus",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": " + ",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "key_f",
+          "type": "chakra_ui/v1/kbd",
+          "properties": {
+            "text": {
+              "format": "plain",
+              "raw": "f + {{ key_shift.value }}"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "forward_text_box",
+          "type": "chakra_ui/v1/box",
+          "properties": {
+            "color": "gray",
+            "display": "inline",
+            "ml": 2
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "forward_text",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "Port-Forward",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "forward_text_box",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
