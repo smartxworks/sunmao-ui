@@ -1,0 +1,777 @@
+{
+  "modules": [
+    {
+      "version": "core/v1",
+      "kind": "Module",
+      "parsedVersion": {
+        "category": "core/v1",
+        "value": "listItem"
+      },
+      "metadata": {
+        "name": "listItem"
+      },
+      "spec": {
+        "properties": {
+          "name": "",
+          "email": ""
+        },
+        "events": ["onClickDelete", "onClickEdit"],
+        "stateMap": {},
+        "components": [
+          {
+            "id": "{{$moduleId}}hstack",
+            "type": "chakra_ui/v1/hstack",
+            "properties": {
+              "spacing": "24px"
+            },
+            "traits": []
+          },
+          {
+            "id": "{{$moduleId}}name",
+            "type": "core/v1/text",
+            "properties": {
+              "value": {
+                "raw": "姓名：{{name}}",
+                "format": "plain"
+              }
+            },
+            "traits": [
+              {
+                "type": "core/v1/slot",
+                "properties": {
+                  "container": {
+                    "id": "{{$moduleId}}hstack",
+                    "slot": "content"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "{{$moduleId}}email",
+            "type": "core/v1/text",
+            "properties": {
+              "value": {
+                "raw": "email：{{email}}",
+                "format": "plain"
+              }
+            },
+            "traits": [
+              {
+                "type": "core/v1/slot",
+                "properties": {
+                  "container": {
+                    "id": "{{$moduleId}}hstack",
+                    "slot": "content"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "{{$moduleId}}deleteButton",
+            "type": "chakra_ui/v1/button",
+            "properties": {
+              "text": {
+                "raw": "删除",
+                "format": "plain"
+              }
+            },
+            "traits": [
+              {
+                "type": "core/v1/event",
+                "parsedType": {
+                  "version": "core/v1",
+                  "name": "event"
+                },
+                "properties": {
+                  "handlers": [
+                    {
+                      "type": "onClick",
+                      "componentId": "$module",
+                      "method": {
+                        "name": "onClickDelete",
+                        "parameters": {
+                          "moduleId": "{{$moduleId}}"
+                        }
+                      },
+                      "wait": {},
+                      "disabled": "false"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "core/v1/slot",
+                "properties": {
+                  "container": {
+                    "id": "{{$moduleId}}hstack",
+                    "slot": "content"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "{{$moduleId}}editButton",
+            "type": "chakra_ui/v1/button",
+            "properties": {
+              "text": {
+                "raw": "编辑",
+                "format": "plain"
+              }
+            },
+            "traits": [
+              {
+                "type": "core/v1/event",
+                "parsedType": {
+                  "version": "core/v1",
+                  "name": "event"
+                },
+                "properties": {
+                  "handlers": [
+                    {
+                      "type": "onClick",
+                      "componentId": "$module",
+                      "method": {
+                        "name": "onClickEdit",
+                        "parameters": {
+                          "moduleId": "{{$moduleId}}"
+                        }
+                      },
+                      "wait": {},
+                      "disabled": "false"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "core/v1/slot",
+                "properties": {
+                  "container": {
+                    "id": "{{$moduleId}}hstack",
+                    "slot": "content"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "list_component",
+      "description": "list component example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "root",
+          "type": "chakra_ui/v1/root",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "editingId",
+                "initialValue": ""
+              }
+            },
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "nameInputInitialValue",
+                "initialValue": ""
+              }
+            },
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "emailInputInitialValue",
+                "initialValue": ""
+              }
+            },
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "deleteId",
+                "initialValue": ""
+              }
+            },
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "listTitle",
+                "initialValue": "客户列表"
+              }
+            },
+            {
+              "type": "core/v1/arrayState",
+              "properties": {
+                "key": "listData",
+                "initialValue": [
+                  {
+                    "id": 1,
+                    "name": "马云",
+                    "email": "jack.ma@deck.com"
+                  },
+                  {
+                    "id": 2,
+                    "name": "马化腾",
+                    "email": "pony.ma@conversation.com"
+                  },
+                  {
+                    "id": 3,
+                    "name": "李彦宏",
+                    "email": "robin.li@response.com"
+                  },
+                  {
+                    "id": 4,
+                    "name": "张一鸣",
+                    "email": "yiming.zhang@example.com"
+                  },
+                  {
+                    "id": 5,
+                    "name": "王兴",
+                    "email": "xing.wang@widget.org"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "**{{root.listTitle}}**",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "type": "chakra_ui/v1/list",
+          "properties": {
+            "listData": "{{ root.listData }}",
+            "template": {
+              "id": "list{{$listItem.id}}",
+              "type": "core/v1/listItem",
+              "properties": {
+                "name": "{{$listItem.name}}",
+                "email": "{{$listItem.email}}"
+              },
+              "handlers": [
+                {
+                  "type": "onClickDelete",
+                  "componentId": "root",
+                  "method": {
+                    "name": "setValue",
+                    "parameters": {
+                      "key": "deleteId",
+                      "value": "{{ $listItem.id }}"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickDelete",
+                  "componentId": "deleteDialog",
+                  "method": {
+                    "name": "openDialog",
+                    "parameters": {
+                      "title": "删除信息"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickDelete",
+                  "componentId": "deleteDialog",
+                  "method": {
+                    "name": "setValue",
+                    "parameters": {
+                      "key": "deleteContent",
+                      "value": "是否确认删除『{{ $listItem.name }}: {{ $listItem.email }}』"
+                    }
+                  },
+                  "wait": {
+                    "type": "delay",
+                    "time": 1
+                  },
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickEdit",
+                  "componentId": "root",
+                  "method": {
+                    "name": "setValue",
+                    "parameters": {
+                      "key": "editingId",
+                      "value": "{{ $listItem.id }}"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickEdit",
+                  "componentId": "root",
+                  "method": {
+                    "name": "setValue",
+                    "parameters": {
+                      "key": "nameInputInitialValue",
+                      "value": "{{ $listItem.name }}"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickEdit",
+                  "componentId": "root",
+                  "method": {
+                    "name": "setValue",
+                    "parameters": {
+                      "key": "emailInputInitialValue",
+                      "value": "{{ $listItem.email }}"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickEdit",
+                  "componentId": "editDialog",
+                  "method": {
+                    "name": "openDialog",
+                    "parameters": {
+                      "title": "编辑信息"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": "false"
+                }
+              ]
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "editDialog",
+          "type": "chakra_ui/v1/dialog",
+          "properties": {
+            "title": "This is a dialog",
+            "confirmButton": {
+              "text": "save",
+              "colorScheme": "purple"
+            },
+            "cancelButton": {
+              "text": "cancel"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "parsedType": {
+                "version": "core/v1",
+                "name": "event"
+              },
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "editDialog",
+                    "method": {
+                      "name": "confirmDialog"
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "root",
+                    "method": {
+                      "name": "setValue",
+                      "parameters": {
+                        "key": "listData",
+                        "value": "{{\\n(function() { \\n const list = [...root.listData || []] \\n if (typeof nameInput !== \"undefined\" && typeof emailInput !== \"undefined\") { \\n let index = list.findIndex((item) => item.id == root.editingId) \\n list[index] = { \\n ...list[index], \\n name: nameInput.value, \\n email: emailInput.value \\n } \\n } \\n return list \\n })() \\n }}"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "root",
+                    "method": {
+                      "name": "setValue",
+                      "parameters": {
+                        "key": "nameInputInitialValue",
+                        "value": ""
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "root",
+                    "method": {
+                      "name": "setValue",
+                      "parameters": {
+                        "key": "emailInputInitialValue",
+                        "value": ""
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "cancelDialog",
+                    "componentId": "editDialog",
+                    "method": {
+                      "name": "cancelDialog"
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "nameInput",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "left": {
+              "type": "addon",
+              "children": "姓名"
+            },
+            "defaultValue": "{{ root.nameInputInitialValue }}"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "editDialog",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "emailInput",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "left": {
+              "type": "addon",
+              "children": "邮箱"
+            },
+            "defaultValue": "{{ root.emailInputInitialValue }}"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "editDialog",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "deleteDialog",
+          "type": "chakra_ui/v1/dialog",
+          "properties": {
+            "title": "This is a dialog",
+            "confirmButton": {
+              "text": "确定"
+            },
+            "cancelButton": {
+              "text": "取消"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            },
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "deleteContent",
+                "initialValue": ""
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "parsedType": {
+                "version": "core/v1",
+                "name": "event"
+              },
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "deleteDialog",
+                    "method": {
+                      "name": "confirmDialog"
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "root",
+                    "method": {
+                      "name": "deleteItemById",
+                      "parameters": {
+                        "key": "listData",
+                        "itemIdKey": "id",
+                        "itemId": "{{ root.deleteId }}"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "cancelDialog",
+                    "componentId": "deleteDialog",
+                    "method": {
+                      "name": "cancelDialog"
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "deleteContent",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "**{{deleteDialog.deleteContent}}**",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "deleteDialog",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "addButton",
+          "type": "chakra_ui/v1/button",
+          "properties": {
+            "text": {
+              "raw": "添加客户",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "parsedType": {
+                "version": "core/v1",
+                "name": "event"
+              },
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "createDialog",
+                    "method": {
+                      "name": "openDialog",
+                      "parameters": {
+                        "title": "编辑信息"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "createDialog",
+          "type": "chakra_ui/v1/dialog",
+          "properties": {
+            "title": "This is a dialog",
+            "confirmButton": {
+              "text": "save",
+              "colorScheme": "purple"
+            },
+            "cancelButton": {
+              "text": "cancel"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "parsedType": {
+                "version": "core/v1",
+                "name": "event"
+              },
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "createDialog",
+                    "method": {
+                      "name": "confirmDialog"
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "confirmDialog",
+                    "componentId": "root",
+                    "method": {
+                      "name": "setValue",
+                      "parameters": {
+                        "key": "listData",
+                        "value": "{{ \\n (function() { \\n const list = [...root.listData || []] \\n if (typeof createNameInput !== \"undefined\" && typeof createEmailInput !== \"undefined\") { \\n list.push({ \\n id: Date.now(), \\n name: createNameInput.value, \\n email: createEmailInput.value \\n }) \\n } \\n return list \\n })() \\n}}"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  },
+                  {
+                    "type": "cancelDialog",
+                    "componentId": "createDialog",
+                    "method": {
+                      "name": "cancelDialog"
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "createNameInput",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "left": {
+              "type": "addon",
+              "children": "姓名"
+            },
+            "defaultValue": ""
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "createDialog",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "createEmailInput",
+          "type": "chakra_ui/v1/input",
+          "properties": {
+            "left": {
+              "type": "addon",
+              "children": "邮箱"
+            },
+            "initialValue": ""
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "createDialog",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
