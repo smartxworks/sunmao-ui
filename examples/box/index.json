@@ -71,7 +71,7 @@
           ]
         },
         {
-          "id": "text",
+          "id": "text1",
           "type": "core/v1/text",
           "properties": { "value": { "raw": "in box child 1", "format": "plain" } },
           "traits": [
@@ -101,7 +101,7 @@
           ]
         },
         {
-          "id": "text",
+          "id": "text2",
           "type": "core/v1/text",
           "properties": { "value": { "raw": "in box child 2", "format": "plain" } },
           "traits": [

@@ -120,7 +120,7 @@ export const EventTraitForm: React.FC<Props> = props => {
           onClick={onClickAddHandler}
         />
       </HStack>
-      <VStack width="full">{handlerForms}</VStack>
+      <VStack width="full">{handlerForms()}</VStack>
     </VStack>
   );
 };
