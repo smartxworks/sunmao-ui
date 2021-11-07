@@ -33,10 +33,12 @@ export const Editor: React.FC<Props> = ({
   stateStore,
   appModelManager,
 }) => {
-  const [selectedComponentId, setSelectedComponentId] = useState('');
+  const { app } = useAppModel();
+  const [selectedComponentId, setSelectedComponentId] = useState(
+    app.spec.components[0]?.id || ''
+  );
   const [scale, setScale] = useState(100);
   const [preview, setPreview] = useState(false);
-  const { app } = useAppModel();
 
   useEffect(() => {
     eventBus.on(SelectComponentEvent, id => {
