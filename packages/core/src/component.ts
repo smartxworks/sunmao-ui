@@ -1,4 +1,4 @@
-import { JSONSchema7, JSONSchema7Object } from 'json-schema';
+import { JSONSchema7 } from 'json-schema';
 import { parseVersion } from './version';
 import { ComponentMetadata } from './metadata';
 import { MethodSchema } from './method';
@@ -14,7 +14,7 @@ export type Component = {
 };
 
 type ComponentSpec = {
-  properties: JSONSchema7Object;
+  properties: JSONSchema7;
   state: JSONSchema7;
   methods: MethodSchema[];
   styleSlots: string[];

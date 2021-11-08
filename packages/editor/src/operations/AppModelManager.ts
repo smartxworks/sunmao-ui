@@ -11,6 +11,7 @@ import {
   AddTraitOperation,
   RemoveTraitOperation,
   ModifyTraitPropertiesOperation,
+  ReplaceComponentPropertyOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { eventBus } from '../eventBus';
@@ -136,6 +137,26 @@ export class AppModelManager {
           const undoOperation = new ModifyComponentPropertyOperation(
             mo.componentId,
             mo.propertyKey,
+            oldValue
+          );
+          this.undoStack.push(undoOperation);
+        }
+        break;
+      case 'replaceComponentProperty':
+        const ro = o as ReplaceComponentPropertyOperation;
+        newApp = produce(this.app, draft => {
+          return draft.spec.components.forEach(c => {
+            if (c.id === ro.componentId) {
+              c.properties = ro.properties;
+            }
+          });
+        });
+        if (!noEffect) {
+          const oldValue = this.app.spec.components.find(
+            c => c.id === ro.componentId
+          )?.properties;
+          const undoOperation = new ReplaceComponentPropertyOperation(
+            ro.componentId,
             oldValue
           );
           this.undoStack.push(undoOperation);
