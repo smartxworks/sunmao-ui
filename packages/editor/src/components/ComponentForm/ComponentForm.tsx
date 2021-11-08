@@ -10,11 +10,13 @@ import {
   ModifyComponentIdOperation,
   ModifyComponentPropertyOperation,
   ModifyTraitPropertyOperation,
+  ReplaceComponentPropertyOperation,
 } from '../../operations/Operations';
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import SchemaField from './JsonSchemaForm/SchemaField';
 
 type Props = {
   registry: Registry;
@@ -113,6 +115,29 @@ export const ComponentForm: React.FC<Props> = props => {
           onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
         />
       </FormControl>
+      <VStack width="full" alignItems="start">
+        <strong>Properties</strong>
+        <VStack
+          width="full"
+          padding="4"
+          background="white"
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="4"
+        >
+          <SchemaField
+            schema={cImpl.spec.properties}
+            label=""
+            formData={properties}
+            onChange={newFormData => {
+              eventBus.send(
+                'operation',
+                new ReplaceComponentPropertyOperation(selectedId, newFormData)
+              );
+            }}
+          />
+        </VStack>
+      </VStack>
       {propertyFields.length > 0 ? propertyForm : null}
       <EventTraitForm component={selectedComponent} registry={registry} />
       <FetchTraitForm component={selectedComponent} registry={registry} />

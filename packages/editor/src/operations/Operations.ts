@@ -27,6 +27,11 @@ export class ModifyComponentPropertyOperation {
   ) {}
 }
 
+export class ReplaceComponentPropertyOperation {
+  kind = 'replaceComponentProperty';
+  constructor(public componentId: string, public properties: any) {}
+}
+
 export class AddTraitOperation {
   kind = 'addTraitOperation';
   constructor(
@@ -66,8 +71,5 @@ export class ModifyTraitPropertiesOperation {
 }
 export class SortComponentOperation {
   kind = 'sortComponent';
-  constructor(
-    public componentId: string,
-    public direction: 'up' | 'down'
-  ) {}
+  constructor(public componentId: string, public direction: 'up' | 'down') {}
 }
