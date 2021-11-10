@@ -47,5 +47,3 @@ export default function renderApp(
     document.getElementById('root')
   );
 }
-
-renderApp();
