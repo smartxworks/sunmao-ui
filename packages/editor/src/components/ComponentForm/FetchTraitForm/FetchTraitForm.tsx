@@ -22,17 +22,19 @@ import {
   RemoveTraitOperation,
 } from '../../../operations/Operations';
 import { eventBus } from '../../../eventBus';
+import { Registry } from '@meta-ui/runtime/lib/services/registry';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
   component: ApplicationComponent;
+  registry: Registry;
 };
 
 const httpMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const FetchTraitForm: React.FC<Props> = props => {
-  const { component } = props;
+  const { component, registry } = props;
 
   const fetchTrait = component.traits.find(t => t.type === 'core/v1/fetch')
     ?.properties as Static<typeof FetchTraitPropertiesSchema>;
@@ -162,6 +164,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
             hideEventType={true}
             onChange={onChange}
             onRemove={onRemove}
+            registry={registry}
           />
         );
       })}
