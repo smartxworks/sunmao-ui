@@ -6,9 +6,7 @@ import { TreeSelect } from 'antd';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { ComponentImplementation } from '../../services/registry';
-import 'antd/lib/select/style/index.css';
-import 'antd/lib/empty/style/index.css';
-import 'antd/lib/tree-select/style/index.css';
+import 'antd/lib/style/index.css';
 
 const StateSchema = Type.Object({
   value: Type.String(),

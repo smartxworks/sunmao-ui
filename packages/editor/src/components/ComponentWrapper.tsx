@@ -38,7 +38,6 @@ export const ComponentWrapper: ComponentWrapperType = props => {
   const style = css`
     display: ${inlineList.includes(component.type) ? 'inline-block' : 'block'};
     height: ${fullHeightList.includes(parentType) ? '100%' : 'auto'};
-    width: ${inlineList.includes(component.type) ? 'auto' : '100%'};
     position: relative;
     &:after {
       content: '';
