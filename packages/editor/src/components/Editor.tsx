@@ -33,7 +33,6 @@ export const Editor: React.FC<Props> = ({
   registry,
   stateStore,
   appModelManager,
-  apiService,
 }) => {
   const { app } = useAppModel();
   const [selectedComponentId, setSelectedComponentId] = useState(

@@ -1,6 +1,6 @@
 import { Static } from '@sinclair/typebox';
 import React, { useEffect, useMemo } from 'react';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { RuntimeApplication } from '@meta-ui/core';
 import { MetaUIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';

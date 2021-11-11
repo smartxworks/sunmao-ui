@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createComponent } from '@meta-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { TreeSelect } from 'antd';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
