@@ -115,7 +115,7 @@ export const ComponentForm: React.FC<Props> = props => {
       </FormControl>
       {propertyFields.length > 0 ? propertyForm : null}
       <EventTraitForm component={selectedComponent} registry={registry} />
-      <FetchTraitForm component={selectedComponent} />
+      <FetchTraitForm component={selectedComponent} registry={registry} />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );
