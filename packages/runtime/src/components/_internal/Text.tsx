@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 
@@ -21,15 +21,12 @@ const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   if (value.format === 'md') {
     return <ReactMarkdown>{value.raw}</ReactMarkdown>;
   }
-  return (
-    <span
-      css={css`
-        ${cssStyle}
-      `}
-    >
-      {value.raw}
-    </span>
-  );
+
+  // TODO: For some unknown reason, emotion css doesn't work in this file. So I use styled instead.
+  const Span = styled.span`
+    ${cssStyle}
+  `;
+  return <Span>{value.raw}</Span>;
 };
 
 export default Text;

@@ -51,10 +51,10 @@ const ValidationTraitImpl: TraitImplementation<Static<typeof PropsSchema>> = pro
     errorMsg: '',
   };
 
-  if (value.length > maxLength) {
+  if (maxLength !== undefined && value.length > maxLength) {
     result.isInvalid = true;
     result.errorMsg = `最长不能超过${maxLength}个字符`;
-  } else if (value.length < minLength) {
+  } else if (minLength !== undefined && value.length < minLength) {
     result.isInvalid = true;
     result.errorMsg = `不能少于${minLength}个字符`;
   } else {

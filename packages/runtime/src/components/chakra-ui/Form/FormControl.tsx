@@ -7,18 +7,18 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
+  HStack,
   Text,
 } from '@chakra-ui/react';
 import { watch } from '../../../utils/watchReactivity';
-import {
-  FormControlContentCSS,
-  FormControlCSS,
-  FormItemCSS,
-  FormLabelCSS,
-} from './FormCSS';
 import { ComponentImplementation } from '../../../services/registry';
 import Slot from '../../_internal/Slot';
 import { CheckboxStateSchema } from '../Checkbox';
+
+const FormItemCSS = {
+  flex: '0 0 auto',
+  width: '66%',
+};
 
 const FormControlImpl: ComponentImplementation<{
   label: string;
@@ -88,23 +88,27 @@ const FormControlImpl: ComponentImplementation<{
   }, [inputId, inputId, fieldName, isInvalid, isRequired, inputValue]);
 
   const placeholder = <Text color="gray.200">Please Add Input Here</Text>;
-  const slotView = <Slot css={FormItemCSS} slotsMap={slotsMap} slot="content" />;
+  const slotView = <Slot {...FormItemCSS} slotsMap={slotsMap} slot="content" />;
 
   return (
     <FormControl
       isRequired={isRequired}
       isInvalid={!hideInvalid && (isInvalid || (!inputValue && isRequired))}
-      css={FormControlCSS}
+      display="flex"
+      flexDirection="column"
+      alignItems="end"
     >
-      <div css={FormControlContentCSS}>
-        <FormLabel css={FormLabelCSS}>{label}</FormLabel>
+      <HStack width="full">
+        <FormLabel flex="0 0 auto" width="33%" margin="auto 0">
+          {label}
+        </FormLabel>
         {inputId ? slotView : placeholder}
-      </div>
+      </HStack>
       {errorMsg ? (
-        <FormErrorMessage css={FormItemCSS}>{errorMsg}</FormErrorMessage>
+        <FormErrorMessage {...FormItemCSS}>{errorMsg}</FormErrorMessage>
       ) : undefined}
       {helperText ? (
-        <FormHelperText css={FormItemCSS}>{helperText}</FormHelperText>
+        <FormHelperText {...FormItemCSS}>{helperText}</FormHelperText>
       ) : undefined}
     </FormControl>
   );
