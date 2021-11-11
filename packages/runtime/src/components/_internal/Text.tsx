@@ -1,6 +1,5 @@
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import ReactMarkdown from 'react-markdown';
-import { Text as BaseText } from '@chakra-ui/react';
 import { Static, Type } from '@sinclair/typebox';
 
 export const TextPropertySchema = Type.Object({
@@ -22,15 +21,12 @@ const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   if (value.format === 'md') {
     return <ReactMarkdown>{value.raw}</ReactMarkdown>;
   }
-  return (
-    <BaseText
-      css={css`
-        ${cssStyle}
-      `}
-    >
-      {value.raw}
-    </BaseText>
-  );
+
+  // TODO: For some unknown reason, emotion css doesn't work in this file. So I use styled instead.
+  const Span = styled.span`
+    ${cssStyle}
+  `;
+  return <Span>{value.raw}</Span>;
 };
 
 export default Text;
