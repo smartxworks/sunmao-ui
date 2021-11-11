@@ -5,6 +5,7 @@ import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { reactive } from '@vue/reactivity';
+import { arrayToTree } from 'performant-array-to-tree';
 import { watch } from '../utils/watchReactivity';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
 
@@ -21,6 +22,8 @@ type ExpChunk = {
 // TODO: use web worker
 const builtIn = {
   dayjs,
+  // TODO: It is a custom dependency, should not be add here
+  arrayToTree,
 };
 
 function isNumeric(x: string | number) {
@@ -110,7 +113,7 @@ export class StateManager {
         });
         return result;
       } catch (e: any) {
-        console.error(Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`));
+        // console.error(Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`));
         return undefined;
       }
     });

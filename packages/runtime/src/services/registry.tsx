@@ -26,6 +26,7 @@ import ChakraUIKbd from '../components/chakra-ui/Kbd';
 import ChakraUIList from '../components/chakra-ui/List';
 import ChakraUILink from '../components/chakra-ui/Link';
 import ChakraUINumberInput from '../components/chakra-ui/NumberInput';
+import ChakraUIMultiSelect from '../components/chakra-ui/MultiSelect';
 import ChakraUICheckboxGroup from '../components/chakra-ui/CheckboxGroup';
 import ChakraUICheckbox from '../components/chakra-ui/Checkbox';
 import ChakraUIStack from '../components/chakra-ui/Stack';
@@ -37,6 +38,8 @@ import ChakraUIDialog from '../components/chakra-ui/Dialog';
 import ChakraUISelect from '../components/chakra-ui/Select';
 import ChakraUIRadioGroup from '../components/chakra-ui/RadioGroup';
 import ChakraUIRadio from '../components/chakra-ui/Radio';
+
+import AntdTreeSelect from '../components/antd/TreeSelect';
 // traits
 import CoreArrayState from '../traits/core/arrayState';
 import CoreState from '../traits/core/state';
@@ -174,6 +177,7 @@ export function initRegistry(): Registry {
   registry.registerComponent(ChakraUIKbd);
   registry.registerComponent(ChakraUIList);
   registry.registerComponent(ChakraUILink);
+  registry.registerComponent(ChakraUIMultiSelect);
   registry.registerComponent(ChakraUINumberInput);
   registry.registerComponent(ChakraUICheckbox);
   registry.registerComponent(ChakraUICheckboxGroup);
@@ -189,6 +193,8 @@ export function initRegistry(): Registry {
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
   registry.registerComponent(CoreModuleContainer);
+
+  registry.registerComponent(AntdTreeSelect);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);

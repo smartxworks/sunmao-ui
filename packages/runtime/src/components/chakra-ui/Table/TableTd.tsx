@@ -1,7 +1,7 @@
 import { RuntimeApplication } from '@meta-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSchema } from './TableTypes';
-import { Button, Link, Td } from '@chakra-ui/react';
+import { Button, Link, Td, Text } from '@chakra-ui/react';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../../constants';
 import { MetaUIServices } from 'src/types/RuntimeSchema';
 import { ModuleRenderer } from '../../_internal/ModuleRenderer';
@@ -25,6 +25,9 @@ export const TableTd: React.FC<{
 
   let content = value;
   switch (column.type) {
+    case 'text':
+      content = <Text whiteSpace="pre-wrap">{value}</Text>;
+      break;
     case 'image':
       content = <img src={value} />;
       break;

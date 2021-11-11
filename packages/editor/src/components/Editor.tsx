@@ -24,6 +24,7 @@ type Props = {
   App: ReturnOfInit['App'];
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
+  apiService: ReturnOfInit['apiService'];
   appModelManager: AppModelManager;
 };
 
