@@ -22,7 +22,13 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <Suspense fallback={null}>
-      <BaseGridLayout onDragStop={onDragStop} onDrop={onDrop} layout={layout}>
+      <BaseGridLayout
+        isDraggable={!!gridCallbacks}
+        isResizable={!!gridCallbacks}
+        onDragStop={onDragStop}
+        onDrop={onDrop}
+        layout={layout}
+      >
         {getSlots(slotsMap, 'content')}
       </BaseGridLayout>
     </Suspense>
