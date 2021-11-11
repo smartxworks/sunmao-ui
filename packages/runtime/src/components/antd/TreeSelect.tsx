@@ -21,6 +21,7 @@ const TreeSelectImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   customStyle,
   multiple,
   treeDefaultExpandAll,
+  autoSelectAncestors,
 }) => {
   const [value, setValue] = useState<string[]>();
   useEffect(() => {
@@ -47,10 +48,13 @@ const TreeSelectImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }
 
   const onChange = (value: string[]) => {
-    const valueWithAncestors = value.reduce<string[]>((res, val) => {
-      return res.concat([val]).concat(getAncestors(val));
-    }, []);
-    const newValue = uniq(valueWithAncestors);
+    let newValue = value;
+    if (autoSelectAncestors) {
+      const valueWithAncestors = value.reduce<string[]>((res, val) => {
+        return res.concat([val]).concat(getAncestors(val));
+      }, []);
+      newValue = uniq(valueWithAncestors);
+    }
     setValue(newValue);
     mergeState({ newValue });
   };
@@ -91,6 +95,7 @@ const PropsSchema = Type.Object({
   multiple: Type.Boolean(),
   placeholder: Type.Optional(Type.String()),
   treeDefaultExpandAll: Type.Boolean(),
+  autoSelectAncestors: Type.Optional(Type.Boolean()),
 });
 
 const exampleProperties = {
