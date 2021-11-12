@@ -19,7 +19,14 @@ export type TextProps = {
 
 const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   if (value.format === 'md') {
-    return <ReactMarkdown>{value.raw}</ReactMarkdown>;
+    const P = styled.p`
+      ${cssStyle}
+    `;
+    return (
+      <P>
+        <ReactMarkdown>{value.raw}</ReactMarkdown>
+      </P>
+    );
   }
 
   // TODO: For some unknown reason, emotion css doesn't work in this file. So I use styled instead.
