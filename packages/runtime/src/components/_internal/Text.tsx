@@ -19,13 +19,13 @@ export type TextProps = {
 
 const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   if (value.format === 'md') {
-    const P = styled.p`
+    const Div = styled.div`
       ${cssStyle}
     `;
     return (
-      <P>
+      <Div>
         <ReactMarkdown>{value.raw}</ReactMarkdown>
-      </P>
+      </Div>
     );
   }
 
