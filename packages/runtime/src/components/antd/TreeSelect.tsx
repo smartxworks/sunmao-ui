@@ -71,6 +71,7 @@ const TreeSelectImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       ref={popContainerRef}
     >
       <TreeSelect
+        showArrow={true}
         multiple={multiple}
         treeData={treeData}
         value={value}
