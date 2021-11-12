@@ -7,11 +7,6 @@ import Text, { TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../services/registry';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
-const style = css`
-  width: 100%;
-  height: 100%;
-`;
-
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
   mergeState,
@@ -19,6 +14,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   callbackMap: callbacks,
   colorScheme,
   isLoading,
+  customStyle,
 }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
@@ -35,7 +31,10 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseButton
-      css={style}
+      css={css`
+        ${customStyle?.content}
+      `}
+      height="full"
       {...{ colorScheme, isLoading }}
       ref={ref}
       onClick={callbacks?.onClick}
