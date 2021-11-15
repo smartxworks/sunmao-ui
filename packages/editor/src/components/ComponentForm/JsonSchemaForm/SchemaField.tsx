@@ -9,6 +9,7 @@ import {
 import { FieldProps, getDisplayLabel } from './fields';
 import StringField from './StringField';
 import ObjectField from './ObjectField';
+import ArrayField from './ArrayField';
 import UnsupportedField from './UnsupportedField';
 
 type TemplateProps = {
@@ -66,6 +67,8 @@ const SchemaField: React.FC<Props> = props => {
     Component = ObjectField;
   } else if (schema.type === 'string') {
     Component = StringField;
+  } else if (schema.type === 'array') {
+    Component = ArrayField;
   }
 
   const displayLabel = getDisplayLabel(schema, label);
