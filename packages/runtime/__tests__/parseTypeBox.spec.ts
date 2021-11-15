@@ -21,4 +21,44 @@ describe('parseTypeBox function', () => {
     });
     expect(parseTypeBox(type)).toMatchObject({ key: '', value: [] });
   });
+
+  it('can parse enum', () => {
+    expect(
+      parseTypeBox(
+        Type.KeyOf(
+          Type.Object({
+            foo: Type.String(),
+            bar: Type.String(),
+          })
+        )
+      )
+    ).toEqual('foo');
+  });
+
+  it('can parse anyOf', () => {
+    expect(
+      parseTypeBox(
+        Type.Union([
+          Type.KeyOf(
+            Type.Object({
+              column: Type.String(),
+              'column-reverse': Type.String(),
+              row: Type.String(),
+              'row-reverse': Type.String(),
+            })
+          ),
+          Type.Array(
+            Type.KeyOf(
+              Type.Object({
+                column: Type.String(),
+                'column-reverse': Type.String(),
+                row: Type.String(),
+                'row-reverse': Type.String(),
+              })
+            )
+          ),
+        ])
+      )
+    ).toEqual('column');
+  });
 });
