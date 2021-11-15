@@ -8,6 +8,7 @@ import {
   StringKind,
   TSchema,
   OptionalModifier,
+  UnionKind,
 } from '@sinclair/typebox';
 
 export function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
@@ -15,25 +16,30 @@ export function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
     return undefined;
   }
 
-  switch (tSchema.kind) {
-    case StringKind:
+  switch (true) {
+    case tSchema.type === 'string' && 'enum' in tSchema && tSchema.enum.length > 0:
+      return tSchema.enum[0];
+    case tSchema.kind === StringKind:
       return '';
-    case BooleanKind:
+    case tSchema.kind === BooleanKind:
       return false;
-    case ArrayKind:
+    case tSchema.kind === ArrayKind:
       return [];
-    case NumberKind:
+    case tSchema.kind === NumberKind:
+    case tSchema.kind === IntegerKind:
       return 0;
-    case IntegerKind:
-      return 0;
-
-    case ObjectKind:
+    case tSchema.kind === ObjectKind: {
       const obj: Static<typeof tSchema> = {};
       for (const key in tSchema.properties) {
         obj[key] = parseTypeBox(tSchema.properties[key]);
       }
       return obj;
-
+    }
+    case tSchema.kind === UnionKind && 'anyOf' in tSchema && tSchema.anyOf.length > 0:
+    case tSchema.kind === UnionKind && 'oneOf' in tSchema && tSchema.oneOf.length > 0: {
+      const subSchema = (tSchema.anyOf || tSchema.oneOf)[0];
+      return parseTypeBox(subSchema);
+    }
     default:
       return {};
   }
