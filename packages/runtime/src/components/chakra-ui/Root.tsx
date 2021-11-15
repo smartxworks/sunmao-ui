@@ -1,11 +1,16 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import { createComponent } from '@meta-ui/core';
 import Slot from '../_internal/Slot';
 
 const Root: ComponentImplementation<Record<string, unknown>> = ({ slotsMap }) => {
   return (
-    <ChakraProvider>
+    <ChakraProvider
+      theme={extendTheme({
+        initialColorMode: 'dark',
+        useSystemColorMode: false,
+      })}
+    >
       <Slot slotsMap={slotsMap} slot="root" />
     </ChakraProvider>
   );

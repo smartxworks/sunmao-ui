@@ -9,6 +9,8 @@ import { ComponentImplementation } from '../../services/registry';
 import 'antd/lib/select/style/index.css';
 import 'antd/lib/empty/style/index.css';
 import 'antd/lib/tree-select/style/index.css';
+import 'antd/lib/style/index.css';
+import { useRef } from 'react';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -24,6 +26,7 @@ const TreeSelectImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   autoSelectAncestors,
 }) => {
   const [value, setValue] = useState<string[]>();
+  const popContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     mergeState({ value });
   }, [value]);
@@ -65,8 +68,10 @@ const TreeSelectImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       css={css`
         ${customStyle?.content}
       `}
+      ref={popContainerRef}
     >
       <TreeSelect
+        showArrow={true}
         multiple={multiple}
         treeData={treeData}
         value={value}
@@ -74,6 +79,7 @@ const TreeSelectImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
         placeholder={placeholder}
         style={{ width: '100%' }}
         treeDefaultExpandAll={treeDefaultExpandAll}
+        getPopupContainer={() => popContainerRef.current || document.body}
       />
     </Box>
   );
