@@ -13,6 +13,8 @@ import ObjectField from './ObjectField';
 import ArrayField from './ArrayField';
 import BooleanField from './BooleanField';
 import NumberField from './NumberField';
+import NullField from './NullField';
+import MultiSchemaField from './MultiSchemaField';
 import UnsupportedField from './UnsupportedField';
 
 type TemplateProps = {
@@ -80,6 +82,12 @@ const SchemaField: React.FC<Props> = props => {
     Component = BooleanField;
   } else if (schema.type === 'integer' || schema.type === 'number') {
     Component = NumberField;
+  } else if (schema.type === 'null') {
+    Component = NullField;
+  } else if ('anyOf' in schema || 'oneOf' in schema) {
+    Component = MultiSchemaField;
+  } else {
+    console.info('Found unsupported schema', schema);
   }
 
   const displayLabel = getDisplayLabel(schema, label);
