@@ -14,10 +14,7 @@ dayjs.extend(isLeapYear);
 dayjs.extend(LocalizedFormat);
 dayjs.locale('zh-cn');
 
-type ExpChunk = {
-  expression: string;
-  isDynamic: boolean;
-};
+type ExpChunk = string | ExpChunk[];
 
 // TODO: use web worker
 const builtIn = {
@@ -34,60 +31,27 @@ function isNumeric(x: string | number) {
 export function initStateManager() {
   return new StateManager();
 }
+
 export class StateManager {
   store = reactive<Record<string, any>>({});
 
-  parseExpression(str: string, parseListItem = false): ExpChunk[] {
-    let l = 0;
-    let r = 0;
-    let isInBrackets = false;
-    const res = [];
-
-    while (r < str.length - 1) {
-      if (!isInBrackets && str.substr(r, 2) === '{{') {
-        if (l !== r) {
-          const substr = str.substring(l, r);
-          res.push({
-            expression: substr,
-            isDynamic: false,
-          });
-        }
-        isInBrackets = true;
-        r += 2;
-        l = r;
-      } else if (isInBrackets && str.substr(r, 2) === '}}') {
-        // remove \n from start and end of substr
-        const substr = str.substring(l, r).replace(/^\s+|\s+$/g, '');
-        const chunk = {
-          expression: substr,
-          isDynamic: true,
-        };
-        // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
-        // unless explicitly pass parseListItem as true
-        if (
-          (substr.includes(LIST_ITEM_EXP) || substr.includes(LIST_ITEM_INDEX_EXP)) &&
-          !parseListItem
-        ) {
-          chunk.expression = `{{${substr}}}`;
-          chunk.isDynamic = false;
-        }
-        res.push(chunk);
-
-        isInBrackets = false;
-        r += 2;
-        l = r;
-      } else {
-        r++;
-      }
+  evalExp(expChunk: ExpChunk, scopeObject = {}): unknown {
+    if (typeof expChunk === 'string') {
+      return expChunk;
     }
 
-    if (r >= l && l < str.length) {
-      res.push({
-        expression: str.substring(l, r + 1),
-        isDynamic: false,
+    const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
+    let evaled;
+    try {
+      evaled = new Function(`with(this) { return ${evalText} }`).call({
+        ...this.store,
+        ...builtIn,
+        ...scopeObject,
       });
+    } catch (e: any) {
+      return `{{ ${evalText} }}`;
     }
-    return res;
+    return evaled;
   }
 
   maskedEval(raw: string, evalListItem = false, scopeObject = {}) {
@@ -100,26 +64,17 @@ export class StateManager {
     if (raw === 'false') {
       return false;
     }
+    const expChunk = parseExpression(raw, evalListItem);
 
-    const expChunks = this.parseExpression(raw, evalListItem);
-    const evaled = expChunks.map(({ expression: exp, isDynamic }) => {
-      if (!isDynamic) {
-        return exp;
-      }
-      try {
-        const result = new Function(`with(this) { return ${exp} }`).call({
-          ...this.store,
-          ...builtIn,
-          ...scopeObject,
-        });
-        return result;
-      } catch (e: any) {
-        // console.error(Error(`Cannot eval value '${exp}' in '${raw}': ${e.message}`));
-        return undefined;
-      }
-    });
+    if (typeof expChunk === 'string') {
+      return expChunk;
+    }
 
-    return evaled.length === 1 ? evaled[0] : evaled.join('');
+    const result = expChunk.map(e => this.evalExp(e, scopeObject));
+    if (result.length === 1) {
+      return result[0];
+    }
+    return result.join('');
   }
 
   mapValuesDeep(
@@ -150,14 +105,13 @@ export class StateManager {
 
     const evaluated = this.mapValuesDeep(obj, ({ value: v, path }) => {
       if (typeof v === 'string') {
-        const isDynamicExpression = this.parseExpression(v).some(
-          ({ isDynamic }) => isDynamic
-        );
+        const isDynamicExpression = parseExpression(v).some(exp => typeof exp !== 'string');
         const result = this.maskedEval(v);
         if (isDynamicExpression && watcher) {
           const stop = watch(
             () => {
-              return this.maskedEval(v);
+              const result = this.maskedEval(v);
+              return result;
             },
             newV => {
               set(evaluated, path, newV);
@@ -178,3 +132,58 @@ export class StateManager {
     };
   }
 }
+// copy and modify from
+// https://stackoverflow.com/questions/68161410/javascript-parse-multiple-brackets-recursively-from-a-string
+export const parseExpression = (exp: string, parseListItem = false): ExpChunk[] => {
+  // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
+  // unless explicitly pass parseListItem as true
+  if (
+    (exp.includes(LIST_ITEM_EXP) || exp.includes(LIST_ITEM_INDEX_EXP)) &&
+    !parseListItem
+  ) {
+    return [exp];
+  }
+
+  function lexer(str: string): string[] {
+    let token = '';
+    let chars = '';
+    let i = 0;
+    const res = [];
+    while ((chars = str.slice(i, i + 2))) {
+      switch (chars) {
+        case '{{':
+        case '}}':
+          i++;
+          if (token) {
+            res.push(token);
+            token = '';
+          }
+          res.push(chars);
+          break;
+        default:
+          token += str[i];
+      }
+      i++;
+    }
+    if (token) {
+      res.push(token);
+    }
+    return res;
+  }
+
+  function build(tokens: string[]): ExpChunk[] {
+    const result: ExpChunk[] = [];
+    let item;
+
+    while ((item = tokens.shift())) {
+      if (item == '}}') return result;
+      result.push(item == '{{' ? build(tokens) : item);
+    }
+    return result;
+  }
+
+  const tokens = lexer(exp);
+  const result = build(tokens);
+
+  return result;
+};
