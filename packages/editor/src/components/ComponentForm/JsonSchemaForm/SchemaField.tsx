@@ -12,6 +12,7 @@ import StringField from './StringField';
 import ObjectField from './ObjectField';
 import ArrayField from './ArrayField';
 import BooleanField from './BooleanField';
+import NumberField from './NumberField';
 import UnsupportedField from './UnsupportedField';
 
 type TemplateProps = {
@@ -77,6 +78,8 @@ const SchemaField: React.FC<Props> = props => {
     Component = ArrayField;
   } else if (schema.type === 'boolean') {
     Component = BooleanField;
+  } else if (schema.type === 'integer' || schema.type === 'number') {
+    Component = NumberField;
   }
 
   const displayLabel = getDisplayLabel(schema, label);
