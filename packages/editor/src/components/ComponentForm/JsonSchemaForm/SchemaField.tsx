@@ -6,10 +6,12 @@ import {
   FormErrorMessage,
   Text,
 } from '@chakra-ui/react';
+import { isEmpty } from 'lodash-es';
 import { FieldProps, getDisplayLabel } from './fields';
 import StringField from './StringField';
 import ObjectField from './ObjectField';
 import ArrayField from './ArrayField';
+import BooleanField from './BooleanField';
 import UnsupportedField from './UnsupportedField';
 
 type TemplateProps = {
@@ -61,6 +63,10 @@ type Props = FieldProps & {
 const SchemaField: React.FC<Props> = props => {
   const { schema, label, formData, onChange } = props;
 
+  if (isEmpty(schema)) {
+    return null;
+  }
+
   let Component = UnsupportedField;
 
   if (schema.type === 'object') {
@@ -69,6 +75,8 @@ const SchemaField: React.FC<Props> = props => {
     Component = StringField;
   } else if (schema.type === 'array') {
     Component = ArrayField;
+  } else if (schema.type === 'boolean') {
+    Component = BooleanField;
   }
 
   const displayLabel = getDisplayLabel(schema, label);
