@@ -1,4 +1,4 @@
-import { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
+import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
@@ -22,6 +22,7 @@ type ExpChunk = {
 // TODO: use web worker
 const builtIn = {
   dayjs,
+  _,
   // TODO: It is a custom dependency, should not be add here
   arrayToTree,
 };
