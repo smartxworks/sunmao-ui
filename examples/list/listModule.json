@@ -24,11 +24,32 @@
         "traits": []
       },
       {
-        "id": "{{$moduleId}}1",
+        "id": "{{$moduleId}}text",
         "type": "core/v1/text",
         "properties": {
           "value": {
             "raw": "**{{value}}**",
+            "format": "md"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "{{$moduleId}}hstack",
+                "slot": "content"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "{{$moduleId}}inputValueText",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "**{{ {{$moduleId}}input.value }}**",
             "format": "md"
           }
         },
@@ -174,7 +195,7 @@
                   "componentId": "$utils",
                   "method": {
                     "name": "alert",
-                    "parameters": "listen module vent：{{ littleItem1.value }}！"
+                    "parameters": "listen module event：{{ $listItem.name }}!"
                   },
                   "wait": {},
                   "disabled": false
