@@ -1,7 +1,10 @@
+import { Application } from '@meta-ui/core';
+
 export type Operations =
   | CreateComponentOperation
   | RemoveComponentOperation
-  | ModifyComponentPropertyOperation;
+  | ModifyComponentPropertyOperation
+  | ReplaceAppOperation;
 export class CreateComponentOperation {
   kind = 'createComponent';
 
@@ -72,4 +75,9 @@ export class ModifyTraitPropertiesOperation {
 export class SortComponentOperation {
   kind = 'sortComponent';
   constructor(public componentId: string, public direction: 'up' | 'down') {}
+}
+
+export class ReplaceAppOperation {
+  kind = 'replaceApp';
+  constructor(public app: Application) {}
 }
