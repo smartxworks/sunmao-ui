@@ -12,6 +12,7 @@ import {
   RemoveTraitOperation,
   ModifyTraitPropertiesOperation,
   ReplaceComponentPropertyOperation,
+  ReplaceAppOperation,
 } from './Operations';
 import { produce } from 'immer';
 import { eventBus } from '../eventBus';
@@ -287,6 +288,13 @@ export class AppModelManager {
           }
         });
         break;
+      case 'replaceApp': {
+        const rao = o as ReplaceAppOperation;
+        newApp = produce(this.app, () => {
+          return rao.app;
+        });
+        break;
+      }
     }
     this.updateApp(newApp);
   }

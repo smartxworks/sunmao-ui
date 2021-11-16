@@ -77,30 +77,9 @@ export const ComponentForm: React.FC<Props> = props => {
     selectedComponent.properties
   );
 
-  const propertyFields = Object.keys(properties || []).map(key => {
-    const value = properties![key];
-    return renderField({ key, value, fullKey: key, selectedId });
-  });
-
   const changeComponentId = (selectedId: string, value: string) => {
     eventBus.send('operation', new ModifyComponentIdOperation(selectedId, value));
   };
-
-  const propertyForm = (
-    <VStack width="full" alignItems="start">
-      <strong>Properties</strong>
-      <VStack
-        width="full"
-        padding="4"
-        background="white"
-        border="1px solid"
-        borderColor="gray.200"
-        borderRadius="4"
-      >
-        {propertyFields}
-      </VStack>
-    </VStack>
-  );
 
   return (
     <VStack p={4} spacing="4" background="gray.50">
@@ -138,7 +117,6 @@ export const ComponentForm: React.FC<Props> = props => {
           />
         </VStack>
       </VStack>
-      {propertyFields.length > 0 ? propertyForm : null}
       <EventTraitForm component={selectedComponent} registry={registry} />
       <FetchTraitForm component={selectedComponent} registry={registry} />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
