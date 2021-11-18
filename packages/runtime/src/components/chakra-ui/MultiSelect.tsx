@@ -4,6 +4,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseMultiSelect } from 'chakra-react-select';
 import { ComponentImplementation } from '../../services/registry';
 import { Box } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -14,9 +15,11 @@ const MultiSelect: ComponentImplementation<Static<typeof PropsSchema>> = ({
   placeholder,
   defaultValue,
   isRequired,
+  isDisabled,
   size,
   variant,
   mergeState,
+  customStyle,
 }) => {
   useEffect(() => {
     const newValue = (defaultValue || []).map(o => o.value);
@@ -29,12 +32,18 @@ const MultiSelect: ComponentImplementation<Static<typeof PropsSchema>> = ({
   };
 
   return (
-    <Box width="full">
+    <Box
+      width="full"
+      css={css`
+        ${customStyle?.content}
+      `}
+    >
       <BaseMultiSelect
         isMulti
         options={options}
         placeholder={placeholder}
         isRequired={isRequired}
+        isDisabled={isDisabled}
         size={size}
         variant={variant}
         onChange={onChange}
@@ -62,6 +71,7 @@ const PropsSchema = Type.Object({
       })
     )
   ),
+  isDisabled: Type.Optional(Type.Boolean()),
   isRequired: Type.Optional(Type.Boolean()),
   size: Type.KeyOf(
     Type.Object({
