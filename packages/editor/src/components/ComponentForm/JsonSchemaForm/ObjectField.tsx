@@ -20,7 +20,7 @@ const ObjectField: React.FC<Props> = props => {
             key={name}
             schema={subSchema}
             label={subSchema.title || name}
-            formData={formData[name]}
+            formData={formData ? formData[name] : undefined}
             onChange={value =>
               onChange({
                 ...formData,
