@@ -10,6 +10,7 @@ import {
   HStack,
   Text,
 } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import { watch } from '../../../utils/watchReactivity';
 import { ComponentImplementation } from '../../../services/registry';
 import Slot from '../../_internal/Slot';
@@ -25,7 +26,16 @@ const FormControlImpl: ComponentImplementation<{
   fieldName: string;
   isRequired: boolean;
   helperText: string;
-}> = ({ label, fieldName, isRequired, helperText, slotsMap, mergeState, services }) => {
+}> = ({
+  label,
+  fieldName,
+  isRequired,
+  helperText,
+  slotsMap,
+  mergeState,
+  services,
+  customStyle,
+}) => {
   const [inputValue, setInputValue] = useState('');
   // don't show Invalid state on component mount
   const [hideInvalid, setHideInvalid] = useState(true);
@@ -97,6 +107,9 @@ const FormControlImpl: ComponentImplementation<{
       display="flex"
       flexDirection="column"
       alignItems="end"
+      css={css`
+        ${customStyle?.content}
+      `}
     >
       <HStack width="full">
         <FormLabel flex="0 0 auto" width="33%" margin="auto 0">
