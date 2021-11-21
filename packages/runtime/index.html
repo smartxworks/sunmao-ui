@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>meta-ui runtime examples</title>
+    <title>sunmao-ui runtime examples</title>
   </head>
   <body>
     <select></select>
@@ -11,7 +11,7 @@
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom';
-      import { initMetaUI } from './src';
+      import { initSunmaoUI } from './src';
       import { ChakraProvider } from '@chakra-ui/react';
       import examples from '@example.json';
 
@@ -28,7 +28,7 @@
       const rootEl = document.querySelector('#root');
       const render = example => {
         ReactDOM.unmountComponentAtNode(rootEl);
-        const { App, registry } = initMetaUI();
+        const { App, registry } = initSunmaoUI();
         const { app, modules = [] } = example.value;
         modules.forEach(m => {
           registry.registerModule(m);

@@ -1,4 +1,4 @@
-import { RuntimeApplication } from '@meta-ui/core';
+import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static, TSchema } from '@sinclair/typebox';
 import { Registry } from 'src/services/registry';
 import { StateManager } from 'src/services/stateStore';

@@ -5,7 +5,7 @@ import { initApiService } from './services/apiService';
 import { mountUtilMethods } from './services/util-methods';
 import { initGlobalHandlerMap } from './services/handler';
 
-export function initMetaUI() {
+export function initSunmaoUI() {
   const registry = initRegistry();
   const stateManager = initStateManager();
   const globalHandlerMap = initGlobalHandlerMap();

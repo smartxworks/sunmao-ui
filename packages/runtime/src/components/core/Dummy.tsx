@@ -1,4 +1,4 @@
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { useEffect } from 'react';
 import { ComponentImplementation } from '../../services/registry';
 

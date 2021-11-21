@@ -2,8 +2,8 @@ import { Static } from '@sinclair/typebox';
 import React, { useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { RuntimeApplication } from '@meta-ui/core';
-import { MetaUIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
+import { RuntimeApplication } from '@sunmao-ui/core';
+import { UIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { ImplWrapper } from '../../services/ImplWrapper';
@@ -12,7 +12,7 @@ import { parseTypeComponents } from '../../utils/parseType';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope?: Record<string, any>;
-  services: MetaUIServices;
+  services: UIServices;
   app?: RuntimeApplication;
 };
 

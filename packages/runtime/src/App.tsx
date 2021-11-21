@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
-import { createApplication } from '@meta-ui/core';
+import { createApplication } from '@sunmao-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 import { ImplWrapper } from './services/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';
-import { AppProps, MetaUIServices } from './types/RuntimeSchema';
+import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
 
 // inject modules to App
-export function genApp(services: MetaUIServices) {
+export function genApp(services: UIServices) {
   return (props: Omit<AppProps, 'services'>) => {
     return <App {...props} services={services} />;
   };

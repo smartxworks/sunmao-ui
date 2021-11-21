@@ -3,7 +3,7 @@ import {
   RuntimeTraitSpec,
   RuntimeModuleSpec,
   ApplicationComponent,
-} from '@meta-ui/core';
+} from '@sunmao-ui/core';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';

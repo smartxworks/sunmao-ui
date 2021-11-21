@@ -1,7 +1,7 @@
 import { Flex, Box, ChakraProvider, Button } from '@chakra-ui/react';
-import { Application } from '@meta-ui/core';
-import { initMetaUI } from '@meta-ui/runtime';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Application } from '@sunmao-ui/core';
+import { initSunmaoUI } from '@sunmao-ui/runtime';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import 'react-grid-layout/css/styles.css';
@@ -25,11 +25,11 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
     if (!example) {
       return {};
     }
-    const metaUI = initMetaUI();
-    const App = metaUI.App;
-    const registry = metaUI.registry;
-    const apiService = metaUI.apiService;
-    const stateStore = metaUI.stateManager.store;
+    const ui = initSunmaoUI();
+    const App = ui.App;
+    const registry = ui.registry;
+    const apiService = ui.apiService;
+    const stateStore = ui.stateManager.store;
 
     const { app, modules = [] } = example.value;
     modules.forEach(m => {

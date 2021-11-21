@@ -1,4 +1,4 @@
-import { Application } from '@meta-ui/core';
+import { Application } from '@sunmao-ui/core';
 
 export type Operations =
   | CreateComponentOperation
