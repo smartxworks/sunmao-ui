@@ -1,4 +1,4 @@
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
 import { TextPropertySchema } from '../_internal/Text';

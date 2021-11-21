@@ -7,7 +7,7 @@ import {
   InputRightAddon,
   InputRightElement,
 } from '@chakra-ui/react';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
 

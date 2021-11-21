@@ -1,6 +1,6 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import Slot from '../_internal/Slot';
 
 const Root: ComponentImplementation<Record<string, unknown>> = ({ slotsMap }) => {

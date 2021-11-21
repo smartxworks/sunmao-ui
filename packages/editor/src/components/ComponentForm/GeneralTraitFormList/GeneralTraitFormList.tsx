@@ -1,5 +1,5 @@
-import { ApplicationComponent } from '@meta-ui/core';
-import { parseTypeBox } from '@meta-ui/runtime';
+import { ApplicationComponent } from '@sunmao-ui/core';
+import { parseTypeBox } from '@sunmao-ui/runtime';
 import { HStack, VStack } from '@chakra-ui/react';
 import { TSchema } from '@sinclair/typebox';
 import { AddTraitButton } from './AddTraitButton';
@@ -7,7 +7,7 @@ import { GeneralTraitForm } from './GeneralTraitForm';
 import { eventBus } from '../../../eventBus';
 import { AddTraitOperation, RemoveTraitOperation } from '../../../operations/Operations';
 import { ignoreTraitsList } from '../../../constants';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 type Props = {
   registry: Registry;

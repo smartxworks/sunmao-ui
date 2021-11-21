@@ -3,7 +3,7 @@ import SchemaField from './SchemaField';
 import { FieldProps } from './fields';
 import { Box, ButtonGroup, IconButton, Flex } from '@chakra-ui/react';
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
-import { parseTypeBox } from '@meta-ui/runtime';
+import { parseTypeBox } from '@sunmao-ui/runtime';
 import { TSchema } from '@sinclair/typebox';
 
 type Props = FieldProps;

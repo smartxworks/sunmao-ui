@@ -1,4 +1,4 @@
-import { createTrait } from '@meta-ui/core';
+import { createTrait } from '@sunmao-ui/core';
 import { Type } from '@sinclair/typebox';
 
 export const ContainerPropertySchema = Type.Object({

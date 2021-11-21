@@ -1,6 +1,6 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { ApplicationComponent } from '@meta-ui/core';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { ApplicationComponent } from '@sunmao-ui/core';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import React, { useMemo, useState } from 'react';
 import { eventBus } from '../../eventBus';
 import {

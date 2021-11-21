@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Type, Static } from '@sinclair/typebox';
 import Text, { TextPropertySchema } from '../_internal/Text';
 import { ComponentImplementation } from '../../services/registry';

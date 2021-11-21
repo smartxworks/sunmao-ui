@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../../services/registry';
 import { Switch } from './component';
 

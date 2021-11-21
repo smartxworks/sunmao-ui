@@ -3,15 +3,15 @@ import { AddIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
-import { ApplicationComponent } from '@meta-ui/core';
-import { EventHandlerSchema } from '@meta-ui/runtime';
+import { ApplicationComponent } from '@sunmao-ui/core';
+import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { eventBus } from '../../../eventBus';
 import {
   AddTraitOperation,
   ModifyTraitPropertyOperation,
 } from '../../../operations/Operations';
 import { EventHandlerForm } from './EventHandlerForm';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 

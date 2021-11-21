@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { first } from 'lodash-es';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import {
   FormControl,

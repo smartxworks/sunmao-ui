@@ -1,4 +1,4 @@
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Type } from '@sinclair/typebox';
 import { TableImpl } from './Table';
 import {

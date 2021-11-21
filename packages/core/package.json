@@ -1,16 +1,16 @@
 {
-  "name": "@meta-ui/core",
+  "name": "@sunmao-ui/core",
   "version": "0.2.2",
-  "description": "meta-ui core",
-  "author": "meta-ui developers",
-  "homepage": "https://github.com/webzard-io/meta-ui#readme",
+  "description": "sunmao-ui core",
+  "author": "sunmao-ui developers",
+  "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webzard-io/meta-ui.git"
+    "url": "git+https://github.com/webzard-io/sunmao-ui.git"
   },
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -29,7 +29,7 @@
     "prepublish": "npm run build && npm run typings"
   },
   "bugs": {
-    "url": "https://github.com/webzard-io/meta-ui/issues"
+    "url": "https://github.com/webzard-io/sunmao-ui/issues"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
@@ -41,7 +41,7 @@
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
     "tsup": "^5.5.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.5.0"
   },
   "dependencies": {
     "@types/json-schema": "^7.0.7",

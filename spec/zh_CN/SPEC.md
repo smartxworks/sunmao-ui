@@ -1,12 +1,12 @@
-# Meta UI
+# Sunmao UI
 
 ## 版本
 
-当前 Meta UI **规范**版本为 **v0.1.0**。
+当前 Sunmao UI **规范**版本为 **v0.1.0**。
 
 ## 目标
 
-Meta UI 的目标是通过提供一种元数据格式用于描述 UI，将开发过程抽象为一个通用平台，从而以更高效的方式开发更高质量的 UI。
+Sunmao UI 的目标是通过提供一种元数据格式用于描述 UI，将开发过程抽象为一个通用平台，从而以更高效的方式开发更高质量的 UI。
 
 为此衍生出两种角色：
 
@@ -15,7 +15,7 @@ Meta UI 的目标是通过提供一种元数据格式用于描述 UI，将开发
 
 平台搭建者为平台增添更多的能力，因此他们关心平台的**扩展性**；平台使用者基于平台提供的能力开发 UI，因此他们关心平台的**易用性**。
 
-Meta UI 的规范则是平台搭建者与使用者之间沟通的桥梁。
+Sunmao UI 的规范则是平台搭建者与使用者之间沟通的桥梁。
 
 ## 概述与术语
 
@@ -110,7 +110,7 @@ Component 的模型定义了自身对外提供的配置项与可接受的 trait�
 }
 ```
 
-将上述 Component 模型载入 meta-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Component。
+将上述 Component 模型载入 sunmao-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Component。
 
 ```json
 {
@@ -190,7 +190,7 @@ Trait 定义了自身提供的 runtime 能力以及与 Component 交互的方式
 }
 ```
 
-将上述 Trait 定义载入 meta-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Trait。
+将上述 Trait 定义载入 sunmao-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Trait。
 
 ```json
 {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { RuntimeApplication } from '@meta-ui/core';
+import { RuntimeApplication } from '@sunmao-ui/core';
 import { ContainerPropertySchema } from '../traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import {
   ComponentParamsFromApp,
-  MetaUIServices,
+  UIServices,
   SlotComponentMap,
 } from 'src/types/RuntimeSchema';
 import { ImplWrapper } from './ImplWrapper';
@@ -12,7 +12,7 @@ import { ImplWrapper } from './ImplWrapper';
 export function resolveAppComponents(
   components: RuntimeApplication['spec']['components'],
   params: {
-    services: MetaUIServices;
+    services: UIServices;
     app?: RuntimeApplication;
   } & ComponentParamsFromApp
 ): {

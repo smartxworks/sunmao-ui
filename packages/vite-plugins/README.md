@@ -1,11 +1,11 @@
-# `@meta-ui/vite-plugins`
+# `@sunmao-ui/vite-plugins`
 
 > TODO: description
 
 ## Usage
 
 ```
-const vitePlugins = require('@meta-ui/vite-plugins');
+const vitePlugins = require('@sunmao-ui/vite-plugins');
 
 // TODO: DEMONSTRATE API
 ```

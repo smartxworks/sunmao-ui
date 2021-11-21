@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
 import {
   AlertDialog,
