@@ -1,6 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { Application } from '@sunmao-ui/core';
-import { initMetaUI } from '@sunmao-ui/runtime';
+import { initSunmaoUI } from '@sunmao-ui/runtime';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
@@ -21,12 +21,12 @@ export default function renderApp(
   app: Application = DefaultAppSchema,
   options: Options = {}
 ) {
-  const metaUI = initMetaUI();
+  const ui = initSunmaoUI();
 
-  const App = metaUI.App;
-  const registry = metaUI.registry;
-  const apiService = metaUI.apiService;
-  const stateStore = metaUI.stateManager.store;
+  const App = ui.App;
+  const registry = ui.registry;
+  const apiService = ui.apiService;
+  const stateStore = ui.stateManager.store;
   const appModelManager = new AppModelManager(app, registry);
 
   const { components = [], traits = [], modules = [] } = options;

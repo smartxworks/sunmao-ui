@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Application } from '@sunmao-ui/core';
-import { initMetaUI } from './index';
+import { initSunmaoUI } from './index';
 import { ChakraProvider } from '@chakra-ui/react';
 
-const { App, registry: _registry } = initMetaUI();
+const { App, registry: _registry } = initSunmaoUI();
 
 export default function renderApp(options: Application) {
   ReactDOM.render(

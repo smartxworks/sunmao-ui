@@ -9,7 +9,7 @@ import { Type } from '@sinclair/typebox';
 
 export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 
-export type MetaUIServices = {
+export type UIServices = {
   registry: Registry;
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
@@ -35,7 +35,7 @@ export type ComponentParamsFromApp = {
 
 export type AppProps = {
   options: Application;
-  services: MetaUIServices;
+  services: UIServices;
   debugStore?: boolean;
   debugEvent?: boolean;
 } & ComponentParamsFromApp;
@@ -44,7 +44,7 @@ export type ImplWrapperProps = {
   component: RuntimeApplicationComponent;
   slotsMap: SlotsMap | undefined;
   targetSlot: { id: string; slot: string } | null;
-  services: MetaUIServices;
+  services: UIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
 
@@ -86,7 +86,7 @@ export type TraitImplementation<T = any> = (
   props: T &
     RuntimeFunctions & {
       componentId: string;
-      services: MetaUIServices;
+      services: UIServices;
     }
 ) => TraitResult;
 
