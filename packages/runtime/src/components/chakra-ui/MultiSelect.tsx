@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseMultiSelect } from 'chakra-react-select';
 import { ComponentImplementation } from '../../services/registry';

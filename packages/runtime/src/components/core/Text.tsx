@@ -1,4 +1,4 @@
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
 import _Text, { TextPropertySchema } from '../_internal/Text';

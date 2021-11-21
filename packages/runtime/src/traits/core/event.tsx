@@ -1,4 +1,4 @@
-import { createTrait } from '@meta-ui/core';
+import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash-es';
 import { CallbackMap, TraitImplementation } from 'src/types/RuntimeSchema';

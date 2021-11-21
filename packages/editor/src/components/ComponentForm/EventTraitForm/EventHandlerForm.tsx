@@ -12,11 +12,11 @@ import {
 import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
-import { EventHandlerSchema } from '@meta-ui/runtime';
+import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 type Props = {
   registry: Registry;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Application, ApplicationComponent } from '@meta-ui/core';
+import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { eventBus } from '../../eventBus';
 import {
@@ -9,7 +9,7 @@ import {
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;

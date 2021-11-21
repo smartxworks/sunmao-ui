@@ -1,4 +1,4 @@
-import { RuntimeApplication } from '@meta-ui/core';
+import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSchema } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';

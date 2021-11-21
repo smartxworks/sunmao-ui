@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { GridCallbacks, DIALOG_CONTAINER_ID, initMetaUI } from '@meta-ui/runtime';
+import { GridCallbacks, DIALOG_CONTAINER_ID, initMetaUI } from '@sunmao-ui/runtime';
 import produce from 'immer';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { StructureTree } from './StructureTree';

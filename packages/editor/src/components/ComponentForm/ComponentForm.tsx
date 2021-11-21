@@ -3,8 +3,8 @@ import { flatten } from 'lodash-es';
 import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
-import { Application } from '@meta-ui/core';
-import { parseType, parseTypeBox } from '@meta-ui/runtime';
+import { Application } from '@sunmao-ui/core';
+import { parseType, parseTypeBox } from '@sunmao-ui/runtime';
 import { eventBus } from '../../eventBus';
 import {
   ModifyComponentIdOperation,
@@ -15,7 +15,7 @@ import {
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
 
 type Props = {

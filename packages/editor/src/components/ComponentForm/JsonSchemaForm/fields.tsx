@@ -1,4 +1,4 @@
-import { Component } from '@meta-ui/core';
+import { Component } from '@sunmao-ui/core';
 
 type Schema = Component['spec']['properties'];
 

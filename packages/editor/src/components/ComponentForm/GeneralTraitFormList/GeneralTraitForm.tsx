@@ -1,11 +1,11 @@
-import { ApplicationComponent, ComponentTrait } from '@meta-ui/core';
+import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
-import { parseTypeBox } from '@meta-ui/runtime';
+import { parseTypeBox } from '@sunmao-ui/runtime';
 import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
 import { renderField } from '../ComponentForm';
 import { formWrapperCSS } from '../style';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 type Props = {
   registry: Registry;

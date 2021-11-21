@@ -3,7 +3,7 @@ import { ApiService } from 'src/services/apiService';
 import { GlobalHandlerMap } from 'src/services/handler';
 import { Registry } from 'src/services/registry';
 import { StateManager } from 'src/services/stateStore';
-import { Application, RuntimeApplication } from '@meta-ui/core';
+import { Application, RuntimeApplication } from '@sunmao-ui/core';
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
 

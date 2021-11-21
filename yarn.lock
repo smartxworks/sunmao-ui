@@ -2857,10 +2857,10 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@sinclair/typebox@^0.20.5":
-  version "0.20.5"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.20.5.tgz#d5828bbb8237876d7937dd229e3dac71d1220771"
-  integrity sha512-WNiVFcS1rdz5KyEutpl3Wmp/AwSQHBUFTyJz7KqMLkpLhOXCj1dnvMytBM6uMS5OTwhwwq877T7EC4vDGrX5Eg==
+"@sinclair/typebox@^0.21.2":
+  version "0.21.2"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.21.2.tgz#d23a42adafc482f4893994e22916b0b54e18c23d"
+  integrity sha512-YeGOsWyjmGS26VxfvxbDgO7In4em8riCI5hEe/NnjM72ifoLQNUeHxwFNufXVIcaaPEK4fCV+fYoLKgmpPKjsA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
@@ -9980,10 +9980,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.3.2, typescript@^4.3.5, typescript@^4.4.3:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
-  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
+typescript@^4.5.0:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
+  integrity sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==
 
 uglify-js@^3.1.4:
   version "3.14.2"

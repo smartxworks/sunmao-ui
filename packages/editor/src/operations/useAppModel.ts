@@ -1,4 +1,4 @@
-import { Application } from '@meta-ui/core';
+import { Application } from '@sunmao-ui/core';
 import { useEffect, useState } from 'react';
 import { DefaultAppSchema } from '../constants';
 import { eventBus } from '../eventBus';

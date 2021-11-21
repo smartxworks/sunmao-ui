@@ -1,5 +1,5 @@
 import mitt from 'mitt';
-import { Application } from '@meta-ui/core';
+import { Application } from '@sunmao-ui/core';
 import { Operations } from './operations/Operations';
 
 export const SelectComponentEvent = 'selectComponent';

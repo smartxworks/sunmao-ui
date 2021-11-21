@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Application } from '@meta-ui/core';
+import { Application } from '@sunmao-ui/core';
 import { initMetaUI } from './index';
 import { ChakraProvider } from '@chakra-ui/react';
 
