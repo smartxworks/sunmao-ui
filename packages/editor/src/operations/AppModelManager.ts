@@ -1,5 +1,5 @@
-import { Application, ComponentTrait, ApplicationComponent } from '@meta-ui/core';
-import { parseType } from '@meta-ui/runtime';
+import { Application, ComponentTrait, ApplicationComponent } from '@sunmao-ui/core';
+import { parseType } from '@sunmao-ui/runtime';
 import {
   Operations,
   CreateComponentOperation,
@@ -17,7 +17,7 @@ import {
 import { produce } from 'immer';
 import { eventBus } from '../eventBus';
 import { set, isEqual } from 'lodash-es';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {

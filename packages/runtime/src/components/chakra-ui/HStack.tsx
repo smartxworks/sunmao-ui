@@ -1,4 +1,4 @@
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';

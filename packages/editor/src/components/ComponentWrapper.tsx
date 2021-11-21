@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { ComponentWrapperType } from '@meta-ui/runtime';
+import { ComponentWrapperType } from '@sunmao-ui/runtime';
 import { eventBus, HoverComponentEvent, SelectComponentEvent } from '../eventBus';
 
 // children of components in this list should render height as 100%

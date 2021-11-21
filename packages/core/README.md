@@ -1,11 +1,11 @@
-# `@meta-ui/core`
+# `@sunmao-ui/core`
 
 > TODO: description
 
 ## Usage
 
 ```
-const core = require('@meta-ui/core');
+const core = require('@sunmao-ui/core');
 
 // TODO: DEMONSTRATE API
 ```

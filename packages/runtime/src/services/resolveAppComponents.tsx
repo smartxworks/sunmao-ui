@@ -1,5 +1,5 @@
 import React from 'react';
-import { RuntimeApplication } from '@meta-ui/core';
+import { RuntimeApplication } from '@sunmao-ui/core';
 import { ContainerPropertySchema } from '../traits/core/slot';
 import { Static } from '@sinclair/typebox';
 import {

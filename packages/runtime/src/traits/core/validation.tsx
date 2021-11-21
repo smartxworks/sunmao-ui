@@ -1,4 +1,4 @@
-import { createTrait } from '@meta-ui/core';
+import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash-es';
 import { TraitImplementation } from 'src/types/RuntimeSchema';

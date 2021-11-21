@@ -110,7 +110,7 @@ Component 的模型定义了自身对外提供的配置项与可接受的 trait�
 }
 ```
 
-将上述 Component 模型载入 meta-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Component。
+将上述 Component 模型载入 sunmao-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Component。
 
 ```json
 {
@@ -190,7 +190,7 @@ Trait 定义了自身提供的 runtime 能力以及与 Component 交互的方式
 }
 ```
 
-将上述 Trait 定义载入 meta-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Trait。
+将上述 Trait 定义载入 sunmao-ui 平台后，平台使用者就可以定义以下的 Application 使用该 Trait。
 
 ```json
 {

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { createApplication } from '@meta-ui/core';
+import { createApplication } from '@sunmao-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 import { ImplWrapper } from './services/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';

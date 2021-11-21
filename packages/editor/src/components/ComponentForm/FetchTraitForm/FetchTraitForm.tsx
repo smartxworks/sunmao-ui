@@ -12,8 +12,8 @@ import { Static } from '@sinclair/typebox';
 import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import produce from 'immer';
-import { ApplicationComponent } from '@meta-ui/core';
-import { EventHandlerSchema, FetchTraitPropertiesSchema } from '@meta-ui/runtime';
+import { ApplicationComponent } from '@sunmao-ui/core';
+import { EventHandlerSchema, FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EventHandlerForm } from '../EventTraitForm/EventHandlerForm';
@@ -22,7 +22,7 @@ import {
   RemoveTraitOperation,
 } from '../../../operations/Operations';
 import { eventBus } from '../../../eventBus';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 

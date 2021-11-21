@@ -2,7 +2,7 @@ import { Static } from '@sinclair/typebox';
 import React, { useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { RuntimeApplication } from '@meta-ui/core';
+import { RuntimeApplication } from '@sunmao-ui/core';
 import { MetaUIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 import { resolveAppComponents } from '../../services/resolveAppComponents';

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Kbd as BaseKbd } from '@chakra-ui/react';
 import { Static, Type } from '@sinclair/typebox';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 

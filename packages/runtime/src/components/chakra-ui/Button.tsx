@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { createComponent } from '@meta-ui/core';
+import { createComponent } from '@sunmao-ui/core';
 import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';

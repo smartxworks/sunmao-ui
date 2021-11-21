@@ -1,6 +1,6 @@
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
-import { Registry } from '@meta-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { useMemo } from 'react';
 
 type Props = {
