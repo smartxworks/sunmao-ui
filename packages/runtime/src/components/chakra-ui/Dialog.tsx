@@ -36,6 +36,7 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
     text: 'cancel',
     colorScheme: 'blue',
   },
+  customStyle
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(customerTitle || '');
@@ -86,6 +87,7 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
         onClose={() => setIsOpen(false)}
         trapFocus={false}
         portalProps={containerRef.current ? portalProps : undefined}
+        css={`${customStyle?.content}`}
       >
         <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>
           <AlertDialogContent {...(containerRef.current ? dialogContentProps : {})}>
@@ -160,7 +162,7 @@ export default {
         },
       ],
       slots: ['content'],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: ['cancelDialog', 'confirmDialog'],
     },
   }),

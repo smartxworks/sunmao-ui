@@ -47,7 +47,7 @@
               "properties": {
                 "container": {
                   "id": "tabs",
-                  "slot": "tab_content_0"
+                  "slot": "content"
                 }
               }
             }
@@ -58,7 +58,7 @@
           "type": "core/v1/text",
           "properties": {
             "value": {
-              "raw": "in tab2",
+              "raw": "in tab3",
               "format": "plain"
             }
           },
@@ -67,8 +67,8 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "tabs",
-                  "slot": "tab_content_1"
+                  "id": "nested_tabs",
+                  "slot": "content"
                 }
               }
             }
@@ -86,7 +86,7 @@
               "properties": {
                 "container": {
                   "id": "tabs",
-                  "slot": "tab_content_1"
+                  "slot": "content"
                 }
               }
             }

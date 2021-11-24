@@ -161,7 +161,7 @@ export default {
       }),
       methods: [],
       slots: ['content'],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

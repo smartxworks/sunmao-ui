@@ -3,6 +3,7 @@ import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
+import { css } from '@emotion/react';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -21,6 +22,7 @@ const Select: ComponentImplementation<Static<typeof PropsSchema>> = ({
   size,
   variant,
   mergeState,
+  customStyle
 }) => {
   const [value, setValue] = useState<string | undefined>(defaultValue);
 
@@ -46,6 +48,7 @@ const Select: ComponentImplementation<Static<typeof PropsSchema>> = ({
       size={size}
       variant={variant}
       onChange={e => setValue(e.target.value)}
+      css={css`${customStyle?.content}`}
     >
       {options.map(opt => (
         <option key={opt.value} value={opt.value}>
@@ -123,7 +126,7 @@ export default {
       state: StateSchema,
       methods: [],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

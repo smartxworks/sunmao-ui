@@ -16,148 +16,148 @@
           "email": ""
         },
         "events": ["onClickDelete", "onClickEdit"],
-        "stateMap": {},
-        "components": [
-          {
-            "id": "{{$moduleId}}hstack",
-            "type": "chakra_ui/v1/hstack",
-            "properties": {
-              "spacing": "24px"
-            },
-            "traits": []
+        "stateMap": {}
+      },
+      "components": [
+        {
+          "id": "{{$moduleId}}hstack",
+          "type": "chakra_ui/v1/hstack",
+          "properties": {
+            "spacing": "24px"
           },
-          {
-            "id": "{{$moduleId}}name",
-            "type": "core/v1/text",
-            "properties": {
-              "value": {
-                "raw": "姓名：{{name}}",
-                "format": "plain"
-              }
-            },
-            "traits": [
-              {
-                "type": "core/v1/slot",
-                "properties": {
-                  "container": {
-                    "id": "{{$moduleId}}hstack",
-                    "slot": "content"
-                  }
+          "traits": []
+        },
+        {
+          "id": "{{$moduleId}}name",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "姓名：{{name}}",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{$moduleId}}hstack",
+                  "slot": "content"
                 }
               }
-            ]
+            }
+          ]
+        },
+        {
+          "id": "{{$moduleId}}email",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "email：{{email}}",
+              "format": "plain"
+            }
           },
-          {
-            "id": "{{$moduleId}}email",
-            "type": "core/v1/text",
-            "properties": {
-              "value": {
-                "raw": "email：{{email}}",
-                "format": "plain"
-              }
-            },
-            "traits": [
-              {
-                "type": "core/v1/slot",
-                "properties": {
-                  "container": {
-                    "id": "{{$moduleId}}hstack",
-                    "slot": "content"
-                  }
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{$moduleId}}hstack",
+                  "slot": "content"
                 }
               }
-            ]
+            }
+          ]
+        },
+        {
+          "id": "{{$moduleId}}deleteButton",
+          "type": "chakra_ui/v1/button",
+          "properties": {
+            "text": {
+              "raw": "删除",
+              "format": "plain"
+            }
           },
-          {
-            "id": "{{$moduleId}}deleteButton",
-            "type": "chakra_ui/v1/button",
-            "properties": {
-              "text": {
-                "raw": "删除",
-                "format": "plain"
-              }
-            },
-            "traits": [
-              {
-                "type": "core/v1/event",
-                "parsedType": {
-                  "version": "core/v1",
-                  "name": "event"
-                },
-                "properties": {
-                  "handlers": [
-                    {
-                      "type": "onClick",
-                      "componentId": "$module",
-                      "method": {
-                        "name": "onClickDelete",
-                        "parameters": {
-                          "moduleId": "{{$moduleId}}"
-                        }
-                      },
-                      "wait": {},
-                      "disabled": "false"
-                    }
-                  ]
-                }
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "parsedType": {
+                "version": "core/v1",
+                "name": "event"
               },
-              {
-                "type": "core/v1/slot",
-                "properties": {
-                  "container": {
-                    "id": "{{$moduleId}}hstack",
-                    "slot": "content"
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "$module",
+                    "method": {
+                      "name": "onClickDelete",
+                      "parameters": {
+                        "moduleId": "{{$moduleId}}"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
                   }
-                }
-              }
-            ]
-          },
-          {
-            "id": "{{$moduleId}}editButton",
-            "type": "chakra_ui/v1/button",
-            "properties": {
-              "text": {
-                "raw": "编辑",
-                "format": "plain"
+                ]
               }
             },
-            "traits": [
-              {
-                "type": "core/v1/event",
-                "parsedType": {
-                  "version": "core/v1",
-                  "name": "event"
-                },
-                "properties": {
-                  "handlers": [
-                    {
-                      "type": "onClick",
-                      "componentId": "$module",
-                      "method": {
-                        "name": "onClickEdit",
-                        "parameters": {
-                          "moduleId": "{{$moduleId}}"
-                        }
-                      },
-                      "wait": {},
-                      "disabled": "false"
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "core/v1/slot",
-                "properties": {
-                  "container": {
-                    "id": "{{$moduleId}}hstack",
-                    "slot": "content"
-                  }
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{$moduleId}}hstack",
+                  "slot": "content"
                 }
               }
-            ]
-          }
-        ]
-      }
+            }
+          ]
+        },
+        {
+          "id": "{{$moduleId}}editButton",
+          "type": "chakra_ui/v1/button",
+          "properties": {
+            "text": {
+              "raw": "编辑",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "parsedType": {
+                "version": "core/v1",
+                "name": "event"
+              },
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "$module",
+                    "method": {
+                      "name": "onClickEdit",
+                      "parameters": {
+                        "moduleId": "{{$moduleId}}"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": "false"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{$moduleId}}hstack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "app": {
