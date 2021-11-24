@@ -17,7 +17,8 @@
           "id": "table",
           "type": "chakra_ui/v1/table",
           "properties": {
-            "size": "sm",
+            "size": "lg",
+            "rowsPerPage": 5,
             "data": [
               {
                 "id": 1,
@@ -48,6 +49,28 @@
                 "name": "Eric Widget",
                 "email": "eric@widget.org",
                 "sales": 243
+              }
+            ],
+            "columns": [
+              {
+                "key": "id",
+                "title": "ID",
+                "type": "text"
+              },
+              {
+                "key": "name",
+                "title": "Name",
+                "type": "text"
+              },
+              {
+                "key": "email",
+                "title": "Email",
+                "type": "text"
+              },
+              {
+                "key": "sales",
+                "title": "Sales",
+                "type": "text"
               }
             ]
           },
