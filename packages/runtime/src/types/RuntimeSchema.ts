@@ -80,6 +80,7 @@ export type TraitResult = {
     callbackMap?: CallbackMap;
     effects?: Array<() => void>;
   } | null;
+  unmount?: boolean;
 };
 
 export type TraitImplementation<T = any> = (
