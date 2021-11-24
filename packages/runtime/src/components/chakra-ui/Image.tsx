@@ -76,12 +76,14 @@ const Image: ComponentImplementation<Static<typeof PropsSchema>> = ({
   htmlHeight,
   crossOrigin,
   callbackMap,
+  customStyle
 }) => {
   const style = boxSize
-    ? undefined
+    ? css`${customStyle?.content}`
     : css`
         height: 100%;
         width: 100%;
+        ${customStyle?.content}
       `;
   return (
     <BaseImage
@@ -148,8 +150,8 @@ export default {
       properties: PropsSchema,
       state: StateSchema,
       methods: [],
-      slots: [],
-      styleSlots: [],
+      slots: ['content'],
+      styleSlots: ['content'],
       events: ['onLoad', 'onError'],
     },
   }),

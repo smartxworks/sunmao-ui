@@ -4,17 +4,19 @@ import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
+import { css } from '@emotion/react';
 
 const Kbd: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
   mergeState,
+  customStyle
 }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
   }, [text.raw]);
 
   return (
-    <BaseKbd>
+    <BaseKbd css={css`${customStyle?.content}`}>
       <Text value={text} />
     </BaseKbd>
   );
@@ -50,7 +52,7 @@ export default {
       state: StateSchema,
       methods: [],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

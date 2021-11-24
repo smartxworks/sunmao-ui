@@ -4,6 +4,7 @@ import { createComponent } from '@sunmao-ui/core';
 import { getSlots } from '../_internal/Slot';
 import { Static, Type } from '@sinclair/typebox';
 import { partial } from 'lodash-es';
+import { css } from '@emotion/react';
 
 const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 
@@ -12,6 +13,7 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
   layout = [],
   gridCallbacks,
   component,
+  customStyle,
 }) => {
   const onDragStop = gridCallbacks?.onDragStop
     ? partial(gridCallbacks.onDragStop, component.id)
@@ -28,6 +30,7 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
         onDragStop={onDragStop}
         onDrop={onDrop}
         layout={layout}
+        css={css`${customStyle?.content}`}
       >
         {getSlots(slotsMap, 'content')}
       </BaseGridLayout>
@@ -67,7 +70,7 @@ export default {
       state: {},
       methods: [],
       slots: ['content'],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

@@ -5,6 +5,7 @@ import { Checkbox as BaseCheckbox, useCheckboxGroupContext } from '@chakra-ui/re
 import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
+import { css } from '@emotion/react';
 
 export const IsDisabledSchema = Type.Optional(Type.Boolean());
 export const SizePropertySchema = Type.KeyOf(
@@ -34,6 +35,7 @@ const Checkbox: ComponentImplementation<Static<typeof PropsSchema>> = ({
   spacing,
   colorScheme,
   mergeState,
+  customStyle,
 }) => {
   const groupContext = useCheckboxGroupContext();
   let _defaultIsChecked = false;
@@ -84,6 +86,7 @@ const Checkbox: ComponentImplementation<Static<typeof PropsSchema>> = ({
       onChange={e => {
         setChecked(e.target.checked);
       }}
+      css={css`${customStyle?.content}`}
     >
       <Text value={text} />
     </BaseCheckbox>
@@ -130,7 +133,7 @@ export default {
       state: CheckboxStateSchema,
       methods: [],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),
