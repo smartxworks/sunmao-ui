@@ -34,7 +34,6 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
       css={css`
         ${customStyle?.content}
       `}
-      height="full"
       {...{ colorScheme, isLoading }}
       ref={ref}
       onClick={callbacks?.onClick}
@@ -82,7 +81,7 @@ export default {
         },
       ],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: ['onClick'],
     },
   }),

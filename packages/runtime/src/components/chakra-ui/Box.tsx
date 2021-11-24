@@ -5,6 +5,7 @@ import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
 import { pick } from 'lodash-es';
 import { GRID_HEIGHT } from '../../constants';
+import { css } from '@emotion/react';
 
 const CssGlobals = Type.KeyOf(
   Type.Object({
@@ -274,6 +275,7 @@ const StyleProps = Object.keys(StyleSchema.properties);
 
 const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
   slotsMap,
+  customStyle,
   ...restProps
 }) => {
   const styleProps = pick(restProps, StyleProps);
@@ -286,6 +288,7 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
       borderColor="gray.200"
       borderRadius="base"
       {...styleProps}
+      css={css`${customStyle?.content}`}
     >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseBox>
@@ -313,7 +316,7 @@ export default {
       state: {},
       methods: [],
       slots: ['content'],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

@@ -67,7 +67,7 @@ export default {
       state: {},
       methods: [],
       slots: ['content'],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

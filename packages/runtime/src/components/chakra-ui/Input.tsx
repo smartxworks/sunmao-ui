@@ -10,6 +10,7 @@ import {
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
+import { css } from '@emotion/react';
 
 const AppendElementPropertySchema = Type.Union([
   Type.Object({
@@ -36,6 +37,7 @@ const Input: ComponentImplementation<Static<typeof PropsSchema>> = ({
   mergeState,
   subscribeMethods,
   defaultValue,
+  customStyle
 }) => {
   const [value, setValue] = React.useState(defaultValue || ''); // TODO: pin input
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -81,6 +83,7 @@ const Input: ComponentImplementation<Static<typeof PropsSchema>> = ({
         isDisabled={isDisabled}
         isRequired={isRequired}
         onChange={onChange}
+        css={css`${customStyle?.content}`}
       />
       {right ? (
         right.type === 'addon' ? (
@@ -161,7 +164,7 @@ export default {
         },
       ],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

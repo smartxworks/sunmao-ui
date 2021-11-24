@@ -9,6 +9,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   mergeState,
   subscribeMethods,
   callbackMap,
+  customStyle
 }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
@@ -24,7 +25,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <button ref={ref} onClick={callbackMap?.onClick}>
+    <button ref={ref} onClick={callbackMap?.onClick} css={`${customStyle?.content}`}>
       <Text value={text} />
     </button>
   );
@@ -64,7 +65,7 @@ export default {
         },
       ],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: ['onClick'],
     },
   }),
