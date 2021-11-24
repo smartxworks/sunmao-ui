@@ -129,6 +129,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         {} as TraitResult['props']
       );
     }, [traitResults]);
+    const unmount = traitResults.some(r => r.unmount);
 
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
@@ -150,7 +151,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
 
     const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
-    const C = (
+    const C = unmount ? null : (
       <Impl
         key={c.id}
         {...mergedProps}
