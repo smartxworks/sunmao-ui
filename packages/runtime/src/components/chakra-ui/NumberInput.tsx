@@ -9,6 +9,7 @@ import {
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
+import { css } from '@emotion/react';
 
 const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
   defaultValue = 0,
@@ -23,6 +24,7 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
   customerDecrement,
   mergeState,
   subscribeMethods,
+  customStyle
 }) => {
   const [value, setValue] = useState(defaultValue);
   const onChange = (_: string, valueAsNumber: number) => setValue(valueAsNumber || 0);
@@ -59,6 +61,7 @@ const NumberInput: ComponentImplementation<Static<typeof PropsSchema>> = ({
       allowMouseWheel={allowMouseWheel}
       size={size}
       onChange={onChange}
+      css={css`${customStyle?.content}`}
     >
       <NumberInputField />
       <NumberInputStepper>
@@ -130,7 +133,7 @@ export default {
         },
       ],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

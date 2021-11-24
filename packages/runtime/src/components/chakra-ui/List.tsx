@@ -5,12 +5,14 @@ import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
+import { css } from '@emotion/react';
 
 const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
   template,
   app,
   services,
+  customStyle
 }) => {
   if (!listData) {
     return null;
@@ -38,7 +40,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     return listItemEle;
   });
 
-  return <BaseList>{listItems}</BaseList>;
+  return <BaseList css={css`${customStyle?.content}`}>{listItems}</BaseList>;
 };
 
 const PropsSchema = Type.Object({
@@ -85,7 +87,7 @@ export default {
       methods: [],
       state: {},
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

@@ -39,7 +39,6 @@ import ChakraUISelect from '../components/chakra-ui/Select';
 import ChakraUIRadioGroup from '../components/chakra-ui/RadioGroup';
 import ChakraUIRadio from '../components/chakra-ui/Radio';
 
-import AntdTreeSelect from '../components/antd/TreeSelect';
 // traits
 import CoreArrayState from '../traits/core/arrayState';
 import CoreState from '../traits/core/state';
@@ -193,8 +192,6 @@ export function initRegistry(): Registry {
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
   registry.registerComponent(CoreModuleContainer);
-
-  registry.registerComponent(AntdTreeSelect);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);

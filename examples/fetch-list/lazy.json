@@ -12,7 +12,7 @@
           "type": "plain/v1/button",
           "properties": {
             "text": {
-              "raw": "fetching",
+              "raw": "Click to Fetch!",
               "format": "md"
             }
           },
@@ -49,13 +49,6 @@
             {
               "type": "core/v1/state",
               "properties": {
-                "key": "country",
-                "initialValue": "CN"
-              }
-            },
-            {
-              "type": "core/v1/state",
-              "properties": {
                 "key": "token",
                 "initialValue": "01f0f6265bmsh0efd88b5c7dfa93p136d2ajsn8be6074b61b2"
               }
@@ -64,12 +57,8 @@
               "type": "core/v1/fetch",
               "properties": {
                 "name": "query",
-                "url": "{{ \"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/\"+fetch_list.country+\"/CNY/zh-CN/CSHA/SZX/anytime/anytime\"}}",
+                "url": "https://61373521eac1410017c18209.mockapi.io/Volume",
                 "method": "get",
-                "headers": {
-                  "x-rapidapi-key": "{{fetch_list.token}}",
-                  "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com"
-                },
                 "lazy": true
               }
             }

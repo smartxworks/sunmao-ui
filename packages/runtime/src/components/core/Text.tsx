@@ -40,7 +40,7 @@ export default {
       state: StateSchema,
       methods: [],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),

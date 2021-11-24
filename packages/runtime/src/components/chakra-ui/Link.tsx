@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
@@ -8,9 +9,17 @@ const LinkImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
   href,
   isExternal,
+  customStyle,
 }) => {
   return (
-    <Link href={href} isExternal={isExternal} color="blue.500">
+    <Link
+      href={href}
+      isExternal={isExternal}
+      color="blue.500"
+      css={css`
+        ${customStyle?.content}
+      `}
+    >
       <Text value={text} />
     </Link>
   );
@@ -45,7 +54,7 @@ export default {
       state: {},
       methods: [],
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
   }),
