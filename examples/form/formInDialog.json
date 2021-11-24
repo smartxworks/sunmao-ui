@@ -151,6 +151,15 @@
                     },
                     "wait": {},
                     "disabled": false
+                  },
+                  {
+                    "type": "cancelDialog",
+                    "componentId": "editDialog",
+                    "method": {
+                      "name": "cancelDialog"
+                    },
+                    "wait": {},
+                    "disabled": false
                   }
                 ]
               }
