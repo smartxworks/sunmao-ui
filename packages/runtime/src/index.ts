@@ -1,13 +1,13 @@
-import { initStateManager } from './services/stateStore';
+import { StateManager } from './services/stateStore';
 import { genApp } from './App';
 import { initRegistry } from './services/registry';
 import { initApiService } from './services/apiService';
 import { mountUtilMethods } from './services/util-methods';
 import { initGlobalHandlerMap } from './services/handler';
 
-export function initSunmaoUI() {
+export function initSunmaoUI(dependencies = {}) {
   const registry = initRegistry();
-  const stateManager = initStateManager();
+  const stateManager = new StateManager(dependencies);
   const globalHandlerMap = initGlobalHandlerMap();
   const apiService = initApiService();
   mountUtilMethods(apiService);
