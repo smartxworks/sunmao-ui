@@ -1,5 +1,5 @@
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
-import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
+import { ImplementedRuntimeModule, Registry } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
 import { eventBus } from './eventBus';
 import { EmptyAppSchema } from './constants';
@@ -40,7 +40,7 @@ export class AppStorage {
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
-  constructor() {
+  constructor(private registry: Registry) {
     this.app = this.getDefaultAppFromLS();
     this.modules = this.getModulesFromLS();
     this.updateCurrentId('app', this.app.metadata.name);
@@ -122,13 +122,15 @@ export class AppStorage {
         const i = this.modules.findIndex(
           m => m.metadata.name === this.currentEditingName
         );
-        // this.modules[i] = app2Module(this.app);
         const newModules = produce(this.modules, draft => {
           draft[i].components = this.components;
         });
         console.log('newModules', newModules);
         this.modules = newModules
         localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(newModules));
+        // reregister modules to activate immediately
+        this.modules.forEach((m) => this.registry.registerModule(m, true));
+        break;
     }
   }
 }

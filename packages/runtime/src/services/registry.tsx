@@ -133,8 +133,8 @@ export class Registry {
     return res;
   }
 
-  registerModule(c: ImplementedRuntimeModule) {
-    if (this.modules.get(c.version)?.has(c.metadata.name)) {
+  registerModule(c: ImplementedRuntimeModule, overWrite = false) {
+    if (!overWrite && this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`
       );

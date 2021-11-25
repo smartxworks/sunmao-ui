@@ -17,6 +17,7 @@ import { useAppModel } from '../../../operations/useAppModel';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { AppModelManager } from '../../../operations/AppModelManager';
 
 type Props = {
   registry: Registry;
@@ -25,15 +26,16 @@ type Props = {
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
   hideEventType?: boolean;
+  appModelManager: AppModelManager
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
-  const { handler, eventTypes, onChange, onRemove, hideEventType, registry } = props;
-  const { app } = useAppModel();
+  const { handler, eventTypes, onChange, onRemove, hideEventType, registry, appModelManager } = props;
+  const { components } = useAppModel(appModelManager);
   const [methods, setMethods] = useState<string[]>([]);
 
   function updateMethods(componentId: string) {
-    const type = app.spec.components.find(c => c.id === componentId)?.type;
+    const type = components.find(c => c.id === componentId)?.type;
     if (type) {
       const componentSpec = registry.getComponentByType(type).spec;
       setMethods(componentSpec.methods.map(m => m.name));
@@ -87,7 +89,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
         onBlur={() => formik.submitForm()}
         value={formik.values.componentId}
       >
-        {app.spec.components.map(c => (
+        {components.map(c => (
           <option key={c.id} value={c.id}>
             {c.id}
           </option>
