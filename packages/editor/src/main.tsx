@@ -23,13 +23,14 @@ export default function renderApp(options: Options = {}) {
   const registry = ui.registry;
   const apiService = ui.apiService;
   const stateStore = ui.stateManager.store;
-  const appStorage = new AppStorage();
+  const appStorage = new AppStorage(registry);
   const appModelManager = new AppModelManager(registry, appStorage.components);
 
   const { components = [], traits = [], modules = [] } = options;
   components.forEach(c => registry.registerComponent(c));
   traits.forEach(t => registry.registerTrait(t));
   modules.forEach(m => registry.registerModule(m));
+  appStorage.modules.forEach(m => registry.registerModule(m));
 
   ReactDOM.render(
     <StrictMode>

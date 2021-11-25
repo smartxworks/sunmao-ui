@@ -190,6 +190,7 @@ export const Editor: React.FC<Props> = ({
                   app={app}
                   selectedId={selectedComponentId}
                   registry={registry}
+                  appModelManager={appModelManager}
                 />
               </TabPanel>
               <TabPanel p={0}>

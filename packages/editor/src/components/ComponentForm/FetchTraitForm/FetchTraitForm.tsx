@@ -23,18 +23,20 @@ import {
 } from '../../../operations/Operations';
 import { eventBus } from '../../../eventBus';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { AppModelManager } from '../../../operations/AppModelManager';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
   component: ApplicationComponent;
   registry: Registry;
+  appModelManager: AppModelManager
 };
 
 const httpMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const FetchTraitForm: React.FC<Props> = props => {
-  const { component, registry } = props;
+  const { component, registry, appModelManager } = props;
 
   const fetchTrait = component.traits.find(t => t.type === 'core/v1/fetch')
     ?.properties as Static<typeof FetchTraitPropertiesSchema>;
@@ -165,6 +167,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
             onChange={onChange}
             onRemove={onRemove}
             registry={registry}
+            appModelManager={appModelManager}
           />
         );
       })}
