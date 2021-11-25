@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { DefaultAppSchema } from '../constants';
 import { eventBus } from '../eventBus';
 
-function getDefaultAppFromLS() {
+export function getDefaultAppFromLS() {
   try {
     const appFromLS = localStorage.getItem('schema');
     if (appFromLS) {

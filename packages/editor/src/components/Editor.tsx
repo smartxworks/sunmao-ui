@@ -18,6 +18,7 @@ import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
 import { AppModelManager } from '../operations/AppModelManager';
+import { Explorer } from './Explorer';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -131,10 +132,14 @@ export const Editor: React.FC<Props> = ({
             isLazy
           >
             <TabList background="gray.50">
+              <Tab>Explorer</Tab>
               <Tab>UI Tree</Tab>
               <Tab>State</Tab>
             </TabList>
             <TabPanels flex="1" overflow="auto">
+              <TabPanel>
+                <Explorer />
+              </TabPanel>
               <TabPanel p={0}>
                 <StructureTree
                   app={app}
