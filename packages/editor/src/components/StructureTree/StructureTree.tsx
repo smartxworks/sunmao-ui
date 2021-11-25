@@ -16,7 +16,7 @@ type SlotsMap = Map<string, ApplicationComponent[]>;
 
 type Props = {
   registry: Registry;
-  app: Application;
+  app?: Application;
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
 };
@@ -25,6 +25,10 @@ export const StructureTree: React.FC<Props> = props => {
   const { app, selectedComponentId, onSelectComponent, registry } = props;
   const topLevelComponents: ApplicationComponent[] = [];
   const childrenMap: ChildrenMap = new Map();
+
+  if (!app) {
+    return null;
+  }
 
   const components = app.spec.components.filter(c => c.type !== 'core/v1/dummy');
   const dataSources = app.spec.components.filter(c => c.type === 'core/v1/dummy');
