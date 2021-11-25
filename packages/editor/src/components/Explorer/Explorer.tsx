@@ -1,24 +1,20 @@
 import { Divider, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { RuntimeModuleSpec } from '@sunmao-ui/core';
-import {
-  AppModelManager,
-  getDefaultAppFromLS,
-  getModulesFromLS,
-} from '../../operations/AppModelManager';
+import { AppStorage } from '../../AppStorage';
 
 type ExplorerProps = {
-  appModelManager: AppModelManager;
+  appStorage: AppStorage;
 };
 
-export const Explorer: React.FC<ExplorerProps> = ({ appModelManager }) => {
-  const app = getDefaultAppFromLS();
+export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
+  const app = appStorage.app;
   const appItemId = `app_${app.metadata.name}`;
   const [selectedItem, setSelectedItem] = React.useState<string | undefined>(appItemId);
 
   const onClickApp = (id: string) => {
     setSelectedItem(id);
-    appModelManager.updateCurrentId('app', app.metadata.name);
+    appStorage.updateCurrentId('app', app.metadata.name);
   };
 
   const appItem = (
@@ -31,12 +27,12 @@ export const Explorer: React.FC<ExplorerProps> = ({ appModelManager }) => {
     />
   );
 
-  const modules: RuntimeModuleSpec[] = getModulesFromLS();
+  const modules: RuntimeModuleSpec[] = appStorage.modules
   const moduleItems = modules.map((module: RuntimeModuleSpec) => {
     const moduleItemId = `module_${module.metadata.name}`;
     const onClickModule = (id: string) => {
       setSelectedItem(id);
-      appModelManager.updateCurrentId('module', module.metadata.name);
+      appStorage.updateCurrentId('module', module.metadata.name);
     };
     return (
       <ExplorerItem

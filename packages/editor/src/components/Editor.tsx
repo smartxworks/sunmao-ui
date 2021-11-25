@@ -19,6 +19,8 @@ import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
 import { AppModelManager } from '../operations/AppModelManager';
 import { Explorer } from './Explorer';
+import { Application } from '../../../core/lib';
+import { AppStorage } from '../AppStorage';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -28,6 +30,7 @@ type Props = {
   stateStore: ReturnOfInit['stateManager']['store'];
   apiService: ReturnOfInit['apiService'];
   appModelManager: AppModelManager;
+  appStorage: AppStorage;
 };
 
 export const Editor: React.FC<Props> = ({
@@ -35,10 +38,11 @@ export const Editor: React.FC<Props> = ({
   registry,
   stateStore,
   appModelManager,
+  appStorage,
 }) => {
-  const { app } = useAppModel();
+  const { components } = useAppModel(appModelManager);
   const [selectedComponentId, setSelectedComponentId] = useState(
-    app.spec.components[0]?.id || ''
+    components?.[0]?.id || ''
   );
   const [scale, setScale] = useState(100);
   const [preview, setPreview] = useState(false);
@@ -82,6 +86,19 @@ export const Editor: React.FC<Props> = ({
       },
     };
   }, []);
+
+  const app = useMemo<Application>(() => {
+    return {
+      version: 'sunmao/v1',
+      kind: 'Application',
+      metadata: {
+        name: 'some App',
+      },
+      spec: {
+        components,
+      },
+    };
+  }, [components]);
 
   const appComponent = useMemo(() => {
     return (
@@ -138,7 +155,7 @@ export const Editor: React.FC<Props> = ({
             </TabList>
             <TabPanels flex="1" overflow="auto">
               <TabPanel>
-                <Explorer appModelManager={appModelManager} />
+                <Explorer appStorage={appStorage} />
               </TabPanel>
               <TabPanel p={0}>
                 <StructureTree

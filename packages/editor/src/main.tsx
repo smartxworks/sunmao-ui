@@ -5,6 +5,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import { AppStorage } from './AppStorage';
 
 import { Editor } from './components/Editor';
 import { AppModelManager } from './operations/AppModelManager';
@@ -22,7 +23,8 @@ export default function renderApp(options: Options = {}) {
   const registry = ui.registry;
   const apiService = ui.apiService;
   const stateStore = ui.stateManager.store;
-  const appModelManager = new AppModelManager(registry);
+  const appStorage = new AppStorage();
+  const appModelManager = new AppModelManager(registry, appStorage.components);
 
   const { components = [], traits = [], modules = [] } = options;
   components.forEach(c => registry.registerComponent(c));
@@ -38,6 +40,7 @@ export default function renderApp(options: Options = {}) {
           stateStore={stateStore}
           appModelManager={appModelManager}
           apiService={apiService}
+          appStorage={appStorage}
         />
       </ChakraProvider>
     </StrictMode>,
