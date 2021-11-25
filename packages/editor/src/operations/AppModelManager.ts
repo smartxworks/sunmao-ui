@@ -1,5 +1,5 @@
 import { Application, ComponentTrait, ApplicationComponent } from '@sunmao-ui/core';
-import { parseType } from '@sunmao-ui/runtime';
+import { parseType, ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import {
   Operations,
   CreateComponentOperation,
@@ -18,6 +18,7 @@ import { produce } from 'immer';
 import { eventBus } from '../eventBus';
 import { set, isEqual } from 'lodash-es';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { DefaultAppSchema } from '../constants';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -50,24 +51,80 @@ function genComponent(
   };
 }
 
-export class AppModelManager {
-  private undoStack: Operations[] = [];
-  private app: Application;
-  private registry: Registry;
-
-  constructor(app: Application, registry: Registry) {
+export function getDefaultAppFromLS(): Application {
+  try {
     const appFromLS = localStorage.getItem('schema');
     if (appFromLS) {
-      this.app = JSON.parse(appFromLS);
-    } else {
-      this.app = app;
+      return JSON.parse(appFromLS);
     }
+    return DefaultAppSchema;
+  } catch (error) {
+    console.warn(error);
+    return DefaultAppSchema;
+  }
+}
+
+export function getModulesFromLS() {
+  try {
+    const modulesFromLS = localStorage.getItem('modules');
+    if (modulesFromLS) {
+      return JSON.parse(modulesFromLS);
+    }
+    return [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function module2App(module: ImplementedRuntimeModule): Application {
+  return {
+    version: module.version,
+    kind: 'Application',
+    metadata: module.metadata,
+    spec: {
+      components: module.components,
+    },
+    moduleSpec: module.spec,
+  } as Application;
+}
+
+function app2Module(app: Application): ImplementedRuntimeModule {
+  return {
+    version: app.version,
+    kind: 'Module',
+    metadata: app.metadata,
+    components: app.spec.components,
+    parsedVersion: {
+      category: app.version,
+      value: app.metadata.name,
+    },
+    spec: (app as any).moduleSpec,
+  };
+}
+
+export class AppModelManager {
+  private undoStack: Operations[] = [];
+  // this is current editing AppModel
+  private app: Application;
+  private modules: ImplementedRuntimeModule[];
+  private appCache: Application;
+  private registry: Registry;
+  private currentEditingId: string | undefined;
+  private currentEditingType: 'app' | 'module' = 'app';
+
+  constructor(registry: Registry) {
     this.registry = registry;
+    const appFromLS = getDefaultAppFromLS();
+    const modulesFromLS = getModulesFromLS();
 
     eventBus.on('undo', () => this.undo());
     eventBus.on('operation', o => this.apply(o));
 
-    this.updateApp(this.app);
+    this.app = appFromLS;
+    this.appCache = appFromLS;
+    this.modules = modulesFromLS;
+    this.updateApp(appFromLS);
+    this.updateCurrentId('app', appFromLS.metadata.name);
   }
 
   getApp() {
@@ -82,10 +139,40 @@ export class AppModelManager {
     return `${name}${componentsCount + 1}`;
   }
 
-  updateApp(app: Application) {
+  updateCurrentId(type: 'app' | 'module', name: string) {
+    this.currentEditingType = type;
+    this.currentEditingId = name;
+    console.log('updateCurrentId', type, name);
+    if (type === 'module') {
+      this.appCache = this.app;
+      const module = this.modules.find(m => m.metadata.name === name);
+      this.updateApp(module2App(module!));
+      console.log('moduleApp', this.app);
+    } else {
+      this.app = this.appCache
+      this.updateApp(this.app);
+    }
+  }
+
+  updateApp(app: Application, shouldSaveInLS = false) {
     eventBus.send('appChange', app);
-    localStorage.setItem('schema', JSON.stringify(app));
     this.app = app;
+    if (shouldSaveInLS) {
+      this.saveInLS();
+    }
+  }
+
+  saveInLS() {
+    switch (this.currentEditingType) {
+      case 'app':
+        localStorage.setItem('schema', JSON.stringify(this.app));
+        break;
+      case 'module':
+        const i = this.modules.findIndex(m => m.metadata.name === this.currentEditingId);
+        this.modules[i] = app2Module(this.app);
+        console.log('saveModule', this.modules)
+        localStorage.setItem('modules', JSON.stringify(this.modules));
+    }
   }
 
   undo() {
@@ -296,6 +383,6 @@ export class AppModelManager {
         break;
       }
     }
-    this.updateApp(newApp);
+    this.updateApp(newApp, true);
   }
 }

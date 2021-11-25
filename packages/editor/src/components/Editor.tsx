@@ -138,7 +138,7 @@ export const Editor: React.FC<Props> = ({
             </TabList>
             <TabPanels flex="1" overflow="auto">
               <TabPanel>
-                <Explorer />
+                <Explorer appModelManager={appModelManager} />
               </TabPanel>
               <TabPanel p={0}>
                 <StructureTree

@@ -3,21 +3,8 @@ import { useEffect, useState } from 'react';
 import { DefaultAppSchema } from '../constants';
 import { eventBus } from '../eventBus';
 
-export function getDefaultAppFromLS() {
-  try {
-    const appFromLS = localStorage.getItem('schema');
-    if (appFromLS) {
-      return JSON.parse(appFromLS);
-    }
-    return DefaultAppSchema;
-  } catch (error) {
-    console.warn(error);
-    return DefaultAppSchema;
-  }
-}
-
 export function useAppModel() {
-  const [app, setApp] = useState<Application>(getDefaultAppFromLS());
+  const [app, setApp] = useState<Application>(DefaultAppSchema);
 
   useEffect(() => {
     const onAppChange = (app: Application) => {

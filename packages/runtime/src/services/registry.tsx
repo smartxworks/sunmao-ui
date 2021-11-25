@@ -56,15 +56,15 @@ import { parseType } from '../utils/parseType';
 
 export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
 
-type ImplementedRuntimeComponent = RuntimeComponentSpec & {
+export type ImplementedRuntimeComponent = RuntimeComponentSpec & {
   impl: ComponentImplementation;
 };
 
-type ImplementedRuntimeTrait = RuntimeTraitSpec & {
+export type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
 };
 
-type ImplementedRuntimeModule = RuntimeModuleSpec & {
+export type ImplementedRuntimeModule = RuntimeModuleSpec & {
   components: ApplicationComponent[];
 };
 
