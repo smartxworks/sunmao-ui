@@ -6,12 +6,10 @@ import produce from 'immer';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { eventBus } from '../../../eventBus';
-import {
-  AddTraitOperation,
-  ModifyTraitPropertyOperation,
-} from '../../../operations/Operations';
 import { EventHandlerForm } from './EventHandlerForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { NewTraitOperation } from '../../../operations/leaf/trait/newOperation';
+import { ModifyTraitPropertiesOperation } from '../../../operations/leaf/trait/modifyPropertiesOperation';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
@@ -51,15 +49,26 @@ export const EventTraitForm: React.FC<Props> = props => {
     if (!handlers) {
       eventBus.send(
         'operation',
-        new AddTraitOperation(component.id, 'core/v1/event', { handlers: [newHandler] })
+        new NewTraitOperation({
+          componentId: component.id,
+          traitType: 'core/v1/event',
+          properties: { handlers: [newHandler] },
+        })
       );
     } else {
+      // assume that we only have one event trait
+      const index = component.traits.findIndex(t => t.type === 'core/v1/event');
       eventBus.send(
         'operation',
-        new ModifyTraitPropertyOperation(component.id, 'core/v1/event', 'handlers', [
-          ...handlers,
-          newHandler,
-        ])
+        new ModifyTraitPropertiesOperation({
+          componentId: component.id,
+          traitIndex: index,
+          properties: {
+            handlers: produce(handlers, draft => {
+              draft.push(newHandler);
+            }),
+          },
+        })
       );
     }
   };
@@ -67,32 +76,36 @@ export const EventTraitForm: React.FC<Props> = props => {
   const handlerForms = () =>
     (handlers || []).map((h, i) => {
       const onChange = (handler: EventHandler) => {
+        const index = component.traits.findIndex(t => t.type === 'core/v1/event');
         const newHanlders = produce(handlers!, draft => {
           draft[i] = handler;
         });
         eventBus.send(
           'operation',
-          new ModifyTraitPropertyOperation(
-            component.id,
-            'core/v1/event',
-            'handlers',
-            newHanlders
-          )
+          new ModifyTraitPropertiesOperation({
+            componentId: component.id,
+            traitIndex: index,
+            properties: {
+              handlers: newHanlders,
+            },
+          })
         );
       };
 
       const onRemove = () => {
+        const index = component.traits.findIndex(t => t.type === 'core/v1/event');
         const newHanlders = produce(handlers!, draft => {
           draft.splice(i, 1);
         });
         eventBus.send(
           'operation',
-          new ModifyTraitPropertyOperation(
-            component.id,
-            'core/v1/event',
-            'handlers',
-            newHanlders
-          )
+          new ModifyTraitPropertiesOperation({
+            componentId: component.id,
+            traitIndex: index,
+            properties: {
+              handlers: newHanlders,
+            },
+          })
         );
       };
       return (
