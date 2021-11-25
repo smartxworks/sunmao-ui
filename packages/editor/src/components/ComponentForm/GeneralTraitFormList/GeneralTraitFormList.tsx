@@ -5,9 +5,10 @@ import { TSchema } from '@sinclair/typebox';
 import { AddTraitButton } from './AddTraitButton';
 import { GeneralTraitForm } from './GeneralTraitForm';
 import { eventBus } from '../../../eventBus';
-import { AddTraitOperation, RemoveTraitOperation } from '../../../operations/Operations';
 import { ignoreTraitsList } from '../../../constants';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { NewTraitOperation } from '../../../operations/leaf/trait/newOperation';
+import { FreeTraitOperation } from '../../../operations/leaf/trait/freeOperation';
 
 type Props = {
   registry: Registry;
@@ -20,7 +21,14 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
   const onAddTrait = (type: string) => {
     const traitSpec = registry.getTraitByType(type).spec;
     const initProperties = parseTypeBox(traitSpec.properties as TSchema);
-    eventBus.send('operation', new AddTraitOperation(component.id, type, initProperties));
+    eventBus.send(
+      'operation',
+      new NewTraitOperation({
+        componentId: component.id,
+        traitType: type,
+        properties: initProperties,
+      })
+    );
   };
 
   const traitFields = component.traits
@@ -29,7 +37,10 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     })
     .map((t, i) => {
       const onRemoveTrait = () => {
-        eventBus.send('operation', new RemoveTraitOperation(component.id, i));
+        eventBus.send(
+          'operation',
+          new FreeTraitOperation({ componentId: component.id, index: i })
+        );
       };
       return (
         <GeneralTraitForm

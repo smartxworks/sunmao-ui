@@ -2,15 +2,13 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import React, { useMemo, useState } from 'react';
+import { AddComponentOperation } from '../../operations/branch/addComponentOperation';
 import { eventBus } from '../../eventBus';
-import {
-  CreateComponentOperation,
-  RemoveComponentOperation,
-  SortComponentOperation,
-} from '../../operations/Operations';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
+import { RemoveComponentOperation } from '../../operations/branch/removeComponentOperation';
+import { AdjustComponentOrderOperation } from '../../operations/leaf/component/adjustOrderOperation';
 
 type Props = {
   registry: Registry;
@@ -57,7 +55,11 @@ export const ComponentTree: React.FC<Props> = props => {
       const onDrop = (creatingComponent: string) => {
         eventBus.send(
           'operation',
-          new CreateComponentOperation(creatingComponent, component.id, slot)
+          new AddComponentOperation({
+            componentType: creatingComponent,
+            parentId: component.id,
+            slot,
+          })
         );
       };
       const slotName = (
@@ -82,23 +84,39 @@ export const ComponentTree: React.FC<Props> = props => {
   }, [component, childrenMap]);
 
   const onClickRemove = () => {
-    eventBus.send('operation', new RemoveComponentOperation(component.id));
+    eventBus.send(
+      'operation',
+      new RemoveComponentOperation({ componentId: component.id })
+    );
   };
 
   const onDrop = (creatingComponent: string) => {
     if (slots.length === 0) return;
     eventBus.send(
       'operation',
-      new CreateComponentOperation(creatingComponent, component.id, 'content')
+      new AddComponentOperation({
+        componentType: creatingComponent,
+        parentId: component.id,
+        slot: 'content',
+      })
     );
   };
 
   const onMoveUp = () => {
-    eventBus.send('operation', new SortComponentOperation(component.id, 'up'));
+    eventBus.send(
+      'operation',
+      new AdjustComponentOrderOperation({ componentId: component.id, orientation: 'up' })
+    );
   };
 
   const onMoveDown = () => {
-    eventBus.send('operation', new SortComponentOperation(component.id, 'down'));
+    eventBus.send(
+      'operation',
+      new AdjustComponentOrderOperation({
+        componentId: component.id,
+        orientation: 'down',
+      })
+    );
   };
 
   return (
