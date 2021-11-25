@@ -5,8 +5,8 @@ import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { reactive } from '@vue/reactivity';
-import { arrayToTree } from 'performant-array-to-tree';
 import { watch } from '../utils/watchReactivity';
+import { isNumeric } from '../utils/isNumeric';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
 
 dayjs.extend(relativeTime);
@@ -17,25 +17,21 @@ dayjs.locale('zh-cn');
 type ExpChunk = string | ExpChunk[];
 
 // TODO: use web worker
-const builtIn = {
+const DefaultDependencies = {
   dayjs,
   _,
-  // TODO: It is a custom dependency, should not be add here
-  arrayToTree,
 };
-
-function isNumeric(x: string | number) {
-  return !isNaN(Number(x)) && x !== '';
-}
-
-export function initStateManager() {
-  return new StateManager();
-}
 
 export class StateManager {
   store = reactive<Record<string, any>>({});
 
-  evalExp(expChunk: ExpChunk, scopeObject = {}): unknown {
+  dependencies: Record<string, unknown>;
+
+  constructor(dependencies: Record<string, unknown> = {}) {
+    this.dependencies = { ...DefaultDependencies, ...dependencies };
+  }
+
+  evalExp = (expChunk: ExpChunk, scopeObject = {}): unknown => {
     if (typeof expChunk === 'string') {
       return expChunk;
     }
@@ -45,14 +41,14 @@ export class StateManager {
     try {
       evaled = new Function(`with(this) { return ${evalText} }`).call({
         ...this.store,
-        ...builtIn,
+        ...this.dependencies,
         ...scopeObject,
       });
     } catch (e: any) {
       return `{{ ${evalText} }}`;
     }
     return evaled;
-  }
+  };
 
   maskedEval(raw: string, evalListItem = false, scopeObject = {}) {
     if (isNumeric(raw)) {
@@ -105,7 +101,9 @@ export class StateManager {
 
     const evaluated = this.mapValuesDeep(obj, ({ value: v, path }) => {
       if (typeof v === 'string') {
-        const isDynamicExpression = parseExpression(v).some(exp => typeof exp !== 'string');
+        const isDynamicExpression = parseExpression(v).some(
+          exp => typeof exp !== 'string'
+        );
         const result = this.maskedEval(v);
         if (isDynamicExpression && watcher) {
           const stop = watch(

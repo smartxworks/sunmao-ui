@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "sunmao-ui editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
@@ -36,7 +36,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@sunmao-ui/core": "^0.3.0",
-    "@sunmao-ui/runtime": "^0.3.2",
+    "@sunmao-ui/runtime": "^0.3.3",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "framer-motion": "^4",
