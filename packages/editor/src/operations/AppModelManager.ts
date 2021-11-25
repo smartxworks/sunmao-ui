@@ -1,5 +1,5 @@
-import { Application, ComponentTrait, ApplicationComponent } from '@sunmao-ui/core';
-import { parseType, ImplementedRuntimeModule } from '@sunmao-ui/runtime';
+import { ComponentTrait, ApplicationComponent } from '@sunmao-ui/core';
+import { parseType } from '@sunmao-ui/runtime';
 import {
   Operations,
   CreateComponentOperation,
@@ -18,7 +18,6 @@ import { produce } from 'immer';
 import { eventBus } from '../eventBus';
 import { set, isEqual } from 'lodash-es';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { DefaultAppSchema } from '../constants';
 
 function genSlotTrait(parentId: string, slot: string): ComponentTrait {
   return {
@@ -51,140 +50,52 @@ function genComponent(
   };
 }
 
-export function getDefaultAppFromLS(): Application {
-  try {
-    const appFromLS = localStorage.getItem('schema');
-    if (appFromLS) {
-      return JSON.parse(appFromLS);
-    }
-    return DefaultAppSchema;
-  } catch (error) {
-    console.warn(error);
-    return DefaultAppSchema;
-  }
-}
-
-export function getModulesFromLS() {
-  try {
-    const modulesFromLS = localStorage.getItem('modules');
-    if (modulesFromLS) {
-      return JSON.parse(modulesFromLS);
-    }
-    return [];
-  } catch (error) {
-    return [];
-  }
-}
-
-function module2App(module: ImplementedRuntimeModule): Application {
-  return {
-    version: module.version,
-    kind: 'Application',
-    metadata: module.metadata,
-    spec: {
-      components: module.components,
-    },
-    moduleSpec: module.spec,
-  } as Application;
-}
-
-function app2Module(app: Application): ImplementedRuntimeModule {
-  return {
-    version: app.version,
-    kind: 'Module',
-    metadata: app.metadata,
-    components: app.spec.components,
-    parsedVersion: {
-      category: app.version,
-      value: app.metadata.name,
-    },
-    spec: (app as any).moduleSpec,
-  };
-}
-
 export class AppModelManager {
   private undoStack: Operations[] = [];
-  // this is current editing AppModel
-  private app: Application;
-  private modules: ImplementedRuntimeModule[];
-  private appCache: Application;
+  components: ApplicationComponent[] = [];
   private registry: Registry;
-  private currentEditingId: string | undefined;
-  private currentEditingType: 'app' | 'module' = 'app';
 
-  constructor(registry: Registry) {
+  constructor(registry: Registry, components: ApplicationComponent[]) {
+    console.log('appmodalManger init', components)
     this.registry = registry;
-    const appFromLS = getDefaultAppFromLS();
-    const modulesFromLS = getModulesFromLS();
+    this.updateComponents(components);
 
     eventBus.on('undo', () => this.undo());
     eventBus.on('operation', o => this.apply(o));
 
-    this.app = appFromLS;
-    this.appCache = appFromLS;
-    this.modules = modulesFromLS;
-    this.updateApp(appFromLS);
-    this.updateCurrentId('app', appFromLS.metadata.name);
+    eventBus.on('componentsReload', components => {
+      console.log('componentsReload', components)
+      this.updateComponents(components);
+    })
   }
 
   getApp() {
-    return this.app;
+    return this.components;
   }
 
   genId(componentType: string) {
     const { name } = parseType(componentType);
-    const componentsCount = this.app.spec.components.filter(
+    const componentsCount = this.components.filter(
       c => c.type === componentType
     ).length;
     return `${name}${componentsCount + 1}`;
   }
 
-  updateCurrentId(type: 'app' | 'module', name: string) {
-    this.currentEditingType = type;
-    this.currentEditingId = name;
-    console.log('updateCurrentId', type, name);
-    if (type === 'module') {
-      this.appCache = this.app;
-      const module = this.modules.find(m => m.metadata.name === name);
-      this.updateApp(module2App(module!));
-      console.log('moduleApp', this.app);
-    } else {
-      this.app = this.appCache
-      this.updateApp(this.app);
-    }
-  }
-
-  updateApp(app: Application, shouldSaveInLS = false) {
-    eventBus.send('appChange', app);
-    this.app = app;
-    if (shouldSaveInLS) {
-      this.saveInLS();
-    }
-  }
-
-  saveInLS() {
-    switch (this.currentEditingType) {
-      case 'app':
-        localStorage.setItem('schema', JSON.stringify(this.app));
-        break;
-      case 'module':
-        const i = this.modules.findIndex(m => m.metadata.name === this.currentEditingId);
-        this.modules[i] = app2Module(this.app);
-        console.log('saveModule', this.modules)
-        localStorage.setItem('modules', JSON.stringify(this.modules));
-    }
+  updateComponents(components: ApplicationComponent[]) {
+    this.components = components;
+    eventBus.send('componentsChange', this.components);
   }
 
   undo() {
     if (this.undoStack.length === 0) {
-      return this.app;
+      return this.components;
     }
     const o = this.undoStack.pop()!;
     this.apply(o, true);
   }
 
   apply(o: Operations, noEffect = false) {
-    let newApp = this.app;
+    let newComponents = this.components;
     switch (o.kind) {
       case 'createComponent':
         const createO = o as CreateComponentOperation;
@@ -199,28 +110,28 @@ export class AppModelManager {
           const undoOperation = new RemoveComponentOperation(newComponent.id);
           this.undoStack.push(undoOperation);
         }
-        newApp = produce(this.app, draft => {
-          draft.spec.components.push(newComponent);
+        newComponents = produce(this.components, draft => {
+          draft.push(newComponent);
         });
         break;
       case 'removeComponent':
         const removeO = o as RemoveComponentOperation;
-        newApp = produce(this.app, draft => {
-          const i = draft.spec.components.findIndex(c => c.id === removeO.componentId);
-          draft.spec.components.splice(i, 1);
+        newComponents = produce(this.components, draft => {
+          const i = draft.findIndex(c => c.id === removeO.componentId);
+          draft.splice(i, 1);
         });
         break;
       case 'modifyComponentProperty':
         const mo = o as ModifyComponentPropertyOperation;
-        newApp = produce(this.app, draft => {
-          return draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          return draft.forEach(c => {
             if (c.id === mo.componentId) {
               set(c.properties, mo.propertyKey, mo.propertyValue);
             }
           });
         });
         if (!noEffect) {
-          const oldValue = this.app.spec.components.find(c => c.id === mo.componentId)
+          const oldValue = this.components.find(c => c.id === mo.componentId)
             ?.properties[mo.propertyKey];
           const undoOperation = new ModifyComponentPropertyOperation(
             mo.componentId,
@@ -232,15 +143,15 @@ export class AppModelManager {
         break;
       case 'replaceComponentProperty':
         const ro = o as ReplaceComponentPropertyOperation;
-        newApp = produce(this.app, draft => {
-          return draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          return draft.forEach(c => {
             if (c.id === ro.componentId) {
               c.properties = ro.properties;
             }
           });
         });
         if (!noEffect) {
-          const oldValue = this.app.spec.components.find(
+          const oldValue = this.components.find(
             c => c.id === ro.componentId
           )?.properties;
           const undoOperation = new ReplaceComponentPropertyOperation(
@@ -252,8 +163,8 @@ export class AppModelManager {
         break;
       case 'modifyComponentId':
         const mIdo = o as ModifyComponentIdOperation;
-        newApp = produce(this.app, draft => {
-          return draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          return draft.forEach(c => {
             if (c.id === mIdo.componentId) {
               c.id = mIdo.value;
             }
@@ -270,8 +181,8 @@ export class AppModelManager {
       case 'modifyTraitProperty':
         const mto = o as ModifyTraitPropertyOperation;
         let oldValue;
-        newApp = produce(this.app, draft => {
-          draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          draft.forEach(c => {
             if (c.id === mto.componentId) {
               c.traits.forEach(t => {
                 if (t.type === mto.traitType) {
@@ -295,8 +206,8 @@ export class AppModelManager {
       case 'modifyTraitProperties':
         const mtpo = o as ModifyTraitPropertiesOperation;
         let oldProperties;
-        newApp = produce(this.app, draft => {
-          draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          draft.forEach(c => {
             if (c.id === mtpo.componentId) {
               c.traits.forEach(t => {
                 if (t.type === mtpo.traitType) {
@@ -319,8 +230,8 @@ export class AppModelManager {
       case 'addTraitOperation':
         const ato = o as AddTraitOperation;
         let i = 0;
-        newApp = produce(this.app, draft => {
-          draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          draft.forEach(c => {
             if (c.id === ato.componentId) {
               c.traits.push({
                 type: ato.traitType,
@@ -337,8 +248,8 @@ export class AppModelManager {
         break;
       case 'removeTraitOperation':
         const rto = o as RemoveTraitOperation;
-        newApp = produce(this.app, draft => {
-          draft.spec.components.forEach(c => {
+        newComponents = produce(this.components, draft => {
+          draft.forEach(c => {
             if (c.id === rto.componentId) {
               c.traits.splice(rto.traitIndex, 1);
             }
@@ -347,16 +258,16 @@ export class AppModelManager {
         break;
       case 'sortComponent':
         const sortO = o as SortComponentOperation;
-        newApp = produce(this.app, draft => {
-          const iIndex = draft.spec.components.findIndex(c => c.id === sortO.componentId);
-          const iComponent = this.app.spec.components[iIndex];
+        newComponents = produce(this.components, draft => {
+          const iIndex = draft.findIndex(c => c.id === sortO.componentId);
+          const iComponent = this.components[iIndex];
           const iSlotTrait = iComponent.traits.find(t => t.type === 'core/v1/slot');
           if (!iSlotTrait) return;
 
           const findArray =
             sortO.direction === 'up'
-              ? this.app.spec.components.slice(0, iIndex).reverse()
-              : this.app.spec.components.slice(iIndex + 1);
+              ? this.components.slice(0, iIndex).reverse()
+              : this.components.slice(iIndex + 1);
 
           const jComponent = findArray.find(c => {
             const jSlotTrait = c.traits.find(t => t.type === 'core/v1/slot');
@@ -366,23 +277,23 @@ export class AppModelManager {
           });
           if (!jComponent) return;
 
-          const jIndex = this.app.spec.components.findIndex(c => c.id === jComponent.id);
+          const jIndex = this.components.findIndex(c => c.id === jComponent.id);
           if (jIndex > -1) {
-            [draft.spec.components[iIndex], draft.spec.components[jIndex]] = [
-              draft.spec.components[jIndex],
-              draft.spec.components[iIndex],
+            [draft[iIndex], draft[jIndex]] = [
+              draft[jIndex],
+              draft[iIndex],
             ];
           }
         });
         break;
       case 'replaceApp': {
         const rao = o as ReplaceAppOperation;
-        newApp = produce(this.app, () => {
+        newComponents = produce(this.components, () => {
           return rao.app;
         });
         break;
       }
     }
-    this.updateApp(newApp, true);
+    this.updateComponents(newComponents);
   }
 }

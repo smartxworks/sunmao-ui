@@ -1,0 +1,134 @@
+import { Application, ApplicationComponent } from '@sunmao-ui/core';
+import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
+import { produce } from 'immer';
+import { eventBus } from './eventBus';
+import { EmptyAppSchema } from './constants';
+
+// function module2App(module: ImplementedRuntimeModule): Application {
+//   return {
+//     version: module.version,
+//     kind: 'Application',
+//     metadata: module.metadata,
+//     spec: {
+//       components: module.components,
+//     },
+//     moduleSpec: module.spec,
+//   } as Application;
+// }
+
+// function app2Module(app: Application): ImplementedRuntimeModule {
+//   return {
+//     version: app.version,
+//     kind: 'Module',
+//     metadata: app.metadata,
+//     components: app.spec.components,
+//     parsedVersion: {
+//       category: app.version,
+//       value: app.metadata.name,
+//     },
+//     spec: (app as any).moduleSpec,
+//   };
+// }
+
+export class AppStorage {
+  components: ApplicationComponent[] = [];
+  app: Application;
+  modules: ImplementedRuntimeModule[];
+  // this is current editing Model
+  private currentEditingName: string | undefined;
+  private currentEditingType: 'app' | 'module' = 'app';
+  static AppLSKey = 'schema';
+  static ModulesLSKey = 'modules';
+
+  constructor() {
+    this.app = this.getDefaultAppFromLS();
+    this.modules = this.getModulesFromLS();
+    this.updateCurrentId('app', this.app.metadata.name);
+    this.refreshComponents();
+    
+    eventBus.on('componentsChange', (components: ApplicationComponent[]) => {
+      this.components = components;
+      this.saveInLS();
+    });
+  }
+
+  getDefaultAppFromLS(): Application {
+    try {
+      const appFromLS = localStorage.getItem(AppStorage.AppLSKey);
+      if (appFromLS) {
+        return JSON.parse(appFromLS);
+      }
+      return EmptyAppSchema;
+    } catch (error) {
+      console.warn(error);
+      return EmptyAppSchema;
+    }
+  }
+
+  getModulesFromLS(): ImplementedRuntimeModule[] {
+    try {
+      const modulesFromLS = localStorage.getItem(AppStorage.ModulesLSKey);
+      if (modulesFromLS) {
+        return JSON.parse(modulesFromLS);
+      }
+      return [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  updateCurrentId(type: 'app' | 'module', name: string) {
+    this.currentEditingType = type;
+    this.currentEditingName = name;
+    console.log('updateCurrentId', type, name);
+    this.refreshComponents();
+  }
+
+  // update components by currentEditingType & cache
+  private refreshComponents() {
+    switch (this.currentEditingType) {
+      case 'module':
+        const module = this.modules.find(
+          m => m.metadata.name === this.currentEditingName
+        );
+        const componentsOfModule = module?.components || [];
+        this.components = componentsOfModule;
+
+        console.log('componentsOfModule', componentsOfModule);
+        break;
+      case 'app':
+        const componentsOfApp = this.app.spec.components;
+        this.components = componentsOfApp;
+        break;
+    }
+    this.emitComponentsChange();
+  }
+
+  private emitComponentsChange() {
+    eventBus.send('componentsReload', this.components);
+  }
+
+  saveInLS() {
+    console.log('saveInLS', this.components)
+    switch (this.currentEditingType) {
+      case 'app':
+        const newApp = produce(this.app, draft => {
+          draft.spec.components = this.components;
+        });
+        this.app = newApp;
+        localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(newApp));
+        break;
+      case 'module':
+        const i = this.modules.findIndex(
+          m => m.metadata.name === this.currentEditingName
+        );
+        // this.modules[i] = app2Module(this.app);
+        const newModules = produce(this.modules, draft => {
+          draft[i].components = this.components;
+        });
+        console.log('newModules', newModules);
+        this.modules = newModules
+        localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(newModules));
+    }
+  }
+}
