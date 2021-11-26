@@ -34,7 +34,7 @@ export class AppModelManager implements IUndoRedoManager {
       console.warn('cannot redo as cannot move to next cursor', this.operationStack);
       return;
     }
-    const newApp = this.operationStack.cursor?.val?.do(this._app);
+    const newApp = this.operationStack.cursor?.val?.redo(this._app);
     // console.log('redo', this.operationStack.cursor?.val);
     if (newApp) {
       this.updateApp(newApp);

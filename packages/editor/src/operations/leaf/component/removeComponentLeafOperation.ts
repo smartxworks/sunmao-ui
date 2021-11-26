@@ -1,5 +1,6 @@
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
+import { tryOriginal } from '../../../operations/util';
 import { BaseLeafOperation } from '../../type';
 
 export type RemoveComponentLeafOperationContext = {
@@ -20,7 +21,9 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
       return prev;
     }
     return produce(prev, draft => {
-      this.deletedComponent = draft.spec.components.splice(this.deletedIndex, 1)[0];
+      this.deletedComponent = tryOriginal(
+        draft.spec.components.splice(this.deletedIndex, 1)[0]
+      );
     });
   }
 

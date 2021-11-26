@@ -1,5 +1,6 @@
 import { Application, ComponentTrait } from '@sunmao-ui/core';
 import produce from 'immer';
+import { tryOriginal } from '../../../operations/util';
 import { BaseLeafOperation } from '../../type';
 
 export type RemoveTraitLeafOperationContext = {
@@ -22,10 +23,9 @@ export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafO
         console.warn('trait not foudn');
         return;
       }
-      this.deletedTrait = draft.spec.components[componentIndex].traits.splice(
-        this.context.index,
-        1
-      )[0];
+      this.deletedTrait = tryOriginal(
+        draft.spec.components[componentIndex].traits.splice(this.context.index, 1)[0]
+      );
     });
   }
 

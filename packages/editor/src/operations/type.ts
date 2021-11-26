@@ -200,7 +200,7 @@ export abstract class BaseBranchOperation<TContext>
    */
   redo(prev: Application): Application {
     return this.operationStack.reduce((prev, node) => {
-      prev = node.do(prev);
+      prev = node.redo(prev);
       return prev;
     }, prev);
   }
