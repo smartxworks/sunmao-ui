@@ -135,13 +135,13 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
     return produce(prev, draft => {
       switch (this.context.orientation) {
         case 'up': {
-          const movedElement = draft.spec.components.splice(this.dest, 1)[0];
-          draft.spec.components.splice(this.index + 1, 0, movedElement);
+          const movedElement = draft.spec.components.splice(this.dest - 1, 1)[0];
+          draft.spec.components.splice(this.index, 0, movedElement);
           break;
         }
         case 'down': {
-          const movedElement = draft.spec.components.splice(this.dest, 1)[0];
-          draft.spec.components.splice(this.index - 1, 0, movedElement);
+          const movedElement = draft.spec.components.splice(this.dest + 1, 1)[0];
+          draft.spec.components.splice(this.index, 0, movedElement);
           break;
         }
       }
