@@ -12,7 +12,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   template,
   app,
   services,
-  customStyle
+  customStyle,
 }) => {
   if (!listData) {
     return null;
@@ -40,7 +40,15 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
     return listItemEle;
   });
 
-  return <BaseList css={css`${customStyle?.content}`}>{listItems}</BaseList>;
+  return (
+    <BaseList
+      css={css`
+        ${customStyle?.content}
+      `}
+    >
+      {listItems}
+    </BaseList>
+  );
 };
 
 const PropsSchema = Type.Object({
@@ -55,19 +63,17 @@ const exampleProperties = {
       name: 'Bowen Tan',
     },
   ],
-  template: [
-    {
-      id: 'listItemName-{{$listItem.id}}',
-      type: 'core/v1/text',
-      properties: {
-        value: {
-          raw: 'Name：{{$listItem.name}}',
-          format: 'plain',
-        },
+  template: {
+    id: 'listItemName-{{$listItem.id}}',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: 'Name：{{$listItem.name}}',
+        format: 'plain',
       },
-      traits: [],
     },
-  ],
+    traits: [],
+  },
 };
 
 export default {
