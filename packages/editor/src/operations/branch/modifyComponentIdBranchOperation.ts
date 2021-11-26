@@ -1,18 +1,20 @@
 import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
-import { ModifyComponentPropertiesOperation } from '../leaf/component/modifyPropertiesOperation';
-import { ModifyComponentIdOperation as LeafModifyComponentIdOperation } from '../leaf/component/modifyIdOperation';
-import { ModifyTraitPropertiesOperation } from '../leaf/trait/modifyPropertiesOperation';
 import { BaseBranchOperation } from '../type';
-import { UpdateSelectIdOperation } from '../leaf/updateSelectIdOperation';
 import { ApplicationInstance } from '../../setup';
+import {
+  ModifyComponentIdLeafOperation,
+  ModifyComponentPropertiesLeafOperation,
+  ModifyTraitPropertiesLeafOperation,
+  UpdateSelectComponentLeafOperation,
+} from '../leaf';
 
-export type ModifyComponentIdOperationContext = {
+export type ModifyComponentIdBranchOperationContext = {
   componentId: string;
   newId: string;
 };
 
-export class ModifyComponentIdOperation extends BaseBranchOperation<ModifyComponentIdOperationContext> {
+export class ModifyComponentIdBranchOperation extends BaseBranchOperation<ModifyComponentIdBranchOperationContext> {
   do(prev: Application): Application {
     const toReId = prev.spec.components.find(c => c.id === this.context.componentId);
     if (!toReId) {
@@ -29,7 +31,7 @@ export class ModifyComponentIdOperation extends BaseBranchOperation<ModifyCompon
     prev.spec.components.forEach(component => {
       if (component.id === parentId && component.type === 'core/v1/grid_layout') {
         this.operationStack.insert(
-          new ModifyComponentPropertiesOperation({
+          new ModifyComponentPropertiesLeafOperation({
             componentId: component.id,
             properties: {
               layout: (prev: Array<ReactGridLayout.Layout>) => {
@@ -56,7 +58,7 @@ export class ModifyComponentIdOperation extends BaseBranchOperation<ModifyCompon
       ) {
         // for direct children of the element, update their slot trait to new id
         this.operationStack.insert(
-          new ModifyTraitPropertiesOperation({
+          new ModifyTraitPropertiesLeafOperation({
             componentId: component.id,
             traitIndex: slotTraitIndex,
             properties: {
@@ -71,10 +73,10 @@ export class ModifyComponentIdOperation extends BaseBranchOperation<ModifyCompon
     });
 
     // update component id to new id
-    this.operationStack.insert(new LeafModifyComponentIdOperation(this.context));
+    this.operationStack.insert(new ModifyComponentIdLeafOperation(this.context));
     // update selectid
     this.operationStack.insert(
-      new UpdateSelectIdOperation({
+      new UpdateSelectComponentLeafOperation({
         componentId: ApplicationInstance.selectedComponent?.id,
         newId: this.context.newId,
       })

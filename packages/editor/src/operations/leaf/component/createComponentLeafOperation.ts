@@ -3,12 +3,12 @@ import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 import { genComponent } from '../../util';
 
-export type NewComponentOperationContext = {
+export type CreateComponentLeafOperationContext = {
   componentType: string;
   componentId: string;
 };
 
-export class NewComponentOperation extends BaseLeafOperation<NewComponentOperationContext> {
+export class CreateComponentLeafOperation extends BaseLeafOperation<CreateComponentLeafOperationContext> {
   do(prev: Application): Application {
     const newComponent = genComponent(
       this.context.componentType,
@@ -19,7 +19,7 @@ export class NewComponentOperation extends BaseLeafOperation<NewComponentOperati
       draft.spec.components.push(newComponent);
     });
   }
-  
+
   undo(prev: Application): Application {
     return produce(prev, draft => {
       const remains = draft.spec.components.filter(

@@ -2,11 +2,11 @@ import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 
-export type FreeComponentOperationContext = {
+export type RemoveComponentLeafOperationContext = {
   componentId: string;
 };
 
-export class FreeComponentOperation extends BaseLeafOperation<FreeComponentOperationContext> {
+export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveComponentLeafOperationContext> {
   private deletedComponent!: ApplicationComponent;
   // FIXME: index is not a good type to remember a deleted resource
   private deletedIndex = -1;

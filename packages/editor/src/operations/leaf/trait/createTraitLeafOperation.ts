@@ -2,13 +2,13 @@ import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 
-export type NewTraitOperationContext = {
+export type CreateTraitLeafOperationContext = {
   componentId: string;
   traitType: string;
   properties: Record<string, any>;
 };
 
-export class NewTraitOperation extends BaseLeafOperation<NewTraitOperationContext> {
+export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafOperationContext> {
   private traitIndex!: number;
 
   do(prev: Application): Application {

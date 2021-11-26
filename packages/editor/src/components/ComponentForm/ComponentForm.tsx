@@ -11,9 +11,11 @@ import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
-import { ModifyTraitPropertiesOperation } from '../../operations/leaf/trait/modifyPropertiesOperation';
-import { ModifyComponentPropertiesOperation } from '../../operations/leaf/component/modifyPropertiesOperation';
-import { ModifyComponentIdOperation } from '../../operations/branch/modifyComponentIdOperation';
+import {
+  ModifyComponentPropertiesLeafOperation,
+  ModifyTraitPropertiesLeafOperation,
+} from '../../operations/leaf';
+import { ModifyComponentIdBranchOperation } from '../../operations/branch';
 
 type Props = {
   registry: Registry;
@@ -34,14 +36,14 @@ export const renderField = (properties: {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
       const operation = type
-        ? new ModifyTraitPropertiesOperation({
+        ? new ModifyTraitPropertiesLeafOperation({
             componentId: selectedId,
             traitIndex: index,
             properties: {
               [fullKey]: ref.current?.value,
             },
           })
-        : new ModifyComponentPropertiesOperation({
+        : new ModifyComponentPropertiesLeafOperation({
             componentId: selectedId,
             properties: {
               [fullKey]: ref.current?.value,
@@ -94,7 +96,7 @@ export const ComponentForm: React.FC<Props> = props => {
   const changeComponentId = (selectedId: string, value: string) => {
     eventBus.send(
       'operation',
-      new ModifyComponentIdOperation({ componentId: selectedId, newId: value })
+      new ModifyComponentIdBranchOperation({ componentId: selectedId, newId: value })
     );
   };
 
@@ -130,7 +132,7 @@ export const ComponentForm: React.FC<Props> = props => {
             onChange={newFormData => {
               eventBus.send(
                 'operation',
-                new ModifyComponentPropertiesOperation({
+                new ModifyComponentPropertiesLeafOperation({
                   componentId: selectedId,
                   properties: newFormData,
                 })

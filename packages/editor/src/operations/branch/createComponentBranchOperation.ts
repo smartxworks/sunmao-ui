@@ -1,12 +1,14 @@
 import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
-import { ModifyComponentPropertiesOperation } from '../leaf/component/modifyPropertiesOperation';
-import { NewComponentOperation } from '../leaf/component/newOperation';
-import { NewTraitOperation } from '../leaf/trait/newOperation';
+import {
+  CreateComponentLeafOperation,
+  CreateTraitLeafOperation,
+  ModifyComponentPropertiesLeafOperation,
+} from '../leaf';
 import { BaseBranchOperation } from '../type';
 import { genId } from '../util';
 
-export type AddComponentOperationContext = {
+export type CreateComponentBranchOperationContext = {
   componentType: string;
   componentId?: string;
   slot?: string;
@@ -14,7 +16,7 @@ export type AddComponentOperationContext = {
   layout?: ReactGridLayout.Layout[];
 };
 
-export class AddComponentOperation extends BaseBranchOperation<AddComponentOperationContext> {
+export class CreateComponentBranchOperation extends BaseBranchOperation<CreateComponentBranchOperationContext> {
   do(prev: Application): Application {
     // gen component id
     if (!this.context.componentId) {
@@ -22,7 +24,7 @@ export class AddComponentOperation extends BaseBranchOperation<AddComponentOpera
     }
     // insert a new component to spec
     this.operationStack.insert(
-      new NewComponentOperation({
+      new CreateComponentLeafOperation({
         componentId: this.context.componentId!,
         componentType: this.context.componentType,
       })
@@ -36,7 +38,7 @@ export class AddComponentOperation extends BaseBranchOperation<AddComponentOpera
 
       // add a slot trait if it has a direct child
       this.operationStack.insert(
-        new NewTraitOperation({
+        new CreateTraitLeafOperation({
           traitType: 'core/v1/slot',
           properties: {
             container: {
@@ -52,7 +54,7 @@ export class AddComponentOperation extends BaseBranchOperation<AddComponentOpera
       } else if (parentComponent.type === 'core/v1/grid_layout') {
         this.operationStack.insert(
           // update grid layout for the new created component, it was pushed into layout by react-grid-layout, so we need to find it and update its id
-          new ModifyComponentPropertiesOperation({
+          new ModifyComponentPropertiesLeafOperation({
             componentId: parentComponent.id,
             properties: {
               layout: (prev: Array<ReactGridLayout.Layout>) => {

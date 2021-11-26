@@ -4,13 +4,13 @@ import _ from 'lodash-es';
 import { tryOriginal } from '../../util';
 import { BaseLeafOperation } from '../../type';
 
-export type ModifyTraitPropertiesOperationContext = {
+export type ModifyTraitPropertiesLeafOperationContext = {
   componentId: string;
   traitIndex: number;
   properties: Record<string, any | (<T = any>(prev: T) => T)>;
 };
 
-export class ModifyTraitPropertiesOperation extends BaseLeafOperation<ModifyTraitPropertiesOperationContext> {
+export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<ModifyTraitPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
   do(prev: Application): Application {
     return produce(prev, draft => {

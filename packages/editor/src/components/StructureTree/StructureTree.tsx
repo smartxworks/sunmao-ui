@@ -6,10 +6,12 @@ import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { RemoveComponentOperation } from '../../operations/branch/removeComponentOperation';
-import { AddComponentOperation } from '../../operations/branch/addComponentOperation';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { ApplicationInstance } from '../../setup';
+import {
+  RemoveComponentBranchOperation,
+  CreateComponentBranchOperation,
+} from '../../operations/branch';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -71,7 +73,7 @@ export const StructureTree: React.FC<Props> = props => {
         const onClickRemove = () => {
           eventBus.send(
             'operation',
-            new RemoveComponentOperation({
+            new RemoveComponentBranchOperation({
               componentId: dummy.id,
             })
           );
@@ -113,7 +115,7 @@ function RootItem() {
   const onDrop = (creatingComponent: string) => {
     eventBus.send(
       'operation',
-      new AddComponentOperation({
+      new CreateComponentBranchOperation({
         componentType: creatingComponent,
       })
     );

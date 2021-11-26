@@ -2,12 +2,12 @@ import { Application, ComponentTrait } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 
-export type FreeTraitOperationContext = {
+export type RemoveTraitLeafOperationContext = {
   componentId: string;
   index: number;
 };
 
-export class FreeTraitOperation extends BaseLeafOperation<FreeTraitOperationContext> {
+export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafOperationContext> {
   private deletedTrait!: ComponentTrait;
   do(prev: Application): Application {
     const componentIndex = prev.spec.components.findIndex(

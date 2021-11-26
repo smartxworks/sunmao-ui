@@ -7,8 +7,10 @@ import { GeneralTraitForm } from './GeneralTraitForm';
 import { eventBus } from '../../../eventBus';
 import { ignoreTraitsList } from '../../../constants';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { NewTraitOperation } from '../../../operations/leaf/trait/newOperation';
-import { FreeTraitOperation } from '../../../operations/leaf/trait/freeOperation';
+import {
+  CreateTraitLeafOperation,
+  RemoveTraitLeafOperation,
+} from '../../../operations/leaf';
 
 type Props = {
   registry: Registry;
@@ -23,7 +25,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     const initProperties = parseTypeBox(traitSpec.properties as TSchema);
     eventBus.send(
       'operation',
-      new NewTraitOperation({
+      new CreateTraitLeafOperation({
         componentId: component.id,
         traitType: type,
         properties: initProperties,
@@ -39,7 +41,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
       const onRemoveTrait = () => {
         eventBus.send(
           'operation',
-          new FreeTraitOperation({ componentId: component.id, index: i })
+          new RemoveTraitLeafOperation({ componentId: component.id, index: i })
         );
       };
       return (
