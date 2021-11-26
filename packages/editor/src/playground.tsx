@@ -36,7 +36,7 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
       registry.registerModule(m);
     });
     localStorage.removeItem('schema');
-    const appModelManager = new AppModelManager(app);
+    const appModelManager = new AppModelManager(app, registry);
 
     return {
       App,
@@ -87,6 +87,7 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
             App={App!}
             registry={registry!}
             stateStore={stateStore!}
+            appModelManager={appModelManager}
             apiService={apiService!}
           />
         )}

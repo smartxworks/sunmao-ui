@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { GridCallbacks, DIALOG_CONTAINER_ID, initSunmaoUI } from '@sunmao-ui/runtime';
+import produce from 'immer';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { StructureTree } from './StructureTree';
+import {
+  CreateComponentOperation,
+  ModifyComponentPropertyOperation,
+  ReplaceAppOperation,
+} from '../operations/Operations';
 import { eventBus, SelectComponentEvent } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
@@ -11,11 +17,7 @@ import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
-import {
-  ModifyComponentPropertiesLeafOperation,
-  ReplaceAppLeafOperation,
-} from '../operations/leaf';
-import { CreateComponentBranchOperation } from '../operations/branch';
+import { AppModelManager } from '../operations/AppModelManager';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -24,9 +26,15 @@ type Props = {
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   apiService: ReturnOfInit['apiService'];
+  appModelManager: AppModelManager;
 };
 
-export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
+export const Editor: React.FC<Props> = ({
+  App,
+  registry,
+  stateStore,
+  appModelManager,
+}) => {
   const { app } = useAppModel();
   const [selectedComponentId, setSelectedComponentId] = useState(
     app.spec.components[0]?.id || ''
@@ -44,27 +52,31 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
 
   const gridCallbacks: GridCallbacks = useMemo(() => {
     return {
-      // drag an existing component
       onDragStop(id, layout) {
         eventBus.send(
           'operation',
-          new ModifyComponentPropertiesLeafOperation({
-            componentId: id,
-            properties: { layout },
-          })
+          new ModifyComponentPropertyOperation(id, 'layout', layout)
         );
       },
-      // drag a new component from tool box
       onDrop(id, layout, _, e) {
         const component = e.dataTransfer?.getData('component') || '';
+        const componentId = appModelManager.genId(component);
         eventBus.send(
           'operation',
-          new CreateComponentBranchOperation({
-            componentType: component,
-            parentId: id,
-            slot: 'content',
-            layout,
-          })
+          new CreateComponentOperation(component, id, 'content')
+        );
+
+        const newLayout = produce(layout, draft => {
+          draft.forEach(l => {
+            if (l.i === '__dropping-elem__') {
+              l.i = componentId;
+            }
+          });
+        }).filter(v => !!v); // there is unknown empty in array
+
+        eventBus.send(
+          'operation',
+          new ModifyComponentPropertyOperation(id, 'layout', newLayout)
         );
       },
     };
@@ -179,7 +191,7 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
           onCodeMode={v => {
             setCodeMode(v);
             if (!v && code) {
-              eventBus.send('operation', new ReplaceAppLeafOperation(JSON.parse(code)));
+              eventBus.send('operation', new ReplaceAppOperation(JSON.parse(code)));
             }
           }}
         />

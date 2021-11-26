@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import React from 'react';
-import { RemoveComponentBranchOperation } from '../operations/branch';
 import { eventBus } from '../eventBus';
+import { RemoveComponentOperation } from '../operations/Operations';
 
 type Props = {
   selectedComponentId: string;
@@ -25,20 +25,13 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
       case 'Backspace':
         eventBus.send(
           'operation',
-          new RemoveComponentBranchOperation({ componentId: props.selectedComponentId })
+          new RemoveComponentOperation(props.selectedComponentId)
         );
         break;
       case 'z':
-        // FIXME: detect os version and set redo/undo logic
-        if (e.metaKey || e.ctrlKey) {
+        if (e.metaKey) {
           eventBus.send('undo');
         }
-        break;
-      case 'y':
-        if (e.metaKey || e.ctrlKey) {
-          eventBus.send('redo');
-        }
-        break;
     }
   };
 

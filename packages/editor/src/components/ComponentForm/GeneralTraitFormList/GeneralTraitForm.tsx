@@ -23,10 +23,9 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     trait.properties
   );
 
-  const fields = Object.keys(properties || []).map((key: string, index: number) => {
+  const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
     return renderField({
-      index,
       key,
       value,
       fullKey: key,
