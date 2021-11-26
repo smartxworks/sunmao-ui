@@ -15,7 +15,7 @@
     <div id="root"></div>
     <script type="module">
       import renderApp from './src/main.tsx';
-      renderApp();
+      renderApp(JSON.parse(localStorage.getItem('schema')) || undefined);
     </script>
   </body>
 </html>

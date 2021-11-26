@@ -17,12 +17,12 @@ import { EventHandlerSchema, FetchTraitPropertiesSchema } from '@sunmao-ui/runti
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EventHandlerForm } from '../EventTraitForm/EventHandlerForm';
-import {
-  ModifyTraitPropertiesOperation,
-  RemoveTraitOperation,
-} from '../../../operations/Operations';
 import { eventBus } from '../../../eventBus';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import {
+  ModifyTraitPropertiesLeafOperation,
+  RemoveTraitLeafOperation,
+} from '../../../operations/leaf';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
@@ -46,9 +46,14 @@ export const FetchTraitForm: React.FC<Props> = props => {
   const formik = useFormik({
     initialValues: fetchTrait,
     onSubmit: values => {
+      const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
       eventBus.send(
         'operation',
-        new ModifyTraitPropertiesOperation(component.id, 'core/v1/fetch', values)
+        new ModifyTraitPropertiesLeafOperation({
+          componentId: component.id,
+          traitIndex: index,
+          properties: values,
+        })
       );
     },
   });
@@ -193,8 +198,11 @@ export const FetchTraitForm: React.FC<Props> = props => {
         size="xs"
         icon={<CloseIcon />}
         onClick={() => {
-          const i = component.traits.findIndex(t => t.type === 'core/v1/fetch');
-          eventBus.send('operation', new RemoveTraitOperation(component.id, i));
+          const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
+          eventBus.send(
+            'operation',
+            new RemoveTraitLeafOperation({ componentId: component.id, index })
+          );
         }}
       />
     </Box>
