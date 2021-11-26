@@ -2,7 +2,7 @@ import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule, Registry } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
 import { eventBus } from './eventBus';
-import { EmptyAppSchema } from './constants';
+import { DefaultNewModule, EmptyAppSchema } from './constants';
 
 // function module2App(module: ImplementedRuntimeModule): Application {
 //   return {
@@ -45,7 +45,7 @@ export class AppStorage {
     this.modules = this.getModulesFromLS();
     this.updateCurrentId('app', this.app.metadata.name);
     this.refreshComponents();
-    
+
     eventBus.on('componentsChange', (components: ApplicationComponent[]) => {
       this.components = components;
       this.saveInLS();
@@ -84,6 +84,45 @@ export class AppStorage {
     this.refreshComponents();
   }
 
+  createModule() {
+    this.modules.push(DefaultNewModule);
+    this.saveModulesInLS();
+  }
+
+  saveInLS() {
+    console.log('saveInLS', this.components);
+    switch (this.currentEditingType) {
+      case 'app':
+        const newApp = produce(this.app, draft => {
+          draft.spec.components = this.components;
+        });
+        this.app = newApp;
+        this.saveAppInLS();
+        break;
+      case 'module':
+        const i = this.modules.findIndex(
+          m => m.metadata.name === this.currentEditingName
+        );
+        const newModules = produce(this.modules, draft => {
+          draft[i].components = this.components;
+        });
+        console.log('newModules', newModules);
+        this.modules = newModules;
+        this.saveModulesInLS();
+        break;
+    }
+  }
+
+  private saveAppInLS() {
+    localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));
+  }
+
+  private saveModulesInLS() {
+    localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(this.modules));
+    // reregister modules to activate immediately
+    this.modules.forEach(m => this.registry.registerModule(m, true));
+  }
+
   // update components by currentEditingType & cache
   private refreshComponents() {
     switch (this.currentEditingType) {
@@ -106,31 +145,5 @@ export class AppStorage {
 
   private emitComponentsChange() {
     eventBus.send('componentsReload', this.components);
-  }
-
-  saveInLS() {
-    console.log('saveInLS', this.components)
-    switch (this.currentEditingType) {
-      case 'app':
-        const newApp = produce(this.app, draft => {
-          draft.spec.components = this.components;
-        });
-        this.app = newApp;
-        localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(newApp));
-        break;
-      case 'module':
-        const i = this.modules.findIndex(
-          m => m.metadata.name === this.currentEditingName
-        );
-        const newModules = produce(this.modules, draft => {
-          draft[i].components = this.components;
-        });
-        console.log('newModules', newModules);
-        this.modules = newModules
-        localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(newModules));
-        // reregister modules to activate immediately
-        this.modules.forEach((m) => this.registry.registerModule(m, true));
-        break;
-    }
   }
 }

@@ -1,7 +1,8 @@
-import { Divider, Text, VStack } from '@chakra-ui/react';
+import { Divider, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { RuntimeModuleSpec } from '@sunmao-ui/core';
 import { AppStorage } from '../../AppStorage';
+import { AddIcon } from '@chakra-ui/icons';
 
 type ExplorerProps = {
   appStorage: AppStorage;
@@ -27,7 +28,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
     />
   );
 
-  const modules: RuntimeModuleSpec[] = appStorage.modules
+  const modules: RuntimeModuleSpec[] = appStorage.modules;
   const moduleItems = modules.map((module: RuntimeModuleSpec) => {
     const moduleItemId = `module_${module.metadata.name}`;
     const onClickModule = (id: string) => {
@@ -52,9 +53,17 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
       </Text>
       {appItem}
       <Divider />
-      <Text fontSize="lg" fontWeight="bold">
-        Modules
-      </Text>
+      <HStack width="full" justifyContent="space-between">
+        <Text fontSize="lg" fontWeight="bold">
+          Modules
+        </Text>
+        <IconButton
+          aria-label="create module"
+          size="xs"
+          icon={<AddIcon />}
+          onClick={() => appStorage.createModule()}
+        />
+      </HStack>
       {moduleItems}
     </VStack>
   );
