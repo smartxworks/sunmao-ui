@@ -1,8 +1,21 @@
 import { ImplementedRuntimeModule } from '../services/registry';
 
 // add {{$moduleId}} in moduleSchema
-export function parseModuleSchema(module: ImplementedRuntimeModule): ImplementedRuntimeModule {
-  const ids = module.components.map(c => c.id);
+export function parseModuleSchema(
+  module: ImplementedRuntimeModule
+): ImplementedRuntimeModule {
+  const ids: string[] = [];
+  module.components.forEach(c => {
+    ids.push(c.id);
+    if (c.type === 'core/v1/moduleContainer') {
+      ids.push(c.properties.id as string);
+    }
+
+
+    if (c.type === 'chakra_ui/v1/list') {
+      ids.push((c.properties.template as any).id);
+    }
+  });
   function traverse(tree: Record<string, any>) {
     for (const key in tree) {
       const val = tree[key];
@@ -25,5 +38,5 @@ export function parseModuleSchema(module: ImplementedRuntimeModule): Implemented
 
   traverse(module.components);
 
-  return module
+  return module;
 }
