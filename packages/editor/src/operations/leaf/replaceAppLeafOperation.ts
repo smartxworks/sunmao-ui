@@ -2,11 +2,11 @@ import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../type';
 
-export type ReplaceAppOperationContext = {
+export type ReplaceAppLeafOperationContext = {
   app: Application;
 };
 
-export class ReplaceAppOperation extends BaseLeafOperation<ReplaceAppOperationContext> {
+export class ReplaceAppLeafOperation extends BaseLeafOperation<ReplaceAppLeafOperationContext> {
   private previousState!: Application;
   do(prev: Application): Application {
     this.previousState = prev;

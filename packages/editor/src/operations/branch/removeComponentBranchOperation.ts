@@ -1,14 +1,16 @@
 import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
-import { FreeComponentOperation } from '../leaf/component/freeOperation';
-import { ModifyComponentPropertiesOperation } from '../leaf/component/modifyPropertiesOperation';
+import {
+  ModifyComponentPropertiesLeafOperation,
+  RemoveComponentLeafOperation,
+} from '../leaf';
 import { BaseBranchOperation } from '../type';
 
-export type RemoveComponentOperationContext = {
+export type RemoveComponentBranchOperationContext = {
   componentId: string;
 };
 
-export class RemoveComponentOperation extends BaseBranchOperation<RemoveComponentOperationContext> {
+export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveComponentBranchOperationContext> {
   do(prev: Application): Application {
     // find component to remove
     const toRemove = prev.spec.components.find(c => c.id === this.context.componentId);
@@ -34,7 +36,7 @@ export class RemoveComponentOperation extends BaseBranchOperation<RemoveComponen
       ) {
         // for direct children of the element, use Remove operation to delete them, it will cause a cascade deletion
         this.operationStack.insert(
-          new RemoveComponentOperation({ componentId: component.id })
+          new RemoveComponentBranchOperation({ componentId: component.id })
         );
       }
     });
@@ -42,7 +44,7 @@ export class RemoveComponentOperation extends BaseBranchOperation<RemoveComponen
     if (parentId) {
       // modify layout property of parent grid layout component
       this.operationStack.insert(
-        new ModifyComponentPropertiesOperation({
+        new ModifyComponentPropertiesLeafOperation({
           componentId: parentId,
           properties: {
             layout: (prev: Array<ReactGridLayout.Layout>) => {
@@ -63,7 +65,7 @@ export class RemoveComponentOperation extends BaseBranchOperation<RemoveComponen
 
     // free component from schema
     this.operationStack.insert(
-      new FreeComponentOperation({ componentId: this.context.componentId })
+      new RemoveComponentLeafOperation({ componentId: this.context.componentId })
     );
 
     // do the operation in order

@@ -3,12 +3,12 @@ import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 import _ from 'lodash-es';
 import { tryOriginal } from '../../util';
-export type ModifyComponentPropertiesOperationContext = {
+export type ModifyComponentPropertiesLeafOperationContext = {
   componentId: string;
   properties: Record<string, any | (<T = any>(prev: T) => T)>;
 };
 
-export class ModifyComponentPropertiesOperation extends BaseLeafOperation<ModifyComponentPropertiesOperationContext> {
+export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<ModifyComponentPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
   do(prev: Application): Application {
     return produce(prev, draft => {

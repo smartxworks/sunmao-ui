@@ -11,9 +11,11 @@ import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
-import { AddComponentOperation } from '../operations/branch/addComponentOperation';
-import { ReplaceAppOperation } from '../operations/leaf/replaceAppOperation';
-import { ModifyComponentPropertiesOperation } from '../operations/leaf/component/modifyPropertiesOperation';
+import {
+  ModifyComponentPropertiesLeafOperation,
+  ReplaceAppLeafOperation,
+} from '../operations/leaf';
+import { CreateComponentBranchOperation } from '../operations/branch';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -46,7 +48,7 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
       onDragStop(id, layout) {
         eventBus.send(
           'operation',
-          new ModifyComponentPropertiesOperation({
+          new ModifyComponentPropertiesLeafOperation({
             componentId: id,
             properties: { layout },
           })
@@ -57,7 +59,7 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
         const component = e.dataTransfer?.getData('component') || '';
         eventBus.send(
           'operation',
-          new AddComponentOperation({
+          new CreateComponentBranchOperation({
             componentType: component,
             parentId: id,
             slot: 'content',
@@ -177,7 +179,7 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
           onCodeMode={v => {
             setCodeMode(v);
             if (!v && code) {
-              eventBus.send('operation', new ReplaceAppOperation(JSON.parse(code)));
+              eventBus.send('operation', new ReplaceAppLeafOperation(JSON.parse(code)));
             }
           }}
         />

@@ -2,12 +2,12 @@ import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 
-export type ModifyComponentIdOperationContext = {
+export type ModifyComponentIdLeafOperationContext = {
   componentId: string;
   newId: string;
 };
 
-export class ModifyComponentIdOperation extends BaseLeafOperation<ModifyComponentIdOperationContext> {
+export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComponentIdLeafOperationContext> {
   do(prev: Application): Application {
     return produce(prev, draft => {
       const comp = draft.spec.components.find(c => c.id === this.context.componentId);

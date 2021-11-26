@@ -1,12 +1,12 @@
 import { Application } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
-export type AdjustComponentOrderOperationContext = {
+export type AdjustComponentOrderLeafOperationContext = {
   orientation: 'up' | 'down';
   componentId: string;
 };
 
-export class AdjustComponentOrderOperation extends BaseLeafOperation<AdjustComponentOrderOperationContext> {
+export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustComponentOrderLeafOperationContext> {
   do(prev: Application): Application {
     return produce(prev, draft => {
       const index = draft.spec.components.findIndex(

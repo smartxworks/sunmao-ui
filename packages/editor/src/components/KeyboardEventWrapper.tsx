@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import React from 'react';
-import { RemoveComponentOperation } from '../operations/branch/removeComponentOperation';
+import { RemoveComponentBranchOperation } from '../operations/branch';
 import { eventBus } from '../eventBus';
 
 type Props = {
@@ -25,7 +25,7 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
       case 'Backspace':
         eventBus.send(
           'operation',
-          new RemoveComponentOperation({ componentId: props.selectedComponentId })
+          new RemoveComponentBranchOperation({ componentId: props.selectedComponentId })
         );
         break;
       case 'z':

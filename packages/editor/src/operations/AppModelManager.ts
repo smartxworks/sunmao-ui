@@ -17,6 +17,7 @@ export class AppModelManager implements IUndoRedoManager {
   }
 
   do(operation: IOperation): void {
+    // TODO: replace by logger
     // console.log('do', operation);
     const newApp = operation.do(this._app);
     this.operationStack.insert(operation);
