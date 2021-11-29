@@ -27,7 +27,10 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
           case 'up':
             for (this.dest = this.index - 1; this.dest >= 0; this.dest--) {
               const nextComponent = draft[this.dest];
-              if (!nextComponent.traits.some(t => t.type === 'core/v1/slot')) {
+              if (
+                nextComponent.type !== 'core/v1/dummy' &&
+                !nextComponent.traits.some(t => t.type === 'core/v1/slot')
+              ) {
                 break;
               }
             }
@@ -98,53 +101,46 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
         console.warn(`the element cannot move ${this.context.orientation}`);
         return;
       }
-      if (movedElement) {
-        switch (this.context.orientation) {
-          case 'up': {
-            const movedElement = draft.splice(this.index, 1)[0];
-            draft.splice(this.dest - 1, 0, movedElement);
-            break;
-          }
-          case 'down': {
-            const movedElement = draft.splice(this.index, 1)[0];
-            draft.splice(this.dest + 1, 0, movedElement);
-            break;
-          }
-        }
-      }
+      const [highPos, lowPos] = [this.dest, this.index].sort();
+      const lowComponent = draft.splice(lowPos, 1)[0];
+      const highComponent = draft.splice(highPos, 1)[0];
+      draft.splice(lowPos - 1, 0, highComponent);
+      draft.splice(highPos, 0, lowComponent);
     });
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      switch (this.context.orientation) {
-        case 'up': {
-          const movedElement = draft.splice(this.index, 1)[0];
-          draft.splice(this.dest - 1, 0, movedElement);
-          break;
-        }
-        case 'down': {
-          const movedElement = draft.splice(this.index, 1)[0];
-          draft.splice(this.dest + 1, 0, movedElement);
-          break;
-        }
+      if (this.index === -1) {
+        console.warn("operation hasn't been executed, cannot redo");
       }
+      if (this.dest === -1) {
+        console.warn('cannot redo, the operation was failed executing');
+        return;
+      }
+      const lowPos = Math.max(this.dest, this.index);
+      const highPos = Math.min(this.dest, this.index);
+      const lowComponent = draft.splice(lowPos, 1)[0];
+      const highComponent = draft.splice(highPos, 1)[0];
+      draft.splice(lowPos - 1, 0, highComponent);
+      draft.splice(highPos, 0, lowComponent);
     });
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      switch (this.context.orientation) {
-        case 'up': {
-          const movedElement = draft.splice(this.dest - 1, 1)[0];
-          draft.splice(this.index, 0, movedElement);
-          break;
-        }
-        case 'down': {
-          const movedElement = draft.splice(this.dest + 1, 1)[0];
-          draft.splice(this.index, 0, movedElement);
-          break;
-        }
+      if (this.index === -1) {
+        console.warn("cannot undo operation, the operation hasn't been executed.");
       }
+      if (this.dest === -1) {
+        console.warn('cannot undo, the operation was failed executing');
+        return;
+      }
+      const lowPos = Math.max(this.dest, this.index);
+      const highPos = Math.min(this.dest, this.index);
+      const lowComponent = draft.splice(lowPos, 1)[0];
+      const highComponent = draft.splice(highPos, 1)[0];
+      draft.splice(lowPos - 1, 0, highComponent);
+      draft.splice(highPos, 0, lowComponent);
     });
   }
 }
