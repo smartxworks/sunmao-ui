@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseBranchOperation } from '../type';
 import {
@@ -14,8 +14,8 @@ export type ModifyComponentIdBranchOperationContext = {
 };
 
 export class ModifyComponentIdBranchOperation extends BaseBranchOperation<ModifyComponentIdBranchOperationContext> {
-  do(prev: Application): Application {
-    const toReId = prev.spec.components.find(c => c.id === this.context.componentId);
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+    const toReId = prev.find(c => c.id === this.context.componentId);
     if (!toReId) {
       console.warn('component not found');
       return prev;
@@ -27,7 +27,7 @@ export class ModifyComponentIdBranchOperation extends BaseBranchOperation<Modify
         | undefined
     )?.id;
 
-    prev.spec.components.forEach(component => {
+    prev.forEach(component => {
       if (component.id === parentId && component.type === 'core/v1/grid_layout') {
         this.operationStack.insert(
           new ModifyComponentPropertiesLeafOperation({
@@ -77,7 +77,7 @@ export class ModifyComponentIdBranchOperation extends BaseBranchOperation<Modify
     this.operationStack.insert(
       new UpdateSelectComponentLeafOperation({
         // TODO:  need a way to get selectedComponent.id here
-        // componentId: ApplicationInstance.selectedComponent?.id,
+        // componentId: ApplicationComponent[]Instance.selectedComponent?.id,
         componentId: '',
         newId: this.context.newId,
       })

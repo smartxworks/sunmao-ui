@@ -32,12 +32,12 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
     const apiService = ui.apiService;
     const stateStore = ui.stateManager.store;
 
-    const { app, modules = [] } = example.value;
+    const { modules = [] } = example.value;
     modules.forEach(m => {
       registry.registerModule(m);
     });
     localStorage.removeItem('schema');
-    const appModelManager = new AppModelManager(app, appStorage.components);
+    const appModelManager = new AppModelManager(appStorage.components);
 
     return {
       App,

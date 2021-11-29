@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import {
   CreateComponentLeafOperation,
@@ -17,12 +17,12 @@ export type CreateComponentBranchOperationContext = {
 };
 
 export class CreateComponentBranchOperation extends BaseBranchOperation<CreateComponentBranchOperationContext> {
-  do(prev: Application): Application {
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
     // gen component id
     if (!this.context.componentId) {
       this.context.componentId = genId(this.context.componentType, prev);
     }
-    // insert a new component to spec
+    // insert a new component to schema
     this.operationStack.insert(
       new CreateComponentLeafOperation({
         componentId: this.context.componentId!,
@@ -32,7 +32,7 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
     // add a slot trait if it has a parent
     if (this.context.parentId && this.context.slot) {
       // try to find parent
-      const parentComponent = prev.spec.components.find(
+      const parentComponent = prev.find(
         c => c.id === this.context.parentId
       );
 
