@@ -9,6 +9,7 @@ import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
 import { AppModelManager } from './operations/AppModelManager';
+import { appStorage } from './setup';
 
 type Example = {
   name: string;
@@ -36,7 +37,7 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
       registry.registerModule(m);
     });
     localStorage.removeItem('schema');
-    const appModelManager = new AppModelManager(app, registry);
+    const appModelManager = new AppModelManager(app, appStorage.components);
 
     return {
       App,
@@ -87,8 +88,9 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
             App={App!}
             registry={registry!}
             stateStore={stateStore!}
-            appModelManager={appModelManager}
             apiService={apiService!}
+            appModelManager={appModelManager}
+            appStorage={appStorage}
           />
         )}
       </Box>
