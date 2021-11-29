@@ -13,7 +13,6 @@ export class AppModelManager implements IUndoRedoManager {
     eventBus.on('redo', () => this.redo());
     eventBus.on('operation', o => this.do(o));
     eventBus.on('componentsReload', components => {
-      console.log('componentsReload', components);
       this.updateComponents(components);
     });
   }

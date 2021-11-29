@@ -9,6 +9,7 @@ import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { ImplWrapper } from '../../services/ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import { parseTypeComponents } from '../../utils/parseType';
+import { ImplementedRuntimeModule } from '../../services/registry';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope?: Record<string, any>;
@@ -47,8 +48,12 @@ export const ModuleRenderer: React.FC<Props> = props => {
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
   const evaledHanlders = evalObject(handlers);
-
-  const moduleSpec = useMemo(() => services.registry.getModuleByType(type), [type]);
+  let moduleSpec: ImplementedRuntimeModule
+  try {
+    moduleSpec = useMemo(() => services.registry.getModuleByType(type), [type]);
+  } catch {
+    return <span>Cannot find Module {type}.</span>
+  }
   const parsedtemplete = useMemo(
     () => moduleSpec.components.map(parseTypeComponents),
     [moduleSpec]

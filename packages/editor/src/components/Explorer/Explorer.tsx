@@ -57,7 +57,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
       <ExplorerItem
         key={module.metadata.name}
         id={moduleItemId}
-        title={module.metadata.name}
+        title={`${module.version}/${module.metadata.name}`}
         onClick={onClickModule}
         onRemove={onRemove}
         isActive={selectedItem === moduleItemId}

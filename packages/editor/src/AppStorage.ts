@@ -37,7 +37,6 @@ export class AppStorage {
       }
       return EmptyAppSchema;
     } catch (error) {
-      console.warn(error);
       return EmptyAppSchema;
     }
   }
@@ -57,7 +56,6 @@ export class AppStorage {
   updateCurrentId(type: 'app' | 'module', name: string) {
     this.currentEditingType = type;
     this.currentEditingName = name;
-    console.log('updateCurrentId', type, name);
     this.refreshComponents();
   }
 
@@ -67,13 +65,11 @@ export class AppStorage {
   }
 
   removeModule(module: ImplementedRuntimeModule) {
-    console.log(module)
     this.setModules(this.modules.filter(m => m !== module));
     this.saveModulesInLS();
   }
 
   saveComponentsInLS() {
-    console.log('saveInLS', this.components);
     switch (this.currentEditingType) {
       case 'app':
         const newApp = produce(this.app, draft => {
@@ -89,7 +85,6 @@ export class AppStorage {
         const newModules = produce(this.modules, draft => {
           draft[i].components = this.components;
         });
-        console.log('newModules', newModules);
         this.setModules(newModules);
         this.saveModulesInLS();
         break;
@@ -126,7 +121,6 @@ export class AppStorage {
         const componentsOfModule = module?.components || [];
         this.components = componentsOfModule;
 
-        console.log('componentsOfModule', componentsOfModule);
         break;
       case 'app':
         const componentsOfApp = this.app.spec.components;

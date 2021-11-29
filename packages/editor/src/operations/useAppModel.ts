@@ -10,7 +10,6 @@ export function useAppModel(appModalManager: AppModelManager) {
 
   useEffect(() => {
     const onComponents = (components: ApplicationComponent[]) => {
-      console.log('componentsChange', components);
       setComponents(() => components);
     };
     eventBus.on('componentsChange', onComponents);
