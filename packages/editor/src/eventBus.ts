@@ -1,12 +1,13 @@
 import mitt from 'mitt';
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
-import { Operations } from './operations/Operations';
+import { IOperation } from './operations/type';
 
 export const SelectComponentEvent = 'selectComponent';
 export const HoverComponentEvent = 'hoverComponent';
 
 const emitter = mitt<{
-  operation: Operations;
+  operation: IOperation;
+  redo: undefined;
   undo: undefined;
   componentsReload: ApplicationComponent[];
   componentsChange: ApplicationComponent[];

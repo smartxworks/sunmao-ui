@@ -2,12 +2,12 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import React, { useMemo, useState } from 'react';
-import { eventBus } from '../../eventBus';
 import {
-  CreateComponentOperation,
-  RemoveComponentOperation,
-  SortComponentOperation,
-} from '../../operations/Operations';
+  RemoveComponentBranchOperation,
+  CreateComponentBranchOperation,
+} from '../../operations/branch';
+import { AdjustComponentOrderLeafOperation } from '../../operations/leaf';
+import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
@@ -57,7 +57,11 @@ export const ComponentTree: React.FC<Props> = props => {
       const onDrop = (creatingComponent: string) => {
         eventBus.send(
           'operation',
-          new CreateComponentOperation(creatingComponent, component.id, slot)
+          new CreateComponentBranchOperation({
+            componentType: creatingComponent,
+            parentId: component.id,
+            slot,
+          })
         );
       };
       const slotName = (
@@ -82,23 +86,42 @@ export const ComponentTree: React.FC<Props> = props => {
   }, [component, childrenMap]);
 
   const onClickRemove = () => {
-    eventBus.send('operation', new RemoveComponentOperation(component.id));
+    eventBus.send(
+      'operation',
+      new RemoveComponentBranchOperation({ componentId: component.id })
+    );
   };
 
   const onDrop = (creatingComponent: string) => {
     if (slots.length === 0) return;
     eventBus.send(
       'operation',
-      new CreateComponentOperation(creatingComponent, component.id, 'content')
+      new CreateComponentBranchOperation({
+        componentType: creatingComponent,
+        parentId: component.id,
+        slot: 'content',
+      })
     );
   };
 
   const onMoveUp = () => {
-    eventBus.send('operation', new SortComponentOperation(component.id, 'up'));
+    eventBus.send(
+      'operation',
+      new AdjustComponentOrderLeafOperation({
+        componentId: component.id,
+        orientation: 'up',
+      })
+    );
   };
 
   const onMoveDown = () => {
-    eventBus.send('operation', new SortComponentOperation(component.id, 'down'));
+    eventBus.send(
+      'operation',
+      new AdjustComponentOrderLeafOperation({
+        componentId: component.id,
+        orientation: 'down',
+      })
+    );
   };
 
   return (
