@@ -1,19 +1,20 @@
 import { Divider, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { RuntimeModuleSpec } from '@sunmao-ui/core';
 import { AppStorage } from '../../AppStorage';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { eventBus } from '../../eventBus';
+import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 
 type ExplorerProps = {
   appStorage: AppStorage;
 };
 
 const useAppStorage = (appStorage: AppStorage) => {
-  const [modules, setModules] = React.useState<RuntimeModuleSpec[]>(appStorage.modules);
+  const [modules, setModules] = React.useState<ImplementedRuntimeModule[]>(
+    appStorage.modules
+  );
 
   eventBus.on('modulesChange', newModules => {
-    console.log('modulesChange')
     setModules(newModules);
   });
 
@@ -43,11 +44,14 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
   );
 
   const { modules } = useAppStorage(appStorage);
-  const moduleItems = modules.map((module: RuntimeModuleSpec) => {
+  const moduleItems = modules.map((module: ImplementedRuntimeModule) => {
     const moduleItemId = `module_${module.metadata.name}`;
     const onClickModule = (id: string) => {
       setSelectedItem(id);
       appStorage.updateCurrentId('module', module.metadata.name);
+    };
+    const onRemove = () => {
+      appStorage.removeModule(module);
     };
     return (
       <ExplorerItem
@@ -55,6 +59,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
         id={moduleItemId}
         title={module.metadata.name}
         onClick={onClickModule}
+        onRemove={onRemove}
         isActive={selectedItem === moduleItemId}
       />
     );
@@ -88,21 +93,37 @@ type ExplorerItemProps = {
   title: string;
   isActive: boolean;
   onClick: (id: string) => void;
+  onRemove?: () => void;
 };
 
-const ExplorerItem: React.FC<ExplorerItemProps> = ({ id, title, isActive, onClick }) => {
+const ExplorerItem: React.FC<ExplorerItemProps> = ({
+  id,
+  title,
+  isActive,
+  onClick,
+  onRemove,
+}) => {
   return (
-    <div
-      onClick={() => onClick(id)}
-      style={{
-        cursor: 'pointer',
-        padding: '10px',
-        borderRadius: '5px',
-        backgroundColor: isActive ? '#eee' : '#fff',
-        width: '100%',
-      }}
+    <HStack
+      width="full"
+      justify="space-between"
+      cursor="pointer"
+      borderRadius="5"
+      padding="2"
+      backgroundColor={isActive ? 'gray.100' : 'white'}
     >
-      {title}
-    </div>
+      <Text fontSize="lg" onClick={() => onClick(id)}>
+        {title}
+      </Text>
+      {onRemove ? (
+        <IconButton
+          variant="ghost"
+          size="smx"
+          aria-label="remove"
+          icon={<DeleteIcon />}
+          onClick={() => onRemove()}
+        />
+      ) : null}
+    </HStack>
   );
 };

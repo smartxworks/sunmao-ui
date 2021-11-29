@@ -25,7 +25,7 @@ export class AppStorage {
 
     eventBus.on('componentsChange', (components: ApplicationComponent[]) => {
       this.components = components;
-      this.saveInLS();
+      this.saveComponentsInLS();
     });
   }
 
@@ -66,7 +66,13 @@ export class AppStorage {
     this.saveModulesInLS();
   }
 
-  saveInLS() {
+  removeModule(module: ImplementedRuntimeModule) {
+    console.log(module)
+    this.setModules(this.modules.filter(m => m !== module));
+    this.saveModulesInLS();
+  }
+
+  saveComponentsInLS() {
     console.log('saveInLS', this.components);
     switch (this.currentEditingType) {
       case 'app':
