@@ -3,9 +3,23 @@ import React from 'react';
 import { RuntimeModuleSpec } from '@sunmao-ui/core';
 import { AppStorage } from '../../AppStorage';
 import { AddIcon } from '@chakra-ui/icons';
+import { eventBus } from '../../eventBus';
 
 type ExplorerProps = {
   appStorage: AppStorage;
+};
+
+const useAppStorage = (appStorage: AppStorage) => {
+  const [modules, setModules] = React.useState<RuntimeModuleSpec[]>(appStorage.modules);
+
+  eventBus.on('modulesChange', newModules => {
+    console.log('modulesChange')
+    setModules(newModules);
+  });
+
+  return {
+    modules,
+  };
 };
 
 export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
@@ -28,7 +42,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
     />
   );
 
-  const modules: RuntimeModuleSpec[] = appStorage.modules;
+  const { modules } = useAppStorage(appStorage);
   const moduleItems = modules.map((module: RuntimeModuleSpec) => {
     const moduleItemId = `module_${module.metadata.name}`;
     const onClickModule = (id: string) => {

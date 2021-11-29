@@ -4,32 +4,6 @@ import { produce } from 'immer';
 import { eventBus } from './eventBus';
 import { DefaultNewModule, EmptyAppSchema } from './constants';
 
-// function module2App(module: ImplementedRuntimeModule): Application {
-//   return {
-//     version: module.version,
-//     kind: 'Application',
-//     metadata: module.metadata,
-//     spec: {
-//       components: module.components,
-//     },
-//     moduleSpec: module.spec,
-//   } as Application;
-// }
-
-// function app2Module(app: Application): ImplementedRuntimeModule {
-//   return {
-//     version: app.version,
-//     kind: 'Module',
-//     metadata: app.metadata,
-//     components: app.spec.components,
-//     parsedVersion: {
-//       category: app.version,
-//       value: app.metadata.name,
-//     },
-//     spec: (app as any).moduleSpec,
-//   };
-// }
-
 export class AppStorage {
   components: ApplicationComponent[] = [];
   app: Application;
@@ -42,7 +16,10 @@ export class AppStorage {
 
   constructor(private registry: Registry) {
     this.app = this.getDefaultAppFromLS();
+    this.setApp(this.app)
     this.modules = this.getModulesFromLS();
+    this.setModules(this.modules)
+  
     this.updateCurrentId('app', this.app.metadata.name);
     this.refreshComponents();
 
@@ -85,7 +62,7 @@ export class AppStorage {
   }
 
   createModule() {
-    this.modules.push(DefaultNewModule);
+    this.setModules([...this.modules, DefaultNewModule]);
     this.saveModulesInLS();
   }
 
@@ -96,7 +73,7 @@ export class AppStorage {
         const newApp = produce(this.app, draft => {
           draft.spec.components = this.components;
         });
-        this.app = newApp;
+        this.setApp(newApp);
         this.saveAppInLS();
         break;
       case 'module':
@@ -107,10 +84,20 @@ export class AppStorage {
           draft[i].components = this.components;
         });
         console.log('newModules', newModules);
-        this.modules = newModules;
+        this.setModules(newModules);
         this.saveModulesInLS();
         break;
     }
+  }
+
+  private setApp(app: Application) {
+    this.app = app;
+    eventBus.send('appChange', app);
+  }
+
+  private setModules(modules: ImplementedRuntimeModule[]) {
+    this.modules = modules;
+    eventBus.send('modulesChange', modules);
   }
 
   private saveAppInLS() {
