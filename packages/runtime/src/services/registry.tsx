@@ -137,7 +137,6 @@ export class Registry {
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {
     const parsedModule = parseModuleSchema(cloneDeep(c))
-    console.log('parsedModule', parsedModule)
     if (!overWrite && this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`
