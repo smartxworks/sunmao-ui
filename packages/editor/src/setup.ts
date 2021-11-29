@@ -9,7 +9,7 @@ const registry = ui.registry;
 const apiService = ui.apiService;
 const stateStore = ui.stateManager.store;
 const appStorage = new AppStorage(registry);
-const appModelManager = new AppModelManager(appStorage.app, appStorage.components);
+const appModelManager = new AppModelManager(appStorage.components);
 
 export {
   ui,

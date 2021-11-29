@@ -1,4 +1,4 @@
-import { Application, ApplicationComponent } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import { tryOriginal } from '../../../operations/util';
 import { BaseLeafOperation } from '../../type';
@@ -12,8 +12,8 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
   // FIXME: index is not a good type to remember a deleted resource
   private deletedIndex = -1;
 
-  do(prev: Application): Application {
-    this.deletedIndex = prev.spec.components.findIndex(
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+    this.deletedIndex = prev.findIndex(
       c => c.id === this.context.componentId
     );
     if (this.deletedIndex === -1) {
@@ -22,20 +22,20 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     }
     return produce(prev, draft => {
       this.deletedComponent = tryOriginal(
-        draft.spec.components.splice(this.deletedIndex, 1)[0]
+        draft.splice(this.deletedIndex, 1)[0]
       );
     });
   }
 
-  redo(prev: Application): Application {
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      draft.spec.components.splice(this.deletedIndex, 1);
+      draft.splice(this.deletedIndex, 1);
     });
   }
 
-  undo(prev: Application): Application {
+  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      draft.spec.components.splice(this.deletedIndex, 0, this.deletedComponent);
+      draft.splice(this.deletedIndex, 0, this.deletedComponent);
     });
   }
 }

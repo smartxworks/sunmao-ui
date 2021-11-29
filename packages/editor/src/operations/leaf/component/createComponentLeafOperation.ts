@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 import { genComponent } from '../../util';
@@ -9,26 +9,26 @@ export type CreateComponentLeafOperationContext = {
 };
 
 export class CreateComponentLeafOperation extends BaseLeafOperation<CreateComponentLeafOperationContext> {
-  do(prev: Application): Application {
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
     const newComponent = genComponent(
       this.context.componentType,
       this.context.componentId
     );
     this.context.componentId = newComponent.id;
     return produce(prev, draft => {
-      draft.spec.components.push(newComponent);
+      draft.push(newComponent);
     });
   }
 
-  undo(prev: Application): Application {
+  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      const remains = draft.spec.components.filter(
+      const remains = draft.filter(
         c => c.id !== this.context.componentId
       );
-      if (remains.length === draft.spec.components.length) {
+      if (remains.length === draft.length) {
         console.warn('element not found');
       }
-      draft.spec.components = remains;
+      draft = remains;
     });
   }
 }
