@@ -6,7 +6,8 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
-import { apiService, App, appModelManager, appStorage, registry, stateStore } from './setup';
+import { editorStore } from './EditorStore';
+import { apiService, App, registry, stateStore } from './setup';
 
 type Options = Partial<{
   components: Parameters<Registry['registerComponent']>[0][];
@@ -19,7 +20,7 @@ export default function renderApp(options: Options = {}) {
   components.forEach(c => registry.registerComponent(c));
   traits.forEach(t => registry.registerTrait(t));
   modules.forEach(m => registry.registerModule(m));
-  appStorage.modules.forEach(m => registry.registerModule(m));
+  editorStore.appStorage.modules.forEach(m => registry.registerModule(m));
 
   ReactDOM.render(
     <StrictMode>
@@ -29,8 +30,6 @@ export default function renderApp(options: Options = {}) {
           registry={registry}
           stateStore={stateStore}
           apiService={apiService}
-          appStorage={appStorage}
-          appModelManager={appModelManager}
         />
       </ChakraProvider>
     </StrictMode>,

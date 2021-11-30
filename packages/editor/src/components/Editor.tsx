@@ -13,7 +13,6 @@ import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
-import { AppStorage } from '../AppStorage';
 import {
   ModifyComponentPropertiesLeafOperation,
   ReplaceAppLeafOperation,
@@ -28,11 +27,10 @@ type Props = {
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   apiService: ReturnOfInit['apiService'];
-  appStorage: AppStorage;
 };
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, appStorage }) => {
+  ({ App, registry, stateStore }) => {
     const { components, selectedComponentId } = editorStore;
 
     const [scale, setScale] = useState(100);
@@ -144,7 +142,7 @@ export const Editor: React.FC<Props> = observer(
               </TabList>
               <TabPanels flex="1" overflow="auto">
                 <TabPanel>
-                  <Explorer appStorage={appStorage} />
+                  <Explorer />
                 </TabPanel>
                 <TabPanel p={0}>
                   <StructureTree
