@@ -10,7 +10,6 @@ class ErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: unknown) {
-    console.log('!!!', { error });
     return { error };
   }
 

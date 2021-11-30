@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Application } from '@sunmao-ui/core';
 import { GridCallbacks, DIALOG_CONTAINER_ID, initSunmaoUI } from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { StructureTree } from './StructureTree';
@@ -11,6 +12,9 @@ import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
+import { AppModelManager } from '../operations/AppModelManager';
+import { Explorer } from './Explorer';
+import { AppStorage } from '../AppStorage';
 import {
   ModifyComponentPropertiesLeafOperation,
   ReplaceAppLeafOperation,
@@ -24,12 +28,21 @@ type Props = {
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   apiService: ReturnOfInit['apiService'];
+  appModelManager: AppModelManager;
+  appStorage: AppStorage;
 };
 
-export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
-  const { app } = useAppModel();
+export const Editor: React.FC<Props> = ({
+  App,
+  registry,
+  stateStore,
+  appModelManager,
+  appStorage,
+}) => {
+  const { components } = useAppModel(appModelManager);
+
   const [selectedComponentId, setSelectedComponentId] = useState(
-    app.spec.components[0]?.id || ''
+    components?.[0]?.id || ''
   );
   const [scale, setScale] = useState(100);
   const [preview, setPreview] = useState(false);
@@ -69,6 +82,19 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
       },
     };
   }, []);
+
+  const app = useMemo<Application>(() => {
+    return {
+      version: 'sunmao/v1',
+      kind: 'Application',
+      metadata: {
+        name: 'some App',
+      },
+      spec: {
+        components,
+      },
+    };
+  }, [components]);
 
   const appComponent = useMemo(() => {
     return (
@@ -119,13 +145,17 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
             isLazy
           >
             <TabList background="gray.50">
+              <Tab>Explorer</Tab>
               <Tab>UI Tree</Tab>
               <Tab>State</Tab>
             </TabList>
             <TabPanels flex="1" overflow="auto">
+              <TabPanel>
+                <Explorer appStorage={appStorage} />
+              </TabPanel>
               <TabPanel p={0}>
                 <StructureTree
-                  app={app}
+                  components={components}
                   selectedComponentId={selectedComponentId}
                   onSelectComponent={id => setSelectedComponentId(id)}
                   registry={registry}
@@ -156,6 +186,7 @@ export const Editor: React.FC<Props> = ({ App, registry, stateStore }) => {
                   app={app}
                   selectedId={selectedComponentId}
                   registry={registry}
+                  appModelManager={appModelManager}
                 />
               </TabPanel>
               <TabPanel p={0}>

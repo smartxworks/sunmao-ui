@@ -53,18 +53,20 @@ import {
   TraitImplementation,
 } from 'src/types/RuntimeSchema';
 import { parseType } from '../utils/parseType';
+import { parseModuleSchema } from '../utils/parseModuleSchema';
+import { cloneDeep } from 'lodash';
 
 export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
 
-type ImplementedRuntimeComponent = RuntimeComponentSpec & {
+export type ImplementedRuntimeComponent = RuntimeComponentSpec & {
   impl: ComponentImplementation;
 };
 
-type ImplementedRuntimeTrait = RuntimeTraitSpec & {
+export type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
 };
 
-type ImplementedRuntimeModule = RuntimeModuleSpec & {
+export type ImplementedRuntimeModule = RuntimeModuleSpec & {
   components: ApplicationComponent[];
 };
 
@@ -133,8 +135,9 @@ export class Registry {
     return res;
   }
 
-  registerModule(c: ImplementedRuntimeModule) {
-    if (this.modules.get(c.version)?.has(c.metadata.name)) {
+  registerModule(c: ImplementedRuntimeModule, overWrite = false) {
+    const parsedModule = parseModuleSchema(cloneDeep(c))
+    if (!overWrite && this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`
       );
@@ -142,7 +145,7 @@ export class Registry {
     if (!this.modules.has(c.version)) {
       this.modules.set(c.version, new Map());
     }
-    this.modules.get(c.version)?.set(c.metadata.name, c);
+    this.modules.get(c.version)?.set(c.metadata.name, parsedModule);
   }
 
   getModule(version: string, name: string): ImplementedRuntimeModule {

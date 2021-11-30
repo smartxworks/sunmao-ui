@@ -27,3 +27,4 @@ export * from './utils/encodeDragDataTransfer';
 export * from './types/RuntimeSchema';
 export * from './types/TraitPropertiesSchema';
 export * from './constants';
+export * from './services/registry';

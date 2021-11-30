@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import _ from 'lodash-es';
 import { tryOriginal } from '../../util';
@@ -12,9 +12,9 @@ export type ModifyTraitPropertiesLeafOperationContext = {
 
 export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<ModifyTraitPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
-  do(prev: Application): Application {
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      const comp = draft.spec.components.find(c => c.id === this.context.componentId);
+      const comp = draft.find(c => c.id === this.context.componentId);
       if (!comp) {
         console.warn('component not found');
         return;
@@ -38,9 +38,9 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       }
     });
   }
-  redo(prev: Application): Application {
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      const comp = draft.spec.components.find(c => c.id === this.context.componentId);
+      const comp = draft.find(c => c.id === this.context.componentId);
       if (!comp) {
         console.warn('component not found');
         return;
@@ -57,9 +57,9 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
     });
   }
 
-  undo(prev: Application): Application {
+  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      const comp = draft.spec.components.find(c => c.id === this.context.componentId);
+      const comp = draft.find(c => c.id === this.context.componentId);
       if (!comp) {
         console.warn('component not found');
         return;

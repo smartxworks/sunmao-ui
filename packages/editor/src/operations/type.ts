@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 
 export const leafSymbol = Symbol('leaf');
 export const branchSymbol = Symbol('branch');
@@ -130,13 +130,13 @@ export interface IOperation<TContext = any> extends IUndoRedo {
    * infer the type of operation, leaf or branch
    */
   type: symbol;
-  do(prev: Application): Application;
-  redo(prev: Application): Application;
-  undo(prev: Application): Application;
+  do(prev: ApplicationComponent[]): ApplicationComponent[];
+  redo(prev: ApplicationComponent[]): ApplicationComponent[];
+  undo(prev: ApplicationComponent[]): ApplicationComponent[];
 }
 
 /**
- * leaf operation is the operation that actually change the spec
+ * leaf operation is the operation that actually change the schema
  */
 export abstract class BaseLeafOperation<TContext> implements IOperation<TContext> {
   context: TContext;
@@ -150,13 +150,13 @@ export abstract class BaseLeafOperation<TContext> implements IOperation<TContext
    * @param prev prev application schema
    * @returns changed application schema
    */
-  abstract do(prev: Application): Application;
+  abstract do(prev: ApplicationComponent[]): ApplicationComponent[];
   /**
    * for leaf operation, most time redo is the same as do, override it if not
    * @param prev prev application schema
    * @returns changed application schema
    */
-  redo(prev: Application): Application {
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return this.do(prev);
   }
   /**
@@ -164,7 +164,7 @@ export abstract class BaseLeafOperation<TContext> implements IOperation<TContext
    * @param prev prev application schema
    * @returns changed application schema
    */
-  abstract undo(prev: Application): Application;
+  abstract undo(prev: ApplicationComponent[]): ApplicationComponent[];
 
   static isLeafOperation<T>(op: IOperation<T>): op is BaseLeafOperation<T> {
     return op.type === leafSymbol;
@@ -191,14 +191,14 @@ export abstract class BaseBranchOperation<TContext>
    * @param prev prev application schema
    * @returns changed application schema
    */
-  abstract do(prev: Application): Application;
+  abstract do(prev: ApplicationComponent[]): ApplicationComponent[];
 
   /**
    * for branch operation, redo is the same as do
    * @param prev prev application schema
    * @returns changed application schema
    */
-  redo(prev: Application): Application {
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return this.operationStack.reduce((prev, node) => {
       prev = node.redo(prev);
       return prev;
@@ -211,7 +211,7 @@ export abstract class BaseBranchOperation<TContext>
    * @param prev prev application schema
    * @returns changed application schema
    */
-  undo(prev: Application): Application {
+  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return this.operationStack.reduceRight((prev, node) => {
       prev = node.undo(prev);
       return prev;

@@ -1,6 +1,7 @@
-import { Application } from '@sunmao-ui/core';
+import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import { ApplicationFixture } from '../../__fixture__/application';
 import { AdjustComponentOrderLeafOperation } from '../../src/operations/leaf/component/adjustComponentOrderLeafOperation';
+
 describe('adjust component order operation', () => {
   let app: Application;
   let operation: AdjustComponentOrderLeafOperation;
@@ -11,10 +12,10 @@ describe('adjust component order operation', () => {
   });
 
   describe('move up top level component', () => {
-    const stack: Application[] = [];
+    const stack: ApplicationComponent[][] = [];
     beforeAll(() => {
       app = ApplicationFixture['adjustOrderOperation'];
-      stack[0] = app;
+      stack[0] = app.spec.components;
       operation = new AdjustComponentOrderLeafOperation({
         componentId: 'grid_layout2',
         orientation: 'up',
@@ -22,15 +23,15 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1].spec.components).toMatchSnapshot();
+      expect(stack[1]).toMatchSnapshot();
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
-      expect(stack[2].spec.components).toEqual(stack[0].spec.components);
+      expect(stack[2]).toEqual(stack[0]);
     });
     it('should redo operation', () => {
       stack[3] = operation.redo(stack[2]);
-      expect(stack[3].spec.components).toEqual(stack[1].spec.components);
+      expect(stack[3]).toEqual(stack[1]);
     });
     afterAll(() => {
       app = undefined;
@@ -39,10 +40,10 @@ describe('adjust component order operation', () => {
   });
 
   describe('move down top level component', () => {
-    const stack: Application[] = [];
+    const stack: ApplicationComponent[][] = [];
     beforeAll(() => {
       app = ApplicationFixture['adjustOrderOperation'];
-      stack[0] = app;
+      stack[0] = app.spec.components;
       operation = new AdjustComponentOrderLeafOperation({
         componentId: 'grid_layout1',
         orientation: 'down',
@@ -50,15 +51,15 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1].spec.components).toMatchSnapshot();
+      expect(stack[1]).toMatchSnapshot();
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
-      expect(stack[2].spec.components).toEqual(stack[0].spec.components);
+      expect(stack[2]).toEqual(stack[0]);
     });
     it('should redo operation', () => {
       stack[3] = operation.redo(stack[2]);
-      expect(stack[3].spec.components).toEqual(stack[1].spec.components);
+      expect(stack[3]).toEqual(stack[1]);
     });
     afterAll(() => {
       app = undefined;
@@ -72,7 +73,7 @@ describe('adjust component order operation', () => {
       componentId: 'grid_layout1',
       orientation: 'up',
     });
-    expect(operation.do(app)).toEqual(app);
+    expect(operation.do(app.spec.components)).toEqual(app.spec.components);
     expect(warnSpy).toHaveBeenCalledWith('the element cannot move up');
   });
 
@@ -82,15 +83,15 @@ describe('adjust component order operation', () => {
       componentId: 'grid_layout2',
       orientation: 'down',
     });
-    expect(operation.do(app)).toEqual(app);
+    expect(operation.do(app.spec.components)).toEqual(app.spec.components);
     expect(warnSpy).toHaveBeenCalledWith('the element cannot move down');
   });
 
   describe('move up child component', () => {
-    const stack: Application[] = [];
+    const stack: ApplicationComponent[][] = [];
     beforeAll(() => {
       app = ApplicationFixture['adjustOrderOperation'];
-      stack[0] = app;
+      stack[0] = app.spec.components;
       operation = new AdjustComponentOrderLeafOperation({
         componentId: 'userInfoContainer',
         orientation: 'up',
@@ -98,15 +99,15 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1].spec.components).toMatchSnapshot();
+      expect(stack[1]).toMatchSnapshot();
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
-      expect(stack[2].spec.components).toEqual(stack[0].spec.components);
+      expect(stack[2]).toEqual(stack[0]);
     });
     it('should redo operation', () => {
       stack[3] = operation.redo(stack[2]);
-      expect(stack[3].spec.components).toEqual(stack[1].spec.components);
+      expect(stack[3]).toEqual(stack[1]);
     });
     afterAll(() => {
       app = undefined;
@@ -115,10 +116,10 @@ describe('adjust component order operation', () => {
   });
 
   describe('move down child component', () => {
-    const stack: Application[] = [];
+    const stack: ApplicationComponent[][] = [];
     beforeAll(() => {
       app = ApplicationFixture['adjustOrderOperation'];
-      stack[0] = app;
+      stack[0] = app.spec.components;
       operation = new AdjustComponentOrderLeafOperation({
         componentId: 'usersTable',
         orientation: 'down',
@@ -126,15 +127,15 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1].spec.components).toMatchSnapshot();
+      expect(stack[1]).toMatchSnapshot();
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
-      expect(stack[2].spec.components).toEqual(stack[0].spec.components);
+      expect(stack[2]).toEqual(stack[0]);
     });
     it('should redo operation', () => {
       stack[3] = operation.redo(stack[2]);
-      expect(stack[3].spec.components).toEqual(stack[1].spec.components);
+      expect(stack[3]).toEqual(stack[1]);
     });
     afterAll(() => {
       app = undefined;
@@ -148,7 +149,7 @@ describe('adjust component order operation', () => {
       componentId: 'usersTable',
       orientation: 'up',
     });
-    expect(operation.do(app)).toEqual(app);
+    expect(operation.do(app.spec.components)).toEqual(app.spec.components);
     expect(warnSpy).toHaveBeenCalledWith('the element cannot move up');
   });
 
@@ -158,7 +159,7 @@ describe('adjust component order operation', () => {
       componentId: 'userInfoContainer',
       orientation: 'down',
     });
-    expect(operation.do(app)).toEqual(app);
+    expect(operation.do(app.spec.components)).toEqual(app.spec.components);
     expect(warnSpy).toHaveBeenCalledWith('the element cannot move down');
   });
 
