@@ -9,7 +9,6 @@ import { css } from '@emotion/react';
 
 const CssGlobals = Type.KeyOf(
   Type.Object({
-    '-moz-initial': Type.String(),
     inherit: Type.String(),
     initial: Type.String(),
     revert: Type.String(),
@@ -288,7 +287,9 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
       borderColor="gray.200"
       borderRadius="base"
       {...styleProps}
-      css={css`${customStyle?.content}`}
+      css={css`
+        ${customStyle?.content}
+      `}
     >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseBox>
