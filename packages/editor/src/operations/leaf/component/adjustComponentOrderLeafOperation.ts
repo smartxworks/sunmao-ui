@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 export type AdjustComponentOrderLeafOperationContext = {
@@ -9,9 +9,9 @@ export type AdjustComponentOrderLeafOperationContext = {
 export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustComponentOrderLeafOperationContext> {
   private dest = -1;
   private index = -1;
-  do(prev: Application): Application {
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      this.index = draft.spec.components.findIndex(
+      this.index = draft.findIndex(
         c => c.id === this.context.componentId
       );
       if (this.index === -1) {
@@ -19,14 +19,14 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
         return;
       }
 
-      const movedElement = draft.spec.components[this.index];
+      const movedElement = draft[this.index];
       const slotTrait = movedElement.traits.find(t => t.type === 'core/v1/slot');
       if (!slotTrait) {
         // for top level element, find the next top level element;
         switch (this.context.orientation) {
           case 'up':
             for (this.dest = this.index - 1; this.dest >= 0; this.dest--) {
-              const nextComponent = draft.spec.components[this.dest];
+              const nextComponent = draft[this.dest];
               if (
                 nextComponent.type !== 'core/v1/dummy' &&
                 !nextComponent.traits.some(t => t.type === 'core/v1/slot')
@@ -39,15 +39,15 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
           case 'down':
             for (
               this.dest = this.index + 1;
-              this.dest < draft.spec.components.length;
+              this.dest < draft.length;
               this.dest++
             ) {
-              const nextComponent = draft.spec.components[this.dest];
+              const nextComponent = draft[this.dest];
               if (!nextComponent.traits.some(t => t.type === 'core/v1/slot')) {
                 break;
               }
             }
-            if (this.dest === draft.spec.components.length) {
+            if (this.dest === draft.length) {
               // mark dest as -1 due to not found element
               this.dest = -1;
             }
@@ -58,7 +58,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
         switch (this.context.orientation) {
           case 'up':
             for (this.dest = this.index - 1; this.dest >= 0; this.dest--) {
-              const nextComponent = draft.spec.components[this.dest];
+              const nextComponent = draft[this.dest];
               if (
                 nextComponent.traits.some(
                   t =>
@@ -75,10 +75,10 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
           case 'down':
             for (
               this.dest = this.index + 1;
-              this.dest < draft.spec.components.length;
+              this.dest < draft.length;
               this.dest++
             ) {
-              const nextComponent = draft.spec.components[this.dest];
+              const nextComponent = draft[this.dest];
               if (
                 nextComponent.traits.some(
                   t =>
@@ -90,7 +90,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
                 break;
               }
             }
-            if (this.dest === draft.spec.components.length) {
+            if (this.dest === draft.length) {
               // mark dest as -1 due to not found element
               this.dest = -1;
             }
@@ -102,13 +102,13 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
         return;
       }
       const [highPos, lowPos] = [this.dest, this.index].sort();
-      const lowComponent = draft.spec.components.splice(lowPos, 1)[0];
-      const highComponent = draft.spec.components.splice(highPos, 1)[0];
-      draft.spec.components.splice(lowPos - 1, 0, highComponent);
-      draft.spec.components.splice(highPos, 0, lowComponent);
+      const lowComponent = draft.splice(lowPos, 1)[0];
+      const highComponent = draft.splice(highPos, 1)[0];
+      draft.splice(lowPos - 1, 0, highComponent);
+      draft.splice(highPos, 0, lowComponent);
     });
   }
-  redo(prev: Application): Application {
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
       if (this.index === -1) {
         console.warn("operation hasn't been executed, cannot redo");
@@ -119,14 +119,14 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
       }
       const lowPos = Math.max(this.dest, this.index);
       const highPos = Math.min(this.dest, this.index);
-      const lowComponent = draft.spec.components.splice(lowPos, 1)[0];
-      const highComponent = draft.spec.components.splice(highPos, 1)[0];
-      draft.spec.components.splice(lowPos - 1, 0, highComponent);
-      draft.spec.components.splice(highPos, 0, lowComponent);
+      const lowComponent = draft.splice(lowPos, 1)[0];
+      const highComponent = draft.splice(highPos, 1)[0];
+      draft.splice(lowPos - 1, 0, highComponent);
+      draft.splice(highPos, 0, lowComponent);
     });
   }
 
-  undo(prev: Application): Application {
+  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
       if (this.index === -1) {
         console.warn("cannot undo operation, the operation hasn't been executed.");
@@ -137,10 +137,10 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
       }
       const lowPos = Math.max(this.dest, this.index);
       const highPos = Math.min(this.dest, this.index);
-      const lowComponent = draft.spec.components.splice(lowPos, 1)[0];
-      const highComponent = draft.spec.components.splice(highPos, 1)[0];
-      draft.spec.components.splice(lowPos - 1, 0, highComponent);
-      draft.spec.components.splice(highPos, 0, lowComponent);
+      const lowComponent = draft.splice(lowPos, 1)[0];
+      const highComponent = draft.splice(highPos, 1)[0];
+      draft.splice(lowPos - 1, 0, highComponent);
+      draft.splice(highPos, 0, lowComponent);
     });
   }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
 import {
@@ -36,7 +36,7 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
     text: 'cancel',
     colorScheme: 'blue',
   },
-  customStyle
+  customStyle,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(customerTitle || '');
@@ -80,43 +80,43 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
   };
 
   return (
-    <React.Fragment>
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={() => setIsOpen(false)}
-        trapFocus={false}
-        portalProps={containerRef.current ? portalProps : undefined}
-        css={`${customStyle?.content}`}
-      >
-        <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>
-          <AlertDialogContent {...(containerRef.current ? dialogContentProps : {})}>
-            <AlertDialogHeader>{title}</AlertDialogHeader>
-            <AlertDialogBody>
-              <Slot slotsMap={slotsMap} slot="content" />
-            </AlertDialogBody>
+    <AlertDialog
+      isOpen={isOpen}
+      leastDestructiveRef={cancelRef}
+      onClose={() => setIsOpen(false)}
+      trapFocus={false}
+      portalProps={containerRef.current ? portalProps : undefined}
+      css={`
+        ${customStyle?.content}
+      `}
+    >
+      <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>
+        <AlertDialogContent {...(containerRef.current ? dialogContentProps : {})}>
+          <AlertDialogHeader>{title}</AlertDialogHeader>
+          <AlertDialogBody>
+            <Slot slotsMap={slotsMap} slot="content" />
+          </AlertDialogBody>
 
-            <AlertDialogFooter>
-              <Button
-                ref={cancelRef}
-                colorScheme={cancelButton.colorScheme}
-                onClick={callbacks?.cancelDialog}
-              >
-                {cancelButton.text}
-              </Button>
-              <Button
-                disabled={disableConfirm}
-                colorScheme={confirmButton.colorScheme}
-                onClick={callbacks?.confirmDialog}
-                ml={3}
-              >
-                {confirmButton.text}
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </React.Fragment>
+          <AlertDialogFooter>
+            <Button
+              ref={cancelRef}
+              colorScheme={cancelButton.colorScheme}
+              onClick={callbacks?.cancelDialog}
+            >
+              {cancelButton.text}
+            </Button>
+            <Button
+              disabled={disableConfirm}
+              colorScheme={confirmButton.colorScheme}
+              onClick={callbacks?.confirmDialog}
+              ml={3}
+            >
+              {confirmButton.text}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogOverlay>
+    </AlertDialog>
   );
 };
 

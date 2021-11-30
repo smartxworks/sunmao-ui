@@ -26,12 +26,16 @@ export function initStateAndMethod(
 
     if (c.type === 'core/v1/moduleContainer') {
       const moduleSchema = c.properties as Static<typeof RuntimeModuleSchema>;
-      const mSpec = registry.getModuleByType(moduleSchema.type).spec;
-      const moduleInitState: Record<string, unknown> = {};
-      for (const key in mSpec) {
-        moduleInitState[key] = undefined;
+      try {
+        const mSpec = registry.getModuleByType(moduleSchema.type).spec;
+        const moduleInitState: Record<string, unknown> = {};
+        for (const key in mSpec) {
+          moduleInitState[key] = undefined;
+        }
+        stateManager.store[moduleSchema.id] = moduleInitState;
+      } catch {
+        return;
       }
-      stateManager.store[moduleSchema.id] = moduleInitState;
     }
   });
 }

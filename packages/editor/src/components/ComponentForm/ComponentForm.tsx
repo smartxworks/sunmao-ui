@@ -11,6 +11,7 @@ import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
+import { AppModelManager } from '../../operations/AppModelManager';
 import {
   ModifyComponentPropertiesLeafOperation,
   ModifyTraitPropertiesLeafOperation,
@@ -21,6 +22,7 @@ type Props = {
   registry: Registry;
   selectedId: string;
   app: Application;
+  appModelManager: AppModelManager;
 };
 
 export const renderField = (properties: {
@@ -76,7 +78,7 @@ export const renderField = (properties: {
 };
 
 export const ComponentForm: React.FC<Props> = props => {
-  const { selectedId, app, registry } = props;
+  const { selectedId, app, registry, appModelManager } = props;
 
   const selectedComponent = useMemo(
     () => app.spec.components.find(c => c.id === selectedId),
@@ -141,8 +143,16 @@ export const ComponentForm: React.FC<Props> = props => {
           />
         </VStack>
       </VStack>
-      <EventTraitForm component={selectedComponent} registry={registry} />
-      <FetchTraitForm component={selectedComponent} registry={registry} />
+      <EventTraitForm
+        component={selectedComponent}
+        registry={registry}
+        appModelManager={appModelManager}
+      />
+      <FetchTraitForm
+        component={selectedComponent}
+        registry={registry}
+        appModelManager={appModelManager}
+      />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );

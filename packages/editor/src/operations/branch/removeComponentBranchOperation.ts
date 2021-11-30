@@ -1,4 +1,4 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import {
   ModifyComponentPropertiesLeafOperation,
@@ -11,9 +11,9 @@ export type RemoveComponentBranchOperationContext = {
 };
 
 export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveComponentBranchOperationContext> {
-  do(prev: Application): Application {
+  do(prev: ApplicationComponent[]): ApplicationComponent[] {
     // find component to remove
-    const toRemove = prev.spec.components.find(c => c.id === this.context.componentId);
+    const toRemove = prev.find(c => c.id === this.context.componentId);
     if (!toRemove) {
       console.warn('component not found');
       return prev;
@@ -24,7 +24,7 @@ export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveCo
         | { id: string }
         | undefined
     )?.id;
-    prev.spec.components.forEach(component => {
+    prev.forEach(component => {
       if (component.id === parentId && component.type !== 'core/v1/grid_layout') {
         // only need to modified layout from grid_layout component
         parentId = undefined;

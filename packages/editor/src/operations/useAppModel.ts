@@ -1,36 +1,25 @@
-import { Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import { useEffect, useState } from 'react';
-import { DefaultAppSchema } from '../constants';
 import { eventBus } from '../eventBus';
+import { AppModelManager } from './AppModelManager';
 
-function getDefaultAppFromLS() {
-  try {
-    const appFromLS = localStorage.getItem('schema');
-    if (appFromLS) {
-      return JSON.parse(appFromLS);
-    }
-    return DefaultAppSchema;
-  } catch (error) {
-    console.warn(error);
-    return DefaultAppSchema;
-  }
-}
-
-export function useAppModel() {
-  const [app, setApp] = useState<Application>(getDefaultAppFromLS());
+export function useAppModel(appModalManager: AppModelManager) {
+  const [components, setComponents] = useState<ApplicationComponent[]>(
+    appModalManager.components
+  );
 
   useEffect(() => {
-    const onAppChange = (app: Application) => {
-      setApp(() => app);
+    const onComponents = (components: ApplicationComponent[]) => {
+      setComponents(() => components);
     };
-    eventBus.on('appChange', onAppChange);
+    eventBus.on('componentsChange', onComponents);
 
     return () => {
-      eventBus.off('appChange', onAppChange);
+      eventBus.off('componentsChange', onComponents);
     };
   }, []);
 
   return {
-    app,
+    components,
   };
 }
