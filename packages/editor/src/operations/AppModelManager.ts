@@ -6,14 +6,13 @@ export class AppModelManager implements IUndoRedoManager {
   components: ApplicationComponent[] = [];
   operationStack: OperationList<IOperation> = new OperationList();
 
-  constructor(components: ApplicationComponent[]) {
-    this.components = components;
-    this.updateComponents(components);
+  constructor() {
     eventBus.on('undo', () => this.undo());
     eventBus.on('redo', () => this.redo());
     eventBus.on('operation', o => this.do(o));
     eventBus.on('componentsReload', components => {
-      this.updateComponents(components);
+      this.components = components;
+      this.operationStack = new OperationList();
     });
   }
 
