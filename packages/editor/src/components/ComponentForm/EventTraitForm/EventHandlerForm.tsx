@@ -11,13 +11,12 @@ import {
 } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
+import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
-import { EventHandlerSchema } from '@sunmao-ui/runtime';
-import { useAppModel } from '../../../operations/useAppModel';
+import { EventHandlerSchema, Registry } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { AppModelManager } from '../../../operations/AppModelManager';
+import { editorStore } from '../../../EditorStore';
 
 type Props = {
   registry: Registry;
@@ -26,12 +25,18 @@ type Props = {
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
   hideEventType?: boolean;
-  appModelManager: AppModelManager
 };
 
-export const EventHandlerForm: React.FC<Props> = props => {
-  const { handler, eventTypes, onChange, onRemove, hideEventType, registry, appModelManager } = props;
-  const { components } = useAppModel(appModelManager);
+export const EventHandlerForm: React.FC<Props> = observer(props => {
+  const {
+    handler,
+    eventTypes,
+    onChange,
+    onRemove,
+    hideEventType,
+    registry,
+  } = props;
+  const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
 
   function updateMethods(componentId: string) {
@@ -193,4 +198,4 @@ export const EventHandlerForm: React.FC<Props> = props => {
       />
     </Box>
   );
-};
+});

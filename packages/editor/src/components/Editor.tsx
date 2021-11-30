@@ -7,13 +7,11 @@ import { StructureTree } from './StructureTree';
 import { eventBus } from '../eventBus';
 import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
-import { useAppModel } from '../operations/useAppModel';
 import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
-import { AppModelManager } from '../operations/AppModelManager';
 import { Explorer } from './Explorer';
 import { AppStorage } from '../AppStorage';
 import {
@@ -30,13 +28,12 @@ type Props = {
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   apiService: ReturnOfInit['apiService'];
-  appModelManager: AppModelManager;
   appStorage: AppStorage;
 };
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, appModelManager, appStorage }) => {
-    const { components } = useAppModel(appModelManager);
+  ({ App, registry, stateStore, appStorage }) => {
+    const { components, selectedComponentId } = editorStore;
 
     const [scale, setScale] = useState(100);
     const [preview, setPreview] = useState(false);
@@ -152,7 +149,7 @@ export const Editor: React.FC<Props> = observer(
                 <TabPanel p={0}>
                   <StructureTree
                     components={components}
-                    selectedComponentId={editorStore.selectedComponentId}
+                    selectedComponentId={selectedComponentId}
                     onSelectComponent={id => editorStore.setSelectedComponentId(id)}
                     registry={registry}
                   />
@@ -180,9 +177,8 @@ export const Editor: React.FC<Props> = observer(
                 <TabPanel p={0}>
                   <ComponentForm
                     app={app}
-                    selectedId={editorStore.selectedComponentId}
+                    selectedId={selectedComponentId}
                     registry={registry}
-                    appModelManager={appModelManager}
                   />
                 </TabPanel>
                 <TabPanel p={0}>
@@ -196,7 +192,7 @@ export const Editor: React.FC<Props> = observer(
     };
 
     return (
-      <KeyboardEventWrapper selectedComponentId={editorStore.selectedComponentId}>
+      <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
         <Box display="flex" height="100%" width="100%" flexDirection="column">
           <EditorHeader
             scale={scale}
