@@ -25,7 +25,6 @@ export const Explorer: React.FC = observer(() => {
     />
   );
 
-  console.log('modules', modules);
   const moduleItems = modules.map((module: ImplementedRuntimeModule) => {
     const moduleItemId = `module_${module.metadata.name}`;
     const onClickModule = (id: string) => {
