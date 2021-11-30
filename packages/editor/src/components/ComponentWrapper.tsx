@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
-import { eventBus, HoverComponentEvent, SelectComponentEvent } from '../eventBus';
+import { eventBus } from '../eventBus';
 
 // children of components in this list should render height as 100%
 const fullHeightList = ['core/v1/grid_layout'];
@@ -15,10 +15,10 @@ export const ComponentWrapper: ComponentWrapperType = props => {
   useEffect(() => {
     const handler = (event: string, payload: any) => {
       switch (event) {
-        case SelectComponentEvent:
+        case 'selectComponent':
           setSelectedComponentId(payload);
           break;
-        case HoverComponentEvent:
+        case 'hoverComponentEvent':
           setHoverComponentId(payload);
           break;
       }
@@ -52,15 +52,15 @@ export const ComponentWrapper: ComponentWrapperType = props => {
   `;
   const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    eventBus.send(SelectComponentEvent as any, component.id);
+    eventBus.send('selectComponent' as any, component.id);
   };
   const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    eventBus.send(HoverComponentEvent as any, component.id);
+    eventBus.send('hoverComponentEvent' as any, component.id);
   };
   const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    eventBus.send(HoverComponentEvent as any, '');
+    eventBus.send('hoverComponentEvent' as any, '');
   };
   return (
     <div

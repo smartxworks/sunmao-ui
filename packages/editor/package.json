@@ -42,6 +42,8 @@
     "framer-motion": "^4",
     "immer": "^9.0.6",
     "lodash-es": "^4.17.21",
+    "mobx": "^6.3.8",
+    "mobx-react-lite": "^3.2.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
