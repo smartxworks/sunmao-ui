@@ -1,5 +1,5 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { eventBus, SelectComponentEvent } from '../../eventBus';
+import { eventBus } from '../../eventBus';
 import { BaseLeafOperation } from '../type';
 
 export type UpdateSelectComponentLeafOperationContext = {
@@ -12,21 +12,21 @@ export class UpdateSelectComponentLeafOperation extends BaseLeafOperation<Update
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
     this.prevId = this.context.componentId || prev[0].id;
     setTimeout(() => {
-      eventBus.send(SelectComponentEvent, this.context.newId);
+      eventBus.send('selectComponent', this.context.newId);
     });
     return prev;
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     setTimeout(() => {
-      eventBus.send(SelectComponentEvent, this.context.newId);
+      eventBus.send('selectComponent', this.context.newId);
     });
     return prev;
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     setTimeout(() => {
-      eventBus.send(SelectComponentEvent, this.prevId);
+      eventBus.send('selectComponent', this.prevId);
     });
     return prev;
   }
