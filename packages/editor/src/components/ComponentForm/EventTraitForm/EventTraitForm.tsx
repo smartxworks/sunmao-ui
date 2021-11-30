@@ -8,7 +8,6 @@ import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { eventBus } from '../../../eventBus';
 import { EventHandlerForm } from './EventHandlerForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { AppModelManager } from '../../../operations/AppModelManager';
 import {
   CreateTraitLeafOperation,
   ModifyTraitPropertiesLeafOperation,
@@ -19,11 +18,10 @@ type EventHandler = Static<typeof EventHandlerSchema>;
 type Props = {
   registry: Registry;
   component: ApplicationComponent;
-  appModelManager: AppModelManager
 };
 
 export const EventTraitForm: React.FC<Props> = props => {
-  const { component, registry, appModelManager } = props;
+  const { component, registry } = props;
 
   const handlers: EventHandler[] = useMemo(() => {
     return component.traits.find(t => t.type === 'core/v1/event')?.properties
@@ -116,7 +114,6 @@ export const EventTraitForm: React.FC<Props> = props => {
           onChange={onChange}
           onRemove={onRemove}
           registry={registry}
-          appModelManager={appModelManager}
         />
       );
     });
