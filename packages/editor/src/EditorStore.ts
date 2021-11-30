@@ -1,44 +1,35 @@
 import { makeAutoObservable, autorun, observable } from 'mobx';
-import { Application, ApplicationComponent } from '@sunmao-ui/core';
-import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import { eventBus } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { registry } from './setup';
 
 class EditorStore {
-  selectedComponentId = '';
-  // currentEditingComponents, it could be app's or module's components
   components: ApplicationComponent[] = [];
-  modules: ImplementedRuntimeModule[];
+  // currentEditingComponents, it could be app's or module's components
+  selectedComponentId = '';
   // it could be app or module's name
   // name is `${module.version}/${module.metadata.name}`
-  currentEditingName: string = '';
+  currentEditingName = '';
   currentEditingType: 'app' | 'module' = 'app';
-  app: Application;
 
   appStorage = new AppStorage();
+
+  get app () {
+    return this.appStorage.app
+  }
+
+  get modules () {
+    return this.appStorage.modules
+  }
 
   constructor() {
     makeAutoObservable(this, {
       components: observable.shallow,
-      app: observable.shallow,
-      modules: observable.shallow,
     });
-    this.app = this.appStorage.app;
-    this.modules = this.appStorage.modules;
-    this.setApp(this.appStorage.app);
-    this.setModules(this.appStorage.modules);
 
     eventBus.on('selectComponent', id => {
       this.setSelectedComponentId(id);
-    });
-    eventBus.on('appChange', app => {
-      this.setApp(app);
-    });
-    eventBus.on('modulesChange', modules => {
-      this.setModules(modules);
-      // reregister modules to activate immediately
-      this.modules.forEach(m => registry.registerModule(m, true));
     });
     // listen the change by operations, and save newComponents
     eventBus.on('componentsChange', components => {
@@ -48,16 +39,20 @@ class EditorStore {
         this.currentEditingName,
         components
       );
+      if (this.currentEditingType === 'module') {
+        // reregister modules to activate immediately
+        this.modules.forEach(m => registry.registerModule(m, true));
+      }
     });
-    
+
     autorun(() => {
-      console.log('componentsReload', this.originComponents)
-      eventBus.send('componentsReload', this.originComponents)
+      eventBus.send('componentsRefresh', this.originComponents);
       this.setComponents(this.originComponents);
-    })
+    });
   }
 
-  // init components of app of module
+  // origin components of app of module
+  // when switch app or module, components should refresh
   get originComponents(): ApplicationComponent[] {
     switch (this.currentEditingType) {
       case 'module':
@@ -66,33 +61,19 @@ class EditorStore {
         );
         return module?.components || [];
       case 'app':
-        console.log('this.app', this.app)
         return this.app.spec.components;
     }
   }
 
   updateCurrentEditingTarget = (type: 'app' | 'module', name: string) => {
-    this.setCurrentEditingType(type);
-    this.setCurrentEditingName(name);
+    this.currentEditingType = type;
+    this.currentEditingName = name
   };
-
   setSelectedComponentId(val: string) {
     this.selectedComponentId = val;
   }
-  private setCurrentEditingName(val: string) {
-    this.currentEditingName = val;
-  }
-  private setCurrentEditingType(val: 'app' | 'module') {
-    this.currentEditingType = val;
-  }
-  private setComponents(val: ApplicationComponent[]) {
+  setComponents(val: ApplicationComponent[]) {
     this.components = val;
-  }
-  private setModules(val: ImplementedRuntimeModule[]) {
-    this.modules = val;
-  }
-  private setApp(val: Application) {
-    this.app = val;
   }
 }
 

@@ -10,7 +10,7 @@ export class AppModelManager implements IUndoRedoManager {
     eventBus.on('undo', () => this.undo());
     eventBus.on('redo', () => this.redo());
     eventBus.on('operation', o => this.do(o));
-    eventBus.on('componentsReload', components => {
+    eventBus.on('componentsRefresh', components => {
       this.components = components;
       this.operationStack = new OperationList();
     });

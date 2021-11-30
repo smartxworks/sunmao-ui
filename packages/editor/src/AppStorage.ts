@@ -1,18 +1,22 @@
+import { observable, makeObservable, action } from 'mobx';
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from './constants';
 
 export class AppStorage {
-  app: Application;
-  modules: ImplementedRuntimeModule[];
-  // this is current editing Model
+  app: Application = this.getDefaultAppFromLS();
+  modules: ImplementedRuntimeModule[] = this.getModulesFromLS();
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
   constructor() {
-    this.app = this.getDefaultAppFromLS();
-    this.modules = this.getModulesFromLS();
+    makeObservable(this, {
+      app: observable.shallow,
+      modules: observable.shallow,
+      setApp: action,
+      setModules: action
+    });
   }
 
   getDefaultAppFromLS(): Application {
@@ -45,8 +49,6 @@ export class AppStorage {
   }
 
   removeModule(v: string, n: string) {
-    console.log(v, n);
-    console.log(this.modules);
     this.setModules(
       this.modules.filter(
         ({ version, metadata: { name } }) => version !== v && name !== n
@@ -80,13 +82,7 @@ export class AppStorage {
     }
   }
 
-  private setApp(app: Application) {
-    this.app = app;
-  }
 
-  private setModules(modules: ImplementedRuntimeModule[]) {
-    this.modules = modules;
-  }
 
   private saveAppInLS() {
     localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));
@@ -94,5 +90,12 @@ export class AppStorage {
 
   private saveModulesInLS() {
     localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(this.modules));
+  }
+
+  setApp(app: Application) {
+    this.app = app;
+  }
+  setModules(modules: ImplementedRuntimeModule[]) {
+    this.modules = modules;
   }
 }
