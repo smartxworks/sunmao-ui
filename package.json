@@ -7,7 +7,8 @@
     "test:ci": "jest -c config/jest.ci.config.js",
     "lint": "eslint packages --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix packages --ext .ts --ext .tsx",
-    "release": "lerna publish"
+    "release": "lerna publish",
+    "release:canary": "branch=$(git rev-parse --abbrev-ref HEAD); lerna publish --canary --preid $branch"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.31.1",
