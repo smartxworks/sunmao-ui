@@ -9,26 +9,26 @@ export type CreateComponentLeafOperationContext = {
 };
 
 export class CreateComponentLeafOperation extends BaseLeafOperation<CreateComponentLeafOperationContext> {
+  private index!: number;
+  private component!: ApplicationComponent;
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const newComponent = genComponent(
-      this.context.componentType,
-      this.context.componentId
-    );
-    this.context.componentId = newComponent.id;
+    this.component = genComponent(this.context.componentType, this.context.componentId);
+    this.context.componentId = this.component.id;
     return produce(prev, draft => {
-      draft.push(newComponent);
+      draft.push(this.component);
+      this.index = draft.length - 1;
+    });
+  }
+
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+    return produce(prev, draft => {
+      draft.push(this.component);
     });
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      const remains = draft.filter(
-        c => c.id !== this.context.componentId
-      );
-      if (remains.length === draft.length) {
-        console.warn('element not found');
-      }
-      draft = remains;
+      draft.splice(this.index, 1);
     });
   }
 }
