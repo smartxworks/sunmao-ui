@@ -8,7 +8,6 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
-import { appStorage } from './setup';
 
 type Example = {
   name: string;
@@ -79,16 +78,13 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
         </Box>
       </Box>
       <Box flex="1">
-        {appModelManager && (
-          <Editor
-            key={example!.name}
-            App={App!}
-            registry={registry!}
-            stateStore={stateStore!}
-            apiService={apiService!}
-            appStorage={appStorage}
-          />
-        )}
+        <Editor
+          key={example!.name}
+          App={App!}
+          registry={registry!}
+          stateStore={stateStore!}
+          apiService={apiService!}
+        />
       </Box>
     </Flex>
   );

@@ -14,12 +14,12 @@ export class AppStorage {
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
-  constructor(private registry: Registry) {
+  constructor() {
     this.app = this.getDefaultAppFromLS();
-    this.setApp(this.app)
+    this.setApp(this.app);
     this.modules = this.getModulesFromLS();
-    this.setModules(this.modules)
-  
+    this.setModules(this.modules);
+
     this.updateCurrentId('app', this.app.metadata.name);
     this.refreshComponents();
 
@@ -64,8 +64,14 @@ export class AppStorage {
     this.saveModulesInLS();
   }
 
-  removeModule(module: ImplementedRuntimeModule) {
-    this.setModules(this.modules.filter(m => m !== module));
+  removeModule(v: string, n: string) {
+    console.log(v, n)
+    console.log(this.modules)
+    this.setModules(
+      this.modules.filter(
+        ({ version, metadata: { name } }) => version !== v && name !== n
+      )
+    );
     this.saveModulesInLS();
   }
 
@@ -107,8 +113,6 @@ export class AppStorage {
 
   private saveModulesInLS() {
     localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(this.modules));
-    // reregister modules to activate immediately
-    this.modules.forEach(m => this.registry.registerModule(m, true));
   }
 
   // update components by currentEditingType & cache
