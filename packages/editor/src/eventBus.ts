@@ -1,23 +1,17 @@
 import mitt from 'mitt';
-import { Application, ApplicationComponent } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import { IOperation } from './operations/type';
-import { ImplementedRuntimeModule } from '../../runtime/lib';
-
-export const SelectComponentEvent = 'selectComponent';
-export const HoverComponentEvent = 'hoverComponent';
 
 export type EventNames = {
   operation: IOperation;
   redo: undefined;
   undo: undefined;
-  componentsReload: ApplicationComponent[];
+  // when switch app or module, current components refresh
+  componentsRefresh: ApplicationComponent[];
+  // components change by operation
   componentsChange: ApplicationComponent[];
-  [SelectComponentEvent]: string;
-  [HoverComponentEvent]: string;
-
-  // for state decorators
-  appChange: Application;
-  modulesChange: ImplementedRuntimeModule[];
+  // it is only used for some operations' side effect
+  selectComponent: string;
 }
 
 const emitter = mitt<EventNames>();

@@ -8,8 +8,6 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
-import { AppModelManager } from './operations/AppModelManager';
-import { appStorage } from './setup';
 
 type Example = {
   name: string;
@@ -22,7 +20,7 @@ type Example = {
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
 
-  const { App, registry, stateStore, appModelManager, apiService } = useMemo(() => {
+  const { App, registry, stateStore, apiService } = useMemo(() => {
     if (!example) {
       return {};
     }
@@ -37,13 +35,11 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
       registry.registerModule(m);
     });
     localStorage.removeItem('schema');
-    const appModelManager = new AppModelManager(appStorage.components);
 
     return {
       App,
       registry,
       stateStore,
-      appModelManager,
       apiService,
     };
   }, [example]);
@@ -82,17 +78,13 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
         </Box>
       </Box>
       <Box flex="1">
-        {appModelManager && (
-          <Editor
-            key={example!.name}
-            App={App!}
-            registry={registry!}
-            stateStore={stateStore!}
-            apiService={apiService!}
-            appModelManager={appModelManager}
-            appStorage={appStorage}
-          />
-        )}
+        <Editor
+          key={example!.name}
+          App={App!}
+          registry={registry!}
+          stateStore={stateStore!}
+          apiService={apiService!}
+        />
       </Box>
     </Flex>
   );
