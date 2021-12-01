@@ -25,7 +25,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) =
   const appItem = (
     <ExplorerTreeItem
       key={app.metadata.name}
-      title={app.metadata.name}
+      title={`${app.version}/${app.metadata.name}`}
       onClick={onClickApp}
       isActive={selectedItem === appItemId}
       onEdit={onEditApp}

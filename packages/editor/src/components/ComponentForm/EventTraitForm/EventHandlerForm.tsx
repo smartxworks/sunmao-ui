@@ -17,7 +17,6 @@ import { EventHandlerSchema, Registry } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { editorStore } from '../../../EditorStore';
-
 type Props = {
   registry: Registry;
   eventTypes: string[];

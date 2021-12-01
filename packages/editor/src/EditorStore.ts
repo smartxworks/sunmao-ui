@@ -81,6 +81,7 @@ class EditorStore {
         );
         return module?.components || [];
       case 'app':
+        console.log('更新了components')
         return this.app.spec.components;
     }
   }

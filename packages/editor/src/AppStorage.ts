@@ -84,6 +84,15 @@ export class AppStorage {
     }
   }
 
+  saveAppMetaDataInLS({version, name}: { version: string, name: string }) {
+    const newApp = produce(this.app, draft => {
+      draft.metadata.name = name;
+      draft.version = version;
+    });
+    this.setApp(newApp);
+    this.saveAppInLS();
+  }
+
   private saveAppInLS() {
     localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));
   }
