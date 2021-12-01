@@ -8,6 +8,7 @@ class EditorStore {
   components: ApplicationComponent[] = [];
   // currentEditingComponents, it could be app's or module's components
   selectedComponentId = '';
+  hoverComponentId = '';
   // it could be app or module's name
   // name is `${module.version}/${module.metadata.name}`
   currentEditingName = '';
@@ -15,12 +16,12 @@ class EditorStore {
 
   appStorage = new AppStorage();
 
-  get app () {
-    return this.appStorage.app
+  get app() {
+    return this.appStorage.app;
   }
 
-  get modules () {
-    return this.appStorage.modules
+  get modules() {
+    return this.appStorage.modules;
   }
 
   constructor() {
@@ -67,14 +68,17 @@ class EditorStore {
 
   updateCurrentEditingTarget = (type: 'app' | 'module', name: string) => {
     this.currentEditingType = type;
-    this.currentEditingName = name
+    this.currentEditingName = name;
   };
-  setSelectedComponentId(val: string) {
+  setSelectedComponentId = (val: string) => {
     this.selectedComponentId = val;
-  }
-  setComponents(val: ApplicationComponent[]) {
+  };
+  setHoverComponentId = (val: string) => {
+    this.hoverComponentId = val;
+  };
+  setComponents = (val: ApplicationComponent[]) => {
     this.components = val;
-  }
+  };
 }
 
 export const editorStore = new EditorStore();

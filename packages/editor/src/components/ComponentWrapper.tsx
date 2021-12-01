@@ -1,34 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { css } from '@emotion/react';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
-import { eventBus } from '../eventBus';
+import { observer } from 'mobx-react-lite';
+import { editorStore } from '../EditorStore';
 
 // children of components in this list should render height as 100%
 const fullHeightList = ['core/v1/grid_layout'];
 const inlineList = ['chakra_ui/v1/checkbox', 'chakra_ui/v1/radio'];
 
-export const ComponentWrapper: ComponentWrapperType = props => {
+export const ComponentWrapper: ComponentWrapperType = observer(props => {
   const { component, parentType } = props;
-  const [selectedComponentId, setSelectedComponentId] = useState('');
-  const [hoverComponentId, setHoverComponentId] = useState('');
-
-  useEffect(() => {
-    const handler = (event: string, payload: any) => {
-      switch (event) {
-        case 'selectComponent':
-          setSelectedComponentId(payload);
-          break;
-        case 'hoverComponentEvent':
-          setHoverComponentId(payload);
-          break;
-      }
-    };
-    eventBus.on('*', handler);
-    return () => eventBus.off('*', handler);
-  }, [setSelectedComponentId, setHoverComponentId]);
+  const {
+    selectedComponentId,
+    setSelectedComponentId,
+    hoverComponentId,
+    setHoverComponentId,
+  } = editorStore;
 
   const isHover = hoverComponentId === component.id;
   const isSelected = selectedComponentId === component.id;
+
   let borderColor = 'transparent';
   if (isSelected) {
     borderColor = 'red';
@@ -52,15 +43,15 @@ export const ComponentWrapper: ComponentWrapperType = props => {
   `;
   const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    eventBus.send('selectComponent' as any, component.id);
+    setSelectedComponentId(component.id);
   };
   const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    eventBus.send('hoverComponentEvent' as any, component.id);
+    setHoverComponentId(component.id);
   };
   const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
-    eventBus.send('hoverComponentEvent' as any, '');
+    setHoverComponentId('');
   };
   return (
     <div
@@ -72,4 +63,4 @@ export const ComponentWrapper: ComponentWrapperType = props => {
       {props.children}
     </div>
   );
-};
+});
