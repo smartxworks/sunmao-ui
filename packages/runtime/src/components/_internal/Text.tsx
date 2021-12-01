@@ -18,13 +18,14 @@ export type TextProps = {
 };
 
 const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
+  const text = typeof value.raw === 'string' ? value.raw : `${value.raw}`;
   if (value.format === 'md') {
     const Div = styled.div`
       ${cssStyle}
     `;
     return (
       <Div>
-        <ReactMarkdown>{value.raw}</ReactMarkdown>
+        <ReactMarkdown>{text}</ReactMarkdown>
       </Div>
     );
   }
@@ -33,7 +34,7 @@ const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   const Span = styled.span`
     ${cssStyle}
   `;
-  return <Span>{value.raw}</Span>;
+  return <Span>{text}</Span>;
 };
 
 export default Text;

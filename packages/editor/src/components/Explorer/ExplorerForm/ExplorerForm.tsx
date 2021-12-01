@@ -3,6 +3,9 @@ import { observer } from 'mobx-react-lite';
 import { Button, Text, VStack } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { AppMetaDataForm } from './AppMetaDataForm';
+import { ModuleMetaDataForm } from './ModuleMetaDataForm';
+import { registry } from '../../../setup';
+
 type Props = {
   formType: 'app' | 'module';
   version: string;
@@ -22,11 +25,13 @@ export const ExplorerForm: React.FC<Props> = observer(
         form = <AppMetaDataForm data={appMetaData} />;
         break;
       case 'module':
-        form = (
-          <span>
-            module Form: {version}/{name}
-          </span>
-        );
+        const moduleSpec = registry.getModule(version, name);
+        const moduleMetaData = {
+          name,
+          version,
+          stateMap: moduleSpec.spec.stateMap,
+        };
+        form = <ModuleMetaDataForm data={moduleMetaData} />;
         break;
     }
     return (
@@ -38,7 +43,7 @@ export const ExplorerForm: React.FC<Props> = observer(
           variant="ghost"
           colorScheme="blue"
           onClick={onBack}
-          padding='0'
+          padding="0"
         >
           Back
         </Button>

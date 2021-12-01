@@ -84,13 +84,37 @@ export class AppStorage {
     }
   }
 
-  saveAppMetaDataInLS({version, name}: { version: string, name: string }) {
+  saveAppMetaDataInLS({ version, name }: { version: string; name: string }) {
     const newApp = produce(this.app, draft => {
       draft.metadata.name = name;
       draft.version = version;
     });
     this.setApp(newApp);
     this.saveAppInLS();
+  }
+
+  saveModuleMetaDataInLS(
+    { originName, originVersion }: { originName: string; originVersion: string },
+    {
+      version,
+      name,
+      stateMap,
+    }: {
+      version: string;
+      name: string;
+      stateMap: Record<string, string>;
+    }
+  ) {
+    const i = this.modules.findIndex(
+      m => m.version === originVersion && m.metadata.name === originName
+    );
+    const newModules = produce(this.modules, draft => {
+      draft[i].metadata.name = name;
+      draft[i].spec.stateMap = stateMap;
+      draft[i].version = version;
+    });
+    this.setModules(newModules);
+    this.saveModulesInLS();
   }
 
   private saveAppInLS() {
