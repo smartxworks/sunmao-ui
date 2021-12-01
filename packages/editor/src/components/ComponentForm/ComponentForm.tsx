@@ -73,9 +73,12 @@ export const renderField = (properties: {
 export const ComponentForm: React.FC<Props> = observer(props => {
   const { registry } = props;
   const { selectedComponent, selectedComponentId } = editorStore;
+  if (!selectedComponentId) {
+    return <div>No components selected. Click on a component to select it.</div>;
+  }
 
   if (!selectedComponent) {
-    return <div>cannot find component with id: {selectedComponentId}</div>;
+    return <div>Cannot find component with id: {selectedComponentId}.</div>;
   }
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
@@ -94,9 +97,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     );
   };
 
-  return !selectedComponent ? (
-    <div>cannot find component with id: {selectedComponentId}</div>
-  ) : (
+  return (
     <VStack p={4} spacing="4" background="gray.50">
       <FormControl>
         <FormLabel>
