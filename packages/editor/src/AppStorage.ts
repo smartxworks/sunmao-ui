@@ -15,7 +15,7 @@ export class AppStorage {
       app: observable.shallow,
       modules: observable.shallow,
       setApp: action,
-      setModules: action
+      setModules: action,
     });
   }
 
@@ -57,9 +57,9 @@ export class AppStorage {
     this.saveModulesInLS();
   }
 
-  // name is `${module.version}/${module.metadata.name}`
   saveComponentsInLS(
     type: 'app' | 'module',
+    version: string,
     name: string,
     components: ApplicationComponent[]
   ) {
@@ -72,7 +72,9 @@ export class AppStorage {
         this.saveAppInLS();
         break;
       case 'module':
-        const i = this.modules.findIndex(m => m.metadata.name === name);
+        const i = this.modules.findIndex(
+          m => m.version === version && m.metadata.name === name
+        );
         const newModules = produce(this.modules, draft => {
           draft[i].components = components;
         });
@@ -81,8 +83,6 @@ export class AppStorage {
         break;
     }
   }
-
-
 
   private saveAppInLS() {
     localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));
