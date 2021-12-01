@@ -1,4 +1,4 @@
-import { Divider, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
+import { Divider, HStack, IconButton, Text, Tooltip, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
@@ -107,31 +107,35 @@ const ExplorerTreeItem: React.FC<ExplorerTreeItemProps> = ({
       padding="2"
       backgroundColor={isActive ? 'gray.100' : 'white'}
     >
-      <Text
-        fontSize="lg"
-        overflow="hidden"
-        whiteSpace="nowrap"
-        textOverflow="ellipsis"
-        onClick={onClick}
-      >
-        {title}
-      </Text>
-      <IconButton
-        variant="ghost"
-        size="smx"
-        aria-label="edit"
-        icon={<EditIcon />}
-        onClick={_onEdit}
-      />
-      {onRemove ? (
+      <Tooltip label={title} openDelay={500}>
+        <Text
+          fontSize="lg"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+          onClick={onClick}
+        >
+          {title}
+        </Text>
+      </Tooltip>
+      <HStack>
         <IconButton
           variant="ghost"
           size="smx"
-          aria-label="remove"
-          icon={<DeleteIcon />}
-          onClick={onRemove}
+          aria-label="edit"
+          icon={<EditIcon />}
+          onClick={_onEdit}
         />
-      ) : null}
+        {onRemove ? (
+          <IconButton
+            variant="ghost"
+            size="smx"
+            aria-label="remove"
+            icon={<DeleteIcon />}
+            onClick={onRemove}
+          />
+        ) : null}
+      </HStack>
     </HStack>
   );
 };

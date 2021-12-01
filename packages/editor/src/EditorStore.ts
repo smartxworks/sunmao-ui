@@ -13,7 +13,7 @@ type EditingTarget = {
 class EditorStore {
   components: ApplicationComponent[] = [];
   // currentEditingComponents, it could be app's or module's components
-  selectedComponentId = this.components[0]?.id;
+  selectedComponentId = '';
   hoverComponentId = '';
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
@@ -73,7 +73,6 @@ class EditorStore {
   get originComponents(): ApplicationComponent[] {
     switch (this.currentEditingTarget.kind) {
       case 'module':
-        console.log('this.currentEditingName', this.currentEditingTarget);
         const module = this.modules.find(
           m =>
             m.version === this.currentEditingTarget.version &&
@@ -81,7 +80,6 @@ class EditorStore {
         );
         return module?.components || [];
       case 'app':
-        console.log('更新了components')
         return this.app.spec.components;
     }
   }
