@@ -10,8 +10,8 @@ export type EventNames = {
   componentsRefresh: ApplicationComponent[];
   // components change by operation
   componentsChange: ApplicationComponent[];
+  // it is only used for some operations' side effect
   selectComponent: string;
-  hoverComponent: string;
 }
 
 const emitter = mitt<EventNames>();
