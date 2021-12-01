@@ -7,7 +7,7 @@ import { GeneralTraitForm } from './GeneralTraitForm';
 import { eventBus } from '../../../eventBus';
 import { ignoreTraitsList } from '../../../constants';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { genOperation } from 'src/operations';
+import { genOperation } from '../../../operations';
 
 type Props = {
   registry: Registry;
