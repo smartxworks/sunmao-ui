@@ -11,7 +11,7 @@ import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
-import { genOperation } from 'src/operations';
+import { genOperation } from '../../operations';
 
 type Props = {
   registry: Registry;

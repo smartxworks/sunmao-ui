@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import { eventBus } from '../eventBus';
-import { genOperation } from 'src/operations';
+import { genOperation } from '../operations';
 
 type Props = {
   selectedComponentId: string;

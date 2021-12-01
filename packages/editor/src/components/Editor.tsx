@@ -14,7 +14,7 @@ import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
 import { editorStore } from '../EditorStore';
-import { genOperation } from 'src/operations';
+import { genOperation } from '../operations';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
