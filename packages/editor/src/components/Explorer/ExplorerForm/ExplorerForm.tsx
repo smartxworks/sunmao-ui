@@ -1,7 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { IconButton, VStack } from '@chakra-ui/react';
+import { Button, Text, VStack } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { AppMetaDataForm } from './AppMetaDataForm';
 type Props = {
   formType: 'app' | 'module';
   version: string;
@@ -14,11 +15,11 @@ export const ExplorerForm: React.FC<Props> = observer(
     let form;
     switch (formType) {
       case 'app':
-        form = (
-          <span>
-            App Form: {version}/{name}
-          </span>
-        );
+        const appMetaData = {
+          name,
+          version,
+        };
+        form = <AppMetaDataForm data={appMetaData} />;
         break;
       case 'module':
         form = (
@@ -29,14 +30,21 @@ export const ExplorerForm: React.FC<Props> = observer(
         break;
     }
     return (
-      <VStack alignItems='start'>
-        <IconButton
+      <VStack alignItems="start">
+        <Button
           aria-label="go back to tree"
-          size="xs"
-          icon={<ArrowLeftIcon />}
+          size="sm"
+          leftIcon={<ArrowLeftIcon />}
           variant="ghost"
+          colorScheme="blue"
           onClick={onBack}
-        />
+          padding='0'
+        >
+          Back
+        </Button>
+        <Text fontSize="lg" fontWeight="bold">
+          {formType === 'app' ? 'Application' : 'Module'}
+        </Text>
         {form}
       </VStack>
     );
