@@ -140,14 +140,8 @@ export const ComponentForm: React.FC<Props> = props => {
           />
         </VStack>
       </VStack>
-      <EventTraitForm
-        component={selectedComponent}
-        registry={registry}
-      />
-      <FetchTraitForm
-        component={selectedComponent}
-        registry={registry}
-      />
+      <EventTraitForm component={selectedComponent} registry={registry} />
+      <FetchTraitForm component={selectedComponent} registry={registry} />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );

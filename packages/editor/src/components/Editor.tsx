@@ -24,14 +24,13 @@ type Props = {
   stateStore: ReturnOfInit['stateManager']['store'];
 };
 
-export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore }) => {
-    const { components, selectedComponentId } = editorStore;
+export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) => {
+  const { components, selectedComponentId } = editorStore;
 
-    const [scale, setScale] = useState(100);
-    const [preview, setPreview] = useState(false);
-    const [codeMode, setCodeMode] = useState(false);
-    const [code, setCode] = useState('');
+  const [scale, setScale] = useState(100);
+  const [preview, setPreview] = useState(false);
+  const [codeMode, setCodeMode] = useState(false);
+  const [code, setCode] = useState('');
 
   const gridCallbacks: GridCallbacks = useMemo(() => {
     return {
@@ -74,115 +73,107 @@ export const Editor: React.FC<Props> = observer(
     };
   }, [components]);
 
-    const appComponent = useMemo(() => {
-      return (
-        <App
-          options={app}
-          debugEvent={false}
-          debugStore={false}
-          gridCallbacks={gridCallbacks}
-          componentWrapper={ComponentWrapper}
-        />
-      );
-    }, [app, gridCallbacks]);
+  const appComponent = useMemo(() => {
+    return (
+      <App
+        options={app}
+        debugEvent={false}
+        debugStore={false}
+        gridCallbacks={gridCallbacks}
+        componentWrapper={ComponentWrapper}
+      />
+    );
+  }, [app, gridCallbacks]);
 
-    const renderMain = () => {
-      const appBox = (
-        <Box flex="1" background="gray.50" p={4}>
-          <Box
-            width="100%"
-            height="100%"
-            background="white"
-            transform={`scale(${scale / 100})`}
-          >
-            <Box
-              id={DIALOG_CONTAINER_ID}
-              width="full"
-              height="full"
-              position="absolute"
-            />
-            {appComponent}
-          </Box>
+  const renderMain = () => {
+    const appBox = (
+      <Box flex="1" background="gray.50" p={4}>
+        <Box
+          width="100%"
+          height="100%"
+          background="white"
+          transform={`scale(${scale / 100})`}
+        >
+          <Box id={DIALOG_CONTAINER_ID} width="full" height="full" position="absolute" />
+          {appComponent}
         </Box>
-      );
+      </Box>
+    );
 
-      if (codeMode) {
-        return (
-          <Flex width="100%" height="100%">
-            <Box flex="1">
-              <SchemaEditor
-                defaultCode={JSON.stringify(app, null, 2)}
-                onChange={setCode}
-              />
-            </Box>
-            {appBox}
-          </Flex>
-        );
-      }
+    if (codeMode) {
       return (
-        <>
-          <Box width="280px" borderRightWidth="1px" borderColor="gray.200">
-            <Tabs
-              align="center"
-              height="100%"
-              display="flex"
-              flexDirection="column"
-              textAlign="left"
-              isLazy
-            >
-              <TabList background="gray.50">
-                <Tab>Explorer</Tab>
-                <Tab>UI Tree</Tab>
-                <Tab>State</Tab>
-              </TabList>
-              <TabPanels flex="1" overflow="auto">
-                <TabPanel>
-                  <Explorer />
-                </TabPanel>
-                <TabPanel p={0}>
-                  <StructureTree
-                    components={components}
-                    selectedComponentId={selectedComponentId}
-                    onSelectComponent={id => editorStore.setSelectedComponentId(id)}
-                    registry={registry}
-                  />
-                </TabPanel>
-                <TabPanel p={0} height="100%">
-                  <StateEditor code={JSON.stringify(stateStore, null, 2)} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+        <Flex width="100%" height="100%">
+          <Box flex="1">
+            <SchemaEditor defaultCode={JSON.stringify(app, null, 2)} onChange={setCode} />
           </Box>
           {appBox}
-          <Box width="320px" borderLeftWidth="1px" borderColor="gray.200" overflow="auto">
-            <Tabs
-              align="center"
-              textAlign="left"
-              height="100%"
-              display="flex"
-              flexDirection="column"
-            >
-              <TabList background="gray.50">
-                <Tab>Inspect</Tab>
-                <Tab>Insert</Tab>
-              </TabList>
-              <TabPanels flex="1" overflow="auto">
-                <TabPanel p={0}>
-                  <ComponentForm
-                    app={app}
-                    selectedId={selectedComponentId}
-                    registry={registry}
-                  />
-                </TabPanel>
-                <TabPanel p={0}>
-                  <ComponentList registry={registry} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </Box>
-        </>
+        </Flex>
       );
-    };
+    }
+    return (
+      <>
+        <Box width="280px" borderRightWidth="1px" borderColor="gray.200">
+          <Tabs
+            align="center"
+            height="100%"
+            display="flex"
+            flexDirection="column"
+            textAlign="left"
+            isLazy
+          >
+            <TabList background="gray.50">
+              <Tab>Explorer</Tab>
+              <Tab>UI Tree</Tab>
+              <Tab>State</Tab>
+            </TabList>
+            <TabPanels flex="1" overflow="auto">
+              <TabPanel>
+                <Explorer />
+              </TabPanel>
+              <TabPanel p={0}>
+                <StructureTree
+                  components={components}
+                  selectedComponentId={selectedComponentId}
+                  onSelectComponent={id => editorStore.setSelectedComponentId(id)}
+                  registry={registry}
+                />
+              </TabPanel>
+              <TabPanel p={0} height="100%">
+                <StateEditor code={JSON.stringify(stateStore, null, 2)} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
+        {appBox}
+        <Box width="320px" borderLeftWidth="1px" borderColor="gray.200" overflow="auto">
+          <Tabs
+            align="center"
+            textAlign="left"
+            height="100%"
+            display="flex"
+            flexDirection="column"
+          >
+            <TabList background="gray.50">
+              <Tab>Inspect</Tab>
+              <Tab>Insert</Tab>
+            </TabList>
+            <TabPanels flex="1" overflow="auto">
+              <TabPanel p={0}>
+                <ComponentForm
+                  app={app}
+                  selectedId={selectedComponentId}
+                  registry={registry}
+                />
+              </TabPanel>
+              <TabPanel p={0}>
+                <ComponentList registry={registry} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
+      </>
+    );
+  };
 
   return (
     <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
