@@ -20,7 +20,7 @@ type Example = {
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
 
-  const { App, registry, stateStore, apiService } = useMemo(() => {
+  const { App, registry, stateStore } = useMemo(() => {
     if (!example) {
       return {};
     }
@@ -83,7 +83,6 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
           App={App!}
           registry={registry!}
           stateStore={stateStore!}
-          apiService={apiService!}
         />
       </Box>
     </Flex>

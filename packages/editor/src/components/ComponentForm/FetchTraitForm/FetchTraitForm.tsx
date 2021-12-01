@@ -19,10 +19,7 @@ import { KeyValueEditor } from '../../KeyValueEditor';
 import { EventHandlerForm } from '../EventTraitForm/EventHandlerForm';
 import { eventBus } from '../../../eventBus';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import {
-  ModifyTraitPropertiesLeafOperation,
-  RemoveTraitLeafOperation,
-} from '../../../operations/leaf';
+import { genOperation } from '../../../operations';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
@@ -49,7 +46,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
       const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
       eventBus.send(
         'operation',
-        new ModifyTraitPropertiesLeafOperation({
+        genOperation('modifyTraitProperty', {
           componentId: component.id,
           traitIndex: index,
           properties: values,
@@ -201,7 +198,10 @@ export const FetchTraitForm: React.FC<Props> = props => {
           const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
           eventBus.send(
             'operation',
-            new RemoveTraitLeafOperation({ componentId: component.id, index })
+            genOperation('removeTrait', {
+              componentId: component.id,
+              index,
+            })
           );
         }}
       />

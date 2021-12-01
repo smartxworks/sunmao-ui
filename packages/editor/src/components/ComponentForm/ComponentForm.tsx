@@ -11,11 +11,7 @@ import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
-import {
-  ModifyComponentPropertiesLeafOperation,
-  ModifyTraitPropertiesLeafOperation,
-} from '../../operations/leaf';
-import { ModifyComponentIdBranchOperation } from '../../operations/branch';
+import { genOperation } from '../../operations';
 
 type Props = {
   registry: Registry;
@@ -36,14 +32,14 @@ export const renderField = (properties: {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
       const operation = type
-        ? new ModifyTraitPropertiesLeafOperation({
+        ? genOperation('modifyTraitProperty', {
             componentId: selectedId,
             traitIndex: index,
             properties: {
               [fullKey]: ref.current?.value,
             },
           })
-        : new ModifyComponentPropertiesLeafOperation({
+        : genOperation('modifyComponentProperty', {
             componentId: selectedId,
             properties: {
               [fullKey]: ref.current?.value,
@@ -96,7 +92,10 @@ export const ComponentForm: React.FC<Props> = props => {
   const changeComponentId = (selectedId: string, value: string) => {
     eventBus.send(
       'operation',
-      new ModifyComponentIdBranchOperation({ componentId: selectedId, newId: value })
+      genOperation('modifyComponentId', {
+        componentId: selectedId,
+        newId: value,
+      })
     );
   };
 
@@ -132,7 +131,7 @@ export const ComponentForm: React.FC<Props> = props => {
             onChange={newFormData => {
               eventBus.send(
                 'operation',
-                new ModifyComponentPropertiesLeafOperation({
+                genOperation('modifyComponentProperty', {
                   componentId: selectedId,
                   properties: newFormData,
                 })
@@ -141,14 +140,8 @@ export const ComponentForm: React.FC<Props> = props => {
           />
         </VStack>
       </VStack>
-      <EventTraitForm
-        component={selectedComponent}
-        registry={registry}
-      />
-      <FetchTraitForm
-        component={selectedComponent}
-        registry={registry}
-      />
+      <EventTraitForm component={selectedComponent} registry={registry} />
+      <FetchTraitForm component={selectedComponent} registry={registry} />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );
