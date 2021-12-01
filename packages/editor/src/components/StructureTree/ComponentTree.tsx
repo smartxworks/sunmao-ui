@@ -2,15 +2,11 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import React, { useMemo, useState } from 'react';
-import {
-  RemoveComponentBranchOperation,
-  CreateComponentBranchOperation,
-} from '../../operations/branch';
-import { AdjustComponentOrderLeafOperation } from '../../operations/leaf';
 import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
+import { genOperation } from '../../operations';
 
 type Props = {
   registry: Registry;
@@ -57,7 +53,7 @@ export const ComponentTree: React.FC<Props> = props => {
       const onDrop = (creatingComponent: string) => {
         eventBus.send(
           'operation',
-          new CreateComponentBranchOperation({
+          genOperation('createComponent', {
             componentType: creatingComponent,
             parentId: component.id,
             slot,
@@ -88,7 +84,9 @@ export const ComponentTree: React.FC<Props> = props => {
   const onClickRemove = () => {
     eventBus.send(
       'operation',
-      new RemoveComponentBranchOperation({ componentId: component.id })
+      genOperation('removeComponent', {
+        componentId: component.id,
+      })
     );
   };
 
@@ -96,10 +94,10 @@ export const ComponentTree: React.FC<Props> = props => {
     if (slots.length === 0) return;
     eventBus.send(
       'operation',
-      new CreateComponentBranchOperation({
+      genOperation('createComponent', {
         componentType: creatingComponent,
         parentId: component.id,
-        slot: 'content',
+        slot: slots[0],
       })
     );
   };
@@ -107,7 +105,7 @@ export const ComponentTree: React.FC<Props> = props => {
   const onMoveUp = () => {
     eventBus.send(
       'operation',
-      new AdjustComponentOrderLeafOperation({
+      genOperation('adjustComponentOrder', {
         componentId: component.id,
         orientation: 'up',
       })
@@ -117,7 +115,7 @@ export const ComponentTree: React.FC<Props> = props => {
   const onMoveDown = () => {
     eventBus.send(
       'operation',
-      new AdjustComponentOrderLeafOperation({
+      genOperation('adjustComponentOrder', {
         componentId: component.id,
         orientation: 'down',
       })

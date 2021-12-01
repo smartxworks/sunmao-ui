@@ -6,10 +6,7 @@ import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import {
-  RemoveComponentBranchOperation,
-  CreateComponentBranchOperation,
-} from '../../operations/branch';
+import { genOperation as genOperation } from '../../operations';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -62,7 +59,7 @@ export const StructureTree: React.FC<Props> = props => {
       const onClickRemove = () => {
         eventBus.send(
           'operation',
-          new RemoveComponentBranchOperation({
+          genOperation('removeComponent', {
             componentId: dummy.id,
           })
         );
@@ -101,7 +98,7 @@ function RootItem() {
   const onDrop = (creatingComponent: string) => {
     eventBus.send(
       'operation',
-      new CreateComponentBranchOperation({
+      genOperation('createComponent', {
         componentType: creatingComponent,
       })
     );
