@@ -13,12 +13,8 @@ import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
-import {
-  ModifyComponentPropertiesLeafOperation,
-  ReplaceAppLeafOperation,
-} from '../operations/leaf';
-import { CreateComponentBranchOperation } from '../operations/branch';
 import { editorStore } from '../EditorStore';
+import { genOperation } from 'src/operations';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -26,7 +22,6 @@ type Props = {
   App: ReturnOfInit['App'];
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
-  apiService: ReturnOfInit['apiService'];
 };
 
 export const Editor: React.FC<Props> = observer(
@@ -38,46 +33,46 @@ export const Editor: React.FC<Props> = observer(
     const [codeMode, setCodeMode] = useState(false);
     const [code, setCode] = useState('');
 
-    const gridCallbacks: GridCallbacks = useMemo(() => {
-      return {
-        // drag an existing component
-        onDragStop(id, layout) {
-          eventBus.send(
-            'operation',
-            new ModifyComponentPropertiesLeafOperation({
-              componentId: id,
-              properties: { layout },
-            })
-          );
-        },
-        // drag a new component from tool box
-        onDrop(id, layout, _, e) {
-          const component = e.dataTransfer?.getData('component') || '';
-          eventBus.send(
-            'operation',
-            new CreateComponentBranchOperation({
-              componentType: component,
-              parentId: id,
-              slot: 'content',
-              layout,
-            })
-          );
-        },
-      };
-    }, []);
+  const gridCallbacks: GridCallbacks = useMemo(() => {
+    return {
+      // drag an existing component
+      onDragStop(id, layout) {
+        eventBus.send(
+          'operation',
+          genOperation('modifyComponentProperty', {
+            componentId: id,
+            properties: { layout },
+          })
+        );
+      },
+      // drag a new component from tool box
+      onDrop(id, layout, _, e) {
+        const component = e.dataTransfer?.getData('component') || '';
+        eventBus.send(
+          'operation',
+          genOperation('createComponent', {
+            componentType: component,
+            parentId: id,
+            slot: 'content',
+            layout,
+          })
+        );
+      },
+    };
+  }, []);
 
-    const app = useMemo<Application>(() => {
-      return {
-        version: 'sunmao/v1',
-        kind: 'Application',
-        metadata: {
-          name: 'some App',
-        },
-        spec: {
-          components,
-        },
-      };
-    }, [components]);
+  const app = useMemo<Application>(() => {
+    return {
+      version: 'sunmao/v1',
+      kind: 'Application',
+      metadata: {
+        name: 'some App',
+      },
+      spec: {
+        components,
+      },
+    };
+  }, [components]);
 
     const appComponent = useMemo(() => {
       return (
@@ -189,37 +184,41 @@ export const Editor: React.FC<Props> = observer(
       );
     };
 
-    return (
-      <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
-        <Box display="flex" height="100%" width="100%" flexDirection="column">
-          <EditorHeader
-            scale={scale}
-            setScale={setScale}
-            onPreview={() => setPreview(true)}
-            codeMode={codeMode}
-            onCodeMode={v => {
-              setCodeMode(v);
-              if (!v && code) {
-                eventBus.send('operation', new ReplaceAppLeafOperation(JSON.parse(code)));
-              }
-            }}
-          />
-          <Box display="flex" flex="1" overflow="auto">
-            {renderMain()}
-          </Box>
+  return (
+    <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
+      <Box display="flex" height="100%" width="100%" flexDirection="column">
+        <EditorHeader
+          scale={scale}
+          setScale={setScale}
+          onPreview={() => setPreview(true)}
+          codeMode={codeMode}
+          onCodeMode={v => {
+            setCodeMode(v);
+            if (!v && code) {
+              eventBus.send(
+                'operation',
+                genOperation('replaceApp', {
+                  app: JSON.parse(code),
+                })
+              );
+            }
+          }}
+        />
+        <Box display="flex" flex="1" overflow="auto">
+          {renderMain()}
         </Box>
-        {preview && (
-          <PreviewModal onClose={() => setPreview(false)}>
-            <Box width="100%" height="100%">
-              <App
-                options={JSON.parse(JSON.stringify(app))}
-                debugEvent={false}
-                debugStore={false}
-              />
-            </Box>
-          </PreviewModal>
-        )}
-      </KeyboardEventWrapper>
-    );
-  }
-);
+      </Box>
+      {preview && (
+        <PreviewModal onClose={() => setPreview(false)}>
+          <Box width="100%" height="100%">
+            <App
+              options={JSON.parse(JSON.stringify(app))}
+              debugEvent={false}
+              debugStore={false}
+            />
+          </Box>
+        </PreviewModal>
+      )}
+    </KeyboardEventWrapper>
+  );
+});
