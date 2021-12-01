@@ -20,7 +20,7 @@
       },
       "components": [
         {
-          "id": "{{$moduleId}}hstack",
+          "id": "hstack",
           "type": "chakra_ui/v1/hstack",
           "properties": {
             "spacing": "24px"
@@ -28,7 +28,7 @@
           "traits": []
         },
         {
-          "id": "{{$moduleId}}name",
+          "id": "name",
           "type": "core/v1/text",
           "properties": {
             "value": {
@@ -41,7 +41,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "{{$moduleId}}hstack",
+                  "id": "hstack",
                   "slot": "content"
                 }
               }
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "id": "{{$moduleId}}email",
+          "id": "email",
           "type": "core/v1/text",
           "properties": {
             "value": {
@@ -62,7 +62,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "{{$moduleId}}hstack",
+                  "id": "hstack",
                   "slot": "content"
                 }
               }
@@ -70,7 +70,7 @@
           ]
         },
         {
-          "id": "{{$moduleId}}deleteButton",
+          "id": "deleteButton",
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
@@ -106,7 +106,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "{{$moduleId}}hstack",
+                  "id": "hstack",
                   "slot": "content"
                 }
               }
@@ -114,7 +114,7 @@
           ]
         },
         {
-          "id": "{{$moduleId}}editButton",
+          "id": "editButton",
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
@@ -137,7 +137,7 @@
                     "method": {
                       "name": "onClickEdit",
                       "parameters": {
-                        "moduleId": "{{$moduleId}}"
+                        "moduleId": ""
                       }
                     },
                     "wait": {},
@@ -150,7 +150,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "{{$moduleId}}hstack",
+                  "id": "hstack",
                   "slot": "content"
                 }
               }

@@ -18,18 +18,18 @@
         },
         "events": ["onSubmit"],
         "stateMap": {
-          "value": "{{$moduleId}}__input.value"
+          "value": "input.value"
         }
       },
       "components": [
         {
-          "id": "{{$moduleId}}__hstack",
+          "id": "hstack",
           "type": "chakra_ui/v1/hstack",
           "properties": {},
           "traits": []
         },
         {
-          "id": "{{$moduleId}}__input",
+          "id": "input",
           "type": "chakra_ui/v1/input",
           "properties": {},
           "traits": [
@@ -37,7 +37,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "{{$moduleId}}__hstack",
+                  "id": "hstack",
                   "slot": "content"
                 }
               }
@@ -45,11 +45,11 @@
           ]
         },
         {
-          "id": "{{$moduleId}}__button",
+          "id": "button",
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "{{littleFormModule__input.value}}",
+              "raw": "{{input.value}}",
               "format": "md"
             }
           },
@@ -77,7 +77,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "{{$moduleId}}__hstack",
+                  "id": "hstack",
                   "slot": "content"
                 }
               }
