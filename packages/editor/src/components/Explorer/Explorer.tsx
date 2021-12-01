@@ -1,36 +1,18 @@
 import { Divider, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { AppStorage } from '../../AppStorage';
+import { observer } from 'mobx-react-lite';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import { eventBus } from '../../eventBus';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
+import { editorStore } from '../../EditorStore';
 
-type ExplorerProps = {
-  appStorage: AppStorage;
-};
-
-const useAppStorage = (appStorage: AppStorage) => {
-  const [modules, setModules] = React.useState<ImplementedRuntimeModule[]>(
-    appStorage.modules
-  );
-
-  eventBus.on('modulesChange', newModules => {
-    setModules(newModules);
-  });
-
-  return {
-    modules,
-  };
-};
-
-export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
-  const app = appStorage.app;
+export const Explorer: React.FC = observer(() => {
+  const { app, modules, updateCurrentEditingTarget } = editorStore;
   const appItemId = `app_${app.metadata.name}`;
   const [selectedItem, setSelectedItem] = React.useState<string | undefined>(appItemId);
 
   const onClickApp = (id: string) => {
     setSelectedItem(id);
-    appStorage.updateCurrentId('app', app.metadata.name);
+    updateCurrentEditingTarget('app', app.metadata.name);
   };
 
   const appItem = (
@@ -43,15 +25,14 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
     />
   );
 
-  const { modules } = useAppStorage(appStorage);
   const moduleItems = modules.map((module: ImplementedRuntimeModule) => {
     const moduleItemId = `module_${module.metadata.name}`;
     const onClickModule = (id: string) => {
       setSelectedItem(id);
-      appStorage.updateCurrentId('module', module.metadata.name);
+      updateCurrentEditingTarget('module', module.metadata.name);
     };
     const onRemove = () => {
-      appStorage.removeModule(module);
+      editorStore.appStorage.removeModule(module.version, module.metadata.name);
     };
     return (
       <ExplorerItem
@@ -80,13 +61,13 @@ export const Explorer: React.FC<ExplorerProps> = ({ appStorage }) => {
           aria-label="create module"
           size="xs"
           icon={<AddIcon />}
-          onClick={() => appStorage.createModule()}
+          onClick={() => editorStore.appStorage.createModule()}
         />
       </HStack>
       {moduleItems}
     </VStack>
   );
-};
+});
 
 type ExplorerItemProps = {
   id: string;

@@ -1,31 +1,21 @@
+import { observable, makeObservable, action } from 'mobx';
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
-import { ImplementedRuntimeModule, Registry } from '@sunmao-ui/runtime';
+import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
-import { eventBus } from './eventBus';
 import { DefaultNewModule, EmptyAppSchema } from './constants';
 
 export class AppStorage {
-  components: ApplicationComponent[] = [];
-  app: Application;
-  modules: ImplementedRuntimeModule[];
-  // this is current editing Model
-  private currentEditingName: string | undefined;
-  private currentEditingType: 'app' | 'module' = 'app';
+  app: Application = this.getDefaultAppFromLS();
+  modules: ImplementedRuntimeModule[] = this.getModulesFromLS();
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
-  constructor(private registry: Registry) {
-    this.app = this.getDefaultAppFromLS();
-    this.setApp(this.app)
-    this.modules = this.getModulesFromLS();
-    this.setModules(this.modules)
-  
-    this.updateCurrentId('app', this.app.metadata.name);
-    this.refreshComponents();
-
-    eventBus.on('componentsChange', (components: ApplicationComponent[]) => {
-      this.components = components;
-      this.saveComponentsInLS();
+  constructor() {
+    makeObservable(this, {
+      app: observable.shallow,
+      modules: observable.shallow,
+      setApp: action,
+      setModules: action
     });
   }
 
@@ -53,37 +43,38 @@ export class AppStorage {
     }
   }
 
-  updateCurrentId(type: 'app' | 'module', name: string) {
-    this.currentEditingType = type;
-    this.currentEditingName = name;
-    this.refreshComponents();
-  }
-
   createModule() {
     this.setModules([...this.modules, DefaultNewModule]);
     this.saveModulesInLS();
   }
 
-  removeModule(module: ImplementedRuntimeModule) {
-    this.setModules(this.modules.filter(m => m !== module));
+  removeModule(v: string, n: string) {
+    this.setModules(
+      this.modules.filter(
+        ({ version, metadata: { name } }) => version !== v && name !== n
+      )
+    );
     this.saveModulesInLS();
   }
 
-  saveComponentsInLS() {
-    switch (this.currentEditingType) {
+  // name is `${module.version}/${module.metadata.name}`
+  saveComponentsInLS(
+    type: 'app' | 'module',
+    name: string,
+    components: ApplicationComponent[]
+  ) {
+    switch (type) {
       case 'app':
         const newApp = produce(this.app, draft => {
-          draft.spec.components = this.components;
+          draft.spec.components = components;
         });
         this.setApp(newApp);
         this.saveAppInLS();
         break;
       case 'module':
-        const i = this.modules.findIndex(
-          m => m.metadata.name === this.currentEditingName
-        );
+        const i = this.modules.findIndex(m => m.metadata.name === name);
         const newModules = produce(this.modules, draft => {
-          draft[i].components = this.components;
+          draft[i].components = components;
         });
         this.setModules(newModules);
         this.saveModulesInLS();
@@ -91,15 +82,7 @@ export class AppStorage {
     }
   }
 
-  private setApp(app: Application) {
-    this.app = app;
-    eventBus.send('appChange', app);
-  }
 
-  private setModules(modules: ImplementedRuntimeModule[]) {
-    this.modules = modules;
-    eventBus.send('modulesChange', modules);
-  }
 
   private saveAppInLS() {
     localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));
@@ -107,30 +90,12 @@ export class AppStorage {
 
   private saveModulesInLS() {
     localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(this.modules));
-    // reregister modules to activate immediately
-    this.modules.forEach(m => this.registry.registerModule(m, true));
   }
 
-  // update components by currentEditingType & cache
-  private refreshComponents() {
-    switch (this.currentEditingType) {
-      case 'module':
-        const module = this.modules.find(
-          m => m.metadata.name === this.currentEditingName
-        );
-        const componentsOfModule = module?.components || [];
-        this.components = componentsOfModule;
-
-        break;
-      case 'app':
-        const componentsOfApp = this.app.spec.components;
-        this.components = componentsOfApp;
-        break;
-    }
-    this.emitComponentsChange();
+  setApp(app: Application) {
+    this.app = app;
   }
-
-  private emitComponentsChange() {
-    eventBus.send('componentsReload', this.components);
+  setModules(modules: ImplementedRuntimeModule[]) {
+    this.modules = modules;
   }
 }
