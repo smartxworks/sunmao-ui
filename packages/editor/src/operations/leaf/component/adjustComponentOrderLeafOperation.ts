@@ -11,9 +11,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
   private index = -1;
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
     return produce(prev, draft => {
-      this.index = draft.findIndex(
-        c => c.id === this.context.componentId
-      );
+      this.index = draft.findIndex(c => c.id === this.context.componentId);
       if (this.index === -1) {
         console.warn('component not found');
         return;
@@ -37,13 +35,12 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
             // if found -1, means no any top level element is in the previous postion for target element
             break;
           case 'down':
-            for (
-              this.dest = this.index + 1;
-              this.dest < draft.length;
-              this.dest++
-            ) {
+            for (this.dest = this.index + 1; this.dest < draft.length; this.dest++) {
               const nextComponent = draft[this.dest];
-              if (!nextComponent.traits.some(t => t.type === 'core/v1/slot')) {
+              if (
+                nextComponent.type !== 'core/v1/dummy' &&
+                !nextComponent.traits.some(t => t.type === 'core/v1/slot')
+              ) {
                 break;
               }
             }
@@ -73,11 +70,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
             // if found -1, means no any top level element is in the previous postion for target element
             break;
           case 'down':
-            for (
-              this.dest = this.index + 1;
-              this.dest < draft.length;
-              this.dest++
-            ) {
+            for (this.dest = this.index + 1; this.dest < draft.length; this.dest++) {
               const nextComponent = draft[this.dest];
               if (
                 nextComponent.traits.some(

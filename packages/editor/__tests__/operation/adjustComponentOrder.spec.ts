@@ -23,7 +23,15 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1]).toMatchSnapshot();
+      expect(stack[1][operation['index']]).toEqual(stack[0][operation['dest']]);
+      expect(stack[1][operation['dest']]).toEqual(stack[0][operation['index']]);
+      const topLevelElements = stack[1].filter(
+        c => !c.traits.some(t => t.type === 'core/v1/slot') && c.type !== 'core/v1/dummy'
+      );
+      const index = topLevelElements.findIndex(
+        c => c.id === stack[0][operation['index']].id
+      );
+      expect(topLevelElements[index + 1].id).toBe(stack[0][operation['dest']].id);
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
@@ -51,7 +59,15 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1]).toMatchSnapshot();
+      expect(stack[1][operation['index']]).toEqual(stack[0][operation['dest']]);
+      expect(stack[1][operation['dest']]).toEqual(stack[0][operation['index']]);
+      const topLevelElements = stack[1].filter(
+        c => !c.traits.some(t => t.type === 'core/v1/slot') && c.type !== 'core/v1/dummy'
+      );
+      const index = topLevelElements.findIndex(
+        c => c.id === stack[0][operation['index']].id
+      );
+      expect(topLevelElements[index - 1].id).toBe(stack[0][operation['dest']].id);
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
@@ -99,7 +115,26 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1]).toMatchSnapshot();
+      expect(stack[1][operation['index']]).toEqual(stack[0][operation['dest']]);
+      expect(stack[1][operation['dest']]).toEqual(stack[0][operation['index']]);
+      const parent = (
+        stack[1]
+          .find(c => c.id === 'userInfoContainer')
+          .traits.find(t => t.type === 'core/v1/slot').properties.container as {
+          id: string;
+        }
+      ).id;
+      const siblingElements = stack[1].filter(c =>
+        c.traits.some(
+          t =>
+            t.type === 'core/v1/slot' &&
+            (t.properties.container as { id: string }).id === parent
+        )
+      );
+      const index = siblingElements.findIndex(
+        c => c.id === stack[0][operation['index']].id
+      );
+      expect(siblingElements[index + 1].id).toBe(stack[0][operation['dest']].id);
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
@@ -127,7 +162,26 @@ describe('adjust component order operation', () => {
     });
     it('should do operation', () => {
       stack[1] = operation.do(stack[0]);
-      expect(stack[1]).toMatchSnapshot();
+      expect(stack[1][operation['index']]).toEqual(stack[0][operation['dest']]);
+      expect(stack[1][operation['dest']]).toEqual(stack[0][operation['index']]);
+      const parent = (
+        stack[1]
+          .find(c => c.id === 'userInfoContainer')
+          .traits.find(t => t.type === 'core/v1/slot').properties.container as {
+          id: string;
+        }
+      ).id;
+      const siblingElements = stack[1].filter(c =>
+        c.traits.some(
+          t =>
+            t.type === 'core/v1/slot' &&
+            (t.properties.container as { id: string }).id === parent
+        )
+      );
+      const index = siblingElements.findIndex(
+        c => c.id === stack[0][operation['index']].id
+      );
+      expect(siblingElements[index - 1].id).toBe(stack[0][operation['dest']].id);
     });
     it('should undo operation', () => {
       stack[2] = operation.undo(stack[1]);
