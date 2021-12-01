@@ -7,10 +7,7 @@ import { GeneralTraitForm } from './GeneralTraitForm';
 import { eventBus } from '../../../eventBus';
 import { ignoreTraitsList } from '../../../constants';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import {
-  CreateTraitLeafOperation,
-  RemoveTraitLeafOperation,
-} from '../../../operations/leaf';
+import { genOperation } from 'src/operations';
 
 type Props = {
   registry: Registry;
@@ -25,7 +22,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     const initProperties = parseTypeBox(traitSpec.properties as TSchema);
     eventBus.send(
       'operation',
-      new CreateTraitLeafOperation({
+      genOperation('createTrait', {
         componentId: component.id,
         traitType: type,
         properties: initProperties,
@@ -34,21 +31,24 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
   };
 
   const traitFields = component.traits
-    .filter(t => {
-      return !ignoreTraitsList.includes(t.type);
+    .filter(trait => {
+      return !ignoreTraitsList.includes(trait.type);
     })
-    .map((t, i) => {
+    .map((trait, index) => {
       const onRemoveTrait = () => {
         eventBus.send(
           'operation',
-          new RemoveTraitLeafOperation({ componentId: component.id, index: i })
+          genOperation('removeTrait', {
+            componentId: component.id,
+            index,
+          })
         );
       };
       return (
         <GeneralTraitForm
-          key={i}
+          key={index}
           component={component}
-          trait={t}
+          trait={trait}
           onRemove={onRemoveTrait}
           registry={registry}
         />

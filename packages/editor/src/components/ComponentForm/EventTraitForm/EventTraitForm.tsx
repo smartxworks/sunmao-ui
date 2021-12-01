@@ -8,10 +8,7 @@ import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { eventBus } from '../../../eventBus';
 import { EventHandlerForm } from './EventHandlerForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import {
-  CreateTraitLeafOperation,
-  ModifyTraitPropertiesLeafOperation,
-} from '../../../operations/leaf';
+import { genOperation } from 'src/operations';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
@@ -51,7 +48,7 @@ export const EventTraitForm: React.FC<Props> = props => {
     if (!handlers) {
       eventBus.send(
         'operation',
-        new CreateTraitLeafOperation({
+        genOperation('createTrait', {
           componentId: component.id,
           traitType: 'core/v1/event',
           properties: { handlers: [newHandler] },
@@ -62,7 +59,7 @@ export const EventTraitForm: React.FC<Props> = props => {
       const index = component.traits.findIndex(t => t.type === 'core/v1/event');
       eventBus.send(
         'operation',
-        new ModifyTraitPropertiesLeafOperation({
+        genOperation('modifyTraitProperty', {
           componentId: component.id,
           traitIndex: index,
           properties: [...handlers, newHandler],
@@ -80,7 +77,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         });
         eventBus.send(
           'operation',
-          new ModifyTraitPropertiesLeafOperation({
+          genOperation('modifyTraitProperty', {
             componentId: component.id,
             traitIndex: index,
             properties: {
@@ -97,7 +94,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         });
         eventBus.send(
           'operation',
-          new ModifyTraitPropertiesLeafOperation({
+          genOperation('modifyTraitProperty', {
             componentId: component.id,
             traitIndex: index,
             properties: {
