@@ -7,7 +7,7 @@ import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
 import { editorStore } from './EditorStore';
-import { App, registry, stateStore } from './setup';
+import { App, registry, stateManager } from './setup';
 
 type Options = Partial<{
   components: Parameters<Registry['registerComponent']>[0][];
@@ -31,7 +31,7 @@ export default function renderApp(options: Options = {}) {
   ReactDOM.render(
     <StrictMode>
       <ChakraProvider>
-        <Editor App={App} registry={registry} stateStore={stateStore} />
+        <Editor App={App} registry={registry} stateStore={stateManager.store} />
       </ChakraProvider>
     </StrictMode>,
     container

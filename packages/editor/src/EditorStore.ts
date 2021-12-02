@@ -1,8 +1,8 @@
-import { makeAutoObservable, autorun, observable, action } from 'mobx';
+import { makeAutoObservable, autorun, observable, reaction, action } from 'mobx';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { eventBus } from './eventBus';
 import { AppStorage } from './AppStorage';
-import { registry } from './setup';
+import { registry, stateManager } from './setup';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -56,14 +56,14 @@ class EditorStore {
         this.currentEditingTarget.name,
         components
       );
-      if (this.currentEditingTarget.kind === 'module') {
-        // reregister modules to activate immediately
-        this.modules.forEach(m => registry.registerModule(m, true));
-      }
     });
 
-    autorun(() => {
+    reaction(() => this.originComponents, () => {
+      this.clearSunmaoGlobalState();
       eventBus.send('componentsRefresh', this.originComponents);
+    })
+
+    autorun(() => {
       this.setComponents(this.originComponents);
     });
   }
@@ -82,6 +82,12 @@ class EditorStore {
       case 'app':
         return this.app.spec.components;
     }
+  }
+
+  clearSunmaoGlobalState() {
+    stateManager.clear();
+    // reregister all modules
+    this.modules.forEach(m => registry.registerModule(m, true));
   }
 
   updateCurrentEditingTarget = (
