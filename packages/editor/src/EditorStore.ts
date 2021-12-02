@@ -1,4 +1,4 @@
-import { makeAutoObservable, autorun, observable, reaction, action } from 'mobx';
+import { makeAutoObservable, observable, reaction, action } from 'mobx';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { eventBus } from './eventBus';
 import { AppStorage } from './AppStorage';
@@ -42,8 +42,6 @@ class EditorStore {
       setComponents: action,
     });
 
-    this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
-
     eventBus.on('selectComponent', id => {
       this.setSelectedComponentId(id);
     });
@@ -58,14 +56,15 @@ class EditorStore {
       );
     });
 
-    reaction(() => this.originComponents, () => {
-      this.clearSunmaoGlobalState();
-      eventBus.send('componentsRefresh', this.originComponents);
+    reaction(() => this.currentEditingTarget, (target) => {
+      if (target.name) {
+        this.clearSunmaoGlobalState();
+        eventBus.send('componentsRefresh', this.originComponents);
+        this.setComponents(this.originComponents);
+      }
     })
 
-    autorun(() => {
-      this.setComponents(this.originComponents);
-    });
+    this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
 
   // origin components of app of module
