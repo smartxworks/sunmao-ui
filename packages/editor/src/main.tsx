@@ -1,4 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
@@ -16,6 +18,10 @@ type Options = Partial<{
   container: Element;
 }>;
 
+const cache = createCache({
+  key: 'sunmao-editor',
+});
+
 export default function renderApp(options: Options = {}) {
   const {
     components = [],
@@ -30,9 +36,11 @@ export default function renderApp(options: Options = {}) {
 
   ReactDOM.render(
     <StrictMode>
-      <ChakraProvider>
-        <Editor App={App} registry={registry} stateStore={stateStore} />
-      </ChakraProvider>
+      <CacheProvider value={cache}>
+        <ChakraProvider>
+          <Editor App={App} registry={registry} stateStore={stateStore} />
+        </ChakraProvider>
+      </CacheProvider>
     </StrictMode>,
     container
   );
