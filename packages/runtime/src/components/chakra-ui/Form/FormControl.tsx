@@ -11,8 +11,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { watch } from '../../../utils/watchReactivity';
-import { ComponentImplementation } from '../../../services/registry';
+import { watch } from 'utils/watchReactivity';
+import { ComponentImplementation } from 'services/registry';
 import Slot from '../../_internal/Slot';
 import { CheckboxStateSchema } from '../Checkbox';
 

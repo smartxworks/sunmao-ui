@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
-import { RuntimeModuleSchema } from '../../../types/RuntimeSchema';
-import { EventHandlerSchema } from '../../../types/TraitPropertiesSchema';
+import { RuntimeModuleSchema } from 'types/RuntimeSchema';
+import { EventHandlerSchema } from 'types/TraitPropertiesSchema';
 
 export const MajorKeyPropertySchema = Type.String();
 export const RowsPerPagePropertySchema = Type.Number();

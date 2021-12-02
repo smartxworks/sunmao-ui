@@ -6,38 +6,38 @@ import {
 } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
-import PlainButton from '../components/plain/Button';
-import CoreText from '../components/core/Text';
-import CoreGridLayout from '../components/core/GridLayout';
-import CoreRouter from '../components/core/Router';
-import CoreDummy from '../components/core/Dummy';
-import CoreModuleContainer from '../components/core/ModuleContainer';
+import PlainButton from 'components/plain/Button';
+import CoreText from 'components/core/Text';
+import CoreGridLayout from 'components/core/GridLayout';
+import CoreRouter from 'components/core/Router';
+import CoreDummy from 'components/core/Dummy';
+import CoreModuleContainer from 'components/core/ModuleContainer';
 /* --- chakra-ui --- */
-import ChakraUIRoot from '../components/chakra-ui/Root';
-import ChakraUIButton from '../components/chakra-ui/Button';
-import ChakraUITabs from '../components/chakra-ui/Tabs';
-import ChakraUITable from '../components/chakra-ui/Table';
-import ChakraUIInput from '../components/chakra-ui/Input';
-import ChakraUIBox from '../components/chakra-ui/Box';
-import ChakraUIDivider from '../components/chakra-ui/Divider';
-import ChakraUIFormControl from '../components/chakra-ui/Form/FormControl';
-import ChakraUIForm from '../components/chakra-ui/Form/Form';
-import ChakraUIKbd from '../components/chakra-ui/Kbd';
-import ChakraUIList from '../components/chakra-ui/List';
-import ChakraUILink from '../components/chakra-ui/Link';
-import ChakraUINumberInput from '../components/chakra-ui/NumberInput';
-import ChakraUIMultiSelect from '../components/chakra-ui/MultiSelect';
-import ChakraUICheckboxGroup from '../components/chakra-ui/CheckboxGroup';
-import ChakraUICheckbox from '../components/chakra-ui/Checkbox';
-import ChakraUIStack from '../components/chakra-ui/Stack';
-import ChakraUITooltip from '../components/chakra-ui/Tooltip';
-import ChakraUIHStack from '../components/chakra-ui/HStack';
-import ChakraUIVStack from '../components/chakra-ui/VStack';
-import ChakraUIImage from '../components/chakra-ui/Image';
-import ChakraUIDialog from '../components/chakra-ui/Dialog';
-import ChakraUISelect from '../components/chakra-ui/Select';
-import ChakraUIRadioGroup from '../components/chakra-ui/RadioGroup';
-import ChakraUIRadio from '../components/chakra-ui/Radio';
+import ChakraUIRoot from 'components/chakra-ui/Root';
+import ChakraUIButton from 'components/chakra-ui/Button';
+import ChakraUITabs from 'components/chakra-ui/Tabs';
+import ChakraUITable from 'components/chakra-ui/Table';
+import ChakraUIInput from 'components/chakra-ui/Input';
+import ChakraUIBox from 'components/chakra-ui/Box';
+import ChakraUIDivider from 'components/chakra-ui/Divider';
+import ChakraUIFormControl from 'components/chakra-ui/Form/FormControl';
+import ChakraUIForm from 'components/chakra-ui/Form/Form';
+import ChakraUIKbd from 'components/chakra-ui/Kbd';
+import ChakraUIList from 'components/chakra-ui/List';
+import ChakraUILink from 'components/chakra-ui/Link';
+import ChakraUINumberInput from 'components/chakra-ui/NumberInput';
+import ChakraUIMultiSelect from 'components/chakra-ui/MultiSelect';
+import ChakraUICheckboxGroup from 'components/chakra-ui/CheckboxGroup';
+import ChakraUICheckbox from 'components/chakra-ui/Checkbox';
+import ChakraUIStack from 'components/chakra-ui/Stack';
+import ChakraUITooltip from 'components/chakra-ui/Tooltip';
+import ChakraUIHStack from 'components/chakra-ui/HStack';
+import ChakraUIVStack from 'components/chakra-ui/VStack';
+import ChakraUIImage from 'components/chakra-ui/Image';
+import ChakraUIDialog from 'components/chakra-ui/Dialog';
+import ChakraUISelect from 'components/chakra-ui/Select';
+import ChakraUIRadioGroup from 'components/chakra-ui/RadioGroup';
+import ChakraUIRadio from 'components/chakra-ui/Radio';
 
 // traits
 import CoreArrayState from '../traits/core/arrayState';
@@ -51,7 +51,7 @@ import CoreValidation from '../traits/core/validation';
 import {
   ComponentImplementationProps,
   TraitImplementation,
-} from 'src/types/RuntimeSchema';
+} from 'types/RuntimeSchema';
 import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash';

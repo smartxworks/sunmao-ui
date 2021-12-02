@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseMultiSelect } from 'chakra-react-select';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 

@@ -3,7 +3,7 @@ import { Static } from '@sinclair/typebox';
 import { ColumnSchema } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../../constants';
-import { UIServices } from 'src/types/RuntimeSchema';
+import { UIServices } from 'types/RuntimeSchema';
 import { ModuleRenderer } from '../../_internal/ModuleRenderer';
 
 export const TableTd: React.FC<{

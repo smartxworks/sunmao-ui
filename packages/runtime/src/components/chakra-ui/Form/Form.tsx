@@ -3,8 +3,8 @@ import { css } from '@emotion/react';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
 import { Button, VStack } from '@chakra-ui/react';
-import { watch } from '../../../utils/watchReactivity';
-import { ComponentImplementation } from '../../../services/registry';
+import { watch } from 'utils/watchReactivity';
+import { ComponentImplementation } from 'services/registry';
 import Slot from '../../_internal/Slot';
 
 const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
