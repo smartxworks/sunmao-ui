@@ -15,7 +15,7 @@ export class AppStorage {
       app: observable.shallow,
       modules: observable.shallow,
       setApp: action,
-      setModules: action
+      setModules: action,
     });
   }
 
@@ -57,9 +57,9 @@ export class AppStorage {
     this.saveModulesInLS();
   }
 
-  // name is `${module.version}/${module.metadata.name}`
   saveComponentsInLS(
     type: 'app' | 'module',
+    version: string,
     name: string,
     components: ApplicationComponent[]
   ) {
@@ -72,7 +72,9 @@ export class AppStorage {
         this.saveAppInLS();
         break;
       case 'module':
-        const i = this.modules.findIndex(m => m.metadata.name === name);
+        const i = this.modules.findIndex(
+          m => m.version === version && m.metadata.name === name
+        );
         const newModules = produce(this.modules, draft => {
           draft[i].components = components;
         });
@@ -82,7 +84,38 @@ export class AppStorage {
     }
   }
 
+  saveAppMetaDataInLS({ version, name }: { version: string; name: string }) {
+    const newApp = produce(this.app, draft => {
+      draft.metadata.name = name;
+      draft.version = version;
+    });
+    this.setApp(newApp);
+    this.saveAppInLS();
+  }
 
+  saveModuleMetaDataInLS(
+    { originName, originVersion }: { originName: string; originVersion: string },
+    {
+      version,
+      name,
+      stateMap,
+    }: {
+      version: string;
+      name: string;
+      stateMap: Record<string, string>;
+    }
+  ) {
+    const i = this.modules.findIndex(
+      m => m.version === originVersion && m.metadata.name === originName
+    );
+    const newModules = produce(this.modules, draft => {
+      draft[i].metadata.name = name;
+      draft[i].spec.stateMap = stateMap;
+      draft[i].version = version;
+    });
+    this.setModules(newModules);
+    this.saveModulesInLS();
+  }
 
   private saveAppInLS() {
     localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));

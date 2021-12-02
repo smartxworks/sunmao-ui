@@ -1,18 +1,26 @@
-import { makeAutoObservable, autorun, observable } from 'mobx';
+import { makeAutoObservable, autorun, observable, action } from 'mobx';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { eventBus } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { registry } from './setup';
+
+type EditingTarget = {
+  kind: 'app' | 'module';
+  version: string;
+  name: string;
+};
 
 class EditorStore {
   components: ApplicationComponent[] = [];
   // currentEditingComponents, it could be app's or module's components
   selectedComponentId = '';
   hoverComponentId = '';
-  // it could be app or module's name
-  // name is `${module.version}/${module.metadata.name}`
-  currentEditingName = '';
-  currentEditingType: 'app' | 'module' = 'app';
+  // current editor editing target(app or module)
+  currentEditingTarget: EditingTarget = {
+    kind: 'app',
+    version: '',
+    name: '',
+  };
 
   appStorage = new AppStorage();
 
@@ -24,10 +32,17 @@ class EditorStore {
     return this.appStorage.modules;
   }
 
+  get selectedComponent() {
+    return this.components.find(c => c.id === this.selectedComponentId);
+  }
+
   constructor() {
     makeAutoObservable(this, {
       components: observable.shallow,
+      setComponents: action,
     });
+
+    this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
 
     eventBus.on('selectComponent', id => {
       this.setSelectedComponentId(id);
@@ -36,11 +51,12 @@ class EditorStore {
     eventBus.on('componentsChange', components => {
       this.setComponents(components);
       this.appStorage.saveComponentsInLS(
-        this.currentEditingType,
-        this.currentEditingName,
+        this.currentEditingTarget.kind,
+        this.currentEditingTarget.version,
+        this.currentEditingTarget.name,
         components
       );
-      if (this.currentEditingType === 'module') {
+      if (this.currentEditingTarget.kind === 'module') {
         // reregister modules to activate immediately
         this.modules.forEach(m => registry.registerModule(m, true));
       }
@@ -55,10 +71,12 @@ class EditorStore {
   // origin components of app of module
   // when switch app or module, components should refresh
   get originComponents(): ApplicationComponent[] {
-    switch (this.currentEditingType) {
+    switch (this.currentEditingTarget.kind) {
       case 'module':
         const module = this.modules.find(
-          m => m.metadata.name === this.currentEditingName
+          m =>
+            m.version === this.currentEditingTarget.version &&
+            m.metadata.name === this.currentEditingTarget.name
         );
         return module?.components || [];
       case 'app':
@@ -66,9 +84,16 @@ class EditorStore {
     }
   }
 
-  updateCurrentEditingTarget = (type: 'app' | 'module', name: string) => {
-    this.currentEditingType = type;
-    this.currentEditingName = name;
+  updateCurrentEditingTarget = (
+    kind: 'app' | 'module',
+    version: string,
+    name: string
+  ) => {
+    this.currentEditingTarget = {
+      kind,
+      name,
+      version,
+    };
   };
   setSelectedComponentId = (val: string) => {
     this.selectedComponentId = val;

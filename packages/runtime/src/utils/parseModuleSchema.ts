@@ -37,6 +37,6 @@ export function parseModuleSchema(
   }
 
   traverse(module.components);
-
+  traverse(module.spec.stateMap);
   return module;
 }
