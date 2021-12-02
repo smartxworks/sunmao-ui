@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { createComponent } from '@sunmao-ui/core';
 import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import { getSlots } from '../_internal/Slot';
 
 const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({

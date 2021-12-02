@@ -1,6 +1,6 @@
 import { createComponent } from '@sunmao-ui/core';
 import { useEffect } from 'react';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 
 const Dummy: ComponentImplementation<Record<string, unknown>> = ({ effects }) => {
   useEffect(() => {

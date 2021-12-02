@@ -1,6 +1,6 @@
 import { createComponent } from '@sunmao-ui/core';
 import { Type, Static } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import _Text, { TextPropertySchema } from '../_internal/Text';
 
 const Text: ComponentImplementation<Static<typeof PropsSchema>> = ({

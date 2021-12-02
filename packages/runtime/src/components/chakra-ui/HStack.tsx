@@ -2,7 +2,7 @@ import { createComponent } from '@sunmao-ui/core';
 import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import Slot from '../_internal/Slot';
 import {
   DirectionSchema,

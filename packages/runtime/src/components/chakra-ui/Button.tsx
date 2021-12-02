@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
