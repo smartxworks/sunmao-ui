@@ -4,7 +4,7 @@ import { Button, Text, VStack } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { AppMetaDataForm } from './AppMetaDataForm';
 import { ModuleMetaDataForm } from './ModuleMetaDataForm';
-import { registry } from '../../../setup';
+import { registry } from 'setup';
 
 type Props = {
   formType: 'app' | 'module';
