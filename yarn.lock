@@ -1606,17 +1606,6 @@
     "@emotion/weak-memoize" "^0.2.5"
     stylis "^4.0.10"
 
-"@emotion/cache@^11.6.0":
-  version "11.6.0"
-  resolved "http://192.168.26.29:7001/@emotion/cache/download/@emotion/cache-11.6.0.tgz#65fbdbbe4382f1991d8b20853c38e63ecccec9a1"
-  integrity sha1-ZfvbvkOC8ZkdiyCFPDjmPszOyaE=
-  dependencies:
-    "@emotion/memoize" "^0.7.4"
-    "@emotion/sheet" "^1.1.0"
-    "@emotion/utils" "^1.0.0"
-    "@emotion/weak-memoize" "^0.2.5"
-    stylis "^4.0.10"
-
 "@emotion/hash@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.8.0.tgz#bbbff68978fefdbe68ccb533bc8cbe1d1afb5413"
@@ -1674,11 +1663,6 @@
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@emotion/sheet/-/sheet-1.0.3.tgz#00c326cd7985c5ccb8fe2c1b592886579dcfab8f"
   integrity sha512-YoX5GyQ4db7LpbmXHMuc8kebtBGP6nZfRC5Z13OKJMixBEwdZrJ914D6yJv/P+ZH/YY3F5s89NYX2hlZAf3SRQ==
-
-"@emotion/sheet@^1.1.0":
-  version "1.1.0"
-  resolved "http://192.168.26.29:7001/@emotion/sheet/download/@emotion/sheet-1.1.0.tgz#56d99c41f0a1cda2726a05aa6a20afd4c63e58d2"
-  integrity sha1-VtmcQfChzaJyagWqaiCv1MY+WNI=
 
 "@emotion/styled@^11":
   version "11.3.0"
