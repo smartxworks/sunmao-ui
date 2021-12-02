@@ -31,7 +31,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
       value,
       fullKey: key,
       type: trait.type,
-      selectedId: component.id,
+      selectedComponentId: component.id,
     });
   });
   return (

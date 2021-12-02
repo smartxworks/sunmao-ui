@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { flatten } from 'lodash-es';
 import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
-import { Application } from '@sunmao-ui/core';
 import { parseType, parseTypeBox } from '@sunmao-ui/runtime';
 import { eventBus } from '../../eventBus';
 import { EventTraitForm } from './EventTraitForm';
@@ -12,11 +11,11 @@ import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
 import { genOperation } from '../../operations';
+import { editorStore } from '../../EditorStore';
+import { observer } from 'mobx-react-lite';
 
 type Props = {
   registry: Registry;
-  selectedId: string;
-  app: Application;
 };
 
 export const renderField = (properties: {
@@ -24,23 +23,23 @@ export const renderField = (properties: {
   value: unknown;
   type?: string;
   fullKey: string;
-  selectedId: string;
+  selectedComponentId: string;
   index: number;
 }) => {
-  const { value, type, fullKey, selectedId, index } = properties;
+  const { value, type, fullKey, selectedComponentId, index } = properties;
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
       const operation = type
         ? genOperation('modifyTraitProperty', {
-            componentId: selectedId,
+            componentId: selectedComponentId,
             traitIndex: index,
             properties: {
               [fullKey]: ref.current?.value,
             },
           })
         : genOperation('modifyComponentProperty', {
-            componentId: selectedId,
+            componentId: selectedComponentId,
             properties: {
               [fullKey]: ref.current?.value,
             },
@@ -48,7 +47,7 @@ export const renderField = (properties: {
       eventBus.send('operation', operation);
     };
     return (
-      <FormControl key={`${selectedId}-${fullKey}`}>
+      <FormControl key={`${selectedComponentId}-${fullKey}`}>
         <FormLabel>{fullKey}</FormLabel>
         <Textarea ref={ref} onBlur={onBlur} defaultValue={value as string} />
       </FormControl>
@@ -63,7 +62,7 @@ export const renderField = (properties: {
           value: childValue,
           type: type,
           fullKey: `${fullKey}.${childKey}`,
-          selectedId,
+          selectedComponentId,
         });
       })
     );
@@ -71,16 +70,15 @@ export const renderField = (properties: {
   }
 };
 
-export const ComponentForm: React.FC<Props> = props => {
-  const { selectedId, app, registry } = props;
-
-  const selectedComponent = useMemo(
-    () => app.spec.components.find(c => c.id === selectedId),
-    [selectedId, app]
-  );
+export const ComponentForm: React.FC<Props> = observer(props => {
+  const { registry } = props;
+  const { selectedComponent, selectedComponentId } = editorStore;
+  if (!selectedComponentId) {
+    return <div>No components selected. Click on a component to select it.</div>;
+  }
 
   if (!selectedComponent) {
-    return <div>cannot find component with id: {selectedId}</div>;
+    return <div>Cannot find component with id: {selectedComponentId}.</div>;
   }
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
@@ -89,19 +87,17 @@ export const ComponentForm: React.FC<Props> = props => {
     selectedComponent.properties
   );
 
-  const changeComponentId = (selectedId: string, value: string) => {
+  const changeComponentId = (selectedComponentId: string, value: string) => {
     eventBus.send(
       'operation',
       genOperation('modifyComponentId', {
-        componentId: selectedId,
+        componentId: selectedComponentId,
         newId: value,
       })
     );
   };
 
-  return !selectedComponent ? (
-    <div>cannot find component with id: {selectedId}</div>
-  ) : (
+  return (
     <VStack p={4} spacing="4" background="gray.50">
       <FormControl>
         <FormLabel>
@@ -132,7 +128,7 @@ export const ComponentForm: React.FC<Props> = props => {
               eventBus.send(
                 'operation',
                 genOperation('modifyComponentProperty', {
-                  componentId: selectedId,
+                  componentId: selectedComponentId,
                   properties: newFormData,
                 })
               );
@@ -145,4 +141,4 @@ export const ComponentForm: React.FC<Props> = props => {
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );
-};
+});

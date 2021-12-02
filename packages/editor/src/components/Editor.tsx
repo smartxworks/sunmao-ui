@@ -5,7 +5,6 @@ import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/r
 import { observer } from 'mobx-react-lite';
 import { StructureTree } from './StructureTree';
 import { eventBus } from '../eventBus';
-import { ComponentForm } from './ComponentForm';
 import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { PreviewModal } from './PreviewModal';
@@ -15,6 +14,7 @@ import { StateEditor, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
 import { editorStore } from '../EditorStore';
 import { genOperation } from '../operations';
+import { ComponentForm } from './ComponentForm';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -159,11 +159,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
             </TabList>
             <TabPanels flex="1" overflow="auto">
               <TabPanel p={0}>
-                <ComponentForm
-                  app={app}
-                  selectedId={selectedComponentId}
-                  registry={registry}
-                />
+                <ComponentForm registry={registry} />
               </TabPanel>
               <TabPanel p={0}>
                 <ComponentList registry={registry} />
