@@ -6,13 +6,23 @@ import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { editorStore } from 'EditorStore';
 
 type ExplorerTreeProps = {
-  onEdit: (type: 'app' | 'module', version: string, name: string) => void;
+  onEdit: (kind: 'app' | 'module', version: string, name: string) => void;
 };
+
+function genItemId(kind: 'app' | 'module', version: string, name: string) {
+  return `${kind}-${version}-${name}`;
+}
 
 export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) => {
   const { app, modules, currentEditingTarget, updateCurrentEditingTarget } = editorStore;
-  const appItemId = `app_${app.metadata.name}`;
-  const [selectedItem, setSelectedItem] = React.useState<string | undefined>(appItemId);
+  const appItemId = genItemId('app', app.version, app.metadata.name);
+  const [selectedItem, setSelectedItem] = React.useState<string | undefined>(
+    genItemId(
+      currentEditingTarget.kind,
+      currentEditingTarget.version,
+      currentEditingTarget.name
+    )
+  );
 
   const onClickApp = () => {
     setSelectedItem(appItemId);
@@ -39,7 +49,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) =
   );
 
   const moduleItems = modules.map((module: ImplementedRuntimeModule) => {
-    const moduleItemId = `module_${module.metadata.name}`;
+    const moduleItemId = genItemId('module', module.version, module.metadata.name);
     const onClickModule = () => {
       setSelectedItem(moduleItemId);
       updateCurrentEditingTarget('module', module.version, module.metadata.name);
