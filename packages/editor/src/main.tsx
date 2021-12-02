@@ -8,7 +8,7 @@ import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
 import { editorStore } from './EditorStore';
-import { App as _App, registry, stateStore } from './setup';
+import { App as _App, registry, stateStore, ui } from './setup';
 
 type Options = Partial<{
   components: Parameters<Registry['registerComponent']>[0][];
@@ -24,7 +24,7 @@ export const App: React.FC = () => {
     </ChakraProvider>
   );
 };
-export { registry, editorStore, stateStore };
+export { registry, editorStore, ui };
 
 export default function renderApp(options: Options = {}) {
   const {
