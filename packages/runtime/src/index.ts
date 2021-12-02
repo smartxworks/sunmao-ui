@@ -28,3 +28,5 @@ export * from './types/RuntimeSchema';
 export * from './types/TraitPropertiesSchema';
 export * from './constants';
 export * from './services/registry';
+export { default as Slot } from './components/_internal/Slot';
+export { ModuleRenderer } from './components/_internal/ModuleRenderer';
