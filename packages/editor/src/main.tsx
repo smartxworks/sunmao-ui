@@ -2,6 +2,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
+
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
