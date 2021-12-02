@@ -40,6 +40,12 @@ export function mountUtilMethods(apiService: ApiService) {
         default:
           break;
       }
+      if (name in window) {
+        const method = window[name as keyof Window];
+        if (typeof method === 'function') {
+          method(parameters);
+        }
+      }
     }
 
     if (componentId === '$module') {
