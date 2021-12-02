@@ -19,7 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "types": ["@emotion/react/types/css-prop"],
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
     "rootDir": "src"
