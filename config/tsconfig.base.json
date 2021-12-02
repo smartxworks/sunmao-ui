@@ -8,5 +8,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "*.d.ts"]
+  "exclude": ["node_modules", "*.d.ts", "lib"]
 }
