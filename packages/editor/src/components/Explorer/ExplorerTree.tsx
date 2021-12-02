@@ -10,7 +10,7 @@ type ExplorerTreeProps = {
 };
 
 export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) => {
-  const { app, modules, updateCurrentEditingTarget } = editorStore;
+  const { app, modules, currentEditingTarget, updateCurrentEditingTarget } = editorStore;
   const appItemId = `app_${app.metadata.name}`;
   const [selectedItem, setSelectedItem] = React.useState<string | undefined>(appItemId);
 
@@ -22,6 +22,11 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) =
     onEdit('app', app.version, app.metadata.name);
   };
 
+  const appEditable =
+    currentEditingTarget.kind === 'app' &&
+    currentEditingTarget.name === app.metadata.name &&
+    currentEditingTarget.version === app.version;
+
   const appItem = (
     <ExplorerTreeItem
       key={app.metadata.name}
@@ -29,6 +34,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) =
       onClick={onClickApp}
       isActive={selectedItem === appItemId}
       onEdit={onEditApp}
+      editable={appEditable}
     />
   );
 
@@ -44,6 +50,10 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) =
     const onRemove = () => {
       editorStore.appStorage.removeModule(module.version, module.metadata.name);
     };
+    const editable =
+      currentEditingTarget.kind === 'module' &&
+      currentEditingTarget.name === module.metadata.name &&
+      currentEditingTarget.version === module.version;
     return (
       <ExplorerTreeItem
         key={module.metadata.name}
@@ -52,6 +62,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(({ onEdit }) =
         onRemove={onRemove}
         isActive={selectedItem === moduleItemId}
         onEdit={onEditModule}
+        editable={editable}
       />
     );
   });
@@ -84,6 +95,7 @@ type ExplorerTreeItemProps = {
   isActive: boolean;
   onClick: () => void;
   onEdit: () => void;
+  editable: boolean;
   onRemove?: () => void;
 };
 
@@ -93,6 +105,7 @@ const ExplorerTreeItem: React.FC<ExplorerTreeItemProps> = ({
   onClick,
   onRemove,
   onEdit,
+  editable,
 }) => {
   const _onEdit = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
@@ -119,13 +132,15 @@ const ExplorerTreeItem: React.FC<ExplorerTreeItemProps> = ({
         </Text>
       </Tooltip>
       <HStack>
-        <IconButton
-          variant="ghost"
-          size="smx"
-          aria-label="edit"
-          icon={<EditIcon />}
-          onClick={_onEdit}
-        />
+        {editable ? (
+          <IconButton
+            variant="ghost"
+            size="smx"
+            aria-label="edit"
+            icon={<EditIcon />}
+            onClick={_onEdit}
+          />
+        ) : null}
         {onRemove ? (
           <IconButton
             variant="ghost"
