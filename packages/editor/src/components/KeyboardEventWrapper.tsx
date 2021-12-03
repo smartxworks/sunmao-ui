@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { useRef } from 'react';
 import { eventBus } from '../eventBus';
 import { genOperation } from '../operations';
 
@@ -9,6 +9,7 @@ type Props = {
 };
 
 export const KeyboardEventWrapper: React.FC<Props> = props => {
+  const copyId = useRef('');
   const style = css`
     &:focus {
       outline: none;
@@ -38,6 +39,23 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
         if (e.metaKey || e.ctrlKey) {
           eventBus.send('redo');
         }
+        break;
+      case 'c':
+        // FIXME: detect os version and set redo/undo logic
+        if (e.metaKey || e.ctrlKey) {
+          // eventBus.send('copy', { componentId: props.selectedComponentId });
+          copyId.current = props.selectedComponentId;
+        }
+        break;
+      case 'v':
+        eventBus.send(
+          'operation',
+          genOperation('pasteComponent', {
+            componentId: copyId.current,
+            parentId: props.selectedComponentId,
+            slot: 'content',
+          })
+        );
         break;
     }
   };
