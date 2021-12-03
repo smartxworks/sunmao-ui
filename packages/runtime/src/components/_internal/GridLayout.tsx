@@ -5,7 +5,7 @@ import { useResizeDetector } from 'react-resize-detector';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { DROP_EXAMPLE_SIZE_PREFIX, GRID_HEIGHT } from '../../constants';
-import { decodeDragDataTransfer } from '../../utils/encodeDragDataTransfer';
+import { decodeDragDataTransfer } from 'utils/encodeDragDataTransfer';
 
 const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
   const { children } = props;

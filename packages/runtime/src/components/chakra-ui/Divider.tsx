@@ -1,7 +1,7 @@
 import { Divider } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { createComponent } from '@sunmao-ui/core';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 
 const DividerImpl: ComponentImplementation = ({customStyle}) => {
   return <Divider css={css`${customStyle?.content}`} />;

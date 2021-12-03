@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import { createComponent } from '@sunmao-ui/core';
 import { getSlots } from '../_internal/Slot';
 import { Static, Type } from '@sinclair/typebox';

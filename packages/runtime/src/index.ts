@@ -1,5 +1,5 @@
 import { StateManager } from './services/stateStore';
-import { genApp } from './App';
+import { genApp } from 'App';
 import { initRegistry } from './services/registry';
 import { initApiService } from './services/apiService';
 import { mountUtilMethods } from './services/util-methods';

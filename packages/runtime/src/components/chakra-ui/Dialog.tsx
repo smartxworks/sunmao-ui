@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { createComponent } from '@sunmao-ui/core';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import {
   AlertDialog,
   AlertDialogBody,
