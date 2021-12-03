@@ -6,13 +6,14 @@ export type EventNames = {
   operation: IOperation;
   redo: undefined;
   undo: undefined;
+  copy: { componentId: string };
   // when switch app or module, current components refresh
   componentsRefresh: ApplicationComponent[];
   // components change by operation
   componentsChange: ApplicationComponent[];
   // it is only used for some operations' side effect
   selectComponent: string;
-}
+};
 
 const emitter = mitt<EventNames>();
 

@@ -7,6 +7,10 @@ import {
   RemoveComponentBranchOperationContext,
 } from './branch';
 import {
+  PasteComponentBranchOperation,
+  PasteComponentBranchOperationContext,
+} from './branch/pasteComponentBranchOperation';
+import {
   AdjustComponentOrderLeafOperation,
   AdjustComponentOrderLeafOperationContext,
   CreateTraitLeafOperation,
@@ -35,6 +39,7 @@ const OperationConstructors: Record<
   removeTrait: RemoveTraitLeafOperation,
   modifyTraitProperty: ModifyTraitPropertiesLeafOperation,
   replaceApp: ReplaceAppLeafOperation,
+  pasteComponent: PasteComponentBranchOperation,
 };
 
 type OperationTypes = keyof OperationConfigMaps;
@@ -78,6 +83,11 @@ type OperationConfigMaps = {
     ModifyTraitPropertiesLeafOperationContext
   >;
   replaceApp: OperationConfigMap<ReplaceAppLeafOperation, ReplaceAppLeafOperationContext>;
+
+  pasteComponent: OperationConfigMap<
+    PasteComponentBranchOperation,
+    PasteComponentBranchOperationContext
+  >;
 };
 
 export const genOperation = <T extends OperationTypes>(
