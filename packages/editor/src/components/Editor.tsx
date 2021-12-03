@@ -87,11 +87,12 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
 
   const renderMain = () => {
     const appBox = (
-      <Box flex="1" background="gray.50" p={4}>
+      <Box flex="1" background="gray.50" p={4} overflow="hidden">
         <Box
           width="100%"
           height="100%"
           background="white"
+          overflow="auto"
           transform={`scale(${scale / 100})`}
         >
           <Box id={DIALOG_CONTAINER_ID} width="full" height="full" position="absolute" />
@@ -112,7 +113,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
     }
     return (
       <>
-        <Box width="280px" borderRightWidth="1px" borderColor="gray.200">
+        <Box width="280px" minWidth="280px" borderRightWidth="1px" borderColor="gray.200">
           <Tabs
             align="center"
             height="100%"
@@ -145,7 +146,13 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
           </Tabs>
         </Box>
         {appBox}
-        <Box width="320px" borderLeftWidth="1px" borderColor="gray.200" overflow="auto">
+        <Box
+          width="320px"
+          minWidth="320px"
+          borderLeftWidth="1px"
+          borderColor="gray.200"
+          overflow="auto"
+        >
           <Tabs
             align="center"
             textAlign="left"
