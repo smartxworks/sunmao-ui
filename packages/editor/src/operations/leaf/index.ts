@@ -4,6 +4,7 @@ export * from './component/adjustComponentOrderLeafOperation';
 export * from './component/createComponentLeafOperation';
 export * from './component/modifyComponentIdLeafOperation';
 export * from './component/modifyComponentPropertiesLeafOperation';
+export * from './component/pasteComponentLeafOperation';
 export * from './trait/removeTraitLeafOperation';
 export * from './trait/createTraitLeafOperation';
 export * from './trait/modifyTraitPropertiesLeafOperation';
