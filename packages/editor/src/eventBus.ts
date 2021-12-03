@@ -7,6 +7,8 @@ export type EventNames = {
   redo: undefined;
   undo: undefined;
   copy: { componentId: string };
+  cutComponent: { componentId: string };
+  paste: { componentId: string };
   // when switch app or module, current components refresh
   componentsRefresh: ApplicationComponent[];
   // components change by operation
