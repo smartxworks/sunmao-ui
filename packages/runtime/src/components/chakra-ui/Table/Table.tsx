@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { TablePagination } from './Pagination';
-import { ComponentImplementation } from '../../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import {
   ColumnsPropertySchema,
   DataPropertySchema,

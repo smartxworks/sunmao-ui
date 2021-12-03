@@ -8,7 +8,7 @@ import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { eventBus } from '../../../eventBus';
 import { EventHandlerForm } from './EventHandlerForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { genOperation } from '../../../operations';
+import { genOperation } from 'operations';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 

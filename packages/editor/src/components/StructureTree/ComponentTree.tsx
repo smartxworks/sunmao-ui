@@ -6,7 +6,7 @@ import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
-import { genOperation } from '../../operations';
+import { genOperation } from 'operations';
 
 type Props = {
   registry: Registry;

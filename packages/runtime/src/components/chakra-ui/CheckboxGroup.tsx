@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
-import { ComponentImplementation } from '../../services/registry';
+import { ComponentImplementation } from 'services/registry';
 import Slot from '../_internal/Slot';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
 import { css } from '@emotion/react';
