@@ -1,4 +1,5 @@
 export * from './component/removeComponentLeafOperation';
+export * from './component/cutComponentLeafOperation';
 export * from './component/adjustComponentOrderLeafOperation';
 export * from './component/createComponentLeafOperation';
 export * from './component/modifyComponentIdLeafOperation';
