@@ -8,10 +8,6 @@ import {
 } from './branch';
 import { CutComponentBranchOperation } from './branch/cutComponentBranchOperation';
 import {
-  PasteComponentBranchOperation,
-  PasteComponentBranchOperationContext,
-} from './branch/pasteComponentBranchOperation';
-import {
   AdjustComponentOrderLeafOperation,
   AdjustComponentOrderLeafOperationContext,
   CreateTraitLeafOperation,
@@ -25,6 +21,8 @@ import {
   RemoveTraitLeafOperationContext,
   ReplaceAppLeafOperation,
   ReplaceAppLeafOperationContext,
+  PasteComponentLeafOperation,
+  PasteComponentLeafOperationContext,
 } from './leaf';
 import { IOperation } from './type';
 
@@ -41,7 +39,7 @@ const OperationConstructors: Record<
   removeTrait: RemoveTraitLeafOperation,
   modifyTraitProperty: ModifyTraitPropertiesLeafOperation,
   replaceApp: ReplaceAppLeafOperation,
-  pasteComponent: PasteComponentBranchOperation,
+  pasteComponent: PasteComponentLeafOperation,
   cutComponent: CutComponentBranchOperation,
 };
 
@@ -92,8 +90,8 @@ type OperationConfigMaps = {
   replaceApp: OperationConfigMap<ReplaceAppLeafOperation, ReplaceAppLeafOperationContext>;
 
   pasteComponent: OperationConfigMap<
-    PasteComponentBranchOperation,
-    PasteComponentBranchOperationContext
+    PasteComponentLeafOperation,
+    PasteComponentLeafOperationContext
   >;
 };
 
