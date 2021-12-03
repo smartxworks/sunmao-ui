@@ -3,10 +3,11 @@ import { getComponentAndChildrens } from './util';
 
 export class PasteManager {
   componentsCache: ApplicationComponent[] = [];
+  copyTimes = 0;
 
-  cutComponent(componentId: string, allComponents: ApplicationComponent[]) {
+  setPasteComponents(componentId: string, allComponents: ApplicationComponent[]) {
     const children = getComponentAndChildrens(componentId, allComponents);
     this.componentsCache = [...children];
-    console.log('componentsCache', this.componentsCache)
+    this.copyTimes = 0;
   }
 }
