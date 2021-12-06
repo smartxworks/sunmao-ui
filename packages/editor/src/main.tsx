@@ -1,4 +1,9 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  extendTheme,
+  withDefaultSize,
+  withDefaultVariant,
+} from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
@@ -17,9 +22,28 @@ type Options = Partial<{
   container: Element;
 }>;
 
+const editorTheme = extendTheme(
+  withDefaultSize({
+    size: 'sm',
+    components: [
+      'Input',
+      'NumberInput',
+      'Checkbox',
+      'Radio',
+      'Textarea',
+      'Select',
+      'Switch',
+    ],
+  }),
+  withDefaultVariant({
+    variant: 'filled',
+    components: ['Input', 'NumberInput', 'Textarea', 'Select'],
+  })
+);
+
 export const App: React.FC = () => {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={editorTheme}>
       <Editor App={_App} registry={registry} stateStore={stateStore} />
     </ChakraProvider>
   );

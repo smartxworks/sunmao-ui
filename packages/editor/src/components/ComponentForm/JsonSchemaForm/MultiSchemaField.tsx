@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, Box } from '@chakra-ui/react';
+import { Box, RadioGroup, Radio, Stack } from '@chakra-ui/react';
 import SchemaField from './SchemaField';
 import { FieldProps } from './fields';
 
@@ -8,7 +8,7 @@ type Props = FieldProps;
 const _Field: React.FC<
   Omit<Props, 'schema'> & { schemas: NonNullable<FieldProps['schema']['anyOf']> }
 > = props => {
-  const { schemas, formData, onChange } = props;
+  const { schemas, formData, onChange, registry } = props;
   const [schemaIdx, setSchemaIdx] = useState(0);
 
   const subSchema = schemas[schemaIdx];
@@ -18,25 +18,23 @@ const _Field: React.FC<
 
   return (
     <Box>
-      <Select
-        mb={1}
-        value={schemaIdx}
-        onChange={evt => setSchemaIdx(parseInt(evt.currentTarget.value))}
-      >
-        {schemas.map((s, idx) => {
-          if (typeof s === 'boolean') {
-            return null;
-          }
-          const text = s.title ? s.title : `schema${idx + 1}(${s.type})`;
-          return (
-            <option key={idx} value={idx}>
-              {text}
-            </option>
-          );
-        })}
-      </Select>
+      <RadioGroup mb={1} value={schemaIdx} onChange={v => setSchemaIdx(parseInt(v))}>
+        <Stack direction="row">
+          {schemas.map((s, idx) => {
+            if (typeof s === 'boolean') {
+              return null;
+            }
+            return (
+              <Radio key={idx} value={idx} borderColor="gray.200">
+                {s.type}
+              </Radio>
+            );
+          })}
+        </Stack>
+      </RadioGroup>
       <SchemaField
         schema={subSchema}
+        registry={registry}
         label={subSchema.title || ''}
         formData={formData}
         onChange={value => onChange(value)}
@@ -46,14 +44,28 @@ const _Field: React.FC<
 };
 
 const MultiSchemaField: React.FC<Props> = props => {
-  const { schema, formData, onChange } = props;
+  const { schema, formData, onChange, registry } = props;
 
   if (schema.anyOf) {
-    return <_Field formData={formData} onChange={onChange} schemas={schema.anyOf} />;
+    return (
+      <_Field
+        formData={formData}
+        onChange={onChange}
+        schemas={schema.anyOf}
+        registry={registry}
+      />
+    );
   }
 
   if (schema.oneOf) {
-    return <_Field formData={formData} onChange={onChange} schemas={schema.oneOf} />;
+    return (
+      <_Field
+        formData={formData}
+        onChange={onChange}
+        schemas={schema.oneOf}
+        registry={registry}
+      />
+    );
   }
 
   return null;

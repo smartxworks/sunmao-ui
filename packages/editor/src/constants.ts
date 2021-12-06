@@ -1,7 +1,12 @@
 import { Application } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 
-export const ignoreTraitsList = ['core/v1/slot', 'core/v1/event', 'core/v1/fetch'];
+export const ignoreTraitsList = [
+  'core/v1/slot',
+  'core/v1/event',
+  'core/v1/fetch',
+  'core/v1/style',
+];
 
 export const EmptyAppSchema: Application = {
   kind: 'Application',

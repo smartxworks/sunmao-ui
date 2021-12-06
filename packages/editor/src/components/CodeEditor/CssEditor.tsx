@@ -2,23 +2,22 @@ import React, { useEffect, useRef } from 'react';
 import CodeMirror from 'codemirror';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/css/css';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/foldgutter.css';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/ayu-mirage.css';
 
-export const SchemaEditor: React.FC<{
+export const CssEditor: React.FC<{
   defaultCode: string;
   onChange?: (v: string) => void;
   onBlur?: (v: string) => void;
-  lineNumbers?: boolean;
-}> = ({ defaultCode, onChange, onBlur, lineNumbers = true }) => {
+}> = ({ defaultCode, onChange, onBlur }) => {
   const style = css`
     .CodeMirror {
       width: 100%;
-      height: 100%;
+      height: 120px;
     }
   `;
 
@@ -32,12 +31,11 @@ export const SchemaEditor: React.FC<{
       cm.current = CodeMirror(wrapperEl.current, {
         value: defaultCode,
         mode: {
-          name: 'javascript',
-          json: true,
+          name: 'css',
         },
         foldGutter: true,
         lineWrapping: true,
-        lineNumbers,
+        lineNumbers: false,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         foldOptions: {
           widget: () => {
@@ -45,16 +43,6 @@ export const SchemaEditor: React.FC<{
           },
         },
         theme: 'ayu-mirage',
-        /**
-         * Codemirror has a serach addon which can search all the content
-         * without render all.
-         * But it's search behavior is differnet with popular code editors
-         * and the native UX of the browser:
-         * https://github.com/codemirror/CodeMirror/issues/4491#issuecomment-284741358
-         * So since our schema is not that large, currently we will render
-         * all content to support native search.
-         */
-        viewportMargin: Infinity,
       });
     }
     const changeHandler = (instance: CodeMirror.Editor) => {
@@ -71,5 +59,5 @@ export const SchemaEditor: React.FC<{
     };
   }, [defaultCode]);
 
-  return <Box css={style} ref={wrapperEl} height="100%" width="100%"></Box>;
+  return <Box css={style} ref={wrapperEl}></Box>;
 };

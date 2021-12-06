@@ -1,11 +1,12 @@
 import React from 'react';
 import SchemaField from './SchemaField';
 import { FieldProps } from './fields';
+import { Box } from '@chakra-ui/react';
 
 type Props = FieldProps;
 
 const ObjectField: React.FC<Props> = props => {
-  const { schema, formData, onChange } = props;
+  const { schema, formData, onChange, registry } = props;
 
   const properties = Object.keys(schema.properties || {});
   return (
@@ -16,18 +17,20 @@ const ObjectField: React.FC<Props> = props => {
           return null;
         }
         return (
-          <SchemaField
-            key={name}
-            schema={subSchema}
-            label={subSchema.title || name}
-            formData={formData?.[name]}
-            onChange={value =>
-              onChange({
-                ...formData,
-                [name]: value,
-              })
-            }
-          />
+          <Box key={name}>
+            <SchemaField
+              schema={subSchema}
+              registry={registry}
+              label={subSchema.title || name}
+              formData={formData?.[name]}
+              onChange={value =>
+                onChange({
+                  ...formData,
+                  [name]: value,
+                })
+              }
+            />
+          </Box>
         );
       })}
     </>

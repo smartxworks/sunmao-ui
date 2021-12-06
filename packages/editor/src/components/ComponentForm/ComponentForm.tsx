@@ -8,6 +8,7 @@ import { eventBus } from '../../eventBus';
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
+import { StyleTraitForm } from './StyleTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
 import { genOperation } from 'operations';
@@ -97,8 +98,10 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     );
   };
 
+  console.log('debug', cImpl.spec.properties);
+
   return (
-    <VStack p={4} spacing="4" background="gray.50">
+    <VStack p={2} spacing="2" background="gray.50">
       <FormControl>
         <FormLabel>
           <strong>Component ID</strong>
@@ -114,7 +117,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         <strong>Properties</strong>
         <VStack
           width="full"
-          padding="4"
+          padding="2"
           background="white"
           border="1px solid"
           borderColor="gray.200"
@@ -122,6 +125,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         >
           <SchemaField
             schema={cImpl.spec.properties}
+            registry={registry}
             label=""
             formData={properties}
             onChange={newFormData => {
@@ -138,6 +142,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
       </VStack>
       <EventTraitForm component={selectedComponent} registry={registry} />
       <FetchTraitForm component={selectedComponent} registry={registry} />
+      <StyleTraitForm component={selectedComponent} registry={registry} />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );
