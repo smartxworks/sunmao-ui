@@ -9,6 +9,7 @@ import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
 type Props = {
+  id: string;
   title: string;
   isSelected: boolean;
   onClick: () => void;
@@ -24,6 +25,7 @@ type Props = {
 
 export const ComponentItemView: React.FC<Props> = props => {
   const {
+    id,
     title,
     isSelected,
     noChevron,
@@ -59,13 +61,22 @@ export const ComponentItemView: React.FC<Props> = props => {
       setIsDragOver(true);
     }
   };
+
+  const onDragStart = (e: React.DragEvent) => {
+    console.log('开始拖拽', id)
+    e.dataTransfer.setData('moveComponent', id);
+  }
+
   return (
     <Box
       width="full"
+      onDragStart={onDragStart}
+      // onDragEnd={onDragEnd}
       onDragOver={onDragOver}
       onDragLeave={() => setIsDragOver(false)}
       onDrop={() => setIsDragOver(false)}
       background={isDragOver ? 'gray.100' : undefined}
+      draggable
     >
       {noChevron ? null : expandIcon}
       <HStack width="full" justify="space-between">

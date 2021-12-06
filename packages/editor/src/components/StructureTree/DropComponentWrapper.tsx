@@ -2,6 +2,7 @@ import { Box } from '@chakra-ui/react';
 
 type Props = {
   onDrop: (componentType: string) => void;
+  onMoveComponent: (from: string) => void;
 };
 
 export const DropComponentWrapper: React.FC<Props> = props => {
@@ -14,8 +15,16 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     e.stopPropagation();
     e.preventDefault();
     const creatingComponent = e.dataTransfer?.getData('component') || '';
+    const movingComponent = e.dataTransfer?.getData('moveComponent') || '';
 
-    props.onDrop(creatingComponent);
+    if (movingComponent) {
+      console.log('把', movingComponent, '移动到');
+      props.onMoveComponent(movingComponent)
+    }
+
+    if (creatingComponent) {
+      props.onDrop(creatingComponent);
+    }
   };
   return (
     <Box width="full" onDrop={onDrop} onDragOver={onDragOver}>
