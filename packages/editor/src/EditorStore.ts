@@ -1,4 +1,4 @@
-import { makeAutoObservable, observable, reaction, action } from 'mobx';
+import { action, makeAutoObservable, observable, reaction } from 'mobx';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { eventBus } from './eventBus';
 import { AppStorage } from './AppStorage';
@@ -15,6 +15,7 @@ class EditorStore {
   // currentEditingComponents, it could be app's or module's components
   selectedComponentId = '';
   hoverComponentId = '';
+  dragIdStack: string[] = [];
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -36,10 +37,16 @@ class EditorStore {
     return this.components.find(c => c.id === this.selectedComponentId);
   }
 
+  get dragOverComponentId() {
+    return this.dragIdStack[this.dragIdStack.length - 1];
+  }
+
   constructor() {
     makeAutoObservable(this, {
       components: observable.shallow,
+      dragIdStack: observable.shallow,
       setComponents: action,
+      setDragIdStack: action,
     });
 
     eventBus.on('selectComponent', id => {
@@ -56,13 +63,16 @@ class EditorStore {
       );
     });
 
-    reaction(() => this.currentEditingTarget, (target) => {
-      if (target.name) {
-        this.clearSunmaoGlobalState();
-        eventBus.send('componentsRefresh', this.originComponents);
-        this.setComponents(this.originComponents);
+    reaction(
+      () => this.currentEditingTarget,
+      target => {
+        if (target.name) {
+          this.clearSunmaoGlobalState();
+          eventBus.send('componentsRefresh', this.originComponents);
+          this.setComponents(this.originComponents);
+        }
       }
-    })
+    );
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
@@ -108,6 +118,15 @@ class EditorStore {
   };
   setComponents = (val: ApplicationComponent[]) => {
     this.components = val;
+  };
+  pushDragIdStack = (val: string) => {
+    this.setDragIdStack([...this.dragIdStack, val]);
+  };
+  popDragIdStack = () => {
+    this.setDragIdStack(this.dragIdStack.slice(0, this.dragIdStack.length - 1));
+  };
+  setDragIdStack = (ids: string[]) => {
+    this.dragIdStack = ids;
   };
 }
 
