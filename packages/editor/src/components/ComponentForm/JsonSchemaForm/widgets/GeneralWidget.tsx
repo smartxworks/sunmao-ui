@@ -1,6 +1,6 @@
 import React from 'react';
 import { FieldProps } from '../fields';
-import { SchemaEditor } from 'components/CodeEditor';
+import { TernEditor } from 'components/CodeEditor';
 
 type Props = FieldProps;
 
@@ -8,7 +8,7 @@ const GeneralWidget: React.FC<Props> = props => {
   const { formData, onChange } = props;
 
   return (
-    <SchemaEditor
+    <TernEditor
       defaultCode={String(formData)}
       lineNumbers={false}
       onBlur={v => {

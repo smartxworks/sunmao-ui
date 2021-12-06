@@ -32,25 +32,32 @@ export const StyleTraitForm: React.FC<Props> = props => {
       </Box>
       {styleSlots.map(styleSlot => {
         const styleTrait = styles.find(s => s.properties.styleSlot === styleSlot);
-        if (!styleTrait) {
-          return null;
-        }
+        const defaultCode = (styleTrait?.properties?.style as string) || '';
         return (
           <FormControl id={styleSlot} key={styleSlot}>
             <FormLabel>{styleSlot}</FormLabel>
             <CssEditor
-              defaultCode={styleTrait.properties.style as string}
+              defaultCode={defaultCode}
               onBlur={v =>
                 eventBus.send(
                   'operation',
-                  genOperation('modifyTraitProperty', {
-                    componentId: component.id,
-                    traitIndex: component.traits.indexOf(styleTrait),
-                    properties: {
-                      styleSlot,
-                      style: v,
-                    },
-                  })
+                  styleTrait
+                    ? genOperation('modifyTraitProperty', {
+                        componentId: component.id,
+                        traitIndex: component.traits.indexOf(styleTrait),
+                        properties: {
+                          styleSlot,
+                          style: v,
+                        },
+                      })
+                    : genOperation('createTrait', {
+                        componentId: component.id,
+                        traitType: 'core/v1/style',
+                        properties: {
+                          styleSlot,
+                          style: v,
+                        },
+                      })
                 )
               }
             />
