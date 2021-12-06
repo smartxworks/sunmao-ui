@@ -50,7 +50,7 @@ export const ComponentTree: React.FC<Props> = props => {
           </Text>
         );
       }
-      const onDrop = (creatingComponent: string) => {
+      const onCreateComponent = (creatingComponent: string) => {
         eventBus.send(
           'operation',
           genOperation('createComponent', {
@@ -62,18 +62,19 @@ export const ComponentTree: React.FC<Props> = props => {
       };
 
       const onMoveComponent = (movingComponent: string) => {
-        // eventBus.send(
-        //   'operation',
-        //   genOperation('moveComponent', {
-        //     fromId: component.id,
-        //     toId: movingComponent,
-        //     slot,
-        //   })
-        // );
+        if (movingComponent === component.id) return;
+        eventBus.send(
+          'operation',
+          genOperation('moveComponent', {
+            fromId: movingComponent,
+            toId: component.id,
+            slot,
+          })
+        );
       };
 
       const slotName = (
-        <DropComponentWrapper onDrop={onDrop} onMoveComponent={onMoveComponent}>
+        <DropComponentWrapper onCreateComponent={onCreateComponent} onMoveComponent={onMoveComponent}>
           <Text color="gray.500" fontWeight="medium">
             Slot: {slot}
           </Text>
@@ -102,7 +103,7 @@ export const ComponentTree: React.FC<Props> = props => {
     );
   };
 
-  const onDrop = (creatingComponent: string) => {
+  const onCreateComponent = (creatingComponent: string) => {
     if (slots.length === 0) return;
     eventBus.send(
       'operation',
@@ -135,14 +136,15 @@ export const ComponentTree: React.FC<Props> = props => {
   };
 
   const onMoveComponent = (movingComponent: string) => {
-    // eventBus.send(
-    //   'operation',
-    //   genOperation('moveComponent', {
-    //     fromId: component.id,
-    //     toId: movingComponent,
-    //     slot,
-    //   })
-    // );
+    if (movingComponent === component.id) return;
+    eventBus.send(
+      'operation',
+      genOperation('moveComponent', {
+        fromId: movingComponent,
+        toId: component.id,
+        slot: 'content',
+      })
+    );
   };
   return (
     <VStack
@@ -152,7 +154,7 @@ export const ComponentTree: React.FC<Props> = props => {
       width="full"
       alignItems="start"
     >
-      <DropComponentWrapper onDrop={onDrop} onMoveComponent={onMoveComponent}>
+      <DropComponentWrapper onCreateComponent={onCreateComponent} onMoveComponent={onMoveComponent}>
         <ComponentItemView
           id={component.id}
           title={component.id}

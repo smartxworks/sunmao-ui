@@ -29,8 +29,10 @@ const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
     const key = (e as React.DragEvent).dataTransfer.types
       .map(decodeDragDataTransfer)
       .find(t => t.startsWith(DROP_EXAMPLE_SIZE_PREFIX));
-    const componentSize = JSON.parse(key?.replace(DROP_EXAMPLE_SIZE_PREFIX, '') || '');
-    return { w: componentSize[0], h: componentSize[1] };
+    if (key) {
+      const componentSize = JSON.parse(key?.replace(DROP_EXAMPLE_SIZE_PREFIX, '') || '');
+      return { w: componentSize[0], h: componentSize[1] };
+    }
   };
 
   return (
