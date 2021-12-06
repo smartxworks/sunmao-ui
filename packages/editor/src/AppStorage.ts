@@ -1,4 +1,4 @@
-import { observable, makeObservable, action } from 'mobx';
+import { observable, makeObservable, action, toJS } from 'mobx';
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
@@ -65,7 +65,7 @@ export class AppStorage {
   ) {
     switch (type) {
       case 'app':
-        const newApp = produce(this.app, draft => {
+        const newApp = produce(toJS(this.app), draft => {
           draft.spec.components = components;
         });
         this.setApp(newApp);
@@ -75,7 +75,7 @@ export class AppStorage {
         const i = this.modules.findIndex(
           m => m.version === version && m.metadata.name === name
         );
-        const newModules = produce(this.modules, draft => {
+        const newModules = produce(toJS(this.modules), draft => {
           draft[i].components = components;
         });
         this.setModules(newModules);
@@ -85,7 +85,7 @@ export class AppStorage {
   }
 
   saveAppMetaDataInLS({ version, name }: { version: string; name: string }) {
-    const newApp = produce(this.app, draft => {
+    const newApp = produce(toJS(this.app), draft => {
       draft.metadata.name = name;
       draft.version = version;
     });
@@ -108,7 +108,7 @@ export class AppStorage {
     const i = this.modules.findIndex(
       m => m.version === originVersion && m.metadata.name === originName
     );
-    const newModules = produce(this.modules, draft => {
+    const newModules = produce(toJS(this.modules), draft => {
       draft[i].metadata.name = name;
       draft[i].spec.stateMap = stateMap;
       draft[i].version = version;

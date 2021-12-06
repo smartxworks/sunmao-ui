@@ -12,19 +12,19 @@ type ModuleMetaDataFormData = {
 };
 
 type ModuleMetaDataFormProps = {
-  data: ModuleMetaDataFormData;
+  initData: ModuleMetaDataFormData;
 };
 
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
-  ({ data }) => {
+  ({ initData }) => {
     const onSubmit = (value: ModuleMetaDataFormData) => {
       editorStore.appStorage.saveModuleMetaDataInLS(
-        { originName: data.name, originVersion: data.version },
+        { originName: initData.name, originVersion: initData.version },
         value
       );
     };
     const formik = useFormik({
-      initialValues: data,
+      initialValues: initData,
       onSubmit,
     });
     return (
