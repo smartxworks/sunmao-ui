@@ -63,7 +63,6 @@ export const ComponentItemView: React.FC<Props> = props => {
   };
 
   const onDragStart = (e: React.DragEvent) => {
-    console.log('开始拖拽', id)
     e.dataTransfer.setData('moveComponent', id);
   }
 

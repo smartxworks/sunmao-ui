@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 
 type Props = {
-  onDrop: (componentType: string) => void;
+  onCreateComponent: (componentType: string) => void;
   onMoveComponent: (from: string) => void;
 };
 
@@ -18,12 +18,11 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     const movingComponent = e.dataTransfer?.getData('moveComponent') || '';
 
     if (movingComponent) {
-      console.log('把', movingComponent, '移动到');
       props.onMoveComponent(movingComponent)
     }
 
     if (creatingComponent) {
-      props.onDrop(creatingComponent);
+      props.onCreateComponent(creatingComponent);
     }
   };
   return (

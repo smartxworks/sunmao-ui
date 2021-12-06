@@ -80,7 +80,7 @@ export const StructureTree: React.FC<Props> = props => {
 };
 
 function RootItem() {
-  const onDrop = (creatingComponent: string) => {
+  const onCreateComponent = (creatingComponent: string) => {
     eventBus.send(
       'operation',
       genOperation('createComponent', {
@@ -89,19 +89,20 @@ function RootItem() {
     );
   };
   const onMoveComponent = (movingComponent: string) => {
-    // eventBus.send(
-    //   'operation',
-    //   genOperation('moveComponent', {
-    //     fromId: component.id,
-    //     toId: movingComponent,
-    //     slot,
-    //   })
-    // );
+    if (movingComponent === 'root') return;
+    eventBus.send(
+      'operation',
+      genOperation('moveComponent', {
+        fromId: movingComponent,
+        toId: 'root',
+        slot: 'root',
+      })
+    );
   };
 
   return (
     <Box width="full">
-      <DropComponentWrapper onDrop={onDrop} onMoveComponent={onMoveComponent}>
+      <DropComponentWrapper onCreateComponent={onCreateComponent} onMoveComponent={onMoveComponent}>
         <ComponentItemView
           id={'root'}
           title="Root"
