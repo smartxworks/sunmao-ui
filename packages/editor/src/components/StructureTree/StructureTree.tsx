@@ -22,8 +22,21 @@ type Props = {
 export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, registry } = props;
 
+  const [realComponents, dataSources] = useMemo(() => {
+    const _realComponent: ApplicationComponent[] = [];
+    const _datasources: ApplicationComponent[] = [];
+    components.forEach(c => {
+      if (c.type === 'core/v1/dummy') {
+        _datasources.push(c);
+      } else {
+        _realComponent.push(c);
+      }
+    });
+    return [_realComponent, _datasources];
+  }, [components]);
+
   const componentEles = useMemo(() => {
-    const { topLevelComponents, childrenMap } = resolveApplicationComponents(components);
+    const { topLevelComponents, childrenMap } = resolveApplicationComponents(realComponents);
 
     return topLevelComponents.map(c => (
       <ComponentTree
@@ -35,10 +48,9 @@ export const StructureTree: React.FC<Props> = props => {
         registry={registry}
       />
     ));
-  }, [components, selectedComponentId, onSelectComponent, registry]);
+  }, [realComponents, selectedComponentId, onSelectComponent, registry]);
 
   const dataSourceEles = useMemo(() => {
-    const dataSources = components.filter(c => c.type === 'core/v1/dummy');
     return dataSources.map(dummy => {
       const onClickRemove = () => {
         eventBus.send(
@@ -62,7 +74,7 @@ export const StructureTree: React.FC<Props> = props => {
         />
       );
     });
-  }, [components, selectedComponentId, onSelectComponent, registry]);
+  }, [dataSources, selectedComponentId, onSelectComponent, registry]);
 
   return (
     <VStack spacing="2" padding="5" alignItems="start">
@@ -102,7 +114,10 @@ function RootItem() {
 
   return (
     <Box width="full">
-      <DropComponentWrapper onCreateComponent={onCreateComponent} onMoveComponent={onMoveComponent}>
+      <DropComponentWrapper
+        onCreateComponent={onCreateComponent}
+        onMoveComponent={onMoveComponent}
+      >
         <ComponentItemView
           id={'root'}
           title="Root"
