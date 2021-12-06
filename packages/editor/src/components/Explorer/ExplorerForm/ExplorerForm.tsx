@@ -31,9 +31,9 @@ export const ExplorerForm: React.FC<Props> = observer(
         const moduleMetaData = {
           name,
           version,
-          stateMap: moduleSpec.spec.stateMap,
+          stateMap: moduleSpec?.spec.stateMap || {},
         };
-        form = <ModuleMetaDataForm data={moduleMetaData} />;
+        form = <ModuleMetaDataForm initData={moduleMetaData} />;
         break;
     }
     return (
