@@ -60,8 +60,20 @@ export const ComponentTree: React.FC<Props> = props => {
           })
         );
       };
+
+      const onMoveComponent = (movingComponent: string) => {
+        // eventBus.send(
+        //   'operation',
+        //   genOperation('moveComponent', {
+        //     fromId: component.id,
+        //     toId: movingComponent,
+        //     slot,
+        //   })
+        // );
+      };
+
       const slotName = (
-        <DropComponentWrapper onDrop={onDrop}>
+        <DropComponentWrapper onDrop={onDrop} onMoveComponent={onMoveComponent}>
           <Text color="gray.500" fontWeight="medium">
             Slot: {slot}
           </Text>
@@ -122,6 +134,16 @@ export const ComponentTree: React.FC<Props> = props => {
     );
   };
 
+  const onMoveComponent = (movingComponent: string) => {
+    // eventBus.send(
+    //   'operation',
+    //   genOperation('moveComponent', {
+    //     fromId: component.id,
+    //     toId: movingComponent,
+    //     slot,
+    //   })
+    // );
+  };
   return (
     <VStack
       key={component.id}
@@ -130,8 +152,9 @@ export const ComponentTree: React.FC<Props> = props => {
       width="full"
       alignItems="start"
     >
-      <DropComponentWrapper onDrop={onDrop}>
+      <DropComponentWrapper onDrop={onDrop} onMoveComponent={onMoveComponent}>
         <ComponentItemView
+          id={component.id}
           title={component.id}
           isSelected={component.id === selectedComponentId}
           onClick={() => {

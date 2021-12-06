@@ -23,7 +23,7 @@ export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, registry } = props;
 
   const componentEles = useMemo(() => {
-    const { topLevelComponents, childrenMap } = resolveApplicationComponents(components)
+    const { topLevelComponents, childrenMap } = resolveApplicationComponents(components);
 
     return topLevelComponents.map(c => (
       <ComponentTree
@@ -50,6 +50,7 @@ export const StructureTree: React.FC<Props> = props => {
       };
       return (
         <ComponentItemView
+          id={dummy.id}
           key={dummy.id}
           title={dummy.id}
           isSelected={dummy.id === selectedComponentId}
@@ -87,10 +88,22 @@ function RootItem() {
       })
     );
   };
+  const onMoveComponent = (movingComponent: string) => {
+    // eventBus.send(
+    //   'operation',
+    //   genOperation('moveComponent', {
+    //     fromId: component.id,
+    //     toId: movingComponent,
+    //     slot,
+    //   })
+    // );
+  };
+
   return (
     <Box width="full">
-      <DropComponentWrapper onDrop={onDrop}>
+      <DropComponentWrapper onDrop={onDrop} onMoveComponent={onMoveComponent}>
         <ComponentItemView
+          id={'root'}
           title="Root"
           isSelected={false}
           onClick={() => undefined}
