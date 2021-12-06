@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { virtualExamplePlugin } from '@sunmao-ui/vite-plugins';
-import tsconfigPaths from 'vite-tsconfig-paths'
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,7 +13,7 @@ export default defineConfig({
           [
             '@babel/plugin-transform-react-jsx',
             {
-              throwIfNamespace: false, // defaults to true
+              throwIfNamespace: false,
               runtime: 'automatic',
               importSource: '@emotion/react',
             },
