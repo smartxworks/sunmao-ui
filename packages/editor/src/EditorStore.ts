@@ -125,6 +125,9 @@ class EditorStore {
   popDragIdStack = () => {
     this.setDragIdStack(this.dragIdStack.slice(0, this.dragIdStack.length - 1));
   };
+  clearIdStack = () => {
+    this.setDragIdStack([]);
+  };
   setDragIdStack = (ids: string[]) => {
     this.dragIdStack = ids;
   };
