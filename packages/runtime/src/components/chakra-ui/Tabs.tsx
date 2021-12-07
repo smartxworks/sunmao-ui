@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { createComponent } from '@sunmao-ui/core';
-import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
+import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel, Text } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { ComponentImplementation } from 'services/registry';
 import { getSlots } from '../_internal/Slot';
@@ -18,6 +18,9 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
   useEffect(() => {
     mergeState({ selectedTabIndex });
   }, [selectedTabIndex]);
+
+  const slotComponents = getSlots(slotsMap, 'content')
+  const placeholder = <Text color='gray'>Slot content is empty.Please drag component to this slot.</Text>
   return (
     <BaseTabs
       defaultIndex={initialSelectedTabIndex}
@@ -36,7 +39,7 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
         ))}
       </TabList>
       <TabPanels>
-        {getSlots(slotsMap, 'content').map((content, idx) => {
+        {tabNames.map((_, idx) => {
           return (
             <TabPanel
               key={idx}
@@ -44,7 +47,7 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
                 ${customStyle?.tabContent}
               `}
             >
-              {content}
+              {slotComponents[idx] || placeholder}
             </TabPanel>
           );
         })}

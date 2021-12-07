@@ -1,8 +1,13 @@
 import React from 'react';
 import { SlotsMap } from 'types/RuntimeSchema';
 
-export function getSlots(slotsMap: SlotsMap | undefined, slot: string) {
-  return (slotsMap?.get(slot) || []).map(({ component: ImplWrapper, id }) => (
+export function getSlots(slotsMap: SlotsMap | undefined, slot: string): React.ReactElement[] {
+  const components = slotsMap?.get(slot);
+  if (!components) {
+    const placeholder = <div style={{color: 'gray'}}>Slot {slot} is empty.Please drag component to this slot.</div>;
+    return [placeholder]
+  }
+  return components.map(({ component: ImplWrapper, id }) => (
     <ImplWrapper key={id} />
   ));
 }
