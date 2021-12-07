@@ -6,7 +6,7 @@ const ui = initSunmaoUI();
 const App = ui.App;
 const registry = ui.registry;
 const apiService = ui.apiService;
-const stateStore = ui.stateManager.store;
+const stateManager = ui.stateManager;
 const appModelManager = new AppModelManager();
 
 export {
@@ -14,6 +14,6 @@ export {
   App,
   registry,
   apiService,
-  stateStore,
+  stateManager,
   appModelManager,
 };

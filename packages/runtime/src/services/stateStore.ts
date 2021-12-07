@@ -31,6 +31,10 @@ export class StateManager {
     this.dependencies = { ...DefaultDependencies, ...dependencies };
   }
 
+  clear = () => {
+    this.store = reactive<Record<string, any>>({});
+  }
+
   evalExp = (expChunk: ExpChunk, scopeObject = {}): unknown => {
     if (typeof expChunk === 'string') {
       return expChunk;
