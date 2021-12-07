@@ -142,7 +142,7 @@ export const ComponentTree: React.FC<Props> = props => {
       genOperation('moveComponent', {
         fromId: movingComponent,
         toId: component.id,
-        slot: 'content',
+        slot: slots[0],
       })
     );
   };

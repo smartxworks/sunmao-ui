@@ -107,8 +107,8 @@ function RootItem() {
       'operation',
       genOperation('moveComponent', {
         fromId: movingComponent,
-        toId: 'root',
-        slot: 'root',
+        toId: '__root__',
+        slot: '__root__',
       })
     );
   };
