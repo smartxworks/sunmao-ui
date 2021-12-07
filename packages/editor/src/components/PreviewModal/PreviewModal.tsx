@@ -1,25 +1,27 @@
+import { Box } from '@chakra-ui/react';
+import { Application } from '@sunmao-ui/core';
+import { ImplementedRuntimeModule, initSunmaoUI } from '@sunmao-ui/runtime';
 import React from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
-  ModalCloseButton,
-  ModalBody,
-} from '@chakra-ui/react';
+import ErrorBoundary from '../ErrorBoundary';
+import { GeneralModal } from '../GeneralModal';
 
-export const PreviewModal: React.FC<{ onClose: () => void }> = ({
-  onClose,
-  children,
-}) => {
+type Props = {
+  app: Application;
+  modules: ImplementedRuntimeModule[];
+  onClose: () => void;
+};
+
+export const PreviewModal: React.FC<Props> = ({ app, modules, onClose }) => {
+  const { App, registry } = initSunmaoUI();
+  modules.forEach(m => registry.registerModule(m));
+
   return (
-    <Modal onClose={onClose} size="full" isOpen>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Preview App</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>{children}</ModalBody>
-      </ModalContent>
-    </Modal>
+    <GeneralModal onClose={onClose} title="Preview Modal">
+      <Box width="full" height="full">
+        <ErrorBoundary>
+          <App options={app} debugEvent={false} debugStore={false} />
+        </ErrorBoundary>
+      </Box>
+    </GeneralModal>
   );
 };
