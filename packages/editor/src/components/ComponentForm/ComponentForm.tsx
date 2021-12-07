@@ -98,9 +98,14 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     );
   };
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    // prevent form keyboard events to accidentally trigger operation shortcut 
+    e.stopPropagation()
+  }
+
   return (
     <ErrorBoundary>
-      <VStack p={4} spacing="4" background="gray.50">
+      <VStack p={4} spacing="4" background="gray.50" onKeyDown={onKeyDown}>
         <FormControl>
           <FormLabel>
             <strong>Component ID</strong>
