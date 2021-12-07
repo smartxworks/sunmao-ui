@@ -7,7 +7,6 @@ import { StructureTree } from './StructureTree';
 import { eventBus } from '../eventBus';
 import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
-import { PreviewModal } from './PreviewModal';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { ComponentWrapper } from './ComponentWrapper';
 import { StateEditor, SchemaEditor } from './CodeEditor';
@@ -16,6 +15,7 @@ import { editorStore } from '../EditorStore';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
+import { PreviewModal } from './PreviewModal';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -26,7 +26,7 @@ type Props = {
 };
 
 export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) => {
-  const { components, selectedComponentId } = editorStore;
+  const { components, selectedComponentId, modules } = editorStore;
 
   const [scale, setScale] = useState(100);
   const [preview, setPreview] = useState(false);
@@ -209,15 +209,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
         </Box>
       </Box>
       {preview && (
-        <PreviewModal onClose={() => setPreview(false)}>
-          <Box width="100%" height="100%">
-            <App
-              options={JSON.parse(JSON.stringify(app))}
-              debugEvent={false}
-              debugStore={false}
-            />
-          </Box>
-        </PreviewModal>
+        <PreviewModal onClose={() => setPreview(false)} app={app} modules={modules} />
       )}
     </KeyboardEventWrapper>
   );
