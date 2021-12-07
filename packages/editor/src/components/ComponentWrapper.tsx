@@ -6,6 +6,7 @@ import { editorStore } from 'EditorStore';
 import { registry } from 'setup';
 import { eventBus } from '../eventBus';
 import { genOperation } from '../operations';
+import { Text } from '@chakra-ui/react';
 
 // children of components in this list should render height as 100%
 const fullHeightList = ['core/v1/grid_layout'];
@@ -21,6 +22,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     dragOverComponentId,
     pushDragIdStack,
     popDragIdStack,
+    clearIdStack,
   } = editorStore;
 
   const slots = useMemo(() => {
@@ -72,7 +74,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     e.stopPropagation();
     e.preventDefault();
     if (!isDroppable) return;
-    popDragIdStack();
+    clearIdStack();
     const creatingComponent = e.dataTransfer?.getData('component') || '';
     eventBus.send(
       'operation',
@@ -102,22 +104,39 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
       css={style}
     >
       {props.children}
-      <OutlineMask color={borderColor} />
+      {borderColor === 'transparent' ? undefined : (
+        <OutlineMask color={borderColor} text={component.id} />
+      )}
     </div>
   );
 });
 
-function OutlineMask({ color }: { color: string }) {
-  const style = useMemo(() => {
-    return css`
-      position: absolute;
-      top: -4px;
-      bottom: -4px;
-      left: -4px;
-      right: -4px;
-      border: 1px solid ${color};
-      pointer-events: none;
-    `;
-  }, [color]);
-  return <div css={style} />;
+const outlineMaskStyle = css`
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  border: 1px solid;
+  pointer-events: none;
+`;
+const outlineMaskTextStyle = css`
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translateY(-100%);
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: black;
+  color: white;
+`;
+
+function OutlineMask({ color, text }: { color: string; text: string }) {
+  return (
+    <div css={outlineMaskStyle} style={{ borderColor: color }}>
+      <Text css={outlineMaskTextStyle} style={{ background: color }}>
+        {text}
+      </Text>
+    </div>
+  );
 }
