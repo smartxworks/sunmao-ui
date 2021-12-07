@@ -51,7 +51,7 @@ import CoreValidation from '../traits/core/validation';
 import {
   ComponentImplementationProps,
   TraitImplementation,
-} from 'types/RuntimeSchema';
+} from '../types/RuntimeSchema';
 import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash';
