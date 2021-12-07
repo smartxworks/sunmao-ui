@@ -4,7 +4,7 @@ import { Button, Text, VStack } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { AppMetaDataForm } from './AppMetaDataForm';
 import { ModuleMetaDataForm } from './ModuleMetaDataForm';
-import { registry } from 'setup';
+import { editorStore } from 'EditorStore';
 
 type Props = {
   formType: 'app' | 'module';
@@ -25,7 +25,9 @@ export const ExplorerForm: React.FC<Props> = observer(
         form = <AppMetaDataForm data={appMetaData} />;
         break;
       case 'module':
-        const moduleSpec = registry.getModule(version, name);
+        const moduleSpec = editorStore.appStorage.modules.find(
+          m => m.version === version && m.metadata.name === name
+        )!;
         const moduleMetaData = {
           name,
           version,

@@ -18,7 +18,17 @@ type Props = Static<typeof RuntimeModuleSchema> & {
 };
 
 export const ModuleRenderer: React.FC<Props> = props => {
-  const { type, properties, handlers, evalScope, services, app } = props;
+  const { type, services } = props;
+  try {
+    const moduleSpec = services.registry.getModuleByType(type);
+    return <ModuleRendererContent {...props} moduleSpec={moduleSpec}/>
+  } catch {
+    return <span>Cannot find Module {type}.</span>
+  }
+}
+
+const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeModule}> = props => {
+  const { moduleSpec, properties, handlers, evalScope, services, app } = props;
   const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string;
 
   function evalObject<T extends Record<string, any>>(obj: T): T {
@@ -48,12 +58,6 @@ export const ModuleRenderer: React.FC<Props> = props => {
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
   const evaledHanlders = evalObject(handlers);
-  let moduleSpec: ImplementedRuntimeModule
-  try {
-    moduleSpec = useMemo(() => services.registry.getModuleByType(type), [type]);
-  } catch {
-    return <span>Cannot find Module {type}.</span>
-  }
   const parsedtemplete = useMemo(
     () => moduleSpec.components.map(parseTypeComponents),
     [moduleSpec]
