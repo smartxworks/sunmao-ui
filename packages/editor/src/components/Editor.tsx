@@ -15,6 +15,7 @@ import { Explorer } from './Explorer';
 import { editorStore } from '../EditorStore';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
+import ErrorBoundary from './ErrorBoundary';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -75,13 +76,15 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
 
   const appComponent = useMemo(() => {
     return (
-      <App
-        options={app}
-        debugEvent={false}
-        debugStore={false}
-        gridCallbacks={gridCallbacks}
-        componentWrapper={ComponentWrapper}
-      />
+      <ErrorBoundary>
+        <App
+          options={app}
+          debugEvent={false}
+          debugStore={false}
+          gridCallbacks={gridCallbacks}
+          componentWrapper={ComponentWrapper}
+        />
+      </ErrorBoundary>
     );
   }, [app, gridCallbacks]);
 
@@ -172,7 +175,10 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
   };
 
   return (
-    <KeyboardEventWrapper components={components} selectedComponentId={selectedComponentId}>
+    <KeyboardEventWrapper
+      components={components}
+      selectedComponentId={selectedComponentId}
+    >
       <Box display="flex" height="100%" width="100%" flexDirection="column">
         <EditorHeader
           scale={scale}

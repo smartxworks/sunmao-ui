@@ -7,6 +7,7 @@ import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/foldgutter.css';
 import 'codemirror/lib/codemirror.css';
+import ErrorBoundary from '../ErrorBoundary';
 
 export const StateEditor: React.FC<{ code: string }> = ({ code }) => {
   const style = css`
@@ -44,5 +45,10 @@ export const StateEditor: React.FC<{ code: string }> = ({ code }) => {
     }
   }, [code]);
 
-  return <Box css={style} ref={wrapperEl} height="100%"></Box>;
+  return (
+    <ErrorBoundary>
+      {' '}
+      <Box css={style} ref={wrapperEl} height="100%"></Box>
+    </ErrorBoundary>
+  );
 };

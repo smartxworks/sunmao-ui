@@ -8,6 +8,7 @@ import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation as genOperation } from 'operations';
 import { resolveApplicationComponents } from 'utils/resolveApplicationComponents';
+import ErrorBoundary from '../ErrorBoundary';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -113,20 +114,22 @@ function RootItem() {
   };
 
   return (
-    <Box width="full">
-      <DropComponentWrapper
-        onCreateComponent={onCreateComponent}
-        onMoveComponent={onMoveComponent}
-      >
-        <ComponentItemView
-          id={'root'}
-          title="Root"
-          isSelected={false}
-          onClick={() => undefined}
-          isDroppable={true}
-          noChevron={true}
-        />
-      </DropComponentWrapper>
-    </Box>
+    <ErrorBoundary>
+      <Box width="full">
+        <DropComponentWrapper
+          onCreateComponent={onCreateComponent}
+          onMoveComponent={onMoveComponent}
+        >
+          <ComponentItemView
+            id={'root'}
+            title="Root"
+            isSelected={false}
+            onClick={() => undefined}
+            isDroppable={true}
+            noChevron={true}
+          />
+        </DropComponentWrapper>
+      </Box>
+    </ErrorBoundary>
   );
 }
