@@ -150,7 +150,7 @@ export default {
       properties: PropsSchema,
       state: StateSchema,
       methods: [],
-      slots: ['content'],
+      slots: [],
       styleSlots: ['content'],
       events: ['onLoad', 'onError'],
     },

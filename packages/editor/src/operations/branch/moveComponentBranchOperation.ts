@@ -10,7 +10,6 @@ export type MoveComponentBranchOperationContext = {
 
 export class MoveComponentBranchOperation extends BaseBranchOperation<MoveComponentBranchOperationContext> {
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    console.log('onMoveComponent', this.context);
     const from = prev.find(c => c.id === this.context.fromId);
     if (!from) return prev;
     
