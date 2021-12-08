@@ -21,6 +21,13 @@ ReactDOM.render(
             type: "arco/v1/button",
             properties: {
               type: "primary",
+              size: "large",
+              shape: "round",
+              disabled: false,
+              loading: true,
+              loadingFixedWidth: true,
+              iconOnly: false,
+              long: false,
             },
             traits: [],
           },

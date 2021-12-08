@@ -1,24 +1,12 @@
-import { Button as BaseButton, ButtonProps } from "@arco-design/web-react";
+import { Button as BaseButton } from "@arco-design/web-react";
 import { ComponentImplementation, Slot } from "@sunmao-ui/runtime";
 import { createComponent } from "@sunmao-ui/core";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
+import { BasePropsSchema } from "../generated/types/Button";
 
-const PropsSchema = Type.Partial(
-  Type.Object({
-    type: Type.KeyOf(
-      Type.Object({
-        default: Type.Boolean(),
-        primary: Type.Boolean(),
-        secondary: Type.Boolean(),
-        dashed: Type.Boolean(),
-        text: Type.Boolean(),
-        outline: Type.Boolean(),
-      })
-    ),
-  })
-);
+const PropsSchema = BasePropsSchema;
 const StateSchema = Type.Object({});
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = (props) => {
