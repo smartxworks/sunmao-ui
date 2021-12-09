@@ -1,5 +1,5 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import { ComponentImplementation } from 'services/registry';
+import { ComponentImplementation } from '../../services/registry';
 import { createComponent } from '@sunmao-ui/core';
 import Slot from '../_internal/Slot';
 
