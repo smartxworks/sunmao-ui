@@ -1,7 +1,7 @@
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from 'services/registry';
-import { RuntimeModuleSchema } from 'types/RuntimeSchema';
+import { ComponentImplementation } from '../../services/registry';
+import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 import { css } from '@emotion/react';
 

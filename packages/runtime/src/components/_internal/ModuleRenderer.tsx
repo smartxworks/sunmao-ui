@@ -3,13 +3,13 @@ import React, { useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { RuntimeApplication } from '@sunmao-ui/core';
-import { UIServices, RuntimeModuleSchema } from 'types/RuntimeSchema';
-import { EventHandlerSchema } from 'types/TraitPropertiesSchema';
-import { resolveAppComponents } from 'services/resolveAppComponents';
-import { ImplWrapper } from 'services/ImplWrapper';
-import { watch } from 'utils/watchReactivity';
-import { parseTypeComponents } from 'utils/parseType';
-import { ImplementedRuntimeModule } from 'services/registry';
+import { UIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
+import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
+import { resolveAppComponents } from '../../services/resolveAppComponents';
+import { ImplWrapper } from '../../services/ImplWrapper';
+import { watch } from '../../utils/watchReactivity';
+import { parseTypeComponents } from '../../utils/parseType';
+import { ImplementedRuntimeModule } from '../../services/registry';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope?: Record<string, any>;
