@@ -1,7 +1,7 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
 import { get } from 'lodash-es';
-import { resolveApplicationComponents } from 'utils/resolveApplicationComponents';
+import { resolveApplicationComponents } from '../../../utils/resolveApplicationComponents';
 import { BaseLeafOperation } from '../../type';
 
 export type PasteComponentLeafOperationContext = {
