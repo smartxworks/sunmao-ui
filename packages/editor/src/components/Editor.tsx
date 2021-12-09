@@ -87,7 +87,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
 
   const renderMain = () => {
     const appBox = (
-      <Box flex="1" background="gray.50" p={4} overflow="hidden">
+      <Box flex="1" background="gray.50" p={1} overflow="hidden">
         <Box
           width="100%"
           height="100%"
@@ -164,7 +164,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
               <Tab>Inspect</Tab>
               <Tab>Insert</Tab>
             </TabList>
-            <TabPanels flex="1" overflow="auto">
+            <TabPanels flex="1" overflow="auto" background="gray.50">
               <TabPanel p={0}>
                 <ComponentForm registry={registry} />
               </TabPanel>
@@ -192,7 +192,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
               eventBus.send(
                 'operation',
                 genOperation('replaceApp', {
-                  app: JSON.parse(code),
+                  app: JSON.parse(code).spec.components,
                 })
               );
             }
