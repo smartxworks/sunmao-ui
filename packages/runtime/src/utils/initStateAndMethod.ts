@@ -1,7 +1,7 @@
 import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static, TSchema } from '@sinclair/typebox';
-import { Registry } from 'src/services/registry';
-import { StateManager } from 'src/services/stateStore';
+import { Registry } from '../services/registry';
+import { StateManager } from '../services/stateStore';
 import { RuntimeModuleSchema } from '../types/RuntimeSchema';
 import { parseTypeBox } from './parseTypeBox';
 
