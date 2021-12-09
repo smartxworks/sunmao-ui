@@ -12,6 +12,8 @@ export const ButtonPropsSchema = {
   'type': Type.Optional(StringUnion(['default', 'primary', 'secondary', 'dashed', 'text', 'outline'])),
   'size': Type.Optional(StringUnion(['default', 'mini', 'small', 'large'])),
   'shape': Type.Optional(StringUnion(['circle', 'round', 'square'])),
+  'href': Type.Optional(Type.String()),
+  'target': Type.Optional(Type.String()),
   'disabled': Type.Optional(Type.Boolean()),
   'loading': Type.Optional(Type.Boolean()),
   'loadingFixedWidth': Type.Optional(Type.Boolean()),
