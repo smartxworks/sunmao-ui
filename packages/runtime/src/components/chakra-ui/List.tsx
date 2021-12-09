@@ -1,9 +1,9 @@
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
-import { ComponentImplementation } from 'services/registry';
+import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
-import { RuntimeModuleSchema } from 'types/RuntimeSchema';
+import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 import { css } from '@emotion/react';
 

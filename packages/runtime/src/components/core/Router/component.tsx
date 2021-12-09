@@ -21,7 +21,7 @@ import {
   RouterCtx,
   useNavigate,
 } from './hooks';
-import { SlotsMap } from 'types/RuntimeSchema';
+import { SlotsMap } from '../../../types/RuntimeSchema';
 
 export type RouteLikeElement = PropsWithChildren<{
   path?: string;

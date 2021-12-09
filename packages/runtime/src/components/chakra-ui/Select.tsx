@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
-import { ComponentImplementation } from 'services/registry';
+import { ComponentImplementation } from '../../services/registry';
 import { css } from '@emotion/react';
 
 const StateSchema = Type.Object({

@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
-import { editorStore } from 'EditorStore';
+import { editorStore } from '../../EditorStore';
 
 type ExplorerTreeProps = {
   onEdit: (kind: 'app' | 'module', version: string, name: string) => void;

@@ -1,8 +1,8 @@
 import RGL from 'react-grid-layout';
-import { ApiService } from 'services/apiService';
-import { GlobalHandlerMap } from 'services/handler';
-import { Registry } from 'services/registry';
-import { StateManager } from 'services/stateStore';
+import { ApiService } from '../services/apiService';
+import { GlobalHandlerMap } from '../services/handler';
+import { Registry } from '../services/registry';
+import { StateManager } from '../services/stateStore';
 import { Application, RuntimeApplication } from '@sunmao-ui/core';
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
