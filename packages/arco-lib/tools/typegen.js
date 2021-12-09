@@ -133,4 +133,7 @@ ${Object.keys(props)
   {
     component: "Image",
   },
+  {
+    component: "Select",
+  },
 ].forEach(generate);

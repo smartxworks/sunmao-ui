@@ -141,6 +141,36 @@ ReactDOM.render(
             ],
           },
           {
+            id: "nav_menu",
+            type: "arco/v1/select",
+            properties: {
+              defaultValue: "IAM",
+              options: [
+                {
+                  text: "IAM",
+                },
+              ],
+            },
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "header",
+                    slot: "content",
+                  },
+                },
+              },
+              {
+                type: "core/v1/style",
+                properties: {
+                  styleSlot: "content",
+                  style: "margin-left: 54px; width: 154px;",
+                },
+              },
+            ],
+          },
+          {
             id: "text_2",
             type: "core/v1/text",
             properties: {

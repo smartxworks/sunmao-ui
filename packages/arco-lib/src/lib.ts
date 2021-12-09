@@ -3,6 +3,7 @@ import { Registry } from "@sunmao-ui/runtime/lib/services/registry";
 import { Button } from "./components/Button";
 import { Header, Content, Footer, Sider, Layout } from "./components/Layout";
 import { Image } from "./components/Image";
+import { Select } from "./components/Select";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -16,6 +17,7 @@ const components: Component[] = [
   Sider,
   Layout,
   Image,
+  Select,
 ];
 const traits: Trait[] = [];
 const modules: Module[] = [];
