@@ -6,7 +6,7 @@ import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { genOperation as genOperation } from 'operations';
+import { genOperation as genOperation } from '../../operations';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;

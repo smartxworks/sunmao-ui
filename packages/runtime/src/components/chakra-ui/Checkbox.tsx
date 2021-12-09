@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Checkbox as BaseCheckbox, useCheckboxGroupContext } from '@chakra-ui/react';
-import { ComponentImplementation } from 'services/registry';
+import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 import { css } from '@emotion/react';

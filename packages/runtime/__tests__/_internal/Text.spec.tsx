@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
-import React from 'react';
 import Text from '../../src/components/_internal/Text';
+import React from 'react';
 
 describe('Text component', () => {
   it('should render plain text', () => {

@@ -19,7 +19,7 @@ import { KeyValueEditor } from '../../KeyValueEditor';
 import { EventHandlerForm } from '../EventTraitForm/EventHandlerForm';
 import { eventBus } from '../../../eventBus';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { genOperation } from 'operations';
+import { genOperation } from '../../../operations';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 

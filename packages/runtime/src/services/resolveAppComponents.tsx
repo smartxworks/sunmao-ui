@@ -6,7 +6,7 @@ import {
   ComponentParamsFromApp,
   UIServices,
   SlotComponentMap,
-} from 'types/RuntimeSchema';
+} from '../types/RuntimeSchema';
 import { ImplWrapper } from './ImplWrapper';
 
 export function resolveAppComponents(
