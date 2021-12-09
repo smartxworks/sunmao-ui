@@ -31,11 +31,21 @@ function generate({ component, propsNames = [], pick, omit }) {
       const type = checker.getTypeAtLocation(node);
       const propertySymbols = checker.getPropertiesOfType(type);
       for (const symbol of propertySymbols) {
-        if (pick && !pick.includes(symbol.name)) {
-          continue;
+        if (pick) {
+          if (Array.isArray(pick) && !pick.includes(symbol.name)) {
+            continue;
+          }
+          if (typeof pick === "function" && !pick(symbol.name)) {
+            continue;
+          }
         }
-        if (omit && omit.includes(symbol.name)) {
-          continue;
+        if (omit) {
+          if (Array.isArray(omit) && omit.includes(symbol.name)) {
+            continue;
+          }
+          if (typeof omit === "function" && omit(symbol.name)) {
+            continue;
+          }
         }
         const symbolType = checker.getTypeOfSymbolAtLocation(symbol, node);
         const declartion = symbol.declarations[0];
@@ -92,7 +102,7 @@ function StringUnion<T extends string[]>(values: [...T]): TUnion<IntoStringUnion
 
 ${Object.keys(props)
   .map(
-    (name) => `export const ${name}Schema = Type.Object({
+    (name) => `export const ${name}Schema = {
   ${props[name]
     .map(
       (p) =>
@@ -101,7 +111,7 @@ ${Object.keys(props)
         }`
     )
     .join(",\r\n  ")}
-});`
+};`
   )
   .join("\r\n")}
 `;
@@ -112,11 +122,10 @@ ${Object.keys(props)
     component: "Button",
   },
   {
-    component: "Typography",
-    propsNames: [
-      "TypographyTitleProps",
-      "TypographyParagraphProps",
-      "TypographyTextProps",
-    ],
+    component: "Layout",
+    propsNames: ["HeaderProps", "FooterProps", "ContentProps", "SiderProps"],
+    omit(name) {
+      return name.startsWith("aria-");
+    },
   },
 ].forEach(generate);

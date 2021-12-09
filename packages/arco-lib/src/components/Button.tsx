@@ -6,7 +6,7 @@ import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { ButtonPropsSchema } from "../generated/types/Button";
 
-const PropsSchema = ButtonPropsSchema;
+const PropsSchema = Type.Object(ButtonPropsSchema);
 const StateSchema = Type.Object({});
 
 const Button: ComponentImplementation<Static<typeof PropsSchema>> = (props) => {
