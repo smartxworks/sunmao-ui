@@ -1,9 +1,9 @@
-import { StateManager } from './services/stateStore';
+import { StateManager } from 'services/stateStore';
 import { genApp } from 'App';
-import { initRegistry } from './services/registry';
-import { initApiService } from './services/apiService';
-import { mountUtilMethods } from './services/util-methods';
-import { initGlobalHandlerMap } from './services/handler';
+import { initRegistry } from 'services/registry';
+import { initApiService } from 'services/apiService';
+import { mountUtilMethods } from 'services/util-methods';
+import { initGlobalHandlerMap } from 'services/handler';
 
 export function initSunmaoUI(dependencies = {}) {
   const registry = initRegistry();
