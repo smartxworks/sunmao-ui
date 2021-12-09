@@ -6,8 +6,7 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx"
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", "*.d.ts", "lib"]
 }
