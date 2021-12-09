@@ -57,6 +57,8 @@ function generate({ component, propsNames = [], pick, omit }) {
         let value;
         if (typeStr === "boolean") {
           value = `Type.Boolean()`;
+        } else if (typeStr === "string") {
+          value = `Type.String()`;
         } else if (
           symbolType.isUnion() &&
           symbolType.types.every((t) => t.isStringLiteral())
@@ -127,5 +129,8 @@ ${Object.keys(props)
     omit(name) {
       return name.startsWith("aria-");
     },
+  },
+  {
+    component: "Image",
   },
 ].forEach(generate);

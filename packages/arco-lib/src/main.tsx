@@ -51,7 +51,7 @@ ReactDOM.render(
                 type: "core/v1/style",
                 properties: {
                   styleSlot: "content",
-                  style: "height: 50px;",
+                  style: "height: 50px; display: flex; align-items: center;",
                 },
               },
             ],
@@ -114,13 +114,11 @@ ReactDOM.render(
             ],
           },
           {
-            id: "text_1",
-            type: "core/v1/text",
+            id: "logo",
+            type: "arco/v1/image",
             properties: {
-              value: {
-                raw: "header",
-                format: "plain",
-              },
+              src:
+                "https://www.smartx.com/img/smartx-logo-horizontal.ff708dd4.svg",
             },
             traits: [
               {
@@ -130,6 +128,14 @@ ReactDOM.render(
                     id: "header",
                     slot: "content",
                   },
+                },
+              },
+              {
+                type: "core/v1/style",
+                properties: {
+                  styleSlot: "content",
+                  style:
+                    "margin-left: 24px; img { width: 124px; height: 24px; }",
                 },
               },
             ],
