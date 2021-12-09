@@ -11,21 +11,23 @@ const filename = path.resolve(
 const program = ts.createProgram([filename], {});
 const checker = program.getTypeChecker();
 
-function generate({ component, propsName, pick, omit }) {
+function generate({ component, propsNames = [], pick, omit }) {
   if (pick && omit) {
     throw new Error(`pick and omit are both set in "${component}"`);
   }
-  if (!propsName) {
-    propsName = `${component}Props`;
-  }
-  const props = [];
+  propsNames = propsNames.concat(`${component}Props`);
+  const props = {};
 
   /**
    * visit function
    * @param {ts.Node} node
    */
   function visit(node) {
-    if (ts.isTypeAliasDeclaration(node) && node.name.text === propsName) {
+    if (
+      (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) &&
+      propsNames.includes(node.name.text)
+    ) {
+      props[node.name.text] = [];
       const type = checker.getTypeAtLocation(node);
       const propertySymbols = checker.getPropertiesOfType(type);
       for (const symbol of propertySymbols) {
@@ -54,7 +56,7 @@ function generate({ component, propsName, pick, omit }) {
             .join(", ")}])`;
         }
         if (value) {
-          props.push({
+          props[node.name.text].push({
             name: symbol.name,
             nullable,
             value,
@@ -88,17 +90,33 @@ function StringUnion<T extends string[]>(values: [...T]): TUnion<IntoStringUnion
     return { enum: values } as any
 }
 
-export const BasePropsSchema = Type.Object({
-  ${props
+${Object.keys(props)
+  .map(
+    (name) => `export const ${name}Schema = Type.Object({
+  ${props[name]
     .map(
       (p) =>
-        `${p.name}: ${p.nullable ? "Type.Optional(" : ""}${p.value}${
+        `'${p.name}': ${p.nullable ? "Type.Optional(" : ""}${p.value}${
           p.nullable ? ")" : ""
         }`
     )
     .join(",\r\n  ")}
-});
+});`
+  )
+  .join("\r\n")}
 `;
 }
 
-generate({ component: "Button" });
+[
+  {
+    component: "Button",
+  },
+  {
+    component: "Typography",
+    propsNames: [
+      "TypographyTitleProps",
+      "TypographyParagraphProps",
+      "TypographyTextProps",
+    ],
+  },
+].forEach(generate);
