@@ -6,7 +6,7 @@ export const EventHandlerSchema = Type.Object(
     componentId: Type.String(),
     method: Type.Object({
       name: Type.String(),
-      parameters: Type.Record(Type.String(), Type.String()),
+      parameters: Type.Record(Type.String(), Type.Any()),
     }),
     wait: Type.Optional(
       Type.Object({
@@ -22,7 +22,7 @@ export const EventHandlerSchema = Type.Object(
     ),
     disabled: Type.Optional(Type.Boolean()),
   },
-  { $id: 'eventHanlder' }
+  { description: 'eventHanlder' }
 );
 
 export const FetchTraitPropertiesSchema = Type.Object({
