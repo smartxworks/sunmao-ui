@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import React from 'react';
 import { eventBus } from '../eventBus';
@@ -12,9 +13,6 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
     &:focus {
       outline: none;
     }
-
-    width: 100%;
-    height: 100%;
   `;
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -45,8 +43,15 @@ export const KeyboardEventWrapper: React.FC<Props> = props => {
   };
 
   return (
-    <div id="keyboard-event-wrapper" css={style} onKeyDown={onKeyDown} tabIndex={-1}>
+    <Box
+      id="keyboard-event-wrapper"
+      css={style}
+      width="100%"
+      height="100%"
+      onKeyDown={onKeyDown}
+      tabIndex={-1}
+    >
       {props.children}
-    </div>
+    </Box>
   );
 };
