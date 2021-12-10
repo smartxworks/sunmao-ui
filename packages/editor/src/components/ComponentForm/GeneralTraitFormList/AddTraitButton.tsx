@@ -2,7 +2,7 @@ import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { useMemo } from 'react';
-import { ignoreTraitsList } from 'src/constants';
+import { ignoreTraitsList } from '../../../constants';
 
 type Props = {
   registry: Registry;
