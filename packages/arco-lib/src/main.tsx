@@ -147,6 +147,7 @@ ReactDOM.render(
               defaultValue: "IAM",
               options: [
                 {
+                  value: "iam",
                   text: "IAM",
                 },
               ],
@@ -171,13 +172,31 @@ ReactDOM.render(
             ],
           },
           {
-            id: "text_2",
-            type: "core/v1/text",
+            id: "sider_menu",
+            type: "arco/v1/menu",
             properties: {
-              value: {
-                raw: "sider",
-                format: "plain",
-              },
+              items: [
+                {
+                  key: "user",
+                  text: "用户",
+                },
+                {
+                  key: "user_group",
+                  text: "用户组",
+                },
+                {
+                  key: "policy",
+                  text: "策略",
+                },
+                {
+                  key: "ldap",
+                  text: "LDAP",
+                },
+                {
+                  key: "settings",
+                  text: "账号设置",
+                },
+              ],
             },
             traits: [
               {

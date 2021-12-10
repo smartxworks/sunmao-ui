@@ -12,6 +12,7 @@ const SelectPropsSchema = Type.Object({
   options: Type.Optional(
     Type.Array(
       Type.Object({
+        value: Type.String(),
         text: Type.String(),
         disabled: Type.Optional(Type.Boolean()),
       })
@@ -30,7 +31,6 @@ const SelectImpl: ComponentImplementation<Static<typeof SelectPropsSchema>> = (
   const { options = [], ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<string>(defaultValue);
   useEffect(() => {
-    console.log({ value });
     mergeState({
       value,
     });
@@ -47,7 +47,7 @@ const SelectImpl: ComponentImplementation<Static<typeof SelectPropsSchema>> = (
       {...cProps}
     >
       {options.map((o) => (
-        <BaseSelect.Option key={o.text} value={o.text} disabled={o.disabled}>
+        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
           {o.text}
         </BaseSelect.Option>
       ))}
@@ -68,7 +68,7 @@ export const Select = {
       methods: [],
       slots: [],
       styleSlots: ["content"],
-      events: ["onClick"],
+      events: ["onChange"],
     },
   }),
   impl: SelectImpl,

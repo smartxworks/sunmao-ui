@@ -136,4 +136,7 @@ ${Object.keys(props)
   {
     component: "Select",
   },
+  {
+    component: "Menu",
+  },
 ].forEach(generate);
