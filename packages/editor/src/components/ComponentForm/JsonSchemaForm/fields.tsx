@@ -12,7 +12,7 @@ export function getDisplayLabel(schema: Schema, label: string): boolean {
   if (!label) {
     return false;
   }
-  if (schema.type === 'object') {
+  if (schema.type === 'object' && !schema.title) {
     return false;
   }
   return true;
