@@ -4,6 +4,7 @@ import { Button } from "./components/Button";
 import { Header, Content, Footer, Sider, Layout } from "./components/Layout";
 import { Image } from "./components/Image";
 import { Select } from "./components/Select";
+import { Menu } from "./components/Menu";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -18,6 +19,7 @@ const components: Component[] = [
   Layout,
   Image,
   Select,
+  Menu,
 ];
 const traits: Trait[] = [];
 const modules: Module[] = [];
