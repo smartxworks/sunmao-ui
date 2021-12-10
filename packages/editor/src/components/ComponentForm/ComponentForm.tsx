@@ -98,7 +98,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   };
 
   return (
-    <VStack p={4} spacing="4" background="gray.50">
+    <VStack p="2" spacing="2" background="gray.50">
       <FormControl>
         <FormLabel>
           <strong>Component ID</strong>
@@ -114,7 +114,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         <strong>Properties</strong>
         <VStack
           width="full"
-          padding="4"
+          padding="2"
           background="white"
           border="1px solid"
           borderColor="gray.200"
