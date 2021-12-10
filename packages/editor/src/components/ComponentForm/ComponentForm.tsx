@@ -13,6 +13,7 @@ import SchemaField from './JsonSchemaForm/SchemaField';
 import { genOperation } from '../../operations';
 import { editorStore } from '../../EditorStore';
 import { observer } from 'mobx-react-lite';
+import { StyleTraitForm } from './StyleTraitForm';
 
 type Props = {
   registry: Registry;
@@ -138,6 +139,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
       </VStack>
       <EventTraitForm component={selectedComponent} registry={registry} />
       <FetchTraitForm component={selectedComponent} registry={registry} />
+      <StyleTraitForm component={selectedComponent} registry={registry} />
       <GeneralTraitFormList component={selectedComponent} registry={registry} />
     </VStack>
   );

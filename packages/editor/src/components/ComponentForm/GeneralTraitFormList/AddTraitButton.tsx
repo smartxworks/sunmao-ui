@@ -2,6 +2,7 @@ import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { useMemo } from 'react';
+import { ignoreTraitsList } from 'src/constants';
 
 type Props = {
   registry: Registry;
@@ -12,7 +13,7 @@ export const AddTraitButton: React.FC<Props> = props => {
   const { onAddTrait, registry } = props;
 
   const traitTypes = useMemo(() => {
-    return registry.getAllTraitTypes();
+    return registry.getAllTraitTypes().filter(type => !ignoreTraitsList.includes(type));
   }, []);
 
   const menuItems = traitTypes.map(type => {
