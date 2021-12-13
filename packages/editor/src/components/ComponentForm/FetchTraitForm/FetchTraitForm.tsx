@@ -126,10 +126,10 @@ export const FetchTraitForm: React.FC<Props> = props => {
       },
     };
 
-    formik.setFieldValue('onComplete', [...formik.values.onComplete, newHandler]);
+    formik.setFieldValue('onComplete', [...(formik.values.onComplete || []), newHandler]);
   };
 
-  const onCompleteField = (
+  const onCompleteField = formik.values.onComplete ? (
     <FormControl>
       <HStack width="full" justify="space-between">
         <FormLabel>onComplete</FormLabel>
@@ -145,14 +145,14 @@ export const FetchTraitForm: React.FC<Props> = props => {
       </HStack>
       {formik.values.onComplete.map((handler, i) => {
         const onChange = (handler: EventHandler) => {
-          const newOnComplete = produce(formik.values.onComplete, draft => {
+          const newOnComplete = produce(formik.values.onComplete || [], draft => {
             draft[i] = handler;
           });
           formik.setFieldValue('onComplete', newOnComplete);
           formik.submitForm();
         };
         const onRemove = () => {
-          const newOnComplete = produce(formik.values.onComplete, draft => {
+          const newOnComplete = produce(formik.values.onComplete || [], draft => {
             draft.splice(i, 1);
           });
           formik.setFieldValue('onComplete', newOnComplete);
@@ -171,7 +171,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
         );
       })}
     </FormControl>
-  );
+  ) : null;
 
   return (
     <Box width="full" position="relative">

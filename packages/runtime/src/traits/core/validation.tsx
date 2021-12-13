@@ -86,9 +86,9 @@ const ValidationTraitImpl: TraitImplementation<Static<typeof PropsSchema>> = pro
 
 const PropsSchema = Type.Object({
   value: Type.String(),
-  rule: Type.String(),
-  maxLength: Type.Integer(),
-  minLength: Type.Integer(),
+  rule: Type.Optional(Type.String()),
+  maxLength: Type.Optional(Type.Integer()),
+  minLength: Type.Optional(Type.Integer()),
 });
 
 export default {
@@ -103,7 +103,6 @@ export default {
       state: Type.Object({
         validResult: ValidResultSchema,
       }),
-      methods: [],
     },
   }),
   impl: ValidationTraitImpl,
