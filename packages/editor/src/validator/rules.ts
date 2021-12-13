@@ -80,6 +80,7 @@ export class ComponentPropertyValidatorRule implements ComponentValidatorRule {
     const validate = ajv.compile(propertySchema);
     const valid = validate(component.properties);
     if (!valid) {
+      console.log('validate.errors', validate.errors)
       validate.errors!.forEach(error => {
         let errorMsg = error.message;
         if (error.keyword === 'type') {
@@ -124,6 +125,7 @@ export class TraitPropertyValidatorRule implements TraitValidatorRule {
     const validate = ajv.compile(propertySchema);
     const valid = validate(trait.properties);
     if (!valid) {
+      console.log('validate.errors', validate.errors)
       validate.errors!.forEach(error => {
         let errorMsg = error.message;
         if (error.keyword === 'type') {
