@@ -1,7 +1,6 @@
 import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
-import { ValidateResult } from './ValidateResult';
 
 export interface ComponentValidateContext {
   component: ApplicationComponent;
@@ -29,7 +28,7 @@ export type ValidateContext =
 
 export interface ComponentValidatorRule {
   kind: 'component';
-  validate: (validateContext: ComponentValidateContext) => ValidateResult[];
+  validate: (validateContext: ComponentValidateContext) => ValidateErrorResult[];
   // fix: (
   //   component: ApplicationComponent,
   //   components: ApplicationComponent[]
@@ -38,13 +37,13 @@ export interface ComponentValidatorRule {
 
 export interface AllComponentsValidatorRule {
   kind: 'allComponents';
-  validate: (validateContext: AllComponentsValidateContext) => ValidateResult[];
+  validate: (validateContext: AllComponentsValidateContext) => ValidateErrorResult[];
   // fix: (components: ApplicationComponent[]) => ApplicationComponent[];
 }
 
 export interface TraitValidatorRule {
   kind: 'trait';
-  validate: (validateContext: TraitValidateContext) => ValidateResult[];
+  validate: (validateContext: TraitValidateContext) => ValidateErrorResult[];
   // fix: (
   //   trait: ComponentTrait,
   //   component: ApplicationComponent,
@@ -59,8 +58,14 @@ export type ValidatorRule =
 
 export interface ISchemaValidator {
   addRules: (rule: ValidatorRule[]) => void;
-  validate: () => ValidateResult[];
+  validate: (components: ApplicationComponent[]) => ValidateErrorResult[];
   fix: () => void;
 }
 
-export const DefaultValidateResult = new ValidateResult('ok', '', -1, () => undefined);
+export interface ValidateErrorResult {
+  componentId: string,
+  traitType?: string,
+  property?: string,
+  message: string;
+  fix?: () => void
+}
