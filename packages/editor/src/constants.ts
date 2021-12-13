@@ -587,7 +587,6 @@ export const UserCenterApp: Application = {
           {
             type: 'core/v1/fetch',
             properties: {
-              url: 'https://192.168.1.1',
               method: 'post',
               lazy: true,
               headers: { 'content-type': 'application/json' },
@@ -736,7 +735,7 @@ export const UserCenterApp: Application = {
           {
             type: 'core/v1/slot',
             properties: {
-              container: { id: 'userInfoContainer', slot: 'content' },
+              container: { id: 'userInfoContainer2', slot: 'content' },
             },
           },
         ],
@@ -857,7 +856,7 @@ export const UserCenterApp: Application = {
           {
             type: 'core/v1/slot',
             properties: {
-              container: { id: 'usersGridLayout', slot: 'content' },
+              container: { id: 'userInfoContainer', slot: 'content' },
             },
           },
         ],
@@ -1114,7 +1113,7 @@ export const UserCenterApp: Application = {
         type: 'chakra_ui/v1/list',
         properties: {
           listData:
-            "{{usersTable.selectedItem ? _.toPairs(_.groupBy(usersTable.selectedItem.roles, 'system.name')) : undefined}}",
+            "{{usersTable.sele}",
           template: {
             id: 'RoleListItem-{{$i}}',
             type: 'userCenter/v1/infoRow',
@@ -1192,7 +1191,6 @@ export const UserCenterApp: Application = {
             properties: {
               handlers: [
                 {
-                  type: 'onClick',
                   componentId: 'isUpdateRole',
                   method: {
                     name: 'setValue',

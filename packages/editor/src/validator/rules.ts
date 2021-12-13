@@ -5,22 +5,24 @@ import {
   AllComponentsValidateContext,
   ComponentValidateContext,
   TraitValidateContext,
+  ValidateErrorResult,
 } from './interfaces';
-import { ValidateResult } from './ValidateResult';
 
 export class RepeatIdValidatorRule implements AllComponentsValidatorRule {
   kind: 'allComponents' = 'allComponents';
 
-  validate({ components }: AllComponentsValidateContext): ValidateResult[] {
+  validate({ components }: AllComponentsValidateContext): ValidateErrorResult[] {
     const componentIds = new Set<string>();
-    const results: ValidateResult[] = [];
+    const results: ValidateErrorResult[] = [];
     components.forEach(component => {
       if (componentIds.has(component.id)) {
-        results.push(
-          new ValidateResult('Duplicate component id', component.id, 0, () => {
-            component.id = `${component.id}_${Math.floor(Math.random() * 10000)}`;
-          })
-        );
+        results.push({
+          message: 'Duplicate component id.',
+          componentId: component.id,
+          fix: () => {
+            `${component.id}_${Math.floor(Math.random() * 10000)}`;
+          },
+        });
       } else {
         componentIds.add(component.id);
       }
@@ -32,28 +34,26 @@ export class RepeatIdValidatorRule implements AllComponentsValidatorRule {
 export class ParentValidatorRule implements AllComponentsValidatorRule {
   kind: 'allComponents' = 'allComponents';
 
-  validate({ components }: AllComponentsValidateContext): ValidateResult[] {
-    const results: ValidateResult[] = [];
+  validate({ components }: AllComponentsValidateContext): ValidateErrorResult[] {
+    const results: ValidateErrorResult[] = [];
     const componentIds = components.map(component => component.id);
     components.forEach(c => {
-      const slotTraitIndex = c.traits.findIndex(t => t.type === 'core/v1/slot');
-      const slotTrait = c.traits[slotTraitIndex];
+      const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
       if (slotTrait) {
         const { id: parentId } = slotTrait.properties.container as any;
         if (!componentIds.includes(parentId)) {
-          results.push(
-            new ValidateResult(
-              `Cannot find parent component: ${parentId}.`,
-              c.id,
-              slotTraitIndex,
-              () => {
-                slotTrait.properties.container = {
-                  id: componentIds[0],
-                  slot: 'content',
-                };
-              }
-            )
-          );
+          results.push({
+            message: `Cannot find parent component: ${parentId}.`,
+            componentId: c.id,
+            traitType: slotTrait.type,
+            property: '/container/id',
+            fix: () => {
+              slotTrait.properties.container = {
+                id: componentIds[0],
+                slot: 'content',
+              };
+            },
+          });
         }
       }
     });
@@ -64,13 +64,18 @@ export class ParentValidatorRule implements AllComponentsValidatorRule {
 export class ComponentPropertyValidatorRule implements ComponentValidatorRule {
   kind: 'component' = 'component';
 
-  validate({ component, registry, ajv }: ComponentValidateContext): ValidateResult[] {
-    const results: ValidateResult[] = [];
+  validate({
+    component,
+    registry,
+    ajv,
+  }: ComponentValidateContext): ValidateErrorResult[] {
+    const results: ValidateErrorResult[] = [];
     const spec = registry.getComponentByType(component.type);
     if (!spec) {
-      results.push(
-        new ValidateResult(`Cannot find component spec: ${component.type}.`, component.id)
-      );
+      results.push({
+        message: `Cannot find component spec: ${component.type}.`,
+        componentId: component.id,
+      });
       return results;
     }
 
@@ -80,22 +85,22 @@ export class ComponentPropertyValidatorRule implements ComponentValidatorRule {
     const validate = ajv.compile(propertySchema);
     const valid = validate(component.properties);
     if (!valid) {
-      console.log('validate.errors', validate.errors)
       validate.errors!.forEach(error => {
-        let errorMsg = error.message;
         if (error.keyword === 'type') {
           const { instancePath } = error;
           const path = instancePath.split('/')[1];
           const value = component.properties[path];
-
+          // if value is an expression, skip it
           if (typeof value === 'string' && regExp.test(value)) {
             return;
-          } else {
-            errorMsg = `${error.instancePath} ${error.message}`;
           }
         }
 
-        results.push(new ValidateResult(errorMsg || '', component.id));
+        results.push({
+          message: error.message || '',
+          componentId: component.id,
+          property: error.instancePath,
+        });
       });
     }
     return results;
@@ -104,18 +109,20 @@ export class ComponentPropertyValidatorRule implements ComponentValidatorRule {
 export class TraitPropertyValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
 
-  validate({ trait, component, registry, ajv }: TraitValidateContext): ValidateResult[] {
-    const results: ValidateResult[] = [];
+  validate({
+    trait,
+    component,
+    registry,
+    ajv,
+  }: TraitValidateContext): ValidateErrorResult[] {
+    const results: ValidateErrorResult[] = [];
     const spec = registry.getTraitByType(trait.type);
-    const traitIndex = component.traits.indexOf(trait);
     if (!spec) {
-      results.push(
-        new ValidateResult(
-          `Cannot find trait spec: ${trait.type}.`,
-          component.id,
-          traitIndex
-        )
-      );
+      results.push({
+        message: `Cannot find trait spec: ${trait.type}.`,
+        componentId: component.id,
+        traitType: trait.type,
+      });
       return results;
     }
 
@@ -125,22 +132,23 @@ export class TraitPropertyValidatorRule implements TraitValidatorRule {
     const validate = ajv.compile(propertySchema);
     const valid = validate(trait.properties);
     if (!valid) {
-      console.log('validate.errors', validate.errors)
       validate.errors!.forEach(error => {
-        let errorMsg = error.message;
         if (error.keyword === 'type') {
           const { instancePath } = error;
           const path = instancePath.split('/')[1];
           const value = trait.properties[path];
 
+          // if value is an expression, skip it
           if (typeof value === 'string' && regExp.test(value)) {
             return;
-          } else {
-            errorMsg = `${error.instancePath} ${error.message}`;
           }
         }
-        console.log('propertySchema', propertySchema)
-        results.push(new ValidateResult(errorMsg || '', component.id, traitIndex));
+        results.push({
+          message: error.message || '',
+          componentId: component.id,
+          traitType: trait.type,
+          property: error.instancePath,
+        });
       });
     }
     return results;

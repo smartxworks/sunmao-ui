@@ -1,6 +1,5 @@
-import { ApplicationComponent, Application } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
 import { registry } from '../setup';
 import {
   ISchemaValidator,
@@ -8,35 +7,20 @@ import {
   AllComponentsValidatorRule,
   TraitValidatorRule,
   ValidatorRule,
+  ValidateErrorResult
 } from './interfaces';
-import { ValidateResult } from './ValidateResult';
+import { rules } from './rules';
 
 export class SchemaValidator implements ISchemaValidator {
-  private components: ApplicationComponent[];
+  private result: ValidateErrorResult[] = [];
   private traitRules: TraitValidatorRule[] = [];
   private componentRules: ComponentValidatorRule[] = [];
   private allComponentsRules: AllComponentsValidatorRule[] = [];
-  private result: ValidateResult[] = [];
   private ajv: Ajv;
 
-  constructor(private app: Application) {
-    this.components = this.app.spec.components;
-    this.ajv = addFormats(new Ajv({}), [
-      'date-time',
-      'time',
-      'date',
-      'email',
-      'hostname',
-      'ipv4',
-      'ipv6',
-      'uri',
-      'uri-reference',
-      'uuid',
-      'uri-template',
-      'json-pointer',
-      'relative-json-pointer',
-      'regex',
-    ])
+  constructor() {
+    this.addRules(rules)
+    this.ajv = new Ajv({})
       .addKeyword('kind')
       .addKeyword('modifier');
   }
@@ -57,19 +41,19 @@ export class SchemaValidator implements ISchemaValidator {
     });
   }
 
-  validate() {
+  validate(components: ApplicationComponent[]) {
     this.result = [];
     this.allComponentsRules.forEach(rule => {
-      const r = rule.validate({ components: this.components, ajv: this.ajv });
+      const r = rule.validate({ components: components, ajv: this.ajv });
       if (r.length > 0) {
         this.result = this.result.concat(r);
       }
     });
     this.componentRules.forEach(rule => {
-      this.components.forEach(component => {
+      components.forEach(component => {
         const r = rule.validate({
           component,
-          components: this.components,
+          components: components,
           registry,
           ajv: this.ajv,
         });
@@ -79,12 +63,12 @@ export class SchemaValidator implements ISchemaValidator {
       });
     });
     this.traitRules.forEach(rule => {
-      this.components.forEach(component => {
+      components.forEach(component => {
         component.traits.forEach(trait => {
           const r = rule.validate({
             trait,
             component,
-            components: this.components,
+            components: components,
             registry,
             ajv: this.ajv,
           });
@@ -98,9 +82,9 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   fix() {
-    this.result.forEach(r => {
-      r.fix();
-    });
-    return this.components;
+    // this.result.forEach(r => {
+    //   r.fix();
+    // });
+    // return components;
   }
 }

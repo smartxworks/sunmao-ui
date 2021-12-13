@@ -11,9 +11,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { Editor } from './components/Editor';
-import { UserCenterApp } from './constants';
 import { App as _App, registry, stateManager, ui } from './setup';
-import { SchemaValidator, rules } from './validator';
 
 type Options = Partial<{
   components: Parameters<Registry['registerComponent']>[0][];
@@ -68,7 +66,3 @@ export default function renderApp(options: Options = {}) {
     container
   );
 }
-
-(window as any).validator = new SchemaValidator(UserCenterApp);
-(window as any).validator.addRules(rules);
-console.log('validResult', (window as any).validator.validate());
