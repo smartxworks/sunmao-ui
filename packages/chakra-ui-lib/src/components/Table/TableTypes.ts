@@ -4,13 +4,13 @@ import { RuntimeModuleSchema, EventHandlerSchema } from '@sunmao-ui/runtime';
 export const MajorKeyPropertySchema = Type.String();
 export const RowsPerPagePropertySchema = Type.Number();
 export const DataPropertySchema = Type.Array(Type.Any());
-export const TableSizePropertySchema = Type.KeyOf(
+export const TableSizePropertySchema = Type.Optional(Type.KeyOf(
   Type.Object({
     sm: Type.String(),
     md: Type.String(),
     lg: Type.String(),
   })
-);
+));
 
 export const TdTypeSchema = Type.KeyOf(
   Type.Object({
