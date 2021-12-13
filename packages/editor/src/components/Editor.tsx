@@ -179,7 +179,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
   };
 
   return (
-    <KeyboardEventWrapper selectedComponentId={selectedComponentId}>
+    <KeyboardEventWrapper components={components} selectedComponentId={selectedComponentId}>
       <Box display="flex" height="100%" width="100%" flexDirection="column">
         <EditorHeader
           scale={scale}

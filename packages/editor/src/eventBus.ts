@@ -12,7 +12,7 @@ export type EventNames = {
   componentsChange: ApplicationComponent[];
   // it is only used for some operations' side effect
   selectComponent: string;
-}
+};
 
 const emitter = mitt<EventNames>();
 
