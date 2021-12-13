@@ -23,10 +23,29 @@ export type RuntimeTraitSpec = Trait & {
   parsedVersion: Version;
 };
 
-export function createTrait(options: Omit<Trait, 'kind'>): RuntimeTraitSpec {
-  return {
-    ...options,
-    kind: 'Trait',
-    parsedVersion: parseVersion(options.version),
-  };
+// partial some fields, use as param createTrait
+export type TraitDefinition = {
+  version: string;
+  metadata: Metadata;
+  spec?: Partial<TraitSpec>;
+};
+
+export function createTrait(options: TraitDefinition): RuntimeTraitSpec {
+  return (
+    {
+      version: options.version,
+      kind: ('Trait' as any),
+      parsedVersion: parseVersion(options.version),
+      metadata: {
+        name: options.metadata.name,
+        description: options.metadata.description,
+      },
+      spec: {
+        properties: {},
+        state: {},
+        methods: [],
+        ...options.spec
+      },
+    }
+  );
 }

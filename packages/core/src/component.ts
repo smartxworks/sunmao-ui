@@ -27,10 +27,37 @@ export type RuntimeComponentSpec = Component & {
   parsedVersion: Version;
 };
 
-export function createComponent(options: Omit<Component, 'kind'>): RuntimeComponentSpec {
-  return {
-    ...options,
-    kind: 'Component',
-    parsedVersion: parseVersion(options.version),
-  };
+// partial some fields, use as param createComponent
+export type ComponentDefinition = {
+  version: string;
+  metadata: Partial<ComponentMetadata> & { name: string };
+  spec?: Partial<ComponentSpec>;
+};
+
+export function createComponent(options: ComponentDefinition): RuntimeComponentSpec {
+  return (
+    { 
+      version: options.version,
+      kind: ('Component' as any),
+      parsedVersion: parseVersion(options.version),
+      metadata: {
+        description: '',
+        isDraggable: true,
+        isResizable: true,
+        displayName: options.metadata.name,
+        exampleProperties: {},
+        exampleSize: [1, 1],
+        ...options.metadata,
+      },
+      spec: {
+        properties: {},
+        state: {},
+        methods: [],
+        styleSlots: [],
+        slots: [],
+        events: [],
+        ...options.spec,
+      },
+    }
+  );
 }

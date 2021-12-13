@@ -23,10 +23,27 @@ export type RuntimeModuleSpec = Module & {
   parsedVersion: Version;
 };
 
-export function createModule(options: Omit<Module, 'kind'>): RuntimeModuleSpec {
+// partial some fields, use as param createModule
+export type ModuleDefinition = {
+  version: string;
+  metadata: Metadata;
+  spec?: Partial<ModuleSpec>;
+};
+
+export function createModule(options: ModuleDefinition): RuntimeModuleSpec {
   return {
-    ...options,
+    version: options.version,
     kind: 'Module',
     parsedVersion: parseVersion(options.version),
+    metadata: {
+      name: options.metadata.name,
+      description: options.metadata.description,
+    },
+    spec: {
+      properties: {},
+      events: [],
+      stateMap: {},
+      ...options.spec
+    },
   };
 }
