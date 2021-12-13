@@ -32,9 +32,9 @@ export const FlexWrapSchema = Type.Optional(Type.KeyOf(
     'wrap-reverse': Type.String(),
   })
 ));
-export const AlignItemsSchema = Type.String();
-export const JustifyContentSchema = Type.String();
-export const SpacingSchema = Type.Union([Type.String(), Type.Number()]);
+export const AlignItemsSchema = Type.Optional(Type.String());
+export const JustifyContentSchema = Type.Optional(Type.String());
+export const SpacingSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
 
 const Stack: ComponentImplementation<Static<typeof PropsSchema>> = ({
   direction,

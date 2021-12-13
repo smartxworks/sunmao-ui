@@ -139,7 +139,7 @@ export class TraitPropertyValidatorRule implements TraitValidatorRule {
             errorMsg = `${error.instancePath} ${error.message}`;
           }
         }
-
+        console.log('propertySchema', propertySchema)
         results.push(new ValidateResult(errorMsg || '', component.id, traitIndex));
       });
     }
