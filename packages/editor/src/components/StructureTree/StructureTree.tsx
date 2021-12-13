@@ -7,6 +7,7 @@ import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation as genOperation } from '../../operations';
+import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -22,24 +23,7 @@ export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, registry } = props;
 
   const componentEles = useMemo(() => {
-    const topLevelComponents: ApplicationComponent[] = [];
-    const childrenMap: ChildrenMap = new Map();
-    components.forEach(c => {
-      const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
-      if (slotTrait) {
-        const { id: parentId, slot } = slotTrait.properties.container as any;
-        if (!childrenMap.has(parentId)) {
-          childrenMap.set(parentId, new Map());
-        }
-        if (!childrenMap.get(parentId)?.has(slot)) {
-          childrenMap.get(parentId)?.set(slot, []);
-        }
-
-        childrenMap.get(parentId)!.get(slot)!.push(c);
-      } else {
-        topLevelComponents.push(c);
-      }
-    });
+    const { topLevelComponents, childrenMap } = resolveApplicationComponents(components)
 
     return topLevelComponents.map(c => (
       <ComponentTree
