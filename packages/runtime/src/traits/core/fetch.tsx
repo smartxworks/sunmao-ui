@@ -19,7 +19,7 @@ const useFetchTrait: TraitImplementation<Static<typeof FetchTraitPropertiesSchem
 }) => {
   const hashId = `#${componentId}@${'fetch'}`;
   const hasFetched = hasFetchedMap.get(hashId);
-  const lazy = undefined ? method.toLowerCase() !== 'get' : _lazy;
+  const lazy = _lazy === undefined ? true : _lazy;
 
   const fetchData = () => {
     // TODO: clear when component destory

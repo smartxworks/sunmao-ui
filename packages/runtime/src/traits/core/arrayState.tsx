@@ -18,7 +18,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
   const hasInitialized = HasInitializedMap.get(hashId);
 
   if (!hasInitialized) {
-    mergeState({ [key]: initialValue });
+    mergeState({ [key]: initialValue || [] });
 
     const methods = {
       setArray({ key, value }: KeyValue) {
@@ -55,7 +55,7 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
 
 const PropsSchema = Type.Object({
   key: Type.String(),
-  initialValue: Type.Array(Type.Any()),
+  initialValue: Type.Optional(Type.Array(Type.Any())),
 });
 
 export default {
@@ -67,7 +67,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      state: Type.Any(),
       methods: [
         {
           name: 'setArray',

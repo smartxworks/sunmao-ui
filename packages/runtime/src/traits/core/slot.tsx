@@ -19,8 +19,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      state: {},
-      methods: [],
     },
   }),
   impl: () => ({

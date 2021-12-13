@@ -6,7 +6,7 @@ export const EventHandlerSchema = Type.Object(
     componentId: Type.String(),
     method: Type.Object({
       name: Type.String(),
-      parameters: Type.Record(Type.String(), Type.Any()),
+      parameters: Type.Optional(Type.Record(Type.String(), Type.Any())),
     }),
     wait: Type.Optional(
       Type.Object({
@@ -28,8 +28,8 @@ export const EventHandlerSchema = Type.Object(
 export const FetchTraitPropertiesSchema = Type.Object({
   url: Type.String(), // {format:uri}?;
   method: Type.String(), // {pattern: /^(get|post|put|delete)$/i}
-  lazy: Type.Boolean(),
+  lazy: Type.Optional(Type.Boolean()),
   headers: Type.Record(Type.String(), Type.String()),
   body: Type.Record(Type.String(), Type.String()),
-  onComplete: Type.Array(EventHandlerSchema),
+  onComplete: Type.Optional(Type.Array(EventHandlerSchema)),
 });
