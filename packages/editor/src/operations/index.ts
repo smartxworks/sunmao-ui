@@ -5,7 +5,6 @@ import {
   ModifyComponentIdBranchOperationContext,
   RemoveComponentBranchOperation,
   RemoveComponentBranchOperationContext,
-  CutComponentBranchOperation,
   MoveComponentBranchOperation,
   MoveComponentBranchOperationContext,
 } from './branch';
@@ -14,7 +13,6 @@ import {
   AdjustComponentOrderLeafOperationContext,
   CreateTraitLeafOperation,
   CreateTraitLeafOperationContext,
-  CutComponentLeafOperationContext,
   ModifyComponentPropertiesLeafOperation,
   ModifyComponentPropertiesLeafOperationContext,
   ModifyTraitPropertiesLeafOperation,
@@ -42,7 +40,6 @@ const OperationConstructors: Record<
   modifyTraitProperty: ModifyTraitPropertiesLeafOperation,
   replaceApp: ReplaceAppLeafOperation,
   pasteComponent: PasteComponentLeafOperation,
-  cutComponent: CutComponentBranchOperation,
   moveComponent: MoveComponentBranchOperation,
 };
 
@@ -61,10 +58,6 @@ type OperationConfigMaps = {
   removeComponent: OperationConfigMap<
     RemoveComponentBranchOperation,
     RemoveComponentBranchOperationContext
-  >;
-  cutComponent: OperationConfigMap<
-    CutComponentBranchOperation,
-    CutComponentLeafOperationContext
   >;
   modifyComponentProperty: OperationConfigMap<
     ModifyComponentPropertiesLeafOperation,

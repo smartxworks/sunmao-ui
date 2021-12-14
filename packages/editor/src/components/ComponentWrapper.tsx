@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { css } from '@emotion/react';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
 import { observer } from 'mobx-react-lite';
-import { editorStore } from 'EditorStore';
-import { registry } from 'setup';
+import { editorStore } from '../EditorStore';
+import { registry } from '../setup';
 import { eventBus } from '../eventBus';
 import { genOperation } from '../operations';
 import { Text } from '@chakra-ui/react';
@@ -94,7 +94,6 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
 
   return (
     <div
-      // onDragOver={onDragOver}
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
       onDrop={onDrop}

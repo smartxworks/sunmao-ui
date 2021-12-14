@@ -47,7 +47,6 @@ export const StateEditor: React.FC<{ code: string }> = ({ code }) => {
 
   return (
     <ErrorBoundary>
-      {' '}
       <Box css={style} ref={wrapperEl} height="100%"></Box>
     </ErrorBoundary>
   );

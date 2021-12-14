@@ -1,9 +1,10 @@
+import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import React, { useRef } from 'react';
 import { eventBus } from '../eventBus';
-import { genOperation } from 'operations';
-import { PasteManager } from 'operations/PasteManager';
+import { genOperation } from '../operations';
+import { PasteManager } from '../operations/PasteManager';
 
 type Props = {
   selectedComponentId: string;
@@ -20,9 +21,6 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
     &:focus {
       outline: none;
     }
-
-    width: 100%;
-    height: 100%;
   `;
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -86,8 +84,15 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   };
 
   return (
-    <div id="keyboard-event-wrapper" css={style} onKeyDown={onKeyDown} tabIndex={-1}>
+    <Box
+      id="keyboard-event-wrapper"
+      css={style}
+      width="100%"
+      height="100%"
+      onKeyDown={onKeyDown}
+      tabIndex={-1}
+    >
       {children}
-    </div>
+    </Box>
   );
 };

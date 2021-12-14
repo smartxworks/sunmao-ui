@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { eventBus } from 'eventBus';
+import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { genOperation as genOperation } from 'operations';
-import { resolveApplicationComponents } from 'utils/resolveApplicationComponents';
+import { genOperation as genOperation } from '../../operations';
+import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
 
 export type ChildrenMap = Map<string, SlotsMap>;

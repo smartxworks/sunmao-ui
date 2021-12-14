@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
-import { ComponentImplementation } from 'services/registry';
+import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 
 const LinkImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
