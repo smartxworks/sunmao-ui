@@ -51,9 +51,9 @@ export type SunmaoLib = {
 };
 
 export class Registry {
-  components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
-  traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
-  modules: Map<string, Map<string, ImplementedRuntimeModule>> = new Map();
+  components = new Map<string, Map<string, ImplementedRuntimeComponent>>()
+  traits = new Map<string, Map<string, ImplementedRuntimeTrait>>()
+  modules = new Map<string, Map<string, ImplementedRuntimeModule>>()
 
   registerComponent(c: ImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
@@ -78,6 +78,16 @@ export class Registry {
   getComponentByType(type: string): ImplementedRuntimeComponent {
     const { version, name } = parseType(type);
     return this.getComponent(version, name);
+  }
+
+  getAllComponents(): ImplementedRuntimeComponent[] {
+    const res: ImplementedRuntimeComponent[] = [];
+    for (const version of this.components.values()) {
+      for (const component of version.values()) {
+        res.push(component);
+      }
+    }
+    return res
   }
 
   registerTrait(t: ImplementedRuntimeTrait) {
@@ -113,6 +123,16 @@ export class Registry {
       }
     }
     return res;
+  }
+
+  getAllTraits(): ImplementedRuntimeTrait[] {
+    const res: ImplementedRuntimeTrait[] = [];
+    for (const version of this.traits.values()) {
+      for (const trait of version.values()) {
+        res.push(trait);
+      }
+    }
+    return res
   }
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {

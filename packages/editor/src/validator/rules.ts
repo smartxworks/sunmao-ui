@@ -66,12 +66,11 @@ export class ComponentPropertyValidatorRule implements ComponentValidatorRule {
 
   validate({
     component,
-    registry,
-    ajv,
+    validators,
   }: ComponentValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
-    const spec = registry.getComponentByType(component.type);
-    if (!spec) {
+    const validate = validators.components[component.type];
+    if (!validate) {
       results.push({
         message: `Cannot find component spec: ${component.type}.`,
         componentId: component.id,
@@ -79,10 +78,8 @@ export class ComponentPropertyValidatorRule implements ComponentValidatorRule {
       return results;
     }
 
-    const propertySchema = spec.spec.properties;
     const regExp = new RegExp('.*{{.*}}.*');
 
-    const validate = ajv.compile(propertySchema);
     const valid = validate(component.properties);
     if (!valid) {
       validate.errors!.forEach(error => {
@@ -112,12 +109,11 @@ export class TraitPropertyValidatorRule implements TraitValidatorRule {
   validate({
     trait,
     component,
-    registry,
-    ajv,
+    validators,
   }: TraitValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
-    const spec = registry.getTraitByType(trait.type);
-    if (!spec) {
+    const validate = validators.traits[trait.type];
+    if (!validate) {
       results.push({
         message: `Cannot find trait spec: ${trait.type}.`,
         componentId: component.id,
@@ -126,10 +122,6 @@ export class TraitPropertyValidatorRule implements TraitValidatorRule {
       return results;
     }
 
-    const propertySchema = spec.spec.properties;
-    const regExp = new RegExp('.*{{.*}}.*');
-
-    const validate = ajv.compile(propertySchema);
     const valid = validate(trait.properties);
     if (!valid) {
       validate.errors!.forEach(error => {
@@ -139,6 +131,7 @@ export class TraitPropertyValidatorRule implements TraitValidatorRule {
           const value = trait.properties[path];
 
           // if value is an expression, skip it
+          const regExp = new RegExp('.*{{.*}}.*');
           if (typeof value === 'string' && regExp.test(value)) {
             return;
           }

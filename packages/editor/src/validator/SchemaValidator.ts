@@ -1,13 +1,14 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
+import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
-import { registry } from '../setup';
 import {
   ISchemaValidator,
   ComponentValidatorRule,
   AllComponentsValidatorRule,
   TraitValidatorRule,
   ValidatorRule,
-  ValidateErrorResult
+  ValidateErrorResult,
+  ValidatorMap,
 } from './interfaces';
 import { rules } from './rules';
 
@@ -16,13 +17,12 @@ export class SchemaValidator implements ISchemaValidator {
   private traitRules: TraitValidatorRule[] = [];
   private componentRules: ComponentValidatorRule[] = [];
   private allComponentsRules: AllComponentsValidatorRule[] = [];
-  private ajv: Ajv;
+  private ajv!: Ajv;
+  private validatorMap!: ValidatorMap;
 
-  constructor() {
-    this.addRules(rules)
-    this.ajv = new Ajv({})
-      .addKeyword('kind')
-      .addKeyword('modifier');
+  constructor(registry: Registry) {
+    this.initAjv(registry);
+    this.addRules(rules);
   }
 
   addRules(rules: ValidatorRule[]) {
@@ -43,8 +43,9 @@ export class SchemaValidator implements ISchemaValidator {
 
   validate(components: ApplicationComponent[]) {
     this.result = [];
+    const t1 = performance.now();
     this.allComponentsRules.forEach(rule => {
-      const r = rule.validate({ components: components, ajv: this.ajv });
+      const r = rule.validate({ components: components, validators: this.validatorMap });
       if (r.length > 0) {
         this.result = this.result.concat(r);
       }
@@ -54,8 +55,7 @@ export class SchemaValidator implements ISchemaValidator {
         const r = rule.validate({
           component,
           components: components,
-          registry,
-          ajv: this.ajv,
+          validators: this.validatorMap,
         });
         if (r.length > 0) {
           this.result = this.result.concat(r);
@@ -69,8 +69,7 @@ export class SchemaValidator implements ISchemaValidator {
             trait,
             component,
             components: components,
-            registry,
-            ajv: this.ajv,
+            validators: this.validatorMap,
           });
           if (r.length > 0) {
             this.result = this.result.concat(r);
@@ -78,6 +77,8 @@ export class SchemaValidator implements ISchemaValidator {
         });
       });
     });
+    const t2 = performance.now();
+    console.log('validate time:', t2 - t1, 'ms');
     return this.result;
   }
 
@@ -86,5 +87,24 @@ export class SchemaValidator implements ISchemaValidator {
     //   r.fix();
     // });
     // return components;
+  }
+
+  private initAjv(registry: Registry) {
+    this.ajv = new Ajv({}).addKeyword('kind').addKeyword('modifier');
+
+    this.validatorMap = {
+      components: {},
+      traits: {},
+    };
+    registry.getAllComponents().forEach(c => {
+      this.validatorMap.components[`${c.version}/${c.metadata.name}`] = this.ajv.compile(
+        c.spec.properties
+      );
+    });
+    registry.getAllTraits().forEach(t => {
+      this.validatorMap.traits[`${t.version}/${t.metadata.name}`] = this.ajv.compile(
+        t.spec.properties
+      );
+    });
   }
 }

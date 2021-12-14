@@ -25,7 +25,7 @@ class EditorStore {
   };
 
   appStorage = new AppStorage();
-  schemaValidator = new SchemaValidator();
+  schemaValidator = new SchemaValidator(registry);
 
   get app() {
     return this.appStorage.app;

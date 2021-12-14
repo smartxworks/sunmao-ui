@@ -1,24 +1,27 @@
 import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
-import Ajv from 'ajv';
+import { ValidateFunction } from 'ajv';
 
-export interface ComponentValidateContext {
-  component: ApplicationComponent;
-  components: ApplicationComponent[];
-  registry: Registry;
-  ajv: Ajv;
+export interface ValidatorMap {
+  components: Record<string, ValidateFunction>;
+  traits: Record<string, ValidateFunction>;
 }
 
-export interface TraitValidateContext {
+interface BaseValidateContext {
+  validators: ValidatorMap;
+}
+
+export interface ComponentValidateContext extends BaseValidateContext {
+  component: ApplicationComponent;
+  components: ApplicationComponent[];
+}
+
+export interface TraitValidateContext extends BaseValidateContext {
   trait: ComponentTrait;
   component: ApplicationComponent;
   components: ApplicationComponent[];
-  registry: Registry;
-  ajv: Ajv;
 }
-export interface AllComponentsValidateContext {
+export interface AllComponentsValidateContext extends BaseValidateContext {
   components: ApplicationComponent[];
-  ajv: Ajv;
 }
 
 export type ValidateContext =
