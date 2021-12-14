@@ -14,6 +14,7 @@ import { genOperation } from '../../operations';
 import { editorStore } from '../../EditorStore';
 import { observer } from 'mobx-react-lite';
 import ErrorBoundary from '../ErrorBoundary';
+import { StyleTraitForm } from './StyleTraitForm';
 
 type Props = {
   registry: Registry;
@@ -141,37 +142,12 @@ export const ComponentForm: React.FC<Props> = observer(props => {
                 );
               }}
             />
-            <VStack width="full" alignItems="start">
-              <strong>Properties</strong>
-              <VStack
-                width="full"
-                padding="4"
-                background="white"
-                border="1px solid"
-                borderColor="gray.200"
-                borderRadius="4"
-              >
-                <SchemaField
-                  schema={cImpl.spec.properties}
-                  label=""
-                  formData={properties}
-                  onChange={newFormData => {
-                    eventBus.send(
-                      'operation',
-                      genOperation('modifyComponentProperty', {
-                        componentId: selectedComponentId,
-                        properties: newFormData,
-                      })
-                    );
-                  }}
-                />
-              </VStack>
-            </VStack>
-            <EventTraitForm component={selectedComponent} registry={registry} />
-            <FetchTraitForm component={selectedComponent} registry={registry} />
-            <GeneralTraitFormList component={selectedComponent} registry={registry} />
           </VStack>
         </VStack>
+        <EventTraitForm component={selectedComponent} registry={registry} />
+        <FetchTraitForm component={selectedComponent} registry={registry} />
+        <StyleTraitForm component={selectedComponent} registry={registry} />
+        <GeneralTraitFormList component={selectedComponent} registry={registry} />
       </VStack>
     </ErrorBoundary>
   );

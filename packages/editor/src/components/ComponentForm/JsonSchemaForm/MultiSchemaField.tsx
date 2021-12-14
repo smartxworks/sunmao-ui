@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, Box } from '@chakra-ui/react';
+import { Box, RadioGroup, Radio, Stack } from '@chakra-ui/react';
 import SchemaField from './SchemaField';
 import { FieldProps } from './fields';
 
@@ -18,23 +18,20 @@ const _Field: React.FC<
 
   return (
     <Box>
-      <Select
-        mb={1}
-        value={schemaIdx}
-        onChange={evt => setSchemaIdx(parseInt(evt.currentTarget.value))}
-      >
-        {schemas.map((s, idx) => {
-          if (typeof s === 'boolean') {
-            return null;
-          }
-          const text = s.title ? s.title : `schema${idx + 1}(${s.type})`;
-          return (
-            <option key={idx} value={idx}>
-              {text}
-            </option>
-          );
-        })}
-      </Select>
+      <RadioGroup mb={1} value={schemaIdx} onChange={v => setSchemaIdx(parseInt(v))}>
+        <Stack direction="row">
+          {schemas.map((s, idx) => {
+            if (typeof s === 'boolean') {
+              return null;
+            }
+            return (
+              <Radio key={idx} value={idx} borderColor="gray.200">
+                {s.type}
+              </Radio>
+            );
+          })}
+        </Stack>
+      </RadioGroup>
       <SchemaField
         schema={subSchema}
         label={subSchema.title || ''}
