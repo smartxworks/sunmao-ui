@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 import { EventHandlerSchema, Registry } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
-import { editorStore } from 'EditorStore';
+import { editorStore } from '../../../EditorStore';
 type Props = {
   registry: Registry;
   eventTypes: string[];
@@ -27,14 +27,7 @@ type Props = {
 };
 
 export const EventHandlerForm: React.FC<Props> = observer(props => {
-  const {
-    handler,
-    eventTypes,
-    onChange,
-    onRemove,
-    hideEventType,
-    registry,
-  } = props;
+  const { handler, eventTypes, onChange, onRemove, hideEventType, registry } = props;
   const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
 
@@ -174,7 +167,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
   );
 
   return (
-    <Box position="relative">
+    <Box position="relative" width="100%">
       <VStack css={formWrapperCSS}>
         {hideEventType ? null : typeField}
         {targetField}

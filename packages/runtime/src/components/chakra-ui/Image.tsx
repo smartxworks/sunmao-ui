@@ -2,7 +2,7 @@ import { Image as BaseImage } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from 'services/registry';
+import { ComponentImplementation } from '../../services/registry';
 
 const BoxSizePropertySchema = Type.Optional(
   Type.Union([

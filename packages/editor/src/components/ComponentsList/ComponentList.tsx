@@ -19,7 +19,7 @@ type Props = {
 export const ComponentList: React.FC<Props> = ({ registry }) => {
   return (
     <Tabs>
-      <TabList>
+      <TabList overflow="auto">
         {Array.from(registry.components.keys()).map(version => (
           <Tab key={version}>{version}</Tab>
         ))}

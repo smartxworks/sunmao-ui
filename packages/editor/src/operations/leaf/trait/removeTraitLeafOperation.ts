@@ -1,6 +1,6 @@
 import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
 import produce from 'immer';
-import { tryOriginal } from 'operations/util';
+import { tryOriginal } from '../../../operations/util';
 import { BaseLeafOperation } from '../../type';
 
 export type RemoveTraitLeafOperationContext = {

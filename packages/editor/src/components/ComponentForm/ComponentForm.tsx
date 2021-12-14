@@ -10,8 +10,8 @@ import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
-import { genOperation } from 'operations';
-import { editorStore } from 'EditorStore';
+import { genOperation } from '../../operations';
+import { editorStore } from '../../EditorStore';
 import { observer } from 'mobx-react-lite';
 import ErrorBoundary from '../ErrorBoundary';
 
@@ -99,13 +99,13 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    // prevent form keyboard events to accidentally trigger operation shortcut 
-    e.stopPropagation()
-  }
+    // prevent form keyboard events to accidentally trigger operation shortcut
+    e.stopPropagation();
+  };
 
   return (
     <ErrorBoundary>
-      <VStack p={4} spacing="4" background="gray.50" onKeyDown={onKeyDown}>
+      <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
         <FormControl>
           <FormLabel>
             <strong>Component ID</strong>
@@ -121,7 +121,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           <strong>Properties</strong>
           <VStack
             width="full"
-            padding="4"
+            padding="2"
             background="white"
             border="1px solid"
             borderColor="gray.200"
@@ -141,11 +141,37 @@ export const ComponentForm: React.FC<Props> = observer(props => {
                 );
               }}
             />
+            <VStack width="full" alignItems="start">
+              <strong>Properties</strong>
+              <VStack
+                width="full"
+                padding="4"
+                background="white"
+                border="1px solid"
+                borderColor="gray.200"
+                borderRadius="4"
+              >
+                <SchemaField
+                  schema={cImpl.spec.properties}
+                  label=""
+                  formData={properties}
+                  onChange={newFormData => {
+                    eventBus.send(
+                      'operation',
+                      genOperation('modifyComponentProperty', {
+                        componentId: selectedComponentId,
+                        properties: newFormData,
+                      })
+                    );
+                  }}
+                />
+              </VStack>
+            </VStack>
+            <EventTraitForm component={selectedComponent} registry={registry} />
+            <FetchTraitForm component={selectedComponent} registry={registry} />
+            <GeneralTraitFormList component={selectedComponent} registry={registry} />
           </VStack>
         </VStack>
-        <EventTraitForm component={selectedComponent} registry={registry} />
-        <FetchTraitForm component={selectedComponent} registry={registry} />
-        <GeneralTraitFormList component={selectedComponent} registry={registry} />
       </VStack>
     </ErrorBoundary>
   );
