@@ -8,7 +8,7 @@ type Props = FieldProps;
 const _Field: React.FC<
   Omit<Props, 'schema'> & { schemas: NonNullable<FieldProps['schema']['anyOf']> }
 > = props => {
-  const { schemas, formData, onChange } = props;
+  const { schemas, formData, onChange, registry } = props;
   const [schemaIdx, setSchemaIdx] = useState(0);
 
   const subSchema = schemas[schemaIdx];
@@ -37,20 +37,35 @@ const _Field: React.FC<
         label={subSchema.title || ''}
         formData={formData}
         onChange={value => onChange(value)}
+        registry={registry}
       />
     </Box>
   );
 };
 
 const MultiSchemaField: React.FC<Props> = props => {
-  const { schema, formData, onChange } = props;
+  const { schema, formData, onChange, registry } = props;
 
   if (schema.anyOf) {
-    return <_Field formData={formData} onChange={onChange} schemas={schema.anyOf} />;
+    return (
+      <_Field
+        formData={formData}
+        onChange={onChange}
+        schemas={schema.anyOf}
+        registry={registry}
+      />
+    );
   }
 
   if (schema.oneOf) {
-    return <_Field formData={formData} onChange={onChange} schemas={schema.oneOf} />;
+    return (
+      <_Field
+        formData={formData}
+        onChange={onChange}
+        schemas={schema.oneOf}
+        registry={registry}
+      />
+    );
   }
 
   return null;
