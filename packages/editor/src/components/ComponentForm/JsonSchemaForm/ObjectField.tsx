@@ -5,7 +5,7 @@ import { FieldProps } from './fields';
 type Props = FieldProps;
 
 const ObjectField: React.FC<Props> = props => {
-  const { schema, formData, onChange } = props;
+  const { schema, formData, onChange, registry } = props;
 
   const properties = Object.keys(schema.properties || {});
   return (
@@ -27,6 +27,7 @@ const ObjectField: React.FC<Props> = props => {
                 [name]: value,
               })
             }
+            registry={registry}
           />
         );
       })}

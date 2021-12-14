@@ -16,7 +16,7 @@ function swap<T>(arr: Array<T>, i1: number, i2: number): Array<T> {
 }
 
 const ArrayField: React.FC<Props> = props => {
-  const { schema, formData, onChange } = props;
+  const { schema, formData, onChange, registry } = props;
   const subSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items;
   if (typeof subSchema === 'boolean' || !subSchema) {
     return null;
@@ -81,6 +81,7 @@ const ArrayField: React.FC<Props> = props => {
                 newFormData[idx] = value;
                 onChange(newFormData);
               }}
+              registry={registry}
             />
           </Box>
         );
