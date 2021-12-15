@@ -1,4 +1,4 @@
-import { ApplicationComponent, ComponentTrait, RuntimeComponentSpec } from '@sunmao-ui/core';
+import { RuntimeComponentSpec, ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
 
@@ -17,13 +17,11 @@ interface BaseValidateContext {
 
 export interface ComponentValidateContext extends BaseValidateContext {
   component: ApplicationComponent;
-  components: ApplicationComponent[];
 }
 
 export interface TraitValidateContext extends BaseValidateContext {
   trait: ComponentTrait;
   component: ApplicationComponent;
-  components: ApplicationComponent[];
 }
 export type AllComponentsValidateContext = BaseValidateContext;
 
@@ -35,26 +33,19 @@ export type ValidateContext =
 export interface ComponentValidatorRule {
   kind: 'component';
   validate: (validateContext: ComponentValidateContext) => ValidateErrorResult[];
-  // fix: (
-  //   component: ApplicationComponent,
-  //   components: ApplicationComponent[]
-  // ) => ApplicationComponent;
+  fix?: (validateContext: ComponentValidateContext) => ApplicationComponent;
 }
 
 export interface AllComponentsValidatorRule {
   kind: 'allComponents';
   validate: (validateContext: AllComponentsValidateContext) => ValidateErrorResult[];
-  // fix: (components: ApplicationComponent[]) => ApplicationComponent[];
+  fix?: (validateContext: AllComponentsValidateContext) => ApplicationComponent[];
 }
 
 export interface TraitValidatorRule {
   kind: 'trait';
   validate: (validateContext: TraitValidateContext) => ValidateErrorResult[];
-  // fix: (
-  //   trait: ComponentTrait,
-  //   component: ApplicationComponent,
-  //   components: ApplicationComponent[]
-  // ) => ApplicationComponent;
+  fix?: (validateContext: TraitValidateContext) => ApplicationComponent;
 }
 
 export type ValidatorRule =
@@ -65,7 +56,7 @@ export type ValidatorRule =
 export interface ISchemaValidator {
   addRules: (rule: ValidatorRule[]) => void;
   validate: (components: ApplicationComponent[]) => ValidateErrorResult[];
-  fix: () => void;
+  fix?: () => void;
 }
 
 export interface ValidateErrorResult {
