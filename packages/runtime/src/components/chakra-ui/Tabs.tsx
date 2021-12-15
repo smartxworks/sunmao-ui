@@ -36,7 +36,7 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
         ))}
       </TabList>
       <TabPanels>
-        {getSlots(slotsMap, 'content').map((content, idx) => {
+        {getSlots(slotsMap, 'content', {}).map((content, idx) => {
           return (
             <TabPanel
               key={idx}
