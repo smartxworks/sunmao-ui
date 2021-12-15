@@ -30,9 +30,11 @@ const GridLayout: ComponentImplementation<Static<typeof PropsSchema>> = ({
         onDragStop={onDragStop}
         onDrop={onDrop}
         layout={layout}
-        css={css`${customStyle?.content}`}
+        css={css`
+          ${customStyle?.content}
+        `}
       >
-        {getSlots(slotsMap, 'content')}
+        {getSlots(slotsMap, 'content', {})}
       </BaseGridLayout>
     </Suspense>
   );
