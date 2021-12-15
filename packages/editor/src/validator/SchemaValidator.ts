@@ -44,10 +44,7 @@ export class SchemaValidator implements ISchemaValidator {
 
   validate(components: ApplicationComponent[]) {
     this.genComponentIdSpecMap(components);
-    console.log('genComponentIdSpecMap', this.componentIdSpecMap);
-    console.log('validators', this.validatorMap);
     this.result = [];
-    const t1 = performance.now();
     const baseContext = {
       components,
       validators: this.validatorMap,
@@ -86,8 +83,6 @@ export class SchemaValidator implements ISchemaValidator {
         });
       });
     });
-    const t2 = performance.now();
-    console.log('validate time:', t2 - t1, 'ms');
     return this.result;
   }
 
@@ -95,13 +90,6 @@ export class SchemaValidator implements ISchemaValidator {
     components.forEach(c => {
       this.componentIdSpecMap[c.id] = this.registry.getComponentByType(c.type);
     });
-  }
-
-  fix() {
-    // this.result.forEach(r => {
-    //   r.fix();
-    // });
-    // return components;
   }
 
   private initAjv() {

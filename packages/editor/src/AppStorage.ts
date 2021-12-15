@@ -2,7 +2,7 @@ import { observable, makeObservable, action, toJS } from 'mobx';
 import { Application, ApplicationComponent } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
-import { DefaultNewModule, UserCenterApp } from './constants';
+import { DefaultNewModule, EmptyAppSchema } from './constants';
 
 export class AppStorage {
   app: Application = this.getDefaultAppFromLS();
@@ -25,9 +25,9 @@ export class AppStorage {
       if (appFromLS) {
         return JSON.parse(appFromLS);
       }
-      return UserCenterApp;
+      return EmptyAppSchema;
     } catch (error) {
-      return UserCenterApp;
+      return EmptyAppSchema;
     }
   }
 
