@@ -59,7 +59,7 @@ const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeMod
   const evaledProperties = evalObject(properties);
   const evaledHanlders = evalObject(handlers);
   const parsedtemplete = useMemo(
-    () => moduleSpec.components.map(parseTypeComponents),
+    () => moduleSpec.impl.map(parseTypeComponents),
     [moduleSpec]
   );
 
