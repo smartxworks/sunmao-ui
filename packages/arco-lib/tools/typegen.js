@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 const ts = require("typescript");
-const { types } = require("util");
 
 const filename = path.resolve(
   __dirname,
@@ -94,13 +93,8 @@ function generate({ component, propsNames = [], pick, omit }) {
 
 function template(props) {
   return `
-import { Type, TUnion, TLiteral } from "@sinclair/typebox";
-
-type IntoStringUnion<T> = {[K in keyof T]: T[K] extends string ? TLiteral<T[K]>: never }
-
-function StringUnion<T extends string[]>(values: [...T]): TUnion<IntoStringUnion<T>> {
-    return { enum: values } as any
-}
+import { Type } from "@sinclair/typebox";
+import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
 
 ${Object.keys(props)
   .map(
@@ -138,5 +132,11 @@ ${Object.keys(props)
   },
   {
     component: "Menu",
+  },
+  {
+    component: "Dropdown",
+  },
+  {
+    component: "Space",
   },
 ].forEach(generate);

@@ -211,11 +211,52 @@ ReactDOM.render(
             ],
           },
           {
-            id: "text_1",
+            id: "toolbar",
+            type: "arco/v1/space",
+            properties: {},
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "content",
+                    slot: "content",
+                  },
+                },
+              },
+              {
+                type: "core/v1/style",
+                properties: {
+                  styleSlot: "content",
+                  style: "padding: 20px;",
+                },
+              },
+            ],
+          },
+          {
+            id: "create_user_button",
+            type: "arco/v1/button",
+            properties: {
+              type: "primary",
+            },
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "toolbar",
+                    slot: "content",
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: "create_user",
             type: "core/v1/text",
             properties: {
               value: {
-                raw: "content",
+                raw: "创建用户",
                 format: "plain",
               },
             },
@@ -224,8 +265,91 @@ ReactDOM.render(
                 type: "core/v1/slot",
                 properties: {
                   container: {
-                    id: "content",
+                    id: "create_user_button",
                     slot: "content",
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: "more_user_operation_dropdown",
+            type: "arco/v1/dropdown",
+            properties: {},
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "toolbar",
+                    slot: "content",
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: "more_user_operation_button",
+            type: "arco/v1/button",
+            properties: {},
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "more_user_operation_dropdown",
+                    slot: "trigger",
+                  },
+                },
+              },
+              {
+                type: "core/v1/style",
+                properties: {
+                  styleSlot: "content",
+                  style: "margin-left: 10px;",
+                },
+              },
+            ],
+          },
+          {
+            id: "more_user_operation",
+            type: "core/v1/text",
+            properties: {
+              value: {
+                raw: "更多操作",
+                format: "plain",
+              },
+            },
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "more_user_operation_button",
+                    slot: "content",
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: "more_user_operation_list",
+            type: "arco/v1/menu",
+            properties: {
+              items: [
+                {
+                  key: "op1",
+                  text: "op1",
+                },
+              ],
+            },
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "more_user_operation_dropdown",
+                    slot: "list",
                   },
                 },
               },
