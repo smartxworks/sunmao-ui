@@ -2,6 +2,17 @@
 
 import { ComponentMetadata } from "@sunmao-ui/core/lib/metadata";
 import { ComponentImplementationProps } from "@sunmao-ui/runtime";
+import { TUnion, TLiteral } from "@sinclair/typebox";
+
+export type IntoStringUnion<T> = {
+  [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
+};
+
+export function StringUnion<T extends string[]>(
+  values: [...T]
+): TUnion<IntoStringUnion<T>> {
+  return { enum: values } as any;
+}
 
 export const FALLBACK_METADATA: ComponentMetadata = {
   name: "",

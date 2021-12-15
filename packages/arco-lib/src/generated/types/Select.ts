@@ -1,11 +1,6 @@
 
-import { Type, TUnion, TLiteral } from "@sinclair/typebox";
-
-type IntoStringUnion<T> = {[K in keyof T]: T[K] extends string ? TLiteral<T[K]>: never }
-
-function StringUnion<T extends string[]>(values: [...T]): TUnion<IntoStringUnion<T>> {
-    return { enum: values } as any
-}
+import { Type } from "@sinclair/typebox";
+import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
 
 export const SelectPropsSchema = {
   'inputValue': Type.Optional(Type.String()),

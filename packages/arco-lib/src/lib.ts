@@ -5,6 +5,8 @@ import { Header, Content, Footer, Sider, Layout } from "./components/Layout";
 import { Image } from "./components/Image";
 import { Select } from "./components/Select";
 import { Menu } from "./components/Menu";
+import { Dropdown } from "./components/Dropdown";
+import { Space } from "./components/Space";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -20,6 +22,8 @@ const components: Component[] = [
   Image,
   Select,
   Menu,
+  Dropdown,
+  Space,
 ];
 const traits: Trait[] = [];
 const modules: Module[] = [];
