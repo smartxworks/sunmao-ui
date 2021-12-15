@@ -17,7 +17,7 @@ export class SchemaValidator implements ISchemaValidator {
   private traitRules: TraitValidatorRule[] = [];
   private componentRules: ComponentValidatorRule[] = [];
   private allComponentsRules: AllComponentsValidatorRule[] = [];
-  private componentIdSpecMap: Record<string, RuntimeComponentSpec> = {}
+  private componentIdSpecMap: Record<string, RuntimeComponentSpec> = {};
   private ajv!: Ajv;
   private validatorMap!: ValidatorMap;
 
@@ -43,9 +43,9 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   validate(components: ApplicationComponent[]) {
-    this.genComponentIdSpecMap(components)
-    console.log('genComponentIdSpecMap', this.componentIdSpecMap)
-    console.log('validators', this.validatorMap)
+    this.genComponentIdSpecMap(components);
+    console.log('genComponentIdSpecMap', this.componentIdSpecMap);
+    console.log('validators', this.validatorMap);
     this.result = [];
     const t1 = performance.now();
     const baseContext = {
@@ -53,8 +53,8 @@ export class SchemaValidator implements ISchemaValidator {
       validators: this.validatorMap,
       registry: this.registry,
       componentIdSpecMap: this.componentIdSpecMap,
-      ajv: this.ajv
-    }
+      ajv: this.ajv,
+    };
     this.allComponentsRules.forEach(rule => {
       const r = rule.validate(baseContext);
       if (r.length > 0) {
@@ -65,7 +65,7 @@ export class SchemaValidator implements ISchemaValidator {
       components.forEach(component => {
         const r = rule.validate({
           component,
-          ...baseContext
+          ...baseContext,
         });
         if (r.length > 0) {
           this.result = this.result.concat(r);
@@ -78,7 +78,7 @@ export class SchemaValidator implements ISchemaValidator {
           const r = rule.validate({
             trait,
             component,
-            ...baseContext
+            ...baseContext,
           });
           if (r.length > 0) {
             this.result = this.result.concat(r);
