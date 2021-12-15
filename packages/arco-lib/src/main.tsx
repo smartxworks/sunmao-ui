@@ -355,6 +355,22 @@ ReactDOM.render(
               },
             ],
           },
+          {
+            id: "user_search",
+            type: "arco/v1/input",
+            properties: {},
+            traits: [
+              {
+                type: "core/v1/slot",
+                properties: {
+                  container: {
+                    id: "toolbar",
+                    slot: "content",
+                  },
+                },
+              },
+            ],
+          },
         ],
       },
     }}

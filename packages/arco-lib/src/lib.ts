@@ -7,6 +7,7 @@ import { Select } from "./components/Select";
 import { Menu } from "./components/Menu";
 import { Dropdown } from "./components/Dropdown";
 import { Space } from "./components/Space";
+import { Input } from "./components/Input";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -24,6 +25,7 @@ const components: Component[] = [
   Menu,
   Dropdown,
   Space,
+  Input,
 ];
 const traits: Trait[] = [];
 const modules: Module[] = [];
