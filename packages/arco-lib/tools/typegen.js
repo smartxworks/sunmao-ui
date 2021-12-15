@@ -139,4 +139,17 @@ ${Object.keys(props)
   {
     component: "Space",
   },
+  {
+    component: "Input",
+    pick: [
+      "allowClear",
+      "disabled",
+      "readOnly",
+      "defaultValue",
+      "placeholder",
+      "error",
+      "size",
+      "showWordLimit",
+    ],
+  },
 ].forEach(generate);
