@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
 import { FieldProps, getDisplayLabel } from './fields';
+import { widgets } from './widgets/widgets';
 import StringField from './StringField';
 import ObjectField from './ObjectField';
 import ArrayField from './ArrayField';
@@ -64,7 +65,7 @@ type Props = FieldProps & {
 };
 
 const SchemaField: React.FC<Props> = props => {
-  const { schema, label, formData, onChange } = props;
+  const { schema, label, formData, onChange, registry } = props;
 
   if (isEmpty(schema)) {
     return null;
@@ -72,7 +73,12 @@ const SchemaField: React.FC<Props> = props => {
 
   let Component = UnsupportedField;
 
-  if (schema.type === 'object') {
+  // customize widgets
+  if (schema.widget && widgets[schema.widget]) {
+    Component = widgets[schema.widget];
+  }
+  // type fields
+  else if (schema.type === 'object') {
     Component = ObjectField;
   } else if (schema.type === 'string') {
     Component = StringField;
@@ -94,7 +100,12 @@ const SchemaField: React.FC<Props> = props => {
 
   return (
     <DefaultTemplate label={label} displayLabel={displayLabel}>
-      <Component schema={schema} formData={formData} onChange={onChange} />
+      <Component
+        schema={schema}
+        formData={formData}
+        onChange={onChange}
+        registry={registry}
+      />
     </DefaultTemplate>
   );
 };

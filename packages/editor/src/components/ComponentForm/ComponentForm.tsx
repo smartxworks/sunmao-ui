@@ -134,6 +134,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
                 })
               );
             }}
+            registry={registry}
           />
         </VStack>
       </VStack>
