@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import {
   Badge,
+  Button,
   HStack,
   IconButton,
   Table,
@@ -40,6 +41,26 @@ export const WarningArea: React.FC = observer(() => {
     });
   }, [isCollapsed, editorStore.validateResult]);
 
+  const savedBadge = useMemo(() => {
+    return <Badge colorScheme="green">Saved</Badge>;
+  }, []);
+
+  const unsaveBadge = useMemo(() => {
+    return (
+      <HStack>
+        <Button
+          colorScheme="red"
+          variant="ghost"
+          size="sm"
+          onClick={() => editorStore.saveCurrentComponents()}
+        >
+          Save anyway
+        </Button>
+        <Badge colorScheme="red">Unsave</Badge>
+      </HStack>
+    );
+  }, []);
+
   return (
     <VStack
       position="absolute"
@@ -57,13 +78,16 @@ export const WarningArea: React.FC = observer(() => {
             {editorStore.validateResult.length}
           </Badge>
         </Text>
-        <IconButton
-          aria-label="show errors"
-          size="sm"
-          variant="ghost"
-          icon={isCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
-          onClick={() => setIsCollapsed(prev => !prev)}
-        />
+        <HStack>
+          {editorStore.isSaved ? savedBadge : unsaveBadge}
+          <IconButton
+            aria-label="show errors"
+            size="sm"
+            variant="ghost"
+            icon={isCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
+            onClick={() => setIsCollapsed(prev => !prev)}
+          />
+        </HStack>
       </HStack>
       <Table
         size="sm"
