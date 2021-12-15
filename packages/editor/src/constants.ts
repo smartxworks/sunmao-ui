@@ -155,7 +155,7 @@ export const UserCenterApp: Application = {
         traits: [
           {
             type: 'core/v1/slot',
-            properties: { container: { id: 'root', slot: 'root' } },
+            properties: { container: { id: 'root', slot: 'root233' } },
           },
         ],
       },
@@ -702,7 +702,7 @@ export const UserCenterApp: Application = {
       {
         id: 'userInfoHeader',
         type: 'chakra_ui/v1/hstack',
-        properties: { spacing: '24px', align: '', justify: 'space-between' },
+        properties: { spacing: '24px', align: true, justify: 'space-between' },
         traits: [
           {
             type: 'core/v1/slot',
@@ -1113,7 +1113,7 @@ export const UserCenterApp: Application = {
         type: 'chakra_ui/v1/list',
         properties: {
           listData:
-            "{{usersTable.sele}",
+            "{{usersTable.sele}}",
           template: {
             id: 'RoleListItem-{{$i}}',
             type: 'userCenter/v1/infoRow',

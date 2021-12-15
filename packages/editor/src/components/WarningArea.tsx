@@ -65,7 +65,13 @@ export const WarningArea: React.FC = observer(() => {
           onClick={() => setIsCollapsed(prev => !prev)}
         />
       </HStack>
-      <Table size="sm" width="full" display={isCollapsed ? 'none' : 'table'}>
+      <Table
+        size="sm"
+        width="full"
+        display={isCollapsed ? 'none' : 'block'}
+        maxHeight="200px"
+        overflow="auto"
+      >
         <Thead>
           <Tr>
             <Th>Component Id</Th>
@@ -74,9 +80,7 @@ export const WarningArea: React.FC = observer(() => {
             <Th>Message</Th>
           </Tr>
         </Thead>
-        <Tbody maxHeight="100px" overflow="auto">
-          {errorItems}
-        </Tbody>
+        <Tbody>{errorItems}</Tbody>
       </Table>
     </VStack>
   );

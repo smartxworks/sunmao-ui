@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ApplicationComponent, RuntimeComponentSpec } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
 import {
@@ -17,11 +17,12 @@ export class SchemaValidator implements ISchemaValidator {
   private traitRules: TraitValidatorRule[] = [];
   private componentRules: ComponentValidatorRule[] = [];
   private allComponentsRules: AllComponentsValidatorRule[] = [];
+  private componentIdSpecMap: Record<string, RuntimeComponentSpec> = {}
   private ajv!: Ajv;
   private validatorMap!: ValidatorMap;
 
-  constructor(registry: Registry) {
-    this.initAjv(registry);
+  constructor(private registry: Registry) {
+    this.initAjv();
     this.addRules(rules);
   }
 
@@ -42,10 +43,20 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   validate(components: ApplicationComponent[]) {
+    this.genComponentIdSpecMap(components)
+    console.log('genComponentIdSpecMap', this.componentIdSpecMap)
+    console.log('validators', this.validatorMap)
     this.result = [];
     const t1 = performance.now();
+    const baseContext = {
+      components,
+      validators: this.validatorMap,
+      registry: this.registry,
+      componentIdSpecMap: this.componentIdSpecMap,
+      ajv: this.ajv
+    }
     this.allComponentsRules.forEach(rule => {
-      const r = rule.validate({ components: components, validators: this.validatorMap });
+      const r = rule.validate(baseContext);
       if (r.length > 0) {
         this.result = this.result.concat(r);
       }
@@ -54,8 +65,7 @@ export class SchemaValidator implements ISchemaValidator {
       components.forEach(component => {
         const r = rule.validate({
           component,
-          components: components,
-          validators: this.validatorMap,
+          ...baseContext
         });
         if (r.length > 0) {
           this.result = this.result.concat(r);
@@ -68,8 +78,7 @@ export class SchemaValidator implements ISchemaValidator {
           const r = rule.validate({
             trait,
             component,
-            components: components,
-            validators: this.validatorMap,
+            ...baseContext
           });
           if (r.length > 0) {
             this.result = this.result.concat(r);
@@ -82,6 +91,12 @@ export class SchemaValidator implements ISchemaValidator {
     return this.result;
   }
 
+  genComponentIdSpecMap(components: ApplicationComponent[]) {
+    components.forEach(c => {
+      this.componentIdSpecMap[c.id] = this.registry.getComponentByType(c.type);
+    });
+  }
+
   fix() {
     // this.result.forEach(r => {
     //   r.fix();
@@ -89,19 +104,19 @@ export class SchemaValidator implements ISchemaValidator {
     // return components;
   }
 
-  private initAjv(registry: Registry) {
+  private initAjv() {
     this.ajv = new Ajv({}).addKeyword('kind').addKeyword('modifier');
 
     this.validatorMap = {
       components: {},
       traits: {},
     };
-    registry.getAllComponents().forEach(c => {
+    this.registry.getAllComponents().forEach(c => {
       this.validatorMap.components[`${c.version}/${c.metadata.name}`] = this.ajv.compile(
         c.spec.properties
       );
     });
-    registry.getAllTraits().forEach(t => {
+    this.registry.getAllTraits().forEach(t => {
       this.validatorMap.traits[`${t.version}/${t.metadata.name}`] = this.ajv.compile(
         t.spec.properties
       );

@@ -1,5 +1,6 @@
-import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
-import { ValidateFunction } from 'ajv';
+import { ApplicationComponent, ComponentTrait, RuntimeComponentSpec } from '@sunmao-ui/core';
+import { Registry } from '@sunmao-ui/runtime';
+import Ajv, { ValidateFunction } from 'ajv';
 
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
@@ -8,6 +9,10 @@ export interface ValidatorMap {
 
 interface BaseValidateContext {
   validators: ValidatorMap;
+  registry: Registry;
+  components: ApplicationComponent[];
+  componentIdSpecMap: Record<string, RuntimeComponentSpec>;
+  ajv: Ajv
 }
 
 export interface ComponentValidateContext extends BaseValidateContext {
@@ -20,9 +25,7 @@ export interface TraitValidateContext extends BaseValidateContext {
   component: ApplicationComponent;
   components: ApplicationComponent[];
 }
-export interface AllComponentsValidateContext extends BaseValidateContext {
-  components: ApplicationComponent[];
-}
+export type AllComponentsValidateContext = BaseValidateContext;
 
 export type ValidateContext =
   | ComponentValidateContext
@@ -66,9 +69,9 @@ export interface ISchemaValidator {
 }
 
 export interface ValidateErrorResult {
-  componentId: string,
-  traitType?: string,
-  property?: string,
+  componentId: string;
+  traitType?: string;
+  property?: string;
   message: string;
-  fix?: () => void
+  fix?: () => void;
 }
