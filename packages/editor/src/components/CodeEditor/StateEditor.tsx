@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import CodeMirror from 'codemirror';
 import { Box } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
@@ -47,7 +47,7 @@ export const StateEditor: React.FC<{ code: string }> = ({ code }) => {
 
   return (
     <ErrorBoundary>
-      <Box css={style} ref={wrapperEl} height="100%"></Box>
+      <Box className={style} ref={wrapperEl} height="100%"></Box>
     </ErrorBoundary>
   );
 };

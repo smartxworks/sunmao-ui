@@ -1,7 +1,7 @@
 import React from 'react';
 import { flatten } from 'lodash-es';
 import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
-import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
+import { EmotionJSX } from '@emotion/css/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
 import { parseType, parseTypeBox } from '@sunmao-ui/runtime';
 import { eventBus } from '../../eventBus';

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
 import { observer } from 'mobx-react-lite';
 import { editorStore } from '../EditorStore';
@@ -100,7 +100,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
       onClick={onClickWrapper}
       onMouseEnter={onMouseEnterWrapper}
       onMouseLeave={onMouseLeaveWrapper}
-      css={style}
+      className={style}
     >
       {props.children}
       {borderColor === 'transparent' ? undefined : (
@@ -132,8 +132,8 @@ const outlineMaskTextStyle = css`
 
 function OutlineMask({ color, text }: { color: string; text: string }) {
   return (
-    <div css={outlineMaskStyle} style={{ borderColor: color }}>
-      <Text css={outlineMaskTextStyle} style={{ background: color }}>
+    <div className={outlineMaskStyle} style={{ borderColor: color }}>
+      <Text className={outlineMaskTextStyle} style={{ background: color }}>
         {text}
       </Text>
     </div>
