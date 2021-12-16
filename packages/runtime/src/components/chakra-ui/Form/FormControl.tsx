@@ -10,7 +10,7 @@ import {
   HStack,
   Text,
 } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { watch } from '../../../utils/watchReactivity';
 import { ComponentImplementation } from '../../../services/registry';
 import Slot from '../../_internal/Slot';
@@ -107,7 +107,7 @@ const FormControlImpl: ComponentImplementation<{
       display="flex"
       flexDirection="column"
       alignItems="end"
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
     >

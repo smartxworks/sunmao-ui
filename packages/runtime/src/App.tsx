@@ -5,7 +5,6 @@ import { ImplWrapper } from './services/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
-import { css } from '@emotion/react';
 
 // inject modules to App
 export function genApp(services: UIServices) {
@@ -39,7 +38,7 @@ export const App: React.FC<AppProps> = props => {
   );
 
   return (
-    <div className="App" css={css`height: 100vh; overflow: auto`}>
+    <div className="App" style={{height: '100vh', overflow: 'auto'}}>
       {topLevelComponents.map(c => {
         return (
           <ImplWrapper

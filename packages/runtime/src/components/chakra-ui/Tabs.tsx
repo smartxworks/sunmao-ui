@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { createComponent } from '@sunmao-ui/core';
 import { Tabs as BaseTabs, TabList, Tab, TabPanels, TabPanel, Text } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
@@ -30,7 +30,7 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
         {tabNames.map((name, idx) => (
           <Tab
             key={idx}
-            css={css`
+            className={css`
               ${customStyle?.tabItem}
             `}
           >
@@ -43,7 +43,7 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
           return (
             <TabPanel
               key={idx}
-              css={css`
+              className={css`
                 ${customStyle?.tabContent}
               `}
             >

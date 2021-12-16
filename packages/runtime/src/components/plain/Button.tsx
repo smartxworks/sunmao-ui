@@ -25,7 +25,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, []);
 
   return (
-    <button ref={ref} onClick={callbackMap?.onClick} css={`${customStyle?.content}`}>
+    <button ref={ref} onClick={callbackMap?.onClick} className={`${customStyle?.content}`}>
       <Text value={text} />
     </button>
   );

@@ -5,7 +5,7 @@ import { ComponentImplementation } from '../../services/registry';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 
 const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
   listData,
@@ -42,7 +42,7 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseList
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
     >

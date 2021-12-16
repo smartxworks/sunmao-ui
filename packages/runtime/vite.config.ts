@@ -5,20 +5,7 @@ import { virtualExamplePlugin } from '@sunmao-ui/vite-plugins';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [
-          [
-            '@babel/plugin-transform-react-jsx',
-            {
-              throwIfNamespace: false, // defaults to true
-              runtime: 'automatic',
-              importSource: '@emotion/react',
-            },
-          ],
-        ],
-      },
-    }),
+    react(),
     virtualExamplePlugin(),
   ],
   define: {

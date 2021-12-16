@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { createComponent } from '@sunmao-ui/core';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { Static, Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
 import Text, { TextPropertySchema } from '../_internal/Text';
@@ -31,7 +31,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
 
   return (
     <BaseButton
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
       {...{ colorScheme, isLoading }}

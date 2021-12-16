@@ -5,7 +5,7 @@ import { Radio as BaseRadio } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -47,7 +47,7 @@ const Radio: ComponentImplementation<Static<typeof PropsSchema>> = ({
       size={size}
       spacing={spacing}
       colorScheme={colorScheme}
-      css={css`${customStyle?.content}`}
+      className={css`${customStyle?.content}`}
     >
       <Text value={text} />
     </BaseRadio>

@@ -1,5 +1,5 @@
 import { Link } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
@@ -16,7 +16,7 @@ const LinkImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       href={href}
       isExternal={isExternal}
       color="blue.500"
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
     >
