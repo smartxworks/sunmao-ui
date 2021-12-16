@@ -19,7 +19,7 @@ const Tabs: ComponentImplementation<Static<typeof PropsSchema>> = ({
     mergeState({ selectedTabIndex });
   }, [selectedTabIndex]);
 
-  const slotComponents = getSlots(slotsMap, 'content')
+  const slotComponents = getSlots(slotsMap, 'content', {})
   const placeholder = <Text color='gray'>Slot content is empty.Please drag component to this slot.</Text>
   return (
     <BaseTabs
