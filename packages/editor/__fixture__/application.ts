@@ -82,9 +82,13 @@ export const ApplicationFixture: Record<string, Application> = {
             {
               type: 'core/v1/style',
               properties: {
-                styleSlot: 'content',
-                style: "{{!usersTable.selectedItem ? 'display: none' : ''}}",
-              },
+                styles: [
+                  {
+                    styleSlot: 'content',
+                    style: "{{!usersTable.selectedItem ? 'display: none' : ''}}",
+                  },
+                ]
+              }
             },
           ],
         },
@@ -110,7 +114,7 @@ export const ApplicationFixture: Record<string, Application> = {
             },
             {
               type: 'core/v1/style',
-              properties: { styleSlot: 'content', style: 'padding: 0; border: none' },
+              properties: { styles: [{styleSlot: 'content', style: 'padding: 0; border: none' }]},
             },
           ],
         },
@@ -174,7 +178,7 @@ export const ApplicationFixture: Record<string, Application> = {
             },
             {
               type: 'core/v1/style',
-              properties: { styleSlot: 'content', style: 'padding: 0; border: none' },
+              properties: { styles: [{styleSlot: 'content', style: 'padding: 0; border: none' }]},
             },
           ],
         },
@@ -241,7 +245,6 @@ export const ApplicationFixture: Record<string, Application> = {
               type: 'core/v1/slot',
               properties: { container: { id: 'hstack4', slot: 'content' } },
             },
-            { type: 'core/v1/style', properties: { string: { kind: {}, type: {} } } },
           ],
         },
         {
@@ -255,7 +258,7 @@ export const ApplicationFixture: Record<string, Application> = {
             },
             {
               type: 'core/v1/style',
-              properties: { styleSlot: 'content', style: 'padding: 0; border: none' },
+              properties: { styles: [{styleSlot: 'content', style: 'padding: 0; border: none' }]},
             },
           ],
         },
@@ -281,7 +284,7 @@ export const ApplicationFixture: Record<string, Application> = {
             },
             {
               type: 'core/v1/style',
-              properties: { styleSlot: 'content', style: 'padding: 0; border: none' },
+              properties: { styles: [{styleSlot: 'content', style: 'padding: 0; border: none' }]},
             },
           ],
         },
@@ -329,7 +332,7 @@ export const ApplicationFixture: Record<string, Application> = {
             },
             {
               type: 'core/v1/style',
-              properties: { styleSlot: 'content', style: 'padding: 0; border: none' },
+              properties: { styles: [{styleSlot: 'content', style: 'padding: 0; border: none' }]},
             },
           ],
         },
