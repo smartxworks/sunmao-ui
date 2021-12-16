@@ -1,5 +1,5 @@
 import { createComponent } from '@sunmao-ui/core';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { Static, Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
@@ -30,7 +30,7 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
       border="1px solid"
       borderColor="gray.200"
       borderRadius="4"
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
       {...{ direction, wrap, align, justify, spacing }}

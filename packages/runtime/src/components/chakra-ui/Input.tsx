@@ -10,7 +10,7 @@ import {
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 
 const AppendElementPropertySchema = Type.Union([
   Type.Object({
@@ -83,7 +83,7 @@ const Input: ComponentImplementation<Static<typeof PropsSchema>> = ({
         isDisabled={isDisabled}
         isRequired={isRequired}
         onChange={onChange}
-        css={css`${customStyle?.content}`}
+        className={css`${customStyle?.content}`}
       />
       {right ? (
         right.type === 'addon' ? (
