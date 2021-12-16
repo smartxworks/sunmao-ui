@@ -1,5 +1,5 @@
 import { Image as BaseImage } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
@@ -87,7 +87,7 @@ const Image: ComponentImplementation<Static<typeof PropsSchema>> = ({
       `;
   return (
     <BaseImage
-      css={style}
+      className={style}
       src={src}
       alt={alt}
       objectFit={objectFit}

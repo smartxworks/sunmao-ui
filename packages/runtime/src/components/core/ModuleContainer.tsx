@@ -3,7 +3,6 @@ import { Static, Type } from '@sinclair/typebox';
 import { ComponentImplementation } from '../../services/registry';
 import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
-import { css } from '@emotion/react';
 
 type Props = Static<typeof RuntimeModuleSchema>;
 
@@ -13,8 +12,7 @@ const ModuleContainer: ComponentImplementation<Props> = ({
   properties,
   handlers,
   services,
-  app,
-  customStyle
+  app
 }) => {
   if (!type) {
     return <span>Please choose a module to render.</span>
@@ -31,7 +29,6 @@ const ModuleContainer: ComponentImplementation<Props> = ({
       handlers={handlers}
       services={services}
       app={app}
-      css={css`${customStyle?.content}`}
     />
   );
 };
@@ -60,7 +57,7 @@ export default {
       state: {},
       methods: [],
       slots: [],
-      styleSlots: ['content'],
+      styleSlots: [],
       events: [],
     },
   }),

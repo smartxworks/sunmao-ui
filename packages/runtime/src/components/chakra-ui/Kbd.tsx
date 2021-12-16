@@ -4,7 +4,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../../services/registry';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 
 const Kbd: ComponentImplementation<Static<typeof PropsSchema>> = ({
   text,
@@ -16,7 +16,7 @@ const Kbd: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, [text.raw]);
 
   return (
-    <BaseKbd css={css`${customStyle?.content}`}>
+    <BaseKbd className={css`${customStyle?.content}`}>
       <Text value={text} />
     </BaseKbd>
   );

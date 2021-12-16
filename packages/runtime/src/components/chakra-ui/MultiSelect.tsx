@@ -4,7 +4,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseMultiSelect } from 'chakra-react-select';
 import { ComponentImplementation } from '../../services/registry';
 import { Box } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -34,7 +34,7 @@ const MultiSelect: ComponentImplementation<Static<typeof PropsSchema>> = ({
   return (
     <Box
       width="full"
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
     >
