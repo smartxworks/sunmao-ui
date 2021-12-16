@@ -24,8 +24,6 @@ export const StyleTraitForm: React.FC<Props> = props => {
   if (!styleSlots.length) {
     return null;
   }
-  console.log('styleSlots', styleSlots)
-  console.log('styles', styles)
   return (
     <VStack width="full">
       <Box fontWeight="bold" textAlign="left" width="100%">
@@ -33,7 +31,6 @@ export const StyleTraitForm: React.FC<Props> = props => {
       </Box>
       {styleSlots.map(styleSlot => {
         const styleTrait = styles.find(s => s.properties.styleSlot === styleSlot);
-        console.log('styleTrait', styleTrait)
         if (!styleTrait) {
           return null;
         }
