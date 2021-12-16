@@ -177,7 +177,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
     <Box width="full" position="relative">
       <strong>Fetch</strong>
       <HStack width="full" justify="space-between">
-        <VStack css={formWrapperCSS}>
+        <VStack className={formWrapperCSS}>
           {urlField}
           {methodField}
           {bodyField}
