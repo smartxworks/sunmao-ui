@@ -35,7 +35,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     });
   });
   return (
-    <VStack key={trait.type} css={formWrapperCSS}>
+    <VStack key={trait.type} className={formWrapperCSS}>
       <HStack width="full" justifyContent="space-between">
         <strong>{trait.type}</strong>
         <IconButton
