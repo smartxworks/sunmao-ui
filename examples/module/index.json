@@ -21,7 +21,7 @@
           "value": "input.value"
         }
       },
-      "components": [
+      "impl": [
         {
           "id": "hstack",
           "type": "chakra_ui/v1/hstack",
