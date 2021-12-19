@@ -67,7 +67,7 @@ export type ImplementedRuntimeTrait = RuntimeTraitSpec & {
 };
 
 export type ImplementedRuntimeModule = RuntimeModuleSpec & {
-  components: ApplicationComponent[];
+  impl: ApplicationComponent[];
 };
 
 export class Registry {
