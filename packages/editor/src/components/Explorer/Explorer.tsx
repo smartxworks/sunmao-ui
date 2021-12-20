@@ -1,4 +1,5 @@
 import React from 'react';
+import ErrorBoundary from '../ErrorBoundary';
 import { ExplorerForm } from './ExplorerForm/ExplorerForm';
 import { ExplorerTree } from './ExplorerTree';
 
@@ -18,13 +19,15 @@ export const Explorer: React.FC = () => {
   };
   if (isEditingMode) {
     return (
-      <ExplorerForm
-        formType={formType}
-        version={currentVersion}
-        name={currentName}
-        onBack={onBack}
-      />
+      <ErrorBoundary>
+        <ExplorerForm
+          formType={formType}
+          version={currentVersion}
+          name={currentName}
+          onBack={onBack}
+        />
+      </ErrorBoundary>
     );
   }
-  return <ExplorerTree onEdit={onEdit} />;
+  return <ErrorBoundary><ExplorerTree onEdit={onEdit} /></ErrorBoundary>;
 };

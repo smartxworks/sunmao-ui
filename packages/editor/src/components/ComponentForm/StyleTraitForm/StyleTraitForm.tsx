@@ -24,7 +24,6 @@ export const StyleTraitForm: React.FC<Props> = props => {
   if (!styleSlots.length) {
     return null;
   }
-
   return (
     <VStack width="full">
       <Box fontWeight="bold" textAlign="left" width="100%">

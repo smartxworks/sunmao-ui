@@ -8,6 +8,7 @@ import { DropComponentWrapper } from './DropComponentWrapper';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation as genOperation } from '../../operations';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
+import ErrorBoundary from '../ErrorBoundary';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
@@ -22,8 +23,21 @@ type Props = {
 export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, registry } = props;
 
+  const [realComponents, dataSources] = useMemo(() => {
+    const _realComponent: ApplicationComponent[] = [];
+    const _datasources: ApplicationComponent[] = [];
+    components.forEach(c => {
+      if (c.type === 'core/v1/dummy') {
+        _datasources.push(c);
+      } else {
+        _realComponent.push(c);
+      }
+    });
+    return [_realComponent, _datasources];
+  }, [components]);
+
   const componentEles = useMemo(() => {
-    const { topLevelComponents, childrenMap } = resolveApplicationComponents(components)
+    const { topLevelComponents, childrenMap } = resolveApplicationComponents(realComponents);
 
     return topLevelComponents.map(c => (
       <ComponentTree
@@ -35,10 +49,9 @@ export const StructureTree: React.FC<Props> = props => {
         registry={registry}
       />
     ));
-  }, [components, selectedComponentId, onSelectComponent, registry]);
+  }, [realComponents, selectedComponentId, onSelectComponent, registry]);
 
   const dataSourceEles = useMemo(() => {
-    const dataSources = components.filter(c => c.type === 'core/v1/dummy');
     return dataSources.map(dummy => {
       const onClickRemove = () => {
         eventBus.send(
@@ -50,6 +63,7 @@ export const StructureTree: React.FC<Props> = props => {
       };
       return (
         <ComponentItemView
+          id={dummy.id}
           key={dummy.id}
           title={dummy.id}
           isSelected={dummy.id === selectedComponentId}
@@ -61,7 +75,7 @@ export const StructureTree: React.FC<Props> = props => {
         />
       );
     });
-  }, [components, selectedComponentId, onSelectComponent, registry]);
+  }, [dataSources, selectedComponentId, onSelectComponent, registry]);
 
   return (
     <VStack spacing="2" padding="5" alignItems="start">
@@ -79,7 +93,7 @@ export const StructureTree: React.FC<Props> = props => {
 };
 
 function RootItem() {
-  const onDrop = (creatingComponent: string) => {
+  const onCreateComponent = (creatingComponent: string) => {
     eventBus.send(
       'operation',
       genOperation('createComponent', {
@@ -87,17 +101,35 @@ function RootItem() {
       })
     );
   };
+  const onMoveComponent = (movingComponent: string) => {
+    if (movingComponent === 'root') return;
+    eventBus.send(
+      'operation',
+      genOperation('moveComponent', {
+        fromId: movingComponent,
+        toId: '__root__',
+        slot: '__root__',
+      })
+    );
+  };
+
   return (
-    <Box width="full">
-      <DropComponentWrapper onDrop={onDrop}>
-        <ComponentItemView
-          title="Root"
-          isSelected={false}
-          onClick={() => undefined}
-          isDroppable={true}
-          noChevron={true}
-        />
-      </DropComponentWrapper>
-    </Box>
+    <ErrorBoundary>
+      <Box width="full">
+        <DropComponentWrapper
+          onCreateComponent={onCreateComponent}
+          onMoveComponent={onMoveComponent}
+        >
+          <ComponentItemView
+            id={'root'}
+            title="Root"
+            isSelected={false}
+            onClick={() => undefined}
+            isDroppable={true}
+            noChevron={true}
+          />
+        </DropComponentWrapper>
+      </Box>
+    </ErrorBoundary>
   );
 }

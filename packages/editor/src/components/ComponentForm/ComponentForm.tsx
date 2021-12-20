@@ -13,6 +13,7 @@ import SchemaField from './JsonSchemaForm/SchemaField';
 import { genOperation } from '../../operations';
 import { editorStore } from '../../EditorStore';
 import { observer } from 'mobx-react-lite';
+import ErrorBoundary from '../ErrorBoundary';
 import { StyleTraitForm } from './StyleTraitForm';
 
 type Props = {
@@ -98,50 +99,57 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     );
   };
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    // prevent form keyboard events to accidentally trigger operation shortcut
+    e.stopPropagation();
+  };
+
   return (
-    <VStack p="2" spacing="2" background="gray.50">
-      <FormControl>
-        <FormLabel>
-          <strong>Component ID</strong>
-        </FormLabel>
-        <Input
-          key={selectedComponent.id}
-          defaultValue={selectedComponent.id}
-          background="white"
-          onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
-        />
-      </FormControl>
-      <VStack width="full" alignItems="start">
-        <strong>Properties</strong>
-        <VStack
-          width="full"
-          padding="2"
-          background="white"
-          border="1px solid"
-          borderColor="gray.200"
-          borderRadius="4"
-        >
-          <SchemaField
-            schema={cImpl.spec.properties}
-            label=""
-            formData={properties}
-            onChange={newFormData => {
-              eventBus.send(
-                'operation',
-                genOperation('modifyComponentProperty', {
-                  componentId: selectedComponentId,
-                  properties: newFormData,
-                })
-              );
-            }}
-            registry={registry}
+    <ErrorBoundary>
+      <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
+        <FormControl>
+          <FormLabel>
+            <strong>Component ID</strong>
+          </FormLabel>
+          <Input
+            key={selectedComponent.id}
+            defaultValue={selectedComponent.id}
+            background="white"
+            onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
           />
+        </FormControl>
+        <VStack width="full" alignItems="start">
+          <strong>Properties</strong>
+          <VStack
+            width="full"
+            padding="2"
+            background="white"
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="4"
+          >
+            <SchemaField
+              schema={cImpl.spec.properties}
+              label=""
+              formData={properties}
+              onChange={newFormData => {
+                eventBus.send(
+                  'operation',
+                  genOperation('modifyComponentProperty', {
+                    componentId: selectedComponentId,
+                    properties: newFormData,
+                  })
+                );
+              }}
+              registry={registry}
+            />
+          </VStack>
         </VStack>
+        <EventTraitForm component={selectedComponent} registry={registry} />
+        <FetchTraitForm component={selectedComponent} registry={registry} />
+        <StyleTraitForm component={selectedComponent} registry={registry} />
+        <GeneralTraitFormList component={selectedComponent} registry={registry} />
       </VStack>
-      <EventTraitForm component={selectedComponent} registry={registry} />
-      <FetchTraitForm component={selectedComponent} registry={registry} />
-      <StyleTraitForm component={selectedComponent} registry={registry} />
-      <GeneralTraitFormList component={selectedComponent} registry={registry} />
-    </VStack>
+    </ErrorBoundary>
   );
 });
