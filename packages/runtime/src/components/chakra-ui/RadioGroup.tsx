@@ -4,7 +4,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { RadioGroup as BaseRadioGroup } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -31,7 +31,7 @@ const RadioGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
     <BaseRadioGroup
       value={value}
       onChange={val => setValue(isNumerical ? Number(val) : val)}
-      css={css`${customStyle?.content}`}
+      className={css`${customStyle?.content}`}
     >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseRadioGroup>

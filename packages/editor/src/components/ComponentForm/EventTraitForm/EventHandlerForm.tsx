@@ -168,7 +168,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
 
   return (
     <Box position="relative" width="100%">
-      <VStack css={formWrapperCSS}>
+      <VStack className={formWrapperCSS}>
         {hideEventType ? null : typeField}
         {targetField}
         {methodField}

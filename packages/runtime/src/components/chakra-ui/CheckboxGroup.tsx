@@ -5,7 +5,6 @@ import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
 import { ComponentImplementation } from '../../services/registry';
 import Slot from '../_internal/Slot';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
-import { css } from '@emotion/react';
 
 const DefaultValueSchema = Type.Optional(
   Type.Array(Type.Union([Type.String(), Type.Number()]))
@@ -21,7 +20,6 @@ const CheckboxGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
   isDisabled,
   slotsMap,
   mergeState,
-  customStyle,
 }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
@@ -34,7 +32,6 @@ const CheckboxGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
       defaultValue={defaultValue}
       isDisabled={isDisabled}
       onChange={val => setValue(val)}
-      css={css`${customStyle?.content}`}
     >
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseCheckboxGroup>
@@ -66,7 +63,7 @@ export default {
       state: StateSchema,
       methods: [],
       slots: ['content'],
-      styleSlots: ['content'],
+      styleSlots: [],
       events: [],
     },
   }),

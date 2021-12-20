@@ -1,6 +1,6 @@
 import RGL from 'react-grid-layout';
 import React from 'react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { useResizeDetector } from 'react-resize-detector';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -36,7 +36,7 @@ const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
   };
 
   return (
-    <div ref={ref} css={bgCss}>
+    <div ref={ref} className={bgCss}>
       <RGL
         cols={12}
         compactType={null}

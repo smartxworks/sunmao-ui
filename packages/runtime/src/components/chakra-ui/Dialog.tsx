@@ -86,12 +86,12 @@ const Dialog: ComponentImplementation<Static<typeof PropsSchema>> = ({
       onClose={() => setIsOpen(false)}
       trapFocus={false}
       portalProps={containerRef.current ? portalProps : undefined}
-      css={`
-        ${customStyle?.content}
-      `}
     >
       <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>
-        <AlertDialogContent {...(containerRef.current ? dialogContentProps : {})}>
+        <AlertDialogContent
+          className={`${customStyle?.content}`}
+          {...(containerRef.current ? dialogContentProps : {})}
+        >
           <AlertDialogHeader>{title}</AlertDialogHeader>
           <AlertDialogBody>
             <Slot slotsMap={slotsMap} slot="content" />
