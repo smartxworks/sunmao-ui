@@ -5,6 +5,8 @@ import {
   ModifyComponentIdBranchOperationContext,
   RemoveComponentBranchOperation,
   RemoveComponentBranchOperationContext,
+  MoveComponentBranchOperation,
+  MoveComponentBranchOperationContext,
 } from './branch';
 import {
   AdjustComponentOrderLeafOperation,
@@ -38,6 +40,7 @@ const OperationConstructors: Record<
   modifyTraitProperty: ModifyTraitPropertiesLeafOperation,
   replaceApp: ReplaceAppLeafOperation,
   pasteComponent: PasteComponentLeafOperation,
+  moveComponent: MoveComponentBranchOperation,
 };
 
 type OperationTypes = keyof OperationConfigMaps;
@@ -85,6 +88,10 @@ type OperationConfigMaps = {
   pasteComponent: OperationConfigMap<
     PasteComponentLeafOperation,
     PasteComponentLeafOperationContext
+  >;
+  moveComponent: OperationConfigMap<
+    MoveComponentBranchOperation,
+    MoveComponentBranchOperationContext
   >;
 };
 

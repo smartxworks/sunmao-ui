@@ -24,8 +24,6 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   `;
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.target instanceof Element && e.target.id !== 'keyboard-event-wrapper')
-      return false;
     switch (e.key) {
       case 'Delete':
       case 'Backspace':
