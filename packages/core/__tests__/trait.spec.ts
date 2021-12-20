@@ -29,6 +29,7 @@ describe('trait', () => {
       Object {
         "kind": "Trait",
         "metadata": Object {
+          "description": "",
           "name": "test_trait",
         },
         "parsedVersion": Object {

@@ -41,7 +41,7 @@ export function createComponent(options: ComponentDefinition): RuntimeComponentS
       kind: ('Component' as any),
       parsedVersion: parseVersion(options.version),
       metadata: {
-        description: '',
+        description: options.metadata.description || '',
         isDraggable: true,
         isResizable: true,
         displayName: options.metadata.name,
