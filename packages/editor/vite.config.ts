@@ -7,21 +7,7 @@ import { resolve } from 'path';
 export default defineConfig({
   base: './',
   plugins: [
-    react({
-      babel: {
-        plugins: [
-          [
-            '@babel/plugin-transform-react-jsx',
-            {
-              throwIfNamespace: false, // defaults to true
-              runtime: 'automatic',
-              importSource: '@emotion/react',
-            },
-            'emotion-react',
-          ],
-        ],
-      },
-    }),
+    react(),
     virtualExamplePlugin(),
   ],
   define: {

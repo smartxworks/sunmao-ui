@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { createComponent } from '@sunmao-ui/core';
 import { Button, VStack } from '@chakra-ui/react';
@@ -110,7 +110,7 @@ const FormImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       borderColor="gray.200"
       borderRadius="4"
       spacing="5"
-      css={css`
+      className={css`
         ${customStyle?.content}
       `}
     >

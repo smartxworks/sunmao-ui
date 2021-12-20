@@ -1,7 +1,6 @@
 import React from 'react';
 import { flatten } from 'lodash-es';
 import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
-import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { TSchema } from '@sinclair/typebox';
 import { parseType, parseTypeBox } from '@sunmao-ui/runtime';
 import { eventBus } from '../../eventBus';
@@ -55,7 +54,7 @@ export const renderField = (properties: {
       </FormControl>
     );
   } else {
-    const fieldArray: EmotionJSX.Element[] = flatten(
+    const fieldArray: React.ReactElement[] = flatten(
       Object.keys(value || []).map((childKey, index) => {
         const childValue = (value as any)[childKey];
         return renderField({

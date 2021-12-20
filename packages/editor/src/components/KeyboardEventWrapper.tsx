@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { ApplicationComponent } from '@sunmao-ui/core';
 import React, { useRef } from 'react';
 import { eventBus } from '../eventBus';
@@ -86,7 +86,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   return (
     <Box
       id="keyboard-event-wrapper"
-      css={style}
+      className={style}
       width="100%"
       height="100%"
       onKeyDown={onKeyDown}
