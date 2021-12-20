@@ -39,7 +39,7 @@ export const DefaultNewModule: ImplementedRuntimeModule = {
     events: [],
     properties: {},
   },
-  components: [
+  impl: [
     {
       id: 'text1',
       type: 'core/v1/text',

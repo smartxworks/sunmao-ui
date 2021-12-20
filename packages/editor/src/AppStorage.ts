@@ -76,7 +76,7 @@ export class AppStorage {
           m => m.version === version && m.metadata.name === name
         );
         const newModules = produce(toJS(this.modules), draft => {
-          draft[i].components = components;
+          draft[i].impl = components;
         });
         this.setModules(newModules);
         this.saveModulesInLS();
