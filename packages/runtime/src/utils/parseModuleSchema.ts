@@ -5,7 +5,7 @@ export function parseModuleSchema(
   module: ImplementedRuntimeModule
 ): ImplementedRuntimeModule {
   const ids: string[] = [];
-  module.components.forEach(c => {
+  module.impl.forEach(c => {
     ids.push(c.id);
     if (c.type === 'core/v1/moduleContainer') {
       ids.push(c.properties.id as string);
@@ -36,7 +36,7 @@ export function parseModuleSchema(
     }
   }
 
-  traverse(module.components);
+  traverse(module.impl);
   traverse(module.spec.stateMap);
   return module;
 }

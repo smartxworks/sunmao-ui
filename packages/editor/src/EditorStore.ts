@@ -87,7 +87,7 @@ class EditorStore {
             m.version === this.currentEditingTarget.version &&
             m.metadata.name === this.currentEditingTarget.name
         );
-        return module?.components || [];
+        return module?.impl || [];
       case 'app':
         return this.app.spec.components;
     }
