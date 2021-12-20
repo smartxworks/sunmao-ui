@@ -1,5 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { eventBus } from '../eventBus';
+import { ApplicationModel } from './AppModel/AppModel';
 import { IUndoRedoManager, IOperation, OperationList } from './type';
 
 export class AppModelManager implements IUndoRedoManager {
@@ -19,6 +20,8 @@ export class AppModelManager implements IUndoRedoManager {
   updateComponents(components: ApplicationComponent[]) {
     this.components = components;
     eventBus.send('componentsChange', this.components);
+    (window as any).app = new ApplicationModel(this.components)
+    console.log((window as any).app)
   }
 
   do(operation: IOperation): void {
