@@ -15,6 +15,7 @@ export const CssEditor: React.FC<{
   onBlur?: (v: string) => void;
 }> = ({ defaultCode, onChange, onBlur }) => {
   const style = css`
+    width: 100%;
     .CodeMirror {
       width: 100%;
       height: 120px;
@@ -44,6 +45,8 @@ export const CssEditor: React.FC<{
         },
         theme: 'ayu-mirage',
       });
+    } else {
+      cm.current.setValue(defaultCode);
     }
     const changeHandler = (instance: CodeMirror.Editor) => {
       onChange?.(instance.getValue());
@@ -57,7 +60,7 @@ export const CssEditor: React.FC<{
       cm.current?.off('change', changeHandler);
       cm.current?.off('blur', blurHandler);
     };
-  }, [defaultCode]);
+  }, [onBlur, onChange, defaultCode]);
 
   return <Box className={style} ref={wrapperEl}></Box>;
 };
