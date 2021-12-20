@@ -38,7 +38,7 @@ export function createTrait(options: TraitDefinition): RuntimeTraitSpec {
       parsedVersion: parseVersion(options.version),
       metadata: {
         name: options.metadata.name,
-        description: options.metadata.description,
+        description: options.metadata.description || '',
       },
       spec: {
         properties: {},

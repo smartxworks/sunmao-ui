@@ -37,7 +37,7 @@ export function createModule(options: ModuleDefinition): RuntimeModuleSpec {
     parsedVersion: parseVersion(options.version),
     metadata: {
       name: options.metadata.name,
-      description: options.metadata.description,
+      description: options.metadata.description || '',
     },
     spec: {
       properties: {},
