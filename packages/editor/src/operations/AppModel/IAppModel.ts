@@ -1,4 +1,4 @@
-import { ApplicationComponent } from "@sunmao-ui/core";
+import { ApplicationComponent, ComponentTrait } from "@sunmao-ui/core";
 
 export type ComponentId = string & {
   kind: 'componentId';
@@ -32,16 +32,20 @@ export type EventName = string & {
 };
 
 export interface IApplicationModel {
-  components: IComponentModel[];
+  model: IComponentModel[];
   modules: IModuleModel[];
   allComponents: IComponentModel[];
   json: ApplicationComponent[];
-  // createComponent: (componentType: ComponentType, componentId: ComponentId, properties: Record<string, string>) => IComponentModel;
+  getComponentById(id: ComponentId): IComponentModel | undefined;
+  genId(type: ComponentType): ComponentId;
+  // createComponent: (componentType: ComponentType, componentId: ComponentId, properties: Record<string, string>) => ApplicationComponent[];
   // createModule: (moduleId: ModuleId, moduleType: ModuleType) => IModuleModel;
-  // removeComponent: (componentId: ComponentId) => void;
+  // removeComponent: (componentId: ComponentId) => ApplicationComponent[];
   // removeModule: (moduleId: ModuleId) => void;
-  // findComponent: (componentId: ComponentId) => IComponentModel | undefined;
+  // findComponent: (componentId: ComponentId) => ApplicationComponent | undefined;
   // moveComponent: (fromId: ComponentId, toId: ComponentId, slot: SlotName, afterId: ComponentId) => void;
+
+  updateSingleComponent(component: IComponentModel): void;
 }
 
 export interface IModuleModel {
@@ -51,6 +55,7 @@ export interface IModuleModel {
 }
 
 export interface IComponentModel {
+  appModel: IApplicationModel;
   id: ComponentId;
   get json (): ApplicationComponent;
   type: ComponentType;
@@ -65,8 +70,11 @@ export interface IComponentModel {
   styleSlots: StyleSlotName[];
   methods: MethodName[];
   events: EventName[];
+  isDirty: boolean;
+  changeComponentProperty: (key: string, value: unknown) => void;
+  appendTo: (slot: SlotName, parent: IComponentModel) => void;
 
-  // addTrait: (traitType: TraitType, properties: Record<string, string>) => ITraitModel;
+  addTrait: (traitType: TraitType, properties: Record<string, unknown>) => ITraitModel;
   // removeTrait: (traitType: TraitType) => void;
   // modifyProperty: (propertyName: string, value: any) => void;
   // modifyId: (newId: ComponentId) => void;
@@ -79,11 +87,14 @@ export interface ITraitModel {
   propertiesMedatadata: Record<string, IFieldModel>;
   methods: MethodName[];
   stateKeys: StateKey[];
+  isDirty: boolean;
+  get json (): ComponentTrait;
 }
 
 export interface IFieldModel {
   value: any;
   isDynamic: boolean;
+  update: (value: any) => void;
   // used components' id in the expression
   // refs: Array<ComponentId | ModuleId>;
 }

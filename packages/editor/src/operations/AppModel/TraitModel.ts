@@ -12,6 +12,7 @@ import {
   StateKey,
 } from './IAppModel';
 import { FieldModel } from './FieldModel';
+import { genTrait, getPropertyObject } from './utils';
 
 export class TraitModel implements ITraitModel {
   private origin: ComponentTrait;
@@ -21,6 +22,7 @@ export class TraitModel implements ITraitModel {
   properties: Record<string, any>;
   propertiesMedatadata: Record<string, IFieldModel> = {};
   parent: IComponentModel;
+  isDirty = false
 
   constructor(trait: ComponentTrait, parent: IComponentModel) {
     this.origin = trait;
@@ -36,7 +38,10 @@ export class TraitModel implements ITraitModel {
   }
 
   get json(): ComponentTrait {
-    return this.origin;
+    if (!this.isDirty) {
+      return this.origin;
+    }
+    return genTrait(this.type, getPropertyObject(this.properties));
   }
 
   get methods() {

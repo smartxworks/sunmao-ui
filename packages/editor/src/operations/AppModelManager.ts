@@ -14,14 +14,15 @@ export class AppModelManager implements IUndoRedoManager {
     eventBus.on('componentsRefresh', components => {
       this.components = components;
       this.operationStack = new OperationList();
+      (window as any).app = new ApplicationModel(this.components);
+      (window as any).data = this.components;
+      console.log((window as any).app)
     });
   }
 
   updateComponents(components: ApplicationComponent[]) {
     this.components = components;
     eventBus.send('componentsChange', this.components);
-    (window as any).app = new ApplicationModel(this.components)
-    console.log((window as any).app)
   }
 
   do(operation: IOperation): void {

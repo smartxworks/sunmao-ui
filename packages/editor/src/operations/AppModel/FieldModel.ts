@@ -8,6 +8,10 @@ export class FieldModel implements IFieldModel {
   // refs: Array<ComponentId | ModuleId> = []
 
   constructor(value: unknown) {
+    this.update(value);
+  }
+
+  update(value: unknown) {
     this.value = value;
     this.isDynamic = typeof value === 'string' && regExp.test(value);
   }
