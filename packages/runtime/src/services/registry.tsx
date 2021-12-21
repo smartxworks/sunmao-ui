@@ -70,6 +70,12 @@ export type ImplementedRuntimeModule = RuntimeModuleSpec & {
   impl: ApplicationComponent[];
 };
 
+export type SunmaoLib = {
+  components: ImplementedRuntimeComponent[];
+  traits: ImplementedRuntimeTrait[];
+  modules: ImplementedRuntimeModule[];
+};
+
 export class Registry {
   components: Map<string, Map<string, ImplementedRuntimeComponent>> = new Map();
   traits: Map<string, Map<string, ImplementedRuntimeTrait>> = new Map();
@@ -136,7 +142,7 @@ export class Registry {
   }
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {
-    const parsedModule = parseModuleSchema(cloneDeep(c))
+    const parsedModule = parseModuleSchema(cloneDeep(c));
     if (!overWrite && this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`
@@ -159,6 +165,12 @@ export class Registry {
   getModuleByType(type: string): ImplementedRuntimeModule {
     const { version, name } = parseType(type);
     return this.getModule(version, name);
+  }
+
+  installLib(lib: SunmaoLib) {
+    lib.components.forEach(c => this.registerComponent(c));
+    lib.traits.forEach(t => this.registerTrait(t));
+    lib.modules.forEach(m => this.registerModule(m));
   }
 }
 
