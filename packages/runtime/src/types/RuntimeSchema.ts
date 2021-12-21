@@ -6,6 +6,7 @@ import { StateManager } from '../services/stateStore';
 import { Application, RuntimeApplication } from '@sunmao-ui/core';
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
+import { SlotType } from '../components/_internal/Slot';
 
 export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 
@@ -40,44 +41,51 @@ export type AppProps = {
   debugEvent?: boolean;
 } & ComponentParamsFromApp;
 
-export type ImplWrapperProps = {
+export type ImplWrapperProps<TSlot extends string = string> = {
   component: RuntimeApplicationComponent;
-  slotsMap: SlotsMap | undefined;
+  slotsMap: SlotsMap<TSlot> | undefined;
+  Slot: SlotType<TSlot>;
   targetSlot: { id: string; slot: string } | null;
   services: UIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
 
-export type SlotComponentMap = Map<string, SlotsMap>;
-export type SlotsMap = Map<
-  string,
+export type SlotComponentMap = Map<string, SlotsMap<string>>;
+export type SlotsMap<K extends string> = Map<
+  K,
   Array<{
     component: React.FC;
     id: string;
   }>
 >;
 
-export type CallbackMap = Record<string, () => void>;
+export type CallbackMap<K extends string> = Record<K, () => void>;
 
-export type SubscribeMethods = <U>(map: {
+export type SubscribeMethods<U> = (map: {
   [K in keyof U]: (parameters: U[K]) => void;
 }) => void;
-export type MergeState = (partialState: any) => void;
+export type MergeState<T> = (partialState: T) => void;
 
-type RuntimeFunctions = {
-  mergeState: MergeState;
-  subscribeMethods: SubscribeMethods;
+type RuntimeFunctions<TState, TMethods> = {
+  mergeState: MergeState<TState>;
+  subscribeMethods: SubscribeMethods<TMethods>;
 };
 
-export type ComponentImplementationProps = ImplWrapperProps &
-  TraitResult['props'] &
-  RuntimeFunctions;
+export type ComponentImplementationProps<
+  TState,
+  TMethods,
+  TSlot extends string,
+  TStyleSlot extends string,
+  TEvent extends string
+> = ImplWrapperProps<TSlot> &
+  TraitResult<TStyleSlot, TEvent>['props'] &
+  RuntimeFunctions<TState, TMethods>;
 
-export type TraitResult = {
+export type TraitResult<TStyleSlot extends string, TEvent extends string> = {
   props: {
     data?: unknown;
-    customStyle?: Record<string, string>;
-    callbackMap?: CallbackMap;
+    customStyle?: Record<TStyleSlot, string>;
+    callbackMap?: CallbackMap<TEvent>;
     effects?: Array<() => void>;
   } | null;
   unmount?: boolean;
@@ -85,11 +93,11 @@ export type TraitResult = {
 
 export type TraitImplementation<T = any> = (
   props: T &
-    RuntimeFunctions & {
+    RuntimeFunctions<unknown, unknown> & {
       componentId: string;
       services: UIServices;
     }
-) => TraitResult;
+) => TraitResult<string, string>;
 
 export const RuntimeModuleSchema = Type.Object({
   id: Type.String(),

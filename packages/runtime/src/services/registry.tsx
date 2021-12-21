@@ -56,7 +56,16 @@ import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash';
 
-export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
+export type ComponentImplementation<
+  TProps = any,
+  TState = any,
+  TMethods = Record<string, unknown>,
+  TSlot extends string = string,
+  TStyleSlot extends string = string,
+  TEvent extends string = string
+> = React.FC<
+  TProps & ComponentImplementationProps<TState, TMethods, TSlot, TStyleSlot, TEvent>
+>;
 
 export type ImplementedRuntimeComponent = RuntimeComponentSpec & {
   impl: ComponentImplementation;
@@ -136,7 +145,7 @@ export class Registry {
   }
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {
-    const parsedModule = parseModuleSchema(cloneDeep(c))
+    const parsedModule = parseModuleSchema(cloneDeep(c));
     if (!overWrite && this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`

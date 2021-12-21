@@ -6,6 +6,7 @@ import {
   ImplWrapperProps,
   TraitResult,
 } from '../types/RuntimeSchema';
+import Slot from 'src/components/_internal/Slot';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
@@ -156,6 +157,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         key={c.id}
         {...mergedProps}
         {...props}
+        Slot={Slot}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
       />
