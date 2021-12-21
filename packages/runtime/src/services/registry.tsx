@@ -12,32 +12,6 @@ import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
-/* --- chakra-ui --- */
-import ChakraUIRoot from '../components/chakra-ui/Root';
-import ChakraUIButton from '../components/chakra-ui/Button';
-import ChakraUITabs from '../components/chakra-ui/Tabs';
-import ChakraUITable from '../components/chakra-ui/Table';
-import ChakraUIInput from '../components/chakra-ui/Input';
-import ChakraUIBox from '../components/chakra-ui/Box';
-import ChakraUIDivider from '../components/chakra-ui/Divider';
-import ChakraUIFormControl from '../components/chakra-ui/Form/FormControl';
-import ChakraUIForm from '../components/chakra-ui/Form/Form';
-import ChakraUIKbd from '../components/chakra-ui/Kbd';
-import ChakraUIList from '../components/chakra-ui/List';
-import ChakraUILink from '../components/chakra-ui/Link';
-import ChakraUINumberInput from '../components/chakra-ui/NumberInput';
-import ChakraUIMultiSelect from '../components/chakra-ui/MultiSelect';
-import ChakraUICheckboxGroup from '../components/chakra-ui/CheckboxGroup';
-import ChakraUICheckbox from '../components/chakra-ui/Checkbox';
-import ChakraUIStack from '../components/chakra-ui/Stack';
-import ChakraUITooltip from '../components/chakra-ui/Tooltip';
-import ChakraUIHStack from '../components/chakra-ui/HStack';
-import ChakraUIVStack from '../components/chakra-ui/VStack';
-import ChakraUIImage from '../components/chakra-ui/Image';
-import ChakraUIDialog from '../components/chakra-ui/Dialog';
-import ChakraUISelect from '../components/chakra-ui/Select';
-import ChakraUIRadioGroup from '../components/chakra-ui/RadioGroup';
-import ChakraUIRadio from '../components/chakra-ui/Radio';
 
 // traits
 import CoreArrayState from '../traits/core/arrayState';
@@ -54,7 +28,7 @@ import {
 } from '../types/RuntimeSchema';
 import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
 
@@ -71,9 +45,9 @@ export type ImplementedRuntimeModule = RuntimeModuleSpec & {
 };
 
 export type SunmaoLib = {
-  components: ImplementedRuntimeComponent[];
-  traits: ImplementedRuntimeTrait[];
-  modules: ImplementedRuntimeModule[];
+  components?: ImplementedRuntimeComponent[];
+  traits?: ImplementedRuntimeTrait[];
+  modules?: ImplementedRuntimeModule[];
 };
 
 export class Registry {
@@ -168,9 +142,9 @@ export class Registry {
   }
 
   installLib(lib: SunmaoLib) {
-    lib.components.forEach(c => this.registerComponent(c));
-    lib.traits.forEach(t => this.registerTrait(t));
-    lib.modules.forEach(m => this.registerModule(m));
+    lib.components?.forEach(c => this.registerComponent(c));
+    lib.traits?.forEach(t => this.registerTrait(t));
+    lib.modules?.forEach(m => this.registerModule(m));
   }
 }
 
@@ -179,31 +153,6 @@ export function initRegistry(): Registry {
   registry.registerComponent(PlainButton);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);
-  registry.registerComponent(ChakraUIRoot);
-  registry.registerComponent(ChakraUIButton);
-  registry.registerComponent(ChakraUITabs);
-  registry.registerComponent(ChakraUITable);
-  registry.registerComponent(ChakraUIInput);
-  registry.registerComponent(ChakraUIBox);
-  registry.registerComponent(ChakraUIDivider);
-  registry.registerComponent(ChakraUIFormControl);
-  registry.registerComponent(ChakraUIForm);
-  registry.registerComponent(ChakraUIKbd);
-  registry.registerComponent(ChakraUIList);
-  registry.registerComponent(ChakraUILink);
-  registry.registerComponent(ChakraUIMultiSelect);
-  registry.registerComponent(ChakraUINumberInput);
-  registry.registerComponent(ChakraUICheckbox);
-  registry.registerComponent(ChakraUICheckboxGroup);
-  registry.registerComponent(ChakraUIStack);
-  registry.registerComponent(ChakraUITooltip);
-  registry.registerComponent(ChakraUIHStack);
-  registry.registerComponent(ChakraUIVStack);
-  registry.registerComponent(ChakraUIImage);
-  registry.registerComponent(ChakraUIDialog);
-  registry.registerComponent(ChakraUISelect);
-  registry.registerComponent(ChakraUIRadioGroup);
-  registry.registerComponent(ChakraUIRadio);
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
   registry.registerComponent(CoreModuleContainer);
