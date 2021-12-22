@@ -1,7 +1,4 @@
-import {
-  ComponentTrait,
-  RuntimeTraitSpec,
-} from '@sunmao-ui/core';
+import { ComponentTrait, RuntimeTraitSpec } from '@sunmao-ui/core';
 import { registry } from '../../setup';
 import {
   IComponentModel,
@@ -15,7 +12,7 @@ import {
 import { FieldModel } from './FieldModel';
 import { genTrait } from './utils';
 
-let traitIdCount = 0
+let traitIdCount = 0;
 
 export class TraitModel implements ITraitModel {
   private schema: ComponentTrait;
@@ -23,7 +20,7 @@ export class TraitModel implements ITraitModel {
   id: TraitId;
   type: TraitType;
   properties: Record<string, IFieldModel> = {};
-  isDirty = false
+  isDirty = false;
 
   constructor(trait: ComponentTrait, public parent: IComponentModel) {
     this.schema = trait;
@@ -38,17 +35,17 @@ export class TraitModel implements ITraitModel {
     this.properties;
   }
 
-  get rawProperties()  {
-    const obj: Record<string, any> = {}
+  get rawProperties() {
+    const obj: Record<string, any> = {};
     for (const key in this.properties) {
-      obj[key] = this.properties[key].value
+      obj[key] = this.properties[key].value;
     }
-    return obj
+    return obj;
   }
 
   toJS(): ComponentTrait {
     if (this.isDirty) {
-      this.schema = genTrait(this.type, this.rawProperties)
+      this.schema = genTrait(this.type, this.rawProperties);
     }
     return this.schema;
   }
@@ -59,5 +56,15 @@ export class TraitModel implements ITraitModel {
 
   get stateKeys() {
     return (this.spec ? Object.keys(this.spec.spec.state) : []) as StateKey[];
+  }
+
+  updateProperty(key: string, value: any) {
+    if (this.properties[key]) {
+      this.properties[key].update(value);
+    } else {
+      this.properties[key] = new FieldModel(value);
+    }
+    this.isDirty = true;
+    this.parent.isDirty = true;
   }
 }

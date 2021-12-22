@@ -7,13 +7,13 @@ import {
   IApplicationModel,
   IComponentModel,
   IModuleModel,
+  SlotName,
 } from './IAppModel';
 import { genComponent } from './utils';
 
 export class ApplicationModel implements IApplicationModel {
   model: IComponentModel[] = [];
   modules: IModuleModel[] = [];
-  allComponents: IComponentModel[] = [];
   private schema: ApplicationComponent[] = [];
   private componentMap: Record<ComponentId, IComponentModel> = {};
 
@@ -22,8 +22,19 @@ export class ApplicationModel implements IApplicationModel {
     this.resolveTree(components);
   }
 
+  get allComponents(): IComponentModel[] {
+    const result: IComponentModel[] = []
+    this.traverseTree(c => {
+      result.push(c)
+    })
+    return result
+  }
+
   updateSingleComponent(component: IComponentModel) {
-    this.allComponents.push(component);
+    component.appModel = this;
+    if (!component.parent && !this.model.includes(component)) {
+      this.model.push(component)
+    }
     this.componentMap[component.id] = component;
   }
 
@@ -55,21 +66,23 @@ export class ApplicationModel implements IApplicationModel {
   removeComponent(componentId: ComponentId) {
     const comp = this.componentMap[componentId];
     delete this.componentMap[componentId];
-    this.allComponents = this.allComponents.filter(c => c !== comp);
     if (comp.parentSlot && comp.parent) {
       const children = comp.parent.children[comp.parentSlot];
       comp.parent.children[comp.parentSlot] = children.filter(c => c !== comp);
+    } else {
+      this.model.splice(this.model.indexOf(comp), 1);
+
     }
   }
 
   private resolveTree(components: ApplicationComponent[]) {
-    this.allComponents = components.map(c => {
+    const allComponents = components.map(c => {
       const comp = new ComponentModel(this, c);
       this.componentMap[c.id as ComponentId] = comp;
       return comp;
     });
 
-    this.allComponents.forEach(child => {
+    allComponents.forEach(child => {
       if (child.parentId && child.parentSlot) {
         const parent = this.componentMap[child.parentId];
         if (parent) {
@@ -84,5 +97,19 @@ export class ApplicationModel implements IApplicationModel {
         this.model.push(child);
       }
     });
+  }
+
+  private traverseTree(cb: (c: IComponentModel) => void) {
+    function traverse(root: IComponentModel) {
+      cb(root)
+      for (const slot in root.children) {
+        root.children[slot as SlotName].forEach(child => {
+          traverse(child)
+        })
+      }
+    }
+    this.model.forEach((parent) => {
+      traverse(parent);
+    })
   }
 }

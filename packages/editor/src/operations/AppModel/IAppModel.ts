@@ -68,15 +68,21 @@ export interface IComponentModel {
   methods: MethodName[];
   events: EventName[];
   isDirty: boolean;
+  allComponents: IComponentModel[];
   toJS(): ApplicationComponent;
   changeComponentProperty: (key: string, value: unknown) => void;
   // move component across level
   appendTo: (parent?: IComponentModel, slot?: SlotName) => void;
   // move in same level
   moveAfter: (after: ComponentId | null) => IComponentModel;
+  appendChild: (component: IComponentModel, slot: SlotName) => void;
   changeId: (newId: ComponentId) => IComponentModel;
   addTrait: (traitType: TraitType, properties: Record<string, unknown>) => ITraitModel;
   removeTrait: (traitId: TraitId) => void;
+  updateTrait: (traitId: TraitId, properties: Record<string, unknown>) => void;
+  updateSlotTrait: (parent: ComponentId, slot: SlotName) => void;
+  nextSilbing: IComponentModel | null
+  prevSilbling: IComponentModel | null
 }
 
 export interface ITraitModel {
@@ -90,6 +96,7 @@ export interface ITraitModel {
   stateKeys: StateKey[];
   isDirty: boolean;
   toJS(): ComponentTrait;
+  updateProperty: (key: string, value: any) => void;
 }
 
 export interface IFieldModel {

@@ -11,22 +11,23 @@ type Props = {
   registry: Registry;
   component: ApplicationComponent;
   trait: ComponentTrait;
+  traitIndex: number;
   onRemove: () => void;
 };
 
 export const GeneralTraitForm: React.FC<Props> = props => {
-  const { trait, component, onRemove, registry } = props;
+  const { trait, traitIndex, component, onRemove, registry } = props;
 
   const tImpl = registry.getTraitByType(trait.type);
   const properties = Object.assign(
     parseTypeBox(tImpl.spec.properties as TSchema),
     trait.properties
   );
-
-  const fields = Object.keys(properties || []).map((key: string, index: number) => {
+  console.log('properties', properties)
+  const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
     return renderField({
-      index,
+      index: traitIndex,
       key,
       value,
       fullKey: key,

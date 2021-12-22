@@ -31,6 +31,39 @@ const AppSchema: Application = {
         ],
       },
       {
+        id: 'text3',
+        type: 'core/v1/text',
+        properties: { value: { raw: 'VM1', format: 'plain' } },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: { container: { id: 'vstack1', slot: 'content' } },
+          },
+        ],
+      },
+      {
+        id: 'text4',
+        type: 'core/v1/text',
+        properties: { value: { raw: '虚拟机', format: 'plain' } },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: { container: { id: 'vstack1', slot: 'content' } },
+          },
+        ],
+      },
+      {
+        id: 'hstack2',
+        type: 'chakra_ui/v1/hstack',
+        properties: { spacing: '24px', align: '' },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: { container: { id: 'hstack1', slot: 'content' } },
+          },
+        ],
+      },
+      {
         id: 'text1',
         type: 'core/v1/text',
         properties: { value: { raw: 'text', format: 'plain' } },
@@ -68,39 +101,6 @@ const AppSchema: Application = {
         ],
       },
       {
-        id: 'hstack2',
-        type: 'chakra_ui/v1/hstack',
-        properties: { spacing: '24px', align: '' },
-        traits: [
-          {
-            type: 'core/v1/slot',
-            properties: { container: { id: 'hstack1', slot: 'content' } },
-          },
-        ],
-      },
-      {
-        id: 'text3',
-        type: 'core/v1/text',
-        properties: { value: { raw: 'VM1', format: 'plain' } },
-        traits: [
-          {
-            type: 'core/v1/slot',
-            properties: { container: { id: 'vstack1', slot: 'content' } },
-          },
-        ],
-      },
-      {
-        id: 'text4',
-        type: 'core/v1/text',
-        properties: { value: { raw: '虚拟机', format: 'plain' } },
-        traits: [
-          {
-            type: 'core/v1/slot',
-            properties: { container: { id: 'vstack1', slot: 'content' } },
-          },
-        ],
-      },
-      {
         id: 'moduleContainer1',
         type: 'core/v1/moduleContainer',
         properties: { id: 'myModule', type: 'custom/v1/module' },
@@ -128,14 +128,14 @@ describe('change component properties', () => {
   const newSchema = appModel.toJS();
 
   it('change component properties', () => {
-    expect(newSchema[2].properties.value).toEqual({ raw: 'hello', format: 'md' });
+    expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'md' });
   });
 
   it('keep immutable after changing component properties', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
-    expect(origin[2]).not.toBe(newSchema[2]);
+    expect(origin[5]).not.toBe(newSchema[5]);
   });
 });
 
@@ -143,11 +143,18 @@ describe('remove component', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
   const origin = appModel.toJS();
   appModel.removeComponent('text1' as any);
-  const newSchema = appModel.toJS();
   it('remove component', () => {
+    const newSchema = appModel.toJS();
     expect(origin.length - 1).toEqual(newSchema.length);
     expect(newSchema.some(c => c.id === 'text1')).toBe(false);
   });
+  it('remove top level component', () => {
+    appModel.removeComponent('hstack3' as any);
+    const newSchema = appModel.toJS();
+    expect(origin.length - 2).toEqual(newSchema.length);
+    expect(newSchema.some(c => c.id === 'text1')).toBe(false);
+  });
+  const newSchema = appModel.toJS();
   it('keep immutable after removing component', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).toBe(newSchema[0]);
@@ -180,8 +187,8 @@ describe('create component', () => {
         container: { id: 'vstack1', slot: 'content' },
       });
     });
-    it('update add model cache', () => {
-      expect(appModel.allComponents[appModel.allComponents.length - 1]).toBe(
+    it('is in right place in allComponents', () => {
+      expect(appModel.allComponents[4]).toBe(
         newComponent
       );
     });
@@ -189,8 +196,9 @@ describe('create component', () => {
       const newSchema = appModel.toJS();
       expect(origin).not.toBe(newSchema);
       expect(origin.length).toBe(newSchema.length - 1);
-      expect(origin.every((v, i) => v === newSchema[i])).toBe(true);
-      const newComponentSchema = newSchema[newSchema.length - 1];
+      expect(origin[0]).toBe(newSchema[0]);
+      expect(origin[1]).toBe(newSchema[1]);
+      const newComponentSchema = newSchema[4];
       expect(newComponentSchema.id).toBe('text5');
       expect(newComponentSchema.traits[0].properties).toEqual({
         container: { id: 'vstack1', slot: 'content' },
@@ -219,13 +227,13 @@ describe('add trait', () => {
   const newSchema = appModel.toJS();
 
   it('add trait', () => {
-    expect(newSchema[2].traits[1].properties.key).toEqual('value');
+    expect(newSchema[5].traits[1].properties.key).toEqual('value');
   });
   it('keep immutable after adding trait', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
-    expect(origin[2]).not.toBe(newSchema[2]);
+    expect(origin[5]).not.toBe(newSchema[5]);
   });
 });
 
@@ -236,14 +244,14 @@ describe('remove trait', () => {
   text1!.removeTrait(text1.traits[0].id);
   const newSchema = appModel.toJS();
   it('remove trait', () => {
-    expect(newSchema[2].traits.length).toEqual(0);
+    expect(newSchema[5].traits.length).toEqual(0);
   });
 
   it('keep immutable after adding trait', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
-    expect(origin[2]).not.toBe(newSchema[2]);
+    expect(origin[5]).not.toBe(newSchema[5]);
   });
 });
 
@@ -262,7 +270,7 @@ describe('change component id', () => {
       id: newId,
       slot: 'content',
     });
-    expect(newSchema[5].traits[0].properties.container).toEqual({
+    expect(newSchema[4].traits[0].properties.container).toEqual({
       id: newId,
       slot: 'content',
     });
@@ -276,6 +284,8 @@ describe('change component id', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).not.toBe(newSchema[0]);
     expect(origin[1]).not.toBe(newSchema[1]);
+    expect(origin[4]).not.toBe(newSchema[4]);
+    expect(origin[8]).not.toBe(newSchema[8]);
     expect(origin[2]).toBe(newSchema[2]);
     expect(origin[3]).toBe(newSchema[3]);
   });
@@ -292,8 +302,8 @@ describe('move component', () => {
     const newSchema = appModel.toJS();
     expect(text1.parent!.children['content' as SlotName][0].id).toEqual('text2');
     expect(text1.parent!.children['content' as SlotName][1].id).toEqual('text1');
-    expect(newSchema[2].id).toEqual('text2');
-    expect(newSchema[3].id).toEqual('text1');
+    expect(newSchema[5].id).toEqual('text2');
+    expect(newSchema[6].id).toEqual('text1');
   });
 
   it('can move top level component', () => {
@@ -301,8 +311,8 @@ describe('move component', () => {
     const newSchema = appModel.toJS();
     expect(appModel.model[0].id).toEqual('hstack3');
     expect(appModel.model[1].id).toEqual('hstack1');
-    expect(newSchema[8].id).toEqual('hstack3');
-    expect(newSchema[9].id).toEqual('hstack1');
+    expect(newSchema[0].id).toEqual('hstack3');
+    expect(newSchema[1].id).toEqual('hstack1');
   });
   it('can move component to the first', () => {
     hstack1.moveAfter(null);

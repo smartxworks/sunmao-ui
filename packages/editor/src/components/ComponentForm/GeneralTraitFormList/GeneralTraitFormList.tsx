@@ -31,10 +31,10 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
   };
 
   const traitFields = component.traits
-    .filter(trait => {
-      return !ignoreTraitsList.includes(trait.type);
-    })
     .map((trait, index) => {
+      if (ignoreTraitsList.includes(trait.type)) {
+        return null
+      }
       const onRemoveTrait = () => {
         eventBus.send(
           'operation',
@@ -49,6 +49,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
           key={index}
           component={component}
           trait={trait}
+          traitIndex={index}
           onRemove={onRemoveTrait}
           registry={registry}
         />

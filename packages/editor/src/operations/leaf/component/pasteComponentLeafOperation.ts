@@ -1,83 +1,46 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import produce from 'immer';
-import { get } from 'lodash-es';
-import { resolveApplicationComponents } from '../../../utils/resolveApplicationComponents';
+import { ApplicationModel } from '../../AppModel/AppModel';
+import { ComponentId, IComponentModel, SlotName } from '../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type PasteComponentLeafOperationContext = {
   parentId: string;
   slot: string;
+  rootComponentId: string;
   components: ApplicationComponent[];
   copyTimes: number;
 };
 
 export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponentLeafOperationContext> {
-  private pastedComponents: ApplicationComponent[] = [];
+  private componentCopy!: IComponentModel
 
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const { childrenMap } = resolveApplicationComponents(
-      this.context.components
-    );
+    const appModel = new ApplicationModel(prev);
+    const targetParent = appModel.getComponentById(this.context.parentId as ComponentId);
+    if (!targetParent) {
+      return prev
+    }
+    const copyComponents = new ApplicationModel(this.context.components);
+    const component = copyComponents.getComponentById(this.context.rootComponentId as ComponentId);
+    if (!component){
+      return prev;
+    }
+    component.allComponents.forEach((c) => {
+      c.changeId(`${c.id}_copy${this.context.copyTimes}` as ComponentId)
+    })
+    targetParent.appendChild(component, this.context.slot as SlotName);
+    this.componentCopy = component;
 
-    const rootTrait = this.context.components[0].traits.find(
-      trait => trait.type === 'core/v1/slot'
-    );
-    const rootParentId = get(rootTrait, 'properties.container.id');
-
-    // map of old parentId to new parentId
-    const newIdMap: Record<string, string> = { [rootParentId]: this.context.parentId };
-    this.context.components.forEach(({ id }) => {
-      if (prev.find(c => c.id === id)) {
-        newIdMap[id] = `${id}_copy${this.context.copyTimes}`;
-      } else {
-        newIdMap[id] = id;
-      }
-    });
-
-    // update components slot
-    childrenMap.forEach((slotMap, parentId) => {
-      slotMap.forEach((children, slot) => {
-        const newChildren = children.map(c => {
-          const newComponent = updateComponentSlot(c, newIdMap[parentId], slot);
-          return produce(newComponent, draft => {
-            draft.id = newIdMap[c.id] || c.id;
-          });
-        });
-        this.pastedComponents = this.pastedComponents.concat(newChildren);
-      });
-    });
-
-
-    return prev.concat(this.pastedComponents);
+    return appModel.toJS();
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return prev.concat(this.pastedComponents);
+    return this.do(prev)
   }
-
+  
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      draft.splice(-this.pastedComponents.length);
-    });
+    const appModel = new ApplicationModel(prev);
+    appModel.removeComponent(this.componentCopy.id);
+    return appModel.toJS()
   }
-}
-
-function updateComponentSlot(
-  component: ApplicationComponent,
-  parentId: string,
-  slot: string
-) {
-  return produce(component, draft => {
-    const newSlotTrait = {
-      type: 'core/v1/slot',
-      properties: { container: { id: parentId, slot } },
-    };
-    const oldSlotIndex = draft.traits.findIndex(trait => trait.type === 'core/v1/slot');
-    if (oldSlotIndex === -1) {
-      draft.traits.push(newSlotTrait);
-    } else {
-      draft.traits[oldSlotIndex] = newSlotTrait;
-    }
-  });
-  return component;
 }

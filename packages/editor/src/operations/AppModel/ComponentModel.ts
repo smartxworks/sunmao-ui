@@ -94,8 +94,32 @@ export class ComponentModel implements IComponentModel {
     return obj;
   }
 
+  get prevSilbling() {
+    if (!this.parent) return null;
+    const parentChildren = this.parent.children[this.parentSlot!];
+    const index = parentChildren.indexOf(this);
+    if (index === 0) return null;
+    return parentChildren[index - 1];
+  }
+
+  get nextSilbing() {
+    if (!this.parent) return null;
+    const parentChildren = this.parent.children[this.parentSlot!];
+    const index = parentChildren.indexOf(this);
+    if (index === parentChildren.length - 1) return null;
+    return parentChildren[index + 1];
+  }
+
   private get slotTrait() {
     return this.traits.find(t => t.type === SlotTraitType);
+  }
+
+  get allComponents(): IComponentModel[] {
+    const result: IComponentModel[] = []
+    this.traverseTree(c => {
+      result.push(c)
+    })
+    return result
   }
 
   toJS(): ApplicationComponent {
@@ -147,11 +171,6 @@ export class ComponentModel implements IComponentModel {
       if (this.slotTrait) {
         this.removeTrait(this.slotTrait?.id)
       }
-      // remove from origin position in allComponents
-      const oldIndex = this.appModel.allComponents.indexOf(this)
-      if (oldIndex > -1){
-        this.appModel.allComponents.splice(this.appModel.allComponents.indexOf(this), 1);
-      }
     }
     // update app model
     this.appModel.updateSingleComponent(this);
@@ -193,18 +212,36 @@ export class ComponentModel implements IComponentModel {
     // update model
     siblings.splice(siblings.indexOf(this), 1);
     const afterIndexInSiblings = after ? siblings.findIndex(c => c.id === after) + 1 : 0;
+    console.log('afterIndexInSiblings', afterIndexInSiblings)
     siblings.splice(afterIndexInSiblings, 0, this);
-
-    // update allComponents schema
-    const allComponents = this.appModel.allComponents;
-    allComponents.splice(allComponents.indexOf(this), 1);
-    // if moving to the first of siblings, move to the next after parent
-    const afterTargetId = after || this.parent?.id;
-    const afterIndexInAllComponents = afterTargetId
-      ? allComponents.findIndex(c => c.id === afterTargetId) + 1
-      : 0;
-    allComponents.splice(afterIndexInAllComponents, 0, this);
+    console.log('siblings', siblings)
     return this;
+  }
+
+  appendChild(child: IComponentModel, slot: SlotName) {
+    if (!this.children[slot]) {
+      this.children[slot] = [];
+    }
+    this.children[slot].push(child);
+    child.parent = this;
+    child.parentSlot = slot;
+    child.parentId = this.id;
+    child.appModel = this.appModel;
+    child.updateSlotTrait(this.id, slot);
+    this.traverseTree(c => {
+      this.appModel.updateSingleComponent(c)
+    })
+  }
+
+  updateTrait(traitId: TraitId, properties: Record<string, unknown>) {
+    const trait = this.traits.find(t => t.id === traitId);
+    if (!trait) return;
+    for (const property in properties) {
+      trait.properties[property].update(properties[property]);
+      trait.isDirty = true
+    }
+    console.log('new trait', trait)
+    this.isDirty = true;
   }
 
   updateSlotTrait(parent: ComponentId, slot: SlotName) {
@@ -215,5 +252,17 @@ export class ComponentModel implements IComponentModel {
       this.addTrait(SlotTraitType, { container: { id: parent, slot } });
     }
     this.isDirty = true;
+  }
+
+  private traverseTree(cb: (c: IComponentModel) => void) {
+    function traverse(root: IComponentModel) {
+      cb(root)
+      for (const slot in root.children) {
+        root.children[slot as SlotName].forEach(child => {
+          traverse(child)
+        })
+      }
+    }
+    traverse(this)
   }
 }
