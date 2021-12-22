@@ -10,38 +10,47 @@ import {
   ITraitModel,
   IFieldModel,
   StateKey,
+  TraitId,
 } from './IAppModel';
 import { FieldModel } from './FieldModel';
-import { genTrait, getPropertyObject } from './utils';
+import { genTrait } from './utils';
+
+let traitIdCount = 0
 
 export class TraitModel implements ITraitModel {
-  private origin: ComponentTrait;
+  private schema: ComponentTrait;
   private spec: RuntimeTraitSpec;
-
+  id: TraitId;
   type: TraitType;
-  properties: Record<string, any>;
-  propertiesMedatadata: Record<string, IFieldModel> = {};
-  parent: IComponentModel;
+  properties: Record<string, IFieldModel> = {};
   isDirty = false
 
-  constructor(trait: ComponentTrait, parent: IComponentModel) {
-    this.origin = trait;
+  constructor(trait: ComponentTrait, public parent: IComponentModel) {
+    this.schema = trait;
     this.parent = parent;
     this.type = trait.type as TraitType;
+    this.id = `${this.parent.id}_trait${traitIdCount++}` as TraitId;
     this.spec = registry.getTraitByType(this.type);
 
-    this.properties = trait.properties || {};
     for (const key in trait.properties) {
-      this.propertiesMedatadata[key] = new FieldModel(trait.properties[key]);
+      this.properties[key] = new FieldModel(trait.properties[key]);
     }
-    this.propertiesMedatadata;
+    this.properties;
   }
 
-  get json(): ComponentTrait {
-    if (!this.isDirty) {
-      return this.origin;
+  get rawProperties()  {
+    const obj: Record<string, any> = {}
+    for (const key in this.properties) {
+      obj[key] = this.properties[key].value
     }
-    return genTrait(this.type, getPropertyObject(this.properties));
+    return obj
+  }
+
+  toJS(): ComponentTrait {
+    if (this.isDirty) {
+      this.schema = genTrait(this.type, this.rawProperties)
+    }
+    return this.schema;
   }
 
   get methods() {

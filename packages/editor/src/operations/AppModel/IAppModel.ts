@@ -3,6 +3,9 @@ import { ApplicationComponent, ComponentTrait } from "@sunmao-ui/core";
 export type ComponentId = string & {
   kind: 'componentId';
 };
+export type TraitId = string & {
+  kind: 'traitId';
+};
 export type ComponentType = string & {
   kind: 'componentType';
 };
@@ -35,16 +38,11 @@ export interface IApplicationModel {
   model: IComponentModel[];
   modules: IModuleModel[];
   allComponents: IComponentModel[];
-  json: ApplicationComponent[];
+  toJS(): ApplicationComponent[];
+  createComponent(type: ComponentType, id?: ComponentId): IComponentModel
   getComponentById(id: ComponentId): IComponentModel | undefined;
   genId(type: ComponentType): ComponentId;
-  // createComponent: (componentType: ComponentType, componentId: ComponentId, properties: Record<string, string>) => ApplicationComponent[];
-  // createModule: (moduleId: ModuleId, moduleType: ModuleType) => IModuleModel;
-  // removeComponent: (componentId: ComponentId) => ApplicationComponent[];
-  // removeModule: (moduleId: ModuleId) => void;
-  // findComponent: (componentId: ComponentId) => ApplicationComponent | undefined;
-  // moveComponent: (fromId: ComponentId, toId: ComponentId, slot: SlotName, afterId: ComponentId) => void;
-
+  removeComponent(componentId: ComponentId): void;
   updateSingleComponent(component: IComponentModel): void;
 }
 
@@ -57,7 +55,6 @@ export interface IModuleModel {
 export interface IComponentModel {
   appModel: IApplicationModel;
   id: ComponentId;
-  get json (): ApplicationComponent;
   type: ComponentType;
   properties: Record<string, IFieldModel>;
   children: Record<SlotName, IComponentModel[]>;
@@ -71,24 +68,28 @@ export interface IComponentModel {
   methods: MethodName[];
   events: EventName[];
   isDirty: boolean;
+  toJS(): ApplicationComponent;
   changeComponentProperty: (key: string, value: unknown) => void;
-  appendTo: (slot: SlotName, parent: IComponentModel) => void;
-
+  // move component across level
+  appendTo: (parent?: IComponentModel, slot?: SlotName) => void;
+  // move in same level
+  moveAfter: (after: ComponentId | null) => IComponentModel;
+  changeId: (newId: ComponentId) => IComponentModel;
   addTrait: (traitType: TraitType, properties: Record<string, unknown>) => ITraitModel;
-  // removeTrait: (traitType: TraitType) => void;
-  // modifyProperty: (propertyName: string, value: any) => void;
-  // modifyId: (newId: ComponentId) => void;
+  removeTrait: (traitId: TraitId) => void;
 }
 
 export interface ITraitModel {
+  // trait id only exists in model, doesnt exist in schema
+  id: TraitId
   parent: IComponentModel;
   type: TraitType;
-  properties: Record<string, any>;
-  propertiesMedatadata: Record<string, IFieldModel>;
+  rawProperties: Record<string, any>;
+  properties: Record<string, IFieldModel>;
   methods: MethodName[];
   stateKeys: StateKey[];
   isDirty: boolean;
-  get json (): ComponentTrait;
+  toJS(): ComponentTrait;
 }
 
 export interface IFieldModel {
