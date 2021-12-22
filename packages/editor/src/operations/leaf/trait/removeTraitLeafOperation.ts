@@ -1,6 +1,6 @@
-import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
-import produce from 'immer';
-import { tryOriginal } from '../../../operations/util';
+import { ApplicationComponent } from '@sunmao-ui/core';
+import { ApplicationModel } from '../../AppModel/AppModel';
+import { ComponentId, ITraitModel } from '../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type RemoveTraitLeafOperationContext = {
@@ -9,60 +9,33 @@ export type RemoveTraitLeafOperationContext = {
 };
 
 export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafOperationContext> {
-  private deletedTrait!: ComponentTrait;
+  private deletedTrait!: ITraitModel;
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const componentIndex = prev.findIndex(
-      c => c.id === this.context.componentId
-    );
-    if (componentIndex === -1) {
-      console.warn('component was removed');
+    const appModel = new ApplicationModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      console.warn('component not found');
       return prev;
     }
-    return produce(prev, draft => {
-      if (!draft[componentIndex].traits[this.context.index]) {
-        console.warn('trait not foudn');
-        return;
-      }
-      this.deletedTrait = tryOriginal(
-        draft[componentIndex].traits.splice(this.context.index, 1)[0]
-      );
-    });
+
+    this.deletedTrait = component.traits[this.context.index];
+    component.removeTrait(this.deletedTrait.id);
+    return appModel.toJS();
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const componentIndex = prev.findIndex(
-      c => c.id === this.context.componentId
-    );
-    if (componentIndex === -1) {
-      console.warn('component was removed');
-      return prev;
-    }
-    return produce(prev, draft => {
-      if (!draft[componentIndex].traits[this.context.index]) {
-        console.warn('trait not foudn');
-        return;
-      }
-      draft[componentIndex].traits.splice(this.context.index, 1);
-    });
+    return this.do(prev);
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const componentIndex = prev.findIndex(
-      c => c.id === this.context.componentId
-    );
-    if (componentIndex === -1) {
-      console.warn('component was removed');
+    const appModel = new ApplicationModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      console.warn('component not found');
       return prev;
     }
-    return produce(prev, draft => {
-      if (draft[componentIndex].traits.length < this.context.index) {
-        console.warn('corrupted index');
-      }
-      draft[componentIndex].traits.splice(
-        this.context.index,
-        0,
-        this.deletedTrait
-      );
-    });
+
+    component.addTrait(this.deletedTrait.type, this.deletedTrait.rawProperties);
+    return appModel.toJS();
   }
 }

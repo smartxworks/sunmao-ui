@@ -67,6 +67,7 @@ class EditorStore {
     });
     // listen the change by operations, and save newComponents
     eventBus.on('componentsChange', components => {
+      console.log('componentsChange', components);
       this.setComponents(components);
       this.setCurrentComponentsVersion(this.currentComponentsVersion + 1)
 
