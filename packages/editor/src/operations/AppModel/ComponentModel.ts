@@ -1,14 +1,11 @@
 import { ApplicationComponent, RuntimeComponentSpec } from '@sunmao-ui/core';
 import { registry } from '../../setup';
-import { genComponent, genTrait, getPropertyObject } from './utils';
+import { genComponent, genTrait } from './utils';
 import {
   ComponentId,
   ComponentType,
   IApplicationModel,
   IComponentModel,
-  IModuleModel,
-  ModuleId,
-  ModuleType,
   SlotName,
   StyleSlotName,
   MethodName,
@@ -17,6 +14,7 @@ import {
   IFieldModel,
   EventName,
   TraitType,
+  TraitId,
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
@@ -46,8 +44,8 @@ export class ComponentModel implements IComponentModel {
     // find slot trait
     this.traits.forEach(t => {
       if (t.type === 'core/v1/slot') {
-        this.parentId = t.properties.container.id;
-        this.parentSlot = t.properties.container.slot;
+        this.parentId = t.rawProperties.container.id;
+        this.parentSlot = t.rawProperties.container.slot;
       }
     });
 
@@ -88,42 +86,32 @@ export class ComponentModel implements IComponentModel {
     return (this.spec ? this.spec.spec.styleSlots : []) as StyleSlotName[];
   }
 
-  get json(): ApplicationComponent {
-    if (!this.isDirty) {
-      return this.schema;
+  get rawProperties() {
+    const obj: Record<string, any> = {};
+    for (const key in this.properties) {
+      obj[key] = this.properties[key].value;
     }
-    this.isDirty = false;
-    const newProperties = getPropertyObject(this.properties);
-    const newTraits = this.traits.map(t => t.json);
-    const newSchema = genComponent(this.type, this.id, newProperties, newTraits);
-    this.schema = newSchema;
+    return obj;
+  }
+
+  private get slotTrait() {
+    return this.traits.find(t => t.type === SlotTraitType);
+  }
+
+  toJS(): ApplicationComponent {
+    if (this.isDirty) {
+      this.isDirty = false;
+      const newProperties = this.rawProperties;
+      const newTraits = this.traits.map(t => t.toJS());
+      const newSchema = genComponent(this.type, this.id, newProperties, newTraits);
+      this.schema = newSchema;
+    }
     return this.schema;
-
-    // if (this.isDirty || this.traits.length !== this.origin.traits.length) {
-    //   return {
-    //     ...this.origin,
-    //     traits: this.traits.map(t => t.json),
-    //   };
-    // } else {
-    //   const isChanged = this.traits.some(t => t.isDirty);
-    //   if (isChanged) {
-    //     return {
-    //       ...this.origin,
-    //       traits: this.traits.map(t => t.json),
-    //     };
-    //   }
-    // }
-
-    // return this.origin;
   }
 
   changeComponentProperty(propertyName: string, value: any) {
     this.properties[propertyName].update(value);
     this.isDirty = true;
-    // const newSchema = produce(this.schema, draft => {
-    //   draft[componentIndex].properties[propertyName] = value;
-    // });
-    // this.updateSchema(newSchema)
   }
 
   addTrait(traitType: TraitType, properties: Record<string, unknown>): ITraitModel {
@@ -134,22 +122,98 @@ export class ComponentModel implements IComponentModel {
     return trait;
   }
 
-  appendTo = (slot: SlotName, parent: IComponentModel) => {
-    if (!parent.children[slot]) {
-      parent.children[slot] = [];
+  appendTo = (parent?: IComponentModel, slot?: SlotName) => {
+    // remove from current position
+    if (this.parent) {
+      const slotChildren = this.parent.children[this.parentSlot!];
+      slotChildren.splice(slotChildren.indexOf(this), 1);
     }
-
     // update parent
-    parent.children[slot].push(this);
-    this.parent = parent;
-    this.parentSlot = slot;
-    this.parentId = parent.id;
-
+    if (parent && slot) {
+      if (!parent.children[slot]) {
+        parent.children[slot] = [];
+      }
+  
+      parent.children[slot].push(this);
+      this.parent = parent;
+      this.parentSlot = slot;
+      this.parentId = parent.id;
+      // update trait
+      this.updateSlotTrait(parent.id, slot);
+    } else {
+      this.parent = null;
+      this.parentSlot = null;
+      this.parentId = null;
+      if (this.slotTrait) {
+        this.removeTrait(this.slotTrait?.id)
+      }
+      // remove from origin position in allComponents
+      const oldIndex = this.appModel.allComponents.indexOf(this)
+      if (oldIndex > -1){
+        this.appModel.allComponents.splice(this.appModel.allComponents.indexOf(this), 1);
+      }
+    }
     // update app model
     this.appModel.updateSingleComponent(this);
-
-    // update trait
-    this.addTrait(SlotTraitType, { container: { id: parent.id, slot } });
     this.isDirty = true;
   };
+
+  removeTrait(traitId: TraitId) {
+    const traitIndex = this.traits.findIndex(t => t.id === traitId);
+    if (traitIndex === -1) return;
+    this.traits.splice(traitIndex, 1);
+    this.isDirty = true;
+  }
+
+  changeId(newId: ComponentId) {
+    this.id = newId;
+    for (const slot in this.children) {
+      const slotChildren = this.children[slot as SlotName];
+      slotChildren.forEach(child => {
+        child.parentId = newId;
+        const slotTrait = child.traits.find(t => t.type === SlotTraitType);
+        if (slotTrait) {
+          slotTrait.properties.container.update({ id: newId, slot });
+          slotTrait.isDirty = true;
+        }
+        child.isDirty = true;
+      });
+    }
+    this.isDirty = true;
+    return this;
+  }
+
+  moveAfter(after: ComponentId | null) {
+    let siblings: IComponentModel[] = [];
+    if (this.parent) {
+      siblings = this.parent.children[this.parentSlot as SlotName];
+    } else {
+      siblings = this.appModel.model;
+    }
+    // update model
+    siblings.splice(siblings.indexOf(this), 1);
+    const afterIndexInSiblings = after ? siblings.findIndex(c => c.id === after) + 1 : 0;
+    siblings.splice(afterIndexInSiblings, 0, this);
+
+    // update allComponents schema
+    const allComponents = this.appModel.allComponents;
+    allComponents.splice(allComponents.indexOf(this), 1);
+    // if moving to the first of siblings, move to the next after parent
+    const afterTargetId = after || this.parent?.id;
+    const afterIndexInAllComponents = afterTargetId
+      ? allComponents.findIndex(c => c.id === afterTargetId) + 1
+      : 0;
+    allComponents.splice(afterIndexInAllComponents, 0, this);
+    return this;
+  }
+
+  updateSlotTrait(parent: ComponentId, slot: SlotName) {
+    if (this.slotTrait) {
+      this.slotTrait.properties.container.update({ id: parent, slot });
+      this.slotTrait.isDirty = true;
+    } else {
+      this.addTrait(SlotTraitType, { container: { id: parent, slot } });
+    }
+    this.isDirty = true;
+  }
 }
