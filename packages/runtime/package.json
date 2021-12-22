@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap --target es5",
     "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings"
@@ -51,6 +51,7 @@
     "wouter": "^2.7.4"
   },
   "devDependencies": {
+    "@swc/core": "^1.2.121",
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -65,7 +66,7 @@
     "@vitejs/plugin-react": "^1.0.1",
     "babel-jest": "^27.1.0",
     "jest": "^27.1.0",
-    "tsup": "^5.5.0",
+    "tsup": "^5.11.0",
     "typescript": "^4.5.0",
     "vite": "^2.6.13"
   }
