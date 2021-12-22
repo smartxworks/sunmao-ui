@@ -28,5 +28,9 @@ export * from './types/RuntimeSchema';
 export * from './types/TraitPropertiesSchema';
 export * from './constants';
 export * from './services/registry';
-export { default as Slot } from './components/_internal/Slot';
+export { default as Slot, getSlots } from './components/_internal/Slot';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
+export { default as Text, TextPropertySchema } from './components/_internal/Text';
+
+// TODO: check this export
+export { watch } from './utils/watchReactivity';
