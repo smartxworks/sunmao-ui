@@ -21,7 +21,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --target es5",
     "dev": "npm run build -- --watch",
     "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
@@ -32,6 +32,7 @@
     "url": "https://github.com/webzard-io/sunmao-ui/issues"
   },
   "devDependencies": {
+    "@swc/core": "^1.2.121",
     "@types/jest": "^26.0.23",
     "@types/lodash-es": "^4.17.5",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
@@ -40,7 +41,7 @@
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "tsup": "^5.5.0",
+    "tsup": "^5.11.0",
     "typescript": "^4.5.0"
   },
   "dependencies": {
