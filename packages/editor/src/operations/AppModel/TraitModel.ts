@@ -20,7 +20,7 @@ export class TraitModel implements ITraitModel {
   id: TraitId;
   type: TraitType;
   properties: Record<string, IFieldModel> = {};
-  isDirty = false;
+  _isDirty = false;
 
   constructor(trait: ComponentTrait, public parent: IComponentModel) {
     this.schema = trait;
@@ -43,19 +43,19 @@ export class TraitModel implements ITraitModel {
     return obj;
   }
 
-  toSchema(): ComponentTrait {
-    if (this.isDirty) {
-      this.schema = genTrait(this.type, this.rawProperties);
-    }
-    return this.schema;
-  }
-
   get methods() {
     return (this.spec ? this.spec.spec.methods.map(m => m.name) : []) as MethodName[];
   }
 
   get stateKeys() {
-    return (this.spec ? Object.keys(this.spec.spec.state) : []) as StateKey[];
+    return (this.spec ? Object.keys(this.spec.spec.state.properties || {}) : []) as StateKey[];
+  }
+
+  toSchema(): ComponentTrait {
+    if (this._isDirty) {
+      this.schema = genTrait(this.type, this.rawProperties);
+    }
+    return this.schema;
   }
 
   updateProperty(key: string, value: any) {
@@ -64,7 +64,7 @@ export class TraitModel implements ITraitModel {
     } else {
       this.properties[key] = new FieldModel(value);
     }
-    this.isDirty = true;
-    this.parent.isDirty = true;
+    this._isDirty = true;
+    this.parent._isDirty = true;
   }
 }

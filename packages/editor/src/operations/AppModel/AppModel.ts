@@ -6,19 +6,20 @@ import {
   ComponentType,
   IApplicationModel,
   IComponentModel,
-  IModuleModel,
   SlotName,
 } from './IAppModel';
 import { genComponent } from './utils';
 
 export class ApplicationModel implements IApplicationModel {
-  model: IComponentModel[] = [];
-  modules: IModuleModel[] = [];
+  topComponents: IComponentModel[] = [];
+  // modules: IModuleModel[] = [];
   private schema: ApplicationComponent[] = [];
   private componentMap: Record<ComponentId, IComponentModel> = {};
+  private componentsCount = 0
 
   constructor(components: ApplicationComponent[]) {
     this.schema = components;
+    this.componentsCount = components.length;
     this.resolveTree(components);
   }
 
@@ -35,15 +36,11 @@ export class ApplicationModel implements IApplicationModel {
     component.parentId = null;
     component.parentSlot = null;
     component.parent = null;
-    if (component.slotTrait) {
-      component.removeTrait(component.slotTrait.id)
+    if (component._slotTrait) {
+      component.removeTrait(component._slotTrait.id)
     }
-    this.model.push(component)
-    this.registerComponent(component)
-  }
-
-  registerComponent(component: IComponentModel) {
-    this.componentMap[component.id] = component;
+    this.topComponents.push(component)
+    this._registerComponent(component)
   }
 
   toSchema(): ApplicationComponent[] {
@@ -59,14 +56,6 @@ export class ApplicationModel implements IApplicationModel {
     return new ComponentModel(this, component);
   }
 
-  genId(type: ComponentType): ComponentId {
-    const { name } = parseType(type);
-    const componentsCount = this.allComponents.filter(
-      component => component.type === type
-    ).length;
-    return `${name}${componentsCount + 1}` as ComponentId;
-  }
-
   getComponentById(componentId: ComponentId): IComponentModel | undefined {
     return this.componentMap[componentId];
   }
@@ -78,9 +67,22 @@ export class ApplicationModel implements IApplicationModel {
       const children = comp.parent.children[comp.parentSlot];
       comp.parent.children[comp.parentSlot] = children.filter(c => c !== comp);
     } else {
-      this.model.splice(this.model.indexOf(comp), 1);
+      this.topComponents.splice(this.topComponents.indexOf(comp), 1);
 
     }
+  }
+
+  _registerComponent(component: IComponentModel) {
+    this.componentMap[component.id] = component;
+  }
+
+  private genId(type: ComponentType): ComponentId {
+    const { name } = parseType(type);
+    const newId = `${name}${this.componentsCount++}` as ComponentId;
+    if (this.allComponents.some(c => c.id === newId)) {
+      return this.genId(type);
+    }
+    return newId
   }
 
   private resolveTree(components: ApplicationComponent[]) {
@@ -102,7 +104,7 @@ export class ApplicationModel implements IApplicationModel {
         }
         child.parent = parent;
       } else {
-        this.model.push(child);
+        this.topComponents.push(child);
       }
     });
   }
@@ -110,13 +112,16 @@ export class ApplicationModel implements IApplicationModel {
   private traverseTree(cb: (c: IComponentModel) => void) {
     function traverse(root: IComponentModel) {
       cb(root)
+      if (root.id === 'hstack2') {
+        console.log('traver', root.children['content' as SlotName].map(c => c.id))
+      }
       for (const slot in root.children) {
         root.children[slot as SlotName].forEach(child => {
           traverse(child)
         })
       }
     }
-    this.model.forEach((parent) => {
+    this.topComponents.forEach((parent) => {
       traverse(parent);
     })
   }

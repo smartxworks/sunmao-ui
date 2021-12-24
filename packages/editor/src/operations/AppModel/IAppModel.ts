@@ -1,4 +1,4 @@
-import { ApplicationComponent, ComponentTrait } from "@sunmao-ui/core";
+import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
 
 export type ComponentId = string & {
   kind: 'componentId';
@@ -35,16 +35,15 @@ export type EventName = string & {
 };
 
 export interface IApplicationModel {
-  model: IComponentModel[];
-  modules: IModuleModel[];
+  topComponents: IComponentModel[];
+  // modules: IModuleModel[];
   allComponents: IComponentModel[];
   toSchema(): ApplicationComponent[];
-  createComponent(type: ComponentType, id?: ComponentId): IComponentModel
+  createComponent(type: ComponentType, id?: ComponentId): IComponentModel;
   getComponentById(id: ComponentId): IComponentModel | undefined;
-  genId(type: ComponentType): ComponentId;
   removeComponent(componentId: ComponentId): void;
-  registerComponent(component: IComponentModel): void
   appendChild(component: IComponentModel): void;
+  _registerComponent(component: IComponentModel): void;
 }
 
 export interface IModuleModel {
@@ -62,17 +61,17 @@ export interface IComponentModel {
   parent: IComponentModel | null;
   parentId: ComponentId | null;
   parentSlot: SlotName | null;
-  slotTrait: ITraitModel | null;
   traits: ITraitModel[];
   stateKeys: StateKey[];
   slots: SlotName[];
   styleSlots: StyleSlotName[];
   methods: MethodName[];
   events: EventName[];
-  isDirty: boolean;
   allComponents: IComponentModel[];
-  nextSilbing: IComponentModel | null
-  prevSilbling: IComponentModel | null
+  nextSilbing: IComponentModel | null;
+  prevSilbling: IComponentModel | null;
+  _isDirty: boolean;
+  _slotTrait: ITraitModel | null;
   toSchema(): ApplicationComponent;
   updateComponentProperty: (property: string, value: unknown) => void;
   // move component across level
@@ -86,18 +85,19 @@ export interface IComponentModel {
   removeTrait: (traitId: TraitId) => void;
   updateTraitProperties: (traitId: TraitId, properties: Record<string, unknown>) => void;
   updateSlotTrait: (parent: ComponentId, slot: SlotName) => void;
+  removeChild: (child: IComponentModel) => void;
 }
 
 export interface ITraitModel {
   // trait id only exists in model, doesnt exist in schema
-  id: TraitId
+  id: TraitId;
   parent: IComponentModel;
   type: TraitType;
   rawProperties: Record<string, any>;
   properties: Record<string, IFieldModel>;
   methods: MethodName[];
   stateKeys: StateKey[];
-  isDirty: boolean;
+  _isDirty: boolean;
   toSchema(): ComponentTrait;
   updateProperty: (key: string, value: any) => void;
 }
