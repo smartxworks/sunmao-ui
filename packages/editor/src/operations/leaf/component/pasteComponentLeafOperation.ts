@@ -31,7 +31,7 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
     targetParent.appendChild(component, this.context.slot as SlotName);
     this.componentCopy = component;
 
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
@@ -41,6 +41,6 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     const appModel = new ApplicationModel(prev);
     appModel.removeComponent(this.componentCopy.id);
-    return appModel.toJS()
+    return appModel.toSchema()
   }
 }

@@ -122,10 +122,10 @@ const AppSchema: Application = {
 };
 describe('change component properties', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
-  text1!.changeComponentProperty('value', { raw: 'hello', format: 'md' });
-  const newSchema = appModel.toJS();
+  text1!.updateComponentProperty('value', { raw: 'hello', format: 'md' });
+  const newSchema = appModel.toSchema();
 
   it('change component properties', () => {
     expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'md' });
@@ -141,20 +141,20 @@ describe('change component properties', () => {
 
 describe('remove component', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   appModel.removeComponent('text1' as any);
   it('remove component', () => {
-    const newSchema = appModel.toJS();
+    const newSchema = appModel.toSchema();
     expect(origin.length - 1).toEqual(newSchema.length);
     expect(newSchema.some(c => c.id === 'text1')).toBe(false);
   });
   it('remove top level component', () => {
     appModel.removeComponent('hstack3' as any);
-    const newSchema = appModel.toJS();
+    const newSchema = appModel.toSchema();
     expect(origin.length - 2).toEqual(newSchema.length);
     expect(newSchema.some(c => c.id === 'text1')).toBe(false);
   });
-  const newSchema = appModel.toJS();
+  const newSchema = appModel.toSchema();
   it('keep immutable after removing component', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).toBe(newSchema[0]);
@@ -163,7 +163,7 @@ describe('remove component', () => {
 
 describe('create component', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   const newComponent = appModel.createComponent('core/v1/text' as ComponentType);
   it('create component', () => {
     expect(newComponent.id).toEqual('text5');
@@ -193,7 +193,7 @@ describe('create component', () => {
       );
     });
     it('keep immutable after create component', () => {
-      const newSchema = appModel.toJS();
+      const newSchema = appModel.toSchema();
       expect(origin).not.toBe(newSchema);
       expect(origin.length).toBe(newSchema.length - 1);
       expect(origin[0]).toBe(newSchema[0]);
@@ -209,11 +209,11 @@ describe('create component', () => {
 
 describe('append component', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
-  const text1 = appModel.getComponentById('text1' as any);
+  const origin = appModel.toSchema();
+  const text1 = appModel.getComponentById('text1' as any)!;
   it('append component to top level', () => {
     text1.appendTo()
-    const newSchema = appModel.toJS();
+    const newSchema = appModel.toSchema();
     expect(newSchema[newSchema.length - 1].id).toBe('text1');
     expect(newSchema.length).toBe(origin.length);
   })
@@ -221,10 +221,10 @@ describe('append component', () => {
 
 describe('add trait', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
   text1!.addTrait('core/v1/state' as TraitType, { key: 'value' });
-  const newSchema = appModel.toJS();
+  const newSchema = appModel.toSchema();
 
   it('add trait', () => {
     expect(newSchema[5].traits[1].properties.key).toEqual('value');
@@ -239,10 +239,10 @@ describe('add trait', () => {
 
 describe('remove trait', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any)!;
   text1!.removeTrait(text1.traits[0].id);
-  const newSchema = appModel.toJS();
+  const newSchema = appModel.toSchema();
   it('remove trait', () => {
     expect(newSchema[5].traits.length).toEqual(0);
   });
@@ -258,10 +258,10 @@ describe('remove trait', () => {
 describe('change component id', () => {
   const newId = 'newHstack1' as ComponentId;
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   const hStack1 = appModel.getComponentById('hstack1' as ComponentId)!;
   hStack1.changeId(newId);
-  const newSchema = appModel.toJS();
+  const newSchema = appModel.toSchema();
   it('change component id', () => {
     expect(newSchema[0].id).toEqual(newId);
   });
@@ -293,13 +293,14 @@ describe('change component id', () => {
 
 describe('move component', () => {
   const appModel = new ApplicationModel(AppSchema.spec.components);
-  const origin = appModel.toJS();
+  const origin = appModel.toSchema();
   const hstack1 = appModel.getComponentById('hstack1' as ComponentId)!;
   const text1 = appModel.getComponentById('text1' as ComponentId)!;
 
   it('can move component', () => {
-    text1.moveAfter('text2' as ComponentId);
-    const newSchema = appModel.toJS();
+    const text2 = appModel.getComponentById('text2' as ComponentId)!;
+    text1.moveAfter(text2);
+    const newSchema = appModel.toSchema();
     expect(text1.parent!.children['content' as SlotName][0].id).toEqual('text2');
     expect(text1.parent!.children['content' as SlotName][1].id).toEqual('text1');
     expect(newSchema[5].id).toEqual('text2');
@@ -307,8 +308,9 @@ describe('move component', () => {
   });
 
   it('can move top level component', () => {
-    hstack1.moveAfter('hstack3' as ComponentId);
-    const newSchema = appModel.toJS();
+    const hstack3 = appModel.getComponentById('hstack3' as ComponentId)!;
+    hstack1.moveAfter(hstack3);
+    const newSchema = appModel.toSchema();
     expect(appModel.model[0].id).toEqual('hstack3');
     expect(appModel.model[1].id).toEqual('hstack1');
     expect(newSchema[0].id).toEqual('hstack3');
@@ -316,15 +318,15 @@ describe('move component', () => {
   });
   it('can move component to the first', () => {
     hstack1.moveAfter(null);
-    const newSchema = appModel.toJS();
+    const newSchema = appModel.toSchema();
     expect(appModel.model[0].id).toEqual('hstack1');
     expect(newSchema[0].id).toEqual('hstack1');
   });
 
   it('keep immutable after moving component', () => {
     const text2 = appModel.getComponentById('text2' as ComponentId)!;
-    text2.moveAfter('text1' as ComponentId);
-    const newSchema = appModel.toJS();
+    text2.moveAfter(text1);
+    const newSchema = appModel.toSchema();
     expect(origin).not.toBe(newSchema);
     expect(origin.every((v, i) => v === newSchema[i])).toBe(true);
   });

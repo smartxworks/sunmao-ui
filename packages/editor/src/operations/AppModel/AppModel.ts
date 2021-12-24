@@ -30,17 +30,25 @@ export class ApplicationModel implements IApplicationModel {
     return result
   }
 
-  updateSingleComponent(component: IComponentModel) {
+  appendChild(component: IComponentModel) {
     component.appModel = this;
-    if (!component.parent && !this.model.includes(component)) {
-      this.model.push(component)
+    component.parentId = null;
+    component.parentSlot = null;
+    component.parent = null;
+    if (component.slotTrait) {
+      component.removeTrait(component.slotTrait.id)
     }
+    this.model.push(component)
+    this.registerComponent(component)
+  }
+
+  registerComponent(component: IComponentModel) {
     this.componentMap[component.id] = component;
   }
 
-  toJS(): ApplicationComponent[] {
+  toSchema(): ApplicationComponent[] {
     this.schema = this.allComponents.map(c => {
-      return c.toJS();
+      return c.toSchema();
     });
 
     return this.schema;

@@ -20,7 +20,7 @@ export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafO
     }
     const trait = component.addTrait(this.context.traitType as TraitType, this.context.properties);
     this.traitId = trait.id;
-    return appModel.toJS()
+    return appModel.toSchema()
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
@@ -34,6 +34,6 @@ export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafO
       return prev
     }
     component.removeTrait(this.traitId);
-    return appModel.toJS()
+    return appModel.toSchema()
   }
 }

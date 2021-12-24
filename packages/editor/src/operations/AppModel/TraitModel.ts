@@ -43,7 +43,7 @@ export class TraitModel implements ITraitModel {
     return obj;
   }
 
-  toJS(): ComponentTrait {
+  toSchema(): ComponentTrait {
     if (this.isDirty) {
       this.schema = genTrait(this.type, this.rawProperties);
     }

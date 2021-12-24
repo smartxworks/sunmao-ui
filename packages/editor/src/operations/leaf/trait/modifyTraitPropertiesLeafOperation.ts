@@ -32,7 +32,7 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       trait.updateProperty(property, this.context.properties[property]);
     }
 
-    return appModel.toJS();
+    return appModel.toSchema();
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     const appModel = new ApplicationModel(prev);
@@ -47,7 +47,7 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       trait.updateProperty(property, this.context.properties[property]);
     }
 
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
@@ -63,6 +63,6 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       trait.updateProperty(property, this.previousState[property]);
     }
 
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 }

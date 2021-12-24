@@ -110,30 +110,30 @@ export class ComponentModel implements IComponentModel {
     return parentChildren[index + 1];
   }
 
-  private get slotTrait() {
-    return this.traits.find(t => t.type === SlotTraitType);
+  get slotTrait() {
+    return this.traits.find(t => t.type === SlotTraitType) || null;
   }
 
   get allComponents(): IComponentModel[] {
-    const result: IComponentModel[] = []
+    const result: IComponentModel[] = [];
     this.traverseTree(c => {
-      result.push(c)
-    })
-    return result
+      result.push(c);
+    });
+    return result;
   }
 
-  toJS(): ApplicationComponent {
+  toSchema(): ApplicationComponent {
     if (this.isDirty) {
       this.isDirty = false;
       const newProperties = this.rawProperties;
-      const newTraits = this.traits.map(t => t.toJS());
+      const newTraits = this.traits.map(t => t.toSchema());
       const newSchema = genComponent(this.type, this.id, newProperties, newTraits);
       this.schema = newSchema;
     }
     return this.schema;
   }
 
-  changeComponentProperty(propertyName: string, value: any) {
+  updateComponentProperty(propertyName: string, value: any) {
     this.properties[propertyName].update(value);
     this.isDirty = true;
   }
@@ -152,28 +152,22 @@ export class ComponentModel implements IComponentModel {
       const slotChildren = this.parent.children[this.parentSlot!];
       slotChildren.splice(slotChildren.indexOf(this), 1);
     }
-    // update parent
-    if (parent && slot) {
-      if (!parent.children[slot]) {
-        parent.children[slot] = [];
-      }
-  
-      parent.children[slot].push(this);
-      this.parent = parent;
-      this.parentSlot = slot;
-      this.parentId = parent.id;
-      // update trait
-      this.updateSlotTrait(parent.id, slot);
-    } else {
-      this.parent = null;
-      this.parentSlot = null;
-      this.parentId = null;
-      if (this.slotTrait) {
-        this.removeTrait(this.slotTrait?.id)
-      }
+    if (!parent || !slot) {
+      this.appModel.appendChild(this);
+      return;
     }
-    // update app model
-    this.appModel.updateSingleComponent(this);
+    // update parent
+    if (!parent.children[slot]) {
+      parent.children[slot] = [];
+    }
+
+    parent.children[slot].push(this);
+    parent.appModel.registerComponent(this)
+    this.parent = parent;
+    this.parentSlot = slot;
+    this.parentId = parent.id;
+    // update trait
+    this.updateSlotTrait(parent.id, slot);
     this.isDirty = true;
   };
 
@@ -202,7 +196,7 @@ export class ComponentModel implements IComponentModel {
     return this;
   }
 
-  moveAfter(after: ComponentId | null) {
+  moveAfter(after: IComponentModel | null) {
     let siblings: IComponentModel[] = [];
     if (this.parent) {
       siblings = this.parent.children[this.parentSlot as SlotName];
@@ -211,10 +205,8 @@ export class ComponentModel implements IComponentModel {
     }
     // update model
     siblings.splice(siblings.indexOf(this), 1);
-    const afterIndexInSiblings = after ? siblings.findIndex(c => c.id === after) + 1 : 0;
-    console.log('afterIndexInSiblings', afterIndexInSiblings)
+    const afterIndexInSiblings = after ? siblings.findIndex(c => c === after) + 1 : 0;
     siblings.splice(afterIndexInSiblings, 0, this);
-    console.log('siblings', siblings)
     return this;
   }
 
@@ -229,18 +221,18 @@ export class ComponentModel implements IComponentModel {
     child.appModel = this.appModel;
     child.updateSlotTrait(this.id, slot);
     this.traverseTree(c => {
-      this.appModel.updateSingleComponent(c)
-    })
+      this.appModel.registerComponent(c);
+    });
   }
 
-  updateTrait(traitId: TraitId, properties: Record<string, unknown>) {
+  updateTraitProperties(traitId: TraitId, properties: Record<string, unknown>) {
     const trait = this.traits.find(t => t.id === traitId);
     if (!trait) return;
     for (const property in properties) {
       trait.properties[property].update(properties[property]);
-      trait.isDirty = true
+      trait.isDirty = true;
     }
-    console.log('new trait', trait)
+    console.log('new trait', trait);
     this.isDirty = true;
   }
 
@@ -256,13 +248,13 @@ export class ComponentModel implements IComponentModel {
 
   private traverseTree(cb: (c: IComponentModel) => void) {
     function traverse(root: IComponentModel) {
-      cb(root)
+      cb(root);
       for (const slot in root.children) {
         root.children[slot as SlotName].forEach(child => {
-          traverse(child)
-        })
+          traverse(child);
+        });
       }
     }
-    traverse(this)
+    traverse(this);
   }
 }

@@ -11,7 +11,6 @@ export class AppModelManager implements IUndoRedoManager {
     eventBus.on('redo', () => this.redo());
     eventBus.on('operation', o => this.do(o));
     eventBus.on('componentsRefresh', components => {
-      console.log('componentsRefresh', components);
       this.components = components;
       this.operationStack = new OperationList();
     });
