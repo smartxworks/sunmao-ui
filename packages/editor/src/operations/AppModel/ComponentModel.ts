@@ -31,7 +31,7 @@ export class ComponentModel implements IComponentModel {
   parentId: ComponentId | null = null;
   parentSlot: SlotName | null = null;
   traits: ITraitModel[] = [];
-  isDirty = false;
+  _isDirty = false;
 
   constructor(public appModel: IApplicationModel, private schema: ApplicationComponent) {
     this.schema = schema;
@@ -60,7 +60,7 @@ export class ComponentModel implements IComponentModel {
 
   get stateKeys() {
     if (!this.spec) return [];
-    const componentStateKeys = Object.keys(this.spec.spec.state) as StateKey[];
+    const componentStateKeys = Object.keys(this.spec.spec.state.properties || {}) as StateKey[];
     const traitStateKeys: StateKey[] = this.traits.reduce(
       (acc, t) => acc.concat(t.stateKeys),
       [] as StateKey[]
@@ -110,7 +110,7 @@ export class ComponentModel implements IComponentModel {
     return parentChildren[index + 1];
   }
 
-  get slotTrait() {
+  get _slotTrait() {
     return this.traits.find(t => t.type === SlotTraitType) || null;
   }
 
@@ -123,8 +123,8 @@ export class ComponentModel implements IComponentModel {
   }
 
   toSchema(): ApplicationComponent {
-    if (this.isDirty) {
-      this.isDirty = false;
+    if (this._isDirty) {
+      this._isDirty = false;
       const newProperties = this.rawProperties;
       const newTraits = this.traits.map(t => t.toSchema());
       const newSchema = genComponent(this.type, this.id, newProperties, newTraits);
@@ -135,22 +135,21 @@ export class ComponentModel implements IComponentModel {
 
   updateComponentProperty(propertyName: string, value: any) {
     this.properties[propertyName].update(value);
-    this.isDirty = true;
+    this._isDirty = true;
   }
 
   addTrait(traitType: TraitType, properties: Record<string, unknown>): ITraitModel {
     const traitSchema = genTrait(traitType, properties);
     const trait = new TraitModel(traitSchema, this);
     this.traits.push(trait);
-    this.isDirty = true;
+    this._isDirty = true;
     return trait;
   }
 
   appendTo = (parent?: IComponentModel, slot?: SlotName) => {
     // remove from current position
     if (this.parent) {
-      const slotChildren = this.parent.children[this.parentSlot!];
-      slotChildren.splice(slotChildren.indexOf(this), 1);
+      this.parent.removeChild(this);
     }
     if (!parent || !slot) {
       this.appModel.appendChild(this);
@@ -162,20 +161,30 @@ export class ComponentModel implements IComponentModel {
     }
 
     parent.children[slot].push(this);
-    parent.appModel.registerComponent(this)
+    parent.appModel._registerComponent(this)
     this.parent = parent;
     this.parentSlot = slot;
     this.parentId = parent.id;
     // update trait
     this.updateSlotTrait(parent.id, slot);
-    this.isDirty = true;
+    this._isDirty = true;
   };
+
+  removeChild(child: IComponentModel) {
+    const slotChildren = this.children[child.parentSlot!];
+    if (slotChildren) {
+      slotChildren.splice(slotChildren.indexOf(child), 1);
+      child._isDirty = true;
+      this._isDirty = true;
+      console.log('after',this.id, this.allComponents.map(c => c.id))
+    }
+  }
 
   removeTrait(traitId: TraitId) {
     const traitIndex = this.traits.findIndex(t => t.id === traitId);
     if (traitIndex === -1) return;
     this.traits.splice(traitIndex, 1);
-    this.isDirty = true;
+    this._isDirty = true;
   }
 
   changeId(newId: ComponentId) {
@@ -187,12 +196,12 @@ export class ComponentModel implements IComponentModel {
         const slotTrait = child.traits.find(t => t.type === SlotTraitType);
         if (slotTrait) {
           slotTrait.properties.container.update({ id: newId, slot });
-          slotTrait.isDirty = true;
+          slotTrait._isDirty = true;
         }
-        child.isDirty = true;
+        child._isDirty = true;
       });
     }
-    this.isDirty = true;
+    this._isDirty = true;
     return this;
   }
 
@@ -201,7 +210,7 @@ export class ComponentModel implements IComponentModel {
     if (this.parent) {
       siblings = this.parent.children[this.parentSlot as SlotName];
     } else {
-      siblings = this.appModel.model;
+      siblings = this.appModel.topComponents;
     }
     // update model
     siblings.splice(siblings.indexOf(this), 1);
@@ -211,6 +220,9 @@ export class ComponentModel implements IComponentModel {
   }
 
   appendChild(child: IComponentModel, slot: SlotName) {
+    if (child.parent) {
+      child.parent.removeChild(child);
+    }
     if (!this.children[slot]) {
       this.children[slot] = [];
     }
@@ -218,10 +230,10 @@ export class ComponentModel implements IComponentModel {
     child.parent = this;
     child.parentSlot = slot;
     child.parentId = this.id;
-    child.appModel = this.appModel;
     child.updateSlotTrait(this.id, slot);
+    this.appModel._registerComponent(child);
     this.traverseTree(c => {
-      this.appModel.registerComponent(c);
+      this.appModel._registerComponent(c);
     });
   }
 
@@ -230,20 +242,20 @@ export class ComponentModel implements IComponentModel {
     if (!trait) return;
     for (const property in properties) {
       trait.properties[property].update(properties[property]);
-      trait.isDirty = true;
+      trait._isDirty = true;
     }
     console.log('new trait', trait);
-    this.isDirty = true;
+    this._isDirty = true;
   }
 
   updateSlotTrait(parent: ComponentId, slot: SlotName) {
-    if (this.slotTrait) {
-      this.slotTrait.properties.container.update({ id: parent, slot });
-      this.slotTrait.isDirty = true;
+    if (this._slotTrait) {
+      this._slotTrait.properties.container.update({ id: parent, slot });
+      this._slotTrait._isDirty = true;
     } else {
       this.addTrait(SlotTraitType, { container: { id: parent, slot } });
     }
-    this.isDirty = true;
+    this._isDirty = true;
   }
 
   private traverseTree(cb: (c: IComponentModel) => void) {
