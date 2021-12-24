@@ -93,12 +93,12 @@ const PropsSchema = Type.Object({
   customerIncrement: Type.Object({
     bg: Type.Optional(Type.String()),
     children: Type.Optional(Type.String()),
-    _active: Type.Object(Type.Object({ bg: Type.String() })),
+    _active: Type.Object({ bg: Type.String() }),
   }),
   customerDecrement: Type.Object({
     bg: Type.Optional(Type.String()),
     children: Type.Optional(Type.String()),
-    _active: Type.Object(Type.Object({ bg: Type.String() })),
+    _active: Type.Object({ bg: Type.String() }),
   }),
 });
 

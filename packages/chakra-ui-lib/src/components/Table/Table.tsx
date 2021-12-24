@@ -130,7 +130,7 @@ export const TableImpl: ComponentImplementation<{
 
   const tableContent = (
     <>
-      <BaseTable size={size}>
+      <BaseTable size={size || 'md'}>
         <Thead>
           <Tr height="10">
             {isMultiSelect ? allCheckbox : undefined}

@@ -13,7 +13,7 @@ import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import produce from 'immer';
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { EventHandlerSchema, FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
+import { EventCallBackHandlerSchema, FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EventHandlerForm } from '../EventTraitForm/EventHandlerForm';
@@ -21,7 +21,7 @@ import { eventBus } from '../../../eventBus';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation } from '../../../operations';
 
-type EventHandler = Static<typeof EventHandlerSchema>;
+type EventHandler = Static<typeof EventCallBackHandlerSchema>;
 
 type Props = {
   component: ApplicationComponent;
@@ -113,7 +113,6 @@ export const FetchTraitForm: React.FC<Props> = props => {
 
   const onAddHandler = () => {
     const newHandler: EventHandler = {
-      type: '',
       componentId: '',
       method: {
         name: '',
@@ -126,10 +125,10 @@ export const FetchTraitForm: React.FC<Props> = props => {
       },
     };
 
-    formik.setFieldValue('onComplete', [...formik.values.onComplete, newHandler]);
+    formik.setFieldValue('onComplete', [...(formik.values.onComplete || []), newHandler]);
   };
 
-  const onCompleteField = (
+  const onCompleteField = formik.values.onComplete ? (
     <FormControl>
       <HStack width="full" justify="space-between">
         <FormLabel>onComplete</FormLabel>
@@ -145,14 +144,14 @@ export const FetchTraitForm: React.FC<Props> = props => {
       </HStack>
       {formik.values.onComplete.map((handler, i) => {
         const onChange = (handler: EventHandler) => {
-          const newOnComplete = produce(formik.values.onComplete, draft => {
+          const newOnComplete = produce(formik.values.onComplete || [], draft => {
             draft[i] = handler;
           });
           formik.setFieldValue('onComplete', newOnComplete);
           formik.submitForm();
         };
         const onRemove = () => {
-          const newOnComplete = produce(formik.values.onComplete, draft => {
+          const newOnComplete = produce(formik.values.onComplete || [], draft => {
             draft.splice(i, 1);
           });
           formik.setFieldValue('onComplete', newOnComplete);
@@ -162,7 +161,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
           <EventHandlerForm
             key={i}
             eventTypes={[]}
-            handler={handler}
+            handler={{type: '', ...handler}}
             hideEventType={true}
             onChange={onChange}
             onRemove={onRemove}
@@ -171,7 +170,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
         );
       })}
     </FormControl>
-  );
+  ) : null;
 
   return (
     <Box width="full" position="relative">

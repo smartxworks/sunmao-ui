@@ -24,7 +24,7 @@ const useHiddenTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
 
 const PropsSchema = Type.Object({
   hidden: Type.Boolean(),
-  visually: Type.Boolean(),
+  visually: Type.Optional(Type.Boolean()),
 });
 
 export default {
@@ -36,8 +36,6 @@ export default {
     },
     spec: {
       properties: PropsSchema,
-      state: {},
-      methods: [],
     },
   }),
   impl: useHiddenTrait,

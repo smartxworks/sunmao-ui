@@ -16,6 +16,7 @@ import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
+import { WarningArea } from './WarningArea';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -92,14 +93,18 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
     const appBox = (
       <Box flex="1" background="gray.50" p={1} overflow="hidden">
         <Box
-          width="100%"
-          height="100%"
+          width="full"
+          height="full"
           background="white"
           overflow="auto"
           transform={`scale(${scale / 100})`}
+          position="relative"
         >
           <Box id={DIALOG_CONTAINER_ID} width="full" height="full" position="absolute" />
-          {appComponent}
+          <Box width="full" overflow="auto">
+            {appComponent}
+          </Box>
+          <WarningArea />
         </Box>
       </Box>
     );
