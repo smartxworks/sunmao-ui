@@ -60,6 +60,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
     <FormControl>
       <FormLabel>Event Type</FormLabel>
       <Select
+        name="type"
         placeholder="Select Event Type"
         onChange={formik.handleChange}
         onBlur={() => formik.submitForm()}

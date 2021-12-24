@@ -37,6 +37,8 @@
     "@emotion/styled": "^11",
     "@sunmao-ui/core": "^0.3.2",
     "@sunmao-ui/runtime": "^0.3.6",
+    "@sunmao-ui/chakra-ui-lib": "^0.1.0",
+    "ajv": "^8.8.2",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "framer-motion": "^4",
