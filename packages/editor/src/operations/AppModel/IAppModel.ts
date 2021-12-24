@@ -38,12 +38,13 @@ export interface IApplicationModel {
   model: IComponentModel[];
   modules: IModuleModel[];
   allComponents: IComponentModel[];
-  toJS(): ApplicationComponent[];
+  toSchema(): ApplicationComponent[];
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel
   getComponentById(id: ComponentId): IComponentModel | undefined;
   genId(type: ComponentType): ComponentId;
   removeComponent(componentId: ComponentId): void;
-  updateSingleComponent(component: IComponentModel): void;
+  registerComponent(component: IComponentModel): void
+  appendChild(component: IComponentModel): void;
 }
 
 export interface IModuleModel {
@@ -61,6 +62,7 @@ export interface IComponentModel {
   parent: IComponentModel | null;
   parentId: ComponentId | null;
   parentSlot: SlotName | null;
+  slotTrait: ITraitModel | null;
   traits: ITraitModel[];
   stateKeys: StateKey[];
   slots: SlotName[];
@@ -69,20 +71,21 @@ export interface IComponentModel {
   events: EventName[];
   isDirty: boolean;
   allComponents: IComponentModel[];
-  toJS(): ApplicationComponent;
-  changeComponentProperty: (key: string, value: unknown) => void;
+  nextSilbing: IComponentModel | null
+  prevSilbling: IComponentModel | null
+  toSchema(): ApplicationComponent;
+  updateComponentProperty: (property: string, value: unknown) => void;
   // move component across level
   appendTo: (parent?: IComponentModel, slot?: SlotName) => void;
   // move in same level
-  moveAfter: (after: ComponentId | null) => IComponentModel;
+  moveAfter: (after: IComponentModel | null) => IComponentModel;
+  // share methods
   appendChild: (component: IComponentModel, slot: SlotName) => void;
   changeId: (newId: ComponentId) => IComponentModel;
   addTrait: (traitType: TraitType, properties: Record<string, unknown>) => ITraitModel;
   removeTrait: (traitId: TraitId) => void;
-  updateTrait: (traitId: TraitId, properties: Record<string, unknown>) => void;
+  updateTraitProperties: (traitId: TraitId, properties: Record<string, unknown>) => void;
   updateSlotTrait: (parent: ComponentId, slot: SlotName) => void;
-  nextSilbing: IComponentModel | null
-  prevSilbling: IComponentModel | null
 }
 
 export interface ITraitModel {
@@ -95,7 +98,7 @@ export interface ITraitModel {
   methods: MethodName[];
   stateKeys: StateKey[];
   isDirty: boolean;
-  toJS(): ComponentTrait;
+  toSchema(): ComponentTrait;
   updateProperty: (key: string, value: any) => void;
 }
 

@@ -20,7 +20,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     this.beforeComponent = this.deletedComponent?.prevSilbling || undefined;
     console.log(this.beforeComponent)
     appModel.removeComponent(this.context.componentId as ComponentId);
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
@@ -45,6 +45,6 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     }
     this.deletedComponent.moveAfter(this.beforeComponent?.id || null);
     console.log(appModel)
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 }

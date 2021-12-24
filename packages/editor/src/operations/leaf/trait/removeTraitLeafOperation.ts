@@ -20,7 +20,7 @@ export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafO
 
     this.deletedTrait = component.traits[this.context.index];
     component.removeTrait(this.deletedTrait.id);
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
@@ -36,6 +36,6 @@ export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafO
     }
 
     component.addTrait(this.deletedTrait.type, this.deletedTrait.rawProperties);
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 }

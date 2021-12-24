@@ -24,7 +24,7 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
           // if modified value is a lazy function, execute it and assign
           newValue = newValue(_.cloneDeep(oldValue));
         }
-        component.changeComponentProperty(property, newValue);
+        component.updateComponentProperty(property, newValue);
         this.context.properties[property] = newValue;
       }
     } else {
@@ -32,7 +32,7 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
       return prev;
     }
 
-    const newSchema = appModel.toJS();
+    const newSchema = appModel.toSchema();
     return newSchema;
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
@@ -44,9 +44,9 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     }
 
     for (const property in this.context.properties) {
-      component.changeComponentProperty(property, this.context.properties[property]);
+      component.updateComponentProperty(property, this.context.properties[property]);
     }
-    return appModel.toJS();
+    return appModel.toSchema();
   }
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     const appModel = new ApplicationModel(prev);
@@ -57,9 +57,9 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     }
 
     for (const property in this.previousState) {
-      component.changeComponentProperty(property, this.previousState[property]);
+      component.updateComponentProperty(property, this.previousState[property]);
     }
 
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 }

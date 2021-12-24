@@ -25,7 +25,7 @@ export class CreateComponentLeafOperation extends BaseLeafOperation<CreateCompon
       component.appendTo();
     }
     this.component = component;
-    const newSchema = appModel.toJS()
+    const newSchema = appModel.toSchema()
     return newSchema
   }
 
@@ -36,6 +36,6 @@ export class CreateComponentLeafOperation extends BaseLeafOperation<CreateCompon
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
     const appModel = new ApplicationModel(prev);
     appModel.removeComponent(this.component.id)
-    return appModel.toJS()
+    return appModel.toSchema()
   }
 }

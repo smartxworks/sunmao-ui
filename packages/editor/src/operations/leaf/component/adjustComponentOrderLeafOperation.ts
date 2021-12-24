@@ -34,16 +34,16 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
           console.warn('destination index out of bound');
           return prev;
         }
-        component.moveAfter(component.prevSilbling?.prevSilbling?.id || null);
+        component.moveAfter(component.prevSilbling?.prevSilbling || null);
         break;
       case 'down':
         if (!component.nextSilbing) {
           console.warn('destination index out of bound');
           return prev;
         }
-        component.moveAfter(component.nextSilbing?.id || null);
+        component.moveAfter(component.nextSilbing || null);
         break;
     }
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 }

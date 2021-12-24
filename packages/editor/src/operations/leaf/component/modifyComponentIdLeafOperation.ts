@@ -17,7 +17,7 @@ export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComp
       return prev;
     }
     component.changeId(this.context.newId as ComponentId);
-    return appModel.toJS();
+    return appModel.toSchema();
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
     return this.do(prev);
@@ -26,6 +26,6 @@ export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComp
     const appModel = new ApplicationModel(prev);
     const component = appModel.getComponentById(this.context.newId as ComponentId)!;
     component.changeId(this.context.componentId as ComponentId);
-    return appModel.toJS();
+    return appModel.toSchema();
   }
 }
