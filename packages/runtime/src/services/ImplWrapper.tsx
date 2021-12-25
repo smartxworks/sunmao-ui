@@ -6,6 +6,7 @@ import {
   ImplWrapperProps,
   TraitResult,
 } from '../types/RuntimeSchema';
+import { getSlotWithMap } from 'src/components/_internal/Slot';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
@@ -79,7 +80,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     }, [c.id, mergeState, registry, services, subscribeMethods])
 
     // result returned from traits
-    const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
+    const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(() => {
       return c.traits.map(trait =>
         excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
       );
@@ -112,9 +113,9 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     }, [c.traits, excecuteTrait, stateManager]);
 
     // reduce traitResults
-    const propsFromTraits: TraitResult['props'] = useMemo(() => {
+    const propsFromTraits: TraitResult<string, string>['props'] = useMemo(() => {
       return Array.from(traitResults.values()).reduce(
-        (prevProps, result: TraitResult) => {
+        (prevProps, result: TraitResult<string, string>) => {
           if (!result.props) {
             return prevProps;
           }
@@ -126,7 +127,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
 
           return merge(prevProps, result.props, { effects });
         },
-        {} as TraitResult['props']
+        {} as TraitResult<string, string>['props']
       );
     }, [traitResults]);
     const unmount = traitResults.some(r => r.unmount);
@@ -150,12 +151,15 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     }, [c.properties, stateManager]);
 
     const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
+    const { slotsMap, ...restProps } = props;
+    const Slot = getSlotWithMap(slotsMap);
 
     const C = unmount ? null : (
       <Impl
         key={c.id}
         {...mergedProps}
-        {...props}
+        {...restProps}
+        Slot={Slot}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
       />

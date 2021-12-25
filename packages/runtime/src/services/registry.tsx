@@ -6,7 +6,7 @@ import {
 } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
-import PlainButton from '../components/plain/Button';
+// import PlainButton from '../components/plain/Button';
 import CoreText from '../components/core/Text';
 import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
@@ -30,7 +30,16 @@ import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
 
-export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
+export type ComponentImplementation<
+  TProps = any,
+  TState = any,
+  TMethods = Record<string, any>,
+  KSlot extends string = string,
+  KStyleSlot extends string = string,
+  KEvent extends string = string
+> = React.FC<
+  TProps & ComponentImplementationProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
+>;
 
 export type ImplementedRuntimeComponent = RuntimeComponentSpec & {
   impl: ComponentImplementation;
@@ -51,9 +60,9 @@ export type SunmaoLib = {
 };
 
 export class Registry {
-  components = new Map<string, Map<string, ImplementedRuntimeComponent>>()
-  traits = new Map<string, Map<string, ImplementedRuntimeTrait>>()
-  modules = new Map<string, Map<string, ImplementedRuntimeModule>>()
+  components = new Map<string, Map<string, ImplementedRuntimeComponent>>();
+  traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
+  modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
 
   registerComponent(c: ImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
@@ -87,7 +96,7 @@ export class Registry {
         res.push(component);
       }
     }
-    return res
+    return res;
   }
 
   registerTrait(t: ImplementedRuntimeTrait) {
@@ -132,7 +141,7 @@ export class Registry {
         res.push(trait);
       }
     }
-    return res
+    return res;
   }
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {
@@ -170,7 +179,8 @@ export class Registry {
 
 export function initRegistry(): Registry {
   const registry = new Registry();
-  registry.registerComponent(PlainButton);
+  // TODO: (type-safe) register v2 component
+  // registry.registerComponent(PlainButton);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);
   registry.registerComponent(CoreRouter);

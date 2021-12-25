@@ -5,6 +5,7 @@ import { ImplWrapper } from './services/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
+import { getSlotWithMap } from 'src/components/_internal/Slot';
 
 // inject modules to App
 export function genApp(services: UIServices) {
@@ -38,14 +39,17 @@ export const App: React.FC<AppProps> = props => {
   );
 
   return (
-    <div className="App" style={{height: '100vh', overflow: 'auto'}}>
+    <div className="App" style={{ height: '100vh', overflow: 'auto' }}>
       {topLevelComponents.map(c => {
+        const slotsMap = slotComponentsMap.get(c.id);
+        const Slot = getSlotWithMap(slotsMap);
         return (
           <ImplWrapper
             key={c.id}
             component={c}
             services={services}
-            slotsMap={slotComponentsMap.get(c.id)}
+            slotsMap={slotsMap}
+            Slot={Slot}
             targetSlot={null}
             app={app}
             componentWrapper={componentWrapper}
