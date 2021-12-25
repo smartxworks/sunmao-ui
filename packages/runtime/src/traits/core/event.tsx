@@ -45,7 +45,7 @@ const useEventTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
     }
   }
 
-  const callbackMap: CallbackMap = {};
+  const callbackMap: CallbackMap<string> = {};
 
   for (const eventName in callbackQueueMap) {
     callbackMap[eventName] = () => {

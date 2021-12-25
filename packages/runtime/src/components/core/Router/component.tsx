@@ -59,7 +59,7 @@ export const Route: React.FC<RouteProps> = ({ match, children, mergeState }) => 
 type SwitchProps = {
   location?: string;
   switchPolicy: SwitchPolicy;
-  slotMap?: SlotsMap;
+  slotMap?: SlotsMap<string>;
   mergeState: (partialState: any) => void;
   subscribeMethods: (map: { [key: string]: (parameters: any) => void }) => void;
 };
@@ -241,11 +241,11 @@ const flattenChildren = (
   }
   return Array.isArray(children)
     ? ([] as ReactElement<RouteProps>[]).concat(
-      ...children.map(c =>
-        c.type === Fragment
-          ? flattenChildren(c.props.children as ReactElement<RouteProps>)
-          : flattenChildren(c)
+        ...children.map(c =>
+          c.type === Fragment
+            ? flattenChildren(c.props.children as ReactElement<RouteProps>)
+            : flattenChildren(c)
+        )
       )
-    )
     : [children];
 };
