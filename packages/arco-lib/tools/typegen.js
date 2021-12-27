@@ -155,4 +155,7 @@ ${Object.keys(props)
   {
     component: "Divider",
   },
+  {
+    component: "Avatar",
+  },
 ].forEach(generate);
