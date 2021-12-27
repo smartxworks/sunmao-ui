@@ -1,5 +1,5 @@
 import { registry } from '../../src/setup';
-import { ComponentInvalidSchema,ComponentPropertyExpressionSchema } from './schema';
+import { ComponentInvalidSchema,ComponentPropertyExpressionSchema } from './mock';
 import { SchemaValidator } from '../../src/validator';
 
 const schemaValidator = new SchemaValidator(registry);

@@ -1,5 +1,5 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { ApplicationModel } from '../../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
@@ -10,7 +10,7 @@ export type ModifyComponentIdLeafOperationContext = {
 
 export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComponentIdLeafOperationContext> {
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
@@ -23,7 +23,7 @@ export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComp
     return this.do(prev);
   }
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.newId as ComponentId)!;
     component.changeId(this.context.componentId as ComponentId);
     return appModel.toSchema();

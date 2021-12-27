@@ -12,14 +12,14 @@ class ParentValidatorRule implements AllComponentsValidatorRule {
   }: AllComponentsValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     const allComponents = appModel.allComponents
-    const allComponentsFromSchema = appModel.allComponentsFromSchema
+    const allComponentsFromSchema = appModel.allComponentsWithOrphan
     if (allComponents.length === allComponentsFromSchema.length) {
       return results
     }
 
-    const orphenComponents = allComponentsFromSchema.filter(c => !allComponents.find(c2 => c2.id === c.id))
+    const orphanComponents = allComponentsFromSchema.filter(c => !allComponents.find(c2 => c2.id === c.id))
   
-    orphenComponents.forEach(c => {
+    orphanComponents.forEach(c => {
       const parent = appModel.getComponentById(c.parentId!)
       if (!parent) {
         results.push({

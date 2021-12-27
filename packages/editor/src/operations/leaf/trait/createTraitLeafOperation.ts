@@ -1,5 +1,5 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { ApplicationModel } from '../../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, TraitId, TraitType } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
@@ -13,7 +13,7 @@ export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafO
   private traitId!: TraitId;
 
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       return prev
@@ -28,7 +28,7 @@ export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafO
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       return prev

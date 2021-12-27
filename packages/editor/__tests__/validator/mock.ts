@@ -1,6 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 
-export const OrphenComponentSchema: ApplicationComponent[] = [
+export const OrphanComponentSchema: ApplicationComponent[] = [
   {
     id: 'hstack1',
     type: 'chakra_ui/v1/hstack',

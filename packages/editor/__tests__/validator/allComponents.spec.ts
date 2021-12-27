@@ -1,12 +1,12 @@
 import { registry } from '../../src/setup';
-import { ComponentInvalidSchema } from './schema';
+import { OrphanComponentSchema } from './mock';
 import { SchemaValidator } from '../../src/validator';
 
 const schemaValidator = new SchemaValidator(registry);
 
 describe('Validate all components', () => {
-  const result = schemaValidator.validate(ComponentInvalidSchema);
-  describe('detect orphen components', () => {
+  const result = schemaValidator.validate(OrphanComponentSchema);
+  describe('detect orphan components', () => {
     it('no parent', () => {
       expect(result[0].message).toBe(`Cannot find parent component: aParent.`);
     });

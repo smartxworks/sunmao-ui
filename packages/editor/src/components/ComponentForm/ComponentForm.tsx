@@ -31,7 +31,6 @@ export const renderField = (properties: {
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
-      console.log('index', index)
       const operation = type
         ? genOperation('modifyTraitProperty', {
             componentId: selectedComponentId,

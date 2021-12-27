@@ -1,5 +1,5 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { ApplicationModel } from '../../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 export type AdjustComponentOrderLeafOperationContext = {
@@ -20,7 +20,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
   }
 
   private move(prev: ApplicationComponent[], orientation: 'up' | 'down'): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');

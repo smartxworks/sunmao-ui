@@ -3,7 +3,7 @@ import {
   TraitInvalidSchema,
   EventTraitSchema,
   EventTraitTraitMethodSchema,
-} from './schema';
+} from './mock';
 import { SchemaValidator } from '../../src/validator';
 
 const schemaValidator = new SchemaValidator(registry);
@@ -21,7 +21,6 @@ describe('Validate trait', () => {
 
   describe('validate event trait', () => {
     const result = schemaValidator.validate(EventTraitSchema);
-    console.log('result', result);
     it('detect wrong event', () => {
       expect(result[0].message).toBe(`Component does not have event: change.`);
     });

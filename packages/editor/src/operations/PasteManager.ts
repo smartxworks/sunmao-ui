@@ -10,6 +10,5 @@ export class PasteManager {
     this.rootComponentId = componentId;
     const children = getComponentAndChildrens(componentId, allComponents);
     this.componentsCache = [...children];
-    this.copyTimes = 0;
   }
 }
