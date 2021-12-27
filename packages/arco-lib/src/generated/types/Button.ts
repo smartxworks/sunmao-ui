@@ -5,6 +5,7 @@ import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
 export const ButtonPropsSchema = {
   'htmlType': Type.Optional(StringUnion(['button', 'submit', 'reset'])),
   'type': Type.Optional(StringUnion(['default', 'primary', 'secondary', 'dashed', 'text', 'outline'])),
+  'status': Type.Optional(StringUnion(['default', 'warning', 'danger', 'success'])),
   'size': Type.Optional(StringUnion(['default', 'mini', 'small', 'large'])),
   'shape': Type.Optional(StringUnion(['circle', 'round', 'square'])),
   'href': Type.Optional(Type.String()),
