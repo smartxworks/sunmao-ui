@@ -44,7 +44,7 @@ export class TraitModel implements ITraitModel {
   }
 
   get methods() {
-    return (this.spec ? this.spec.spec.methods.map(m => m.name) : []) as MethodName[];
+    return this.spec ? this.spec.spec.methods as any : []
   }
 
   get stateKeys() {
