@@ -121,12 +121,6 @@ export class ApplicationModel implements IApplicationModel {
   private traverseTree(cb: (c: IComponentModel) => void) {
     function traverse(root: IComponentModel) {
       cb(root);
-      if (root.id === 'hstack2') {
-        console.log(
-          'traver',
-          root.children['content' as SlotName].map(c => c.id)
-        );
-      }
       for (const slot in root.children) {
         root.children[slot as SlotName].forEach(child => {
           traverse(child);

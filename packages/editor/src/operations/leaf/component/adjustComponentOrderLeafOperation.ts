@@ -29,7 +29,6 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
 
     switch (orientation) {
       case 'up':
-        console.log('component.prevSilbling', component.prevSilbling)
         if (!component.prevSilbling) {
           console.warn('destination index out of bound');
           return prev;
