@@ -1,6 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
-import { ComponentId, SlotName } from '../AppModel/IAppModel';
+import { ComponentId, SlotName } from '../../AppModel/IAppModel';
 import {
   CreateComponentLeafOperation,
   ModifyComponentPropertiesLeafOperation,

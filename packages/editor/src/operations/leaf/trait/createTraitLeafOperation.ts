@@ -1,6 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { ApplicationModel } from '../../AppModel/AppModel';
-import { ComponentId, TraitId, TraitType } from '../../AppModel/IAppModel';
+import { ApplicationModel } from '../../../AppModel/AppModel';
+import { ComponentId, TraitId, TraitType } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type CreateTraitLeafOperationContext = {

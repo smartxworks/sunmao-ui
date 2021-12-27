@@ -1,8 +1,8 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { BaseLeafOperation } from '../../type';
 import _ from 'lodash-es';
-import { ApplicationModel } from '../../AppModel/AppModel';
-import { ComponentId } from '../../AppModel/IAppModel';
+import { ApplicationModel } from '../../../AppModel/AppModel';
+import { ComponentId } from '../../../AppModel/IAppModel';
 export type ModifyComponentPropertiesLeafOperationContext = {
   componentId: string;
   properties: Record<string, any | (<T = any>(prev: T) => T)>;

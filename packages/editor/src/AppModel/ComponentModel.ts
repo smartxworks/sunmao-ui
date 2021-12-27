@@ -1,5 +1,5 @@
-import { ApplicationComponent, RuntimeComponentSpec } from '@sunmao-ui/core';
-import { registry } from '../../setup';
+import { ApplicationComponent, MethodSchema, RuntimeComponentSpec } from '@sunmao-ui/core';
+import { registry } from '../setup';
 import { genComponent, genTrait } from './utils';
 import {
   ComponentId,
@@ -8,7 +8,6 @@ import {
   IComponentModel,
   SlotName,
   StyleSlotName,
-  MethodName,
   StateKey,
   ITraitModel,
   IFieldModel,
@@ -76,10 +75,10 @@ export class ComponentModel implements IComponentModel {
 
   get methods() {
     if (!this.spec) return [];
-    const componentMethods = this.spec.spec.methods as any;
-    const traitMethods: MethodName[] = this.traits.reduce(
+    const componentMethods = this.spec.spec.methods;
+    const traitMethods: MethodSchema[] = this.traits.reduce(
       (acc, t) => acc.concat(t.methods),
-      [] as any
+      [] as MethodSchema[]
     );
     return [...componentMethods, ...traitMethods];
   }

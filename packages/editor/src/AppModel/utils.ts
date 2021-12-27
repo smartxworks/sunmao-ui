@@ -1,5 +1,5 @@
 import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
-import { registry } from '../../setup';
+import { registry } from '../setup';
 
 export function genComponent(
   type: string,

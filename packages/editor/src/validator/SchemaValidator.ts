@@ -1,7 +1,7 @@
 import { ApplicationComponent, RuntimeComponentSpec } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
-import { ApplicationModel } from '../operations/AppModel/AppModel';
+import { ApplicationModel } from '../AppModel/AppModel';
 import {
   ISchemaValidator,
   ComponentValidatorRule,

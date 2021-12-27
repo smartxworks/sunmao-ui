@@ -1,8 +1,7 @@
 import { ComponentTrait, RuntimeTraitSpec } from '@sunmao-ui/core';
-import { registry } from '../../setup';
+import { registry } from '../setup';
 import {
   IComponentModel,
-  MethodName,
   TraitType,
   ITraitModel,
   IFieldModel,
@@ -44,7 +43,7 @@ export class TraitModel implements ITraitModel {
   }
 
   get methods() {
-    return this.spec ? this.spec.spec.methods as any : []
+    return this.spec ? this.spec.spec.methods : []
   }
 
   get stateKeys() {
