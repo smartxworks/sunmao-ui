@@ -177,11 +177,6 @@ export class ComponentModel implements IComponentModel {
       slotChildren.splice(slotChildren.indexOf(child), 1);
       child._isDirty = true;
       this._isDirty = true;
-      console.log(
-        'after',
-        this.id,
-        this.allComponents.map(c => c.id)
-      );
     }
   }
 
@@ -254,7 +249,6 @@ export class ComponentModel implements IComponentModel {
       trait.properties[property].update(properties[property]);
       trait._isDirty = true;
     }
-    console.log('new trait', trait);
     this._isDirty = true;
   }
 

@@ -70,18 +70,17 @@ export class SchemaValidator implements ISchemaValidator {
         if (r.length > 0) {
           this.result = this.result.concat(r);
         }
-        
-        this.traitRules.forEach(rule => {
-          component.traits.forEach(trait => {
-            const r = rule.validate({
-              trait,
-              component,
-              ...baseContext,
-            });
-            if (r.length > 0) {
-              this.result = this.result.concat(r);
-            }
+      });
+      this.traitRules.forEach(rule => {
+        component.traits.forEach(trait => {
+          const r = rule.validate({
+            trait,
+            component,
+            ...baseContext,
           });
+          if (r.length > 0) {
+            this.result = this.result.concat(r);
+          }
         });
       });
     });

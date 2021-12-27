@@ -25,7 +25,6 @@ class TraitPropertyValidatorRule implements TraitValidatorRule {
       });
       return results;
     }
-
     const valid = validate(trait.rawProperties);
     if (!valid) {
       validate.errors!.forEach(error => {
@@ -108,11 +107,9 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         return;
       }
 
-      if (
-        method.parameters &&
-        !ajv.validate(method.parameters, parameters)
-      ) {
-        ajv.errors!.forEach(error => {JSON
+      if (method.parameters && !ajv.validate(method.parameters, parameters)) {
+        ajv.errors!.forEach(error => {
+          JSON;
           if (error.keyword === 'type') {
             const { instancePath } = error;
             const path = instancePath.split('/')[1];

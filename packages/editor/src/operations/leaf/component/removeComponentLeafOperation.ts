@@ -18,7 +18,6 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
       this.context.componentId as ComponentId
     );
     this.beforeComponent = this.deletedComponent?.prevSilbling || undefined;
-    console.log(this.beforeComponent)
     appModel.removeComponent(this.context.componentId as ComponentId);
     return appModel.toSchema();
   }
@@ -41,10 +40,9 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
         this.deletedComponent.parentSlot as SlotName
       );
     } else {
-      appModel.updateSingleComponent(this.deletedComponent);
+      appModel._registerComponent(this.deletedComponent);
     }
-    this.deletedComponent.moveAfter(this.beforeComponent?.id || null);
-    console.log(appModel)
+    this.deletedComponent.moveAfter(this.beforeComponent || null);
     return appModel.toSchema();
   }
 }
