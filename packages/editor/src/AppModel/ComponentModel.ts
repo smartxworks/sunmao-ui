@@ -1,4 +1,8 @@
-import { ApplicationComponent, MethodSchema, RuntimeComponentSpec } from '@sunmao-ui/core';
+import {
+  ApplicationComponent,
+  MethodSchema,
+  RuntimeComponentSpec,
+} from '@sunmao-ui/core';
 import { registry } from '../setup';
 import { genComponent, genTrait } from './utils';
 import {
@@ -219,7 +223,9 @@ export class ComponentModel implements IComponentModel {
     }
     // update model
     siblings.splice(siblings.indexOf(this), 1);
-    const afterIndexInSiblings = after ? siblings.findIndex(c => c === after) + 1 : 0;
+    const afterIndexInSiblings = after
+      ? siblings.findIndex(c => c.id === after.id) + 1
+      : 0;
     siblings.splice(afterIndexInSiblings, 0, this);
     return this;
   }
