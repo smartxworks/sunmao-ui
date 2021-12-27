@@ -52,6 +52,7 @@ export const Input = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "input",
+      displayName: "Input",
     },
     spec: {
       properties: InputPropsSchema,

@@ -29,6 +29,7 @@ export const Dropdown = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "dropdown",
+      displayName: "Dropdown",
     },
     spec: {
       properties: DropdownPropsSchema,

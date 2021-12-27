@@ -38,6 +38,7 @@ export const Space = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "space",
+      displayName: "Space",
     },
     spec: {
       properties: SpacePropsSchema,
