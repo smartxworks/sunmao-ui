@@ -27,8 +27,12 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style: "height: 100%; background: #fff;",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style: "height: 100%; background: #fff;",
+                    },
+                  ],
                 },
               },
             ],
@@ -50,8 +54,13 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style: "height: 50px; display: flex; align-items: center;",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style:
+                        "height: 50px; display: flex; align-items: center;",
+                    },
+                  ],
                 },
               },
             ],
@@ -91,8 +100,12 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style: "width: 200px; background: #F7F8FB",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style: "width: 200px; background: #F7F8FB",
+                    },
+                  ],
                 },
               },
             ],
@@ -133,9 +146,13 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style:
-                    "margin-left: 24px; img { width: 124px; height: 24px; }",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style:
+                        "margin-left: 24px; img { width: 124px; height: 24px; }",
+                    },
+                  ],
                 },
               },
             ],
@@ -165,8 +182,12 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style: "margin-left: 54px; width: 154px;",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style: "margin-left: 54px; width: 154px;",
+                    },
+                  ],
                 },
               },
             ],
@@ -227,8 +248,12 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style: "padding: 20px;",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style: "padding: 20px;",
+                    },
+                  ],
                 },
               },
             ],
@@ -305,8 +330,12 @@ ReactDOM.render(
               {
                 type: "core/v1/style",
                 properties: {
-                  styleSlot: "content",
-                  style: "margin-left: 10px;",
+                  styles: [
+                    {
+                      styleSlot: "content",
+                      style: "margin-left: 10px;",
+                    },
+                  ],
                 },
               },
             ],
