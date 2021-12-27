@@ -1,7 +1,7 @@
 import { ApplicationComponent, RuntimeComponentSpec } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
-import { ApplicationModel } from '../AppModel/AppModel';
+import { AppModel } from '../AppModel/AppModel';
 import {
   ISchemaValidator,
   ComponentValidatorRule,
@@ -44,7 +44,7 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   validate(components: ApplicationComponent[]) {
-    const appModel = new ApplicationModel(components);
+    const appModel = new AppModel(components);
     this.genComponentIdSpecMap(components);
     this.result = [];
     const baseContext = {

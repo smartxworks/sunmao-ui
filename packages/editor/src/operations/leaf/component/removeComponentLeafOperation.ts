@@ -1,5 +1,5 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { ApplicationModel } from '../../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
@@ -9,11 +9,10 @@ export type RemoveComponentLeafOperationContext = {
 
 export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveComponentLeafOperationContext> {
   private deletedComponent?: IComponentModel;
-  // FIXME: index is not a good type to remember a deleted resource
   private beforeComponent?: IComponentModel;
 
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     this.deletedComponent = appModel.getComponentById(
       this.context.componentId as ComponentId
     );
@@ -30,7 +29,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     if (!this.deletedComponent) {
       return prev;
     }
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const parent = appModel.getComponentById(
       this.deletedComponent.parentId as ComponentId
     );
@@ -40,7 +39,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
         this.deletedComponent.parentSlot as SlotName
       );
     } else {
-      appModel._registerComponent(this.deletedComponent);
+      appModel.appendChild(this.deletedComponent);
     }
     this.deletedComponent.moveAfter(this.beforeComponent || null);
     return appModel.toSchema();

@@ -4,7 +4,7 @@ import { genComponent, genTrait } from './utils';
 import {
   ComponentId,
   ComponentType,
-  IApplicationModel,
+  IAppModel,
   IComponentModel,
   SlotName,
   StyleSlotName,
@@ -32,7 +32,7 @@ export class ComponentModel implements IComponentModel {
   traits: ITraitModel[] = [];
   _isDirty = false;
 
-  constructor(public appModel: IApplicationModel, private schema: ApplicationComponent) {
+  constructor(public appModel: IAppModel, private schema: ApplicationComponent) {
     this.schema = schema;
 
     this.id = schema.id as ComponentId;
@@ -162,7 +162,7 @@ export class ComponentModel implements IComponentModel {
     }
 
     parent.children[slot].push(this);
-    parent.appModel._registerComponent(this);
+    parent.appModel._bindComponentToModel(this);
     this.parent = parent;
     this.parentSlot = slot;
     this.parentId = parent.id;
@@ -236,9 +236,9 @@ export class ComponentModel implements IComponentModel {
     child.parentSlot = slot;
     child.parentId = this.id;
     child.updateSlotTrait(this.id, slot);
-    this.appModel._registerComponent(child);
+    this.appModel._bindComponentToModel(child);
     this.traverseTree(c => {
-      this.appModel._registerComponent(c);
+      this.appModel._bindComponentToModel(c);
     });
   }
 

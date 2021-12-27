@@ -23,7 +23,6 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     parseTypeBox(tImpl.spec.properties as TSchema),
     trait.properties
   );
-  console.log('properties', properties)
   const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
     return renderField({

@@ -1,6 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
-import { ApplicationModel } from '../../AppModel/AppModel';
+import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
 import {
   ModifyComponentPropertiesLeafOperation,
@@ -14,16 +14,14 @@ export type RemoveComponentBranchOperationContext = {
 
 export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveComponentBranchOperationContext> {
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
-    const parentId = appModel.getComponentById(
-      this.context.componentId as ComponentId
-    )?.parentId;
+    const appModel = new AppModel(prev);
+    const parent = appModel.getComponentById(this.context.componentId as ComponentId);
 
-    if (parentId) {
+    if (parent && parent.type === 'core/v1/grid_layout') {
       // modify layout property of parent grid layout component
       this.operationStack.insert(
         new ModifyComponentPropertiesLeafOperation({
-          componentId: parentId,
+          componentId: parent.id,
           properties: {
             layout: (prev: Array<ReactGridLayout.Layout>) => {
               return produce(prev, draft => {

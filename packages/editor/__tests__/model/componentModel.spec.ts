@@ -1,20 +1,20 @@
-import { ApplicationModel } from '../../src/AppModel/AppModel';
+import { AppModel } from '../../src/AppModel/AppModel';
 import {
   ComponentId,
   ComponentType,
   SlotName,
   TraitType,
 } from '../../src/AppModel/IAppModel';
-import { AppSchema } from './schema';
+import { AppSchema } from './mock';
 
 describe('ComponentModel test', () => {
   it('compute component property', () => {
-    const appModel = new ApplicationModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components);
     const button1 = appModel.getComponentById('button1' as ComponentId)!;
     expect(button1.allComponents.length).toEqual(1);
     expect(button1.appModel).toEqual(appModel);
     expect(button1.id).toEqual('button1');
-    expect(button1.methods).toEqual(['click', 'setValue', 'reset']);
+    expect(button1.methods.map(m => m.name)).toEqual(['click', 'setValue', 'reset']);
     expect(button1.events).toEqual(['onClick']);
     expect(button1.styleSlots).toEqual(['content']);
     expect(button1.parentId).toEqual('hstack2');
@@ -24,12 +24,12 @@ describe('ComponentModel test', () => {
     expect(button1.properties['text'].value).toEqual({ raw: 'text', format: 'plain' });
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
     expect(apiFetch.stateKeys).toEqual(['fetch']);
-    expect(apiFetch.methods).toEqual(['triggerFetch']);
+    expect(apiFetch.methods[0].name).toEqual('triggerFetch');
   });
 });
 
 describe('update component property', () => {
-  const appModel = new ApplicationModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
   text1!.updateComponentProperty('value', { raw: 'hello', format: 'md' });
@@ -48,7 +48,7 @@ describe('update component property', () => {
 });
 
 describe('append to another component', () => {
-  const appModel = new ApplicationModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components);
   const origin = appModel.toSchema();
   const newComponent = appModel.createComponent('core/v1/text' as ComponentType);
   const parent = appModel.getComponentById('vstack1' as any)!;
@@ -86,7 +86,7 @@ describe('append to another component', () => {
   });
 
   describe('append component to top level', () => {
-    const appModel = new ApplicationModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components);
     const origin = appModel.toSchema();
     const text1 = appModel.getComponentById('text1' as any)!;
     it('append component to top level', () => {
@@ -100,7 +100,7 @@ describe('append to another component', () => {
 
 describe('append component as child to self', () => {
   it('append component to top level', () => {
-    const appModel = new ApplicationModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components);
     const origin = appModel.toSchema();
     const hstack1 = appModel.getComponentById('hstack1' as any)!;
     const text1 = appModel.getComponentById('text1' as any)!;
@@ -112,7 +112,7 @@ describe('append component as child to self', () => {
 });
 
 describe('add trait', () => {
-  const appModel = new ApplicationModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
   text1!.addTrait('core/v1/state' as TraitType, { key: 'value' });
@@ -130,7 +130,7 @@ describe('add trait', () => {
 });
 
 describe('remove trait', () => {
-  const appModel = new ApplicationModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any)!;
   text1!.removeTrait(text1.traits[0].id);
@@ -149,7 +149,7 @@ describe('remove trait', () => {
 
 describe('change component id', () => {
   const newId = 'newHstack1' as ComponentId;
-  const appModel = new ApplicationModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components);
   const origin = appModel.toSchema();
   const hStack1 = appModel.getComponentById('hstack1' as ComponentId)!;
   hStack1.changeId(newId);
@@ -184,7 +184,7 @@ describe('change component id', () => {
 });
 
 describe('move component', () => {
-  const appModel = new ApplicationModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components);
   const origin = appModel.toSchema();
   const hstack1 = appModel.getComponentById('hstack1' as ComponentId)!;
   const text1 = appModel.getComponentById('text1' as ComponentId)!;

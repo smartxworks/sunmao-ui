@@ -4,13 +4,13 @@ import { ComponentModel } from './ComponentModel';
 import {
   ComponentId,
   ComponentType,
-  IApplicationModel,
+  IAppModel,
   IComponentModel,
   SlotName,
 } from './IAppModel';
 import { genComponent } from './utils';
 
-export class ApplicationModel implements IApplicationModel {
+export class AppModel implements IAppModel {
   topComponents: IComponentModel[] = [];
   // modules: IModuleModel[] = [];
   private schema: ApplicationComponent[] = [];
@@ -23,7 +23,6 @@ export class ApplicationModel implements IApplicationModel {
     this.resolveTree(components);
   }
 
-  // all ValidComponents
   get allComponents(): IComponentModel[] {
     const result: IComponentModel[] = [];
     this.traverseTree(c => {
@@ -32,21 +31,9 @@ export class ApplicationModel implements IApplicationModel {
     return result;
   }
 
-  // getFrom componentMap
-  get allComponentsFromSchema(): IComponentModel[] {
+  // get from componentMap
+  get allComponentsWithOrphan(): IComponentModel[] {
     return Object.values(this.componentMap);
-  }
-
-  appendChild(component: IComponentModel) {
-    component.appModel = this;
-    component.parentId = null;
-    component.parentSlot = null;
-    component.parent = null;
-    if (component._slotTrait) {
-      component.removeTrait(component._slotTrait.id);
-    }
-    this.topComponents.push(component);
-    this._registerComponent(component);
   }
 
   toSchema(): ApplicationComponent[] {
@@ -55,6 +42,17 @@ export class ApplicationModel implements IApplicationModel {
     });
 
     return this.schema;
+  }
+
+  appendChild(component: IComponentModel) {
+    component.parentId = null;
+    component.parentSlot = null;
+    component.parent = null;
+    this._bindComponentToModel(component);
+    if (component._slotTrait) {
+      component.removeTrait(component._slotTrait.id);
+    }
+    this.topComponents.push(component);
   }
 
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel {
@@ -77,8 +75,9 @@ export class ApplicationModel implements IApplicationModel {
     }
   }
 
-  _registerComponent(component: IComponentModel) {
+  _bindComponentToModel(component: IComponentModel) {
     this.componentMap[component.id] = component;
+    component.appModel = this;
   }
 
   private genId(type: ComponentType): ComponentId {

@@ -1,7 +1,7 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import { BaseLeafOperation } from '../../type';
 import _ from 'lodash-es';
-import { ApplicationModel } from '../../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
 export type ModifyComponentPropertiesLeafOperationContext = {
   componentId: string;
@@ -11,8 +11,7 @@ export type ModifyComponentPropertiesLeafOperationContext = {
 export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<ModifyComponentPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
-    // const component = appModel.createComponent(this.context.componentType as ComponentType, this.context.componentId as ComponentId);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (component) {
       for (const property in component.properties) {
@@ -36,7 +35,7 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     return newSchema;
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
@@ -49,7 +48,7 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     return appModel.toSchema();
   }
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');

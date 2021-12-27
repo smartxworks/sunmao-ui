@@ -1,5 +1,5 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import { ApplicationModel } from '../../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, ITraitModel } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
@@ -11,7 +11,7 @@ export type RemoveTraitLeafOperationContext = {
 export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafOperationContext> {
   private deletedTrait!: ITraitModel;
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
@@ -28,7 +28,7 @@ export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafO
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    const appModel = new ApplicationModel(prev);
+    const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
