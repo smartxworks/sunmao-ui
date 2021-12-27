@@ -15,7 +15,7 @@ export class ApplicationModel implements IApplicationModel {
   // modules: IModuleModel[] = [];
   private schema: ApplicationComponent[] = [];
   private componentMap: Record<ComponentId, IComponentModel> = {};
-  private componentsCount = 0
+  private componentsCount = 0;
 
   constructor(components: ApplicationComponent[]) {
     this.schema = components;
@@ -23,12 +23,18 @@ export class ApplicationModel implements IApplicationModel {
     this.resolveTree(components);
   }
 
+  // all ValidComponents
   get allComponents(): IComponentModel[] {
-    const result: IComponentModel[] = []
+    const result: IComponentModel[] = [];
     this.traverseTree(c => {
-      result.push(c)
-    })
-    return result
+      result.push(c);
+    });
+    return result;
+  }
+
+  // getFrom componentMap
+  get allComponentsFromSchema(): IComponentModel[] {
+    return Object.values(this.componentMap);
   }
 
   appendChild(component: IComponentModel) {
@@ -37,10 +43,10 @@ export class ApplicationModel implements IApplicationModel {
     component.parentSlot = null;
     component.parent = null;
     if (component._slotTrait) {
-      component.removeTrait(component._slotTrait.id)
+      component.removeTrait(component._slotTrait.id);
     }
-    this.topComponents.push(component)
-    this._registerComponent(component)
+    this.topComponents.push(component);
+    this._registerComponent(component);
   }
 
   toSchema(): ApplicationComponent[] {
@@ -68,7 +74,6 @@ export class ApplicationModel implements IApplicationModel {
       comp.parent.children[comp.parentSlot] = children.filter(c => c !== comp);
     } else {
       this.topComponents.splice(this.topComponents.indexOf(comp), 1);
-
     }
   }
 
@@ -82,47 +87,54 @@ export class ApplicationModel implements IApplicationModel {
     if (this.allComponents.some(c => c.id === newId)) {
       return this.genId(type);
     }
-    return newId
+    return newId;
   }
 
   private resolveTree(components: ApplicationComponent[]) {
     const allComponents = components.map(c => {
-      const comp = new ComponentModel(this, c);
-      this.componentMap[c.id as ComponentId] = comp;
-      return comp;
+      if (this.componentMap[c.id as ComponentId]) {
+        throw new Error(`Duplicate component id: ${c.id}`);
+      } else {
+        const comp = new ComponentModel(this, c);
+        this.componentMap[c.id as ComponentId] = comp;
+        return comp;
+      }
     });
 
     allComponents.forEach(child => {
-      if (child.parentId && child.parentSlot) {
-        const parent = this.componentMap[child.parentId];
-        if (parent) {
-          if (parent.children[child.parentSlot]) {
-            parent.children[child.parentSlot].push(child);
-          } else {
-            parent.children[child.parentSlot] = [child];
-          }
-        }
-        child.parent = parent;
-      } else {
+      if (!child.parentId || !child.parentSlot) {
         this.topComponents.push(child);
+        return;
+      }
+      const parent = this.componentMap[child.parentId];
+      if (parent && parent.slots.includes(child.parentSlot)) {
+        child.parent = parent;
+        if (parent.children[child.parentSlot]) {
+          parent.children[child.parentSlot].push(child);
+        } else {
+          parent.children[child.parentSlot] = [child];
+        }
       }
     });
   }
 
   private traverseTree(cb: (c: IComponentModel) => void) {
     function traverse(root: IComponentModel) {
-      cb(root)
+      cb(root);
       if (root.id === 'hstack2') {
-        console.log('traver', root.children['content' as SlotName].map(c => c.id))
+        console.log(
+          'traver',
+          root.children['content' as SlotName].map(c => c.id)
+        );
       }
       for (const slot in root.children) {
         root.children[slot as SlotName].forEach(child => {
-          traverse(child)
-        })
+          traverse(child);
+        });
       }
     }
-    this.topComponents.forEach((parent) => {
+    this.topComponents.forEach(parent => {
       traverse(parent);
-    })
+    });
   }
 }

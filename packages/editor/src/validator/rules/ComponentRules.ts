@@ -18,14 +18,14 @@ class ComponentPropertyValidatorRule implements ComponentValidatorRule {
       });
       return results;
     }
-
-    const valid = validate(component.properties);
+    const properties = component.rawProperties
+    const valid = validate(properties);
     if (!valid) {
       validate.errors!.forEach(error => {
         if (error.keyword === 'type') {
           const { instancePath } = error;
           const path = instancePath.split('/')[1];
-          const value = component.properties[path];
+          const value = properties[path];
           // if value is an expression, skip it
           if (isExpression(value)) {
             return;
@@ -54,13 +54,13 @@ class ModuleValidatorRule implements ComponentValidatorRule {
     const results: ValidateErrorResult[] = [];
     let moduleSpec
     try {
-      moduleSpec = registry.getModuleByType(component.properties.type as string);
+      moduleSpec = registry.getModuleByType(component.rawProperties.type.value as string);
     } catch (err) {
       moduleSpec = undefined
     }
     if (!moduleSpec) {
       results.push({
-        message: `Module is not registered: ${component.properties.type}.`,
+        message: `Module is not registered: ${component.rawProperties.type}.`,
         componentId: component.id,
         property: '/type',
       });

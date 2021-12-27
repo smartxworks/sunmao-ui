@@ -1,6 +1,7 @@
-import { RuntimeComponentSpec, ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
+import { ApplicationComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
+import { IApplicationModel, IComponentModel, ITraitModel } from '../operations/AppModel/IAppModel';
 
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
@@ -10,18 +11,17 @@ export interface ValidatorMap {
 interface BaseValidateContext {
   validators: ValidatorMap;
   registry: Registry;
-  components: ApplicationComponent[];
-  componentIdSpecMap: Record<string, RuntimeComponentSpec>;
+  appModel: IApplicationModel;
   ajv: Ajv
 }
 
 export interface ComponentValidateContext extends BaseValidateContext {
-  component: ApplicationComponent;
+  component: IComponentModel;
 }
 
 export interface TraitValidateContext extends BaseValidateContext {
-  trait: ComponentTrait;
-  component: ApplicationComponent;
+  trait: ITraitModel;
+  component: IComponentModel;
 }
 export type AllComponentsValidateContext = BaseValidateContext;
 
@@ -33,19 +33,19 @@ export type ValidateContext =
 export interface ComponentValidatorRule {
   kind: 'component';
   validate: (validateContext: ComponentValidateContext) => ValidateErrorResult[];
-  fix?: (validateContext: ComponentValidateContext) => ApplicationComponent;
+  fix?: (validateContext: ComponentValidateContext) => void;
 }
 
 export interface AllComponentsValidatorRule {
   kind: 'allComponents';
   validate: (validateContext: AllComponentsValidateContext) => ValidateErrorResult[];
-  fix?: (validateContext: AllComponentsValidateContext) => ApplicationComponent[];
+  fix?: (validateContext: AllComponentsValidateContext) => void[];
 }
 
 export interface TraitValidatorRule {
   kind: 'trait';
   validate: (validateContext: TraitValidateContext) => ValidateErrorResult[];
-  fix?: (validateContext: TraitValidateContext) => ApplicationComponent;
+  fix?: (validateContext: TraitValidateContext) => void;
 }
 
 export type ValidatorRule =

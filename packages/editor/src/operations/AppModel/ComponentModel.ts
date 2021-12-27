@@ -60,7 +60,9 @@ export class ComponentModel implements IComponentModel {
 
   get stateKeys() {
     if (!this.spec) return [];
-    const componentStateKeys = Object.keys(this.spec.spec.state.properties || {}) as StateKey[];
+    const componentStateKeys = Object.keys(
+      this.spec.spec.state.properties || {}
+    ) as StateKey[];
     const traitStateKeys: StateKey[] = this.traits.reduce(
       (acc, t) => acc.concat(t.stateKeys),
       [] as StateKey[]
@@ -74,10 +76,10 @@ export class ComponentModel implements IComponentModel {
 
   get methods() {
     if (!this.spec) return [];
-    const componentMethods = this.spec.spec.methods.map(m => m.name) as MethodName[];
+    const componentMethods = this.spec.spec.methods as any;
     const traitMethods: MethodName[] = this.traits.reduce(
       (acc, t) => acc.concat(t.methods),
-      [] as MethodName[]
+      [] as any
     );
     return [...componentMethods, ...traitMethods];
   }
@@ -161,7 +163,7 @@ export class ComponentModel implements IComponentModel {
     }
 
     parent.children[slot].push(this);
-    parent.appModel._registerComponent(this)
+    parent.appModel._registerComponent(this);
     this.parent = parent;
     this.parentSlot = slot;
     this.parentId = parent.id;
@@ -176,7 +178,11 @@ export class ComponentModel implements IComponentModel {
       slotChildren.splice(slotChildren.indexOf(child), 1);
       child._isDirty = true;
       this._isDirty = true;
-      console.log('after',this.id, this.allComponents.map(c => c.id))
+      console.log(
+        'after',
+        this.id,
+        this.allComponents.map(c => c.id)
+      );
     }
   }
 
@@ -188,6 +194,11 @@ export class ComponentModel implements IComponentModel {
   }
 
   changeId(newId: ComponentId) {
+    const isIdExist = !!this.appModel.getComponentById(newId);
+    if (isIdExist) {
+      throw Error(`Id ${newId} already exist`);
+      return this;
+    }
     this.id = newId;
     for (const slot in this.children) {
       const slotChildren = this.children[slot as SlotName];
