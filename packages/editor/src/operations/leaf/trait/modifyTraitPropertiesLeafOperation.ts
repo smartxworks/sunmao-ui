@@ -1,8 +1,8 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import _ from 'lodash-es';
 import { BaseLeafOperation } from '../../type';
-import { ApplicationModel } from '../../AppModel/AppModel';
-import { ComponentId } from '../../AppModel/IAppModel';
+import { ApplicationModel } from '../../../AppModel/AppModel';
+import { ComponentId } from '../../../AppModel/IAppModel';
 
 export type ModifyTraitPropertiesLeafOperationContext = {
   componentId: string;

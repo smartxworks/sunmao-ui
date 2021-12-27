@@ -1,7 +1,7 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
-import { ApplicationModel } from '../AppModel/AppModel';
-import { ComponentId } from '../AppModel/IAppModel';
+import { ApplicationModel } from '../../AppModel/AppModel';
+import { ComponentId } from '../../AppModel/IAppModel';
 import {
   ModifyComponentPropertiesLeafOperation,
   RemoveComponentLeafOperation,

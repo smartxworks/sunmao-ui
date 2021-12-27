@@ -1,5 +1,4 @@
-import { JSONSchema7 } from 'json-schema';
-import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
+import { ApplicationComponent, ComponentTrait, MethodSchema } from '@sunmao-ui/core';
 
 export type ComponentId = string & {
   kind: 'componentId';
@@ -68,7 +67,7 @@ export interface IComponentModel {
   stateKeys: StateKey[];
   slots: SlotName[];
   styleSlots: StyleSlotName[];
-  methods: Array<{name: MethodName, parameters: JSONSchema7}>;
+  methods: MethodSchema[];
   events: EventName[];
   allComponents: IComponentModel[];
   nextSilbing: IComponentModel | null;
@@ -98,7 +97,7 @@ export interface ITraitModel {
   type: TraitType;
   rawProperties: Record<string, any>;
   properties: Record<string, IFieldModel>;
-  methods: Array<{name: MethodName, parameters: JSONSchema7}>;
+  methods: MethodSchema[];
   stateKeys: StateKey[];
   _isDirty: boolean;
   toSchema(): ComponentTrait;

@@ -1,8 +1,8 @@
-import { ApplicationModel } from '../../src/operations/AppModel/AppModel';
+import { ApplicationModel } from '../../src/AppModel/AppModel';
 import {
   ComponentId,
   ComponentType,
-} from '../../src/operations/AppModel/IAppModel';
+} from '../../src/AppModel/IAppModel';
 import {AppSchema} from './schema'
 
 describe('AppModel test', () => {

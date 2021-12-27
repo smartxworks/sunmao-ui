@@ -6,7 +6,7 @@ import {
 } from '../interfaces';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
-import { ComponentId, EventName } from '../../operations/AppModel/IAppModel';
+import { ComponentId, EventName } from '../../AppModel/IAppModel';
 
 class TraitPropertyValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
