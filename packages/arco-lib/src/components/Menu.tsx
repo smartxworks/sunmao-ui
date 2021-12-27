@@ -60,6 +60,7 @@ export const Menu = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "menu",
+      displayName: "Menu",
     },
     spec: {
       properties: MenuPropsSchema,

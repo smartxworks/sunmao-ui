@@ -61,6 +61,7 @@ export const Select = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "select",
+      displayName: "Select",
     },
     spec: {
       properties: SelectPropsSchema,

@@ -13,7 +13,7 @@ type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
 type Module = Parameters<Registry["registerModule"]>[0];
 
-const components: Component[] = [
+export const components: Component[] = [
   Button,
   Header,
   Content,
@@ -27,8 +27,8 @@ const components: Component[] = [
   Space,
   Input,
 ];
-const traits: Trait[] = [];
-const modules: Module[] = [];
+export const traits: Trait[] = [];
+export const modules: Module[] = [];
 
 export function install(registry: Registry) {
   components.forEach((c) => registry.registerComponent(c));

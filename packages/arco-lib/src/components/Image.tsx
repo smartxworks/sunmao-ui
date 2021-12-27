@@ -30,6 +30,7 @@ export const Image = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "image",
+      displayName: "Image",
     },
     spec: {
       properties: ImagePropsSchema,

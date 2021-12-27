@@ -35,6 +35,7 @@ export const Button = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "button",
+      displayName: "Button",
     },
     spec: {
       properties: ButtonPropsSchema,

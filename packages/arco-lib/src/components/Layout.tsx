@@ -34,6 +34,7 @@ export const Layout = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "layout",
+      displayName: "Layout",
     },
     spec: {
       properties: LayoutPropsSchema,
@@ -69,6 +70,7 @@ export const Header = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "header",
+      displayName: "Header",
     },
     spec: {
       properties: HeaderPropsSchema,
@@ -104,6 +106,7 @@ export const Footer = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "footer",
+      displayName: "Footer",
     },
     spec: {
       properties: FooterPropsSchema,
@@ -139,6 +142,7 @@ export const Content = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "content",
+      displayName: "Content",
     },
     spec: {
       properties: ContentPropsSchema,
@@ -174,6 +178,7 @@ export const Sider = {
     metadata: {
       ...FALLBACK_METADATA,
       name: "sider",
+      displayName: "Sider",
     },
     spec: {
       properties: SiderPropsSchema,
