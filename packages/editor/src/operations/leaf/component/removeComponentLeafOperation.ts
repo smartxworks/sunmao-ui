@@ -9,14 +9,14 @@ export type RemoveComponentLeafOperationContext = {
 
 export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveComponentLeafOperationContext> {
   private deletedComponent?: IComponentModel;
-  private beforeComponent?: IComponentModel;
+  private prevComponent?: IComponentModel;
 
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
     const appModel = new AppModel(prev);
     this.deletedComponent = appModel.getComponentById(
       this.context.componentId as ComponentId
     );
-    this.beforeComponent = this.deletedComponent?.prevSilbling || undefined;
+    this.prevComponent = this.deletedComponent?.prevSilbling || undefined;
     appModel.removeComponent(this.context.componentId as ComponentId);
     return appModel.toSchema();
   }
@@ -41,7 +41,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     } else {
       appModel.appendChild(this.deletedComponent);
     }
-    this.deletedComponent.moveAfter(this.beforeComponent || null);
+    this.deletedComponent.moveAfter(this.prevComponent || null);
     return appModel.toSchema();
   }
 }

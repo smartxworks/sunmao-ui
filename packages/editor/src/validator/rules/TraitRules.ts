@@ -109,7 +109,6 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
 
       if (method.parameters && !ajv.validate(method.parameters, parameters)) {
         ajv.errors!.forEach(error => {
-          JSON;
           if (error.keyword === 'type') {
             const { instancePath } = error;
             const path = instancePath.split('/')[1];

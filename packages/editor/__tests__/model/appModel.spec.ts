@@ -9,18 +9,20 @@ describe('AppModel test', () => {
       expect(appModel.allComponents.length).toBe(10);
       expect(appModel.topComponents.length).toBe(2);
     });
-
     it('components order', () => {
-      expect(appModel.allComponents[0].id).toBe('hstack1');
-      expect(appModel.allComponents[1].id).toBe('vstack1');
-      expect(appModel.allComponents[2].id).toBe('text3');
-      expect(appModel.allComponents[3].id).toBe('text4');
-      expect(appModel.allComponents[4].id).toBe('hstack2');
-      expect(appModel.allComponents[5].id).toBe('text1');
-      expect(appModel.allComponents[6].id).toBe('text2');
-      expect(appModel.allComponents[7].id).toBe('button1');
-      expect(appModel.allComponents[8].id).toBe('moduleContainer1');
-      expect(appModel.allComponents[9].id).toBe('apiFetch');
+      const order = [
+        'hstack1',
+        'vstack1',
+        'text3',
+        'text4',
+        'hstack2',
+        'text1',
+        'text2',
+        'button1',
+        'moduleContainer1',
+        'apiFetch',
+      ];
+      expect(appModel.allComponents.map(c => c.id)).toEqual(order);
     });
 
     it('detect duplicated dd', () => {
