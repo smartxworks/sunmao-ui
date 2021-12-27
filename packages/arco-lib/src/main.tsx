@@ -1,4 +1,4 @@
-import renderApp, { registry } from "@sunmao-ui/editor";
+import renderApp from "@sunmao-ui/editor";
 import { components, traits, modules } from "./lib";
 
 ((window as unknown) as { resetApp: Function }).resetApp = () => {

@@ -152,4 +152,7 @@ ${Object.keys(props)
       "showWordLimit",
     ],
   },
+  {
+    component: "Divider",
+  },
 ].forEach(generate);
