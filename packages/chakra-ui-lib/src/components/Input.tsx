@@ -127,8 +127,8 @@ const PropsSchema = Type.Object({
   focusBorderColor: Type.Optional(Type.String()),
   isDisabled: Type.Optional(Type.Boolean()),
   isRequired: Type.Optional(Type.Boolean()),
-  left: AppendElementPropertySchema,
-  right: AppendElementPropertySchema,
+  left: Type.Optional(AppendElementPropertySchema),
+  right: Type.Optional(AppendElementPropertySchema),
   defaultValue: Type.Optional(Type.String()),
 });
 

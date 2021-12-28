@@ -1,8 +1,8 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
 import produce from 'immer';
+import { ComponentId, SlotName } from '../../AppModel/IAppModel';
 import {
   CreateComponentLeafOperation,
-  CreateTraitLeafOperation,
   ModifyComponentPropertiesLeafOperation,
 } from '../leaf';
 import { BaseBranchOperation } from '../type';
@@ -27,6 +27,8 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
       new CreateComponentLeafOperation({
         componentId: this.context.componentId!,
         componentType: this.context.componentType,
+        parentId: this.context.parentId as ComponentId,
+        slot: this.context.slot as SlotName,
       })
     );
     // add a slot trait if it has a parent
@@ -36,19 +38,6 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
         c => c.id === this.context.parentId
       );
 
-      // add a slot trait if it has a direct child
-      this.operationStack.insert(
-        new CreateTraitLeafOperation({
-          traitType: 'core/v1/slot',
-          properties: {
-            container: {
-              id: this.context.parentId,
-              slot: this.context.slot,
-            },
-          },
-          componentId: this.context.componentId,
-        })
-      );
       if (!parentComponent) {
         console.warn("insert element has an invalid parent, it won't show in the view");
       } else if (parentComponent.type === 'core/v1/grid_layout') {

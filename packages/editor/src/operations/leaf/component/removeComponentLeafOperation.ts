@@ -1,6 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import produce from 'immer';
-import { tryOriginal } from '../../../operations/util';
+import { AppModel } from '../../../AppModel/AppModel';
+import { ComponentId, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type RemoveComponentLeafOperationContext = {
@@ -8,34 +8,40 @@ export type RemoveComponentLeafOperationContext = {
 };
 
 export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveComponentLeafOperationContext> {
-  private deletedComponent!: ApplicationComponent;
-  // FIXME: index is not a good type to remember a deleted resource
-  private deletedIndex = -1;
+  private deletedComponent?: IComponentModel;
+  private prevComponent?: IComponentModel;
 
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    this.deletedIndex = prev.findIndex(
-      c => c.id === this.context.componentId
+    const appModel = new AppModel(prev);
+    this.deletedComponent = appModel.getComponentById(
+      this.context.componentId as ComponentId
     );
-    if (this.deletedIndex === -1) {
-      console.warn('element not found');
-      return prev;
-    }
-    return produce(prev, draft => {
-      this.deletedComponent = tryOriginal(
-        draft.splice(this.deletedIndex, 1)[0]
-      );
-    });
+    this.prevComponent = this.deletedComponent?.prevSilbling || undefined;
+    appModel.removeComponent(this.context.componentId as ComponentId);
+    return appModel.toSchema();
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      draft.splice(this.deletedIndex, 1);
-    });
+    return this.do(prev);
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      draft.splice(this.deletedIndex, 0, this.deletedComponent);
-    });
+    if (!this.deletedComponent) {
+      return prev;
+    }
+    const appModel = new AppModel(prev);
+    const parent = appModel.getComponentById(
+      this.deletedComponent.parentId as ComponentId
+    );
+    if (parent) {
+      parent.appendChild(
+        this.deletedComponent,
+        this.deletedComponent.parentSlot as SlotName
+      );
+    } else {
+      appModel.appendChild(this.deletedComponent);
+    }
+    this.deletedComponent.moveAfter(this.prevComponent || null);
+    return appModel.toSchema();
   }
 }

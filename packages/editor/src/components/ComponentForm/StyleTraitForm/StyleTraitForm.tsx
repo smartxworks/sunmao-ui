@@ -34,10 +34,6 @@ export const StyleTraitForm: React.FC<Props> = props => {
     return registry.getComponentByType(component.type).spec.styleSlots;
   }, [component, registry]);
 
-  if (!styleSlots.length) {
-    return null;
-  }
-
   const styleTraitIndex = useMemo(() => {
     return component.traits.findIndex(t => t.type === 'core/v1/style');
   }, [component]);

@@ -1,5 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import produce from 'immer';
+import { AppModel } from '../../../AppModel/AppModel';
+import { ComponentId, TraitId, TraitType } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type CreateTraitLeafOperationContext = {
@@ -9,36 +10,30 @@ export type CreateTraitLeafOperationContext = {
 };
 
 export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafOperationContext> {
-  private traitIndex!: number;
+  private traitId!: TraitId;
 
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      for (const component of draft) {
-        if (component.id === this.context.componentId) {
-          component.traits.push({
-            type: this.context.traitType,
-            properties: this.context.properties,
-          });
-          this.traitIndex = component.traits.length - 1;
-          break;
-        }
-      }
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      return prev
+    }
+    const trait = component.addTrait(this.context.traitType as TraitType, this.context.properties);
+    this.traitId = trait.id;
+    return appModel.toSchema()
+  }
+
+  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+    return this.do(prev);
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      for (let i = 0; i < draft.length; i++) {
-        const component = draft[i];
-        if (component.id === this.context.componentId) {
-          component.traits.splice(this.traitIndex, 1);
-          return;
-        } else if (i === draft.length - 1) {
-          console.warn('trait not found');
-          return;
-        }
-      }
-      console.warn('component not found');
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      return prev
+    }
+    component.removeTrait(this.traitId);
+    return appModel.toSchema()
   }
 }
