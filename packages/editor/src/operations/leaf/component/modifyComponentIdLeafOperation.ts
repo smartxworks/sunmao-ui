@@ -1,5 +1,6 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import produce from 'immer';
+import { AppModel } from '../../../AppModel/AppModel';
+import { ComponentId } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type ModifyComponentIdLeafOperationContext = {
@@ -9,33 +10,22 @@ export type ModifyComponentIdLeafOperationContext = {
 
 export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComponentIdLeafOperationContext> {
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      const comp = draft.find(c => c.id === this.context.componentId);
-      if (!comp) {
-        console.warn('component not found');
-        return;
-      }
-      comp.id = this.context.newId;
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      console.warn('component not found');
+      return prev;
+    }
+    component.changeId(this.context.newId as ComponentId);
+    return appModel.toSchema();
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      const comp = draft.find(c => c.id === this.context.componentId);
-      if (!comp) {
-        console.warn('component not found');
-        return;
-      }
-      comp.id = this.context.newId;
-    });
+    return this.do(prev);
   }
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      const comp = draft.find(c => c.id === this.context.newId);
-      if (!comp) {
-        console.warn('component not found');
-        return;
-      }
-      comp.id = this.context.componentId;
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.newId as ComponentId)!;
+    component.changeId(this.context.componentId as ComponentId);
+    return appModel.toSchema();
   }
 }

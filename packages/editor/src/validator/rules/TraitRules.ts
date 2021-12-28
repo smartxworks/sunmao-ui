@@ -6,6 +6,7 @@ import {
 } from '../interfaces';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
+import { ComponentId, EventName } from '../../AppModel/IAppModel';
 
 class TraitPropertyValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
@@ -24,14 +25,13 @@ class TraitPropertyValidatorRule implements TraitValidatorRule {
       });
       return results;
     }
-
-    const valid = validate(trait.properties);
+    const valid = validate(trait.rawProperties);
     if (!valid) {
       validate.errors!.forEach(error => {
         if (error.keyword === 'type') {
           const { instancePath } = error;
           const path = instancePath.split('/')[1];
-          const value = trait.properties[path];
+          const value = trait.rawProperties[path];
 
           // if value is an expression, skip it
           if (isExpression(value)) {
@@ -55,25 +55,24 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
   traitMethods = ['setValue', 'resetValue', 'triggerFetch'];
 
   validate({
+    appModel,
     trait,
     component,
-    components,
-    componentIdSpecMap,
     ajv,
   }: TraitValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     if (trait.type !== 'core/v1/event') {
       return results;
     }
-    const handlers = trait.properties.handlers as Static<typeof EventHandlerSchema>[];
+    const handlers = trait.rawProperties.handlers as Static<typeof EventHandlerSchema>[];
     handlers.forEach((handler, i) => {
       const {
         type: eventName,
         componentId: targetId,
         method: { name: methodName, parameters },
       } = handler;
-      const componentSpec = componentIdSpecMap[component.id];
-      if (!componentSpec.spec.events.includes(eventName)) {
+
+      if (!component.events.includes(eventName as EventName)) {
         results.push({
           message: `Component does not have event: ${eventName}.`,
           componentId: component.id,
@@ -86,7 +85,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         return;
       }
 
-      const targetComponent = components.find(c => c.id === targetId);
+      const targetComponent = appModel.getComponentById(targetId as ComponentId);
       if (!targetComponent) {
         results.push({
           message: `Event target component is not exist: ${targetId}.`,
@@ -97,22 +96,8 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         return;
       }
 
-      const targetComponentSpec = componentIdSpecMap[targetComponent.id];
-      if (!targetComponentSpec) {
-        results.push({
-          message: `Event target component is not registered: ${targetId}.`,
-          componentId: component.id,
-          traitType: trait.type,
-          property: `/handlers/${i}/componentId`,
-        });
-        return;
-      }
-
-      const methodSchema = targetComponentSpec.spec.methods.find(
-        m => m.name === methodName
-      );
-
-      if (!methodSchema && !this.traitMethods.includes(methodName)) {
+      const method = targetComponent.methods.find(m => m.name === methodName);
+      if (!method) {
         results.push({
           message: `Event target component does not have method: ${methodName}.`,
           componentId: component.id,
@@ -122,10 +107,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         return;
       }
 
-      if (
-        methodSchema?.parameters &&
-        !ajv.validate(methodSchema.parameters, parameters)
-      ) {
+      if (method.parameters && !ajv.validate(method.parameters, parameters)) {
         ajv.errors!.forEach(error => {
           if (error.keyword === 'type') {
             const { instancePath } = error;

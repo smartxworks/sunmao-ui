@@ -1,34 +1,41 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import produce from 'immer';
+import { AppModel } from '../../../AppModel/AppModel';
+import { ComponentId, ComponentType, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
-import { genComponent } from '../../util';
 
 export type CreateComponentLeafOperationContext = {
   componentType: string;
   componentId: string;
+  parentId?: ComponentId;
+  slot?: SlotName;
 };
 
 export class CreateComponentLeafOperation extends BaseLeafOperation<CreateComponentLeafOperationContext> {
-  private index!: number;
-  private component!: ApplicationComponent;
+  private component!: IComponentModel;
+
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    this.component = genComponent(this.context.componentType, this.context.componentId);
-    this.context.componentId = this.component.id;
-    return produce(prev, draft => {
-      draft.push(this.component);
-      this.index = draft.length - 1;
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.createComponent(this.context.componentType as ComponentType, this.context.componentId as ComponentId);
+    if (this.context.parentId) {
+      const parent = appModel.getComponentById(this.context.parentId);
+      if (parent) {
+        component.appendTo(parent, this.context.slot);
+      }
+    } else {
+      component.appendTo();
+    }
+    this.component = component;
+    const newSchema = appModel.toSchema()
+    return newSchema
   }
 
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      draft.push(this.component);
-    });
+    return this.do(prev)
   }
 
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      draft.splice(this.index, 1);
-    });
+    const appModel = new AppModel(prev);
+    appModel.removeComponent(this.component.id)
+    return appModel.toSchema()
   }
 }

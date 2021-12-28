@@ -1,8 +1,8 @@
 import { ApplicationComponent } from '@sunmao-ui/core';
-import produce from 'immer';
 import { BaseLeafOperation } from '../../type';
 import _ from 'lodash-es';
-import { tryOriginal } from '../../util';
+import { AppModel } from '../../../AppModel/AppModel';
+import { ComponentId } from '../../../AppModel/IAppModel';
 export type ModifyComponentPropertiesLeafOperationContext = {
   componentId: string;
   properties: Record<string, any | (<T = any>(prev: T) => T)>;
@@ -11,47 +11,54 @@ export type ModifyComponentPropertiesLeafOperationContext = {
 export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<ModifyComponentPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
   do(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      const comp = draft.find(c => c.id === this.context.componentId);
-      if (!comp) {
-        console.warn('component not found');
-        return;
-      }
-      for (const property in this.context.properties) {
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (component) {
+      for (const property in component.properties) {
+        const oldValue = component.properties[property].value;
         // assign previous data
-        this.previousState[property] = tryOriginal(comp.properties[property]);
-        if (_.isFunction(this.context.properties[property])) {
+        this.previousState[property] = oldValue;
+        let newValue = this.context.properties[property];
+        if (_.isFunction(newValue)) {
           // if modified value is a lazy function, execute it and assign
-          this.context.properties[property] = this.context.properties[property](
-            _.cloneDeep(comp.properties[property])
-          );
+          newValue = newValue(_.cloneDeep(oldValue));
         }
-        comp.properties[property] = this.context.properties[property];
+        component.updateComponentProperty(property, newValue);
+        this.context.properties[property] = newValue;
       }
-    });
+    } else {
+      console.warn('component not found');
+      return prev;
+    }
+
+    const newSchema = appModel.toSchema();
+    return newSchema;
   }
   redo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      const comp = draft.find(c => c.id === this.context.componentId);
-      if (!comp) {
-        console.warn('component not found');
-        return;
-      }
-      for (const property in this.context.properties) {
-        comp.properties[property] = this.context.properties[property];
-      }
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      console.warn('component not found');
+      return prev;
+    }
+
+    for (const property in this.context.properties) {
+      component.updateComponentProperty(property, this.context.properties[property]);
+    }
+    return appModel.toSchema();
   }
   undo(prev: ApplicationComponent[]): ApplicationComponent[] {
-    return produce(prev, draft => {
-      const comp = draft.find(c => c.id === this.context.componentId);
-      if (!comp) {
-        console.warn('component not found');
-        return;
-      }
-      for (const property in this.context.properties) {
-        comp.properties[property] = this.previousState[property];
-      }
-    });
+    const appModel = new AppModel(prev);
+    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+    if (!component) {
+      console.warn('component not found');
+      return prev;
+    }
+
+    for (const property in this.previousState) {
+      component.updateComponentProperty(property, this.previousState[property]);
+    }
+
+    return appModel.toSchema();
   }
 }

@@ -1,6 +1,7 @@
 import { ApplicationComponent, RuntimeComponentSpec } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
+import { AppModel } from '../AppModel/AppModel';
 import {
   ISchemaValidator,
   ComponentValidatorRule,
@@ -43,12 +44,14 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   validate(components: ApplicationComponent[]) {
+    const appModel = new AppModel(components);
     this.genComponentIdSpecMap(components);
     this.result = [];
     const baseContext = {
       components,
       validators: this.validatorMap,
       registry: this.registry,
+      appModel,
       componentIdSpecMap: this.componentIdSpecMap,
       ajv: this.ajv,
     };
@@ -58,8 +61,8 @@ export class SchemaValidator implements ISchemaValidator {
         this.result = this.result.concat(r);
       }
     });
-    this.componentRules.forEach(rule => {
-      components.forEach(component => {
+    appModel.allComponents.forEach(component => {
+      this.componentRules.forEach(rule => {
         const r = rule.validate({
           component,
           ...baseContext,
@@ -68,9 +71,7 @@ export class SchemaValidator implements ISchemaValidator {
           this.result = this.result.concat(r);
         }
       });
-    });
-    this.traitRules.forEach(rule => {
-      components.forEach(component => {
+      this.traitRules.forEach(rule => {
         component.traits.forEach(trait => {
           const r = rule.validate({
             trait,

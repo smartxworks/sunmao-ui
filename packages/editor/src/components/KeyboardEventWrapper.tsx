@@ -73,6 +73,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
             genOperation('pasteComponent', {
               parentId: selectedComponentId,
               slot: 'content',
+              rootComponentId: pasteManager.current.rootComponentId,
               components: pasteManager.current.componentsCache,
               copyTimes: pasteManager.current.copyTimes,
             })
