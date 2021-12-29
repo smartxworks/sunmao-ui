@@ -11,7 +11,6 @@ export function parseModuleSchema(
       ids.push(c.properties.id as string);
     }
 
-
     if (c.type === 'chakra_ui/v1/list') {
       ids.push((c.properties.template as any).id);
     }
@@ -25,7 +24,10 @@ export function parseModuleSchema(
         } else {
           for (const id of ids) {
             if (val.includes(`${id}.`)) {
-              tree[key] = val.replaceAll(`${id}.`, `{{ $moduleId }}__${id}.`);
+              tree[key] = val.replace(
+                new RegExp(`${id}\\.`, 'g'),
+                `{{ $moduleId }}__${id}.`
+              );
               break;
             }
           }
