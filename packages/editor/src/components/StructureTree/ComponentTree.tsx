@@ -92,7 +92,7 @@ export const ComponentTree: React.FC<Props> = props => {
         </Box>
       );
     });
-  }, [component, childrenMap]);
+  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, registry]);
 
   const onClickRemove = () => {
     eventBus.send(
