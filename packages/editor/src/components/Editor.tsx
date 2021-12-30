@@ -87,7 +87,7 @@ export const Editor: React.FC<Props> = observer(({ App, registry, stateStore }) 
         />
       </ErrorBoundary>
     );
-  }, [app, gridCallbacks]);
+  }, [App, app, gridCallbacks]);
 
   const renderMain = () => {
     const appBox = (

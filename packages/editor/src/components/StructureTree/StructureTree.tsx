@@ -75,7 +75,7 @@ export const StructureTree: React.FC<Props> = props => {
         />
       );
     });
-  }, [dataSources, selectedComponentId, onSelectComponent, registry]);
+  }, [dataSources, selectedComponentId, onSelectComponent]);
 
   return (
     <VStack spacing="2" padding="5" alignItems="start">

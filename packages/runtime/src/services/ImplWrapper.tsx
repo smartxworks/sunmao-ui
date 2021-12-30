@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { watch } from '../utils/watchReactivity';
 import { merge } from 'lodash-es';
 import {
@@ -31,47 +31,40 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       globalHandlerMap.set(c.id, {});
     }
 
-    let handlerMap = globalHandlerMap.get(c.id)!;
+    const handlerMap = useRef(globalHandlerMap.get(c.id)!);
     useEffect(() => {
       const handler = (s: { componentId: string; name: string; parameters?: any }) => {
         if (s.componentId !== c.id) {
           return;
         }
-        if (!handlerMap[s.name]) {
+        if (!handlerMap.current[s.name]) {
           // maybe log?
           return;
         }
-        handlerMap[s.name](s.parameters);
+        handlerMap.current[s.name](s.parameters);
       };
       apiService.on('uiMethod', handler);
       return () => {
         apiService.off('uiMethod', handler);
         globalHandlerMap.delete(c.id);
       };
-    }, []);
+    }, [apiService, c.id, globalHandlerMap, handlerMap]);
 
     const mergeState = useCallback(
       (partial: any) => {
         stateManager.store[c.id] = { ...stateManager.store[c.id], ...partial };
       },
-      [c.id]
+      [c.id, stateManager.store]
     );
     const subscribeMethods = useCallback((map: any) => {
-      handlerMap = { ...handlerMap, ...map };
-      globalHandlerMap.set(c.id, handlerMap);
-    }, []);
+      handlerMap.current = { ...handlerMap, ...map };
+      globalHandlerMap.set(c.id, handlerMap.current);
+    }, [c.id, globalHandlerMap]);
 
-    // result returned from traits
-    const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
-      return c.traits.map(trait =>
-        excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
-      );
-    });
-
-    function excecuteTrait(
+    const excecuteTrait = useCallback((
       trait: ApplicationTrait,
       traitProperty: ApplicationTrait['properties']
-    ) {
+    ) => {
       const tImpl = registry.getTrait(
         trait.parsedType.version,
         trait.parsedType.name
@@ -83,7 +76,14 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
         subscribeMethods,
         services,
       });
-    }
+    }, [c.id, mergeState, registry, services, subscribeMethods])
+
+    // result returned from traits
+    const [traitResults, setTraitResults] = useState<TraitResult[]>(() => {
+      return c.traits.map(trait =>
+        excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
+      );
+    });
 
     // eval traits' properties then excecute traits
     useEffect(() => {
@@ -109,7 +109,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       // because mergeState will be called during the first render of component, and state will change
       setTraitResults(c.traits.map((trait, i) => excecuteTrait(trait, properties[i])));
       return () => stops.forEach(s => s());
-    }, [c.traits]);
+    }, [c.traits, excecuteTrait, stateManager]);
 
     // reduce traitResults
     const propsFromTraits: TraitResult['props'] = useMemo(() => {
@@ -147,7 +147,7 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       // must keep this line, reason is the same as above
       setEvaledComponentProperties({ ...result });
       return stop;
-    }, [c.properties]);
+    }, [c.properties, stateManager]);
 
     const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
