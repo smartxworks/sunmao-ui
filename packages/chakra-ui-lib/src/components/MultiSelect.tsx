@@ -1,57 +1,13 @@
 import { useEffect } from 'react';
-import { createComponent } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseMultiSelect } from 'chakra-react-select';
-import { ComponentImplementation } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
-  value: Type.String(),
+  value: Type.Array(Type.String()),
 });
-
-const MultiSelect: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  options,
-  placeholder,
-  defaultValue,
-  isRequired,
-  isDisabled,
-  size,
-  variant,
-  mergeState,
-  customStyle,
-}) => {
-  useEffect(() => {
-    const newValue = (defaultValue || []).map(o => o.value);
-    mergeState({ value: newValue });
-  }, []);
-
-  const onChange = (options: Static<typeof OptionsSchema>) => {
-    const newValue = options.map(o => o.value);
-    mergeState({ value: newValue });
-  };
-
-  return (
-    <Box
-      width="full"
-      className={css`
-        ${customStyle?.content}
-      `}
-    >
-      <BaseMultiSelect
-        isMulti
-        options={options}
-        placeholder={placeholder}
-        isRequired={isRequired}
-        isDisabled={isDisabled}
-        size={size}
-        variant={variant}
-        onChange={onChange}
-        defaultValue={defaultValue}
-      />
-    </Box>
-  );
-};
 
 const OptionsSchema = Type.Array(
   Type.Object({
@@ -107,8 +63,7 @@ const exampleProperties = {
   ],
 };
 
-export default {
-  ...createComponent({
+export default implementRuntimeComponent2({
     version: 'chakra_ui/v1',
     metadata: {
       name: 'multiSelect',
@@ -124,9 +79,48 @@ export default {
       state: StateSchema,
       methods: {},
       slots: [],
-      styleSlots: [],
+      styleSlots: ['content'],
       events: [],
     },
-  }),
-  impl: MultiSelect,
-};
+  })(({
+    options,
+    placeholder,
+    defaultValue,
+    isRequired,
+    isDisabled,
+    size,
+    variant,
+    mergeState,
+    customStyle,
+  }) => {
+    useEffect(() => {
+      const newValue = (defaultValue || []).map(o => o.value);
+      mergeState({ value: newValue });
+    }, []);
+  
+    const onChange = (options: Static<typeof OptionsSchema>) => {
+      const newValue = options.map(o => o.value);
+      mergeState({ value: newValue });
+    };
+  
+    return (
+      <Box
+        width="full"
+        className={css`
+          ${customStyle?.content}
+        `}
+      >
+        <BaseMultiSelect
+          isMulti
+          options={options}
+          placeholder={placeholder}
+          isRequired={isRequired}
+          isDisabled={isDisabled}
+          size={size}
+          variant={variant}
+          onChange={onChange}
+          defaultValue={defaultValue}
+        />
+      </Box>
+    );
+  })

@@ -1,8 +1,7 @@
-import { createComponent } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { VStack as BaseVStack } from '@chakra-ui/react';
-import { ComponentImplementation, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
 import {
   DirectionSchema,
   FlexWrapSchema,
@@ -10,34 +9,6 @@ import {
   JustifyContentSchema,
   SpacingSchema,
 } from './Stack';
-
-const VStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  direction,
-  wrap,
-  align,
-  justify,
-  spacing,
-  slotsMap,
-  customStyle,
-}) => {
-  return (
-    <BaseVStack
-      width="full"
-      height="full"
-      padding="4"
-      background="white"
-      border="1px solid"
-      borderColor="gray.200"
-      borderRadius="4"
-      className={css`
-        ${customStyle?.content}
-      `}
-      {...{ direction, wrap, align, justify, spacing }}
-    >
-      <Slot slotsMap={slotsMap} slot="content" />
-    </BaseVStack>
-  );
-};
 
 const PropsSchema = Type.Object({
   direction: DirectionSchema,
@@ -47,20 +18,51 @@ const PropsSchema = Type.Object({
   spacing: SpacingSchema,
 });
 
-export default {
-  ...createComponent({
+export default implementRuntimeComponent2({
     version: 'chakra_ui/v1',
     metadata: {
       name: 'vstack',
       displayName: 'VStack',
       description: 'chakra-ui vstack',
+      exampleProperties: {
+        spacing: '24px',
+      },
       exampleSize: [6, 6],
+      isDraggable: true,
+      isResizable: true,
     },
     spec: {
       properties: PropsSchema,
+      state: Type.Object({}),
       slots: ['content'],
       styleSlots: ['content'],
+      methods: {},
+      events: [],
     },
-  }),
-  impl: VStack,
-};
+  })(({
+    direction,
+    wrap,
+    align,
+    justify,
+    spacing,
+    slotsMap,
+    customStyle,
+  }) => {
+    return (
+      <BaseVStack
+        width="full"
+        height="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+        className={css`
+          ${customStyle?.content}
+        `}
+        {...{ direction, wrap, align, justify, spacing }}
+      >
+        <Slot slotsMap={slotsMap} slot="content" />
+      </BaseVStack>
+    );
+  })

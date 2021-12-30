@@ -1,25 +1,43 @@
 import { useState, useEffect } from 'react';
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
-import { ComponentImplementation, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
 
-const DefaultValueSchema = Type.Optional(
-  Type.Array(Type.Union([Type.String(), Type.Number()]))
-);
+const DefaultValueSchema = Type.Array(Type.Union([Type.String(), Type.Number()]));
 
 const StateSchema = Type.Object({
-  value: Type.String(),
+  value: DefaultValueSchema,
 });
 
-const CheckboxGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  size,
-  defaultValue,
-  isDisabled,
-  slotsMap,
-  mergeState,
-}) => {
+const PropsSchema = Type.Object({
+  size: SizePropertySchema,
+  isDisabled: IsDisabledSchema,
+  defaultValue: Type.Optional(DefaultValueSchema),
+});
+
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'checkbox_group',
+    displayName: 'Checkbox Group',
+    description: 'chakra-ui checkbox group',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      defaultValue: [],
+    },
+    exampleSize: [3, 3],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {},
+    slots: ['content'],
+    styleSlots: [],
+    events: [],
+  },
+})(({ size, defaultValue, isDisabled, slotsMap, mergeState }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({ value });
@@ -35,36 +53,4 @@ const CheckboxGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseCheckboxGroup>
   );
-};
-
-const PropsSchema = Type.Object({
-  size: SizePropertySchema,
-  isDisabled: IsDisabledSchema,
-  defaultValue: DefaultValueSchema,
 });
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'checkbox_group',
-      displayName: 'Checkbox Group',
-      description: 'chakra-ui checkbox group',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        defaultValue: [],
-      },
-      exampleSize: [3, 3],
-    },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: {},
-      slots: ['content'],
-      styleSlots: [],
-      events: [],
-    },
-  }),
-  impl: CheckboxGroup,
-};
