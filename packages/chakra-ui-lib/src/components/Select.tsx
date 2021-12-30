@@ -101,7 +101,7 @@ export default implementRuntimeComponent2({
 
     useEffect(() => {
       mergeState({ value: value });
-    }, [value]);
+    }, [mergeState, value]);
 
     return (
       <BaseSelect

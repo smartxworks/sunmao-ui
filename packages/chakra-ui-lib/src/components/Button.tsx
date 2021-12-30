@@ -55,7 +55,7 @@ export default implementRuntimeComponent2({
   }) => {
     useEffect(() => {
       mergeState({ value: text.raw });
-    }, [text.raw]);
+    }, [mergeState, text.raw]);
 
     const ref = useRef<HTMLButtonElement>(null);
     useEffect(() => {
@@ -64,7 +64,7 @@ export default implementRuntimeComponent2({
           ref.current?.click();
         },
       });
-    }, []);
+    }, [subscribeMethods]);
 
     return (
       <BaseButton

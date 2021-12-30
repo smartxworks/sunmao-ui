@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { sortBy } from 'lodash-es';
 import {
   Table as BaseTable,
@@ -39,23 +39,28 @@ export const TableImpl = implementTable(
     const [sortRule, setSortRule] = useState<SortRule | undefined>();
     const pageNumber = Math.ceil((data?.length || 0) / rowsPerPage);
 
+    const updateSelectedItems = useCallback(
+      (items: Array<Record<string, any>>) => {
+        setSelectedItems(items);
+        mergeState({ selectedItems: items });
+      },
+      [mergeState]
+    );
+
+    const updateSelectedItem = useCallback(
+      (item?: Record<string, any>) => {
+        setSelectedItem(item);
+        mergeState({ selectedItem: item });
+      },
+      [mergeState]
+    );
     useEffect(() => {
       // reset table state when data source changes
       updateSelectedItems([]);
       updateSelectedItem(undefined);
       setCurrentPage(0);
       setSortRule(undefined);
-    }, [data]);
-
-    const updateSelectedItems = (items: Array<Record<string, any>>) => {
-      setSelectedItems(items);
-      mergeState({ selectedItems: items });
-    };
-
-    const updateSelectedItem = (item?: Record<string, any>) => {
-      setSelectedItem(item);
-      mergeState({ selectedItem: item });
-    };
+    }, [data, updateSelectedItem, updateSelectedItems]);
 
     const sortedData = useMemo(() => {
       if (!sortRule) return data;
@@ -112,7 +117,7 @@ export const TableImpl = implementTable(
           ></Checkbox>
         </Th>
       );
-    }, [selectedItems.length, data]);
+    }, [data, isMultiSelect, selectedItems.length, updateSelectedItems]);
 
     const tableContent = (
       <>

@@ -40,7 +40,7 @@ export default implementRuntimeComponent2({
 
   useEffect(() => {
     mergeState({ value });
-  }, [value]);
+  }, [mergeState, value]);
 
   useEffect(() => {
     setValue(defaultValue);

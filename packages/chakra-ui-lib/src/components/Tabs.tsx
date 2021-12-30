@@ -48,7 +48,7 @@ export default implementRuntimeComponent2({
 
   useEffect(() => {
     mergeState({ selectedTabIndex });
-  }, [selectedTabIndex]);
+  }, [mergeState, selectedTabIndex]);
 
   const slotComponents = getSlots(slotsMap, 'content', {});
   const placeholder = (

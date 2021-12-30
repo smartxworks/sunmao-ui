@@ -96,7 +96,7 @@ export default implementRuntimeComponent2({
     useEffect(() => {
       const newValue = (defaultValue || []).map(o => o.value);
       mergeState({ value: newValue });
-    }, []);
+    }, [defaultValue, mergeState]);
   
     const onChange = (options: Static<typeof OptionsSchema>) => {
       const newValue = options.map(o => o.value);

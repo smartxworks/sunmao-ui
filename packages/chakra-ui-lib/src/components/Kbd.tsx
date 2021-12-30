@@ -39,7 +39,7 @@ export default implementRuntimeComponent2({
 })(({ text, mergeState, customStyle }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
-  }, [text.raw]);
+  }, [mergeState, text.raw]);
 
   return (
     <BaseKbd

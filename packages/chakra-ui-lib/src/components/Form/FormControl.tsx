@@ -68,7 +68,7 @@ export default implementRuntimeComponent2({
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
     const [hideInvalid, setHideInvalid] = useState(true);
-    const inputId = useMemo(() => first(slotsMap?.get('content'))?.id || '', []);
+    const inputId = useMemo(() => first(slotsMap?.get('content'))?.id || '', [slotsMap]);
     const [validResult, setValidResult] = useState({
       isInvalid: false,
       errorMsg: '',
@@ -94,7 +94,7 @@ export default implementRuntimeComponent2({
       );
       setInputValue(services.stateManager.store[inputId].value);
       return stop;
-    }, [inputId, setInputValue]);
+    }, [inputId, services.stateManager.store, setInputValue]);
 
     useEffect(() => {
       if (!inputId) return;
@@ -110,7 +110,7 @@ export default implementRuntimeComponent2({
         setValidResult(services.stateManager.store[inputId].validResult);
       }
       return stop;
-    }, [inputId, setValidResult]);
+    }, [inputId, services.stateManager.store, setValidResult]);
 
     useEffect(() => {
       if (!inputId) return;
@@ -124,7 +124,7 @@ export default implementRuntimeComponent2({
         isInvalid: !!(isInvalid || (!inputValue && isRequired)),
         value: inputValue,
       });
-    }, [inputId, inputId, fieldName, isInvalid, isRequired, inputValue]);
+    }, [inputId, fieldName, isInvalid, isRequired, inputValue, mergeState]);
 
     const placeholder = <Text color="gray.200">Please Add Input Here</Text>;
     const slotView = <Slot {...FormItemCSS} slotsMap={slotsMap} slot="content" />;
