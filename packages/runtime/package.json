@@ -51,12 +51,12 @@
     "wouter": "^2.7.4"
   },
   "devDependencies": {
-    "@swc/core": "^1.2.121",
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.15.0",
     "@sunmao-ui/vite-plugins": "^1.0.2",
+    "@swc/core": "^1.2.121",
     "@testing-library/react": "^12.1.0",
     "@types/lodash": "^4.14.170",
     "@types/lodash-es": "^4.17.5",
@@ -65,6 +65,7 @@
     "@types/react-grid-layout": "^1.1.2",
     "@vitejs/plugin-react": "^1.0.1",
     "babel-jest": "^27.1.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.1.0",
     "tsup": "^5.11.0",
     "typescript": "^4.5.0",

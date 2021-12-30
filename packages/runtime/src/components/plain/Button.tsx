@@ -13,7 +13,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
 }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
-  }, [text.raw]);
+  }, [mergeState, text.raw]);
 
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -22,7 +22,7 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
         ref.current?.click();
       },
     });
-  }, []);
+  }, [subscribeMethods]);
 
   return (
     <button ref={ref} onClick={callbackMap?.onClick} className={`${customStyle?.content}`}>

@@ -1,5 +1,5 @@
 import { Static } from '@sinclair/typebox';
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { RuntimeApplication } from '@sunmao-ui/core';
@@ -40,10 +40,10 @@ const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeMod
     }).obj;
   }
 
-  function evalWithScope<T extends Record<string, any>>(
+  const evalWithScope = useCallback(<T extends Record<string, any>>(
     obj: T,
     scope: Record<string, any>
-  ): T {
+  ): T => {
     const hasScopeKey = (exp: string) => {
       return Object.keys(scope).some(key => exp.includes('{{') && exp.includes(key));
     };
@@ -53,7 +53,7 @@ const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeMod
       }
       return value;
     }).obj;
-  }
+  }, [services.stateManager])
 
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
@@ -67,7 +67,7 @@ const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeMod
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
     return evalWithScope(moduleSpec.spec.stateMap, { $moduleId: moduleId });
-  }, [moduleSpec, moduleId]);
+  }, [evalWithScope, moduleSpec.spec.stateMap, moduleId]);
 
   const evaledModuleTemplate = useDeepCompareMemo(() => {
     // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
@@ -111,7 +111,7 @@ const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeMod
     return () => {
       stops.forEach(s => s());
     };
-  }, [evaledStateMap, services]);
+  }, [evaledStateMap, moduleId, services]);
 
   // listen module event
   useEffect(() => {
@@ -137,7 +137,7 @@ const ModuleRendererContent: React.FC<Props & {moduleSpec: ImplementedRuntimeMod
         services.apiService.off('moduleEvent', h);
       });
     };
-  }, [evaledHanlders]);
+  }, [evaledHanlders, moduleId, services.apiService]);
 
   const result = useMemo(() => {
     const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
