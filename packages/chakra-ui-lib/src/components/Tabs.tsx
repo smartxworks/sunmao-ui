@@ -91,7 +91,7 @@ export default {
     spec: {
       properties: PropsSchema,
       state: StateSchema,
-      methods: [],
+      methods: {},
       // tab slot is dynamic
       slots: ['content'],
       styleSlots: ['tabItem', 'tabContent'],

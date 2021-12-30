@@ -60,7 +60,7 @@ export default {
     spec: {
       properties: PropsSchema,
       state: StateSchema,
-      methods: [],
+      methods: {},
       slots: ['content'],
       styleSlots: [],
       events: [],

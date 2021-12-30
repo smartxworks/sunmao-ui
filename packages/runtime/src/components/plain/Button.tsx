@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Type } from '@sinclair/typebox';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { implementRuntimeComponent2 } from 'src/utils/buildKit';
+import { implementRuntimeComponent2 } from '../../utils/buildKit';
 
 const StateSchema = Type.Object({
   value: Type.String(),

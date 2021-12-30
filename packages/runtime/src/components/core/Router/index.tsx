@@ -1,21 +1,6 @@
 import { Static, Type } from '@sinclair/typebox';
-import { createComponent } from '@sunmao-ui/core';
-import { ComponentImplementation } from '../../../services/registry';
+import { implementRuntimeComponent2 } from '../../../utils/buildKit';
 import { Switch } from './component';
-
-const Router: ComponentImplementation<{
-  switchPolicy: Static<typeof SwitchPolicyPropertySchema>;
-  nested?: boolean;
-}> = ({ slotsMap, switchPolicy, subscribeMethods, mergeState }) => {
-  return (
-    <Switch
-      slotMap={slotsMap}
-      switchPolicy={switchPolicy}
-      subscribeMethods={subscribeMethods}
-      mergeState={mergeState}
-    ></Switch>
-  );
-};
 
 export enum RouteType {
   REDIRECT = 'REDIRECT',
@@ -52,29 +37,35 @@ const PropsSchema = Type.Object({
   ),
 });
 
-export default {
-  ...createComponent({
-    version: 'core/v1',
-    metadata: {
-      name: 'router',
-      displayName: 'Router',
-      description: 'create a router-controlled component',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        switchPolicy: [],
-      },
-      exampleSize: [6, 6],
+export default implementRuntimeComponent2({
+  version: 'core/v1',
+  metadata: {
+    name: 'router',
+    displayName: 'Router',
+    description: 'create a router-controlled component',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      switchPolicy: [],
     },
-    spec: {
-      properties: PropsSchema,
-      state: {},
-      methods: [],
-      // route slots are dynamic
-      slots: [],
-      styleSlots: [],
-      events: [],
-    },
-  }),
-  impl: Router,
-};
+    exampleSize: [6, 6],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: Type.Object({}),
+    methods: {},
+    // route slots are dynamic
+    slots: [],
+    styleSlots: [],
+    events: [],
+  },
+})(({ slotsMap, switchPolicy, subscribeMethods, mergeState }) => {
+  return (
+    <Switch
+      slotMap={slotsMap}
+      switchPolicy={switchPolicy}
+      subscribeMethods={subscribeMethods}
+      mergeState={mergeState}
+    ></Switch>
+  );
+});

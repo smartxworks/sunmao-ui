@@ -1,40 +1,8 @@
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from '../../services/registry';
+import { implementRuntimeComponent2 } from '../../utils/buildKit';
 import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
-type Props = Static<typeof RuntimeModuleSchema>;
-
-const ModuleContainer: ComponentImplementation<Props> = ({
-  id,
-  type,
-  properties,
-  handlers,
-  services,
-  app
-}) => {
-  if (!type) {
-    return <span>Please choose a module to render.</span>
-  }
-  if (!id) {
-    return <span>Please set a id for module.</span>
-  }
-
-  return (
-    <ModuleRenderer
-      id={id}
-      type={type}
-      properties={properties}
-      handlers={handlers}
-      services={services}
-      app={app}
-    />
-  );
-};
-
-export default {
-  ...createComponent({
+export default implementRuntimeComponent2({
     version: 'core/v1',
     metadata: {
       name: 'moduleContainer',
@@ -49,17 +17,36 @@ export default {
       exampleSize: [6, 6],
     },
     spec: {
-      properties: Type.Object({
-        id: Type.String(),
-        type: Type.String(),
-        properties: Type.Record(Type.String(), Type.Any()),
-      }),
+      properties: RuntimeModuleSchema,
       state: {},
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: [],
       events: [],
     },
-  }),
-  impl: ModuleContainer,
-};
+  })(({
+    id,
+    type,
+    properties,
+    handlers,
+    services,
+    app
+  }) => {
+    if (!type) {
+      return <span>Please choose a module to render.</span>
+    }
+    if (!id) {
+      return <span>Please set a id for module.</span>
+    }
+  
+    return (
+      <ModuleRenderer
+        id={id}
+        type={type}
+        properties={properties}
+        handlers={handlers}
+        services={services}
+        app={app}
+      />
+    );
+  })

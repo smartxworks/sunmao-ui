@@ -28,7 +28,7 @@ export default {
     spec: {
       properties: {},
       state: {},
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: ['content'],
       events: [],

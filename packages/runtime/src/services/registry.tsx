@@ -29,6 +29,7 @@ import {
 import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
+import { ImplementedRuntimeComponent2 } from '../utils/buildKit';
 
 export type ComponentImplementation<
   TProps = any,
@@ -60,11 +61,28 @@ export type SunmaoLib = {
 };
 
 export class Registry {
-  components = new Map<string, Map<string, ImplementedRuntimeComponent>>();
+  components = new Map<string, Map<string, any>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
 
   registerComponent(c: ImplementedRuntimeComponent) {
+    if (this.components.get(c.version)?.has(c.metadata.name)) {
+      throw new Error(
+        `Already has component ${c.version}/${c.metadata.name} in this registry.`
+      );
+    }
+    if (!this.components.has(c.version)) {
+      this.components.set(c.version, new Map());
+    }
+    this.components.get(c.version)?.set(c.metadata.name, c);
+  }
+
+  registerComponent2<
+    KMethodName extends string,
+    KStyleSlot extends string,
+    KSlot extends string,
+    KEvent extends string
+  >(c: ImplementedRuntimeComponent2<KMethodName, KStyleSlot, KSlot, KEvent>) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has component ${c.version}/${c.metadata.name} in this registry.`
@@ -181,11 +199,11 @@ export function initRegistry(): Registry {
   const registry = new Registry();
   // TODO: (type-safe) register v2 component
   // registry.registerComponent(PlainButton);
-  registry.registerComponent(CoreText);
-  registry.registerComponent(CoreGridLayout);
-  registry.registerComponent(CoreRouter);
-  registry.registerComponent(CoreDummy);
-  registry.registerComponent(CoreModuleContainer);
+  registry.registerComponent2(CoreText);
+  registry.registerComponent2(CoreGridLayout);
+  registry.registerComponent2(CoreRouter);
+  registry.registerComponent2(CoreDummy);
+  registry.registerComponent2(CoreModuleContainer);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);

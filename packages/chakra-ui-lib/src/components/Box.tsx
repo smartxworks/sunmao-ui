@@ -313,7 +313,7 @@ export default {
     spec: {
       properties: StyleSchema,
       state: {},
-      methods: [],
+      methods: {},
       slots: ['content'],
       styleSlots: ['content'],
       events: [],
