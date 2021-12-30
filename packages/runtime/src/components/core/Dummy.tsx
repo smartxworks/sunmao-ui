@@ -7,7 +7,7 @@ const Dummy: ComponentImplementation<Record<string, unknown>> = ({ effects }) =>
     return () => {
       effects?.forEach(e => e());
     };
-  }, []);
+  }, [effects]);
 
   return null;
 };

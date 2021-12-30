@@ -34,7 +34,7 @@ export const App: React.FC<AppProps> = props => {
         componentWrapper,
         gridCallbacks,
       }),
-    [app]
+    [app, componentWrapper, gridCallbacks, services]
   );
 
   return (
