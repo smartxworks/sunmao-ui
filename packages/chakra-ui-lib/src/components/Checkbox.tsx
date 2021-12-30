@@ -89,15 +89,15 @@ export default implementRuntimeComponent2({
 
     useEffect(() => {
       mergeState({ text: text.raw });
-    }, [text.raw]);
+    }, [mergeState, text.raw]);
 
     useEffect(() => {
       mergeState({ value });
-    }, [value]);
+    }, [mergeState, value]);
 
     useEffect(() => {
       mergeState({ checked });
-    }, [checked]);
+    }, [checked, mergeState]);
 
     useEffect(() => {
       setChecked(!!defaultIsChecked);

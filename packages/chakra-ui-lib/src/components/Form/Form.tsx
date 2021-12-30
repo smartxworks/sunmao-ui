@@ -61,7 +61,7 @@ export default implementRuntimeComponent2({
           return services.stateManager.store[fcid].isInvalid;
         })
       );
-    }, []);
+    }, [formControlIds, services.stateManager.store]);
 
     useEffect(() => {
       const disable = invalidArray.some(v => v);
@@ -69,7 +69,7 @@ export default implementRuntimeComponent2({
       mergeState({
         disableSubmit: disable,
       });
-    }, [invalidArray]);
+    }, [invalidArray, mergeState]);
 
     useEffect(() => {
       subscribeMethods({
@@ -83,7 +83,7 @@ export default implementRuntimeComponent2({
           });
         },
       });
-    }, [formControlIds]);
+    }, [formControlIds, services.apiService, services.stateManager.store, subscribeMethods]);
 
     useEffect(() => {
       const stops: ReturnType<typeof watch>[] = [];
@@ -122,7 +122,7 @@ export default implementRuntimeComponent2({
           s();
         });
       };
-    }, [formControlIds]);
+    }, [formControlIds, mergeState, services.stateManager.store]);
 
     const onSubmit = () => {
       callbackMap?.onSubmit();

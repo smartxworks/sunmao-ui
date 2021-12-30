@@ -41,7 +41,7 @@ export default implementRuntimeComponent2({
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({ value });
-  }, [value]);
+  }, [mergeState, value]);
 
   return (
     <BaseCheckboxGroup

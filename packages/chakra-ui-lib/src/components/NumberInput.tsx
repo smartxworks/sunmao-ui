@@ -89,7 +89,7 @@ export default implementRuntimeComponent2({
 
     useEffect(() => {
       mergeState({ value });
-    }, [value]);
+    }, [mergeState, value]);
 
     useEffect(() => {
       setValue(defaultValue || 0);
@@ -104,7 +104,7 @@ export default implementRuntimeComponent2({
           setValue(defaultValue);
         },
       });
-    }, []);
+    }, [defaultValue, subscribeMethods]);
 
     return (
       <BaseNumberInput

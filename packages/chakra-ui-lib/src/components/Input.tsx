@@ -106,7 +106,7 @@ export default implementRuntimeComponent2({
 
     useEffect(() => {
       mergeState({ value });
-    }, [value]);
+    }, [mergeState, value]);
 
     useEffect(() => {
       setValue(defaultValue || '');
@@ -121,7 +121,7 @@ export default implementRuntimeComponent2({
           setValue(defaultValue || '');
         },
       });
-    }, []);
+    }, [defaultValue, subscribeMethods]);
 
     return (
       <InputGroup size={size} background="white">

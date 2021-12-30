@@ -73,11 +73,11 @@ export default implementRuntimeComponent2({
   }) => {
     useEffect(() => {
       mergeState({ value: text.raw });
-    }, [text.raw]);
+    }, [mergeState, text.raw]);
   
     useEffect(() => {
       mergeState({ value });
-    }, [value]);
+    }, [mergeState, value]);
   
     return (
       <BaseRadio

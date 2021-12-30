@@ -99,7 +99,7 @@ export default implementRuntimeComponent2({
           setIsOpen(false);
         },
       });
-    }, []);
+    }, [subscribeMethods]);
 
     const dialogContentProps: ModalContentProps = {
       position: 'absolute',
