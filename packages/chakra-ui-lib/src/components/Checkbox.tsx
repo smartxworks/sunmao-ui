@@ -132,7 +132,7 @@ export default {
     spec: {
       properties: PropsSchema,
       state: CheckboxStateSchema,
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: ['content'],
       events: [],

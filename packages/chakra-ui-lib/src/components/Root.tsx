@@ -30,7 +30,7 @@ export default {
     spec: {
       properties: {},
       state: {},
-      methods: [],
+      methods: {},
       slots: ['root'],
       styleSlots: [],
       events: [],

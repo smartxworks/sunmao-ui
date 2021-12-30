@@ -157,7 +157,7 @@ export default {
         isInvalid: Type.Boolean(),
         value: Type.Any(),
       }),
-      methods: [],
+      methods: {},
       slots: ['content'],
       styleSlots: ['content'],
       events: [],

@@ -54,7 +54,7 @@ export default {
     spec: {
       properties: PropsSchema,
       state: TableStateSchema,
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: [],
       events: [],
