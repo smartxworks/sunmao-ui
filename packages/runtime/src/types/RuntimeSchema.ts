@@ -66,7 +66,7 @@ export type CallbackMap<K extends string> = Record<K, () => void>;
 export type SubscribeMethods<U> = (map: {
   [K in keyof U]: (parameters: U[K]) => void;
 }) => void;
-export type MergeState<T> = (partialState: T) => void;
+export type MergeState<T> = (partialState: Partial<T>) => void;
 
 type RuntimeFunctions<TState, TMethods> = {
   mergeState: MergeState<TState>;

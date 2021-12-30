@@ -1,65 +1,12 @@
 import { useState, useEffect } from 'react';
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
-import { ComponentImplementation } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
   value: Type.String(),
 });
-
-const Select: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  options,
-  placeholder,
-  defaultValue,
-  errorBorderColor,
-  focusBorderColor,
-  isDisabled,
-  isInvalid,
-  isReadOnly,
-  isRequired,
-  size,
-  variant,
-  mergeState,
-  customStyle,
-}) => {
-  const [value, setValue] = useState<string | undefined>(defaultValue);
-
-  useEffect(() => {
-    setValue(defaultValue);
-  }, [defaultValue]);
-
-  useEffect(() => {
-    mergeState({ value: value });
-  }, [value]);
-
-  return (
-    <BaseSelect
-      background="white"
-      placeholder={placeholder}
-      value={value}
-      errorBorderColor={errorBorderColor}
-      focusBorderColor={focusBorderColor}
-      isDisabled={isDisabled}
-      isInvalid={isInvalid}
-      isReadOnly={isReadOnly}
-      isRequired={isRequired}
-      size={size}
-      variant={variant}
-      onChange={e => setValue(e.target.value)}
-      className={css`
-        ${customStyle?.content}
-      `}
-    >
-      {options.map(opt => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </BaseSelect>
-  );
-};
 
 const PropsSchema = Type.Object({
   options: Type.Array(
@@ -111,26 +58,75 @@ const exampleProperties = {
   ],
 };
 
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'select',
-      displayName: 'Select',
-      description: 'chakra-ui select',
-      isResizable: true,
-      isDraggable: true,
-      exampleProperties,
-      exampleSize: [4, 1],
-    },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: {},
-      slots: [],
-      styleSlots: ['content'],
-      events: [],
-    },
-  }),
-  impl: Select,
-};
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'select',
+    displayName: 'Select',
+    description: 'chakra-ui select',
+    isResizable: true,
+    isDraggable: true,
+    exampleProperties,
+    exampleSize: [4, 1],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(
+  ({
+    options,
+    placeholder,
+    defaultValue,
+    errorBorderColor,
+    focusBorderColor,
+    isDisabled,
+    isInvalid,
+    isReadOnly,
+    isRequired,
+    size,
+    variant,
+    mergeState,
+    customStyle,
+  }) => {
+    const [value, setValue] = useState<string | undefined>(defaultValue);
+
+    useEffect(() => {
+      setValue(defaultValue);
+    }, [defaultValue]);
+
+    useEffect(() => {
+      mergeState({ value: value });
+    }, [value]);
+
+    return (
+      <BaseSelect
+        background="white"
+        placeholder={placeholder}
+        value={value}
+        errorBorderColor={errorBorderColor}
+        focusBorderColor={focusBorderColor}
+        isDisabled={isDisabled}
+        isInvalid={isInvalid}
+        isReadOnly={isReadOnly}
+        isRequired={isRequired}
+        size={size}
+        variant={variant}
+        onChange={e => setValue(e.target.value)}
+        className={css`
+          ${customStyle?.content}
+        `}
+      >
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </BaseSelect>
+    );
+  }
+);

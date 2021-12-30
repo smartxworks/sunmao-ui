@@ -1,7 +1,6 @@
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { Box as BaseBox } from '@chakra-ui/react';
-import { ComponentImplementation, Slot, GRID_HEIGHT } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, Slot, GRID_HEIGHT } from '@sunmao-ui/runtime';
 import { pick } from 'lodash-es';
 import { css } from '@emotion/css';
 
@@ -270,11 +269,30 @@ const StyleSchema = Type.Partial(
 );
 const StyleProps = Object.keys(StyleSchema.properties);
 
-const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
-  slotsMap,
-  customStyle,
-  ...restProps
-}) => {
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'box',
+    displayName: 'Box',
+    isDraggable: true,
+    isResizable: true,
+    description: 'chakra-ui box',
+    exampleProperties: {
+      w: GRID_HEIGHT,
+      h: GRID_HEIGHT,
+      border: '1px solid black',
+    },
+    exampleSize: [6, 6],
+  },
+  spec: {
+    properties: StyleSchema,
+    state: Type.Object({}),
+    methods: {},
+    slots: ['content'],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(({ slotsMap, customStyle, ...restProps }) => {
   const styleProps = pick(restProps, StyleProps);
   return (
     <BaseBox
@@ -292,32 +310,4 @@ const Box: ComponentImplementation<Static<typeof StyleSchema>> = ({
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseBox>
   );
-};
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'box',
-      displayName: 'Box',
-      isDraggable: true,
-      isResizable: true,
-      description: 'chakra-ui box',
-      exampleProperties: {
-        w: GRID_HEIGHT,
-        h: GRID_HEIGHT,
-        border: '1px solid black',
-      },
-      exampleSize: [6, 6],
-    },
-    spec: {
-      properties: StyleSchema,
-      state: {},
-      methods: {},
-      slots: ['content'],
-      styleSlots: ['content'],
-      events: [],
-    },
-  }),
-  impl: Box,
-};
+});

@@ -1,15 +1,40 @@
 import { Link } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { Static, Type } from '@sinclair/typebox';
-import { createComponent } from '@sunmao-ui/core';
-import { ComponentImplementation, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeComponent2, Text, TextPropertySchema } from '@sunmao-ui/runtime';
 
-const LinkImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  text,
-  href,
-  isExternal,
-  customStyle,
-}) => {
+const PropsSchema = Type.Object({
+  text: TextPropertySchema,
+  href: Type.String(),
+  isExternal: Type.Optional(Type.Boolean()),
+});
+
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'link',
+    displayName: 'Link',
+    description: 'chakra-ui link',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      text: {
+        raw: 'link',
+        format: 'plain',
+      },
+      href: 'https://www.google.com',
+    },
+    exampleSize: [2, 1],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: Type.Object({}),
+    methods: {},
+    slots: [],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(({ text, href, isExternal, customStyle }) => {
   return (
     <Link
       href={href}
@@ -22,40 +47,4 @@ const LinkImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
       <Text value={text} />
     </Link>
   );
-};
-
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
-  href: Type.String(),
-  isExternal: Type.Optional(Type.Boolean()),
 });
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'link',
-      displayName: 'Link',
-      description: 'chakra-ui link',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        text: {
-          raw: 'link',
-          format: 'plain',
-        },
-        href: 'https://www.google.com',
-      },
-      exampleSize: [2, 1],
-    },
-    spec: {
-      properties: PropsSchema,
-      state: {},
-      methods: {},
-      slots: [],
-      styleSlots: ['content'],
-      events: [],
-    },
-  }),
-  impl: LinkImpl,
-};

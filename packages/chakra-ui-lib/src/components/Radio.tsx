@@ -1,59 +1,13 @@
 import { useEffect } from 'react';
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { Radio as BaseRadio } from '@chakra-ui/react';
-import { ComponentImplementation, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, Text, TextPropertySchema } from '@sunmao-ui/runtime';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
-  value: Type.String(),
+  value: Type.Union([Type.String(), Type.Number()]),
 });
-
-const Radio: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  text,
-  value,
-  isDisabled,
-  isFocusable,
-  isInValid,
-  isReadOnly,
-  isRequired,
-  name,
-  size,
-  spacing,
-  colorScheme,
-  mergeState,
-  customStyle,
-}) => {
-  useEffect(() => {
-    mergeState({ text: text.raw });
-  }, [text.raw]);
-
-  useEffect(() => {
-    mergeState({ value });
-  }, [value]);
-
-  return (
-    <BaseRadio
-      height="10"
-      value={value}
-      isDisabled={isDisabled}
-      isFocusable={isFocusable}
-      isInvalid={isInValid}
-      isReadOnly={isReadOnly}
-      isRequired={isRequired}
-      name={name}
-      size={size}
-      spacing={spacing}
-      colorScheme={colorScheme}
-      className={css`
-        ${customStyle?.content}
-      `}
-    >
-      <Text value={text} />
-    </BaseRadio>
-  );
-};
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
@@ -75,8 +29,7 @@ const PropsSchema = Type.Object({
   colorScheme: ColorSchemePropertySchema,
 });
 
-export default {
-  ...createComponent({
+export default implementRuntimeComponent2({
     version: 'chakra_ui/v1',
     metadata: {
       name: 'radio',
@@ -103,6 +56,47 @@ export default {
       styleSlots: ['content'],
       events: [],
     },
-  }),
-  impl: Radio,
-};
+  })(({
+    text,
+    value,
+    isDisabled,
+    isFocusable,
+    isInValid,
+    isReadOnly,
+    isRequired,
+    name,
+    size,
+    spacing,
+    colorScheme,
+    mergeState,
+    customStyle,
+  }) => {
+    useEffect(() => {
+      mergeState({ value: text.raw });
+    }, [text.raw]);
+  
+    useEffect(() => {
+      mergeState({ value });
+    }, [value]);
+  
+    return (
+      <BaseRadio
+        height="10"
+        value={value}
+        isDisabled={isDisabled}
+        isFocusable={isFocusable}
+        isInvalid={isInValid}
+        isReadOnly={isReadOnly}
+        isRequired={isRequired}
+        name={name}
+        size={size}
+        spacing={spacing}
+        colorScheme={colorScheme}
+        className={css`
+          ${customStyle?.content}
+        `}
+      >
+        <Text value={text} />
+      </BaseRadio>
+    );
+  })

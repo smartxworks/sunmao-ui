@@ -55,7 +55,7 @@ export type ImplementedRuntimeModule = RuntimeModuleSpec & {
 };
 
 export type SunmaoLib = {
-  components?: ImplementedRuntimeComponent[];
+  components?: ImplementedRuntimeComponent2<string, string, string, string>[];
   traits?: ImplementedRuntimeTrait[];
   modules?: ImplementedRuntimeModule[];
 };

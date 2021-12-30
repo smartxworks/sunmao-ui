@@ -1,7 +1,6 @@
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { Stack as BaseStack } from '@chakra-ui/react';
-import { ComponentImplementation, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
 
 export const DirectionSchema = Type.Optional(
   Type.Union([
@@ -25,31 +24,18 @@ export const DirectionSchema = Type.Optional(
     ),
   ])
 );
-export const FlexWrapSchema = Type.Optional(Type.KeyOf(
-  Type.Object({
-    nowrap: Type.String(),
-    wrap: Type.String(),
-    'wrap-reverse': Type.String(),
-  })
-));
+export const FlexWrapSchema = Type.Optional(
+  Type.KeyOf(
+    Type.Object({
+      nowrap: Type.String(),
+      wrap: Type.String(),
+      'wrap-reverse': Type.String(),
+    })
+  )
+);
 export const AlignItemsSchema = Type.Optional(Type.String());
 export const JustifyContentSchema = Type.Optional(Type.String());
 export const SpacingSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
-
-const Stack: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  direction,
-  wrap,
-  align,
-  justify,
-  spacing,
-  slotsMap,
-}) => {
-  return (
-    <BaseStack {...{ direction, wrap, align, justify, spacing }}>
-      <Slot slotsMap={slotsMap} slot="content" />
-    </BaseStack>
-  );
-};
 
 const PropsSchema = Type.Object({
   direction: DirectionSchema,
@@ -59,29 +45,32 @@ const PropsSchema = Type.Object({
   spacing: SpacingSchema,
 });
 
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'stack',
-      displayName: 'Stack',
-      description: 'chakra-ui stack',
-      isResizable: true,
-      isDraggable: true,
-      exampleProperties: {
-        direction: 'column',
-        spacing: 10,
-      },
-      exampleSize: [6, 6],
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'stack',
+    displayName: 'Stack',
+    description: 'chakra-ui stack',
+    isResizable: true,
+    isDraggable: true,
+    exampleProperties: {
+      direction: 'column',
+      spacing: 10,
     },
-    spec: {
-      properties: PropsSchema,
-      state: {},
-      methods: {},
-      slots: ['content'],
-      styleSlots: [],
-      events: [],
-    },
-  }),
-  impl: Stack,
-};
+    exampleSize: [6, 6],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: Type.Object({}),
+    methods: {},
+    slots: ['content'],
+    styleSlots: [],
+    events: [],
+  },
+})(({ direction, wrap, align, justify, spacing, slotsMap }) => {
+  return (
+    <BaseStack {...{ direction, wrap, align, justify, spacing }}>
+      <Slot slotsMap={slotsMap} slot="content" />
+    </BaseStack>
+  );
+});

@@ -4,7 +4,7 @@ import {
   CreateComponentOptions2,
   RuntimeComponentSpec2,
 } from '@sunmao-ui/core';
-import { ComponentImplementation } from 'src/services/registry';
+import { ComponentImplementation } from '../services/registry';
 
 export type ImplementedRuntimeComponent2<
   KMethodName extends string,

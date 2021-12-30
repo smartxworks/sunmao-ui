@@ -1,9 +1,28 @@
 import { Divider } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { createComponent } from '@sunmao-ui/core';
-import { ComponentImplementation } from '@sunmao-ui/runtime';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 
-const DividerImpl: ComponentImplementation = ({ customStyle }) => {
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'divider',
+    displayName: 'Divider',
+    description: 'chakra-ui divider',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {},
+    exampleSize: [4, 1],
+  },
+  spec: {
+    properties: Type.Object({}),
+    state: Type.Object({}),
+    methods: {},
+    slots: [],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(({ customStyle }) => {
   return (
     <Divider
       className={css`
@@ -11,28 +30,4 @@ const DividerImpl: ComponentImplementation = ({ customStyle }) => {
       `}
     />
   );
-};
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'divider',
-      displayName: 'Divider',
-      description: 'chakra-ui divider',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {},
-      exampleSize: [4, 1],
-    },
-    spec: {
-      properties: {},
-      state: {},
-      methods: {},
-      slots: [],
-      styleSlots: ['content'],
-      events: [],
-    },
-  }),
-  impl: DividerImpl,
-};
+});

@@ -1,8 +1,7 @@
-import { createComponent } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
-import { ComponentImplementation, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
 import {
   DirectionSchema,
   FlexWrapSchema,
@@ -11,15 +10,36 @@ import {
   SpacingSchema,
 } from './Stack';
 
-const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  direction,
-  wrap,
-  align,
-  justify,
-  spacing,
-  slotsMap,
-  customStyle,
-}) => {
+const PropsSchema = Type.Object({
+  direction: DirectionSchema,
+  wrap: FlexWrapSchema,
+  align: AlignItemsSchema,
+  justify: JustifyContentSchema,
+  spacing: SpacingSchema,
+});
+
+export default implementRuntimeComponent2({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'hstack',
+    description: 'chakra-ui hstack',
+    displayName: 'HStack',
+    exampleProperties: {
+      spacing: '24px',
+    },
+    exampleSize: [6, 6],
+    isDraggable: true,
+    isResizable: true,
+  },
+  spec: {
+    properties: PropsSchema,
+    state: Type.Object({}),
+    slots: ['content'],
+    styleSlots: ['content'],
+    methods: {},
+    events: [],
+  },
+})(({ direction, wrap, align, justify, spacing, slotsMap, customStyle }) => {
   return (
     <BaseHStack
       height="full"
@@ -37,33 +57,4 @@ const HStack: ComponentImplementation<Static<typeof PropsSchema>> = ({
       <Slot slotsMap={slotsMap} slot="content" />
     </BaseHStack>
   );
-};
-
-const PropsSchema = Type.Object({
-  direction: DirectionSchema,
-  wrap: FlexWrapSchema,
-  align: AlignItemsSchema,
-  justify: JustifyContentSchema,
-  spacing: SpacingSchema,
 });
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'hstack',
-      description: 'chakra-ui hstack',
-      displayName: 'HStack',
-      exampleProperties: {
-        spacing: '24px',
-      },
-      exampleSize: [6, 6],
-    },
-    spec: {
-      properties: PropsSchema,
-      slots: ['content'],
-      styleSlots: ['content'],
-    },
-  }),
-  impl: HStack,
-};
