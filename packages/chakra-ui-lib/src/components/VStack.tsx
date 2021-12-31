@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { VStack as BaseVStack } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 import {
   DirectionSchema,
   FlexWrapSchema,
@@ -45,7 +45,7 @@ export default implementRuntimeComponent2({
     align,
     justify,
     spacing,
-    slotsMap,
+    Slot,
     customStyle,
   }) => {
     return (
@@ -62,7 +62,7 @@ export default implementRuntimeComponent2({
         `}
         {...{ direction, wrap, align, justify, spacing }}
       >
-        <Slot slotsMap={slotsMap} slot="content" />
+        <Slot slot="content" />
       </BaseVStack>
     );
   })

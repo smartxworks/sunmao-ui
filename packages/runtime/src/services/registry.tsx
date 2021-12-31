@@ -1,12 +1,11 @@
 import {
-  RuntimeComponentSpec,
   RuntimeTraitSpec,
   RuntimeModuleSpec,
   ApplicationComponent,
 } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
-// import PlainButton from '../components/plain/Button';
+import PlainButton from '../components/plain/Button';
 import CoreText from '../components/core/Text';
 import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
@@ -29,7 +28,7 @@ import {
 import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
-import { ImplementedRuntimeComponent2 } from '../utils/buildKit';
+import { ImplementedRuntimeComponent } from '../utils/buildKit';
 
 export type ComponentImplementation<
   TProps = any,
@@ -42,10 +41,6 @@ export type ComponentImplementation<
   TProps & ComponentImplementationProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
 >;
 
-export type ImplementedRuntimeComponent = RuntimeComponentSpec & {
-  impl: ComponentImplementation;
-};
-
 export type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
 };
@@ -55,17 +50,24 @@ export type ImplementedRuntimeModule = RuntimeModuleSpec & {
 };
 
 export type SunmaoLib = {
-  components?: ImplementedRuntimeComponent2<string, string, string, string>[];
+  components?: ImplementedRuntimeComponent<string, string, string, string>[];
   traits?: ImplementedRuntimeTrait[];
   modules?: ImplementedRuntimeModule[];
 };
 
+type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
+  string,
+  string,
+  string,
+  string
+>;
+
 export class Registry {
-  components = new Map<string, Map<string, any>>();
+  components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
 
-  registerComponent(c: ImplementedRuntimeComponent) {
+  registerComponent(c: AnyImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has component ${c.version}/${c.metadata.name} in this registry.`
@@ -77,24 +79,7 @@ export class Registry {
     this.components.get(c.version)?.set(c.metadata.name, c);
   }
 
-  registerComponent2<
-    KMethodName extends string,
-    KStyleSlot extends string,
-    KSlot extends string,
-    KEvent extends string
-  >(c: ImplementedRuntimeComponent2<KMethodName, KStyleSlot, KSlot, KEvent>) {
-    if (this.components.get(c.version)?.has(c.metadata.name)) {
-      throw new Error(
-        `Already has component ${c.version}/${c.metadata.name} in this registry.`
-      );
-    }
-    if (!this.components.has(c.version)) {
-      this.components.set(c.version, new Map());
-    }
-    this.components.get(c.version)?.set(c.metadata.name, c);
-  }
-
-  getComponent(version: string, name: string): ImplementedRuntimeComponent {
+  getComponent(version: string, name: string): AnyImplementedRuntimeComponent {
     const c = this.components.get(version)?.get(name);
     if (!c) {
       throw new Error(`Component ${version}/${name} has not registered yet.`);
@@ -102,13 +87,13 @@ export class Registry {
     return c;
   }
 
-  getComponentByType(type: string): ImplementedRuntimeComponent {
+  getComponentByType(type: string): AnyImplementedRuntimeComponent {
     const { version, name } = parseType(type);
     return this.getComponent(version, name);
   }
 
-  getAllComponents(): ImplementedRuntimeComponent[] {
-    const res: ImplementedRuntimeComponent[] = [];
+  getAllComponents(): AnyImplementedRuntimeComponent[] {
+    const res: AnyImplementedRuntimeComponent[] = [];
     for (const version of this.components.values()) {
       for (const component of version.values()) {
         res.push(component);
@@ -198,12 +183,12 @@ export class Registry {
 export function initRegistry(): Registry {
   const registry = new Registry();
   // TODO: (type-safe) register v2 component
-  // registry.registerComponent(PlainButton);
-  registry.registerComponent2(CoreText);
-  registry.registerComponent2(CoreGridLayout);
-  registry.registerComponent2(CoreRouter);
-  registry.registerComponent2(CoreDummy);
-  registry.registerComponent2(CoreModuleContainer);
+  registry.registerComponent(PlainButton);
+  registry.registerComponent(CoreText);
+  registry.registerComponent(CoreGridLayout);
+  registry.registerComponent(CoreRouter);
+  registry.registerComponent(CoreDummy);
+  registry.registerComponent(CoreModuleContainer);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);

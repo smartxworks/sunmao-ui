@@ -6,7 +6,7 @@ import { StateManager } from '../services/stateStore';
 import { Application, RuntimeApplication } from '@sunmao-ui/core';
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
-import { SlotType } from 'src/components/_internal/Slot';
+import { SlotType } from '../components/_internal/Slot';
 
 export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 

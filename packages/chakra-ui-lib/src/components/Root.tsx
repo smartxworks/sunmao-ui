@@ -1,6 +1,6 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 
 export default implementRuntimeComponent2({
   version: 'chakra_ui/v1',
@@ -21,7 +21,7 @@ export default implementRuntimeComponent2({
     styleSlots: [],
     events: [],
   },
-})(({ slotsMap }) => {
+})(({ Slot }) => {
   return (
     <ChakraProvider
       theme={extendTheme({
@@ -29,7 +29,7 @@ export default implementRuntimeComponent2({
         useSystemColorMode: false,
       })}
     >
-      <Slot slotsMap={slotsMap} slot="root" />
+      <Slot slot="root" />
     </ChakraProvider>
   );
 });
