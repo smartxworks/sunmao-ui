@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
   DirectionSchema,
   FlexWrapSchema,
@@ -18,7 +18,7 @@ const PropsSchema = Type.Object({
   spacing: SpacingSchema,
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'hstack',

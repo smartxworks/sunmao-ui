@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Static, Type } from '@sinclair/typebox';
 import { Select as BaseMultiSelect } from 'chakra-react-select';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 
@@ -63,7 +63,7 @@ const exampleProperties = {
   ],
 };
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
     version: 'chakra_ui/v1',
     metadata: {
       name: 'multiSelect',

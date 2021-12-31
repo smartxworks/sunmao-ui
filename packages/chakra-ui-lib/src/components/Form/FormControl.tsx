@@ -10,7 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { implementRuntimeComponent2, Slot, watch } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Slot, watch } from '@sunmao-ui/runtime';
 import { CheckboxStateSchema } from '../Checkbox';
 
 const FormItemCSS = {
@@ -25,7 +25,7 @@ const PropsSchema = Type.Object({
   helperText: Type.String(),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'formControl',

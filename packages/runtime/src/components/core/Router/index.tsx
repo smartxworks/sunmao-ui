@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2 } from '../../../utils/buildKit';
+import { implementRuntimeComponent } from '../../../utils/buildKit';
 import { Switch } from './component';
 
 export enum RouteType {
@@ -37,7 +37,7 @@ const PropsSchema = Type.Object({
   ),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'core/v1',
   metadata: {
     name: 'router',

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
-import { Text, TextPropertySchema, implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { Text, TextPropertySchema, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const StateSchema = Type.Object({
@@ -15,7 +15,7 @@ const PropsSchema = Type.Object({
   isLoading: Type.Optional(Type.Boolean()),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'button',

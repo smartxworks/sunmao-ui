@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
@@ -58,7 +58,7 @@ const exampleProperties = {
   ],
 };
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'select',

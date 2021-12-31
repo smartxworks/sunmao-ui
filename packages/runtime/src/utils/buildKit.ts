@@ -1,19 +1,9 @@
 import { Static } from '@sinclair/typebox';
+import { createComponent, CreateComponentOptions } from '@sunmao-ui/core';
 import {
-  createComponent2,
-  CreateComponentOptions2,
-  RuntimeComponentSpec2,
-} from '@sunmao-ui/core';
-import { ComponentImplementation } from '../services/registry';
-
-export type ImplementedRuntimeComponent<
-  KMethodName extends string,
-  KStyleSlot extends string,
-  KSlot extends string,
-  KEvent extends string
-> = RuntimeComponentSpec2<KMethodName, KStyleSlot, KSlot, KEvent> & {
-  impl: ComponentImplementation;
-};
+  ComponentImplementation,
+  ImplementedRuntimeComponent,
+} from '../services/registry';
 
 type ToMap<U> = {
   [K in keyof U]: Static<U[K]>;
@@ -21,12 +11,12 @@ type ToMap<U> = {
 
 type ToStringUnion<T extends ReadonlyArray<string>> = T[number];
 
-export function implementRuntimeComponent2<
+export function implementRuntimeComponent<
   KMethodName extends string,
   KStyleSlot extends string,
   KSlot extends string,
   KEvent extends string,
-  T extends CreateComponentOptions2<KMethodName, KStyleSlot, KSlot, KEvent>
+  T extends CreateComponentOptions<KMethodName, KStyleSlot, KSlot, KEvent>
 >(
   options: T
 ): (
@@ -40,7 +30,7 @@ export function implementRuntimeComponent2<
   >
 ) => ImplementedRuntimeComponent<KMethodName, KStyleSlot, KSlot, KEvent> {
   return impl => ({
-    ...createComponent2(options),
+    ...createComponent(options),
     impl,
   });
 }

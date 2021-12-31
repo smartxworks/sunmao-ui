@@ -1,7 +1,7 @@
 import { Link } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
@@ -9,7 +9,7 @@ const PropsSchema = Type.Object({
   isExternal: Type.Optional(Type.Boolean()),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'link',

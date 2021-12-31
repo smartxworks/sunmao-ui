@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import {
-  implementRuntimeComponent2,
+  implementRuntimeComponent,
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
   RuntimeModuleSchema,
@@ -34,7 +34,7 @@ const exampleProperties = {
   },
 };
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'list',

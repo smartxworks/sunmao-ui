@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Kbd as BaseKbd } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
@@ -12,7 +12,7 @@ const PropsSchema = Type.Object({
   text: TextPropertySchema,
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'kbd',

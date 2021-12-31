@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { RadioGroup as BaseRadioGroup } from '@chakra-ui/react';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
@@ -13,7 +13,7 @@ const PropsSchema = Type.Object({
   isNumerical: Type.Optional(Type.Boolean()),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'radio_group',

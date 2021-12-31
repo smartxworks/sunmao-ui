@@ -1,8 +1,8 @@
-import { implementRuntimeComponent2 } from '../../utils/buildKit';
+import { implementRuntimeComponent } from '../../utils/buildKit';
 import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
     version: 'core/v1',
     metadata: {
       name: 'moduleContainer',

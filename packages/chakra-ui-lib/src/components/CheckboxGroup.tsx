@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
 
 const DefaultValueSchema = Type.Array(Type.Union([Type.String(), Type.Number()]));
@@ -16,7 +16,7 @@ const PropsSchema = Type.Object({
   defaultValue: Type.Optional(DefaultValueSchema),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'checkbox_group',
