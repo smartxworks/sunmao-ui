@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { RadioGroup as BaseRadioGroup } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
@@ -35,7 +35,7 @@ export default implementRuntimeComponent2({
     styleSlots: ['content'],
     events: [],
   },
-})(({ defaultValue, isNumerical, slotsMap, mergeState, customStyle }) => {
+})(({ defaultValue, isNumerical, Slot, mergeState, customStyle }) => {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default implementRuntimeComponent2({
         ${customStyle?.content}
       `}
     >
-      <Slot slotsMap={slotsMap} slot="content" />
+      <Slot slot="content" />
     </BaseRadioGroup>
   );
 });

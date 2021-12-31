@@ -6,7 +6,7 @@ import {
   ImplWrapperProps,
   TraitResult,
 } from '../types/RuntimeSchema';
-import { getSlotWithMap } from 'src/components/_internal/Slot';
+import { getSlotWithMap } from '../components/_internal/Slot';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
@@ -57,34 +57,39 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
       },
       [c.id, stateManager.store]
     );
-    const subscribeMethods = useCallback((map: any) => {
-      handlerMap.current = { ...handlerMap, ...map };
-      globalHandlerMap.set(c.id, handlerMap.current);
-    }, [c.id, globalHandlerMap]);
+    const subscribeMethods = useCallback(
+      (map: any) => {
+        handlerMap.current = { ...handlerMap, ...map };
+        globalHandlerMap.set(c.id, handlerMap.current);
+      },
+      [c.id, globalHandlerMap]
+    );
 
-    const excecuteTrait = useCallback((
-      trait: ApplicationTrait,
-      traitProperty: ApplicationTrait['properties']
-    ) => {
-      const tImpl = registry.getTrait(
-        trait.parsedType.version,
-        trait.parsedType.name
-      ).impl;
-      return tImpl({
-        ...traitProperty,
-        componentId: c.id,
-        mergeState,
-        subscribeMethods,
-        services,
-      });
-    }, [c.id, mergeState, registry, services, subscribeMethods])
+    const excecuteTrait = useCallback(
+      (trait: ApplicationTrait, traitProperty: ApplicationTrait['properties']) => {
+        const tImpl = registry.getTrait(
+          trait.parsedType.version,
+          trait.parsedType.name
+        ).impl;
+        return tImpl({
+          ...traitProperty,
+          componentId: c.id,
+          mergeState,
+          subscribeMethods,
+          services,
+        });
+      },
+      [c.id, mergeState, registry, services, subscribeMethods]
+    );
 
     // result returned from traits
-    const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(() => {
-      return c.traits.map(trait =>
-        excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
-      );
-    });
+    const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
+      () => {
+        return c.traits.map(trait =>
+          excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
+        );
+      }
+    );
 
     // eval traits' properties then excecute traits
     useEffect(() => {
@@ -153,13 +158,13 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
     const { slotsMap, ...restProps } = props;
     const Slot = getSlotWithMap(slotsMap);
-
     const C = unmount ? null : (
       <Impl
         key={c.id}
         {...mergedProps}
         {...restProps}
         Slot={Slot}
+        slotsMap={slotsMap}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
       />

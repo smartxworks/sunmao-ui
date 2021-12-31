@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
 
 const DefaultValueSchema = Type.Array(Type.Union([Type.String(), Type.Number()]));
@@ -37,7 +37,7 @@ export default implementRuntimeComponent2({
     styleSlots: [],
     events: [],
   },
-})(({ size, defaultValue, isDisabled, slotsMap, mergeState }) => {
+})(({ size, defaultValue, isDisabled, Slot, mergeState }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({ value });
@@ -50,7 +50,7 @@ export default implementRuntimeComponent2({
       isDisabled={isDisabled}
       onChange={val => setValue(val)}
     >
-      <Slot slotsMap={slotsMap} slot="content" />
+      <Slot slot="content" />
     </BaseCheckboxGroup>
   );
 });

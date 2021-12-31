@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   implementRuntimeComponent2,
-  Slot,
   DIALOG_CONTAINER_ID,
 } from '@sunmao-ui/runtime';
 import {
@@ -62,7 +61,7 @@ export default implementRuntimeComponent2({
   },
 })(
   ({
-    slotsMap,
+    Slot,
     subscribeMethods,
     callbackMap: callbacks,
     title: customerTitle,
@@ -133,7 +132,7 @@ export default implementRuntimeComponent2({
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
             <AlertDialogBody>
-              <Slot slotsMap={slotsMap} slot="content" />
+              <Slot slot="content" />
             </AlertDialogBody>
 
             <AlertDialogFooter>

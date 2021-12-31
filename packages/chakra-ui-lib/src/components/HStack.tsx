@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 import {
   DirectionSchema,
   FlexWrapSchema,
@@ -39,7 +39,7 @@ export default implementRuntimeComponent2({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsMap, customStyle }) => {
+})(({ direction, wrap, align, justify, spacing, Slot, customStyle }) => {
   return (
     <BaseHStack
       height="full"
@@ -54,7 +54,7 @@ export default implementRuntimeComponent2({
       `}
       {...{ direction, wrap, align, justify, spacing }}
     >
-      <Slot slotsMap={slotsMap} slot="content" />
+      <Slot slot="content" />
     </BaseHStack>
   );
 });

@@ -6,7 +6,7 @@ import {
 } from '@sunmao-ui/core';
 import { ComponentImplementation } from '../services/registry';
 
-export type ImplementedRuntimeComponent2<
+export type ImplementedRuntimeComponent<
   KMethodName extends string,
   KStyleSlot extends string,
   KSlot extends string,
@@ -38,7 +38,7 @@ export function implementRuntimeComponent2<
     ToStringUnion<T['spec']['styleSlots']>,
     ToStringUnion<T['spec']['events']>
   >
-) => ImplementedRuntimeComponent2<KMethodName, KStyleSlot, KSlot, KEvent> {
+) => ImplementedRuntimeComponent<KMethodName, KStyleSlot, KSlot, KEvent> {
   return impl => ({
     ...createComponent2(options),
     impl,

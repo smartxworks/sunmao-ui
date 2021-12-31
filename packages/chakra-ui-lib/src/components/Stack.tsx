@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { Stack as BaseStack } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
 
 export const DirectionSchema = Type.Optional(
   Type.Union([
@@ -67,10 +67,10 @@ export default implementRuntimeComponent2({
     styleSlots: [],
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsMap }) => {
+})(({ direction, wrap, align, justify, spacing, Slot }) => {
   return (
     <BaseStack {...{ direction, wrap, align, justify, spacing }}>
-      <Slot slotsMap={slotsMap} slot="content" />
+      <Slot slot="content" />
     </BaseStack>
   );
 });

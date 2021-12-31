@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent2, TextPropertySchema } from '@sunmao-ui/runtime';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const PropsSchema = Type.Object({
@@ -64,7 +64,7 @@ export default implementRuntimeComponent2({
     hasArrow,
     isDisabled,
     defaultIsOpen,
-    slotsMap,
+    Slot,
   }) => {
     return (
       /* 
@@ -80,7 +80,7 @@ export default implementRuntimeComponent2({
         defaultIsOpen={defaultIsOpen}
         shouldWrapChildren={shouldWrapChildren}
       >
-        <Slot slotsMap={slotsMap} slot="content" />
+        <Slot slot="content" />
       </Tooltip>
     );
   }
