@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2, getSlots } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, getSlots } from '@sunmao-ui/runtime';
 
 const StateSchema = Type.Object({
   selectedTabIndex: Type.Number(),
@@ -20,7 +20,7 @@ const PropsSchema = Type.Object({
   initialSelectedTabIndex: Type.Optional(Type.Number()),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'tabs',

@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
-import { implementRuntimeComponent2, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, TextPropertySchema } from '@sunmao-ui/runtime';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 
 const PropsSchema = Type.Object({
@@ -34,7 +34,7 @@ const PropsSchema = Type.Object({
   ),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'tooltip',

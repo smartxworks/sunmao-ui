@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
   ColumnsPropertySchema,
   DataPropertySchema,
@@ -38,7 +38,7 @@ const exampleProperties = {
   isMultiSelect: false,
 };
 
-export const implementTable = implementRuntimeComponent2({
+export const implementTable = implementRuntimeComponent({
   kind: 'Component',
   version: 'chakra_ui/v1',
   metadata: {

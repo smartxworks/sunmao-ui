@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import {
-  implementRuntimeComponent2,
+  implementRuntimeComponent,
   DIALOG_CONTAINER_ID,
 } from '@sunmao-ui/runtime';
 import {
@@ -29,7 +29,7 @@ const PropsSchema = Type.Object({
   disableConfirm: Type.Optional(Type.Boolean()),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'dialog',

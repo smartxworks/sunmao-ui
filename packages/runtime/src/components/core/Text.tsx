@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import _Text, { TextPropertySchema } from '../_internal/Text';
-import { implementRuntimeComponent2 } from '../../utils/buildKit';
+import { implementRuntimeComponent } from '../../utils/buildKit';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -10,7 +10,7 @@ const PropsSchema = Type.Object({
   value: TextPropertySchema,
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'core/v1',
   metadata: {
     name: 'text',

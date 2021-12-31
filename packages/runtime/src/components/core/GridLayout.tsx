@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { implementRuntimeComponent2 } from '../../utils/buildKit';
+import { implementRuntimeComponent } from '../../utils/buildKit';
 import { getSlots } from '../_internal/Slot';
 import { Type } from '@sinclair/typebox';
 import { partial } from 'lodash-es';
@@ -20,7 +20,7 @@ const PropsSchema = Type.Object({
   ),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'core/v1',
   metadata: {
     name: 'grid_layout',

@@ -2,6 +2,7 @@ import {
   RuntimeTraitSpec,
   RuntimeModuleSpec,
   ApplicationComponent,
+  RuntimeComponentSpec,
 } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
@@ -28,7 +29,15 @@ import {
 import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
-import { ImplementedRuntimeComponent } from '../utils/buildKit';
+
+export type ImplementedRuntimeComponent<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+> = RuntimeComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent> & {
+  impl: ComponentImplementation;
+};
 
 export type ComponentImplementation<
   TProps = any,
@@ -182,7 +191,6 @@ export class Registry {
 
 export function initRegistry(): Registry {
   const registry = new Registry();
-  // TODO: (type-safe) register v2 component
   registry.registerComponent(PlainButton);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);

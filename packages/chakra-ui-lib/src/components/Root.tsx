@@ -1,8 +1,8 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'root',

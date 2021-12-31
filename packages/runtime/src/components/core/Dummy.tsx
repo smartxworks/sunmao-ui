@@ -1,8 +1,8 @@
-import { implementRuntimeComponent2 } from '../../utils/buildKit';
+import { implementRuntimeComponent } from '../../utils/buildKit';
 import { useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'core/v1',
   metadata: {
     name: 'dummy',

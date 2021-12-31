@@ -2,13 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { Button, VStack } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Slot, watch } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Slot, watch } from '@sunmao-ui/runtime';
 
 const PropsSchema = Type.Object({
   hideSubmit: Type.Boolean(),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'form',
@@ -83,7 +83,12 @@ export default implementRuntimeComponent2({
           });
         },
       });
-    }, [formControlIds, services.apiService, services.stateManager.store, subscribeMethods]);
+    }, [
+      formControlIds,
+      services.apiService,
+      services.stateManager.store,
+      subscribeMethods,
+    ]);
 
     useEffect(() => {
       const stops: ReturnType<typeof watch>[] = [];

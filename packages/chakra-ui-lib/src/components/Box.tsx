@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { Box as BaseBox } from '@chakra-ui/react';
-import { implementRuntimeComponent2, GRID_HEIGHT } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, GRID_HEIGHT } from '@sunmao-ui/runtime';
 import { pick } from 'lodash-es';
 import { css } from '@emotion/css';
 
@@ -269,7 +269,7 @@ const StyleSchema = Type.Partial(
 );
 const StyleProps = Object.keys(StyleSchema.properties);
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'box',
@@ -292,9 +292,8 @@ export default implementRuntimeComponent2({
     styleSlots: ['content'],
     events: [],
   },
-})(({ slotsMap, customStyle, Slot, ...restProps }) => {
+})(({ customStyle, Slot, ...restProps }) => {
   const styleProps = pick(restProps, StyleProps);
-  console.log('slotsMap', slotsMap)
   return (
     <BaseBox
       width="full"

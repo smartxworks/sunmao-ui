@@ -42,7 +42,6 @@ export const App: React.FC<AppProps> = props => {
       {topLevelComponents.map(c => {
         const slotsMap = slotComponentsMap.get(c.id);
         const Slot = getSlotWithMap(slotsMap);
-        console.log('slotsMapslotsMapslotsMap', slotsMap)
         return (
           <ImplWrapper
             key={c.id}

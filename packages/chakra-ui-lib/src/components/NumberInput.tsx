@@ -7,7 +7,7 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent2 } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const PropsSchema = Type.Object({
@@ -42,7 +42,7 @@ const StateSchema = Type.Object({
   value: Type.Number(),
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'number_input',

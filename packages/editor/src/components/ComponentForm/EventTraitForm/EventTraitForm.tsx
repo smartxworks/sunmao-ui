@@ -27,7 +27,7 @@ export const EventTraitForm: React.FC<Props> = props => {
 
   const eventTypes = useMemo(() => {
     return registry.getComponentByType(component.type).spec.events;
-  }, [component]);
+  }, [component.type, registry]);
 
   if (!eventTypes.length) return null;
   const onClickAddHandler = () => {

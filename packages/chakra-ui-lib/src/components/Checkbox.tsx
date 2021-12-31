@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Static, Type } from '@sinclair/typebox';
 import { Checkbox as BaseCheckbox, useCheckboxGroupContext } from '@chakra-ui/react';
-import { implementRuntimeComponent2, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
 import { css } from '@emotion/css';
 
@@ -34,7 +34,7 @@ const PropsSchema = Type.Object({
   colorScheme: ColorSchemePropertySchema,
 });
 
-export default implementRuntimeComponent2({
+export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'checkbox',
