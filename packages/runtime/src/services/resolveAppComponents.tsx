@@ -7,7 +7,7 @@ import {
   UIServices,
   SlotComponentMap,
 } from '../types/RuntimeSchema';
-import { ImplWrapper } from './ImplWrapper';
+import { ImplWrapper } from '../components/_internal/ImplWrapper';
 
 export function resolveAppComponents(
   components: RuntimeApplication['spec']['components'],

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { watch } from '../utils/watchReactivity';
+import { watch } from '../../utils/watchReactivity';
 import { merge } from 'lodash-es';
 import {
   RuntimeApplicationComponent,
   ImplWrapperProps,
   TraitResult,
-} from '../types/RuntimeSchema';
-import { getSlotWithMap } from '../components/_internal/Slot';
+} from '../../types/RuntimeSchema';
+import { getSlotWithMap } from './Slot';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

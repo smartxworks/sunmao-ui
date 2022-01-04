@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { createApplication } from '@sunmao-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
-import { ImplWrapper } from './services/ImplWrapper';
+import { ImplWrapper } from './components/_internal/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';

@@ -6,7 +6,7 @@ import { RuntimeApplication } from '@sunmao-ui/core';
 import { UIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 import { resolveAppComponents } from '../../services/resolveAppComponents';
-import { ImplWrapper } from '../../services/ImplWrapper';
+import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import { parseTypeComponents } from '../../utils/parseType';
 import { ImplementedRuntimeModule } from '../../services/registry';
