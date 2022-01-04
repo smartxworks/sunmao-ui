@@ -4,8 +4,7 @@ import { initSunmaoUI } from '@sunmao-ui/runtime';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import './styles.css';
 
 import { Editor } from './components/Editor';
 

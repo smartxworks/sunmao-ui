@@ -7,8 +7,7 @@ import {
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import './styles.css';
 
 import { Editor } from './components/Editor';
 import { App as _App, registry, stateManager, ui } from './setup';

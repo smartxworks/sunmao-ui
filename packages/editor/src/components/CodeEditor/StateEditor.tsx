@@ -5,8 +5,6 @@ import { css } from '@emotion/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/foldgutter.css';
-import 'codemirror/lib/codemirror.css';
 import ErrorBoundary from '../ErrorBoundary';
 
 export const StateEditor: React.FC<{ code: string }> = ({ code }) => {
