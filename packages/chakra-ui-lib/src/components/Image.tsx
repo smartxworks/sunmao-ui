@@ -1,8 +1,7 @@
 import { Image as BaseImage } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { ComponentImplementation } from '@sunmao-ui/runtime';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 
 const BoxSizePropertySchema = Type.Optional(
   Type.Union([
@@ -64,48 +63,6 @@ const BorderRadiusSchema = Type.Optional(
   ])
 );
 
-const Image: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  boxSize,
-  src,
-  alt,
-  objectFit,
-  borderRadius,
-  fallbackSrc,
-  ignoreFallback,
-  htmlWidth,
-  htmlHeight,
-  crossOrigin,
-  callbackMap,
-  customStyle,
-}) => {
-  const style = boxSize
-    ? css`
-        ${customStyle?.content}
-      `
-    : css`
-        height: 100%;
-        width: 100%;
-        ${customStyle?.content}
-      `;
-  return (
-    <BaseImage
-      className={style}
-      src={src}
-      alt={alt}
-      objectFit={objectFit}
-      boxSize={boxSize}
-      onLoad={callbackMap?.onLoad}
-      htmlHeight={htmlHeight}
-      htmlWidth={htmlWidth}
-      crossOrigin={crossOrigin}
-      onError={callbackMap?.onError}
-      ignoreFallback={ignoreFallback}
-      borderRadius={borderRadius}
-      fallbackSrc={fallbackSrc}
-    ></BaseImage>
-  );
-};
-
 const StateSchema = Type.Object({
   value: Type.String(),
 });
@@ -130,32 +87,71 @@ const PropsSchema = Type.Object({
   ),
 });
 
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'image',
-      displayName: 'Image',
-      description: 'chakra_ui image',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        src: 'https://bit.ly/dan-abramov',
-        alt: 'dan-abramov',
-        objectFit: 'cover',
-        borderRadius: 5,
-        fallbackSrc: 'https://via.placeholder.com/150',
-      },
-      exampleSize: [6, 6],
+export default implementRuntimeComponent({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'image',
+    displayName: 'Image',
+    description: 'chakra_ui image',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      src: 'https://bit.ly/dan-abramov',
+      alt: 'dan-abramov',
+      objectFit: 'cover',
+      borderRadius: 5,
+      fallbackSrc: 'https://via.placeholder.com/150',
     },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: [],
-      slots: [],
-      styleSlots: ['content'],
-      events: ['onLoad', 'onError'],
-    },
-  }),
-  impl: Image,
-};
+    exampleSize: [6, 6],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ['content'],
+    events: ['onLoad', 'onError'],
+  },
+})(
+  ({
+    boxSize,
+    src,
+    alt,
+    objectFit,
+    borderRadius,
+    fallbackSrc,
+    ignoreFallback,
+    htmlWidth,
+    htmlHeight,
+    crossOrigin,
+    callbackMap,
+    customStyle,
+  }) => {
+    const style = boxSize
+      ? css`
+          ${customStyle?.content}
+        `
+      : css`
+          height: 100%;
+          width: 100%;
+          ${customStyle?.content}
+        `;
+    return (
+      <BaseImage
+        className={style}
+        src={src}
+        alt={alt}
+        objectFit={objectFit}
+        boxSize={boxSize}
+        onLoad={callbackMap?.onLoad}
+        htmlHeight={htmlHeight}
+        htmlWidth={htmlWidth}
+        crossOrigin={crossOrigin}
+        onError={callbackMap?.onError}
+        ignoreFallback={ignoreFallback}
+        borderRadius={borderRadius}
+        fallbackSrc={fallbackSrc}
+      ></BaseImage>
+    );
+  }
+);

@@ -1,8 +1,7 @@
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { List as BaseList, ListItem as BaseListItem } from '@chakra-ui/react';
 import {
-  ComponentImplementation,
+  implementRuntimeComponent,
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
   RuntimeModuleSchema,
@@ -10,13 +9,51 @@ import {
 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
-const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  listData,
-  template,
-  app,
-  services,
-  customStyle,
-}) => {
+const PropsSchema = Type.Object({
+  listData: Type.Array(Type.Record(Type.String(), Type.String())),
+  template: RuntimeModuleSchema,
+});
+
+const exampleProperties = {
+  listData: [
+    {
+      id: '1',
+      name: 'Bowen Tan',
+    },
+  ],
+  template: {
+    id: 'listItemName-{{$listItem.id}}',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: 'Name：{{$listItem.name}}',
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+};
+
+export default implementRuntimeComponent({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'list',
+    description: 'chakra-ui list',
+    displayName: 'List',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties,
+    exampleSize: [6, 6],
+  },
+  spec: {
+    properties: PropsSchema,
+    methods: {},
+    state: Type.Object({}),
+    slots: [],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(({ listData, template, app, services, customStyle }) => {
   if (!listData) {
     return null;
   }
@@ -52,53 +89,4 @@ const List: ComponentImplementation<Static<typeof PropsSchema>> = ({
       {listItems}
     </BaseList>
   );
-};
-
-const PropsSchema = Type.Object({
-  listData: Type.Array(Type.Record(Type.String(), Type.String())),
-  template: RuntimeModuleSchema,
 });
-
-const exampleProperties = {
-  listData: [
-    {
-      id: '1',
-      name: 'Bowen Tan',
-    },
-  ],
-  template: {
-    id: 'listItemName-{{$listItem.id}}',
-    type: 'core/v1/text',
-    properties: {
-      value: {
-        raw: 'Name：{{$listItem.name}}',
-        format: 'plain',
-      },
-    },
-    traits: [],
-  },
-};
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'list',
-      description: 'chakra-ui list',
-      displayName: 'List',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties,
-      exampleSize: [6, 6],
-    },
-    spec: {
-      properties: PropsSchema,
-      methods: [],
-      state: {},
-      slots: [],
-      styleSlots: ['content'],
-      events: [],
-    },
-  }),
-  impl: List,
-};

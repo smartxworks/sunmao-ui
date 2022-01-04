@@ -1,37 +1,7 @@
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
-import { ComponentImplementation, Slot, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, TextPropertySchema } from '@sunmao-ui/runtime';
 import { ColorSchemePropertySchema } from './Types/ColorScheme';
-
-const TooltipImpl: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  text,
-  shouldWrapChildren,
-  placement = 'auto',
-  isOpen,
-  hasArrow,
-  isDisabled,
-  defaultIsOpen,
-  slotsMap,
-}) => {
-  return (
-    /* 
-        Chakra tooltip requires children to be created by forwardRef.
-        If not, should add shouldWrapChildren.
-    */
-    <Tooltip
-      label={text}
-      placement={placement}
-      isOpen={isOpen}
-      hasArrow={hasArrow}
-      isDisabled={isDisabled}
-      defaultIsOpen={defaultIsOpen}
-      shouldWrapChildren={shouldWrapChildren}
-    >
-      <Slot slotsMap={slotsMap} slot="content" />
-    </Tooltip>
-  );
-};
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
@@ -64,28 +34,54 @@ const PropsSchema = Type.Object({
   ),
 });
 
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'tooltip',
-      description: 'chakra-ui tooltip',
-      displayName: 'Tooltip',
-      isDraggable: false,
-      isResizable: false,
-      exampleProperties: {
-        text: 'tooltip',
-      },
-      exampleSize: [2, 1],
+export default implementRuntimeComponent({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'tooltip',
+    description: 'chakra-ui tooltip',
+    displayName: 'Tooltip',
+    isDraggable: false,
+    isResizable: false,
+    exampleProperties: {
+      text: 'tooltip',
     },
-    spec: {
-      properties: PropsSchema,
-      state: {},
-      methods: [],
-      slots: ['content'],
-      styleSlots: [],
-      events: [],
-    },
-  }),
-  impl: TooltipImpl,
-};
+    exampleSize: [2, 1],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: Type.Object({}),
+    methods: {},
+    slots: ['content'],
+    styleSlots: [],
+    events: [],
+  },
+})(
+  ({
+    text,
+    shouldWrapChildren,
+    placement = 'auto',
+    isOpen,
+    hasArrow,
+    isDisabled,
+    defaultIsOpen,
+    Slot,
+  }) => {
+    return (
+      /* 
+          Chakra tooltip requires children to be created by forwardRef.
+          If not, should add shouldWrapChildren.
+      */
+      <Tooltip
+        label={text}
+        placement={placement}
+        isOpen={isOpen}
+        hasArrow={hasArrow}
+        isDisabled={isDisabled}
+        defaultIsOpen={defaultIsOpen}
+        shouldWrapChildren={shouldWrapChildren}
+      >
+        <Slot slot="content" />
+      </Tooltip>
+    );
+  }
+);

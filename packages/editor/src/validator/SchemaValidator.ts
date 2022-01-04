@@ -18,7 +18,10 @@ export class SchemaValidator implements ISchemaValidator {
   private traitRules: TraitValidatorRule[] = [];
   private componentRules: ComponentValidatorRule[] = [];
   private allComponentsRules: AllComponentsValidatorRule[] = [];
-  private componentIdSpecMap: Record<string, RuntimeComponentSpec> = {};
+  private componentIdSpecMap: Record<
+    string,
+    RuntimeComponentSpec<string, string, string, string>
+  > = {};
   private ajv!: Ajv;
   private validatorMap!: ValidatorMap;
 
