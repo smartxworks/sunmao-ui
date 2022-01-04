@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { css } from '@emotion/css';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
 import { observer } from 'mobx-react-lite';
@@ -20,16 +20,23 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     hoverComponentId,
     setHoverComponentId,
     dragOverComponentId,
-    pushDragIdStack,
-    popDragIdStack,
-    clearIdStack,
+    setDragId,
   } = editorStore;
 
-  const slots = useMemo(() => {
-    return registry.getComponentByType(component.type).spec.slots;
+  const [slots, isDroppable] = useMemo(() => {
+    const slots = registry.getComponentByType(component.type).spec.slots;
+    return [slots, slots.length > 0];
   }, [component.type]);
 
-  const isDroppable = slots.length > 0;
+  useEffect(() => {
+    if (isDroppable) {
+      const listener = (e: Event) => e.preventDefault();
+      document.addEventListener('dragover', listener);
+      return () => {
+        document.removeEventListener('dragover', listener);
+      };
+    }
+  }, [isDroppable]);
 
   const borderColor = useMemo(() => {
     if (dragOverComponentId === component.id) {
@@ -64,9 +71,10 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     setHoverComponentId('');
   };
 
-  const onDragEnter = () => {
+  const onDragEnter = (e: React.DragEvent) => {
+    e.stopPropagation();
     if (isDroppable) {
-      pushDragIdStack(component.id);
+      setDragId(component.id);
     }
   };
 
@@ -74,7 +82,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     e.stopPropagation();
     e.preventDefault();
     if (!isDroppable) return;
-    clearIdStack();
+    setDragId('');
     const creatingComponent = e.dataTransfer?.getData('component') || '';
     eventBus.send(
       'operation',
@@ -86,9 +94,10 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     );
   };
 
-  const onDragLeave = () => {
-    if (isDroppable) {
-      popDragIdStack();
+  const onDragLeave = (e: React.DragEvent) => {
+    e.stopPropagation();
+    if (isDroppable && component.id === dragOverComponentId) {
+      setDragId('');
     }
   };
 
