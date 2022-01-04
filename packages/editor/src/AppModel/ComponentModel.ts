@@ -18,13 +18,14 @@ import {
   EventName,
   TraitType,
   TraitId,
+  MethodName,
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
-
+type ComponentSpecModel = RuntimeComponentSpec<MethodName, StyleSlotName, SlotName, EventName>
 const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
 export class ComponentModel implements IComponentModel {
-  private spec: RuntimeComponentSpec;
+  private spec: ComponentSpecModel;
 
   id: ComponentId;
   type: ComponentType;
@@ -41,7 +42,7 @@ export class ComponentModel implements IComponentModel {
 
     this.id = schema.id as ComponentId;
     this.type = schema.type as ComponentType;
-    this.spec = registry.getComponentByType(this.type);
+    this.spec = registry.getComponentByType(this.type) as any;
 
     this.traits = schema.traits.map(t => new TraitModel(t, this));
     // find slot trait
@@ -79,7 +80,13 @@ export class ComponentModel implements IComponentModel {
 
   get methods() {
     if (!this.spec) return [];
-    const componentMethods = this.spec.spec.methods;
+    const componentMethods = [];
+    for (const methodName in this.spec.spec.methods) {
+      componentMethods.push({
+        name: methodName,
+        parameters: this.spec.spec.methods[methodName as MethodName]!,
+      })
+    }
     const traitMethods: MethodSchema[] = this.traits.reduce(
       (acc, t) => acc.concat(t.methods),
       [] as MethodSchema[]

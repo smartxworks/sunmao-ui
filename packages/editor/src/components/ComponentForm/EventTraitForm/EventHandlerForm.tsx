@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -19,7 +19,7 @@ import { KeyValueEditor } from '../../KeyValueEditor';
 import { editorStore } from '../../../EditorStore';
 type Props = {
   registry: Registry;
-  eventTypes: string[];
+  eventTypes: readonly string[];
   handler: Static<typeof EventHandlerSchema>;
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
@@ -31,19 +31,19 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
   const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
 
-  function updateMethods(componentId: string) {
+  const updateMethods = useCallback((componentId: string) => {
     const type = components.find(c => c.id === componentId)?.type;
     if (type) {
       const componentSpec = registry.getComponentByType(type).spec;
-      setMethods(componentSpec.methods.map(m => m.name));
+      setMethods(Object.keys(componentSpec.methods));
     }
-  }
+  }, [components, registry])
 
   useEffect(() => {
     if (handler.componentId) {
       updateMethods(handler.componentId);
     }
-  }, [handler]);
+  }, [handler, updateMethods]);
 
   const onTargetComponentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateMethods(e.target.value);

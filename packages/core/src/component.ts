@@ -4,60 +4,61 @@ import { ComponentMetadata } from './metadata';
 import { MethodSchema } from './method';
 import { Version } from './version';
 
-// spec
+// TODO: (type-safe), rename version 2 to normal version
 
-export type Component = {
+type ComponentSpec<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+> = {
+  properties: JSONSchema7;
+  state: JSONSchema7;
+  methods: Record<KMethodName, MethodSchema['parameters']>;
+  styleSlots: ReadonlyArray<KStyleSlot>;
+  slots: ReadonlyArray<KSlot>;
+  events: ReadonlyArray<KEvent>;
+};
+
+export type ComponentDefinition<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+> = {
   version: string;
   kind: 'Component';
   metadata: ComponentMetadata;
-  spec: ComponentSpec;
+  spec: ComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent>;
 };
 
-type ComponentSpec = {
-  properties: JSONSchema7;
-  state: JSONSchema7;
-  methods: MethodSchema[];
-  styleSlots: string[];
-  slots: string[];
-  events: string[];
-};
-
-// extended runtime
-export type RuntimeComponentSpec = Component & {
+export type RuntimeComponentSpec<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+> = ComponentDefinition<KMethodName, KStyleSlot, KSlot, KEvent> & {
   parsedVersion: Version;
 };
 
-// partial some fields, use as param createComponent
-export type ComponentDefinition = {
-  version: string;
-  metadata: Partial<ComponentMetadata> & { name: string };
-  spec?: Partial<ComponentSpec>;
-};
+export type CreateComponentOptions<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+> = Omit<ComponentDefinition<KMethodName, KStyleSlot, KSlot, KEvent>, 'kind'>;
 
-export function createComponent(options: ComponentDefinition): RuntimeComponentSpec {
-  return (
-    { 
-      version: options.version,
-      kind: ('Component' as any),
-      parsedVersion: parseVersion(options.version),
-      metadata: {
-        description: options.metadata.description || '',
-        isDraggable: true,
-        isResizable: true,
-        displayName: options.metadata.name,
-        exampleProperties: {},
-        exampleSize: [1, 1],
-        ...options.metadata,
-      },
-      spec: {
-        properties: {},
-        state: {},
-        methods: [],
-        styleSlots: [],
-        slots: [],
-        events: [],
-        ...options.spec,
-      },
-    }
-  );
+export function createComponent<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+>(
+  options: CreateComponentOptions<KMethodName, KStyleSlot, KSlot, KEvent>
+): RuntimeComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent> {
+  return {
+    ...options,
+    kind: 'Component',
+    parsedVersion: parseVersion(options.version),
+  };
 }

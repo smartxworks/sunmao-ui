@@ -1,8 +1,27 @@
-import { createComponent } from '@sunmao-ui/core';
+import { implementRuntimeComponent } from '../../utils/buildKit';
 import { useEffect } from 'react';
-import { ComponentImplementation } from '../../services/registry';
+import { Type } from '@sinclair/typebox';
 
-const Dummy: ComponentImplementation<Record<string, unknown>> = ({ effects }) => {
+export default implementRuntimeComponent({
+  version: 'core/v1',
+  metadata: {
+    name: 'dummy',
+    displayName: 'Dummy',
+    description: 'Dummy Invisible component',
+    isDraggable: false,
+    isResizable: false,
+    exampleProperties: {},
+    exampleSize: [1, 1],
+  },
+  spec: {
+    properties: Type.Object({}),
+    state: Type.Object({}),
+    methods: {},
+    slots: [],
+    styleSlots: [],
+    events: [],
+  },
+})(({ effects }) => {
   useEffect(() => {
     return () => {
       effects?.forEach(e => e());
@@ -10,27 +29,4 @@ const Dummy: ComponentImplementation<Record<string, unknown>> = ({ effects }) =>
   }, [effects]);
 
   return null;
-};
-export default {
-  ...createComponent({
-    version: 'core/v1',
-    metadata: {
-      name: 'dummy',
-      displayName: 'Dummy',
-      description: 'Dummy Invisible component',
-      isDraggable: false,
-      isResizable: false,
-      exampleProperties: {},
-      exampleSize: [1, 1],
-    },
-    spec: {
-      properties: {},
-      state: {},
-      methods: [],
-      slots: [],
-      styleSlots: [],
-      events: [],
-    },
-  }),
-  impl: Dummy,
-};
+});

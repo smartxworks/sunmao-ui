@@ -1,16 +1,43 @@
 import { useEffect, useRef } from 'react';
-import { createComponent } from '@sunmao-ui/core';
-import { Type, Static } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import Text, { TextPropertySchema } from '../_internal/Text';
-import { ComponentImplementation } from '../../services/registry';
+import { implementRuntimeComponent } from '../../utils/buildKit';
 
-const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  text,
-  mergeState,
-  subscribeMethods,
-  callbackMap,
-  customStyle
-}) => {
+const StateSchema = Type.Object({
+  value: Type.String(),
+});
+
+const PropsSchema = Type.Object({
+  text: TextPropertySchema,
+});
+
+export default implementRuntimeComponent({
+  version: 'plain/v1',
+  metadata: {
+    name: 'button',
+    displayName: 'Button',
+    description: 'plain button',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      text: {
+        raw: 'text',
+        format: 'plain',
+      },
+    },
+    exampleSize: [2, 1],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {
+      click: void 0,
+    },
+    slots: [],
+    styleSlots: ['content'],
+    events: ['onClick'],
+  },
+})(({ text, mergeState, subscribeMethods, callbackMap, customStyle }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
   }, [mergeState, text.raw]);
@@ -25,49 +52,12 @@ const Button: ComponentImplementation<Static<typeof PropsSchema>> = ({
   }, [subscribeMethods]);
 
   return (
-    <button ref={ref} onClick={callbackMap?.onClick} className={`${customStyle?.content}`}>
+    <button
+      ref={ref}
+      onClick={callbackMap?.onClick}
+      className={`${customStyle?.content}`}
+    >
       <Text value={text} />
     </button>
   );
-};
-
-const StateSchema = Type.Object({
-  value: Type.String(),
 });
-
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
-});
-
-export default {
-  ...createComponent({
-    version: 'plain/v1',
-    metadata: {
-      name: 'button',
-      displayName: 'Button',
-      description: 'plain button',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        text: {
-          raw: 'text',
-          format: 'plain',
-        },
-      },
-      exampleSize: [2, 1],
-    },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: [
-        {
-          name: 'click',
-        },
-      ],
-      slots: [],
-      styleSlots: ['content'],
-      events: ['onClick'],
-    },
-  }),
-  impl: Button,
-};

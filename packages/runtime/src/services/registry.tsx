@@ -1,8 +1,8 @@
 import {
-  RuntimeComponentSpec,
   RuntimeTraitSpec,
   RuntimeModuleSpec,
   ApplicationComponent,
+  RuntimeComponentSpec,
 } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
@@ -30,11 +30,25 @@ import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
 
-export type ComponentImplementation<T = any> = React.FC<T & ComponentImplementationProps>;
-
-export type ImplementedRuntimeComponent = RuntimeComponentSpec & {
+export type ImplementedRuntimeComponent<
+  KMethodName extends string,
+  KStyleSlot extends string,
+  KSlot extends string,
+  KEvent extends string
+> = RuntimeComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent> & {
   impl: ComponentImplementation;
 };
+
+export type ComponentImplementation<
+  TProps = any,
+  TState = any,
+  TMethods = Record<string, any>,
+  KSlot extends string = string,
+  KStyleSlot extends string = string,
+  KEvent extends string = string
+> = React.FC<
+  TProps & ComponentImplementationProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
+>;
 
 export type ImplementedRuntimeTrait = RuntimeTraitSpec & {
   impl: TraitImplementation;
@@ -45,17 +59,24 @@ export type ImplementedRuntimeModule = RuntimeModuleSpec & {
 };
 
 export type SunmaoLib = {
-  components?: ImplementedRuntimeComponent[];
+  components?: ImplementedRuntimeComponent<string, string, string, string>[];
   traits?: ImplementedRuntimeTrait[];
   modules?: ImplementedRuntimeModule[];
 };
 
-export class Registry {
-  components = new Map<string, Map<string, ImplementedRuntimeComponent>>()
-  traits = new Map<string, Map<string, ImplementedRuntimeTrait>>()
-  modules = new Map<string, Map<string, ImplementedRuntimeModule>>()
+type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
+  string,
+  string,
+  string,
+  string
+>;
 
-  registerComponent(c: ImplementedRuntimeComponent) {
+export class Registry {
+  components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
+  traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
+  modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
+
+  registerComponent(c: AnyImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has component ${c.version}/${c.metadata.name} in this registry.`
@@ -67,7 +88,7 @@ export class Registry {
     this.components.get(c.version)?.set(c.metadata.name, c);
   }
 
-  getComponent(version: string, name: string): ImplementedRuntimeComponent {
+  getComponent(version: string, name: string): AnyImplementedRuntimeComponent {
     const c = this.components.get(version)?.get(name);
     if (!c) {
       throw new Error(`Component ${version}/${name} has not registered yet.`);
@@ -75,19 +96,19 @@ export class Registry {
     return c;
   }
 
-  getComponentByType(type: string): ImplementedRuntimeComponent {
+  getComponentByType(type: string): AnyImplementedRuntimeComponent {
     const { version, name } = parseType(type);
     return this.getComponent(version, name);
   }
 
-  getAllComponents(): ImplementedRuntimeComponent[] {
-    const res: ImplementedRuntimeComponent[] = [];
+  getAllComponents(): AnyImplementedRuntimeComponent[] {
+    const res: AnyImplementedRuntimeComponent[] = [];
     for (const version of this.components.values()) {
       for (const component of version.values()) {
         res.push(component);
       }
     }
-    return res
+    return res;
   }
 
   registerTrait(t: ImplementedRuntimeTrait) {
@@ -132,7 +153,7 @@ export class Registry {
         res.push(trait);
       }
     }
-    return res
+    return res;
   }
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {

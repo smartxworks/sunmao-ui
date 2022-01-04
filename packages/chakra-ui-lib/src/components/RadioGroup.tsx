@@ -1,26 +1,46 @@
 import { useState, useEffect } from 'react';
-import { createComponent } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { RadioGroup as BaseRadioGroup } from '@chakra-ui/react';
-import { ComponentImplementation, Slot } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const StateSchema = Type.Object({
-  value: Type.String(),
+  value: Type.Union([Type.String(), Type.Number()]),
 });
 
-const RadioGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
-  defaultValue,
-  isNumerical,
-  slotsMap,
-  mergeState,
-  customStyle,
-}) => {
+const PropsSchema = Type.Object({
+  defaultValue: Type.Union([Type.String(), Type.Number()]),
+  isNumerical: Type.Optional(Type.Boolean()),
+});
+
+export default implementRuntimeComponent({
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'radio_group',
+    displayName: 'RadioGroup',
+    description: 'chakra-ui radio group',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      defaultValue: 0,
+      isNumerical: true,
+    },
+    exampleSize: [3, 3],
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {},
+    slots: ['content'],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(({ defaultValue, isNumerical, Slot, mergeState, customStyle }) => {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
     mergeState({ value });
-  }, [value]);
+  }, [mergeState, value]);
 
   useEffect(() => {
     setValue(defaultValue);
@@ -34,39 +54,7 @@ const RadioGroup: ComponentImplementation<Static<typeof PropsSchema>> = ({
         ${customStyle?.content}
       `}
     >
-      <Slot slotsMap={slotsMap} slot="content" />
+      <Slot slot="content" />
     </BaseRadioGroup>
   );
-};
-
-const PropsSchema = Type.Object({
-  defaultValue: Type.Union([Type.String(), Type.Number()]),
-  isNumerical: Type.Optional(Type.Boolean()),
 });
-
-export default {
-  ...createComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'radio_group',
-      displayName: 'RadioGroup',
-      description: 'chakra-ui radio group',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        defaultValue: 0,
-        isNumerical: true,
-      },
-      exampleSize: [3, 3],
-    },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: [],
-      slots: ['content'],
-      styleSlots: ['content'],
-      events: [],
-    },
-  }),
-  impl: RadioGroup,
-};
