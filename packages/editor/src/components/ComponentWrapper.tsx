@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { css } from '@emotion/css';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
 import { observer } from 'mobx-react-lite';
@@ -27,16 +27,6 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     const slots = registry.getComponentByType(component.type).spec.slots;
     return [slots, slots.length > 0];
   }, [component.type]);
-
-  useEffect(() => {
-    if (isDroppable) {
-      const listener = (e: Event) => e.preventDefault();
-      document.addEventListener('dragover', listener);
-      return () => {
-        document.removeEventListener('dragover', listener);
-      };
-    }
-  }, [isDroppable]);
 
   const borderColor = useMemo(() => {
     if (dragOverComponentId === component.id) {
@@ -109,6 +99,9 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
       onClick={onClickWrapper}
       onMouseEnter={onMouseEnterWrapper}
       onMouseLeave={onMouseLeaveWrapper}
+      onDragOver={e => {
+        if (isDroppable) e.preventDefault();
+      }}
       className={style}
     >
       {props.children}
