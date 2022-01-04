@@ -130,6 +130,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
             <SchemaField
               schema={cImpl.spec.properties}
               label=""
+              key={selectedComponent.id}
               formData={properties}
               onChange={newFormData => {
                 eventBus.send(
