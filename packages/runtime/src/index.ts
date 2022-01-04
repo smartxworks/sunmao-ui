@@ -4,6 +4,7 @@ import { initRegistry } from './services/registry';
 import { initApiService } from './services/apiService';
 import { mountUtilMethods } from './services/util-methods';
 import { initGlobalHandlerMap } from './services/handler';
+import './style.css';
 
 export function initSunmaoUI(dependencies = {}) {
   const registry = initRegistry();

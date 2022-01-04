@@ -2,8 +2,6 @@ import RGL from 'react-grid-layout';
 import React from 'react';
 import { css } from '@emotion/css';
 import { useResizeDetector } from 'react-resize-detector';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
 import { DROP_EXAMPLE_SIZE_PREFIX, GRID_HEIGHT } from '../../constants';
 import { decodeDragDataTransfer } from '../../utils/encodeDragDataTransfer';
 
