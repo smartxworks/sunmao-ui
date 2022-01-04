@@ -25,15 +25,7 @@ export const EmptyAppSchema: Application = {
           isRequired: false,
           defaultValue: '',
         },
-        traits: [
-          {
-            type: 'core/v1/style',
-            properties: {
-              styleSlot: 'content',
-              style: "background: red",
-            },
-          },
-        ],
+        traits: [],
       },
       {
         id: 'input2',
