@@ -10,7 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { implementRuntimeComponent, Slot, watch } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, watch } from '@sunmao-ui/runtime';
 import { CheckboxStateSchema } from '../Checkbox';
 
 const FormItemCSS = {
@@ -64,6 +64,7 @@ export default implementRuntimeComponent({
     mergeState,
     services,
     customStyle,
+    Slot,
   }) => {
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
@@ -127,7 +128,7 @@ export default implementRuntimeComponent({
     }, [inputId, fieldName, isInvalid, isRequired, inputValue, mergeState]);
 
     const placeholder = <Text color="gray.200">Please Add Input Here</Text>;
-    const slotView = <Slot {...FormItemCSS} slotsMap={slotsMap} slot="content" />;
+    const slotView = <Slot {...FormItemCSS} slot="content" />;
 
     return (
       <FormControl

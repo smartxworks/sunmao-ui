@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { getSlots } from '../_internal/Slot';
 import { Type } from '@sinclair/typebox';
 import { partial } from 'lodash-es';
 import { css } from '@emotion/css';
@@ -41,7 +40,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ slotsMap, layout = [], gridCallbacks, component, customStyle }) => {
+})(({ layout = [], gridCallbacks, component, customStyle, Slot }) => {
   const onDragStop = gridCallbacks?.onDragStop
     ? partial(gridCallbacks.onDragStop, component.id)
     : undefined;
@@ -61,7 +60,7 @@ export default implementRuntimeComponent({
           ${customStyle?.content}
         `}
       >
-        {getSlots(slotsMap, 'content', {})}
+        <Slot slot='content' />
       </BaseGridLayout>
     </Suspense>
   );

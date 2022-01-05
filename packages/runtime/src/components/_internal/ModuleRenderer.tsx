@@ -13,7 +13,7 @@ import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import { ImplementedRuntimeModule } from '../../services/registry';
-import { getSlotWithMap } from './Slot';
+import { resolveTreeMap } from '../../utils/resolveTreeMap';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope?: Record<string, any>;
@@ -156,18 +156,19 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
           app,
         }
       );
+      const {treeMap} = resolveTreeMap(evaledModuleTemplate)
       return topLevelComponents.map(c => {
         const slotsMap = slotComponentsMap.get(c.id);
-        const Slot = getSlotWithMap(slotsMap);
         return (
           <ImplWrapper
             key={c.id}
             component={c}
             slotsMap={slotsMap}
-            Slot={Slot}
+            Slot={() => null}
             targetSlot={null}
             services={services}
             app={app}
+            treeMap={treeMap}
           />
         );
       });
