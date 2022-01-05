@@ -1,5 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
-import { parseType } from '@sunmao-ui/runtime';
+import { ApplicationComponent, parseType } from '@sunmao-ui/core';
 import { ComponentModel } from './ComponentModel';
 import {
   ComponentId,
