@@ -39,22 +39,23 @@ export default implementRuntimeComponent({
     mergeState,
     subscribeMethods,
     hideSubmit,
-    slotsMap,
     callbackMap,
     services,
     customStyle,
     Slot,
+    treeMap,
+    component
   }) => {
     const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
     const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
     const formDataRef = useRef<Record<string, any>>({});
     const formControlIds = useMemo<string[]>(() => {
       return (
-        slotsMap?.get('content')?.map(slot => {
+        treeMap[component.id]?.content.map(slot => {
           return slot.id;
         }) || []
       );
-    }, [slotsMap]);
+    }, [component.id, treeMap]);
 
     useEffect(() => {
       setInvalidArray(

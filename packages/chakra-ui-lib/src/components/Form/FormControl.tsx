@@ -60,16 +60,17 @@ export default implementRuntimeComponent({
     fieldName,
     isRequired,
     helperText,
-    slotsMap,
     mergeState,
     services,
     customStyle,
     Slot,
+    treeMap,
+    component,
   }) => {
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
     const [hideInvalid, setHideInvalid] = useState(true);
-    const inputId = useMemo(() => first(slotsMap?.get('content'))?.id || '', [slotsMap]);
+    const inputId = useMemo(() => first(treeMap[component.id].content)?.id || '', [component.id, treeMap]);
     const [validResult, setValidResult] = useState({
       isInvalid: false,
       errorMsg: '',

@@ -17,15 +17,7 @@ export function genSlots<K extends string>(
     return (
       <>
         {childrenSchema.map(c => {
-          return (
-            <ImplWrapper
-              Slot={() => null}
-              targetSlot={null}
-              key={c.id}
-              {...props}
-              component={c}
-            />
-          );
+          return <ImplWrapper key={c.id} {...props} component={c} />;
         })}
       </>
     );
@@ -41,14 +33,6 @@ export function genSlotsAsArray<K extends string>(
     return [];
   }
   return childrenSchema.map(c => {
-    return () => (
-      <ImplWrapper
-        Slot={() => null}
-        targetSlot={null}
-        key={c.id}
-        {...props}
-        component={c}
-      />
-    );
+    return () => <ImplWrapper key={c.id} {...props} component={c} />;
   });
 }

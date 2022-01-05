@@ -26,10 +26,10 @@ export const ComponentTree: React.FC<Props> = props => {
     if (slots.length === 0) {
       return null;
     }
-    const slotsMap = childrenMap.get(component.id);
+    const children = childrenMap.get(component.id);
     return slots.map(slot => {
       let slotContent;
-      const slotChildren = slotsMap?.get(slot);
+      const slotChildren = children?.get(slot);
       if (slotChildren && slotChildren.length > 0) {
         slotContent = slotChildren.map(c => {
           return (

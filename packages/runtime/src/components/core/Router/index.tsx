@@ -59,13 +59,10 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ slotsMap, switchPolicy, subscribeMethods, mergeState }) => {
+})((props) => {
   return (
     <Switch
-      slotMap={slotsMap}
-      switchPolicy={switchPolicy}
-      subscribeMethods={subscribeMethods}
-      mergeState={mergeState}
+      {...props}
     ></Switch>
   );
 });
