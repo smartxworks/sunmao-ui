@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { Button, VStack } from '@chakra-ui/react';
-import { implementRuntimeComponent, Slot, watch } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, watch } from '@sunmao-ui/runtime';
 
 const PropsSchema = Type.Object({
   hideSubmit: Type.Boolean(),
@@ -43,6 +43,7 @@ export default implementRuntimeComponent({
     callbackMap,
     services,
     customStyle,
+    Slot,
   }) => {
     const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
     const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
@@ -147,7 +148,7 @@ export default implementRuntimeComponent({
           ${customStyle?.content}
         `}
       >
-        <Slot slotsMap={slotsMap} slot="content" />
+        <Slot slot="content" />
         {hideSubmit ? undefined : (
           <Button
             marginInlineStart="auto !important"

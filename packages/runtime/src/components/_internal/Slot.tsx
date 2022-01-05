@@ -1,47 +1,54 @@
 import React from 'react';
-import { SlotsMap } from '../../types/RuntimeSchema';
+import { ImplWrapperProps } from '../../types/RuntimeSchema';
+import { ImplWrapper } from './ImplWrapper';
 
 export type SlotType<K extends string> = React.FC<{
   slot: K;
 }>;
 
-export function getSlots<T, K extends string>(
-  slotsMap: SlotsMap<K> | undefined,
-  slot: K,
-  rest: T
-): React.ReactElement[] {
-  const components = slotsMap?.get(slot);
-  if (!components) {
-    const placeholder = (
-      <div key="slot-placeholder" style={{ color: 'gray' }}>
-        Slot {slot} is empty.Please drag component to this slot.
-      </div>
-    );
-    return [placeholder];
-  }
-  return components.map(({ component: ImplWrapper, id }) => (
-    <ImplWrapper key={id} {...rest} />
-  ));
-}
-
-function Slot<K extends string>({
-  slotsMap,
-  slot,
-  ...rest
-}: {
-  slotsMap: SlotsMap<K> | undefined;
-  slot: K;
-}): ReturnType<React.FC> {
-  if (!slotsMap?.has(slot)) {
-    return null;
-  }
-  return <>{getSlots(slotsMap, slot, rest)}</>;
-}
-
-export function getSlotWithMap<K extends string>(
-  slotsMap: SlotsMap<K> | undefined
+export function genSlots<K extends string>(
+  props: Omit<ImplWrapperProps, 'targetSlot' | 'Slot'>
 ): SlotType<K> {
-  return props => <Slot slotsMap={slotsMap} {...props} />;
+  return ({ slot }: { slot: string }) => {
+    const childrenSchema = props.treeMap[props.component.id]?.[slot];
+    if (!childrenSchema || childrenSchema.length === 0) {
+      return null;
+    }
+    return (
+      <>
+        {childrenSchema.map(c => {
+          return (
+            <ImplWrapper
+              Slot={() => null}
+              targetSlot={null}
+              key={c.id}
+              {...props}
+              component={c}
+            />
+          );
+        })}
+      </>
+    );
+  };
 }
 
-export default Slot;
+export function genSlotsAsArray<K extends string>(
+  props: Omit<ImplWrapperProps, 'targetSlot' | 'Slot'>,
+  slot: K
+): React.FC[] {
+  const childrenSchema = props.treeMap[props.component.id]?.[slot];
+  if (!childrenSchema || childrenSchema.length === 0) {
+    return [];
+  }
+  return childrenSchema.map(c => {
+    return () => (
+      <ImplWrapper
+        Slot={() => null}
+        targetSlot={null}
+        key={c.id}
+        {...props}
+        component={c}
+      />
+    );
+  });
+}

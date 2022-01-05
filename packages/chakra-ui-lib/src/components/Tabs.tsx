@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent, getSlots } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, genSlotsAsArray } from '@sunmao-ui/runtime';
 
 const StateSchema = Type.Object({
   selectedTabIndex: Type.Number(),
@@ -43,14 +43,15 @@ export default implementRuntimeComponent({
     styleSlots: ['tabItem', 'tabContent'],
     events: [],
   },
-})(({ tabNames, mergeState, initialSelectedTabIndex, slotsMap, customStyle }) => {
+})((props) => {
+  const { tabNames, mergeState, initialSelectedTabIndex, customStyle } = props
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialSelectedTabIndex ?? 0);
 
   useEffect(() => {
     mergeState({ selectedTabIndex });
   }, [mergeState, selectedTabIndex]);
 
-  const slotComponents = getSlots(slotsMap, 'content', {});
+  const slotComponents = genSlotsAsArray(props, 'content');
   const placeholder = (
     <Text color="gray">Slot content is empty.Please drag component to this slot.</Text>
   );
@@ -73,6 +74,7 @@ export default implementRuntimeComponent({
       </TabList>
       <TabPanels>
         {tabNames.map((_, idx) => {
+          const Component = slotComponents[idx]
           return (
             <TabPanel
               key={idx}
@@ -80,7 +82,7 @@ export default implementRuntimeComponent({
                 ${customStyle?.tabContent}
               `}
             >
-              {slotComponents[idx] || placeholder}
+              {<Component /> || placeholder}
             </TabPanel>
           );
         })}

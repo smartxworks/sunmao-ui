@@ -1,12 +1,11 @@
 import React, { useMemo, useRef } from 'react';
-// import { createApplication } from '@sunmao-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 import { ImplWrapper } from './components/_internal/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
-import { getSlotWithMap } from './components/_internal/Slot';
 import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
+import { resolveTreeMap } from './utils/resolveTreeMap';
 
 // inject modules to App
 export function genApp(services: UIServices) {
@@ -24,8 +23,8 @@ export const App: React.FC<AppProps> = props => {
     debugStore = true,
     debugEvent = true,
   } = props;
-  const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager())
-  const app = runtimeAppSchemaManager.current.update(options)
+  const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
+  const app = runtimeAppSchemaManager.current.update(options);
 
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
 
@@ -39,18 +38,26 @@ export const App: React.FC<AppProps> = props => {
       }),
     [app, componentWrapper, gridCallbacks, services]
   );
+
+  const { treeMap } = resolveTreeMap(app.spec.components);
   return (
     <div className="App" style={{ height: '100vh', overflow: 'auto' }}>
       {topLevelComponents.map(c => {
         const slotsMap = slotComponentsMap.get(c.id);
-        const Slot = getSlotWithMap(slotsMap);
+        // const Slot = genSlot({
+        //   component: c,
+        //   slotsMap,
+        //   treeMap,
+        //   ...props,
+        // });
         return (
           <ImplWrapper
             key={c.id}
             component={c}
             services={services}
             slotsMap={slotsMap}
-            Slot={Slot}
+            Slot={() => null}
+            treeMap={treeMap}
             targetSlot={null}
             app={app}
             componentWrapper={componentWrapper}
