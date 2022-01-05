@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { watch } from '../../utils/watchReactivity';
 import { merge } from 'lodash-es';
+import { watch } from '../../utils/watchReactivity';
 import {
   RuntimeApplicationComponent,
   ImplWrapperProps,
   TraitResult,
 } from '../../types/RuntimeSchema';
-import { genSlots } from './Slot';
+import { shallowCompareArray } from '../../utils/shallowCompareArray';
 
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
@@ -20,9 +20,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     children,
     componentWrapper: ComponentWrapper,
     services,
+    treeMap,
   } = props;
-
+  console.log('wrapper', c.id);
   const { registry, stateManager, globalHandlerMap, apiService } = props.services;
+  const childrenCache = new Map<RuntimeApplicationComponent, React.ReactElement>();
 
   const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
@@ -152,13 +154,26 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   }, [c.properties, stateManager]);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
-  const Slot = genSlots(props);
+  const contentChildren = (
+    <>
+      {treeMap[c.id]
+        ? treeMap[c.id]._allChildren.map(child => {
+            if (!childrenCache.get(child)) {
+              const ele = <ImplWrapper key={child.id} {...props} component={child} />;
+              console.log('render element', c.id);
+              childrenCache.set(child, ele);
+            }
+            return childrenCache.get(child);
+          })
+        : null}
+    </>
+  );
   const C = unmount ? null : (
     <Impl
       key={c.id}
       {...props}
       {...mergedProps}
-      Slot={Slot}
+      contentChildren={contentChildren}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
     />
@@ -173,10 +188,12 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 
   let parentComponent;
 
-  const slotTrait = c.traits.find(t => t.type === 'core/v1/slot')
+  const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
 
   if (slotTrait && app) {
-    parentComponent = app.spec.components.find(c => c.id === (slotTrait.properties.container as any).id);
+    parentComponent = app.spec.components.find(
+      c => c.id === (slotTrait.properties.container as any).id
+    );
   }
   // wrap component, but grid_layout is root component and cannot be chosen, so don't wrap it
   if (
@@ -194,14 +211,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   if (parentComponent?.parsedType.name === 'grid_layout') {
     // prevent react componentWrapper
     /* eslint-disable */
-    const {
-      component,
-      services,
-      app,
-      componentWrapper,
-      gridCallbacks,
-      ...restProps
-    } = props;
+    const { component, services, app, componentWrapper, gridCallbacks, ...restProps } =
+      props;
     /* eslint-enable */
     result = (
       <div key={c.id} data-sunmao-ui-id={c.id} ref={ref} {...restProps}>
@@ -216,6 +227,14 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
   _ImplWrapper,
   (prevProps, nextProps) => {
-    return prevProps === nextProps;
+    const prevChildren = prevProps.treeMap[prevProps.component.id]?._grandChildren;
+    const nextChildren = nextProps.treeMap[nextProps.component.id]?._grandChildren;
+    if (!prevChildren || !nextProps) return false;
+    let isEqual = false;
+
+    if (prevChildren && nextChildren) {
+      isEqual = shallowCompareArray(prevChildren, nextChildren);
+    }
+    return isEqual;
   }
 );

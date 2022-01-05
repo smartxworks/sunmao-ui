@@ -25,7 +25,7 @@ export class RuntimeAppSchemaManager {
     };
   }
 
-  private genComponent(component: ApplicationComponent): RuntimeApplicationComponent {
+  genComponent(component: ApplicationComponent): RuntimeApplicationComponent {
     const componentInCache = this.componentsCache[component.id];
     if (componentInCache && componentInCache === component) {
       return this.runtimeComponentsCache[component.id];

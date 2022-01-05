@@ -45,7 +45,7 @@ export default implementRuntimeComponent({
     align,
     justify,
     spacing,
-    Slot,
+    contentChildren,
     customStyle,
   }) => {
     return (
@@ -62,7 +62,7 @@ export default implementRuntimeComponent({
         `}
         {...{ direction, wrap, align, justify, spacing }}
       >
-        <Slot slot="content" />
+        {contentChildren}
       </BaseVStack>
     );
   })

@@ -24,9 +24,8 @@ export const App: React.FC<AppProps> = props => {
   } = props;
   const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
   const app = runtimeAppSchemaManager.current.update(options);
-
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
-
+  
   const { treeMap, topLevelComponents } = resolveTreeMap(app.spec.components);
   return (
     <div className="App" style={{ height: '100vh', overflow: 'auto' }}>

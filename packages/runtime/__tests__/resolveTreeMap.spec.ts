@@ -82,12 +82,24 @@ const origin = createApplication({
 });
 
 describe('resolve tree map', () => {
-  const {treeMap, topLevelComponents} = resolveTreeMap(origin.spec.components)
+  const { treeMap, topLevelComponents } = resolveTreeMap(origin.spec.components);
   it('resolve tree map', () => {
     expect(treeMap['hstack1'].content.map(c => c.id)).toEqual(['button1', 'vstack1']);
     expect(treeMap['vstack1'].content.map(c => c.id)).toEqual(['hstack2']);
     expect(treeMap['hstack2'].content.map(c => c.id)).toEqual(['text1', 'text2']);
     expect(topLevelComponents.map(c => c.id)).toEqual(['hstack1', 'hstack3']);
-
+    expect(treeMap['hstack1']._grandChildren!.map(c => c.id)).toEqual([
+      'button1',
+      'vstack1',
+      'hstack2',
+      'text1',
+      'text2',
+    ]);
+    expect(treeMap['vstack1']._grandChildren!.map(c => c.id)).toEqual([
+      'hstack2',
+      'text1',
+      'text2',
+    ]);
+    expect(treeMap['hstack2']._grandChildren!.map(c => c.id)).toEqual(['text1', 'text2']);
   });
 });

@@ -6,7 +6,7 @@ import { StateManager } from '../services/stateStore';
 import { Application, RuntimeApplication } from '@sunmao-ui/core';
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
-import { SlotType } from '../components/_internal/Slot';
+import React from 'react';
 
 export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 
@@ -51,7 +51,10 @@ export type ImplWrapperProps<KSlot extends string = string> = {
 
 export type TreeMap<KSlot extends string> = Record<
   string,
-  Record<KSlot, RuntimeApplicationComponent[]>
+  Record<KSlot, RuntimeApplicationComponent[]> & {
+    _grandChildren?: RuntimeApplicationComponent[];
+    _allChildren: RuntimeApplicationComponent[];
+  }
 >;
 
 export type CallbackMap<K extends string> = Record<K, () => void>;
@@ -75,7 +78,7 @@ export type ComponentImplementationProps<
 > = ImplWrapperProps<KSlot> &
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods> & {
-    Slot: SlotType<KSlot>;
+    contentChildren: Record<KSlot, React.ReactElement>
   };
 
 export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
