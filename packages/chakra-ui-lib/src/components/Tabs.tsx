@@ -82,7 +82,7 @@ export default implementRuntimeComponent({
                 ${customStyle?.tabContent}
               `}
             >
-              {<Component /> || placeholder}
+              {Component ? <Component /> : placeholder}
             </TabPanel>
           );
         })}

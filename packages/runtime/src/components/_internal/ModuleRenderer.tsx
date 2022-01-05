@@ -9,7 +9,6 @@ import {
   RuntimeApplicationComponent,
 } from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
-import { resolveAppComponents } from '../../services/resolveAppComponents';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import { ImplementedRuntimeModule } from '../../services/registry';
@@ -149,23 +148,12 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
     }, [evaledHanlders, moduleId, services.apiService]);
 
     const result = useMemo(() => {
-      const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-        evaledModuleTemplate,
-        {
-          services,
-          app,
-        }
-      );
-      const {treeMap} = resolveTreeMap(evaledModuleTemplate)
+      const { treeMap, topLevelComponents } = resolveTreeMap(evaledModuleTemplate);
       return topLevelComponents.map(c => {
-        const slotsMap = slotComponentsMap.get(c.id);
         return (
           <ImplWrapper
             key={c.id}
             component={c}
-            slotsMap={slotsMap}
-            Slot={() => null}
-            targetSlot={null}
             services={services}
             app={app}
             treeMap={treeMap}
@@ -176,7 +164,6 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
 
     return <>{result}</>;
   };
-  
 
 function parseTypeComponents(
   c: Application['spec']['components'][0]

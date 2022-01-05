@@ -16,7 +16,6 @@ type ApplicationTrait = ArrayElement<RuntimeApplicationComponent['traits']>;
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
   const {
     component: c,
-    targetSlot,
     app,
     children,
     componentWrapper: ComponentWrapper,
@@ -153,15 +152,13 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   }, [c.properties, stateManager]);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
-  const { slotsMap, ...restProps } = props;
   const Slot = genSlots(props);
   const C = unmount ? null : (
     <Impl
       key={c.id}
+      {...props}
       {...mergedProps}
-      {...restProps}
       Slot={Slot}
-      slotsMap={slotsMap}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
     />
@@ -175,8 +172,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   );
 
   let parentComponent;
-  if (targetSlot && app) {
-    parentComponent = app.spec.components.find(c => c.id === targetSlot.id);
+
+  const slotTrait = c.traits.find(t => t.type === 'core/v1/slot')
+
+  if (slotTrait && app) {
+    parentComponent = app.spec.components.find(c => c.id === (slotTrait.properties.container as any).id);
   }
   // wrap component, but grid_layout is root component and cannot be chosen, so don't wrap it
   if (
@@ -197,9 +197,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     const {
       component,
       services,
-      targetSlot,
       app,
-      slotsMap,
       componentWrapper,
       gridCallbacks,
       ...restProps

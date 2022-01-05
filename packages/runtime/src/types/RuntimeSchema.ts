@@ -44,11 +44,7 @@ export type AppProps = {
 // TODO: (type-safe), remove fallback type
 export type ImplWrapperProps<KSlot extends string = string> = {
   component: RuntimeApplicationComponent;
-  // TODO: (type-safe), remove slotsMap from props
-  slotsMap: SlotsMap<KSlot> | undefined;
   treeMap: TreeMap<KSlot>;
-  Slot: SlotType<KSlot>;
-  targetSlot: { id: string; slot: string } | null;
   services: UIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
@@ -56,15 +52,6 @@ export type ImplWrapperProps<KSlot extends string = string> = {
 export type TreeMap<KSlot extends string> = Record<
   string,
   Record<KSlot, RuntimeApplicationComponent[]>
->;
-
-export type SlotComponentMap = Map<string, SlotsMap<string>>;
-export type SlotsMap<K extends string> = Map<
-  K,
-  Array<{
-    component: React.FC;
-    id: string;
-  }>
 >;
 
 export type CallbackMap<K extends string> = Record<K, () => void>;
@@ -87,7 +74,9 @@ export type ComponentImplementationProps<
   KEvent extends string
 > = ImplWrapperProps<KSlot> &
   TraitResult<KStyleSlot, KEvent>['props'] &
-  RuntimeFunctions<TState, TMethods>;
+  RuntimeFunctions<TState, TMethods> & {
+    Slot: SlotType<KSlot>;
+  };
 
 export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
   props: {
