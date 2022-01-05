@@ -13,7 +13,7 @@ type ArrayElement<ArrayType extends readonly unknown[]> =
 
 type ApplicationTrait = ArrayElement<RuntimeApplicationComponent['traits']>;
 
-export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
+const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {
     const {
       component: c,
@@ -218,3 +218,11 @@ export const ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
     return result;
   }
 );
+
+export const ImplWrapper = React.memo<ImplWrapperProps>(
+  _ImplWrapper,
+  (prevProps, nextProps) => {
+    return prevProps === nextProps;
+  }
+);
+
