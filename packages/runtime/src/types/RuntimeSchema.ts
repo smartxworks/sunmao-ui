@@ -46,11 +46,17 @@ export type ImplWrapperProps<KSlot extends string = string> = {
   component: RuntimeApplicationComponent;
   // TODO: (type-safe), remove slotsMap from props
   slotsMap: SlotsMap<KSlot> | undefined;
+  treeMap: TreeMap<KSlot>;
   Slot: SlotType<KSlot>;
   targetSlot: { id: string; slot: string } | null;
   services: UIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
+
+export type TreeMap<KSlot extends string> = Record<
+  string,
+  Record<KSlot, RuntimeApplicationComponent[]>
+>;
 
 export type SlotComponentMap = Map<string, SlotsMap<string>>;
 export type SlotsMap<K extends string> = Map<
