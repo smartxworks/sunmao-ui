@@ -1,11 +1,12 @@
-import React, { useMemo } from 'react';
-import { createApplication } from '@sunmao-ui/core';
+import React, { useMemo, useRef } from 'react';
+// import { createApplication } from '@sunmao-ui/core';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 import { ImplWrapper } from './components/_internal/ImplWrapper';
 import { resolveAppComponents } from './services/resolveAppComponents';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
 import { getSlotWithMap } from './components/_internal/Slot';
+import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
 
 // inject modules to App
 export function genApp(services: UIServices) {
@@ -23,7 +24,8 @@ export const App: React.FC<AppProps> = props => {
     debugStore = true,
     debugEvent = true,
   } = props;
-  const app = createApplication(options);
+  const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager())
+  const app = runtimeAppSchemaManager.current.update(options)
 
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
 
