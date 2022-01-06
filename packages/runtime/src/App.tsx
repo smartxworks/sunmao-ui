@@ -4,7 +4,7 @@ import { ImplWrapper } from './components/_internal/ImplWrapper';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
 import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
-import { resolveTreeMap } from './utils/resolveTreeMap';
+import { resolveChildrenMap } from './utils/resolveChildrenMap';
 
 // inject modules to App
 export function genApp(services: UIServices) {
@@ -26,7 +26,7 @@ export const App: React.FC<AppProps> = props => {
   const app = runtimeAppSchemaManager.current.update(options);
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
   
-  const { treeMap, topLevelComponents } = resolveTreeMap(app.spec.components);
+  const { childrenMap, topLevelComponents } = resolveChildrenMap(app.spec.components);
   return (
     <div className="App" style={{ height: '100vh', overflow: 'auto' }}>
       {topLevelComponents.map(c => {
@@ -35,7 +35,7 @@ export const App: React.FC<AppProps> = props => {
             key={c.id}
             component={c}
             services={services}
-            treeMap={treeMap}
+            childrenMap={childrenMap}
             app={app}
             componentWrapper={componentWrapper}
             gridCallbacks={gridCallbacks}

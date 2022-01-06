@@ -39,7 +39,7 @@ export default implementRuntimeComponent({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, contentChildren , customStyle }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle }) => {
   return (
     <BaseHStack
       height="full"
@@ -54,7 +54,7 @@ export default implementRuntimeComponent({
       `}
       {...{ direction, wrap, align, justify, spacing }}
     >
-      {contentChildren}
+      {slotsElements.content}
     </BaseHStack>
   );
 });

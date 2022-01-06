@@ -37,7 +37,7 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ size, defaultValue, isDisabled, Slot, mergeState }) => {
+})(({ size, defaultValue, isDisabled, slotsElements, mergeState }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({ value });
@@ -50,7 +50,7 @@ export default implementRuntimeComponent({
       isDisabled={isDisabled}
       onChange={val => setValue(val)}
     >
-      <Slot slot="content" />
+      {slotsElements.content}
     </BaseCheckboxGroup>
   );
 });

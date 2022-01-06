@@ -42,8 +42,8 @@ export default implementRuntimeComponent({
     callbackMap,
     services,
     customStyle,
-    Slot,
-    treeMap,
+    slotsElements,
+    childrenMap,
     component
   }) => {
     const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
@@ -51,11 +51,11 @@ export default implementRuntimeComponent({
     const formDataRef = useRef<Record<string, any>>({});
     const formControlIds = useMemo<string[]>(() => {
       return (
-        treeMap[component.id]?.content.map(slot => {
+        childrenMap[component.id]?.content.map(slot => {
           return slot.id;
         }) || []
       );
-    }, [component.id, treeMap]);
+    }, [component.id, childrenMap]);
 
     useEffect(() => {
       setInvalidArray(
@@ -149,7 +149,7 @@ export default implementRuntimeComponent({
           ${customStyle?.content}
         `}
       >
-        <Slot slot="content" />
+        {slotsElements.content}
         {hideSubmit ? undefined : (
           <Button
             marginInlineStart="auto !important"

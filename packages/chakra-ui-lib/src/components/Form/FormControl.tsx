@@ -63,14 +63,14 @@ export default implementRuntimeComponent({
     mergeState,
     services,
     customStyle,
-    Slot,
-    treeMap,
+    slotsElements,
+    childrenMap,
     component,
   }) => {
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
     const [hideInvalid, setHideInvalid] = useState(true);
-    const inputId = useMemo(() => first(treeMap[component.id].content)?.id || '', [component.id, treeMap]);
+    const inputId = useMemo(() => first(childrenMap[component.id]?.content)?.id || '', [component.id, childrenMap]);
     const [validResult, setValidResult] = useState({
       isInvalid: false,
       errorMsg: '',
@@ -129,7 +129,7 @@ export default implementRuntimeComponent({
     }, [inputId, fieldName, isInvalid, isRequired, inputValue, mergeState]);
 
     const placeholder = <Text color="gray.200">Please Add Input Here</Text>;
-    const slotView = <Slot {...FormItemCSS} slot="content" />;
+    const slotView = slotsElements.content;
 
     return (
       <FormControl

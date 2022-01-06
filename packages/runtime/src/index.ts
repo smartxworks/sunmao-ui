@@ -29,7 +29,6 @@ export * from './types/RuntimeSchema';
 export * from './types/TraitPropertiesSchema';
 export * from './constants';
 export * from './services/registry';
-export { genSlots, genSlotsAsArray } from './components/_internal/Slot';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { default as Text, TextPropertySchema } from './components/_internal/Text';
 
