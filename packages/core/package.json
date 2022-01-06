@@ -21,7 +21,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --target es5",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output",
     "dev": "npm run build -- --watch",
     "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
