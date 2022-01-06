@@ -20,9 +20,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     children,
     componentWrapper: ComponentWrapper,
     services,
-    treeMap,
+    childrenMap,
   } = props;
-  console.log('wrapper', c.id);
   const { registry, stateManager, globalHandlerMap, apiService } = props.services;
   const childrenCache = new Map<RuntimeApplicationComponent, React.ReactElement>();
 
@@ -154,26 +153,30 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   }, [c.properties, stateManager]);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
-  const contentChildren = (
-    <>
-      {treeMap[c.id]
-        ? treeMap[c.id]._allChildren.map(child => {
-            if (!childrenCache.get(child)) {
-              const ele = <ImplWrapper key={child.id} {...props} component={child} />;
-              console.log('render element', c.id);
-              childrenCache.set(child, ele);
-            }
-            return childrenCache.get(child);
-          })
-        : null}
-    </>
-  );
+
+  function genSlotsElements() {
+    if (!childrenMap[c.id]) {
+      return {};
+    }
+    const res: Record<string, React.ReactElement[]> = {};
+    for (const slot in childrenMap[c.id]) {
+      res[slot] = childrenMap[c.id][slot].map(child => {
+        if (!childrenCache.get(child)) {
+          const ele = <ImplWrapper key={child.id} {...props} component={child} />;
+          childrenCache.set(child, ele);
+        }
+        return childrenCache.get(child)!;
+      });
+    }
+    return res;
+  }
+
   const C = unmount ? null : (
     <Impl
       key={c.id}
       {...props}
       {...mergedProps}
-      contentChildren={contentChildren}
+      slotsElements={genSlotsElements()}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
     />
@@ -227,8 +230,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
   _ImplWrapper,
   (prevProps, nextProps) => {
-    const prevChildren = prevProps.treeMap[prevProps.component.id]?._grandChildren;
-    const nextChildren = nextProps.treeMap[nextProps.component.id]?._grandChildren;
+    const prevChildren = prevProps.childrenMap[prevProps.component.id]?._grandChildren;
+    const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;
     if (!prevChildren || !nextProps) return false;
     let isEqual = false;
 

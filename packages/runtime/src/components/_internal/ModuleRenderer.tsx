@@ -12,7 +12,7 @@ import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import { ImplementedRuntimeModule } from '../../services/registry';
-import { resolveTreeMap } from '../../utils/resolveTreeMap';
+import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope?: Record<string, any>;
@@ -148,7 +148,7 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
     }, [evaledHanlders, moduleId, services.apiService]);
 
     const result = useMemo(() => {
-      const { treeMap, topLevelComponents } = resolveTreeMap(evaledModuleTemplate);
+      const { childrenMap, topLevelComponents } = resolveChildrenMap(evaledModuleTemplate);
       return topLevelComponents.map(c => {
         return (
           <ImplWrapper
@@ -156,7 +156,7 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
             component={c}
             services={services}
             app={app}
-            treeMap={treeMap}
+            childrenMap={childrenMap}
           />
         );
       });

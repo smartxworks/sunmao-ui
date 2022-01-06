@@ -292,7 +292,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ customStyle, Slot, ...restProps }) => {
+})(({ customStyle, slotsElements, ...restProps }) => {
   const styleProps = pick(restProps, StyleProps);
   return (
     <BaseBox
@@ -307,7 +307,7 @@ export default implementRuntimeComponent({
         ${customStyle?.content}
       `}
     >
-      <Slot slot="content" />
+      {slotsElements.content}
     </BaseBox>
   );
 });

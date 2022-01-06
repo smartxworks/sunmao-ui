@@ -24,9 +24,8 @@ import {
 import {
   RuntimeApplicationComponent,
   UIServices,
-  TreeMap,
+  ChildrenMap,
 } from '../../../types/RuntimeSchema';
-import { genSlotsAsArray } from '../../../components/_internal/Slot';
 
 export type RouteLikeElement = PropsWithChildren<{
   path?: string;
@@ -65,14 +64,23 @@ type SwitchProps = {
   location?: string;
   switchPolicy: SwitchPolicy;
   component: RuntimeApplicationComponent;
-  treeMap: TreeMap<string>;
+  childrenMap: ChildrenMap<string>;
   services: UIServices;
+  slotsElements: Record<string, ReactElement[]>;
   mergeState: (partialState: any) => void;
   subscribeMethods: (map: { [key: string]: (parameters: any) => void }) => void;
 };
 
 export const Switch: React.FC<SwitchProps> = props => {
-  const { switchPolicy, location, mergeState, subscribeMethods } = props;
+  const {
+    switchPolicy,
+    location,
+    mergeState,
+    subscribeMethods,
+    slotsElements,
+    childrenMap,
+    component,
+  } = props;
   const [originalLocation] = useLocation();
   const matcher = useMemo(() => makeMatcher(), []);
 
@@ -82,7 +90,7 @@ export const Switch: React.FC<SwitchProps> = props => {
     let defaultPath: string | undefined = undefined;
     const result = switchPolicy.map(
       ({ type, path, slotId, href, default: _default, exact, strict, sensitive }) => {
-        const componentsArr = genSlotsAsArray(props, slotId);
+        const children = slotsElements[slotId];
         if (defaultPath === undefined && _default) {
           defaultPath = path;
         }
@@ -101,19 +109,19 @@ export const Switch: React.FC<SwitchProps> = props => {
               </Route>
             );
           case RouteType.ROUTE:
-            if (!componentsArr) {
+            if (!children) {
               console.warn('component not registered to router');
               return <></>;
             }
-            if (componentsArr.length !== 1) {
+            if (children.length !== 1) {
               console.warn('router slot can only have one component');
             }
-            const C = componentsArr[0];
-            if (C.displayName === 'router') {
+            const ele = children[0];
+            if (childrenMap[component.id][slotId][0].parsedType.name === 'router') {
               return (
                 // it should match both itself and its children path
                 <Nested path={`(${path}|${path}/.*)`} base={path} key={path}>
-                  <C key={slotId}></C>
+                  {ele}
                 </Nested>
               );
             }
@@ -126,7 +134,7 @@ export const Switch: React.FC<SwitchProps> = props => {
                 path={path}
                 mergeState={mergeState}
               >
-                <C key={slotId}></C>
+                {ele}
               </Route>
             );
           default:
@@ -143,7 +151,7 @@ export const Switch: React.FC<SwitchProps> = props => {
       );
     }
     return result;
-  }, [mergeState, props, switchPolicy]);
+  }, [component.id, mergeState, slotsElements, switchPolicy, childrenMap]);
 
   useEffect(() => {
     subscribeMethods({

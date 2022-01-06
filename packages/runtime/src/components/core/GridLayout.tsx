@@ -40,7 +40,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ layout = [], gridCallbacks, component, customStyle, Slot }) => {
+})(({ layout = [], gridCallbacks, component, customStyle, slotsElements }) => {
   const onDragStop = gridCallbacks?.onDragStop
     ? partial(gridCallbacks.onDragStop, component.id)
     : undefined;
@@ -60,7 +60,7 @@ export default implementRuntimeComponent({
           ${customStyle?.content}
         `}
       >
-        <Slot slot='content' />
+        {slotsElements.content}
       </BaseGridLayout>
     </Suspense>
   );

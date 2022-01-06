@@ -44,12 +44,12 @@ export type AppProps = {
 // TODO: (type-safe), remove fallback type
 export type ImplWrapperProps<KSlot extends string = string> = {
   component: RuntimeApplicationComponent;
-  treeMap: TreeMap<KSlot>;
+  childrenMap: ChildrenMap<KSlot>;
   services: UIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
 
-export type TreeMap<KSlot extends string> = Record<
+export type ChildrenMap<KSlot extends string> = Record<
   string,
   Record<KSlot, RuntimeApplicationComponent[]> & {
     _grandChildren?: RuntimeApplicationComponent[];
@@ -78,7 +78,7 @@ export type ComponentImplementationProps<
 > = ImplWrapperProps<KSlot> &
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods> & {
-    contentChildren: Record<KSlot, React.ReactElement>
+    slotsElements: Record<KSlot, React.ReactElement[]>
   };
 
 export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
