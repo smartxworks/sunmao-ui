@@ -39,7 +39,7 @@ export const Layout = {
     spec: {
       properties: LayoutPropsSchema,
       state: LayoutStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: [],
@@ -75,7 +75,7 @@ export const Header = {
     spec: {
       properties: HeaderPropsSchema,
       state: HeaderStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: [],
@@ -111,7 +111,7 @@ export const Footer = {
     spec: {
       properties: FooterPropsSchema,
       state: FooterStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: [],
@@ -147,7 +147,7 @@ export const Content = {
     spec: {
       properties: ContentPropsSchema,
       state: ContentStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: [],
@@ -183,7 +183,7 @@ export const Sider = {
     spec: {
       properties: SiderPropsSchema,
       state: SiderStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: [],

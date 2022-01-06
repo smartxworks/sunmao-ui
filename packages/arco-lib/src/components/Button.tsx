@@ -40,7 +40,7 @@ export const Button = {
     spec: {
       properties: ButtonPropsSchema,
       state: ButtonStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: ["onClick"],

@@ -65,7 +65,7 @@ export const Menu = {
     spec: {
       properties: MenuPropsSchema,
       state: MenuStateSchema,
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: ["content"],
       events: ["onClick"],
