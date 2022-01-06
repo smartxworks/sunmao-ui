@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
@@ -11,11 +11,11 @@ import { resolveApplicationComponents } from '../../utils/resolveApplicationComp
 import ErrorBoundary from '../ErrorBoundary';
 
 export type ChildrenMap = Map<string, SlotsMap>;
-type SlotsMap = Map<string, ApplicationComponent[]>;
+type SlotsMap = Map<string, ComponentSchema[]>;
 
 type Props = {
   registry: Registry;
-  components: ApplicationComponent[];
+  components: ComponentSchema[];
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
 };
@@ -24,8 +24,8 @@ export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, registry } = props;
 
   const [realComponents, dataSources] = useMemo(() => {
-    const _realComponent: ApplicationComponent[] = [];
-    const _datasources: ApplicationComponent[] = [];
+    const _realComponent: ComponentSchema[] = [];
+    const _datasources: ComponentSchema[] = [];
     components.forEach(c => {
       if (c.type === 'core/v1/dummy') {
         _datasources.push(c);

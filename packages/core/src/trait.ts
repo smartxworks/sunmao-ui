@@ -19,33 +19,32 @@ type TraitSpec = {
 };
 
 // extended runtime
-export type RuntimeTraitSpec = Trait & {
+export type RuntimeTrait = Trait & {
   parsedVersion: Version;
 };
 
-// partial some fields, use as param createTrait
-export type TraitDefinition = {
+// partial some fields, use as param createModule
+type CreateTraitOptions = {
   version: string;
   metadata: Metadata;
   spec?: Partial<TraitSpec>;
 };
 
-export function createTrait(options: TraitDefinition): RuntimeTraitSpec {
-  return (
-    {
-      version: options.version,
-      kind: ('Trait' as any),
-      parsedVersion: parseVersion(options.version),
-      metadata: {
-        name: options.metadata.name,
-        description: options.metadata.description || '',
-      },
-      spec: {
-        properties: {},
-        state: {},
-        methods: [],
-        ...options.spec
-      },
-    }
-  );
+// partial some field
+export function createTrait(options: CreateTraitOptions): RuntimeTrait {
+  return {
+    version: options.version,
+    kind: 'Trait' as any,
+    parsedVersion: parseVersion(options.version),
+    metadata: {
+      name: options.metadata.name,
+      description: options.metadata.description || '',
+    },
+    spec: {
+      properties: {},
+      state: {},
+      methods: [],
+      ...options.spec,
+    },
+  };
 }

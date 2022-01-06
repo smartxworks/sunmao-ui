@@ -1,12 +1,12 @@
-import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
+import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { registry } from '../setup';
 
 export function genComponent(
   type: string,
   id: string,
   properties?: Record<string, unknown>,
-  traits: ComponentTrait[] = []
-): ApplicationComponent {
+  traits: TraitSchema[] = []
+): ComponentSchema {
   const cImpl = registry.getComponentByType(type);
   const initProperties = properties || cImpl.metadata.exampleProperties;
   return {
@@ -20,7 +20,7 @@ export function genComponent(
 export function genTrait(
   type: string,
   properties: Record<string, unknown> = {}
-): ComponentTrait {
+): TraitSchema {
   return {
     type,
     properties,

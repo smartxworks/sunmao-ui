@@ -1,15 +1,15 @@
 import {
   Application,
-  ApplicationComponent,
+  ComponentSchema,
   RuntimeApplication,
   isValidId,
   parseType,
   parseVersion,
+  RuntimeComponentSchema,
 } from '@sunmao-ui/core';
-import { RuntimeApplicationComponent } from '../types/RuntimeSchema';
 export class RuntimeAppSchemaManager {
-  private runtimeComponentsCache: Record<string, RuntimeApplicationComponent> = {};
-  private componentsCache: Record<string, ApplicationComponent> = {};
+  private runtimeComponentsCache: Record<string, RuntimeComponentSchema> = {};
+  private componentsCache: Record<string, ComponentSchema> = {};
 
   update(schema: Application): RuntimeApplication {
     return {
@@ -25,7 +25,7 @@ export class RuntimeAppSchemaManager {
     };
   }
 
-  genComponent(component: ApplicationComponent): RuntimeApplicationComponent {
+  genComponent(component: ComponentSchema): RuntimeComponentSchema {
     const componentInCache = this.componentsCache[component.id];
     if (componentInCache && componentInCache === component) {
       return this.runtimeComponentsCache[component.id];
@@ -33,7 +33,7 @@ export class RuntimeAppSchemaManager {
     if (!isValidId(component.id)) {
       throw new Error(`Invalid id: "${component.id}"`);
     }
-    const componentSchema: RuntimeApplicationComponent = {
+    const componentSchema: RuntimeComponentSchema = {
       ...component,
       parsedType: parseType(component.type),
       traits: component.traits.map(t => {

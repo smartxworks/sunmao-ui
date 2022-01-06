@@ -1,4 +1,4 @@
-import { ApplicationComponent, ComponentTrait } from '@sunmao-ui/core';
+import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { CloseIcon } from '@chakra-ui/icons';
@@ -9,8 +9,8 @@ import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 
 type Props = {
   registry: Registry;
-  component: ApplicationComponent;
-  trait: ComponentTrait;
+  component: ComponentSchema;
+  trait: TraitSchema;
   traitIndex: number;
   onRemove: () => void;
 };

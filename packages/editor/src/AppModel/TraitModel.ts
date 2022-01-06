@@ -1,4 +1,4 @@
-import { ComponentTrait, RuntimeTraitSpec } from '@sunmao-ui/core';
+import { TraitSchema, RuntimeTrait } from '@sunmao-ui/core';
 import { registry } from '../setup';
 import {
   IComponentModel,
@@ -14,14 +14,14 @@ import { genTrait } from './utils';
 let traitIdCount = 0;
 
 export class TraitModel implements ITraitModel {
-  private schema: ComponentTrait;
-  private spec: RuntimeTraitSpec;
+  private schema: TraitSchema;
+  private spec: RuntimeTrait;
   id: TraitId;
   type: TraitType;
   properties: Record<string, IFieldModel> = {};
   _isDirty = false;
 
-  constructor(trait: ComponentTrait, public parent: IComponentModel) {
+  constructor(trait: TraitSchema, public parent: IComponentModel) {
     this.schema = trait;
     this.parent = parent;
     this.type = trait.type as TraitType;
@@ -50,7 +50,7 @@ export class TraitModel implements ITraitModel {
     return (this.spec ? Object.keys(this.spec.spec.state.properties || {}) : []) as StateKey[];
   }
 
-  toSchema(): ComponentTrait {
+  toSchema(): TraitSchema {
     if (this._isDirty) {
       this.schema = genTrait(this.type, this.rawProperties);
     }

@@ -1,6 +1,6 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 
-export const OrphanComponentSchema: ApplicationComponent[] = [
+export const OrphanComponentSchema: ComponentSchema[] = [
   {
     id: 'hstack1',
     type: 'chakra_ui/v1/hstack',
@@ -31,7 +31,7 @@ export const OrphanComponentSchema: ApplicationComponent[] = [
   },
 ];
 
-export const ComponentInvalidSchema: ApplicationComponent[] = [
+export const ComponentInvalidSchema: ComponentSchema[] = [
   {
     id: 'text1',
     type: 'core/v1/text',
@@ -55,7 +55,7 @@ export const ComponentInvalidSchema: ApplicationComponent[] = [
   },
 ];
 
-export const ComponentPropertyExpressionSchema: ApplicationComponent[] = [
+export const ComponentPropertyExpressionSchema: ComponentSchema[] = [
   {
     id: 'text1',
     type: 'chakra_ui/v1/list',
@@ -67,7 +67,7 @@ export const ComponentPropertyExpressionSchema: ApplicationComponent[] = [
   },
 ];
 
-export const TraitInvalidSchema: ApplicationComponent[] = [
+export const TraitInvalidSchema: ComponentSchema[] = [
   {
     id: 'text1',
     type: 'core/v1/text',
@@ -102,7 +102,7 @@ export const TraitInvalidSchema: ApplicationComponent[] = [
   },
 ];
 
-export const EventTraitSchema: ApplicationComponent[] = [
+export const EventTraitSchema: ComponentSchema[] = [
   {
     id: 'input1',
     type: 'chakra_ui/v1/input',
@@ -177,7 +177,7 @@ export const EventTraitSchema: ApplicationComponent[] = [
   },
 ];
 
-export const EventTraitTraitMethodSchema: ApplicationComponent[] = [
+export const EventTraitTraitMethodSchema: ComponentSchema[] = [
   {
     id: 'text1',
     type: 'core/v1/text',

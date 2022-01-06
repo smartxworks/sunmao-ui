@@ -1,4 +1,4 @@
-import { ApplicationComponent, parseType } from '@sunmao-ui/core';
+import { ComponentSchema, parseType } from '@sunmao-ui/core';
 import { ComponentModel } from './ComponentModel';
 import {
   ComponentId,
@@ -12,11 +12,11 @@ import { genComponent } from './utils';
 export class AppModel implements IAppModel {
   topComponents: IComponentModel[] = [];
   // modules: IModuleModel[] = [];
-  private schema: ApplicationComponent[] = [];
+  private schema: ComponentSchema[] = [];
   private componentMap: Record<ComponentId, IComponentModel> = {};
   private componentsCount = 0;
 
-  constructor(components: ApplicationComponent[]) {
+  constructor(components: ComponentSchema[]) {
     this.schema = components;
     this.componentsCount = components.length;
     this.resolveTree(components);
@@ -35,7 +35,7 @@ export class AppModel implements IAppModel {
     return Object.values(this.componentMap);
   }
 
-  toSchema(): ApplicationComponent[] {
+  toSchema(): ComponentSchema[] {
     this.schema = this.allComponents.map(c => {
       return c.toSchema();
     });
@@ -88,7 +88,7 @@ export class AppModel implements IAppModel {
     return newId;
   }
 
-  private resolveTree(components: ApplicationComponent[]) {
+  private resolveTree(components: ComponentSchema[]) {
     const allComponents = components.map(c => {
       if (this.componentMap[c.id as ComponentId]) {
         throw new Error(`Duplicate component id: ${c.id}`);

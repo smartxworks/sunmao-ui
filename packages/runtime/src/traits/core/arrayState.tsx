@@ -1,12 +1,12 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../types/RuntimeSchema';
+import { TraitImpl } from '../../types';
 
 const HasInitializedMap = new Map<string, boolean>();
 
 type KeyValue = { key: string; value: unknown };
 
-const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+const ArrayStateTrait: TraitImpl<Static<typeof PropsSchema>> = ({
   key,
   initialValue,
   componentId,
@@ -94,6 +94,7 @@ export default {
           name: 'reset',
         },
       ],
+      state: {},
     },
   }),
   impl: ArrayStateTrait,

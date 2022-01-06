@@ -1,8 +1,8 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../types/RuntimeSchema';
+import { TraitImpl } from '../../types';
 
-const StyleTrait: TraitImplementation<Static<typeof PropsSchema>> = ({ styles }) => {
+const StyleTrait: TraitImpl<Static<typeof PropsSchema>> = ({ styles }) => {
   const customStyle: Record<string, string> = {};
   styles.forEach(style => {
     customStyle[style.styleSlot] = style.style;
@@ -32,6 +32,8 @@ export default {
     },
     spec: {
       properties: PropsSchema,
+      methods: [],
+      state: {},
     },
   }),
   impl: StyleTrait,

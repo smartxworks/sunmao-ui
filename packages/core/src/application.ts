@@ -7,47 +7,45 @@ export type Application = {
   version: string;
   kind: 'Application';
   metadata: Metadata;
-  spec: ApplicationSpec;
+  spec: {
+    components: ComponentSchema[];
+  };
 };
 
-type ApplicationSpec = {
-  components: ApplicationComponent[];
-};
-
-export type ApplicationComponent = {
+export type ComponentSchema = {
   id: string;
   type: string;
   // do runtime type check
   properties: Record<string, unknown>;
-  traits: ComponentTrait[];
+  traits: TraitSchema[];
   // scopes TBD
 };
 
-export type ComponentTrait = {
+export type TraitSchema = {
   type: string;
   // do runtime type check
   properties: Record<string, unknown>;
 };
+
+export type RuntimeTraitSchema = TraitSchema & {
+  parsedType: VersionAndName;
+}
 
 type VersionAndName = {
   version: string;
   name: string;
 };
 
+export type RuntimeComponentSchema = Omit<ComponentSchema, 'traits'> & {
+  parsedType: VersionAndName;
+  traits: RuntimeTraitSchema[];
+};
+
 // extended runtime
 export type RuntimeApplication = Omit<Application, 'spec'> & {
   parsedVersion: Version;
-  spec: Omit<ApplicationSpec, 'components'> & {
-    components: Array<
-      Omit<ApplicationComponent, 'traits'> & {
-        parsedType: VersionAndName;
-        traits: Array<
-          ComponentTrait & {
-            parsedType: VersionAndName;
-          }
-        >;
-      }
-    >;
+  spec: {
+    components: RuntimeComponentSchema[];
   };
 };
 

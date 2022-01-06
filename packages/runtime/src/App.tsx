@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 import { ImplWrapper } from './components/_internal/ImplWrapper';
-import { AppProps, UIServices } from './types/RuntimeSchema';
+import { AppProps, UIServices } from './types';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
 import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
 import { resolveChildrenMap } from './utils/resolveChildrenMap';
