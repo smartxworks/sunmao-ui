@@ -37,7 +37,7 @@ export const Divider = {
     spec: {
       properties: DividerPropsSchema,
       state: DividerStateSchema,
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: ["content"],
       events: [],

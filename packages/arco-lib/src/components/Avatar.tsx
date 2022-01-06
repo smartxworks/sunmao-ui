@@ -39,7 +39,7 @@ export const Avatar = {
     spec: {
       properties: AvatarPropsSchema,
       state: AvatarStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: [],

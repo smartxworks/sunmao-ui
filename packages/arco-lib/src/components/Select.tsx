@@ -66,7 +66,7 @@ export const Select = {
     spec: {
       properties: SelectPropsSchema,
       state: SelectStateSchema,
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: ["content"],
       events: ["onChange"],

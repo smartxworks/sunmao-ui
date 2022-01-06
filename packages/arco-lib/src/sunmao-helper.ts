@@ -31,9 +31,11 @@ export const FALLBACK_METADATA: ComponentMetadata = {
   exampleSize: [1, 1],
 };
 
-export const getComponentProps = <T>(
-  props: T & ComponentImplementationProps
-): T => {
+export const getComponentProps = <T, TState, TMethods, KSlot extends string,
+  KStyleSlot extends string,
+  KEvent extends string>(
+    props: T & ComponentImplementationProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
+  ): T => {
   const {
     component,
     slotsMap,

@@ -34,7 +34,7 @@ export const Dropdown = {
     spec: {
       properties: DropdownPropsSchema,
       state: DropdownStateSchema,
-      methods: [],
+      methods: {},
       slots: ["trigger", "list"],
       styleSlots: [],
       events: [],

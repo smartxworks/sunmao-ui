@@ -57,7 +57,7 @@ export const Input = {
     spec: {
       properties: InputPropsSchema,
       state: InputStateSchema,
-      methods: [],
+      methods: {},
       slots: ["addAfter", "addBefore", "prefix", "suffix"],
       styleSlots: ["input"],
       events: ["onChange", "onBlur", "onFocus"],

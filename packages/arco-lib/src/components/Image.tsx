@@ -35,7 +35,7 @@ export const Image = {
     spec: {
       properties: ImagePropsSchema,
       state: ImageStateSchema,
-      methods: [],
+      methods: {},
       slots: [],
       styleSlots: ["content"],
       events: [],

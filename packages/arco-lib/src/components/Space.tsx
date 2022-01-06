@@ -43,7 +43,7 @@ export const Space = {
     spec: {
       properties: SpacePropsSchema,
       state: SpaceStateSchema,
-      methods: [],
+      methods: {},
       slots: ["content"],
       styleSlots: ["content"],
       events: ["onClick"],
