@@ -1,10 +1,4 @@
-import {
-  RuntimeTraitSpec,
-  RuntimeModuleSpec,
-  ApplicationComponent,
-  RuntimeComponentSpec,
-  parseType,
-} from '@sunmao-ui/core';
+import { parseType } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';
@@ -24,39 +18,12 @@ import CoreHidden from '../traits/core/hidden';
 import CoreFetch from '../traits/core/fetch';
 import CoreValidation from '../traits/core/validation';
 import {
-  ComponentImplementationProps,
-  TraitImplementation,
-} from '../types/RuntimeSchema';
+  ImplementedRuntimeComponent,
+  ImplementedRuntimeTrait,
+  ImplementedRuntimeModule,
+} from '../types';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
-
-export type ImplementedRuntimeComponent<
-  KMethodName extends string,
-  KStyleSlot extends string,
-  KSlot extends string,
-  KEvent extends string
-> = RuntimeComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent> & {
-  impl: ComponentImplementation;
-};
-
-export type ComponentImplementation<
-  TProps = any,
-  TState = any,
-  TMethods = Record<string, any>,
-  KSlot extends string = string,
-  KStyleSlot extends string = string,
-  KEvent extends string = string
-> = React.FC<
-  TProps & ComponentImplementationProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
->;
-
-export type ImplementedRuntimeTrait = RuntimeTraitSpec & {
-  impl: TraitImplementation;
-};
-
-export type ImplementedRuntimeModule = RuntimeModuleSpec & {
-  impl: ApplicationComponent[];
-};
 
 export type SunmaoLib = {
   components?: ImplementedRuntimeComponent<string, string, string, string>[];

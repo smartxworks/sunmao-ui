@@ -12,7 +12,7 @@ import { Static } from '@sinclair/typebox';
 import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import produce from 'immer';
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { EventCallBackHandlerSchema, FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
@@ -24,7 +24,7 @@ import { genOperation } from '../../../operations';
 type EventHandler = Static<typeof EventCallBackHandlerSchema>;
 
 type Props = {
-  component: ApplicationComponent;
+  component: ComponentSchema;
   registry: Registry;
 };
 

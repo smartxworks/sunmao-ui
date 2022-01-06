@@ -20,7 +20,7 @@ type ComponentSpec<
   events: ReadonlyArray<KEvent>;
 };
 
-export type ComponentDefinition<
+export type Component<
   KMethodName extends string,
   KStyleSlot extends string,
   KSlot extends string,
@@ -32,12 +32,12 @@ export type ComponentDefinition<
   spec: ComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent>;
 };
 
-export type RuntimeComponentSpec<
+export type RuntimeComponent<
   KMethodName extends string,
   KStyleSlot extends string,
   KSlot extends string,
   KEvent extends string
-> = ComponentDefinition<KMethodName, KStyleSlot, KSlot, KEvent> & {
+> = Component<KMethodName, KStyleSlot, KSlot, KEvent> & {
   parsedVersion: Version;
 };
 
@@ -46,7 +46,7 @@ export type CreateComponentOptions<
   KStyleSlot extends string,
   KSlot extends string,
   KEvent extends string
-> = Omit<ComponentDefinition<KMethodName, KStyleSlot, KSlot, KEvent>, 'kind'>;
+> = Omit<Component<KMethodName, KStyleSlot, KSlot, KEvent>, 'kind'>;
 
 export function createComponent<
   KMethodName extends string,
@@ -55,7 +55,7 @@ export function createComponent<
   KEvent extends string
 >(
   options: CreateComponentOptions<KMethodName, KStyleSlot, KSlot, KEvent>
-): RuntimeComponentSpec<KMethodName, KStyleSlot, KSlot, KEvent> {
+): RuntimeComponent<KMethodName, KStyleSlot, KSlot, KEvent> {
   return {
     ...options,
     kind: 'Component',

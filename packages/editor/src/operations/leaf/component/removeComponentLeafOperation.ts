@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -11,7 +11,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
   private deletedComponent?: IComponentModel;
   private prevComponent?: IComponentModel;
 
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     this.deletedComponent = appModel.getComponentById(
       this.context.componentId as ComponentId
@@ -21,11 +21,11 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     return appModel.toSchema();
   }
 
-  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  redo(prev: ComponentSchema[]): ComponentSchema[] {
     return this.do(prev);
   }
 
-  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  undo(prev: ComponentSchema[]): ComponentSchema[] {
     if (!this.deletedComponent) {
       return prev;
     }

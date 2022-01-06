@@ -1,9 +1,6 @@
 import { Static } from '@sinclair/typebox';
 import { createComponent, CreateComponentOptions } from '@sunmao-ui/core';
-import {
-  ComponentImplementation,
-  ImplementedRuntimeComponent,
-} from '../services/registry';
+import { ComponentImpl, ImplementedRuntimeComponent } from '../types';
 
 type ToMap<U> = {
   [K in keyof U]: Static<U[K]>;
@@ -20,7 +17,7 @@ export function implementRuntimeComponent<
 >(
   options: T
 ): (
-  impl: ComponentImplementation<
+  impl: ComponentImpl<
     Static<T['spec']['properties']>,
     Static<T['spec']['state']>,
     ToMap<T['spec']['methods']>,

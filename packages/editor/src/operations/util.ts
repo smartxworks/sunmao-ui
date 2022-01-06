@@ -1,9 +1,9 @@
-import { ApplicationComponent, parseType } from '@sunmao-ui/core';
+import { ComponentSchema, parseType } from '@sunmao-ui/core';
 import { isDraft, original } from 'immer';
 import { get } from 'lodash-es';
 import { registry } from '../setup';
 
-export function genComponent(type: string, id: string): ApplicationComponent {
+export function genComponent(type: string, id: string): ComponentSchema {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = cImpl.metadata.exampleProperties;
@@ -15,7 +15,7 @@ export function genComponent(type: string, id: string): ApplicationComponent {
   };
 }
 
-export function genId(componentType: string, components: ApplicationComponent[]): string {
+export function genId(componentType: string, components: ComponentSchema[]): string {
   const { name } = parseType(componentType);
   const componentsCount = components.filter(
     component => component.type === componentType
@@ -29,13 +29,13 @@ export function tryOriginal<T>(val: T): T {
 
 export function getComponentAndChildrens(
   componentId: string,
-  allComponents: ApplicationComponent[]
-): ApplicationComponent[] {
+  allComponents: ComponentSchema[]
+): ComponentSchema[] {
   const target = allComponents.find(c => c.id === componentId);
   if (!target) {
     return [];
   }
-  return allComponents.reduce<ApplicationComponent[]>(
+  return allComponents.reduce<ComponentSchema[]>(
     (result, component) => {
       const slotTrait = component.traits.find(trait => trait.type === 'core/v1/slot');
       const slotId = get(slotTrait, 'properties.container.id');

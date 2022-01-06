@@ -3,7 +3,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { eventBus } from '../../../eventBus';
 import { EventHandlerForm } from './EventHandlerForm';
@@ -14,7 +14,7 @@ type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
   registry: Registry;
-  component: ApplicationComponent;
+  component: ComponentSchema;
 };
 
 export const EventTraitForm: React.FC<Props> = props => {

@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import _ from 'lodash-es';
 import { BaseLeafOperation } from '../../type';
 import { AppModel } from '../../../AppModel/AppModel';
@@ -12,7 +12,7 @@ export type ModifyTraitPropertiesLeafOperationContext = {
 
 export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<ModifyTraitPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
@@ -34,7 +34,7 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
 
     return appModel.toSchema();
   }
-  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  redo(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
@@ -50,7 +50,7 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
     return appModel.toSchema();
   }
 
-  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  undo(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {

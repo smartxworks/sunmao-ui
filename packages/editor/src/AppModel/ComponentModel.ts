@@ -1,7 +1,7 @@
 import {
-  ApplicationComponent,
+  ComponentSchema,
   MethodSchema,
-  RuntimeComponentSpec,
+  RuntimeComponent,
 } from '@sunmao-ui/core';
 import { registry } from '../setup';
 import { genComponent, genTrait } from './utils';
@@ -22,7 +22,7 @@ import {
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
-type ComponentSpecModel = RuntimeComponentSpec<MethodName, StyleSlotName, SlotName, EventName>
+type ComponentSpecModel = RuntimeComponent<MethodName, StyleSlotName, SlotName, EventName>
 const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
 export class ComponentModel implements IComponentModel {
   private spec: ComponentSpecModel;
@@ -37,7 +37,7 @@ export class ComponentModel implements IComponentModel {
   traits: ITraitModel[] = [];
   _isDirty = false;
 
-  constructor(public appModel: IAppModel, private schema: ApplicationComponent) {
+  constructor(public appModel: IAppModel, private schema: ComponentSchema) {
     this.schema = schema;
 
     this.id = schema.id as ComponentId;
@@ -134,7 +134,7 @@ export class ComponentModel implements IComponentModel {
     return result;
   }
 
-  toSchema(): ApplicationComponent {
+  toSchema(): ComponentSchema {
     if (this._isDirty) {
       this._isDirty = false;
       const newProperties = this.rawProperties;

@@ -1,13 +1,13 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 
 export type ChildrenMap = Map<string, SlotsMap>;
-type SlotsMap = Map<string, ApplicationComponent[]>;
+type SlotsMap = Map<string, ComponentSchema[]>;
 
-export function resolveApplicationComponents(components: ApplicationComponent[]): {
-  topLevelComponents: ApplicationComponent[];
+export function resolveApplicationComponents(components: ComponentSchema[]): {
+  topLevelComponents: ComponentSchema[];
   childrenMap: ChildrenMap;
 } {
-  const topLevelComponents: ApplicationComponent[] = [];
+  const topLevelComponents: ComponentSchema[] = [];
   const childrenMap: ChildrenMap = new Map();
   components.forEach(c => {
     const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');

@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import produce from 'immer';
 import { ComponentId, SlotName } from '../../AppModel/IAppModel';
 import {
@@ -17,7 +17,7 @@ export type CreateComponentBranchOperationContext = {
 };
 
 export class CreateComponentBranchOperation extends BaseBranchOperation<CreateComponentBranchOperationContext> {
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     // gen component id
     if (!this.context.componentId) {
       this.context.componentId = genId(this.context.componentType, prev);

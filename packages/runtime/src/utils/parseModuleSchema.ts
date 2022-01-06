@@ -1,4 +1,4 @@
-import { ImplementedRuntimeModule } from '../services/registry';
+import { ImplementedRuntimeModule } from '../types';
 
 // add {{$moduleId}} in moduleSchema
 export function parseModuleSchema(
