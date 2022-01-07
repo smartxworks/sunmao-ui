@@ -43,6 +43,26 @@ const ArrayStateTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
         });
         mergeState({ [key]: _arr });
       },
+      pushItem({ item, key }: { key: string; item: any }) {
+        const _arr = [...services.stateManager.store[componentId][key], item];
+        mergeState({ [key]: _arr });
+      },
+      modifyItemById({
+        key,
+        itemIdKey,
+        itemId,
+        newItem,
+      }: {
+        key: string;
+        itemIdKey: string;
+        itemId: string;
+        newItem: any;
+      }) {
+        const _arr = [...services.stateManager.store[componentId][key]];
+        const index = _arr.findIndex(v => v[itemIdKey] === itemId)
+        _arr.splice(index, 1, newItem);
+        mergeState({ [key]: _arr });
+      },
     };
     subscribeMethods(methods);
     HasInitializedMap.set(hashId, true);
@@ -88,6 +108,22 @@ export default {
             key: Type.String(),
             itemIdKey: Type.String(),
             itemId: Type.String(),
+          }),
+        },
+        {
+          name: 'pushItem',
+          parameters: Type.Object({
+            key: Type.String(),
+            item: Type.Any(),
+          }),
+        },
+        {
+          name: 'modifyItemById',
+          parameters: Type.Object({
+            key: Type.String(),
+            itemIdKey: Type.String(),
+            itemId: Type.String(),
+            newItem: Type.Any(),
           }),
         },
         {
