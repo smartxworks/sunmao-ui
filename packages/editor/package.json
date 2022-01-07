@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsup src/main.tsx --format cjs,esm,iife --legacy-output --inject ../runtime/react-import.js --clean --no-splitting --sourcemap --target es5",
+    "build": "tsup src/main.tsx --format cjs,esm,iife --legacy-output --inject ../runtime/react-import.js --clean --no-splitting --sourcemap",
     "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
     "prepublish": "npm run build && npm run typings"
