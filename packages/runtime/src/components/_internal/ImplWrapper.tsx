@@ -58,7 +58,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   );
   const subscribeMethods = useCallback(
     (map: any) => {
-      handlerMap.current = { ...handlerMap, ...map };
+      handlerMap.current = { ...handlerMap.current, ...map };
       globalHandlerMap.set(c.id, handlerMap.current);
     },
     [c.id, globalHandlerMap]
