@@ -1,5 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
-import { parseType } from '@sunmao-ui/runtime';
+import { ApplicationComponent, parseType } from '@sunmao-ui/core';
 import { isDraft, original } from 'immer';
 import { get } from 'lodash-es';
 import { registry } from '../setup';
@@ -36,12 +35,15 @@ export function getComponentAndChildrens(
   if (!target) {
     return [];
   }
-  return allComponents.reduce<ApplicationComponent[]>((result, component) => {
-    const slotTrait = component.traits.find(trait => trait.type === 'core/v1/slot');
-    const slotId = get(slotTrait, 'properties.container.id');
-    if (slotId === componentId) {
-      return result.concat(getComponentAndChildrens(component.id, allComponents));
-    }
-    return result;
-  }, [target]);
+  return allComponents.reduce<ApplicationComponent[]>(
+    (result, component) => {
+      const slotTrait = component.traits.find(trait => trait.type === 'core/v1/slot');
+      const slotId = get(slotTrait, 'properties.container.id');
+      if (slotId === componentId) {
+        return result.concat(getComponentAndChildrens(component.id, allComponents));
+      }
+      return result;
+    },
+    [target]
+  );
 }

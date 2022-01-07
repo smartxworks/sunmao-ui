@@ -64,7 +64,7 @@ export default implementRuntimeComponent({
     hasArrow,
     isDisabled,
     defaultIsOpen,
-    Slot,
+    slotsElements,
   }) => {
     return (
       /* 
@@ -80,7 +80,7 @@ export default implementRuntimeComponent({
         defaultIsOpen={defaultIsOpen}
         shouldWrapChildren={shouldWrapChildren}
       >
-        <Slot slot="content" />
+        {slotsElements.content}
       </Tooltip>
     );
   }

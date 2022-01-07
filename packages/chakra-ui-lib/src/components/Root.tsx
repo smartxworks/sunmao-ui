@@ -21,7 +21,7 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ Slot }) => {
+})(({ slotsElements }) => {
   return (
     <ChakraProvider
       theme={extendTheme({
@@ -29,7 +29,7 @@ export default implementRuntimeComponent({
         useSystemColorMode: false,
       })}
     >
-      <Slot slot="root" />
+      <>{slotsElements.root}</>
     </ChakraProvider>
   );
 });

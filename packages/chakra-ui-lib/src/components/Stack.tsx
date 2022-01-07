@@ -67,10 +67,10 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, Slot }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements }) => {
   return (
     <BaseStack {...{ direction, wrap, align, justify, spacing }}>
-      <Slot slot="content" />
+      {slotsElements.content}
     </BaseStack>
   );
 });

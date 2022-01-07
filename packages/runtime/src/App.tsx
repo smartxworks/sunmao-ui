@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react';
-import { createApplication } from '@sunmao-ui/core';
+import React, { useRef } from 'react';
 import { initStateAndMethod } from './utils/initStateAndMethod';
-import { ImplWrapper } from './services/ImplWrapper';
-import { resolveAppComponents } from './services/resolveAppComponents';
+import { ImplWrapper } from './components/_internal/ImplWrapper';
 import { AppProps, UIServices } from './types/RuntimeSchema';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
-import { getSlotWithMap } from './components/_internal/Slot';
+import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
+import { resolveChildrenMap } from './utils/resolveChildrenMap';
 
 // inject modules to App
 export function genApp(services: UIServices) {
@@ -23,33 +22,20 @@ export const App: React.FC<AppProps> = props => {
     debugStore = true,
     debugEvent = true,
   } = props;
-  const app = createApplication(options);
-
+  const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
+  const app = runtimeAppSchemaManager.current.update(options);
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
-
-  const { topLevelComponents, slotComponentsMap } = useMemo(
-    () =>
-      resolveAppComponents(app.spec.components, {
-        services,
-        app,
-        componentWrapper,
-        gridCallbacks,
-      }),
-    [app, componentWrapper, gridCallbacks, services]
-  );
+  
+  const { childrenMap, topLevelComponents } = resolveChildrenMap(app.spec.components);
   return (
     <div className="App" style={{ height: '100vh', overflow: 'auto' }}>
       {topLevelComponents.map(c => {
-        const slotsMap = slotComponentsMap.get(c.id);
-        const Slot = getSlotWithMap(slotsMap);
         return (
           <ImplWrapper
             key={c.id}
             component={c}
             services={services}
-            slotsMap={slotsMap}
-            Slot={Slot}
-            targetSlot={null}
+            childrenMap={childrenMap}
             app={app}
             componentWrapper={componentWrapper}
             gridCallbacks={gridCallbacks}

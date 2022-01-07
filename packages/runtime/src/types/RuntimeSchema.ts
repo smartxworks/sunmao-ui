@@ -6,7 +6,7 @@ import { StateManager } from '../services/stateStore';
 import { Application, RuntimeApplication } from '@sunmao-ui/core';
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
-import { SlotType } from '../components/_internal/Slot';
+import React from 'react';
 
 export type RuntimeApplicationComponent = RuntimeApplication['spec']['components'][0];
 
@@ -44,21 +44,17 @@ export type AppProps = {
 // TODO: (type-safe), remove fallback type
 export type ImplWrapperProps<KSlot extends string = string> = {
   component: RuntimeApplicationComponent;
-  // TODO: (type-safe), remove slotsMap from props
-  slotsMap: SlotsMap<KSlot> | undefined;
-  Slot: SlotType<KSlot>;
-  targetSlot: { id: string; slot: string } | null;
+  childrenMap: ChildrenMap<KSlot>;
   services: UIServices;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
 
-export type SlotComponentMap = Map<string, SlotsMap<string>>;
-export type SlotsMap<K extends string> = Map<
-  K,
-  Array<{
-    component: React.FC;
-    id: string;
-  }>
+export type ChildrenMap<KSlot extends string> = Record<
+  string,
+  Record<KSlot, RuntimeApplicationComponent[]> & {
+    _grandChildren?: RuntimeApplicationComponent[];
+    _allChildren: RuntimeApplicationComponent[];
+  }
 >;
 
 export type CallbackMap<K extends string> = Record<K, () => void>;
@@ -81,7 +77,9 @@ export type ComponentImplementationProps<
   KEvent extends string
 > = ImplWrapperProps<KSlot> &
   TraitResult<KStyleSlot, KEvent>['props'] &
-  RuntimeFunctions<TState, TMethods>;
+  RuntimeFunctions<TState, TMethods> & {
+    slotsElements: Record<KSlot, React.ReactElement[]>
+  };
 
 export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
   props: {

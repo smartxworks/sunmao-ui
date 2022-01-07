@@ -3,7 +3,6 @@ import { ApplicationComponent } from '@sunmao-ui/core';
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ApplicationComponent[]>;
 
-// similar to resolveAppComponents
 export function resolveApplicationComponents(components: ApplicationComponent[]): {
   topLevelComponents: ApplicationComponent[];
   childrenMap: ChildrenMap;
