@@ -137,7 +137,7 @@
                     "method": {
                       "name": "onClickEdit",
                       "parameters": {
-                        "moduleId": ""
+                        "moduleId": "{{$moduleId}}"
                       }
                     },
                     "wait": {},
@@ -294,18 +294,6 @@
                   "type": "onClickDelete",
                   "componentId": "deleteDialog",
                   "method": {
-                    "name": "openDialog",
-                    "parameters": {
-                      "title": "删除信息"
-                    }
-                  },
-                  "wait": {},
-                  "disabled": "false"
-                },
-                {
-                  "type": "onClickDelete",
-                  "componentId": "deleteDialog",
-                  "method": {
                     "name": "setValue",
                     "parameters": {
                       "key": "deleteContent",
@@ -316,6 +304,18 @@
                     "type": "delay",
                     "time": 1
                   },
+                  "disabled": "false"
+                },
+                {
+                  "type": "onClickDelete",
+                  "componentId": "deleteDialog",
+                  "method": {
+                    "name": "openDialog",
+                    "parameters": {
+                      "title": "删除信息"
+                    }
+                  },
+                  "wait": {},
                   "disabled": "false"
                 },
                 {
@@ -428,10 +428,12 @@
                     "type": "confirmDialog",
                     "componentId": "root",
                     "method": {
-                      "name": "setValue",
+                      "name": "modifyItemById",
                       "parameters": {
                         "key": "listData",
-                        "value": "{{\\n(function() { \\n const list = [...root.listData || []] \\n if (typeof nameInput !== \"undefined\" && typeof emailInput !== \"undefined\") { \\n let index = list.findIndex((item) => item.id == root.editingId) \\n list[index] = { \\n ...list[index], \\n name: nameInput.value, \\n email: emailInput.value \\n } \\n } \\n return list \\n })() \\n }}"
+                        "itemId": "{{root.editingId}}",
+                        "itemIdKey": "id",
+                        "newItem": "{{ { id: '{{root.editingId}}', name: '{{nameInput.value}}', email: '{{emailInput.value}}' } }}"
                       }
                     },
                     "wait": {},
@@ -704,10 +706,10 @@
                     "type": "confirmDialog",
                     "componentId": "root",
                     "method": {
-                      "name": "setValue",
+                      "name": "pushItem",
                       "parameters": {
                         "key": "listData",
-                        "value": "{{ \\n (function() { \\n const list = [...root.listData || []] \\n if (typeof createNameInput !== \"undefined\" && typeof createEmailInput !== \"undefined\") { \\n list.push({ \\n id: Date.now(), \\n name: createNameInput.value, \\n email: createEmailInput.value \\n }) \\n } \\n return list \\n })() \\n}}"
+                        "item": "{{ { id: 1, name: '{{createNameInput.value}}', email: '{{createEmailInput.value}}' } }}"
                       }
                     },
                     "wait": {},
