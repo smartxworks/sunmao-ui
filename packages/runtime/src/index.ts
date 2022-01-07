@@ -22,7 +22,6 @@ export function initSunmaoUI(dependencies = {}) {
   };
 }
 
-export * from './utils/parseType';
 export * from './utils/parseTypeBox';
 export * from './utils/buildKit';
 export * from './utils/encodeDragDataTransfer';
@@ -30,7 +29,6 @@ export * from './types/RuntimeSchema';
 export * from './types/TraitPropertiesSchema';
 export * from './constants';
 export * from './services/registry';
-export { default as Slot, getSlots } from './components/_internal/Slot';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { default as Text, TextPropertySchema } from './components/_internal/Text';
 

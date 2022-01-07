@@ -29,8 +29,10 @@ export const EmptyAppSchema: Application = {
           {
             type: 'core/v1/style',
             properties: {
-              styleSlot: 'content',
-              style: "background: red",
+              styles: [{
+                styleSlot: 'content',
+                style: 'background: red',
+              }],
             },
           },
         ],

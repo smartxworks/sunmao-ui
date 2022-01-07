@@ -61,7 +61,7 @@ export default implementRuntimeComponent({
   },
 })(
   ({
-    Slot,
+    slotsElements,
     subscribeMethods,
     callbackMap: callbacks,
     title: customerTitle,
@@ -132,7 +132,7 @@ export default implementRuntimeComponent({
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
             <AlertDialogBody>
-              <Slot slot="content" />
+              {slotsElements.content}
             </AlertDialogBody>
 
             <AlertDialogFooter>

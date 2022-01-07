@@ -55,7 +55,7 @@ const TYPE_REG = /^([a-zA-Z0-9_\d]+\/[a-zA-Z0-9_\d]+)\/([a-zA-Z0-9_\d]+)$/;
 function isValidType(v: string): boolean {
   return TYPE_REG.test(v);
 }
-function parseType(v: string): VersionAndName {
+export function parseType(v: string): VersionAndName {
   if (!isValidType(v)) {
     throw new Error(`Invalid type string: "${v}"`);
   }
@@ -67,7 +67,7 @@ function parseType(v: string): VersionAndName {
   };
 }
 
-function isValidId(id: string): boolean {
+export function isValidId(id: string): boolean {
   return /^[a-zA-Z_$][0-9a-zA-Z_$]+$/.test(id);
 }
 

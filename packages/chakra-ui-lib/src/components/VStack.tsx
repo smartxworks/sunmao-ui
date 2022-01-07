@@ -19,50 +19,42 @@ const PropsSchema = Type.Object({
 });
 
 export default implementRuntimeComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'vstack',
-      displayName: 'VStack',
-      description: 'chakra-ui vstack',
-      exampleProperties: {
-        spacing: '24px',
-      },
-      exampleSize: [6, 6],
-      isDraggable: true,
-      isResizable: true,
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'vstack',
+    displayName: 'VStack',
+    description: 'chakra-ui vstack',
+    exampleProperties: {
+      spacing: '24px',
     },
-    spec: {
-      properties: PropsSchema,
-      state: Type.Object({}),
-      slots: ['content'],
-      styleSlots: ['content'],
-      methods: {},
-      events: [],
-    },
-  })(({
-    direction,
-    wrap,
-    align,
-    justify,
-    spacing,
-    Slot,
-    customStyle,
-  }) => {
-    return (
-      <BaseVStack
-        width="full"
-        height="full"
-        padding="4"
-        background="white"
-        border="1px solid"
-        borderColor="gray.200"
-        borderRadius="4"
-        className={css`
-          ${customStyle?.content}
-        `}
-        {...{ direction, wrap, align, justify, spacing }}
-      >
-        <Slot slot="content" />
-      </BaseVStack>
-    );
-  })
+    exampleSize: [6, 6],
+    isDraggable: true,
+    isResizable: true,
+  },
+  spec: {
+    properties: PropsSchema,
+    state: Type.Object({}),
+    slots: ['content'],
+    styleSlots: ['content'],
+    methods: {},
+    events: [],
+  },
+})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle }) => {
+  return (
+    <BaseVStack
+      width="full"
+      height="full"
+      padding="4"
+      background="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="4"
+      className={css`
+        ${customStyle?.content}
+      `}
+      {...{ direction, wrap, align, justify, spacing }}
+    >
+      {slotsElements.content}
+    </BaseVStack>
+  );
+});

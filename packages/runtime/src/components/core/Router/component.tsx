@@ -21,7 +21,11 @@ import {
   RouterCtx,
   useNavigate,
 } from './hooks';
-import { SlotsMap } from '../../../types/RuntimeSchema';
+import {
+  RuntimeApplicationComponent,
+  UIServices,
+  ChildrenMap,
+} from '../../../types/RuntimeSchema';
 
 export type RouteLikeElement = PropsWithChildren<{
   path?: string;
@@ -51,7 +55,7 @@ export const Route: React.FC<RouteProps> = ({ match, children, mergeState }) => 
       }
       mergeState(destroyObj);
     };
-  }, [params]);
+  }, [matches, mergeState, params]);
   if (!matches) return null;
   return typeof children === 'function' ? children(params) : children;
 };
@@ -59,18 +63,24 @@ export const Route: React.FC<RouteProps> = ({ match, children, mergeState }) => 
 type SwitchProps = {
   location?: string;
   switchPolicy: SwitchPolicy;
-  slotMap?: SlotsMap<string>;
+  component: RuntimeApplicationComponent;
+  childrenMap: ChildrenMap<string>;
+  services: UIServices;
+  slotsElements: Record<string, ReactElement[]>;
   mergeState: (partialState: any) => void;
   subscribeMethods: (map: { [key: string]: (parameters: any) => void }) => void;
 };
 
-export const Switch: React.FC<SwitchProps> = ({
-  switchPolicy,
-  location,
-  slotMap,
-  mergeState,
-  subscribeMethods,
-}) => {
+export const Switch: React.FC<SwitchProps> = props => {
+  const {
+    switchPolicy,
+    location,
+    mergeState,
+    subscribeMethods,
+    slotsElements,
+    childrenMap,
+    component,
+  } = props;
   const [originalLocation] = useLocation();
   const matcher = useMemo(() => makeMatcher(), []);
 
@@ -80,7 +90,7 @@ export const Switch: React.FC<SwitchProps> = ({
     let defaultPath: string | undefined = undefined;
     const result = switchPolicy.map(
       ({ type, path, slotId, href, default: _default, exact, strict, sensitive }) => {
-        const componentsArr = slotMap && slotMap.get(slotId);
+        const children = slotsElements[slotId];
         if (defaultPath === undefined && _default) {
           defaultPath = path;
         }
@@ -99,19 +109,19 @@ export const Switch: React.FC<SwitchProps> = ({
               </Route>
             );
           case RouteType.ROUTE:
-            if (!componentsArr) {
+            if (!children) {
               console.warn('component not registered to router');
               return <></>;
             }
-            if (componentsArr.length !== 1) {
+            if (children.length !== 1) {
               console.warn('router slot can only have one component');
             }
-            const { component: C } = componentsArr[0];
-            if (C.displayName === 'router') {
+            const ele = children[0];
+            if (childrenMap[component.id][slotId][0].parsedType.name === 'router') {
               return (
                 // it should match both itself and its children path
                 <Nested path={`(${path}|${path}/.*)`} base={path} key={path}>
-                  <C key={slotId}></C>
+                  {ele}
                 </Nested>
               );
             }
@@ -124,7 +134,7 @@ export const Switch: React.FC<SwitchProps> = ({
                 path={path}
                 mergeState={mergeState}
               >
-                <C key={slotId}></C>
+                {ele}
               </Route>
             );
           default:
@@ -141,7 +151,7 @@ export const Switch: React.FC<SwitchProps> = ({
       );
     }
     return result;
-  }, [switchPolicy]);
+  }, [component.id, mergeState, slotsElements, switchPolicy, childrenMap]);
 
   useEffect(() => {
     subscribeMethods({
@@ -149,7 +159,7 @@ export const Switch: React.FC<SwitchProps> = ({
         naviagte(path);
       },
     });
-  }, []);
+  }, [naviagte, subscribeMethods]);
 
   useEffect(() => {
     // to assign location as a state
@@ -161,7 +171,7 @@ export const Switch: React.FC<SwitchProps> = ({
         route: undefined,
       });
     };
-  }, [loc]);
+  }, [loc, mergeState]);
 
   for (const element of flattenChildren(routes)) {
     const match: Match<DefaultParams> = element.props.path
@@ -228,7 +238,7 @@ export const Redirect: React.FC<RedirectProps> = props => {
   // empty array means running the effect once, navRef is a ref so it never changes
   useLayoutEffect(() => {
     navRef.current!();
-  }, []);
+  }, [navRef]);
 
   return null;
 };

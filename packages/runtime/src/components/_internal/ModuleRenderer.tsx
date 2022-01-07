@@ -2,15 +2,17 @@ import { Static } from '@sinclair/typebox';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { RuntimeApplication } from '@sunmao-ui/core';
-import { UIServices, RuntimeModuleSchema } from '../../types/RuntimeSchema';
+import { Application, parseType, RuntimeApplication } from '@sunmao-ui/core';
+import {
+  UIServices,
+  RuntimeModuleSchema,
+  RuntimeApplicationComponent,
+} from '../../types/RuntimeSchema';
 import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
-import { resolveAppComponents } from '../../services/resolveAppComponents';
-import { ImplWrapper } from '../../services/ImplWrapper';
+import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
-import { parseTypeComponents } from '../../utils/parseType';
 import { ImplementedRuntimeModule } from '../../services/registry';
-import { getSlotWithMap } from './Slot';
+import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 
 type Props = Static<typeof RuntimeModuleSchema> & {
   evalScope?: Record<string, any>;
@@ -46,20 +48,20 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
       }).obj;
     }
 
-    const evalWithScope = useCallback(<T extends Record<string, any>>(
-      obj: T,
-      scope: Record<string, any>
-    ): T =>{
-      const hasScopeKey = (exp: string) => {
-        return Object.keys(scope).some(key => exp.includes('{{') && exp.includes(key));
-      };
-      return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
-        if (typeof value === 'string' && hasScopeKey(value)) {
-          return services.stateManager.maskedEval(value, true, scope);
-        }
-        return value;
-      }).obj;
-    }, [services.stateManager]);
+    const evalWithScope = useCallback(
+      <T extends Record<string, any>>(obj: T, scope: Record<string, any>): T => {
+        const hasScopeKey = (exp: string) => {
+          return Object.keys(scope).some(key => exp.includes('{{') && exp.includes(key));
+        };
+        return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
+          if (typeof value === 'string' && hasScopeKey(value)) {
+            return services.stateManager.maskedEval(value, true, scope);
+          }
+          return value;
+        }).obj;
+      },
+      [services.stateManager]
+    );
 
     // first eval the property, handlers, id of module
     const evaledProperties = evalObject(properties);
@@ -146,25 +148,15 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
     }, [evaledHanlders, moduleId, services.apiService]);
 
     const result = useMemo(() => {
-      const { topLevelComponents, slotComponentsMap } = resolveAppComponents(
-        evaledModuleTemplate,
-        {
-          services,
-          app,
-        }
-      );
+      const { childrenMap, topLevelComponents } = resolveChildrenMap(evaledModuleTemplate);
       return topLevelComponents.map(c => {
-        const slotsMap = slotComponentsMap.get(c.id);
-        const Slot = getSlotWithMap(slotsMap);
         return (
           <ImplWrapper
             key={c.id}
             component={c}
-            slotsMap={slotsMap}
-            Slot={Slot}
-            targetSlot={null}
             services={services}
             app={app}
+            childrenMap={childrenMap}
           />
         );
       });
@@ -172,3 +164,18 @@ const ModuleRendererContent: React.FC<Props & { moduleSpec: ImplementedRuntimeMo
 
     return <>{result}</>;
   };
+
+function parseTypeComponents(
+  c: Application['spec']['components'][0]
+): RuntimeApplicationComponent {
+  return {
+    ...c,
+    parsedType: parseType(c.type),
+    traits: c.traits.map(t => {
+      return {
+        ...t,
+        parsedType: parseType(t.type),
+      };
+    }),
+  };
+}

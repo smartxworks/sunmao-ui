@@ -3,6 +3,7 @@ import {
   RuntimeModuleSpec,
   ApplicationComponent,
   RuntimeComponentSpec,
+  parseType,
 } from '@sunmao-ui/core';
 // components
 /* --- plain --- */
@@ -26,7 +27,6 @@ import {
   ComponentImplementationProps,
   TraitImplementation,
 } from '../types/RuntimeSchema';
-import { parseType } from '../utils/parseType';
 import { parseModuleSchema } from '../utils/parseModuleSchema';
 import { cloneDeep } from 'lodash-es';
 

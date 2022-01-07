@@ -4,3 +4,4 @@ export * from './scope';
 export * from './application';
 export * from './method';
 export * from './module';
+export * from './version';
