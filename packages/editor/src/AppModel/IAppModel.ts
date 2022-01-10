@@ -115,5 +115,5 @@ export interface IFieldModel {
   isDynamic: boolean;
   update: (value: any) => void;
   // ids of used components in the expression
-  // dependencies: Array<ComponentId | ModuleId>;
+  refs: Array<ComponentId | ModuleId>;
 }
