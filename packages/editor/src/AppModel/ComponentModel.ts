@@ -146,7 +146,11 @@ export class ComponentModel implements IComponentModel {
   }
 
   updateComponentProperty(propertyName: string, value: any) {
-    this.properties[propertyName].update(value);
+    if (!Reflect.has(this.properties, propertyName)) {
+      this.properties[propertyName] = new FieldModel(value)
+    } else {
+      this.properties[propertyName].update(value);
+    }
     this._isDirty = true;
   }
 
