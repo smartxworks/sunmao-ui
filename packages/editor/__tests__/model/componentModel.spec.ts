@@ -21,7 +21,7 @@ describe('ComponentModel test', () => {
     expect(button1.parentSlot).toEqual('content');
     expect(button1.prevSilbling).toBe(appModel.getComponentById('text2' as ComponentId));
     expect(button1.nextSilbing).toBe(null);
-    expect(button1.properties['text'].value).toEqual({ raw: 'text', format: 'plain' });
+    expect(button1.properties['text'].rawValue).toEqual({ raw: 'text', format: 'plain' });
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
     expect(apiFetch.stateKeys).toEqual(['fetch']);
     expect(apiFetch.methods[0].name).toEqual('triggerFetch');

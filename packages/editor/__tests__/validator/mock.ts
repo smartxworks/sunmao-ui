@@ -57,12 +57,21 @@ export const ComponentInvalidSchema: ComponentSchema[] = [
 
 export const ComponentPropertyExpressionSchema: ComponentSchema[] = [
   {
-    id: 'text1',
+    id: 'list',
     type: 'chakra_ui/v1/list',
     properties: {
-      listData: '{{data}}',
-      template: '{{template}}',
+      listData: '{{ [] }}',
+      template: '{{ {} }}',
     },
+    traits: [],
+  },
+];
+
+export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
+  {
+    id: 'hstack1',
+    type: 'chakra_ui/v1/hstack',
+    properties: { spacing: '24px', align: '{{input.value}}' },
     traits: [],
   },
 ];

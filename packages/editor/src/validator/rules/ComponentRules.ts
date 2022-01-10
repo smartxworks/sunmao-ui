@@ -3,12 +3,15 @@ import {
   ComponentValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-import { isExpression } from '../utils';
 
 class ComponentPropertyValidatorRule implements ComponentValidatorRule {
   kind: 'component' = 'component';
 
-  validate({ component, validators }: ComponentValidateContext): ValidateErrorResult[] {
+  validate({
+    component,
+    validators,
+    componentIdSpecMap,
+  }: ComponentValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     const validate = validators.components[component.type];
     if (!validate) {
@@ -18,27 +21,43 @@ class ComponentPropertyValidatorRule implements ComponentValidatorRule {
       });
       return results;
     }
-    const properties = component.rawProperties
+    const properties = component.rawProperties;
+
     const valid = validate(properties);
     if (!valid) {
       validate.errors!.forEach(error => {
-        if (error.keyword === 'type') {
-          const { instancePath } = error;
-          const path = instancePath.split('/')[1];
-          const value = properties[path];
-          // if value is an expression, skip it
-          if (isExpression(value)) {
-            return;
-          }
+        const { instancePath, params } = error;
+        let key = ''
+        if (instancePath) {
+          key = instancePath.split('/')[1];
+        } else {
+          key = params.missingProperty
         }
-
-        results.push({
-          message: error.message || '',
-          componentId: component.id,
-          property: error.instancePath,
-        });
+        const fieldModel = component.properties[key];
+        // fieldModel could be undefiend. if is undefined, still throw error.
+        if (fieldModel?.isDynamic !== true) {
+          results.push({
+            message: error.message || '',
+            componentId: component.id,
+            property: error.instancePath,
+          });
+        }
       });
     }
+
+    for (const key in component.properties) {
+      const fieldModel = component.properties[key];
+      fieldModel.refs.forEach((id: string) => {
+        if (!componentIdSpecMap[id]) {
+          results.push({
+            message: `Cannot find '${id}' in store.`,
+            componentId: component.id,
+            property: key,
+          });
+        }
+      });
+    }
+
     return results;
   }
 }
@@ -52,11 +71,11 @@ class ModuleValidatorRule implements ComponentValidatorRule {
     }
 
     const results: ValidateErrorResult[] = [];
-    let moduleSpec
+    let moduleSpec;
     try {
       moduleSpec = registry.getModuleByType(component.rawProperties.type.value as string);
     } catch (err) {
-      moduleSpec = undefined
+      moduleSpec = undefined;
     }
     if (!moduleSpec) {
       results.push({
