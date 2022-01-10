@@ -14,9 +14,9 @@ type EditingTarget = {
 class EditorStore {
   components: ApplicationComponent[] = [];
   // currentEditingComponents, it could be app's or module's components
-  selectedComponentId = '';
-  hoverComponentId = '';
-  dragOverId: string = '';
+  _selectedComponentId = '';
+  _hoverComponentId = '';
+  _dragOverComponentId: string = '';
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -39,11 +39,20 @@ class EditorStore {
   }
 
   get selectedComponent() {
-    return this.components.find(c => c.id === this.selectedComponentId);
+    return this.components.find(c => c.id === this._selectedComponentId);
+  }
+  
+  // to avoid get out-of-dated value here, we should use getter to lazy load primitive type
+  get hoverComponentId() {
+    return this._hoverComponentId;
+  }
+
+  get selectedComponentId() {
+    return this._selectedComponentId;
   }
 
   get dragOverComponentId() {
-    return this.dragOverId;
+    return this._dragOverComponentId;
   }
 
   get validateResult() {
@@ -58,7 +67,7 @@ class EditorStore {
     makeAutoObservable(this, {
       components: observable.shallow,
       setComponents: action,
-      setDragId: action,
+      setDragOverComponentId: action,
     });
 
     eventBus.on('selectComponent', id => {
@@ -135,16 +144,16 @@ class EditorStore {
     };
   };
   setSelectedComponentId = (val: string) => {
-    this.selectedComponentId = val;
+    this._selectedComponentId = val;
   };
   setHoverComponentId = (val: string) => {
-    this.hoverComponentId = val;
+    this._hoverComponentId = val;
   };
   setComponents = (val: ApplicationComponent[]) => {
     this.components = val;
   };
-  setDragId = (val: string) => {
-    this.dragOverId = val;
+  setDragOverComponentId = (val: string) => {
+    this._dragOverComponentId = val;
   };
   setCurrentComponentsVersion = (val: number) => {
     this.currentComponentsVersion = val;
