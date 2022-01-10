@@ -111,9 +111,11 @@ export interface ITraitModel {
 }
 
 export interface IFieldModel {
-  value: any;
+  // value: any;
   isDynamic: boolean;
-  update: (value: any) => void;
+  update: (value: unknown) => void;
+  getProperty: (key?: string) => unknown | void | Record<string, IFieldModel>;
+  rawValue: any;
   // ids of used components in the expression
   refs: Array<ComponentId | ModuleId>;
 }

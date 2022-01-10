@@ -1,4 +1,4 @@
-import { ComponentSchema } from '@sunmao-ui/core';
+import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
 import { IAppModel, IComponentModel, ITraitModel } from '../AppModel/IAppModel';
@@ -9,10 +9,15 @@ export interface ValidatorMap {
 }
 
 interface BaseValidateContext {
+  components: ComponentSchema[];
   validators: ValidatorMap;
   registry: Registry;
   appModel: IAppModel;
   ajv: Ajv;
+  componentIdSpecMap: Record<
+    string,
+    RuntimeComponent<string, string, string, string>
+  >;
 }
 
 export interface ComponentValidateContext extends BaseValidateContext {
@@ -23,11 +28,14 @@ export interface TraitValidateContext extends BaseValidateContext {
   trait: ITraitModel;
   component: IComponentModel;
 }
+
+export type PropertyValidateContext = BaseValidateContext;
 export type AllComponentsValidateContext = BaseValidateContext;
 
 export type ValidateContext =
   | ComponentValidateContext
   | TraitValidateContext
+  | PropertyValidateContext
   | AllComponentsValidateContext;
 
 export interface ComponentValidatorRule {
@@ -48,9 +56,16 @@ export interface TraitValidatorRule {
   fix?: (validateContext: TraitValidateContext) => void;
 }
 
+export interface PropertyValidatorRule {
+  kind: 'property';
+  validate: (validateContext: PropertyValidateContext) => ValidateErrorResult[];
+  fix?: (validateContext: PropertyValidateContext) => void;
+}
+
 export type ValidatorRule =
   | ComponentValidatorRule
   | AllComponentsValidatorRule
+  | PropertyValidatorRule
   | TraitValidatorRule;
 
 export interface ISchemaValidator {

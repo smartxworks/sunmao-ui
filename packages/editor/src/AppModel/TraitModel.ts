@@ -37,7 +37,7 @@ export class TraitModel implements ITraitModel {
   get rawProperties() {
     const obj: Record<string, any> = {};
     for (const key in this.properties) {
-      obj[key] = this.properties[key].value;
+      obj[key] = this.properties[key].rawValue;
     }
     return obj;
   }

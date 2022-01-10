@@ -2,7 +2,7 @@ import { parseExpression } from '@sunmao-ui/runtime';
 import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';
-import { flattenDeep } from 'lodash-es';
+import { flattenDeep, isArray, isObject, isPlainObject } from 'lodash-es';
 import { ComponentId, IFieldModel, ModuleId } from './IAppModel';
 
 (window as any).acorn = acorn;
@@ -11,8 +11,10 @@ import { ComponentId, IFieldModel, ModuleId } from './IAppModel';
 
 const regExp = new RegExp('.*{{.*}}.*');
 
+isPlainObject
+
 export class FieldModel implements IFieldModel {
-  value: any;
+  private value: unknown | Record<string, IFieldModel>;
   isDynamic = false;
   refs: Array<ComponentId | ModuleId> = [];
 
@@ -21,26 +23,63 @@ export class FieldModel implements IFieldModel {
   }
 
   update(value: unknown) {
-    this.value = value;
+    if (isObject(value) && !isArray(value)) {
+      if (!isObject(this.value)) {
+        this.value = {};
+      }
+      for (const key in value) {
+        const val = (value as Record<string, unknown>)[key];
+        const _thisValue = this.value as Record<string, IFieldModel>;
+        if (!_thisValue[key]) {
+          _thisValue[key] = new FieldModel(val);
+        } else {
+          _thisValue[key].update(val);
+        }
+      }
+    } else {
+      this.value = value;
+    }
     this.isDynamic = typeof value === 'string' && regExp.test(value);
     this.parseReferences();
   }
 
-  parseReferences() {
+  getProperty(key?: string) {
+    if (!key) {
+      return this.value;
+    }
+    if (key && typeof this.value === 'object') {
+      return (this.value as any)[key];
+    }
+    return undefined;
+  }
+
+  get rawValue() {
+    if (isObject(this.value) && !isArray(this.value) ) {
+      const _thisValue = this.value as Record<string, IFieldModel>;
+      const res: Record<string, any> = {};
+      for (const key in _thisValue) {
+        res[key] = _thisValue[key].rawValue;
+      }
+      return res;
+    }
+    return this.value;
+  }
+
+  private parseReferences() {
     if (!this.isDynamic || typeof this.value !== 'string') return;
 
     const refs: string[] = [];
-    const exps = flattenDeep(parseExpression(this.value as string).filter(exp => typeof exp !== 'string'))
+    const exps = flattenDeep(
+      parseExpression(this.value as string).filter(exp => typeof exp !== 'string')
+    );
 
     exps.forEach(exp => {
-      simpleWalk(acornLoose.parse(exp, acorn.defaultOptions), {
+      simpleWalk(acornLoose.parse(exp, { ecmaVersion: 2020 }), {
         Identifier: node => {
-          console.log('node', node);
           refs.push(exp.slice(node.start, node.end));
         },
       });
-    })
+    });
     this.refs = refs as Array<ComponentId | ModuleId>;
-    console.log('this.refs', this.refs)
   }
 }

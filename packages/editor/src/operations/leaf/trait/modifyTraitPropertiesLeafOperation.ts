@@ -21,7 +21,7 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
     }
     const trait = component.traits[this.context.traitIndex];
     for (const property in this.context.properties) {
-      const oldValue = trait.properties[property]?.value;
+      const oldValue = trait.properties[property]?.rawValue;
       this.previousState[property] = oldValue;
       let newValue = this.context.properties[property];
       if (_.isFunction(newValue)) {

@@ -101,7 +101,7 @@ export class ComponentModel implements IComponentModel {
   get rawProperties() {
     const obj: Record<string, any> = {};
     for (const key in this.properties) {
-      obj[key] = this.properties[key].value;
+      obj[key] = this.properties[key].rawValue;
     }
     return obj;
   }

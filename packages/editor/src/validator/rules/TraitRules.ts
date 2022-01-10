@@ -15,6 +15,7 @@ class TraitPropertyValidatorRule implements TraitValidatorRule {
     trait,
     component,
     validators,
+    componentIdSpecMap,
   }: TraitValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     const validate = validators.traits[trait.type];
@@ -28,22 +29,36 @@ class TraitPropertyValidatorRule implements TraitValidatorRule {
     const valid = validate(trait.rawProperties);
     if (!valid) {
       validate.errors!.forEach(error => {
-        if (error.keyword === 'type') {
-          const { instancePath } = error;
-          const path = instancePath.split('/')[1];
-          const value = trait.rawProperties[path];
-
-          // if value is an expression, skip it
-          if (isExpression(value)) {
-            return;
-          }
+        const { instancePath, params } = error;
+        let key = '';
+        if (instancePath) {
+          key = instancePath.split('/')[1];
+        } else {
+          key = params.missingProperty;
         }
-        results.push({
-          message: error.message || '',
-          componentId: component.id,
-          traitType: trait.type,
-          property: error.instancePath,
-        });
+        const fieldModel = component.properties[key];
+        // fieldModel could be undefiend. if is undefined, still throw error.
+        if (fieldModel?.isDynamic !== true) {
+          results.push({
+            message: error.message || '',
+            componentId: component.id,
+            traitType: trait.type,
+            property: error.instancePath,
+          });
+        }
+      });
+    }
+
+    for (const key in trait.properties) {
+      const fieldModel = trait.properties[key];
+      fieldModel.refs.forEach(id => {
+        if (!componentIdSpecMap[id]) {
+          results.push({
+            message: `Cannot find '${id}' in store.`,
+            componentId: component.id,
+            property: `traits/${key}`,
+          });
+        }
       });
     }
     return results;
@@ -132,6 +147,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
     return results;
   }
 }
+
 export const TraitRules = [
   new TraitPropertyValidatorRule(),
   new EventHandlerValidatorRule(),
