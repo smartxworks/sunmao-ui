@@ -29,6 +29,7 @@ export * from './types';
 export * from './types/TraitPropertiesSchema';
 export * from './constants';
 export * from './services/registry';
+export * from './services/stateStore';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { default as Text, TextPropertySchema } from './components/_internal/Text';
 
