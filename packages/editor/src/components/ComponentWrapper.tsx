@@ -121,7 +121,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     hoverComponentId,
     setHoverComponentId,
     dragOverComponentId,
-    setDragId,
+    setDragOverComponentId,
   } = editorStore;
 
   const [slots, isDroppable] = useMemo(() => {
@@ -172,19 +172,19 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     const enter = findRelatedWrapper(e.target as HTMLElement);
     if (!enter) {
       // if enter a non-wrapper element (seems won't happen)
-      setDragId(dragOverComponentId);
+      setDragOverComponentId(dragOverComponentId);
       setCurrentSlot(undefined);
       return;
     }
     if (!enter.droppable) {
       // if not droppable element
-      setDragId('');
+      setDragOverComponentId('');
       setCurrentSlot(undefined);
       return;
     }
     // update dragover component id
     if (dragOverComponentId !== enter.id) {
-      setDragId(enter.id);
+      setDragOverComponentId(enter.id);
       setCurrentSlot(enter.slot);
     } else if (currentSlot !== enter.slot && enter.slot) {
       setCurrentSlot(enter.slot);
@@ -200,7 +200,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     const enter = findRelatedWrapper(e.relatedTarget as HTMLElement);
     if (!enter) {
       // if entered element is not a sunmao wrapper, set dragId to ''
-      setDragId('');
+      setDragOverComponentId('');
       setCurrentSlot(undefined);
     } else if ((!enter.slot && !enter.droppable) || enter.id !== component.id) {
       setCurrentSlot(undefined);
@@ -217,7 +217,7 @@ export const ComponentWrapper: ComponentWrapperType = observer(props => {
     if (!isDroppable) return;
     e.stopPropagation();
     e.preventDefault();
-    setDragId('');
+    setDragOverComponentId('');
     setCurrentSlot(undefined);
     const creatingComponent = e.dataTransfer?.getData('component') || '';
     eventBus.send(
