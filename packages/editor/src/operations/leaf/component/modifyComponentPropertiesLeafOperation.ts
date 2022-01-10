@@ -14,8 +14,8 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (component) {
-      for (const property in component.properties) {
-        const oldValue = component.properties[property].value;
+      for (const property in this.context.properties) {
+        const oldValue = component.properties[property]?.value;
         // assign previous data
         this.previousState[property] = oldValue;
         let newValue = this.context.properties[property];
