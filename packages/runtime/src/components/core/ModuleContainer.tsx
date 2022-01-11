@@ -1,5 +1,5 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { RuntimeModuleSchema } from '../../types/RuntimeSchema';
+import { ModuleSchema } from '../../types';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
 export default implementRuntimeComponent({
@@ -17,7 +17,7 @@ export default implementRuntimeComponent({
       exampleSize: [6, 6],
     },
     spec: {
-      properties: RuntimeModuleSchema,
+      properties: ModuleSchema,
       state: {},
       methods: {},
       slots: [],

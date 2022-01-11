@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { BaseBranchOperation } from '../type';
 import { CreateTraitLeafOperation, ModifyTraitPropertiesLeafOperation, RemoveTraitLeafOperation } from '../leaf';
 
@@ -9,7 +9,7 @@ export type MoveComponentBranchOperationContext = {
 };
 
 export class MoveComponentBranchOperation extends BaseBranchOperation<MoveComponentBranchOperationContext> {
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     const from = prev.find(c => c.id === this.context.fromId);
     if (!from) return prev;
     

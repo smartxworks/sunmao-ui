@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import produce from 'immer';
 import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
@@ -13,7 +13,7 @@ export type RemoveComponentBranchOperationContext = {
 };
 
 export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveComponentBranchOperationContext> {
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     const parent = appModel.getComponentById(this.context.componentId as ComponentId);
 

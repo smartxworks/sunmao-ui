@@ -1,5 +1,5 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import React, { useMemo, useState } from 'react';
 import { eventBus } from '../../eventBus';
@@ -10,7 +10,7 @@ import { genOperation } from '../../operations';
 
 type Props = {
   registry: Registry;
-  component: ApplicationComponent;
+  component: ComponentSchema;
   childrenMap: ChildrenMap;
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;

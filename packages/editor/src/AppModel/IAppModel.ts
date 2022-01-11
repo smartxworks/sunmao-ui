@@ -1,4 +1,4 @@
-import { ApplicationComponent, ComponentTrait, MethodSchema } from '@sunmao-ui/core';
+import { ComponentSchema, TraitSchema, MethodSchema } from '@sunmao-ui/core';
 
 export type ComponentId = string & {
   kind: 'componentId';
@@ -41,7 +41,7 @@ export interface IAppModel {
   allComponents: IComponentModel[];
   // all components, including orphan component
   allComponentsWithOrphan: IComponentModel[];
-  toSchema(): ApplicationComponent[];
+  toSchema(): ComponentSchema[];
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel;
   getComponentById(id: ComponentId): IComponentModel | undefined;
   removeComponent(componentId: ComponentId): void;
@@ -80,7 +80,7 @@ export interface IComponentModel {
   prevSilbling: IComponentModel | null;
   _isDirty: boolean;
   _slotTrait: ITraitModel | null;
-  toSchema(): ApplicationComponent;
+  toSchema(): ComponentSchema;
   updateComponentProperty: (property: string, value: unknown) => void;
   // move component from old parent to new parent(or top level if parent is undefined).
   appendTo: (parent?: IComponentModel, slot?: SlotName) => void;
@@ -106,7 +106,7 @@ export interface ITraitModel {
   methods: MethodSchema[];
   stateKeys: StateKey[];
   _isDirty: boolean;
-  toSchema(): ComponentTrait;
+  toSchema(): TraitSchema;
   updateProperty: (key: string, value: any) => void;
 }
 

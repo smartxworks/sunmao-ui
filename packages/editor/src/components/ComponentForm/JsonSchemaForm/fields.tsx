@@ -1,7 +1,7 @@
-import { ComponentDefinition } from '@sunmao-ui/core';
+import { Component } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 
-type Schema = ComponentDefinition<string, string, string, string>['spec']['properties'];
+type Schema = Component<string, string, string, string>['spec']['properties'];
 type EditorSchema = {
   widget?: string;
 };

@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { eventBus } from '../../eventBus';
 import { BaseLeafOperation } from '../type';
 
@@ -9,7 +9,7 @@ export type UpdateSelectComponentLeafOperationContext = {
 
 export class UpdateSelectComponentLeafOperation extends BaseLeafOperation<UpdateSelectComponentLeafOperationContext> {
   private prevId!: string;
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     this.prevId = this.context.componentId || prev[0].id;
     setTimeout(() => {
       eventBus.send('selectComponent', this.context.newId);
@@ -17,14 +17,14 @@ export class UpdateSelectComponentLeafOperation extends BaseLeafOperation<Update
     return prev;
   }
 
-  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  redo(prev: ComponentSchema[]): ComponentSchema[] {
     setTimeout(() => {
       eventBus.send('selectComponent', this.context.newId);
     });
     return prev;
   }
 
-  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  undo(prev: ComponentSchema[]): ComponentSchema[] {
     setTimeout(() => {
       eventBus.send('selectComponent', this.prevId);
     });

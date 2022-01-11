@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
 import { IAppModel, IComponentModel, ITraitModel } from '../AppModel/IAppModel';
@@ -55,7 +55,7 @@ export type ValidatorRule =
 
 export interface ISchemaValidator {
   addRules: (rule: ValidatorRule[]) => void;
-  validate: (components: ApplicationComponent[]) => ValidateErrorResult[];
+  validate: (components: ComponentSchema[]) => ValidateErrorResult[];
   fix?: () => void;
 }
 

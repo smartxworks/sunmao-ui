@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { BaseBranchOperation } from '../type';
 import {
   ModifyComponentIdLeafOperation,
@@ -11,7 +11,7 @@ export type ModifyComponentIdBranchOperationContext = {
 };
 
 export class ModifyComponentIdBranchOperation extends BaseBranchOperation<ModifyComponentIdBranchOperationContext> {
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     this.operationStack.insert(new ModifyComponentIdLeafOperation(this.context));
 
     // update selectid

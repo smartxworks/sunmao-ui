@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { HStack, VStack } from '@chakra-ui/react';
 import { TSchema } from '@sinclair/typebox';
@@ -11,7 +11,7 @@ import { genOperation } from '../../../operations';
 
 type Props = {
   registry: Registry;
-  component: ApplicationComponent;
+  component: ComponentSchema;
 };
 
 export const GeneralTraitFormList: React.FC<Props> = props => {

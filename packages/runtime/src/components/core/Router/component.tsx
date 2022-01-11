@@ -22,10 +22,10 @@ import {
   useNavigate,
 } from './hooks';
 import {
-  RuntimeApplicationComponent,
   UIServices,
   ChildrenMap,
-} from '../../../types/RuntimeSchema';
+} from '../../../types';
+import { RuntimeComponentSchema } from '@sunmao-ui/core';
 
 export type RouteLikeElement = PropsWithChildren<{
   path?: string;
@@ -63,7 +63,7 @@ export const Route: React.FC<RouteProps> = ({ match, children, mergeState }) => 
 type SwitchProps = {
   location?: string;
   switchPolicy: SwitchPolicy;
-  component: RuntimeApplicationComponent;
+  component: RuntimeComponentSchema;
   childrenMap: ChildrenMap<string>;
   services: UIServices;
   slotsElements: Record<string, ReactElement[]>;

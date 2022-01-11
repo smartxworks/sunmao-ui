@@ -1,4 +1,4 @@
-import { Application, ApplicationComponent } from '@sunmao-ui/core';
+import { Application, ComponentSchema } from '@sunmao-ui/core';
 
 export const AppSchema: Application = {
   kind: 'Application',
@@ -128,7 +128,7 @@ export const AppSchema: Application = {
   },
 };
 
-export const DuplicatedIdSchema: ApplicationComponent[] = [
+export const DuplicatedIdSchema: ComponentSchema[] = [
   {
     id: 'hstack1',
     type: 'chakra_ui/v1/hstack',

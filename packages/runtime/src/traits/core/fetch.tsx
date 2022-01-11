@@ -1,11 +1,11 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../types/RuntimeSchema';
+import { TraitImpl } from '../../types';
 import { FetchTraitPropertiesSchema } from '../../types/TraitPropertiesSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
 
-const useFetchTrait: TraitImplementation<Static<typeof FetchTraitPropertiesSchema>> = ({
+const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
   url,
   method,
   lazy: _lazy,
