@@ -5,7 +5,9 @@ import {
   SlotName,
   TraitType,
 } from '../../src/AppModel/IAppModel';
-import { AppSchema } from './mock';
+import { AppSchema, EventHanlderMockSchema } from './mock';
+import { produce } from 'immer';
+import { get } from 'lodash-es';
 
 describe('ComponentModel test', () => {
   it('compute component property', () => {
@@ -49,6 +51,23 @@ describe('update component property', () => {
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
     expect(origin[5]).not.toBe(newSchema[5]);
+  });
+});
+
+describe('update event trait handlers(array) property', () => {
+  const appModel = new AppModel(EventHanlderMockSchema);
+  const button1 = appModel.getComponentById('button1' as any);
+  const oldHandlers = button1.traits[0].rawProperties.handlers;
+  const newHandlers = produce(oldHandlers, draft => {
+    draft[1].method.parameters.value = 'hello';
+  });
+  button1.updateTraitProperties(button1.traits[0].id, { handlers: newHandlers });
+  const newSchema = appModel.toSchema();
+
+  it('update trait array properties', () => {
+    expect(
+      get(newSchema[0].traits[0].properties, 'handlers[1].method.parameters.value')
+    ).toEqual('hello');
   });
 });
 

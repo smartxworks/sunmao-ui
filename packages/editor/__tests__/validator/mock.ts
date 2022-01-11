@@ -74,6 +74,45 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
     properties: { spacing: '24px', align: '{{input.value}}' },
     traits: [],
   },
+  {
+    id: 'button1',
+    type: 'chakra_ui/v1/button',
+    properties: {
+      text: {
+        raw: 'hello',
+        format: 'md',
+      },
+    },
+    traits: [
+      {
+        type: 'core/v1/event',
+        properties: {
+          handlers: [
+            {
+              type: 'onClick',
+              componentId: 'button1',
+              method: {
+                name: 'click',
+                parameters: {
+                  value: '666',
+                },
+              },
+            },
+            {
+              type: 'onClick',
+              componentId: 'dialog1',
+              method: {
+                name: 'click',
+                parameters: {
+                  value: '666',
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
 
 export const TraitInvalidSchema: ComponentSchema[] = [

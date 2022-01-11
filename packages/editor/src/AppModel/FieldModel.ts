@@ -14,7 +14,7 @@ const regExp = new RegExp('.*{{.*}}.*');
 isPlainObject
 
 export class FieldModel implements IFieldModel {
-  private value: unknown | Record<string, IFieldModel>;
+  private value: unknown | Array<IFieldModel> | Record<string, IFieldModel>;
   isDynamic = false;
   refs: Array<ComponentId | ModuleId> = [];
 
@@ -23,10 +23,11 @@ export class FieldModel implements IFieldModel {
   }
 
   update(value: unknown) {
-    if (isObject(value) && !isArray(value)) {
+    if (isObject(value)) {
       if (!isObject(this.value)) {
-        this.value = {};
+        this.value = isArray(value) ? [] : {}
       }
+
       for (const key in value) {
         const val = (value as Record<string, unknown>)[key];
         const _thisValue = this.value as Record<string, IFieldModel>;
@@ -43,24 +44,28 @@ export class FieldModel implements IFieldModel {
     this.parseReferences();
   }
 
-  getProperty(key?: string) {
-    if (!key) {
+  getProperty(key?: string | number) {
+    if (key === undefined) {
       return this.value;
     }
-    if (key && typeof this.value === 'object') {
+    if (key !== undefined && typeof this.value === 'object') {
       return (this.value as any)[key];
     }
     return undefined;
   }
 
   get rawValue() {
-    if (isObject(this.value) && !isArray(this.value) ) {
-      const _thisValue = this.value as Record<string, IFieldModel>;
-      const res: Record<string, any> = {};
-      for (const key in _thisValue) {
-        res[key] = _thisValue[key].rawValue;
+    if (isObject(this.value)) {
+      if (isArray(this.value)) {
+        return this.value.map((field) => field.rawValue)
+      } else {
+        const _thisValue = this.value as Record<string, IFieldModel>;
+        const res: Record<string, any> = {};
+        for (const key in _thisValue) {
+          res[key] = _thisValue[key].rawValue;
+        }
+        return res;
       }
-      return res;
     }
     return this.value;
   }
