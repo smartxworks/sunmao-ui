@@ -69,9 +69,16 @@ export const ComponentPropertyExpressionSchema: ComponentSchema[] = [
 
 export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
   {
-    id: 'hstack1',
-    type: 'chakra_ui/v1/hstack',
-    properties: { spacing: '24px', align: '{{input.value}}' },
+    id: 'input1',
+    type: 'chakra_ui/v1/input',
+    properties: {
+      variant: 'outline',
+      placeholder: '{{data.value}}',
+      size: 'md',
+      isDisabled: false,
+      isRequired: false,
+      defaultValue: '',
+    },
     traits: [],
   },
   {
@@ -90,21 +97,11 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
           handlers: [
             {
               type: 'onClick',
-              componentId: 'button1',
+              componentId: 'input1',
               method: {
-                name: 'click',
+                name: 'setInputValue',
                 parameters: {
-                  value: '666',
-                },
-              },
-            },
-            {
-              type: 'onClick',
-              componentId: 'dialog1',
-              method: {
-                name: 'click',
-                parameters: {
-                  value: '666',
+                  value: '{{fetch.data.value}}',
                 },
               },
             },

@@ -23,7 +23,11 @@ describe('Validate component', () => {
     });
     it('detect using non-exist variables in expression', () => {
       const result = schemaValidator.validate(ComponentWrongPropertyExpressionSchema);
-      expect(result[0].message).toBe(`Cannot find 'input' in store.`);
+      expect(result[0].message).toBe(`Cannot find 'data' in store.`);
+    });
+    it('detect using non-exist variables in expression of array property', () => {
+      const result = schemaValidator.validate(ComponentWrongPropertyExpressionSchema);
+      expect(result[1].message).toBe(`Cannot find 'fetch' in store.`);
     });
   });
 });
