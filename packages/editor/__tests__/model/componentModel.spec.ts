@@ -33,11 +33,16 @@ describe('update component property', () => {
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
   text1!.updateComponentProperty('value', { raw: 'hello', format: 'md' });
+  text1!.updateComponentProperty('newProperty', "a property that didn't exist before");
   const newSchema = appModel.toSchema();
 
   it('update component properties', () => {
     expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'md' });
   });
+
+  it("update a new property that component don't have",()=>{
+    expect(newSchema[5].properties.newProperty).toEqual("a property that didn't exist before");
+  })
 
   it('keep immutable after updating component properties', () => {
     expect(origin).not.toBe(newSchema);
