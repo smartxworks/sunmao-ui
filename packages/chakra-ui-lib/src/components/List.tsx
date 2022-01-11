@@ -4,14 +4,14 @@ import {
   implementRuntimeComponent,
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
-  RuntimeModuleSchema,
+  ModuleSchema,
   ModuleRenderer,
 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
 const PropsSchema = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String())),
-  template: RuntimeModuleSchema,
+  template: ModuleSchema,
 });
 
 const exampleProperties = {

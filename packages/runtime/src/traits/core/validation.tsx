@@ -1,7 +1,7 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash-es';
-import { TraitImplementation } from '../../types/RuntimeSchema';
+import { TraitImpl } from '../../types';
 import { ValidResultSchema } from '../../types/ValidResultSchema';
 
 type ValidationResult = Static<typeof ValidResultSchema>;
@@ -43,7 +43,7 @@ addValidationRule('phoneNumber', text => {
 
 const ValidationResultCache: Record<string, ValidationResult> = {};
 
-const ValidationTraitImpl: TraitImplementation<Static<typeof PropsSchema>> = props => {
+const ValidationTraitImpl: TraitImpl<Static<typeof PropsSchema>> = props => {
   const { value, minLength, maxLength, mergeState, componentId, rule } = props;
 
   const result: ValidationResult = {
@@ -103,6 +103,7 @@ export default {
       state: Type.Object({
         validResult: ValidResultSchema,
       }),
+      methods: [],
     },
   }),
   impl: ValidationTraitImpl,

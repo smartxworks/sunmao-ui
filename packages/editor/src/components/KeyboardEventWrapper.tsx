@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import React, { useRef } from 'react';
 import { eventBus } from '../eventBus';
 import { genOperation } from '../operations';
@@ -8,7 +8,7 @@ import { PasteManager } from '../operations/PasteManager';
 
 type Props = {
   selectedComponentId: string;
-  components: ApplicationComponent[];
+  components: ComponentSchema[];
 };
 
 export const KeyboardEventWrapper: React.FC<Props> = ({

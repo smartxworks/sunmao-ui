@@ -8,7 +8,7 @@ import {
   Text,
   Select,
 } from '@chakra-ui/react';
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import { CssEditor } from '../../../components/CodeEditor';
 import { eventBus } from '../../../eventBus';
@@ -19,7 +19,7 @@ import { formWrapperCSS } from '../style';
 
 type Props = {
   registry: Registry;
-  component: ApplicationComponent;
+  component: ComponentSchema;
 };
 
 type Styles = Array<{

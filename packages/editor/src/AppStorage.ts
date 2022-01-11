@@ -1,5 +1,5 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import { Application, ApplicationComponent } from '@sunmao-ui/core';
+import { Application, ComponentSchema } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from './constants';
@@ -61,7 +61,7 @@ export class AppStorage {
     type: 'app' | 'module',
     version: string,
     name: string,
-    components: ApplicationComponent[]
+    components: ComponentSchema[]
   ) {
     switch (type) {
       case 'app':

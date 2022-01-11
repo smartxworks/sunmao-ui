@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -8,18 +8,18 @@ export type AdjustComponentOrderLeafOperationContext = {
 };
 
 export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustComponentOrderLeafOperationContext> {
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     return this.move(prev, this.context.orientation);
   }
-  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  redo(prev: ComponentSchema[]): ComponentSchema[] {
     return this.do(prev)
   }
 
-  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  undo(prev: ComponentSchema[]): ComponentSchema[] {
     return this.move(prev, this.context.orientation === 'up' ? 'down' : 'up');
   }
 
-  private move(prev: ApplicationComponent[], orientation: 'up' | 'down'): ApplicationComponent[] {
+  private move(prev: ComponentSchema[], orientation: 'up' | 'down'): ComponentSchema[] {
     const appModel = new AppModel(prev);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {

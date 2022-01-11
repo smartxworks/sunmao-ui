@@ -1,11 +1,12 @@
-import { RuntimeApplicationComponent, ChildrenMap } from '../types/RuntimeSchema';
+import { RuntimeComponentSchema } from '@sunmao-ui/core';
+import { ChildrenMap } from '../types';
 
-export function resolveChildrenMap(components: RuntimeApplicationComponent[]): {
+export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
   childrenMap: ChildrenMap<string>;
-  topLevelComponents: RuntimeApplicationComponent[];
+  topLevelComponents: RuntimeComponentSchema[];
 } {
   const childrenMap: ChildrenMap<string> = {};
-  const topLevelComponents: RuntimeApplicationComponent[] = [];
+  const topLevelComponents: RuntimeComponentSchema[] = [];
 
   for (const c of components) {
     const slotTrait = c.traits.find(t => t.parsedType.name === 'slot');
@@ -28,7 +29,7 @@ export function resolveChildrenMap(components: RuntimeApplicationComponent[]): {
   }
 
   // get allChildren and grand children
-  function getAllChildren(id: string): RuntimeApplicationComponent[] {
+  function getAllChildren(id: string): RuntimeComponentSchema[] {
     if (!childrenMap[id]) {
       return [];
     }

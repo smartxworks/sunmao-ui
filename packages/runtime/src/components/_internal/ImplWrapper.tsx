@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { merge } from 'lodash-es';
+import { RuntimeComponentSchema, RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../utils/watchReactivity';
 import {
-  RuntimeApplicationComponent,
   ImplWrapperProps,
   TraitResult,
-} from '../../types/RuntimeSchema';
+} from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
-
-type ArrayElement<ArrayType extends readonly unknown[]> =
-  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
-
-type ApplicationTrait = ArrayElement<RuntimeApplicationComponent['traits']>;
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
   const {
@@ -23,7 +18,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     childrenMap,
   } = props;
   const { registry, stateManager, globalHandlerMap, apiService } = props.services;
-  const childrenCache = new Map<RuntimeApplicationComponent, React.ReactElement>();
+  const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
   const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
@@ -65,7 +60,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   );
 
   const excecuteTrait = useCallback(
-    (trait: ApplicationTrait, traitProperty: ApplicationTrait['properties']) => {
+    (trait: RuntimeTraitSchema, traitProperty: RuntimeTraitSchema['properties']) => {
       const tImpl = registry.getTrait(
         trait.parsedType.version,
         trait.parsedType.name
@@ -91,7 +86,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   // eval traits' properties then excecute traits
   useEffect(() => {
     const stops: ReturnType<typeof watch>[] = [];
-    const properties: Array<ApplicationTrait['properties']> = [];
+    const properties: Array<RuntimeTraitSchema['properties']> = [];
     c.traits.forEach((t, i) => {
       const { result, stop } = stateManager.deepEval(
         t.properties,

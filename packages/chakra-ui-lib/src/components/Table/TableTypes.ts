@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { RuntimeModuleSchema, EventHandlerSchema } from '@sunmao-ui/runtime';
+import { ModuleSchema, EventHandlerSchema } from '@sunmao-ui/runtime';
 
 export const MajorKeyPropertySchema = Type.String();
 export const RowsPerPagePropertySchema = Type.Number();
@@ -30,7 +30,7 @@ export const ColumnSchema = Type.Object({
     text: Type.String(),
     handlers: Type.Array(EventHandlerSchema),
   }),
-  module: RuntimeModuleSchema,
+  module: ModuleSchema,
 });
 
 export const ColumnsPropertySchema = Type.Array(ColumnSchema);

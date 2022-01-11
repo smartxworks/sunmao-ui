@@ -1,8 +1,8 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImplementation } from '../../types/RuntimeSchema';
+import { TraitImpl } from '../../types';
 
-const useHiddenTrait: TraitImplementation<Static<typeof PropsSchema>> = ({
+const useHiddenTrait: TraitImpl<Static<typeof PropsSchema>> = ({
   hidden,
   visually,
 }) => {
@@ -36,6 +36,8 @@ export default {
     },
     spec: {
       properties: PropsSchema,
+      state: {},
+      methods: [],
     },
   }),
   impl: useHiddenTrait,

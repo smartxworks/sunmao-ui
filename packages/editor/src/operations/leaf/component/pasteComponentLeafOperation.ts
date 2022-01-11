@@ -1,4 +1,4 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -7,14 +7,14 @@ export type PasteComponentLeafOperationContext = {
   parentId: string;
   slot: string;
   rootComponentId: string;
-  components: ApplicationComponent[];
+  components: ComponentSchema[];
   copyTimes: number;
 };
 
 export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponentLeafOperationContext> {
   private componentCopy!: IComponentModel
 
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     const targetParent = appModel.getComponentById(this.context.parentId as ComponentId);
     if (!targetParent) {
@@ -34,11 +34,11 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
     return appModel.toSchema();
   }
 
-  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  redo(prev: ComponentSchema[]): ComponentSchema[] {
     return this.do(prev)
   }
   
-  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  undo(prev: ComponentSchema[]): ComponentSchema[] {
     const appModel = new AppModel(prev);
     appModel.removeComponent(this.componentCopy.id);
     return appModel.toSchema()

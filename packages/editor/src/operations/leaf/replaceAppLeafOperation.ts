@@ -1,27 +1,27 @@
-import { ApplicationComponent } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import produce from 'immer';
 import { BaseLeafOperation } from '../type';
 
 export type ReplaceAppLeafOperationContext = {
-  app: ApplicationComponent[];
+  app: ComponentSchema[];
 };
 
 export class ReplaceAppLeafOperation extends BaseLeafOperation<ReplaceAppLeafOperationContext> {
-  private previousState!: ApplicationComponent[];
-  do(prev: ApplicationComponent[]): ApplicationComponent[] {
+  private previousState!: ComponentSchema[];
+  do(prev: ComponentSchema[]): ComponentSchema[] {
     this.previousState = prev;
     return produce(prev, () => {
       return this.context.app;
     });
   }
 
-  redo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  redo(prev: ComponentSchema[]): ComponentSchema[] {
     return produce(prev, () => {
       return this.context.app;
     });
   }
 
-  undo(prev: ApplicationComponent[]): ApplicationComponent[] {
+  undo(prev: ComponentSchema[]): ComponentSchema[] {
     return produce(prev, () => {
       return this.previousState;
     });
