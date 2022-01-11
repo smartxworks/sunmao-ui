@@ -148,3 +148,40 @@ export const DuplicatedIdSchema: ComponentSchema[] = [
     traits: [],
   },
 ];
+
+export const EventHanlderMockSchema: ComponentSchema[] = [
+  {
+    id: 'button1',
+    type: 'chakra_ui/v1/button',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/event',
+        properties: {
+          handlers: [
+            {
+              type: 'onClick',
+              componentId: 'input1',
+              method: {
+                name: 'setInputValue',
+                parameters: {
+                  value: '666',
+                },
+              },
+            },
+            {
+              type: 'onClick',
+              componentId: 'input2',
+              method: {
+                name: 'setInputValue',
+                parameters: {
+                  value: '666',
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+];

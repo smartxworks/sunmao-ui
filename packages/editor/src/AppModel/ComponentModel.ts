@@ -263,7 +263,9 @@ export class ComponentModel implements IComponentModel {
     const trait = this.traits.find(t => t.id === traitId);
     if (!trait) return;
     for (const property in properties) {
-      trait.properties[property].update(properties[property]);
+      if (trait.properties[property]) {
+        trait.updateProperty(property, properties[property])
+      }
       trait._isDirty = true;
     }
     this._isDirty = true;

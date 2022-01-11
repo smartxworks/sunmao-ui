@@ -16,15 +16,30 @@ describe('Field test', () => {
   });
 
   it('parse object property', () => {
-    const field = new FieldModel({raw: '{{input.value}}', format: 'md'});
+    const field = new FieldModel({ raw: '{{input.value}}', format: 'md' });
     expect(field.isDynamic).toEqual(false);
     expect(field.refs).toEqual([]);
-    expect(field.rawValue).toEqual({raw: '{{input.value}}', format: 'md'});
-    expect(field.getProperty('raw').value).toEqual('{{input.value}}');
+    expect(field.rawValue).toEqual({ raw: '{{input.value}}', format: 'md' });
+    expect(field.getProperty('raw').rawValue).toEqual('{{input.value}}');
     expect(field.getProperty('raw').isDynamic).toEqual(true);
     expect(field.getProperty('raw').refs).toEqual(['input']);
-    expect(field.getProperty('format').value).toEqual('md');
+    expect(field.getProperty('format').rawValue).toEqual('md');
     expect(field.getProperty('format').isDynamic).toEqual(false);
     expect(field.getProperty('format').refs).toEqual([]);
+  });
+
+  it('parse array property', () => {
+    const field = new FieldModel({ data: [1, '{{fetch.data}}'] });
+    expect(field.isDynamic).toEqual(false);
+    expect(field.refs).toEqual([]);
+    expect(field.rawValue).toEqual({ data: [1, '{{fetch.data}}'] });
+    expect(field.getProperty('data').rawValue).toEqual([1, '{{fetch.data}}']);
+    expect(field.getProperty('data').isDynamic).toEqual(false);
+    expect(field.getProperty('data').refs).toEqual([]);
+    expect(field.getProperty('data').getProperty(0).rawValue).toEqual(1);
+    expect(field.getProperty('data').getProperty(0).isDynamic).toEqual(false);
+    expect(field.getProperty('data').getProperty(1).rawValue).toEqual('{{fetch.data}}');
+    expect(field.getProperty('data').getProperty(1).isDynamic).toEqual(true);
+    expect(field.getProperty('data').getProperty(1).refs).toEqual(['fetch']);
   });
 });
