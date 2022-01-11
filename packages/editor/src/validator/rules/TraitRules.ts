@@ -7,6 +7,7 @@ import {
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
+import { get } from 'lodash-es';
 
 class TraitPropertyValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
@@ -36,9 +37,10 @@ class TraitPropertyValidatorRule implements TraitValidatorRule {
         } else {
           key = params.missingProperty;
         }
-        const fieldModel = component.properties[key];
+        const fieldModel = trait.properties.getProperty(key);
+        // if field is expression, ignore type error
         // fieldModel could be undefiend. if is undefined, still throw error.
-        if (fieldModel?.isDynamic !== true) {
+        if (get(fieldModel, 'isDynamic') !== true) {
           results.push({
             message: error.message || '',
             componentId: component.id,
@@ -49,18 +51,18 @@ class TraitPropertyValidatorRule implements TraitValidatorRule {
       });
     }
 
-    for (const key in trait.properties) {
-      const fieldModel = trait.properties[key];
-      fieldModel.refs.forEach(id => {
+    // validate expression
+    trait.properties.traverse((fieldModel, key) => {
+      fieldModel.refs.forEach((id: string) => {
         if (!componentIdSpecMap[id]) {
           results.push({
             message: `Cannot find '${id}' in store.`,
             componentId: component.id,
-            property: `traits/${key}`,
+            property: key,
           });
         }
       });
-    }
+    });
     return results;
   }
 }
@@ -127,7 +129,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
           if (error.keyword === 'type') {
             const { instancePath } = error;
             const path = instancePath.split('/')[1];
-            const value = trait.properties[path];
+            const value = trait.rawProperties[path];
 
             // if value is an expression, skip it
             if (isExpression(value)) {

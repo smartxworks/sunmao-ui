@@ -22,6 +22,22 @@ export class FieldModel implements IFieldModel {
     this.update(value);
   }
 
+  get rawValue() {
+    if (isObject(this.value)) {
+      if (isArray(this.value)) {
+        return this.value.map((field) => field.rawValue)
+      } else {
+        const _thisValue = this.value as Record<string, IFieldModel>;
+        const res: Record<string, any> = {};
+        for (const key in _thisValue) {
+          res[key] = _thisValue[key].rawValue;
+        }
+        return res;
+      }
+    }
+    return this.value;
+  }
+
   update(value: unknown) {
     if (isObject(value)) {
       if (!isObject(this.value)) {
@@ -44,7 +60,7 @@ export class FieldModel implements IFieldModel {
     this.parseReferences();
   }
 
-  getProperty(key?: string | number) {
+  getProperty(key?: string | number): FieldModel | unknown {
     if (key === undefined) {
       return this.value;
     }
@@ -54,20 +70,20 @@ export class FieldModel implements IFieldModel {
     return undefined;
   }
 
-  get rawValue() {
-    if (isObject(this.value)) {
-      if (isArray(this.value)) {
-        return this.value.map((field) => field.rawValue)
-      } else {
-        const _thisValue = this.value as Record<string, IFieldModel>;
-        const res: Record<string, any> = {};
-        for (const key in _thisValue) {
-          res[key] = _thisValue[key].rawValue;
+  traverse(cb: (f: IFieldModel, key: string) => void) {
+    function _traverse(field: FieldModel, key: string) {
+      if (isObject(field.value)) {
+        for (const _key in field.value) {
+          const val = field.getProperty(_key)
+          if (val instanceof FieldModel) {
+            _traverse(val, `${key}.${_key}`)
+          }
         }
-        return res;
+      } else {
+        cb(field, key)
       }
     }
-    return this.value;
+    _traverse(this, '')
   }
 
   private parseReferences() {

@@ -59,7 +59,7 @@ export interface IComponentModel {
   appModel: IAppModel;
   id: ComponentId;
   type: ComponentType;
-  properties: Record<string, IFieldModel>;
+  properties: IFieldModel;
   // just like properties in schema
   rawProperties: Record<string, any>;
   children: Record<SlotName, IComponentModel[]>;
@@ -102,7 +102,7 @@ export interface ITraitModel {
   parent: IComponentModel;
   type: TraitType;
   rawProperties: Record<string, any>;
-  properties: Record<string, IFieldModel>;
+  properties: IFieldModel;
   methods: MethodSchema[];
   stateKeys: StateKey[];
   _isDirty: boolean;
@@ -114,7 +114,8 @@ export interface IFieldModel {
   // value: any;
   isDynamic: boolean;
   update: (value: unknown) => void;
-  getProperty: (key?: string) => unknown | void | Record<string, IFieldModel>;
+  getProperty: (key?: string) => unknown | void | IFieldModel;
+  traverse: (cb: (f: IFieldModel, key: string) => void) => void
   rawValue: any;
   // ids of used components in the expression
   refs: Array<ComponentId | ModuleId>;

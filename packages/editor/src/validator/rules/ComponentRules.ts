@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import {
   ComponentValidatorRule,
   ComponentValidateContext,
@@ -27,15 +28,16 @@ class ComponentPropertyValidatorRule implements ComponentValidatorRule {
     if (!valid) {
       validate.errors!.forEach(error => {
         const { instancePath, params } = error;
-        let key = ''
+        let key = '';
         if (instancePath) {
           key = instancePath.split('/')[1];
         } else {
-          key = params.missingProperty
+          key = params.missingProperty;
         }
-        const fieldModel = component.properties[key];
+        const fieldModel = component.properties.getProperty(key);
+        // if field is expression, ignore type error
         // fieldModel could be undefiend. if is undefined, still throw error.
-        if (fieldModel?.isDynamic !== true) {
+        if (get(fieldModel, 'isDynamic') !== true) {
           results.push({
             message: error.message || '',
             componentId: component.id,
@@ -45,8 +47,8 @@ class ComponentPropertyValidatorRule implements ComponentValidatorRule {
       });
     }
 
-    for (const key in component.properties) {
-      const fieldModel = component.properties[key];
+    // validate expression
+    component.properties.traverse((fieldModel, key) => {
       fieldModel.refs.forEach((id: string) => {
         if (!componentIdSpecMap[id]) {
           results.push({
@@ -56,7 +58,7 @@ class ComponentPropertyValidatorRule implements ComponentValidatorRule {
           });
         }
       });
-    }
+    });
 
     return results;
   }

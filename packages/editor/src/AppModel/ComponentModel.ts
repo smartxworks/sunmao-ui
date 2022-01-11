@@ -1,8 +1,4 @@
-import {
-  ComponentSchema,
-  MethodSchema,
-  RuntimeComponent,
-} from '@sunmao-ui/core';
+import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { registry } from '../setup';
 import { genComponent, genTrait } from './utils';
 import {
@@ -22,14 +18,19 @@ import {
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
-type ComponentSpecModel = RuntimeComponent<MethodName, StyleSlotName, SlotName, EventName>
+type ComponentSpecModel = RuntimeComponent<
+  MethodName,
+  StyleSlotName,
+  SlotName,
+  EventName
+>;
 const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
 export class ComponentModel implements IComponentModel {
   private spec: ComponentSpecModel;
 
   id: ComponentId;
   type: ComponentType;
-  properties: Record<string, IFieldModel> = {};
+  properties: IFieldModel;
   children: Record<SlotName, IComponentModel[]> = {};
   parent: IComponentModel | null = null;
   parentId: ComponentId | null = null;
@@ -53,9 +54,7 @@ export class ComponentModel implements IComponentModel {
       }
     });
 
-    for (const key in schema.properties) {
-      this.properties[key] = new FieldModel(schema.properties[key]);
-    }
+    this.properties = new FieldModel(schema.properties);
   }
 
   get slots() {
@@ -85,7 +84,7 @@ export class ComponentModel implements IComponentModel {
       componentMethods.push({
         name: methodName,
         parameters: this.spec.spec.methods[methodName as MethodName]!,
-      })
+      });
     }
     const traitMethods: MethodSchema[] = this.traits.reduce(
       (acc, t) => acc.concat(t.methods),
@@ -99,11 +98,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   get rawProperties() {
-    const obj: Record<string, any> = {};
-    for (const key in this.properties) {
-      obj[key] = this.properties[key].rawValue;
-    }
-    return obj;
+    return this.properties.rawValue;
   }
 
   get prevSilbling() {
@@ -146,11 +141,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   updateComponentProperty(propertyName: string, value: any) {
-    if (!Reflect.has(this.properties, propertyName)) {
-      this.properties[propertyName] = new FieldModel(value)
-    } else {
-      this.properties[propertyName].update(value);
-    }
+    this.properties.update({ [propertyName]: value });
     this._isDirty = true;
   }
 
@@ -215,7 +206,7 @@ export class ComponentModel implements IComponentModel {
         child.parentId = newId;
         const slotTrait = child.traits.find(t => t.type === SlotTraitType);
         if (slotTrait) {
-          slotTrait.properties.container.update({ id: newId, slot });
+          slotTrait.properties.update({ container: { id: newId, slot } });
           slotTrait._isDirty = true;
         }
         child._isDirty = true;
@@ -263,17 +254,15 @@ export class ComponentModel implements IComponentModel {
     const trait = this.traits.find(t => t.id === traitId);
     if (!trait) return;
     for (const property in properties) {
-      if (trait.properties[property]) {
-        trait.updateProperty(property, properties[property])
-      }
-      trait._isDirty = true;
+      trait.updateProperty(property, properties[property]);
     }
+    trait._isDirty = true;
     this._isDirty = true;
   }
 
   updateSlotTrait(parent: ComponentId, slot: SlotName) {
     if (this._slotTrait) {
-      this._slotTrait.properties.container.update({ id: parent, slot });
+      this._slotTrait.properties.update({ container: { id: parent, slot } });
       this._slotTrait._isDirty = true;
     } else {
       this.addTrait(SlotTraitType, { container: { id: parent, slot } });
