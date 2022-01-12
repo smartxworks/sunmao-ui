@@ -1,7 +1,7 @@
 import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
-import { IAppModel, IComponentModel, ITraitModel } from '../AppModel/IAppModel';
+import { IAppModel, IComponentModel, IFieldModel, ITraitModel } from '../AppModel/IAppModel';
 
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
@@ -29,13 +29,18 @@ export interface TraitValidateContext extends BaseValidateContext {
   component: IComponentModel;
 }
 
-export type PropertyValidateContext = BaseValidateContext;
+export interface PropertiesValidateContext extends BaseValidateContext {
+  properties: IFieldModel;
+  trait?: ITraitModel;
+  component: IComponentModel;
+}
+
 export type AllComponentsValidateContext = BaseValidateContext;
 
 export type ValidateContext =
   | ComponentValidateContext
   | TraitValidateContext
-  | PropertyValidateContext
+  | PropertiesValidateContext
   | AllComponentsValidateContext;
 
 export interface ComponentValidatorRule {
@@ -44,6 +49,11 @@ export interface ComponentValidatorRule {
   fix?: (validateContext: ComponentValidateContext) => void;
 }
 
+export interface PropertiesValidatorRule {
+  kind: 'properties';
+  validate: (validateContext: PropertiesValidateContext) => ValidateErrorResult[];
+  fix?: (validateContext: PropertiesValidateContext) => void;
+}
 export interface AllComponentsValidatorRule {
   kind: 'allComponents';
   validate: (validateContext: AllComponentsValidateContext) => ValidateErrorResult[];
@@ -56,16 +66,10 @@ export interface TraitValidatorRule {
   fix?: (validateContext: TraitValidateContext) => void;
 }
 
-export interface PropertyValidatorRule {
-  kind: 'property';
-  validate: (validateContext: PropertyValidateContext) => ValidateErrorResult[];
-  fix?: (validateContext: PropertyValidateContext) => void;
-}
-
 export type ValidatorRule =
   | ComponentValidatorRule
   | AllComponentsValidatorRule
-  | PropertyValidatorRule
+  | PropertiesValidatorRule
   | TraitValidatorRule;
 
 export interface ISchemaValidator {

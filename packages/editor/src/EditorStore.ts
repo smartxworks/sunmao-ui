@@ -16,7 +16,7 @@ class EditorStore {
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
   _hoverComponentId = '';
-  _dragOverComponentId: string = '';
+  _dragOverComponentId = '';
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',

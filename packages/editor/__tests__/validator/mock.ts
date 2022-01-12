@@ -86,7 +86,7 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
     type: 'chakra_ui/v1/button',
     properties: {
       text: {
-        raw: 'hello',
+        raw: '{{fetch.data.value}}',
         format: 'md',
       },
     },
@@ -101,7 +101,7 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
               method: {
                 name: 'setInputValue',
                 parameters: {
-                  value: '{{fetch.data.value}}',
+                  value: '{{input1.noValue}}',
                 },
               },
             },

@@ -7,65 +7,6 @@ import {
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
-import { get } from 'lodash-es';
-
-class TraitPropertyValidatorRule implements TraitValidatorRule {
-  kind: 'trait' = 'trait';
-
-  validate({
-    trait,
-    component,
-    validators,
-    componentIdSpecMap,
-  }: TraitValidateContext): ValidateErrorResult[] {
-    const results: ValidateErrorResult[] = [];
-    const validate = validators.traits[trait.type];
-    if (!validate) {
-      results.push({
-        message: `Trait is not registered: ${trait.type}.`,
-        componentId: component.id,
-      });
-      return results;
-    }
-    const valid = validate(trait.rawProperties);
-    if (!valid) {
-      validate.errors!.forEach(error => {
-        const { instancePath, params } = error;
-        let key = '';
-        if (instancePath) {
-          key = instancePath.split('/')[1];
-        } else {
-          key = params.missingProperty;
-        }
-        const fieldModel = trait.properties.getProperty(key);
-        // if field is expression, ignore type error
-        // fieldModel could be undefiend. if is undefined, still throw error.
-        if (get(fieldModel, 'isDynamic') !== true) {
-          results.push({
-            message: error.message || '',
-            componentId: component.id,
-            traitType: trait.type,
-            property: error.instancePath,
-          });
-        }
-      });
-    }
-
-    // validate expression
-    trait.properties.traverse((fieldModel, key) => {
-      fieldModel.refs.forEach((id: string) => {
-        if (!componentIdSpecMap[id]) {
-          results.push({
-            message: `Cannot find '${id}' in store.`,
-            componentId: component.id,
-            property: key,
-          });
-        }
-      });
-    });
-    return results;
-  }
-}
 
 class EventHandlerValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
@@ -151,6 +92,5 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
 }
 
 export const TraitRules = [
-  new TraitPropertyValidatorRule(),
   new EventHandlerValidatorRule(),
 ];

@@ -1,68 +1,8 @@
-import { get } from 'lodash-es';
 import {
   ComponentValidatorRule,
   ComponentValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-
-class ComponentPropertyValidatorRule implements ComponentValidatorRule {
-  kind: 'component' = 'component';
-
-  validate({
-    component,
-    validators,
-    componentIdSpecMap,
-  }: ComponentValidateContext): ValidateErrorResult[] {
-    const results: ValidateErrorResult[] = [];
-    const validate = validators.components[component.type];
-    if (!validate) {
-      results.push({
-        message: `Component is not registered: ${component.type}.`,
-        componentId: component.id,
-      });
-      return results;
-    }
-    const properties = component.rawProperties;
-
-    const valid = validate(properties);
-    if (!valid) {
-      validate.errors!.forEach(error => {
-        const { instancePath, params } = error;
-        let key = '';
-        if (instancePath) {
-          key = instancePath.split('/')[1];
-        } else {
-          key = params.missingProperty;
-        }
-        const fieldModel = component.properties.getProperty(key);
-        // if field is expression, ignore type error
-        // fieldModel could be undefiend. if is undefined, still throw error.
-        if (get(fieldModel, 'isDynamic') !== true) {
-          results.push({
-            message: error.message || '',
-            componentId: component.id,
-            property: error.instancePath,
-          });
-        }
-      });
-    }
-
-    // validate expression
-    component.properties.traverse((fieldModel, key) => {
-      fieldModel.refs.forEach((id: string) => {
-        if (!componentIdSpecMap[id]) {
-          results.push({
-            message: `Cannot find '${id}' in store.`,
-            componentId: component.id,
-            property: key,
-          });
-        }
-      });
-    });
-
-    return results;
-  }
-}
 
 class ModuleValidatorRule implements ComponentValidatorRule {
   kind: 'component' = 'component';
@@ -89,7 +29,4 @@ class ModuleValidatorRule implements ComponentValidatorRule {
     return results;
   }
 }
-export const ComponentRules = [
-  new ComponentPropertyValidatorRule(),
-  new ModuleValidatorRule(),
-];
+export const ComponentRules = [new ModuleValidatorRule()];

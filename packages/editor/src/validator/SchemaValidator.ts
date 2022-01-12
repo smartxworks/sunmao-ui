@@ -1,6 +1,7 @@
 import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
+import { PropertiesValidatorRule } from '.';
 import { AppModel } from '../AppModel/AppModel';
 import {
   ISchemaValidator,
@@ -18,6 +19,7 @@ export class SchemaValidator implements ISchemaValidator {
   private traitRules: TraitValidatorRule[] = [];
   private componentRules: ComponentValidatorRule[] = [];
   private allComponentsRules: AllComponentsValidatorRule[] = [];
+  private propertiesRules: PropertiesValidatorRule[] = [];
   private componentIdSpecMap: Record<
     string,
     RuntimeComponent<string, string, string, string>
@@ -41,6 +43,9 @@ export class SchemaValidator implements ISchemaValidator {
           break;
         case 'trait':
           this.traitRules.push(rule);
+          break;
+        case 'properties':
+          this.propertiesRules.push(rule);
           break;
       }
     });
@@ -74,6 +79,19 @@ export class SchemaValidator implements ISchemaValidator {
           this.result = this.result.concat(r);
         }
       });
+
+      // validate component properties
+      this.propertiesRules.forEach(rule => {
+        const r = rule.validate({
+          properties: component.properties,
+          component,
+          ...baseContext,
+        });
+        if (r.length > 0) {
+          this.result = this.result.concat(r);
+        }
+      });
+
       this.traitRules.forEach(rule => {
         component.traits.forEach(trait => {
           const r = rule.validate({
@@ -84,6 +102,18 @@ export class SchemaValidator implements ISchemaValidator {
           if (r.length > 0) {
             this.result = this.result.concat(r);
           }
+          // validate trait properties
+          this.propertiesRules.forEach(rule => {
+            const r = rule.validate({
+              properties: trait.properties,
+              trait,
+              component,
+              ...baseContext,
+            });
+            if (r.length > 0) {
+              this.result = this.result.concat(r);
+            }
+          });
         });
       });
     });
