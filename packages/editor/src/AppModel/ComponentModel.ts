@@ -8,7 +8,6 @@ import {
   IComponentModel,
   SlotName,
   StyleSlotName,
-  StateKey,
   ITraitModel,
   IFieldModel,
   EventName,
@@ -18,16 +17,19 @@ import {
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
+import { merge } from 'lodash-es';
+import { parseTypeBox } from '@sunmao-ui/runtime';
+
+const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
+
 type ComponentSpecModel = RuntimeComponent<
   MethodName,
   StyleSlotName,
   SlotName,
   EventName
 >;
-const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
 export class ComponentModel implements IComponentModel {
-  private spec: ComponentSpecModel;
-
+  spec: ComponentSpecModel;
   id: ComponentId;
   type: ComponentType;
   properties: IFieldModel;
@@ -36,6 +38,7 @@ export class ComponentModel implements IComponentModel {
   parentId: ComponentId | null = null;
   parentSlot: SlotName | null = null;
   traits: ITraitModel[] = [];
+  stateExample: Record<string, any> = {};
   _isDirty = false;
 
   constructor(public appModel: IAppModel, private schema: ComponentSchema) {
@@ -46,31 +49,14 @@ export class ComponentModel implements IComponentModel {
     this.spec = registry.getComponentByType(this.type) as any;
 
     this.traits = schema.traits.map(t => new TraitModel(t, this));
-    // find slot trait
-    this.traits.forEach(t => {
-      if (t.type === 'core/v1/slot') {
-        this.parentId = t.rawProperties.container.id;
-        this.parentSlot = t.rawProperties.container.slot;
-      }
-    });
-
+    this.genStateExample()
+    this.parentId = this._slotTrait?.rawProperties.container.id;
+    this.parentSlot = this._slotTrait?.rawProperties.container.slot; 
     this.properties = new FieldModel(schema.properties);
   }
 
   get slots() {
     return (this.spec ? this.spec.spec.slots : []) as SlotName[];
-  }
-
-  get stateKeys() {
-    if (!this.spec) return [];
-    const componentStateKeys = Object.keys(
-      this.spec.spec.state.properties || {}
-    ) as StateKey[];
-    const traitStateKeys: StateKey[] = this.traits.reduce(
-      (acc, t) => acc.concat(t.stateKeys),
-      [] as StateKey[]
-    );
-    return [...componentStateKeys, ...traitStateKeys];
   }
 
   get events() {
@@ -150,6 +136,7 @@ export class ComponentModel implements IComponentModel {
     const trait = new TraitModel(traitSchema, this);
     this.traits.push(trait);
     this._isDirty = true;
+    this.genStateExample()
     return trait;
   }
 
@@ -191,6 +178,7 @@ export class ComponentModel implements IComponentModel {
     if (traitIndex === -1) return;
     this.traits.splice(traitIndex, 1);
     this._isDirty = true;
+    this.genStateExample()
   }
 
   changeId(newId: ComponentId) {
@@ -280,5 +268,16 @@ export class ComponentModel implements IComponentModel {
       }
     }
     traverse(this);
+  }
+
+  // should be called after changing traits length
+  private genStateExample() {
+    if (!this.spec) return [];
+    const componentStateSpec = this.spec.spec.state;
+    const traitsStateSpec = this.traits.map(t => t.spec.spec.state);
+    const stateSpecs = [componentStateSpec, ...traitsStateSpec];
+    this.stateExample = stateSpecs.reduce((res, jsonSchema) => {
+      return merge(res, parseTypeBox(jsonSchema as any, true));
+    }, {});
   }
 }

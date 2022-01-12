@@ -25,7 +25,7 @@ describe('ComponentModel test', () => {
     expect(button1.nextSilbing).toBe(null);
     expect(button1.rawProperties.text).toEqual({ raw: 'text', format: 'plain' });
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
-    expect(apiFetch.stateKeys).toEqual(['fetch']);
+    expect([...Object.keys(apiFetch.stateExample)]).toEqual(['fetch']);
     expect(apiFetch.methods[0].name).toEqual('triggerFetch');
   });
 });
@@ -42,9 +42,11 @@ describe('update component property', () => {
     expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'md' });
   });
 
-  it("update a new property that component don't have",()=>{
-    expect(newSchema[5].properties.newProperty).toEqual("a property that didn't exist before");
-  })
+  it("update a new property that component don't have", () => {
+    expect(newSchema[5].properties.newProperty).toEqual(
+      "a property that didn't exist before"
+    );
+  });
 
   it('keep immutable after updating component properties', () => {
     expect(origin).not.toBe(newSchema);
@@ -56,9 +58,9 @@ describe('update component property', () => {
 
 describe('update event trait handlers(array) property', () => {
   const appModel = new AppModel(EventHanlderMockSchema);
-  const button1 = appModel.getComponentById('button1' as any);
+  const button1 = appModel.getComponentById('button1' as any)!;
   const oldHandlers = button1.traits[0].rawProperties.handlers;
-  const newHandlers = produce(oldHandlers, draft => {
+  const newHandlers = produce(oldHandlers, (draft: any) => {
     draft[1].method.parameters.value = 'hello';
   });
   button1.updateTraitProperties(button1.traits[0].id, { handlers: newHandlers });

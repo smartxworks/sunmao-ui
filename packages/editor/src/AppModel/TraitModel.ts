@@ -5,7 +5,6 @@ import {
   TraitType,
   ITraitModel,
   IFieldModel,
-  StateKey,
   TraitId,
 } from './IAppModel';
 import { FieldModel } from './FieldModel';
@@ -15,7 +14,7 @@ let traitIdCount = 0;
 
 export class TraitModel implements ITraitModel {
   private schema: TraitSchema;
-  private spec: RuntimeTrait;
+  spec: RuntimeTrait;
   id: TraitId;
   type: TraitType;
   properties: IFieldModel;
@@ -37,10 +36,6 @@ export class TraitModel implements ITraitModel {
 
   get methods() {
     return this.spec ? this.spec.spec.methods : []
-  }
-
-  get stateKeys() {
-    return (this.spec ? Object.keys(this.spec.spec.state.properties || {}) : []) as StateKey[];
   }
 
   toSchema(): TraitSchema {
