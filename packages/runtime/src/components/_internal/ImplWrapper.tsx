@@ -2,10 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { merge } from 'lodash-es';
 import { RuntimeComponentSchema, RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../utils/watchReactivity';
-import {
-  ImplWrapperProps,
-  TraitResult,
-} from '../../types';
+import { ImplWrapperProps, TraitResult } from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
@@ -227,12 +224,13 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
   (prevProps, nextProps) => {
     const prevChildren = prevProps.childrenMap[prevProps.component.id]?._grandChildren;
     const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;
-    if (!prevChildren || !nextProps) return false;
+    const prevComponent = prevProps.component;
+    const nextComponent = nextProps.component;
     let isEqual = false;
 
     if (prevChildren && nextChildren) {
       isEqual = shallowCompareArray(prevChildren, nextChildren);
     }
-    return isEqual;
+    return isEqual && prevComponent === nextComponent;
   }
 );
