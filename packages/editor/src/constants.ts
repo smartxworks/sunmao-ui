@@ -118,6 +118,7 @@ export const EmptyAppSchema: Application = {
   },
 };
 
+// need not add moduleId, because it is used in runtime of editor
 export const DefaultNewModule: ImplementedRuntimeModule = {
   kind: 'Module',
   parsedVersion: { category: 'custom/v1', value: 'myModule' },
