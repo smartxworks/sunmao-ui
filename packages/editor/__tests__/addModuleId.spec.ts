@@ -31,7 +31,7 @@ describe('format to module schema', () => {
             type: 'test/v1/child',
             properties: {
               test: '{{ value.BE_CAREFUL.toFixed(2) }}',
-              replace: '{{ input1.value }} / {{ BE_CAREFUL.value }}'
+              add: '{{ input1.value }} / {{ BE_CAREFUL.value }}'
             },
 
             traits: [],
@@ -49,7 +49,7 @@ describe('format to module schema', () => {
         Object {
           "id": "{{ $moduleId }}__BE_CAREFUL",
           "properties": Object {
-            "replace": "{{ {{ $moduleId }}__input1.value }} / {{ {{ $moduleId }}__BE_CAREFUL.value }}",
+            "add": "{{ {{ $moduleId }}__input1.value }} / {{ {{ $moduleId }}__BE_CAREFUL.value }}",
             "test": "{{ value.BE_CAREFUL.toFixed(2) }}",
           },
           "traits": Array [],

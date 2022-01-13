@@ -31,7 +31,7 @@ export function addModuleId(module: Module): Module {
         if (ids.includes(val)) {
           tree[key] = `${ModuleIdPrefix}${val}`;
         } else {
-          const newField = replaceProperty(val, ids);
+          const newField = replaceIdsInProperty(val, ids);
           tree[key] = newField;
         }
       } else if (typeof val === 'object') {
@@ -45,7 +45,7 @@ export function addModuleId(module: Module): Module {
   return module;
 }
 
-// remove {{$moduleId}} in moduleSchema
+// remove '{{$moduleId}}__' in moduleSchema
 export function removeModuleId(module: Module): Module {
   function traverse(tree: Record<string, any>) {
     for (const key in tree) {
@@ -63,7 +63,34 @@ export function removeModuleId(module: Module): Module {
   return module;
 }
 
-function replaceExp(exp: string, ids: string[]): string | void {
+// example: replaceIdsInExp('{{input1.value}} + {{input2.value}}', ids: ['input1']])
+function replaceIdsInProperty(property: string, ids: string[]): string {
+  const expRegExp = new RegExp('{{(.*?)}}', 'g');
+  const matches = [...property.matchAll(expRegExp)];
+
+  if (matches.length === 0) return property;
+
+  const expPos: StringPos[] = [];
+  matches.forEach(match => {
+    const newExp = replaceIdsInExp(match[1], ids);
+    if (newExp) {
+      expPos.push({
+        // + 2 because of '{{' length is 2
+        start: match.index! + 2,
+        end: match.index! + 2 + match[1].length,
+        replaceStr: newExp,
+      });
+    }
+  });
+  if (expPos.length === 0) return property;
+
+  return expPos.reverse().reduce((result, { start, end, replaceStr }) => {
+    return result.slice(0, start) + `${replaceStr}` + result.slice(end);
+  }, property);
+}
+
+// example: replaceIdsInExp('input1.value', ids: ['input1']])
+function replaceIdsInExp(exp: string, ids: string[]): string | void {
   const identifierPos: StringPos[] = [];
   simpleWalk((acornLoose as typeof acorn).parse(exp, { ecmaVersion: 2020 }), {
     Identifier: node => {
@@ -86,29 +113,4 @@ function replaceExp(exp: string, ids: string[]): string | void {
   }, exp);
 
   return newExp;
-}
-
-function replaceProperty(property: string, ids: string[]): string {
-  const expRegExp = new RegExp('{{(.*?)}}', 'g');
-  const matches = [...property.matchAll(expRegExp)];
-
-  if (matches.length === 0) return property;
-
-  const expPos: StringPos[] = [];
-  matches.forEach(match => {
-    const newExp = replaceExp(match[1], ids);
-    if (newExp) {
-      expPos.push({
-        // + 2 because of '{{' length is 2
-        start: match.index! + 2,
-        end: match.index! + 2 + match[1].length,
-        replaceStr: newExp,
-      });
-    }
-  });
-  if (expPos.length === 0) return property;
-
-  return expPos.reverse().reduce((result, { start, end, replaceStr }) => {
-    return result.slice(0, start) + `${replaceStr}` + result.slice(end);
-  }, property);
 }
