@@ -13,7 +13,6 @@ export class AppStorage {
   static ModulesLSKey = 'modules';
 
   constructor() {
-    console.log(this.modules)
     makeObservable(this, {
       app: observable.shallow,
       modules: observable.shallow,
