@@ -15,12 +15,12 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
   private componentCopy!: IComponentModel
 
   do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const targetParent = appModel.getComponentById(this.context.parentId as ComponentId);
     if (!targetParent) {
       return prev
     }
-    const copyComponents = new AppModel(this.context.components);
+    const copyComponents = new AppModel(this.context.components, this.registry);
     const component = copyComponents.getComponentById(this.context.rootComponentId as ComponentId);
     if (!component){
       return prev;
@@ -39,7 +39,7 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
   }
   
   undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     appModel.removeComponent(this.componentCopy.id);
     return appModel.toSchema()
   }

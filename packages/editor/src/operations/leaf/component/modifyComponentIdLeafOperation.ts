@@ -10,7 +10,7 @@ export type ModifyComponentIdLeafOperationContext = {
 
 export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComponentIdLeafOperationContext> {
   do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
@@ -23,7 +23,7 @@ export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComp
     return this.do(prev);
   }
   undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.getComponentById(this.context.newId as ComponentId)!;
     component.changeId(this.context.componentId as ComponentId);
     return appModel.toSchema();

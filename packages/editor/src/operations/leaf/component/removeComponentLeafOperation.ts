@@ -12,7 +12,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
   private prevComponent?: IComponentModel;
 
   do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     this.deletedComponent = appModel.getComponentById(
       this.context.componentId as ComponentId
     );
@@ -29,7 +29,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     if (!this.deletedComponent) {
       return prev;
     }
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const parent = appModel.getComponentById(
       this.deletedComponent.parentId as ComponentId
     );

@@ -8,10 +8,11 @@ import {
 import { AppSchema, EventHanlderMockSchema } from './mock';
 import { produce } from 'immer';
 import { get } from 'lodash-es';
+import { registry } from '../sevices';
 
 describe('ComponentModel test', () => {
   it('compute component property', () => {
-    const appModel = new AppModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components, registry);
     const button1 = appModel.getComponentById('button1' as ComponentId)!;
     expect(button1.allComponents.length).toEqual(1);
     expect(button1.appModel).toEqual(appModel);
@@ -31,7 +32,7 @@ describe('ComponentModel test', () => {
 });
 
 describe('update component property', () => {
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
   text1!.updateComponentProperty('value', { raw: 'hello', format: 'md' });
@@ -57,7 +58,7 @@ describe('update component property', () => {
 });
 
 describe('update event trait handlers(array) property', () => {
-  const appModel = new AppModel(EventHanlderMockSchema);
+  const appModel = new AppModel(EventHanlderMockSchema, registry);
   const button1 = appModel.getComponentById('button1' as any)!;
   const oldHandlers = button1.traits[0].rawProperties.handlers;
   const newHandlers = produce(oldHandlers, (draft: any) => {
@@ -74,7 +75,7 @@ describe('update event trait handlers(array) property', () => {
 });
 
 describe('append to another component', () => {
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const newComponent = appModel.createComponent('core/v1/text' as ComponentType);
   const parent = appModel.getComponentById('vstack1' as any)!;
@@ -112,7 +113,7 @@ describe('append to another component', () => {
   });
 
   describe('append component to top level', () => {
-    const appModel = new AppModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components, registry);
     const origin = appModel.toSchema();
     const text1 = appModel.getComponentById('text1' as any)!;
     it('append component to top level', () => {
@@ -126,7 +127,7 @@ describe('append to another component', () => {
 
 describe('append component as child to self', () => {
   it('append component to top level', () => {
-    const appModel = new AppModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components, registry);
     const origin = appModel.toSchema();
     const hstack1 = appModel.getComponentById('hstack1' as any)!;
     const text1 = appModel.getComponentById('text1' as any)!;
@@ -138,7 +139,7 @@ describe('append component as child to self', () => {
 });
 
 describe('add trait', () => {
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
   text1!.addTrait('core/v1/state' as TraitType, { key: 'value' });
@@ -156,7 +157,7 @@ describe('add trait', () => {
 });
 
 describe('remove trait', () => {
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any)!;
   text1!.removeTrait(text1.traits[0].id);
@@ -175,7 +176,7 @@ describe('remove trait', () => {
 
 describe('change component id', () => {
   const newId = 'newHstack1' as ComponentId;
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const hStack1 = appModel.getComponentById('hstack1' as ComponentId)!;
   hStack1.changeId(newId);
@@ -210,7 +211,7 @@ describe('change component id', () => {
 });
 
 describe('move component', () => {
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const hstack1 = appModel.getComponentById('hstack1' as ComponentId)!;
   const text1 = appModel.getComponentById('text1' as ComponentId)!;

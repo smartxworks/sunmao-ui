@@ -20,7 +20,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
   }
 
   private move(prev: ComponentSchema[], orientation: 'up' | 'down'): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');

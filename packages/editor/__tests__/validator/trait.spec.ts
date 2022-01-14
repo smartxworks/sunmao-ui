@@ -1,10 +1,10 @@
-import { registry } from '../../src/setup';
 import {
   TraitInvalidSchema,
   EventTraitSchema,
   EventTraitTraitMethodSchema,
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
+import { registry } from '../sevices';
 
 const schemaValidator = new SchemaValidator(registry);
 

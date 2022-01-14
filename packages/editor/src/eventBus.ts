@@ -14,10 +14,14 @@ export type EventNames = {
   selectComponent: string;
 };
 
-const emitter = mitt<EventNames>();
 
-export const eventBus = {
-  on: emitter.on,
-  off: emitter.off,
-  send: emitter.emit,
-};
+export const initEventBus = () => {
+  const emitter = mitt<EventNames>();
+  return {
+    on: emitter.on,
+    off: emitter.off,
+    send: emitter.emit,
+  };
+}
+
+export type EventBusType = ReturnType<typeof initEventBus>

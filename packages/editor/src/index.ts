@@ -1,0 +1,1 @@
+export { initSunmaoEditor } from './init';

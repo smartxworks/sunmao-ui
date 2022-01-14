@@ -1,3 +1,4 @@
+import { Registry } from '@sunmao-ui/runtime';
 import {
   CreateComponentBranchOperation,
   CreateComponentBranchOperationContext,
@@ -46,8 +47,9 @@ const OperationConstructors: Record<
 type OperationTypes = keyof OperationConfigMaps;
 
 type OperationConfigMap<TOperation, TContext> = {
-  constructor: new (context: TContext) => TOperation;
+  constructor: new (registry: Registry, context: TContext) => TOperation;
   context: TContext;
+  registry: Registry;
 };
 
 type OperationConfigMaps = {
@@ -96,11 +98,12 @@ type OperationConfigMaps = {
 };
 
 export const genOperation = <T extends OperationTypes>(
+  registry: Registry,
   type: T,
-  context: OperationConfigMaps[T]['context']
+  context: OperationConfigMaps[T]['context'],
 ): IOperation => {
   const OperationConstructor = OperationConstructors[
     type
   ] as OperationConfigMaps[T]['constructor'];
-  return new OperationConstructor(context as any);
+  return new OperationConstructor(registry, context as any);
 };
