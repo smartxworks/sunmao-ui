@@ -1,12 +1,12 @@
 import { Flex, Box, ChakraProvider, Button } from '@chakra-ui/react';
 import { Application } from '@sunmao-ui/core';
-import { initSunmaoUI } from '@sunmao-ui/runtime';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import { StrictMode, useMemo, useState } from 'react';
+import { StrictMode, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './styles.css';
 
-import { Editor } from './components/Editor';
+import { initSunmaoEditor } from './init';
+import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
 
 type Example = {
   name: string;
@@ -16,32 +16,12 @@ type Example = {
   };
 };
 
+const { Editor, registry } = initSunmaoEditor();
+
+registry.installLib(sunmaoChakraUILib);
+
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
-
-  const { App, registry, stateStore } = useMemo(() => {
-    if (!example) {
-      return {};
-    }
-    const ui = initSunmaoUI();
-    const App = ui.App;
-    const registry = ui.registry;
-    const apiService = ui.apiService;
-    const stateStore = ui.stateManager.store;
-
-    const { modules = [] } = example.value;
-    modules.forEach(m => {
-      registry.registerModule(m);
-    });
-    localStorage.removeItem('schema');
-
-    return {
-      App,
-      registry,
-      stateStore,
-      apiService,
-    };
-  }, [example]);
 
   return (
     <Flex width="100vw" height="100vh">
@@ -77,12 +57,7 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
         </Box>
       </Box>
       <Box flex="1">
-        <Editor
-          key={example!.name}
-          App={App!}
-          registry={registry!}
-          stateStore={stateStore!}
-        />
+        <Editor />
       </Box>
     </Flex>
   );

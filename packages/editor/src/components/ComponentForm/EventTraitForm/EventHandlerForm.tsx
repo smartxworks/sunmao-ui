@@ -13,31 +13,36 @@ import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
-import { EventHandlerSchema, Registry } from '@sunmao-ui/runtime';
+import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
-import { editorStore } from '../../../EditorStore';
+import { EditorServices } from '../../../types';
+
 type Props = {
-  registry: Registry;
   eventTypes: readonly string[];
   handler: Static<typeof EventHandlerSchema>;
   onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
   hideEventType?: boolean;
+  services: EditorServices;
 };
 
 export const EventHandlerForm: React.FC<Props> = observer(props => {
-  const { handler, eventTypes, onChange, onRemove, hideEventType, registry } = props;
+  const { handler, eventTypes, onChange, onRemove, hideEventType, services } = props;
+  const { registry, editorStore } = services;
   const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
 
-  const updateMethods = useCallback((componentId: string) => {
-    const type = components.find(c => c.id === componentId)?.type;
-    if (type) {
-      const componentSpec = registry.getComponentByType(type).spec;
-      setMethods(Object.keys(componentSpec.methods));
-    }
-  }, [components, registry])
+  const updateMethods = useCallback(
+    (componentId: string) => {
+      const type = components.find(c => c.id === componentId)?.type;
+      if (type) {
+        const componentSpec = registry.getComponentByType(type).spec;
+        setMethods(Object.keys(componentSpec.methods));
+      }
+    },
+    [components, registry]
+  );
 
   useEffect(() => {
     if (handler.componentId) {

@@ -2,8 +2,8 @@ import React from 'react';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
-import { editorStore } from '../../../EditorStore';
 import { KeyValueEditor } from '../../KeyValueEditor';
+import { EditorServices } from '../../../types';
 
 type ModuleMetaDataFormData = {
   name: string;
@@ -13,10 +13,12 @@ type ModuleMetaDataFormData = {
 
 type ModuleMetaDataFormProps = {
   initData: ModuleMetaDataFormData;
+  services: EditorServices;
 };
 
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
-  ({ initData }) => {
+  ({ initData, services }) => {
+    const { editorStore } = services;
     const onSubmit = (value: ModuleMetaDataFormData) => {
       editorStore.appStorage.saveModuleMetaDataInLS(
         { originName: initData.name, originVersion: initData.version },

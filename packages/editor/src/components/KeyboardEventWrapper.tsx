@@ -1,21 +1,24 @@
+import React, { useRef } from 'react';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { ComponentSchema } from '@sunmao-ui/core';
-import React, { useRef } from 'react';
-import { eventBus } from '../eventBus';
 import { genOperation } from '../operations';
 import { PasteManager } from '../operations/PasteManager';
+import { EditorServices } from '../types';
 
 type Props = {
   selectedComponentId: string;
   components: ComponentSchema[];
+  services: EditorServices;
 };
 
 export const KeyboardEventWrapper: React.FC<Props> = ({
   selectedComponentId,
   components,
+  services,
   children,
 }) => {
+  const { eventBus,registry } = services;
   const pasteManager = useRef(new PasteManager());
   const style = css`
     &:focus {
@@ -29,7 +32,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
       case 'Backspace':
         eventBus.send(
           'operation',
-          genOperation('removeComponent', {
+          genOperation(registry, 'removeComponent', {
             componentId: selectedComponentId,
           })
         );
@@ -60,7 +63,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
           pasteManager.current.setPasteComponents(selectedComponentId, components);
           eventBus.send(
             'operation',
-            genOperation('removeComponent', {
+            genOperation(registry, 'removeComponent', {
               componentId: selectedComponentId,
             })
           );
@@ -70,7 +73,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
         if (e.metaKey || e.ctrlKey) {
           eventBus.send(
             'operation',
-            genOperation('pasteComponent', {
+            genOperation(registry, 'pasteComponent', {
               parentId: selectedComponentId,
               slot: 'content',
               rootComponentId: pasteManager.current.rootComponentId,

@@ -2,8 +2,13 @@ import React from 'react';
 import ErrorBoundary from '../ErrorBoundary';
 import { ExplorerForm } from './ExplorerForm/ExplorerForm';
 import { ExplorerTree } from './ExplorerTree';
+import { EditorServices } from '../../types';
 
-export const Explorer: React.FC = () => {
+type Props = {
+  services: EditorServices;
+};
+
+export const Explorer: React.FC<Props> = ({ services }) => {
   const [isEditingMode, setIsEditingMode] = React.useState(false);
   const [formType, setFormType] = React.useState<'app' | 'module'>('app');
   const [currentVersion, setCurrentVersion] = React.useState<string>('');
@@ -25,9 +30,14 @@ export const Explorer: React.FC = () => {
           version={currentVersion}
           name={currentName}
           onBack={onBack}
+          services={services}
         />
       </ErrorBoundary>
     );
   }
-  return <ErrorBoundary><ExplorerTree onEdit={onEdit} /></ErrorBoundary>;
+  return (
+    <ErrorBoundary>
+      <ExplorerTree onEdit={onEdit} services={services} />
+    </ErrorBoundary>
+  );
 };

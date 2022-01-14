@@ -1,28 +1,29 @@
+import { TSchema } from '@sinclair/typebox';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { HStack, VStack } from '@chakra-ui/react';
-import { TSchema } from '@sinclair/typebox';
+
 import { AddTraitButton } from './AddTraitButton';
 import { GeneralTraitForm } from './GeneralTraitForm';
-import { eventBus } from '../../../eventBus';
 import { ignoreTraitsList } from '../../../constants';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation } from '../../../operations';
+import { EditorServices } from '../../../types';
 
 type Props = {
-  registry: Registry;
   component: ComponentSchema;
+  services: EditorServices;
 };
 
 export const GeneralTraitFormList: React.FC<Props> = props => {
-  const { component, registry } = props;
+  const { component, services } = props;
+  const { eventBus, registry } = services;
 
   const onAddTrait = (type: string) => {
     const traitSpec = registry.getTraitByType(type).spec;
     const initProperties = parseTypeBox(traitSpec.properties as TSchema);
     eventBus.send(
       'operation',
-      genOperation('createTrait', {
+      genOperation(registry, 'createTrait', {
         componentId: component.id,
         traitType: type,
         properties: initProperties,
@@ -30,31 +31,30 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     );
   };
 
-  const traitFields = component.traits
-    .map((trait, index) => {
-      if (ignoreTraitsList.includes(trait.type)) {
-        return null
-      }
-      const onRemoveTrait = () => {
-        eventBus.send(
-          'operation',
-          genOperation('removeTrait', {
-            componentId: component.id,
-            index,
-          })
-        );
-      };
-      return (
-        <GeneralTraitForm
-          key={index}
-          component={component}
-          trait={trait}
-          traitIndex={index}
-          onRemove={onRemoveTrait}
-          registry={registry}
-        />
+  const traitFields = component.traits.map((trait, index) => {
+    if (ignoreTraitsList.includes(trait.type)) {
+      return null;
+    }
+    const onRemoveTrait = () => {
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'removeTrait', {
+          componentId: component.id,
+          index,
+        })
       );
-    });
+    };
+    return (
+      <GeneralTraitForm
+        key={index}
+        component={component}
+        trait={trait}
+        traitIndex={index}
+        onRemove={onRemoveTrait}
+        services={services}
+      />
+    );
+  });
 
   return (
     <VStack width="full" alignItems="start">

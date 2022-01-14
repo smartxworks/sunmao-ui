@@ -1,11 +1,12 @@
+import { cloneDeep } from 'lodash-es';
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
-import { eventBus } from './eventBus';
+import { Registry, StateManager } from '@sunmao-ui/runtime';
+
+import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
-import { registry, stateManager } from './setup';
 import { SchemaValidator } from './validator';
 import { addModuleId } from './utils/addModuleId';
-import { cloneDeep } from 'lodash-es';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -13,7 +14,7 @@ type EditingTarget = {
   name: string;
 };
 
-class EditorStore {
+export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
@@ -30,8 +31,49 @@ class EditorStore {
   lastSavedComponentsVersion = 0;
 
   appStorage = new AppStorage();
-  schemaValidator = new SchemaValidator(registry);
+  schemaValidator: SchemaValidator;
 
+  constructor(
+    private eventBus: EventBusType,
+    private registry: Registry,
+    private stateManager: StateManager
+  ) {
+    this.schemaValidator = new SchemaValidator(this.registry)
+    makeAutoObservable(this, {
+      components: observable.shallow,
+      setComponents: action,
+      setDragOverComponentId: action,
+    });
+
+    this.eventBus.on('selectComponent', id => {
+      this.setSelectedComponentId(id);
+    });
+    // listen the change by operations, and save newComponents
+    this.eventBus.on('componentsChange', components => {
+      this.setComponents(components);
+      this.setCurrentComponentsVersion(this.currentComponentsVersion + 1);
+
+      if (this.validateResult.length === 0) {
+        this.saveCurrentComponents();
+      }
+    });
+
+    // when switch app or module, components should refresh
+    reaction(
+      () => this.currentEditingTarget,
+      target => {
+        if (target.name) {
+          this.setCurrentComponentsVersion(0);
+          this.setLastSavedComponentsVersion(0);
+          this.clearSunmaoGlobalState();
+          this.eventBus.send('componentsRefresh', this.originComponents);
+          this.setComponents(this.originComponents);
+        }
+      }
+    );
+
+    this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
+  }
   get app() {
     return this.appStorage.app;
   }
@@ -65,43 +107,6 @@ class EditorStore {
     return this.currentComponentsVersion === this.lastSavedComponentsVersion;
   }
 
-  constructor() {
-    makeAutoObservable(this, {
-      components: observable.shallow,
-      setComponents: action,
-      setDragOverComponentId: action,
-    });
-
-    eventBus.on('selectComponent', id => {
-      this.setSelectedComponentId(id);
-    });
-    // listen the change by operations, and save newComponents
-    eventBus.on('componentsChange', components => {
-      this.setComponents(components);
-      this.setCurrentComponentsVersion(this.currentComponentsVersion + 1);
-
-      if (this.validateResult.length === 0) {
-        this.saveCurrentComponents();
-      }
-    });
-
-    // when switch app or module, components should refresh
-    reaction(
-      () => this.currentEditingTarget,
-      target => {
-        if (target.name) {
-          this.setCurrentComponentsVersion(0);
-          this.setLastSavedComponentsVersion(0);
-          this.clearSunmaoGlobalState();
-          eventBus.send('componentsRefresh', this.originComponents);
-          this.setComponents(this.originComponents);
-        }
-      }
-    );
-
-    this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
-  }
-
   // origin components of app of module
   // when switch app or module, components should refresh
   get originComponents(): ComponentSchema[] {
@@ -119,11 +124,11 @@ class EditorStore {
   }
 
   clearSunmaoGlobalState() {
-    stateManager.clear();
+    this.stateManager.clear();
     // reregister all modules
     this.modules.forEach(m => {
       const modules = createModule(addModuleId(cloneDeep(m)));
-      registry.registerModule(modules, true);
+      this.registry.registerModule(modules, true);
     });
   }
 
@@ -167,5 +172,3 @@ class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 }
-
-export const editorStore = new EditorStore();

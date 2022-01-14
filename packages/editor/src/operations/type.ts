@@ -1,4 +1,5 @@
 import { ComponentSchema } from '@sunmao-ui/core';
+import { Registry } from '@sunmao-ui/runtime';
 
 export const leafSymbol = Symbol('leaf');
 export const branchSymbol = Symbol('branch');
@@ -140,9 +141,11 @@ export interface IOperation<TContext = any> extends IUndoRedo {
  */
 export abstract class BaseLeafOperation<TContext> implements IOperation<TContext> {
   context: TContext;
+  registry: Registry;
   type = leafSymbol;
 
-  constructor(context: TContext) {
+  constructor(registry: Registry, context: TContext) {
+    this.registry = registry;
     this.context = context;
   }
   /**
@@ -178,10 +181,12 @@ export abstract class BaseBranchOperation<TContext>
 {
   operationStack: OperationList;
   context: TContext;
+  registry: Registry;
   type = branchSymbol;
 
-  constructor(context: TContext) {
+  constructor(registry: Registry, context: TContext) {
     this.context = context;
+    this.registry = registry;
     this.operationStack = new OperationList();
   }
 

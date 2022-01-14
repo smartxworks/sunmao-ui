@@ -1,3 +1,5 @@
+import { useFormik } from 'formik';
+import produce from 'immer';
 import {
   Box,
   FormControl,
@@ -10,35 +12,32 @@ import {
 } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { AddIcon, CloseIcon } from '@chakra-ui/icons';
-import { useFormik } from 'formik';
-import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { EventCallBackHandlerSchema, FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
+import {
+  EventCallBackHandlerSchema,
+  FetchTraitPropertiesSchema,
+} from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EventHandlerForm } from '../EventTraitForm/EventHandlerForm';
-import { eventBus } from '../../../eventBus';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation } from '../../../operations';
+import { EditorServices } from '../../../types';
 
 type EventHandler = Static<typeof EventCallBackHandlerSchema>;
 
 type Props = {
   component: ComponentSchema;
-  registry: Registry;
+  services: EditorServices;
 };
 
 const httpMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const FetchTraitForm: React.FC<Props> = props => {
-  const { component, registry } = props;
+  const { component, services } = props;
+  const { registry, eventBus } = services;
 
   const fetchTrait = component.traits.find(t => t.type === 'core/v1/fetch')
     ?.properties as Static<typeof FetchTraitPropertiesSchema>;
-
-  if (!fetchTrait) {
-    return null;
-  }
 
   const formik = useFormik({
     initialValues: fetchTrait,
@@ -46,7 +45,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
       const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
       eventBus.send(
         'operation',
-        genOperation('modifyTraitProperty', {
+        genOperation(registry, 'modifyTraitProperty', {
           componentId: component.id,
           traitIndex: index,
           properties: values,
@@ -54,6 +53,10 @@ export const FetchTraitForm: React.FC<Props> = props => {
       );
     },
   });
+
+  if (!fetchTrait) {
+    return null;
+  }
 
   const urlField = (
     <FormControl>
@@ -161,11 +164,11 @@ export const FetchTraitForm: React.FC<Props> = props => {
           <EventHandlerForm
             key={i}
             eventTypes={[]}
-            handler={{type: '', ...handler}}
+            handler={{ type: '', ...handler }}
             hideEventType={true}
             onChange={onChange}
             onRemove={onRemove}
-            registry={registry}
+            services={services}
           />
         );
       })}
@@ -197,7 +200,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
           const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
           eventBus.send(
             'operation',
-            genOperation('removeTrait', {
+            genOperation(registry, 'removeTrait', {
               componentId: component.id,
               index,
             })

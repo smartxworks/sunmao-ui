@@ -17,7 +17,7 @@ export class MoveComponentBranchOperation extends BaseBranchOperation<MoveCompon
     
     if (this.context.toId === '__root__') {
       this.operationStack.insert(
-        new RemoveTraitLeafOperation({
+        new RemoveTraitLeafOperation(this.registry, {
           componentId: this.context.fromId,
           index: traitIndex,
         })
@@ -28,7 +28,7 @@ export class MoveComponentBranchOperation extends BaseBranchOperation<MoveCompon
       };
       if (traitIndex > -1) {
         this.operationStack.insert(
-          new ModifyTraitPropertiesLeafOperation({
+          new ModifyTraitPropertiesLeafOperation(this.registry, {
             componentId: this.context.fromId,
             traitIndex,
             properties: newSlotProperties,
@@ -36,7 +36,7 @@ export class MoveComponentBranchOperation extends BaseBranchOperation<MoveCompon
         );
       } else {
         this.operationStack.insert(
-          new CreateTraitLeafOperation({
+          new CreateTraitLeafOperation(this.registry, {
             componentId: this.context.fromId,
             traitType: 'core/v1/slot',
             properties: newSlotProperties,

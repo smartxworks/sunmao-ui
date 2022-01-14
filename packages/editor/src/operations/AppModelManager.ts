@@ -1,12 +1,12 @@
 import { ComponentSchema } from '@sunmao-ui/core';
-import { eventBus } from '../eventBus';
+import { EventBusType } from '../eventBus';
 import { IUndoRedoManager, IOperation, OperationList } from './type';
 
 export class AppModelManager implements IUndoRedoManager {
   components: ComponentSchema[] = [];
   operationStack: OperationList<IOperation> = new OperationList();
 
-  constructor() {
+  constructor(private eventBus: EventBusType) {
     eventBus.on('undo', () => this.undo());
     eventBus.on('redo', () => this.redo());
     eventBus.on('operation', o => this.do(o));
@@ -18,7 +18,7 @@ export class AppModelManager implements IUndoRedoManager {
 
   updateComponents(components: ComponentSchema[]) {
     this.components = components;
-    eventBus.send('componentsChange', this.components);
+    this.eventBus.send('componentsChange', this.components);
   }
 
   do(operation: IOperation): void {

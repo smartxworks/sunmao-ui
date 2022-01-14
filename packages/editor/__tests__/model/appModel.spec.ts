@@ -1,9 +1,10 @@
 import { AppModel } from '../../src/AppModel/AppModel';
 import { ComponentId, ComponentType } from '../../src/AppModel/IAppModel';
+import { registry } from '../sevices';
 import { AppSchema, DuplicatedIdSchema } from './mock';
 
 describe('AppModel test', () => {
-  const appModel = new AppModel(AppSchema.spec.components);
+  const appModel = new AppModel(AppSchema.spec.components, registry);
   describe('resolve tree', () => {
     it('resolve Tree corectlly', () => {
       expect(appModel.allComponents.length).toBe(10);
@@ -27,7 +28,7 @@ describe('AppModel test', () => {
 
     it('detect duplicated dd', () => {
       try {
-        new AppModel(DuplicatedIdSchema);
+        new AppModel(DuplicatedIdSchema, registry);
       } catch (e: any) {
         expect(e.message).toBe('Duplicate component id: hstack1');
       }
@@ -74,7 +75,7 @@ describe('AppModel test', () => {
     expect(newComponent.appModel).toBe(appModel);
   });
   it('can append component from other appModel', () => {
-    const appModel2 = new AppModel(AppSchema.spec.components);
+    const appModel2 = new AppModel(AppSchema.spec.components, registry);
     const newComponent2 = appModel2.createComponent('core/v1/text' as ComponentType);
     expect(newComponent2.appModel).not.toBe(appModel);
     appModel.appendChild(newComponent2);
@@ -82,7 +83,7 @@ describe('AppModel test', () => {
   });
 
   describe('remove component', () => {
-    const appModel = new AppModel(AppSchema.spec.components);
+    const appModel = new AppModel(AppSchema.spec.components, registry);
     const origin = appModel.toSchema();
     appModel.removeComponent('text1' as any);
     it('remove component', () => {

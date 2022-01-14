@@ -4,17 +4,19 @@ import { Button, Text, VStack } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { AppMetaDataForm } from './AppMetaDataForm';
 import { ModuleMetaDataForm } from './ModuleMetaDataForm';
-import { editorStore } from '../../../EditorStore';
+import { EditorServices } from '../../../types';
 
 type Props = {
   formType: 'app' | 'module';
   version: string;
   name: string;
   onBack: () => void;
+  services: EditorServices;
 };
 
 export const ExplorerForm: React.FC<Props> = observer(
-  ({ formType, version, name, onBack }) => {
+  ({ formType, version, name, onBack, services }) => {
+    const { editorStore } = services;
     let form;
     switch (formType) {
       case 'app':
@@ -22,7 +24,7 @@ export const ExplorerForm: React.FC<Props> = observer(
           name,
           version,
         };
-        form = <AppMetaDataForm data={appMetaData} />;
+        form = <AppMetaDataForm data={appMetaData} services={services} />;
         break;
       case 'module':
         const moduleSpec = editorStore.appStorage.modules.find(
@@ -33,7 +35,7 @@ export const ExplorerForm: React.FC<Props> = observer(
           version,
           stateMap: moduleSpec?.spec.stateMap || {},
         };
-        form = <ModuleMetaDataForm initData={moduleMetaData} />;
+        form = <ModuleMetaDataForm services={services} initData={moduleMetaData} />;
         break;
     }
     return (

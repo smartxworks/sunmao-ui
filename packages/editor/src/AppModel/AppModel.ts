@@ -1,4 +1,5 @@
 import { ComponentSchema, parseType } from '@sunmao-ui/core';
+import { Registry } from '@sunmao-ui/runtime';
 import { ComponentModel } from './ComponentModel';
 import {
   ComponentId,
@@ -16,7 +17,7 @@ export class AppModel implements IAppModel {
   private componentMap: Record<ComponentId, IComponentModel> = {};
   private componentsCount = 0;
 
-  constructor(components: ComponentSchema[]) {
+  constructor(components: ComponentSchema[], private registry: Registry) {
     this.schema = components;
     this.componentsCount = components.length;
     this.resolveTree(components);
@@ -55,8 +56,8 @@ export class AppModel implements IAppModel {
   }
 
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel {
-    const component = genComponent(type, id || this.genId(type));
-    return new ComponentModel(this, component);
+    const component = genComponent(this.registry, type, id || this.genId(type));
+    return new ComponentModel(this, component, this.registry);
   }
 
   getComponentById(componentId: ComponentId): IComponentModel | undefined {
@@ -93,7 +94,7 @@ export class AppModel implements IAppModel {
       if (this.componentMap[c.id as ComponentId]) {
         throw new Error(`Duplicate component id: ${c.id}`);
       } else {
-        const comp = new ComponentModel(this, c);
+        const comp = new ComponentModel(this, c, this.registry);
         this.componentMap[c.id as ComponentId] = comp;
         return comp;
       }

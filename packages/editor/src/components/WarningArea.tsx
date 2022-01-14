@@ -15,9 +15,14 @@ import {
 } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
-import { editorStore } from '../EditorStore';
+import { EditorServices } from '../types';
 
-export const WarningArea: React.FC = observer(() => {
+type Props = {
+  services: EditorServices;
+};
+
+export const WarningArea: React.FC<Props> = observer(({ services }) => {
+  const { editorStore } = services;
   const [isCollapsed, setIsCollapsed] = React.useState(true);
   const errorItems = useMemo(() => {
     if (isCollapsed) {
@@ -39,7 +44,7 @@ export const WarningArea: React.FC = observer(() => {
         </Tr>
       );
     });
-  }, [isCollapsed, editorStore.validateResult]);
+  }, [isCollapsed, editorStore]);
 
   const savedBadge = useMemo(() => {
     return <Badge colorScheme="green">Saved</Badge>;
@@ -59,7 +64,7 @@ export const WarningArea: React.FC = observer(() => {
         <Badge colorScheme="red">Unsave</Badge>
       </HStack>
     );
-  }, []);
+  }, [editorStore]);
 
   return (
     <VStack
