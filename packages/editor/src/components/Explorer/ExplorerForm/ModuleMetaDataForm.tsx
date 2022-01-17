@@ -20,7 +20,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
   ({ initData, services }) => {
     const { editorStore } = services;
     const onSubmit = (value: ModuleMetaDataFormData) => {
-      editorStore.appStorage.saveModuleMetaDataInLS(
+      editorStore.appStorage.saveModuleMetaData(
         { originName: initData.name, originVersion: initData.version },
         value
       );
