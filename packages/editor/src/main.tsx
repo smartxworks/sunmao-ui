@@ -6,7 +6,6 @@ import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
 
 import './styles.css';
 
-
 type Options = Partial<{
   components: Parameters<Registry['registerComponent']>[0][];
   traits: Parameters<Registry['registerTrait']>[0][];
@@ -14,7 +13,13 @@ type Options = Partial<{
   container: Element;
 }>;
 
-const { Editor, registry } = initSunmaoEditor();
+const { Editor, registry } = initSunmaoEditor({
+  storageHanlder: {
+    onSaveApp(app) {
+      console.log('save', app);
+    },
+  },
+});
 
 export default function renderApp(options: Options = {}) {
   const {

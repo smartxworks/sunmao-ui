@@ -30,13 +30,13 @@ export class EditorStore {
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
 
-  appStorage = new AppStorage();
   schemaValidator: SchemaValidator;
 
   constructor(
     private eventBus: EventBusType,
     private registry: Registry,
-    private stateManager: StateManager
+    private stateManager: StateManager,
+    private appStorage: AppStorage
   ) {
     this.schemaValidator = new SchemaValidator(this.registry)
     makeAutoObservable(this, {
