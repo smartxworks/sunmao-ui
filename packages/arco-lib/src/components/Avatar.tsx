@@ -1,5 +1,8 @@
 import { Avatar as BaseAvatar } from "@arco-design/web-react";
-import { ComponentImplementation, Slot } from "@sunmao-ui/runtime";
+import {
+  ComponentImpl,
+  implementRuntimeComponent,
+} from "@sunmao-ui/runtime";
 import { createComponent } from "@sunmao-ui/core";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
@@ -12,10 +15,10 @@ const AvatarPropsSchema = Type.Object({
 });
 const AvatarStateSchema = Type.Object({});
 
-const AvatarImpl: ComponentImplementation<Static<typeof AvatarPropsSchema>> = (
+const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (
   props
 ) => {
-  const { slotsMap, customStyle } = props;
+  const { slotsElements, customStyle } = props;
   const { className, ...cProps } = getComponentProps(props);
 
   return (
@@ -23,27 +26,36 @@ const AvatarImpl: ComponentImplementation<Static<typeof AvatarPropsSchema>> = (
       className={cx(className, css(customStyle?.content))}
       {...cProps}
     >
-      <Slot slotsMap={slotsMap} slot="content" />
+      {slotsElements.content}
     </BaseAvatar>
   );
 };
 
-export const Avatar = {
-  ...createComponent({
-    version: "arco/v1",
-    metadata: {
-      ...FALLBACK_METADATA,
-      name: "avatar",
-      displayName: "Avatar",
-    },
-    spec: {
-      properties: AvatarPropsSchema,
-      state: AvatarStateSchema,
-      methods: {},
-      slots: ["content"],
-      styleSlots: ["content"],
-      events: [],
-    },
-  }),
-  impl: AvatarImpl,
+const exampleProperties: Static<typeof AvatarPropsSchema> = {
+  className: "avatar",
+  shape: "circle",
+  autoFixFontSize: false,
+  triggerType: "button",
 };
+
+const options = {
+  version: "arco/v1",
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: "avatar",
+    displayName: "Avatar",
+    exampleProperties,
+  },
+  spec: {
+    properties: AvatarPropsSchema,
+    state: AvatarStateSchema,
+    methods: {},
+    slots: ["content"],
+    styleSlots: ["content"],
+    events: [],
+  },
+};
+
+export const Avatar = implementRuntimeComponent(options)(
+  AvatarImpl as typeof AvatarImpl & undefined
+);
