@@ -20,7 +20,7 @@ const LayoutStateSchema = Type.Object({});
 const LayoutImpl: ComponentImpl<Static<typeof LayoutPropsSchema>> = (props) => {
   const { slotsElements, customStyle } = props;
   const cProps = getComponentProps(props);
-
+  console.log('layout', slotsElements)
   return (
     <BaseLayout className={css(customStyle?.content)} {...cProps}>
       {slotsElements.content}
