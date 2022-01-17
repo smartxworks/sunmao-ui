@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lk": "yarn link @sunmao-ui/runtime @sunmao-ui/editor @sunmao-ui/core",
+    "unlk": "yarn unlink @sunmao-ui/runtime @sunmao-ui/editor @sunmao-ui/core"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.26.1",

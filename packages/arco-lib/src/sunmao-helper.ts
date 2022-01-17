@@ -1,7 +1,7 @@
 // move to @sunmao-ui/runtime in the future?
 
 import { ComponentMetadata } from "@sunmao-ui/core/lib/metadata";
-import { ComponentImplementationProps } from "@sunmao-ui/runtime";
+import { ComponentImplProps } from "@sunmao-ui/runtime";
 import { TUnion, TLiteral, Type } from "@sinclair/typebox";
 
 export type IntoStringUnion<T> = {
@@ -34,12 +34,12 @@ export const FALLBACK_METADATA: ComponentMetadata = {
 export const getComponentProps = <T, TState, TMethods, KSlot extends string,
   KStyleSlot extends string,
   KEvent extends string>(
-    props: T & ComponentImplementationProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
+    props: T & ComponentImplProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
   ): T => {
   const {
     component,
-    slotsMap,
-    targetSlot,
+    slotsElements,
+    childrenMap,
     services,
     app,
     gridCallbacks,

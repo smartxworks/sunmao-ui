@@ -1,5 +1,8 @@
 import { Divider as BaseDivider } from "@arco-design/web-react";
-import { ComponentImplementation } from "@sunmao-ui/runtime";
+import {
+  ComponentImpl,
+  implementRuntimeComponent,
+} from "@sunmao-ui/runtime";
 import { createComponent } from "@sunmao-ui/core";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
@@ -12,7 +15,7 @@ const DividerPropsSchema = Type.Object({
 });
 const DividerStateSchema = Type.Object({});
 
-const DividerImpl: ComponentImplementation<
+const DividerImpl: ComponentImpl<
   Static<typeof DividerPropsSchema>
 > = (props) => {
   const { customStyle } = props;
@@ -26,22 +29,30 @@ const DividerImpl: ComponentImplementation<
   );
 };
 
-export const Divider = {
-  ...createComponent({
-    version: "arco/v1",
-    metadata: {
-      ...FALLBACK_METADATA,
-      name: "divider",
-      displayName: "Divider",
-    },
-    spec: {
-      properties: DividerPropsSchema,
-      state: DividerStateSchema,
-      methods: {},
-      slots: [],
-      styleSlots: ["content"],
-      events: [],
-    },
-  }),
-  impl: DividerImpl,
+const exampleProperties: Static<typeof DividerPropsSchema> = {
+  className: "",
+  type: "horizontal",
+  orientation: "center",
 };
+
+const options = {
+  version: "arco/v1",
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: "divider",
+    displayName: "Divider",
+    exampleProperties,
+  },
+  spec: {
+    properties: DividerPropsSchema,
+    state: DividerStateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ["content"],
+    events: [],
+  },
+};
+
+export const Divider = implementRuntimeComponent(options)(
+  DividerImpl as typeof DividerImpl & undefined
+);

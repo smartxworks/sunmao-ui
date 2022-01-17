@@ -1,9 +1,14 @@
 import { Select as BaseSelect } from "@arco-design/web-react";
-import { ComponentImplementation } from "@sunmao-ui/runtime";
-import { createComponent } from "@sunmao-ui/core";
+import {
+  ComponentImpl,
+  implementRuntimeComponent,
+} from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
+import {
+  FALLBACK_METADATA,
+  getComponentProps,
+} from "../sunmao-helper";
 import { SelectPropsSchema as BaseSelectPropsSchema } from "../generated/types/Select";
 import { useEffect, useState } from "react";
 
@@ -24,7 +29,7 @@ const SelectStateSchema = Type.Object({
   value: Type.String(),
 });
 
-const SelectImpl: ComponentImplementation<Static<typeof SelectPropsSchema>> = (
+const SelectImpl: ComponentImpl<Static<typeof SelectPropsSchema>> = (
   props
 ) => {
   const { customStyle, callbackMap, mergeState, defaultValue = "" } = props;
@@ -55,22 +60,45 @@ const SelectImpl: ComponentImplementation<Static<typeof SelectPropsSchema>> = (
   );
 };
 
-export const Select = {
-  ...createComponent({
-    version: "arco/v1",
-    metadata: {
-      ...FALLBACK_METADATA,
-      name: "select",
-      displayName: "Select",
-    },
-    spec: {
-      properties: SelectPropsSchema,
-      state: SelectStateSchema,
-      methods: {},
-      slots: [],
-      styleSlots: ["content"],
-      events: ["onChange"],
-    },
-  }),
-  impl: SelectImpl,
+const exampleProperties: Static<typeof SelectPropsSchema> = {
+  allowClear: false,
+  allowCreate: false,
+  animation: false,
+  bordered: false,
+  defaultActiveFirstOption: false,
+  defaultPopupVisible: false,
+  defaultValue: "",
+  disabled: false,
+  error: false,
+  inputValue: "",
+  labelInValue: false,
+  loading: false,
+  mode: "multiple",
+  options: [
+    { value: "smartx", text: "smartx" },
+    { value: "baidu", text: "baidu" },
+    { value: "tencent", text: "tencent" },
+  ],
+  placeholder: "",
+  popupVisible: false,
+  size: "default",
+  unmountOnExit: false,
 };
+
+export const Select = implementRuntimeComponent({
+  version: "arco/v1",
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: "select",
+    displayName: "Select",
+    exampleProperties
+  },
+  spec: {
+    properties: SelectPropsSchema,
+    state: SelectStateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ["content"],
+    events: ["onChange"],
+  },
+})(SelectImpl as typeof SelectImpl & undefined);

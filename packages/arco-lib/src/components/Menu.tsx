@@ -1,6 +1,8 @@
 import { Menu as BaseMenu } from "@arco-design/web-react";
-import { ComponentImplementation } from "@sunmao-ui/runtime";
-import { createComponent } from "@sunmao-ui/core";
+import {
+  ComponentImpl,
+  implementRuntimeComponent,
+} from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -24,7 +26,7 @@ const MenuStateSchema = Type.Object({
   activeKey: Type.Optional(Type.String()),
 });
 
-const MenuImpl: ComponentImplementation<Static<typeof MenuPropsSchema>> = (
+const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (
   props
 ) => {
   const { customStyle, callbackMap, mergeState } = props;
@@ -54,22 +56,36 @@ const MenuImpl: ComponentImplementation<Static<typeof MenuPropsSchema>> = (
   );
 };
 
-export const Menu = {
-  ...createComponent({
-    version: "arco/v1",
-    metadata: {
-      ...FALLBACK_METADATA,
-      name: "menu",
-      displayName: "Menu",
-    },
-    spec: {
-      properties: MenuPropsSchema,
-      state: MenuStateSchema,
-      methods: {},
-      slots: [],
-      styleSlots: ["content"],
-      events: ["onClick"],
-    },
-  }),
-  impl: MenuImpl,
+const exampleProperties: Static<typeof MenuPropsSchema> = {
+  prefixCls: "",
+  isMenu: false,
+  inDropdown: false,
+  theme: "dark",
+  mode: "vertical",
+  autoOpen: false,
+  collapse: false,
+  accordion: false,
+  selectable: true,
+  ellipsis: false,
+  autoScrollIntoView: false,
+  hasCollapseButton: false,
+  items: [{ key: "key1", text: "text1" }],
 };
+
+export const Menu = implementRuntimeComponent({
+  version: "arco/v1",
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: "menu",
+    displayName: "Menu",
+    exampleProperties,
+  },
+  spec: {
+    properties: MenuPropsSchema,
+    state: MenuStateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ["content"],
+    events: ["onClick"],
+  },
+})(MenuImpl as typeof MenuImpl & undefined);
