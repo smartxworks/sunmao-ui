@@ -18,7 +18,7 @@ type CascaderOptions = {
   children?: CascaderOptions[];
 };
 const convertArrToTree = (arr: Array<Array<string>>) => {
-  let map: MapItem = {};
+  const map: MapItem = {};
   let node = map;
 
   // convert array to object, use the uniqueness of the object key
