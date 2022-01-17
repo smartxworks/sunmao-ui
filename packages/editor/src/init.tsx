@@ -8,10 +8,10 @@ import {
   withDefaultSize,
   withDefaultVariant,
 } from '@chakra-ui/react';
-import { initEventBus } from './eventBus';
-import { EditorStore } from './EditorStore';
+import { initEventBus } from './services/eventBus';
+import { EditorStore } from './services/EditorStore';
 import { StorageHandler } from './types';
-import { AppStorage } from './AppStorage';
+import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
 
 type SunmaoUIEditorProps = {
@@ -80,7 +80,5 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   return {
     Editor,
     registry,
-    onChange: () => null,
-    onSave: () => null,
   };
 }

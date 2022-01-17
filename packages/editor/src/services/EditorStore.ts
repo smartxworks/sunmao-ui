@@ -5,8 +5,8 @@ import { Registry, StateManager } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
-import { SchemaValidator } from './validator';
-import { addModuleId } from './utils/addModuleId';
+import { SchemaValidator } from '../validator';
+import { addModuleId } from '../utils/addModuleId';
 
 type EditingTarget = {
   kind: 'app' | 'module';

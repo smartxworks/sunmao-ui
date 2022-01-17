@@ -1,7 +1,7 @@
 import { Application, Module } from '@sunmao-ui/core';
 import { initSunmaoUI, Registry, StateManager } from '@sunmao-ui/runtime';
-import { EditorStore } from './EditorStore';
-import { EventBusType } from './eventBus';
+import { EditorStore } from './services/EditorStore';
+import { EventBusType } from './services/eventBus';
 import { AppModelManager } from './operations/AppModelManager';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;

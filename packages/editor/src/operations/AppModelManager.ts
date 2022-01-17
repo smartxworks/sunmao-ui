@@ -1,5 +1,5 @@
 import { ComponentSchema } from '@sunmao-ui/core';
-import { EventBusType } from '../eventBus';
+import { EventBusType } from '../services/eventBus';
 import { IUndoRedoManager, IOperation, OperationList } from './type';
 
 export class AppModelManager implements IUndoRedoManager {

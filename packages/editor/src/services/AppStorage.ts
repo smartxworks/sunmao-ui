@@ -1,10 +1,10 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
 import { Application, ComponentSchema, Module } from '@sunmao-ui/core';
-import { produce } from 'immer';
-import { DefaultNewModule, EmptyAppSchema } from './constants';
-import { addModuleId, removeModuleId } from './utils/addModuleId';
 import { cloneDeep } from 'lodash-es';
-import { StorageHandler } from './types';
+import { produce } from 'immer';
+import { DefaultNewModule, EmptyAppSchema } from '../constants';
+import { addModuleId, removeModuleId } from '../utils/addModuleId';
+import { StorageHandler } from '../types';
 
 export class AppStorage {
   app: Application;
