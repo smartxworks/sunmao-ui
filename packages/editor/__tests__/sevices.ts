@@ -1,4 +1,4 @@
-import { initSunmaoEditor } from '../src';
+import { initSunmaoUIEditor } from '../src';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
-export const { registry } = initSunmaoEditor();
+export const { registry } = initSunmaoUIEditor();
 registry.installLib(sunmaoChakraUILib);

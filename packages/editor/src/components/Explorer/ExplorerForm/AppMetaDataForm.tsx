@@ -18,7 +18,7 @@ export const AppMetaDataForm: React.FC<AppMetaDataFormProps> = observer(
   ({ data, services }) => {
     const { editorStore } = services;
     const onSubmit = (value: AppMetaDataFormData) => {
-      editorStore.appStorage.saveAppMetaDataInLS(value);
+      editorStore.appStorage.saveAppMetaData(value);
     };
     const formik = useFormik({
       initialValues: data,

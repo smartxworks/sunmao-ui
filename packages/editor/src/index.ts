@@ -1,1 +1,1 @@
-export { initSunmaoEditor } from './init';
+export { initSunmaoUIEditor } from './init';

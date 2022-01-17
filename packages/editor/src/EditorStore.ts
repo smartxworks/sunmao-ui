@@ -133,7 +133,7 @@ export class EditorStore {
   }
 
   saveCurrentComponents() {
-    this.appStorage.saveComponentsInLS(
+    this.appStorage.saveComponents(
       this.currentEditingTarget.kind,
       this.currentEditingTarget.version,
       this.currentEditingTarget.name,

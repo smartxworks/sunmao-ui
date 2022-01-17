@@ -21,7 +21,7 @@ type SunmaoUIEditorProps = {
   defaultModules?: Module[];
 };
 
-export function initSunmaoEditor(props: SunmaoUIEditorProps = {}) {
+export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   const editorTheme = extendTheme(
     withDefaultSize({
       size: 'sm',

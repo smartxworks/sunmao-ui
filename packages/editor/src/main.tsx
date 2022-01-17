@@ -1,8 +1,9 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { Registry } from '@sunmao-ui/runtime';
-import { initSunmaoEditor } from './init';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
+import { initSunmaoUIEditor } from './init';
+import { LocalStorageManager } from './LocalStorageManager';
 
 import './styles.css';
 
@@ -13,12 +14,18 @@ type Options = Partial<{
   container: Element;
 }>;
 
-const { Editor, registry } = initSunmaoEditor({
+const lsManager = new LocalStorageManager();
+const { Editor, registry } = initSunmaoUIEditor({
   storageHanlder: {
     onSaveApp(app) {
-      console.log('save', app);
+       lsManager.saveAppInLS(app);
+    },
+    onSaveModules(modules) {
+      lsManager.saveModulesInLS(modules);
     },
   },
+  defaultApplication: lsManager.getAppFromLS(),
+  defaultModules: lsManager.getModulesFromLS(),
 });
 
 export default function renderApp(options: Options = {}) {

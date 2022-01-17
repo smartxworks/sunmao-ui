@@ -5,7 +5,7 @@ import { StrictMode, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './styles.css';
 
-import { initSunmaoEditor } from './init';
+import { initSunmaoUIEditor } from './init';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
 
 type Example = {
@@ -16,7 +16,7 @@ type Example = {
   };
 };
 
-const { Editor, registry } = initSunmaoEditor();
+const { Editor, registry } = initSunmaoUIEditor();
 
 registry.installLib(sunmaoChakraUILib);
 
