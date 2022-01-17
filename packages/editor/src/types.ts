@@ -1,3 +1,4 @@
+import { Application, Module } from '@sunmao-ui/core';
 import { initSunmaoUI, Registry, StateManager } from '@sunmao-ui/runtime';
 import { EditorStore } from './EditorStore';
 import { EventBusType } from './eventBus';
@@ -14,3 +15,8 @@ export type EditorServices = {
   eventBus: EventBusType;
   editorStore: EditorStore;
 };
+
+export type StorageHandler = {
+  onSaveApp?: (app: Application) => void
+  onSaveModules?: (module: Module[]) => void
+}

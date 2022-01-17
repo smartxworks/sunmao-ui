@@ -6,9 +6,13 @@ import { mountUtilMethods } from './services/util-methods';
 import { initGlobalHandlerMap } from './services/handler';
 import './style.css';
 
-export function initSunmaoUI(dependencies = {}) {
+export type SunmaoUIRuntimeProps = {
+  dependencies?: Record<string, any>
+}
+
+export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   const registry = initRegistry();
-  const stateManager = new StateManager(dependencies);
+  const stateManager = new StateManager(props.dependencies);
   const globalHandlerMap = initGlobalHandlerMap();
   const apiService = initApiService();
   mountUtilMethods(apiService);
