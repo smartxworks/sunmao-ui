@@ -39,7 +39,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
   }, [component]);
 
   const styleTrait = component.traits[styleTraitIndex];
-  const ddddddd = styleTrait?.properties.styles as Styles | undefined;
+  const styles = styleTrait?.properties.styles as Styles | undefined;
 
   const createStyleTrait = () => {
     eventBus.send(
@@ -76,12 +76,12 @@ export const StyleTraitForm: React.FC<Props> = props => {
   );
 
   const addStyle = useCallback(() => {
-    const newStyles: Styles = (ddddddd || []).concat({
+    const newStyles: Styles = (styles || []).concat({
       styleSlot: styleSlots[0],
       style: '',
     });
     updateStyles(newStyles);
-  }, [updateStyles, styleSlots, ddddddd]);
+  }, [updateStyles, styleSlots, styles]);
 
   const onClickCreate = () => {
     if (!styleTrait) {
@@ -93,33 +93,33 @@ export const StyleTraitForm: React.FC<Props> = props => {
 
   const changeStyleContent = useCallback(
     (i: number, value: string) => {
-      if (!ddddddd) return;
-      const newStyles = produce(ddddddd, draft => {
+      if (!styles) return;
+      const newStyles = produce(styles, draft => {
         draft[i].style = value;
       });
       updateStyles(newStyles);
     },
-    [updateStyles, ddddddd]
+    [updateStyles, styles]
   );
 
   const changeStyleSlot = useCallback(
     (i: number, newSlot: string) => {
-      if (!ddddddd) return;
-      const newStyles = produce(ddddddd, draft => {
+      if (!styles) return;
+      const newStyles = produce(styles, draft => {
         draft[i].styleSlot = newSlot;
       });
       updateStyles(newStyles);
     },
-    [updateStyles, ddddddd]
+    [updateStyles, styles]
   );
 
   const styleForms = useMemo(() => {
-    if (!ddddddd) {
+    if (!styles) {
       return null;
     }
-    return ddddddd.map(({ style, styleSlot }, i) => {
+    return styles.map(({ style, styleSlot }, i) => {
       const removeStyle = () => {
-        const newStyles = ddddddd.filter((_, j) => j !== i);
+        const newStyles = styles.filter((_, j) => j !== i);
         updateStyles(newStyles);
       };
       return (
@@ -150,7 +150,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
         </VStack>
       );
     });
-  }, [ddddddd, styleSlots, updateStyles, changeStyleSlot, changeStyleContent]);
+  }, [styles, styleSlots, updateStyles, changeStyleSlot, changeStyleContent]);
 
   return (
     <VStack width="full">
