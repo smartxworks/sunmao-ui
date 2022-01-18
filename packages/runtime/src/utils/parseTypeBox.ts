@@ -11,8 +11,8 @@ import {
   UnionKind,
 } from '@sinclair/typebox';
 
-export function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
-  if (tSchema.modifier === OptionalModifier) {
+export function parseTypeBox(tSchema: TSchema, noOptional = false): Static<typeof tSchema> {
+  if (tSchema.modifier === OptionalModifier && !noOptional) {
     return undefined;
   }
 
@@ -31,14 +31,14 @@ export function parseTypeBox(tSchema: TSchema): Static<typeof tSchema> {
     case tSchema.kind === ObjectKind: {
       const obj: Static<typeof tSchema> = {};
       for (const key in tSchema.properties) {
-        obj[key] = parseTypeBox(tSchema.properties[key]);
+        obj[key] = parseTypeBox(tSchema.properties[key], noOptional);
       }
       return obj;
     }
     case tSchema.kind === UnionKind && 'anyOf' in tSchema && tSchema.anyOf.length > 0:
     case tSchema.kind === UnionKind && 'oneOf' in tSchema && tSchema.oneOf.length > 0: {
       const subSchema = (tSchema.anyOf || tSchema.oneOf)[0];
-      return parseTypeBox(subSchema);
+      return parseTypeBox(subSchema, noOptional);
     }
     default:
       return {};

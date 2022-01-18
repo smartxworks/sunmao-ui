@@ -1,7 +1,7 @@
-import { ComponentSchema } from '@sunmao-ui/core';
+import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
-import { IAppModel, IComponentModel, ITraitModel } from '../AppModel/IAppModel';
+import { IAppModel, IComponentModel, IFieldModel, ITraitModel } from '../AppModel/IAppModel';
 
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
@@ -9,10 +9,15 @@ export interface ValidatorMap {
 }
 
 interface BaseValidateContext {
+  components: ComponentSchema[];
   validators: ValidatorMap;
   registry: Registry;
   appModel: IAppModel;
   ajv: Ajv;
+  componentIdSpecMap: Record<
+    string,
+    RuntimeComponent<string, string, string, string>
+  >;
 }
 
 export interface ComponentValidateContext extends BaseValidateContext {
@@ -23,11 +28,19 @@ export interface TraitValidateContext extends BaseValidateContext {
   trait: ITraitModel;
   component: IComponentModel;
 }
+
+export interface PropertiesValidateContext extends BaseValidateContext {
+  properties: IFieldModel;
+  trait?: ITraitModel;
+  component: IComponentModel;
+}
+
 export type AllComponentsValidateContext = BaseValidateContext;
 
 export type ValidateContext =
   | ComponentValidateContext
   | TraitValidateContext
+  | PropertiesValidateContext
   | AllComponentsValidateContext;
 
 export interface ComponentValidatorRule {
@@ -36,6 +49,11 @@ export interface ComponentValidatorRule {
   fix?: (validateContext: ComponentValidateContext) => void;
 }
 
+export interface PropertiesValidatorRule {
+  kind: 'properties';
+  validate: (validateContext: PropertiesValidateContext) => ValidateErrorResult[];
+  fix?: (validateContext: PropertiesValidateContext) => void;
+}
 export interface AllComponentsValidatorRule {
   kind: 'allComponents';
   validate: (validateContext: AllComponentsValidateContext) => ValidateErrorResult[];
@@ -51,6 +69,7 @@ export interface TraitValidatorRule {
 export type ValidatorRule =
   | ComponentValidatorRule
   | AllComponentsValidatorRule
+  | PropertiesValidatorRule
   | TraitValidatorRule;
 
 export interface ISchemaValidator {
