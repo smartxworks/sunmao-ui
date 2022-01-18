@@ -5,7 +5,6 @@ import {
   TraitType,
   ITraitModel,
   IFieldModel,
-  StateKey,
   TraitId,
 } from './IAppModel';
 import { FieldModel } from './FieldModel';
@@ -15,10 +14,10 @@ let traitIdCount = 0;
 
 export class TraitModel implements ITraitModel {
   private schema: TraitSchema;
-  private spec: RuntimeTrait;
+  spec: RuntimeTrait;
   id: TraitId;
   type: TraitType;
-  properties: Record<string, IFieldModel> = {};
+  properties: IFieldModel;
   _isDirty = false;
 
   constructor(trait: TraitSchema, public parent: IComponentModel) {
@@ -28,26 +27,15 @@ export class TraitModel implements ITraitModel {
     this.id = `${this.parent.id}_trait${traitIdCount++}` as TraitId;
     this.spec = registry.getTraitByType(this.type);
 
-    for (const key in trait.properties) {
-      this.properties[key] = new FieldModel(trait.properties[key]);
-    }
-    this.properties;
+      this.properties = new FieldModel(trait.properties);
   }
 
   get rawProperties() {
-    const obj: Record<string, any> = {};
-    for (const key in this.properties) {
-      obj[key] = this.properties[key].value;
-    }
-    return obj;
+    return this.properties.rawValue
   }
 
   get methods() {
     return this.spec ? this.spec.spec.methods : []
-  }
-
-  get stateKeys() {
-    return (this.spec ? Object.keys(this.spec.spec.state.properties || {}) : []) as StateKey[];
   }
 
   toSchema(): TraitSchema {
@@ -58,11 +46,7 @@ export class TraitModel implements ITraitModel {
   }
 
   updateProperty(key: string, value: any) {
-    if (this.properties[key]) {
-      this.properties[key].update(value);
-    } else {
-      this.properties[key] = new FieldModel(value);
-    }
+    this.properties.update({[key]: value})
     this._isDirty = true;
     this.parent._isDirty = true;
   }

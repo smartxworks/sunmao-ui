@@ -8,48 +8,6 @@ import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
 
-class TraitPropertyValidatorRule implements TraitValidatorRule {
-  kind: 'trait' = 'trait';
-
-  validate({
-    trait,
-    component,
-    validators,
-  }: TraitValidateContext): ValidateErrorResult[] {
-    const results: ValidateErrorResult[] = [];
-    const validate = validators.traits[trait.type];
-    if (!validate) {
-      results.push({
-        message: `Trait is not registered: ${trait.type}.`,
-        componentId: component.id,
-      });
-      return results;
-    }
-    const valid = validate(trait.rawProperties);
-    if (!valid) {
-      validate.errors!.forEach(error => {
-        if (error.keyword === 'type') {
-          const { instancePath } = error;
-          const path = instancePath.split('/')[1];
-          const value = trait.rawProperties[path];
-
-          // if value is an expression, skip it
-          if (isExpression(value)) {
-            return;
-          }
-        }
-        results.push({
-          message: error.message || '',
-          componentId: component.id,
-          traitType: trait.type,
-          property: error.instancePath,
-        });
-      });
-    }
-    return results;
-  }
-}
-
 class EventHandlerValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
   traitMethods = ['setValue', 'resetValue', 'triggerFetch'];
@@ -112,7 +70,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
           if (error.keyword === 'type') {
             const { instancePath } = error;
             const path = instancePath.split('/')[1];
-            const value = trait.properties[path];
+            const value = trait.rawProperties[path];
 
             // if value is an expression, skip it
             if (isExpression(value)) {
@@ -132,7 +90,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
     return results;
   }
 }
+
 export const TraitRules = [
-  new TraitPropertyValidatorRule(),
   new EventHandlerValidatorRule(),
 ];

@@ -57,13 +57,58 @@ export const ComponentInvalidSchema: ComponentSchema[] = [
 
 export const ComponentPropertyExpressionSchema: ComponentSchema[] = [
   {
-    id: 'text1',
+    id: 'list',
     type: 'chakra_ui/v1/list',
     properties: {
-      listData: '{{data}}',
-      template: '{{template}}',
+      listData: '{{ [] }}',
+      template: '{{ {} }}',
     },
     traits: [],
+  },
+];
+
+export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
+  {
+    id: 'input1',
+    type: 'chakra_ui/v1/input',
+    properties: {
+      variant: 'outline',
+      placeholder: '{{data.value}}',
+      size: 'md',
+      isDisabled: false,
+      isRequired: false,
+      defaultValue: '',
+    },
+    traits: [],
+  },
+  {
+    id: 'button1',
+    type: 'chakra_ui/v1/button',
+    properties: {
+      text: {
+        raw: '{{fetch.data.value}}',
+        format: 'md',
+      },
+    },
+    traits: [
+      {
+        type: 'core/v1/event',
+        properties: {
+          handlers: [
+            {
+              type: 'onClick',
+              componentId: 'input1',
+              method: {
+                name: 'setInputValue',
+                parameters: {
+                  value: '{{input1.noValue}}',
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
   },
 ];
 

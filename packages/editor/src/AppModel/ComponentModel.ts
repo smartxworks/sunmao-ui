@@ -1,8 +1,4 @@
-import {
-  ComponentSchema,
-  MethodSchema,
-  RuntimeComponent,
-} from '@sunmao-ui/core';
+import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { registry } from '../setup';
 import { genComponent, genTrait } from './utils';
 import {
@@ -12,7 +8,6 @@ import {
   IComponentModel,
   SlotName,
   StyleSlotName,
-  StateKey,
   ITraitModel,
   IFieldModel,
   EventName,
@@ -22,19 +17,28 @@ import {
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
-type ComponentSpecModel = RuntimeComponent<MethodName, StyleSlotName, SlotName, EventName>
-const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
-export class ComponentModel implements IComponentModel {
-  private spec: ComponentSpecModel;
+import { merge } from 'lodash-es';
+import { parseTypeBox } from '@sunmao-ui/runtime';
 
+const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
+
+type ComponentSpecModel = RuntimeComponent<
+  MethodName,
+  StyleSlotName,
+  SlotName,
+  EventName
+>;
+export class ComponentModel implements IComponentModel {
+  spec: ComponentSpecModel;
   id: ComponentId;
   type: ComponentType;
-  properties: Record<string, IFieldModel> = {};
+  properties: IFieldModel;
   children: Record<SlotName, IComponentModel[]> = {};
   parent: IComponentModel | null = null;
   parentId: ComponentId | null = null;
   parentSlot: SlotName | null = null;
   traits: ITraitModel[] = [];
+  stateExample: Record<string, any> = {};
   _isDirty = false;
 
   constructor(public appModel: IAppModel, private schema: ComponentSchema) {
@@ -45,33 +49,14 @@ export class ComponentModel implements IComponentModel {
     this.spec = registry.getComponentByType(this.type) as any;
 
     this.traits = schema.traits.map(t => new TraitModel(t, this));
-    // find slot trait
-    this.traits.forEach(t => {
-      if (t.type === 'core/v1/slot') {
-        this.parentId = t.rawProperties.container.id;
-        this.parentSlot = t.rawProperties.container.slot;
-      }
-    });
-
-    for (const key in schema.properties) {
-      this.properties[key] = new FieldModel(schema.properties[key]);
-    }
+    this.genStateExample()
+    this.parentId = this._slotTrait?.rawProperties.container.id;
+    this.parentSlot = this._slotTrait?.rawProperties.container.slot; 
+    this.properties = new FieldModel(schema.properties);
   }
 
   get slots() {
     return (this.spec ? this.spec.spec.slots : []) as SlotName[];
-  }
-
-  get stateKeys() {
-    if (!this.spec) return [];
-    const componentStateKeys = Object.keys(
-      this.spec.spec.state.properties || {}
-    ) as StateKey[];
-    const traitStateKeys: StateKey[] = this.traits.reduce(
-      (acc, t) => acc.concat(t.stateKeys),
-      [] as StateKey[]
-    );
-    return [...componentStateKeys, ...traitStateKeys];
   }
 
   get events() {
@@ -85,7 +70,7 @@ export class ComponentModel implements IComponentModel {
       componentMethods.push({
         name: methodName,
         parameters: this.spec.spec.methods[methodName as MethodName]!,
-      })
+      });
     }
     const traitMethods: MethodSchema[] = this.traits.reduce(
       (acc, t) => acc.concat(t.methods),
@@ -99,11 +84,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   get rawProperties() {
-    const obj: Record<string, any> = {};
-    for (const key in this.properties) {
-      obj[key] = this.properties[key].value;
-    }
-    return obj;
+    return this.properties.rawValue;
   }
 
   get prevSilbling() {
@@ -146,11 +127,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   updateComponentProperty(propertyName: string, value: any) {
-    if (!Reflect.has(this.properties, propertyName)) {
-      this.properties[propertyName] = new FieldModel(value)
-    } else {
-      this.properties[propertyName].update(value);
-    }
+    this.properties.update({ [propertyName]: value });
     this._isDirty = true;
   }
 
@@ -159,6 +136,7 @@ export class ComponentModel implements IComponentModel {
     const trait = new TraitModel(traitSchema, this);
     this.traits.push(trait);
     this._isDirty = true;
+    this.genStateExample()
     return trait;
   }
 
@@ -200,6 +178,7 @@ export class ComponentModel implements IComponentModel {
     if (traitIndex === -1) return;
     this.traits.splice(traitIndex, 1);
     this._isDirty = true;
+    this.genStateExample()
   }
 
   changeId(newId: ComponentId) {
@@ -215,7 +194,7 @@ export class ComponentModel implements IComponentModel {
         child.parentId = newId;
         const slotTrait = child.traits.find(t => t.type === SlotTraitType);
         if (slotTrait) {
-          slotTrait.properties.container.update({ id: newId, slot });
+          slotTrait.properties.update({ container: { id: newId, slot } });
           slotTrait._isDirty = true;
         }
         child._isDirty = true;
@@ -263,15 +242,15 @@ export class ComponentModel implements IComponentModel {
     const trait = this.traits.find(t => t.id === traitId);
     if (!trait) return;
     for (const property in properties) {
-      trait.properties[property].update(properties[property]);
-      trait._isDirty = true;
+      trait.updateProperty(property, properties[property]);
     }
+    trait._isDirty = true;
     this._isDirty = true;
   }
 
   updateSlotTrait(parent: ComponentId, slot: SlotName) {
     if (this._slotTrait) {
-      this._slotTrait.properties.container.update({ id: parent, slot });
+      this._slotTrait.properties.update({ container: { id: parent, slot } });
       this._slotTrait._isDirty = true;
     } else {
       this.addTrait(SlotTraitType, { container: { id: parent, slot } });
@@ -289,5 +268,16 @@ export class ComponentModel implements IComponentModel {
       }
     }
     traverse(this);
+  }
+
+  // should be called after changing traits length
+  private genStateExample() {
+    if (!this.spec) return [];
+    const componentStateSpec = this.spec.spec.state;
+    const traitsStateSpec = this.traits.map(t => t.spec.spec.state);
+    const stateSpecs = [componentStateSpec, ...traitsStateSpec];
+    this.stateExample = stateSpecs.reduce((res, jsonSchema) => {
+      return merge(res, parseTypeBox(jsonSchema as any, true));
+    }, {});
   }
 }

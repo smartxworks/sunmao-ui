@@ -5,7 +5,9 @@ import {
   SlotName,
   TraitType,
 } from '../../src/AppModel/IAppModel';
-import { AppSchema } from './mock';
+import { AppSchema, EventHanlderMockSchema } from './mock';
+import { produce } from 'immer';
+import { get } from 'lodash-es';
 
 describe('ComponentModel test', () => {
   it('compute component property', () => {
@@ -21,9 +23,9 @@ describe('ComponentModel test', () => {
     expect(button1.parentSlot).toEqual('content');
     expect(button1.prevSilbling).toBe(appModel.getComponentById('text2' as ComponentId));
     expect(button1.nextSilbing).toBe(null);
-    expect(button1.properties['text'].value).toEqual({ raw: 'text', format: 'plain' });
+    expect(button1.rawProperties.text).toEqual({ raw: 'text', format: 'plain' });
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
-    expect(apiFetch.stateKeys).toEqual(['fetch']);
+    expect([...Object.keys(apiFetch.stateExample)]).toEqual(['fetch']);
     expect(apiFetch.methods[0].name).toEqual('triggerFetch');
   });
 });
@@ -40,15 +42,34 @@ describe('update component property', () => {
     expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'md' });
   });
 
-  it("update a new property that component don't have",()=>{
-    expect(newSchema[5].properties.newProperty).toEqual("a property that didn't exist before");
-  })
+  it("update a new property that component don't have", () => {
+    expect(newSchema[5].properties.newProperty).toEqual(
+      "a property that didn't exist before"
+    );
+  });
 
   it('keep immutable after updating component properties', () => {
     expect(origin).not.toBe(newSchema);
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
     expect(origin[5]).not.toBe(newSchema[5]);
+  });
+});
+
+describe('update event trait handlers(array) property', () => {
+  const appModel = new AppModel(EventHanlderMockSchema);
+  const button1 = appModel.getComponentById('button1' as any)!;
+  const oldHandlers = button1.traits[0].rawProperties.handlers;
+  const newHandlers = produce(oldHandlers, (draft: any) => {
+    draft[1].method.parameters.value = 'hello';
+  });
+  button1.updateTraitProperties(button1.traits[0].id, { handlers: newHandlers });
+  const newSchema = appModel.toSchema();
+
+  it('update trait array properties', () => {
+    expect(
+      get(newSchema[0].traits[0].properties, 'handlers[1].method.parameters.value')
+    ).toEqual('hello');
   });
 });
 
