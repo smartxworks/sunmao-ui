@@ -16,12 +16,13 @@ type Example = {
   };
 };
 
-const { Editor, registry } = initSunmaoUIEditor();
-
-registry.installLib(sunmaoChakraUILib);
-
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
+  const { Editor, registry } = initSunmaoUIEditor({
+    defaultApplication: example?.value.app,
+  });
+  registry.installLib(sunmaoChakraUILib);
+  example?.value.modules?.forEach(m => registry.registerModule(m));
 
   return (
     <Flex width="100vw" height="100vh">
