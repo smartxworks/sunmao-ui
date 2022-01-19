@@ -7,6 +7,7 @@ import { Select } from "./components/Select";
 import { Menu } from "./components/Menu";
 import { Dropdown } from "./components/Dropdown";
 import { Space } from "./components/Space";
+import { Icon } from "./components/Icon";
 import { Input } from "./components/Input";
 import { Divider } from "./components/Divider";
 import { Avatar } from "./components/Avatar";
@@ -35,6 +36,7 @@ export const components: Component[] = [
   Menu,
   Dropdown,
   Space,
+  Icon,
   Input,
   Divider,
   Avatar,
