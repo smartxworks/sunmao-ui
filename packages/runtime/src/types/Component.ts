@@ -24,7 +24,7 @@ export type ComponentImplProps<
 > = ImplWrapperProps<KSlot> &
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods> & {
-    slotsElements: Record<KSlot, React.ReactElement[]>;
+    slotsElements: Record<KSlot, React.ReactElement[] | React.ReactElement>;
   };
 
 export type ComponentImpl<
