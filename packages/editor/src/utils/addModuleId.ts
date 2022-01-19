@@ -51,7 +51,7 @@ export function removeModuleId(module: Module): Module {
     for (const key in tree) {
       const val = tree[key];
       if (typeof val === 'string') {
-        tree[key] = val.replaceAll(ModuleIdPrefix, '');
+        tree[key] = val.replace(/{{ \$moduleId }}__/g, '');
       } else if (typeof val === 'object') {
         traverse(val);
       }
