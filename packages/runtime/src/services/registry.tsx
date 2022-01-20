@@ -22,8 +22,6 @@ import {
   ImplementedRuntimeTrait,
   ImplementedRuntimeModule,
 } from '../types';
-import { parseModuleSchema } from '../utils/parseModuleSchema';
-import { cloneDeep } from 'lodash-es';
 
 export type SunmaoLib = {
   components?: ImplementedRuntimeComponent<string, string, string, string>[];
@@ -124,7 +122,6 @@ export class Registry {
   }
 
   registerModule(c: ImplementedRuntimeModule, overWrite = false) {
-    const parsedModule = parseModuleSchema(cloneDeep(c));
     if (!overWrite && this.modules.get(c.version)?.has(c.metadata.name)) {
       throw new Error(
         `Already has module ${c.version}/${c.metadata.name} in this registry.`
@@ -133,7 +130,7 @@ export class Registry {
     if (!this.modules.has(c.version)) {
       this.modules.set(c.version, new Map());
     }
-    this.modules.get(c.version)?.set(c.metadata.name, parsedModule);
+    this.modules.get(c.version)?.set(c.metadata.name, c);
   }
 
   getModule(version: string, name: string): ImplementedRuntimeModule {

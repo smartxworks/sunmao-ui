@@ -3,6 +3,8 @@ import { Application, ComponentSchema } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from './constants';
+import { addModuleId, removeModuleId } from './utils/addModuleId';
+import { cloneDeep } from 'lodash-es';
 
 export class AppStorage {
   app: Application = this.getDefaultAppFromLS();
@@ -35,7 +37,7 @@ export class AppStorage {
     try {
       const modulesFromLS = localStorage.getItem(AppStorage.ModulesLSKey);
       if (modulesFromLS) {
-        return JSON.parse(modulesFromLS);
+        return JSON.parse(modulesFromLS).map(removeModuleId);
       }
       return [];
     } catch (error) {
@@ -122,7 +124,8 @@ export class AppStorage {
   }
 
   private saveModulesInLS() {
-    localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(this.modules));
+    const modules = cloneDeep(this.modules).map(addModuleId)
+    localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(modules));
   }
 
   setApp(app: Application) {

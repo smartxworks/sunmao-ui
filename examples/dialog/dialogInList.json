@@ -20,7 +20,7 @@
       },
       "impl": [
         {
-          "id": "hstack",
+          "id": "{{ $moduleId }}__hstack",
           "type": "chakra_ui/v1/hstack",
           "properties": {
             "spacing": "24px"
@@ -28,7 +28,7 @@
           "traits": []
         },
         {
-          "id": "name",
+          "id": "{{ $moduleId }}__nameText",
           "type": "core/v1/text",
           "properties": {
             "value": {
@@ -41,7 +41,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "hstack",
+                  "id": "{{ $moduleId }}__hstack",
                   "slot": "content"
                 }
               }
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "id": "email",
+          "id": "{{ $moduleId }}__emailText",
           "type": "core/v1/text",
           "properties": {
             "value": {
@@ -62,7 +62,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "hstack",
+                  "id": "{{ $moduleId }}__hstack",
                   "slot": "content"
                 }
               }
@@ -70,7 +70,7 @@
           ]
         },
         {
-          "id": "deleteButton",
+          "id": "{{ $moduleId }}__deleteButton",
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
@@ -106,7 +106,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "hstack",
+                  "id": "{{ $moduleId }}__hstack",
                   "slot": "content"
                 }
               }
@@ -114,7 +114,7 @@
           ]
         },
         {
-          "id": "editButton",
+          "id": "{{ $moduleId }}__editButton",
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
@@ -150,7 +150,7 @@
               "type": "core/v1/slot",
               "properties": {
                 "container": {
-                  "id": "hstack",
+                  "id": "{{ $moduleId }}__hstack",
                   "slot": "content"
                 }
               }

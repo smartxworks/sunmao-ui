@@ -1,9 +1,11 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
-import { ComponentSchema } from '@sunmao-ui/core';
+import { ComponentSchema, createModule } from '@sunmao-ui/core';
 import { eventBus } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { registry, stateManager } from './setup';
 import { SchemaValidator } from './validator';
+import { addModuleId } from './utils/addModuleId';
+import { cloneDeep } from 'lodash-es';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -41,7 +43,7 @@ class EditorStore {
   get selectedComponent() {
     return this.components.find(c => c.id === this._selectedComponentId);
   }
-  
+
   // to avoid get out-of-dated value here, we should use getter to lazy load primitive type
   get hoverComponentId() {
     return this._hoverComponentId;
@@ -119,7 +121,10 @@ class EditorStore {
   clearSunmaoGlobalState() {
     stateManager.clear();
     // reregister all modules
-    this.modules.forEach(m => registry.registerModule(m, true));
+    this.modules.forEach(m => {
+      const modules = createModule(addModuleId(cloneDeep(m)));
+      registry.registerModule(modules, true);
+    });
   }
 
   saveCurrentComponents() {
