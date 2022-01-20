@@ -16,6 +16,7 @@ type Options = Partial<{
 
 const lsManager = new LocalStorageManager();
 const { Editor, registry } = initSunmaoUIEditor({
+  libs: [sunmaoChakraUILib],
   storageHanlder: {
     onSaveApp(app) {
        lsManager.saveAppInLS(app);
@@ -38,7 +39,6 @@ export default function renderApp(options: Options = {}) {
   components.forEach(c => registry.registerComponent(c));
   traits.forEach(t => registry.registerTrait(t));
   modules.forEach(m => registry.registerModule(m));
-  registry.installLib(sunmaoChakraUILib);
 
   ReactDOM.render(
     <StrictMode>
