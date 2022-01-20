@@ -2,6 +2,7 @@ import { JSONSchema7Object } from 'json-schema';
 import { parseVersion } from './version';
 import { Metadata } from './metadata';
 import { Version } from './version';
+import { ComponentSchema } from './application';
 
 // spec
 
@@ -10,6 +11,7 @@ export type Module = {
   kind: 'Module';
   metadata: Metadata;
   spec: ModuleSpec;
+  impl: ComponentSchema[];
 };
 
 type ModuleSpec = {
@@ -28,6 +30,7 @@ type CreateModuleOptions = {
   version: string;
   metadata: Metadata;
   spec?: Partial<ModuleSpec>;
+  impl?: ComponentSchema[];
 };
 
 export function createModule(options: CreateModuleOptions): RuntimeModule {
@@ -45,5 +48,6 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
       stateMap: {},
       ...options.spec
     },
+    impl: options.impl || [],
   };
 }
