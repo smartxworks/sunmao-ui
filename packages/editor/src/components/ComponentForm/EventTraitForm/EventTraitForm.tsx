@@ -36,13 +36,13 @@ export const EventTraitForm: React.FC<Props> = props => {
       componentId: '',
       method: {
         name: '',
-        parameters: {},
+        parameters: {}
       },
       disabled: false,
       wait: {
         type: 'delay',
-        time: 0,
-      },
+        time: 0
+      }
     };
 
     if (!handlers) {
@@ -51,7 +51,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         genOperation('createTrait', {
           componentId: component.id,
           traitType: 'core/v1/event',
-          properties: { handlers: [newHandler] },
+          properties: { handlers: [newHandler] }
         })
       );
     } else {
@@ -62,7 +62,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         genOperation('modifyTraitProperty', {
           componentId: component.id,
           traitIndex: index,
-          properties: [...handlers, newHandler],
+          properties: { handlers: [...handlers, newHandler] }
         })
       );
     }
@@ -81,8 +81,8 @@ export const EventTraitForm: React.FC<Props> = props => {
             componentId: component.id,
             traitIndex: index,
             properties: {
-              handlers: newHanlders,
-            },
+              handlers: newHanlders
+            }
           })
         );
       };
@@ -98,16 +98,16 @@ export const EventTraitForm: React.FC<Props> = props => {
             componentId: component.id,
             traitIndex: index,
             properties: {
-              handlers: newHanlders,
-            },
+              handlers: newHanlders
+            }
           })
         );
       };
       return (
         <EventHandlerForm
-          key={i}
-          handler={h}
           eventTypes={eventTypes}
+          handler={h}
+          key={i}
           onChange={onChange}
           onRemove={onRemove}
           registry={registry}
@@ -117,15 +117,18 @@ export const EventTraitForm: React.FC<Props> = props => {
 
   return (
     <VStack width="full">
-      <HStack width="full" justify="space-between">
+      <HStack
+        justify="space-between"
+        width="full"
+      >
         <strong>Events</strong>
         <IconButton
           aria-label="add event"
-          size="sm"
-          variant="ghost"
           colorScheme="blue"
           icon={<AddIcon />}
           onClick={onClickAddHandler}
+          size="sm"
+          variant="ghost"
         />
       </HStack>
       <VStack width="full">{handlerForms()}</VStack>
