@@ -82,6 +82,4 @@ const options = {
   },
 };
 
-export const Timeline = implementRuntimeComponent(options)(
-  TimelineImpl as typeof TimelineImpl & undefined
-);
+export const Timeline = implementRuntimeComponent(options)(TimelineImpl);

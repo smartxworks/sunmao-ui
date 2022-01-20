@@ -2,10 +2,7 @@ import { Layout as BaseLayout } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
-import {
-  FALLBACK_METADATA,
-  getComponentProps,
-} from "../sunmao-helper";
+import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import {
   HeaderPropsSchema as BaseHeaderPropsSchema,
   FooterPropsSchema as BaseFooterPropsSchema,
@@ -20,7 +17,6 @@ const LayoutStateSchema = Type.Object({});
 const LayoutImpl: ComponentImpl<Static<typeof LayoutPropsSchema>> = (props) => {
   const { slotsElements, customStyle } = props;
   const cProps = getComponentProps(props);
-  console.log('layout', slotsElements)
   return (
     <BaseLayout className={css(customStyle?.content)} {...cProps}>
       {slotsElements.content}
@@ -330,4 +326,4 @@ export const Sider = implementRuntimeComponent({
     styleSlots: ["content"],
     events: [],
   },
-})(SiderImpl as typeof SiderImpl & undefined);
+})(SiderImpl);

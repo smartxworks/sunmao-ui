@@ -114,6 +114,4 @@ const options = {
   },
 };
 
-export const TreeSelect = implementRuntimeComponent(options)(
-  TreeSelectImpl as typeof TreeSelectImpl & undefined
-);
+export const TreeSelect = implementRuntimeComponent(options)(TreeSelectImpl);

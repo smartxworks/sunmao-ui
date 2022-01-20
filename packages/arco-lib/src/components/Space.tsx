@@ -1,8 +1,5 @@
 import { Space as BaseSpace } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import {
@@ -21,9 +18,7 @@ const SpacePropsSchema = Type.Object({
 });
 const SpaceStateSchema = Type.Object({});
 
-const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSchema>> = (
-  props
-) => {
+const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSchema>> = (props) => {
   const { slotsElements, customStyle } = props;
   const cProps = getComponentProps(props);
 
@@ -56,4 +51,4 @@ export const Space = implementRuntimeComponent({
     styleSlots: ["content"],
     events: ["onClick"],
   },
-})(SpaceImpl as typeof SpaceImpl & undefined);
+})(SpaceImpl);

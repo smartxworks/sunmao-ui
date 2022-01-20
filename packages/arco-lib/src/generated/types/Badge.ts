@@ -4,10 +4,9 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const BadgePropsSchema = {
     className: Type.Optional(Type.String()),
-    defaultCount: Type.Optional(Type.Number()),
-    defaultText: Type.Optional(Type.String()),
+    text:Type.Optional(Type.String()),
+    count:Type.Optional(Type.Number()),
     dot: Type.Optional(Type.Boolean()),
-    dotStyle: Type.Optional(Type.String()),
     maxCount: Type.Optional(Type.Number()),
     offset: Type.Optional(Type.Tuple([Type.Number(), Type.Number()])),
     color: Type.Optional(StringUnion(['red', 'orangered', 'orange', 'gold', 'lime', 'green', 'cyan', 'arcoblue', 'purple', 'pinkpurple', 'magenta', 'gray'])),

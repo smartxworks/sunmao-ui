@@ -51,6 +51,4 @@ const options = {
   },
 };
 
-export const Link = implementRuntimeComponent(options)(
-  LinkImpl as typeof LinkImpl & undefined
-);
+export const Link = implementRuntimeComponent(options)(LinkImpl);

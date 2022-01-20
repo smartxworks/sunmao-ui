@@ -4,44 +4,20 @@ import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { SkeletonPropsSchema as BaseSkeletonPropsSchema } from "../generated/types/Skeleton";
-import { useState, useEffect } from "react";
 
 const SkeletonPropsSchema = Type.Object(BaseSkeletonPropsSchema);
-const SkeletonStateSchema = Type.Object({
-  loading: Type.Boolean(),
-});
+const SkeletonStateSchema = Type.Object({});
 
 const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSchema>> = (
   props
 ) => {
-  const { defaultLoading, ...cProps } = getComponentProps(props);
-  const {
-    customStyle,
-    className,
-    slotsElements,
-    mergeState,
-    subscribeMethods,
-  } = props;
-
-  const [loading, _setLoading] = useState(defaultLoading);
-
-  useEffect(() => {
-    mergeState({ loading });
-  }, [loading]);
-
-  useEffect(() => {
-    subscribeMethods({
-      setLoading({ loading }) {
-        _setLoading(loading);
-      },
-    });
-  }, []);
+  const { ...cProps } = getComponentProps(props);
+  const { customStyle, className, slotsElements } = props;
 
   return (
     <BaseSkeleton
       className={cx(className, css(customStyle?.content))}
       {...cProps}
-      loading={loading}
     >
       {slotsElements.content}
     </BaseSkeleton>
@@ -51,7 +27,7 @@ const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSchema>> = (
 const exampleProperties: Static<typeof SkeletonPropsSchema> = {
   className: "",
   animation: true,
-  defaultLoading: true,
+  loading: true,
   image: false,
   text: { rows: 3, width: ["100%", 600, 400] },
 };
@@ -67,15 +43,11 @@ const options = {
   spec: {
     properties: SkeletonPropsSchema,
     state: SkeletonStateSchema,
-    methods: {
-      setLoading: Type.String(),
-    },
+    methods: {},
     slots: ["content"],
     styleSlots: ["content"],
     events: [],
   },
 };
 
-export const Skeleton = implementRuntimeComponent(options)(
-  SkeletonImpl as typeof SkeletonImpl & undefined
-);
+export const Skeleton = implementRuntimeComponent(options)(SkeletonImpl);

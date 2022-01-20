@@ -1,9 +1,5 @@
 import { Divider as BaseDivider } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
-import { createComponent } from "@sunmao-ui/core";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -15,9 +11,9 @@ const DividerPropsSchema = Type.Object({
 });
 const DividerStateSchema = Type.Object({});
 
-const DividerImpl: ComponentImpl<
-  Static<typeof DividerPropsSchema>
-> = (props) => {
+const DividerImpl: ComponentImpl<Static<typeof DividerPropsSchema>> = (
+  props
+) => {
   const { customStyle } = props;
   const { className, ...cProps } = getComponentProps(props);
 
@@ -53,6 +49,4 @@ const options = {
   },
 };
 
-export const Divider = implementRuntimeComponent(options)(
-  DividerImpl as typeof DividerImpl & undefined
-);
+export const Divider = implementRuntimeComponent(options)(DividerImpl);

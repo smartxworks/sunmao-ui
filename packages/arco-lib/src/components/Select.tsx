@@ -101,4 +101,4 @@ export const Select = implementRuntimeComponent({
     styleSlots: ["content"],
     events: ["onChange"],
   },
-})(SelectImpl as typeof SelectImpl & undefined);
+})(SelectImpl);
