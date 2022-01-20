@@ -8,7 +8,8 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "prettier",
+    "standard"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -20,15 +21,27 @@
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
+    "semi": ["error", "always"],
     "linebreak-style": ["error", "unix"],
-    "react/prop-types": "off",
     "no-case-declarations": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "react/prop-types": "off",
     "react/display-name": "off",
     "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-indent": ["error", 2],
+    "react/jsx-indent-props": ["error", 2],
+    "react/self-closing-comp": ["error", {
+      "component": true,
+      "html": true
+    }],
+    "react/jsx-equals-spacing": ["error", "never"],
+    "react/jsx-wrap-multilines": ["error"],
+    "react/jsx-tag-spacing": ["error"],
+    "react/jsx-max-props-per-line": ["error"],
+    "react/jsx-sort-props": ["warn"]
   },
   "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html"]
 }
