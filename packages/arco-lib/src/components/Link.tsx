@@ -9,13 +9,15 @@ const LinkPropsSchema = Type.Object(BaseLinkPropsSchema);
 const LinkStateSchema = Type.Object({});
 
 const LinkImpl: ComponentImpl<Static<typeof LinkPropsSchema>> = (props) => {
-  const { content,status, ...cProps } = getComponentProps(props);
+  const { content, status, ...cProps } = getComponentProps(props);
   const { customStyle, className, slotsElements } = props;
 
   return (
     <BaseLink
-    status={status as any}
-    className={cx(className, css(customStyle?.content))} {...cProps}>
+      status={status}
+      className={cx(className, css(customStyle?.content))}
+      {...cProps}
+    >
       {content}
       {slotsElements.content}
     </BaseLink>
@@ -26,7 +28,7 @@ const exampleProperties: Static<typeof LinkPropsSchema> = {
   className: "",
   disabled: false,
   hoverable: true,
-  status: "default",
+  status: "warning",
   href: "https://www.smartx.com/",
   content: "Link",
 };
