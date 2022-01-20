@@ -21,7 +21,7 @@ export const SkeletonImagePropsSchema = {
 export const SkeletonPropsSchema = {
     className: Type.Optional(Type.String()),
     animation: Type.Optional(Type.Boolean()),
-    defaultLoading: Type.Optional(Type.Boolean()),
+    loading: Type.Optional(Type.Boolean()),
     image: Type.Optional(Type.Union([
         Type.Boolean(),
         Type.Object(SkeletonImagePropsSchema)

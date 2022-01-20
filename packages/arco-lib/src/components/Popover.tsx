@@ -31,10 +31,10 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
         _setPopupVisible(!!visible);
       },
     });
-  }, []);
+  }, [subscribeMethods]);
   useEffect(() => {
     mergeState({ visible: popupVisible });
-  }, [popupVisible]);
+  }, [popupVisible, mergeState]);
 
   // TODO only support arco componets slot now (same as Tooltip)
   const content = slotsElements.content && slotsElements.content[0];
@@ -45,11 +45,11 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
       {...cProps}
       content={slotsElements.popupContent}
       popupVisible={popupVisible}
-      onVisibleChange={(visible)=>{
-        if(visible){
-          _setPopupVisible(true)
+      onVisibleChange={(visible) => {
+        if (visible) {
+          _setPopupVisible(true);
         }
-    }}
+      }}
     >
       {content}
     </BasePopover>
@@ -76,7 +76,7 @@ const exampleProperties: Static<typeof PopoverPropsSchema> = {
   content: "This is Popover",
   controlled: false,
   trigger: "hover",
-  title:'Title'
+  title: "Title",
 };
 
 const options = {
@@ -93,12 +93,10 @@ const options = {
     methods: {
       setPopupVisible: Type.String(),
     },
-    slots: ["popupContent",'content'],
+    slots: ["popupContent", "content"],
     styleSlots: ["content"],
     events: [],
   },
 };
 
-export const Popover = implementRuntimeComponent(options)(
-  PopoverImpl as typeof PopoverImpl & undefined
-);
+export const Popover = implementRuntimeComponent(options)(PopoverImpl);

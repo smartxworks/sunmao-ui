@@ -1,47 +1,31 @@
 import { Progress as BaseProgress } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { ProgressPropsSchema as BaseProgressPropsSchema } from "../generated/types/Progress";
-import { useState, useEffect } from "react";
 
 const ProgressPropsSchema = Type.Object(BaseProgressPropsSchema);
-const ProgressStateSchema = Type.Object({
-  percent: Type.String(),
-});
+const ProgressStateSchema = Type.Object({});
 
-const ProgressImpl: ComponentImpl<
-  Static<typeof ProgressPropsSchema>
-> = (props) => {
+const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSchema>> = (
+  props
+) => {
   const { className, ...cProps } = getComponentProps(props);
-  const {
-    mergeState,
-    defaultPercent,
-    customStyle,
-    subscribeMethods,
-  } = props;
-  const [percent, _setPercent] = useState(defaultPercent);
+  const { customStyle } = props;
 
-  useEffect(() => {
-    mergeState({percent});
-  }, [percent]);
-
-  subscribeMethods({
-    setPercent({percent}) {
-      _setPercent(percent)
-    },
-  });
+  let steps = 0;
+  // step cannot be negative
+  if (cProps.steps && cProps.steps > 0) {
+    steps = cProps.steps;
+  }
 
   return (
-      <BaseProgress
-        percent={percent}
-        className={cx(className, css(customStyle?.content))}
-        {...cProps}
-      />
+    <BaseProgress
+      className={cx(className, css(customStyle?.content))}
+      {...cProps}
+      steps={steps}
+    />
   );
 };
 const exampleProperties: Static<typeof ProgressPropsSchema> = {
@@ -53,7 +37,7 @@ const exampleProperties: Static<typeof ProgressPropsSchema> = {
   color: "red",
   trailColor: "blue",
   showText: true,
-  defaultPercent: 0,
+  percent: 0,
   width: 100,
   size: "default",
   buffer: false,
@@ -71,15 +55,11 @@ const options = {
   spec: {
     properties: ProgressPropsSchema,
     state: ProgressStateSchema,
-    methods: {
-      setPercent: Type.String(),
-    },
+    methods: {},
     slots: [],
     styleSlots: ["content"],
-    events: ["setPercent"],
+    events: [],
   },
 };
 
-export const Progress = implementRuntimeComponent(options)(
-  ProgressImpl as typeof ProgressImpl & undefined
-);
+export const Progress = implementRuntimeComponent(options)(ProgressImpl);

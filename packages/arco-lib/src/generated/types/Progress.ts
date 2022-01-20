@@ -12,7 +12,7 @@ export const ProgressPropsSchema = {
     color: Type.Optional(Type.Union([Type.String(), Type.Object({ key: Type.String() })])),
     trailColor:Type.Optional(Type.String()),
     showText:Type.Optional(Type.Boolean()),
-    defaultPercent: Type.Number(),
+    percent: Type.Number(),
     width:Type.Optional(Type.Union([Type.String(),Type.Number()])),
     size:Type.Optional(StringUnion(['small' , 'default' , 'mini' , 'large'])),
     buffer:Type.Optional(Type.Boolean()),

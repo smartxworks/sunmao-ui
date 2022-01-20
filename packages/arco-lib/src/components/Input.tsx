@@ -1,8 +1,5 @@
 import { Input as BaseInput } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -17,9 +14,7 @@ const InputStateSchema = Type.Object({
   value: Type.String(),
 });
 
-const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (
-  props
-) => {
+const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
   const { slotsElements, customStyle, callbackMap, mergeState } = props;
   const { className, defaultValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState(defaultValue);
@@ -78,6 +73,4 @@ const options = {
   },
 };
 
-export const Input = implementRuntimeComponent(options)(
-  InputImpl as typeof InputImpl & undefined
-);
+export const Input = implementRuntimeComponent(options)(InputImpl);

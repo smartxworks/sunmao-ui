@@ -3,7 +3,6 @@ import {
   ComponentImpl,
   implementRuntimeComponent,
 } from "@sunmao-ui/runtime";
-import { createComponent } from "@sunmao-ui/core";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -53,4 +52,4 @@ const options = {
     events: [],
   },
 };
-export const Image = implementRuntimeComponent(options)(ImageImpl as typeof ImageImpl & undefined);
+export const Image = implementRuntimeComponent(options)(ImageImpl);

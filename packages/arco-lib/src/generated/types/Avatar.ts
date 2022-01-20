@@ -1,6 +1,6 @@
 
 import { Type } from "@sinclair/typebox";
-import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
+import { StringUnion } from '../../sunmao-helper';
 
 export const AvatarPropsSchema = {
   'shape': Type.Optional(StringUnion(['circle', 'square'])),

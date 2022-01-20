@@ -50,5 +50,5 @@ const options = {
 };
 
 export const Dropdown = implementRuntimeComponent(options)(
-  DropdownImpl as typeof DropdownImpl & undefined
+  DropdownImpl
 );

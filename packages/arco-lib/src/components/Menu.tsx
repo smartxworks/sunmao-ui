@@ -1,8 +1,5 @@
 import { Menu as BaseMenu } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -26,9 +23,7 @@ const MenuStateSchema = Type.Object({
   activeKey: Type.Optional(Type.String()),
 });
 
-const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (
-  props
-) => {
+const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
   const { customStyle, callbackMap, mergeState } = props;
   const { items = [], className, ...cProps } = getComponentProps(props);
   const [activeKey, setActiveKey] = useState<string>();
@@ -88,4 +83,4 @@ export const Menu = implementRuntimeComponent({
     styleSlots: ["content"],
     events: ["onClick"],
   },
-})(MenuImpl as typeof MenuImpl & undefined);
+})(MenuImpl);

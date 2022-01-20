@@ -146,4 +146,4 @@ export const CollapseItem = implementRuntimeComponent({
     styleSlots: ["content"],
     events: [],
   },
-})(CollapseItemImpl as typeof CollapseItemImpl & undefined);
+})(CollapseItemImpl);

@@ -1,9 +1,5 @@
 import { Avatar as BaseAvatar } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
-import { createComponent } from "@sunmao-ui/core";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -15,9 +11,7 @@ const AvatarPropsSchema = Type.Object({
 });
 const AvatarStateSchema = Type.Object({});
 
-const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (
-  props
-) => {
+const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
   const { slotsElements, customStyle } = props;
   const { className, ...cProps } = getComponentProps(props);
 
@@ -56,6 +50,4 @@ const options = {
   },
 };
 
-export const Avatar = implementRuntimeComponent(options)(
-  AvatarImpl as typeof AvatarImpl & undefined
-);
+export const Avatar = implementRuntimeComponent(options)(AvatarImpl);

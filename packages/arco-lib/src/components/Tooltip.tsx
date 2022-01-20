@@ -70,7 +70,7 @@ const exampleProperties: Static<typeof TooltipPropsSchema> = {
   disabled: false,
   content: "This is tooltip",
   controlled: false,
-  trigger:['hover','click']
+  trigger: ["hover", "click"],
 };
 
 const options = {
@@ -93,6 +93,4 @@ const options = {
   },
 };
 
-export const Tooltip = implementRuntimeComponent(options)(
-  TooltipImpl as typeof TooltipImpl & undefined
-);
+export const Tooltip = implementRuntimeComponent(options)(TooltipImpl);

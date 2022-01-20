@@ -61,6 +61,4 @@ const options = {
   },
 };
 
-export const Alert = implementRuntimeComponent(options)(
-  AlertImpl as any
-);
+export const Alert = implementRuntimeComponent(options)(AlertImpl);

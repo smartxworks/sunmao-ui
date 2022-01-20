@@ -1,8 +1,5 @@
 import { Button as BaseButton } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -14,12 +11,10 @@ const ButtonPropsSchema = Type.Object({
 });
 const ButtonStateSchema = Type.Object({});
 
-const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (
-  props
-) => {
+const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
   const { slotsElements, customStyle, callbackMap } = props;
   const { className, ...cProps } = getComponentProps(props);
-  
+
   return (
     <BaseButton
       className={cx(className, css(customStyle?.content))}
@@ -64,6 +59,4 @@ const options = {
   },
 };
 
-export const Button = implementRuntimeComponent(options)(
-  ButtonImpl as typeof ButtonImpl & undefined
-);
+export const Button = implementRuntimeComponent(options)(ButtonImpl);
