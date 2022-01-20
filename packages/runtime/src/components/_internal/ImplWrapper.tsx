@@ -150,15 +150,17 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     if (!childrenMap[c.id]) {
       return {};
     }
-    const res: Record<string, React.ReactElement[]> = {};
+    const res: Record<string, React.ReactElement[] | React.ReactElement> = {};
     for (const slot in childrenMap[c.id]) {
-      res[slot] = childrenMap[c.id][slot].map(child => {
+      const slotChildren = childrenMap[c.id][slot].map(child => {
         if (!childrenCache.get(child)) {
           const ele = <ImplWrapper key={child.id} {...props} component={child} />;
           childrenCache.set(child, ele);
         }
         return childrenCache.get(child)!;
       });
+
+      res[slot] = slotChildren.length === 1 ? slotChildren[0] : slotChildren;
     }
     return res;
   }
