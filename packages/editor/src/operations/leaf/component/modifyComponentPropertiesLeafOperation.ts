@@ -1,4 +1,3 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import { BaseLeafOperation } from '../../type';
 import _ from 'lodash-es';
 import { AppModel } from '../../../AppModel/AppModel';
@@ -10,9 +9,8 @@ export type ModifyComponentPropertiesLeafOperationContext = {
 
 export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<ModifyComponentPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+  do(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (component) {
       for (const property in this.context.properties) {
         const oldValue = component.rawProperties[property];
@@ -31,12 +29,11 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
       return prev;
     }
 
-    const newSchema = appModel.toSchema();
-    return newSchema;
+    return prev;
   }
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+
+  redo(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -45,11 +42,11 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     for (const property in this.context.properties) {
       component.updateComponentProperty(property, this.context.properties[property]);
     }
-    return appModel.toSchema();
+    return prev;
   }
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+
+  undo(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -59,6 +56,6 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
       component.updateComponentProperty(property, this.previousState[property]);
     }
 
-    return appModel.toSchema();
+    return prev;
   }
 }

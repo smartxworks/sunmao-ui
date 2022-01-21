@@ -1,4 +1,4 @@
-import { ComponentSchema } from '@sunmao-ui/core';
+
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -11,26 +11,24 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
   private deletedComponent?: IComponentModel;
   private prevComponent?: IComponentModel;
 
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    this.deletedComponent = appModel.getComponentById(
+  do(prev: AppModel): AppModel {
+    this.deletedComponent = prev.getComponentById(
       this.context.componentId as ComponentId
     );
     this.prevComponent = this.deletedComponent?.prevSilbling || undefined;
-    appModel.removeComponent(this.context.componentId as ComponentId);
-    return appModel.toSchema();
+    prev.removeComponent(this.context.componentId as ComponentId);
+    return prev;
   }
 
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
+  redo(prev: AppModel): AppModel {
     return this.do(prev);
   }
 
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
+  undo(prev: AppModel): AppModel {
     if (!this.deletedComponent) {
       return prev;
     }
-    const appModel = new AppModel(prev, this.registry);
-    const parent = appModel.getComponentById(
+    const parent = prev.getComponentById(
       this.deletedComponent.parentId as ComponentId
     );
     if (parent) {
@@ -39,9 +37,9 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
         this.deletedComponent.parentSlot as SlotName
       );
     } else {
-      appModel.appendChild(this.deletedComponent);
+      prev.appendChild(this.deletedComponent);
     }
     this.deletedComponent.moveAfter(this.prevComponent || null);
-    return appModel.toSchema();
+    return prev;
   }
 }

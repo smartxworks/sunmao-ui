@@ -170,9 +170,12 @@ export class ComponentModel implements IComponentModel {
   removeChild(child: IComponentModel) {
     const slotChildren = this.children[child.parentSlot!];
     if (slotChildren) {
-      slotChildren.splice(slotChildren.indexOf(child), 1);
-      child._isDirty = true;
-      this._isDirty = true;
+      const index = slotChildren.indexOf(child)
+      if (index > -1) {
+        slotChildren.splice(slotChildren.indexOf(child), 1);
+        child._isDirty = true;
+        this._isDirty = true;
+      }
     }
   }
 

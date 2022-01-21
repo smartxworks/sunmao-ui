@@ -1,6 +1,11 @@
-import { ComponentSchema } from '@sunmao-ui/core';
+import { AppModel } from '../../AppModel/AppModel';
 import { BaseBranchOperation } from '../type';
-import { CreateTraitLeafOperation, ModifyTraitPropertiesLeafOperation, RemoveTraitLeafOperation } from '../leaf';
+import {
+  CreateTraitLeafOperation,
+  ModifyTraitPropertiesLeafOperation,
+  RemoveTraitLeafOperation,
+} from '../leaf';
+import { ComponentId } from '../../AppModel/IAppModel';
 
 export type MoveComponentBranchOperationContext = {
   fromId: string;
@@ -9,12 +14,12 @@ export type MoveComponentBranchOperationContext = {
 };
 
 export class MoveComponentBranchOperation extends BaseBranchOperation<MoveComponentBranchOperationContext> {
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const from = prev.find(c => c.id === this.context.fromId);
+  do(prev: AppModel): AppModel {
+    const from = prev.getComponentById(this.context.fromId as ComponentId);
     if (!from) return prev;
-    
+
     const traitIndex = from.traits.findIndex(t => t.type === 'core/v1/slot');
-    
+
     if (this.context.toId === '__root__') {
       this.operationStack.insert(
         new RemoveTraitLeafOperation(this.registry, {

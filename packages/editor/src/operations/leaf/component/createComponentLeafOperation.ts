@@ -1,6 +1,10 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import { AppModel } from '../../../AppModel/AppModel';
-import { ComponentId, ComponentType, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
+import {
+  ComponentId,
+  ComponentType,
+  IComponentModel,
+  SlotName,
+} from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 
 export type CreateComponentLeafOperationContext = {
@@ -13,11 +17,13 @@ export type CreateComponentLeafOperationContext = {
 export class CreateComponentLeafOperation extends BaseLeafOperation<CreateComponentLeafOperationContext> {
   private component!: IComponentModel;
 
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.createComponent(this.context.componentType as ComponentType, this.context.componentId as ComponentId);
+  do(prev: AppModel): AppModel {
+    const component = prev.createComponent(
+      this.context.componentType as ComponentType,
+      this.context.componentId as ComponentId
+    );
     if (this.context.parentId) {
-      const parent = appModel.getComponentById(this.context.parentId);
+      const parent = prev.getComponentById(this.context.parentId);
       if (parent) {
         component.appendTo(parent, this.context.slot);
       }
@@ -25,17 +31,15 @@ export class CreateComponentLeafOperation extends BaseLeafOperation<CreateCompon
       component.appendTo();
     }
     this.component = component;
-    const newSchema = appModel.toSchema()
-    return newSchema
+    return prev;
   }
 
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
-    return this.do(prev)
+  redo(prev: AppModel): AppModel {
+    return this.do(prev);
   }
 
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    appModel.removeComponent(this.component.id)
-    return appModel.toSchema()
+  undo(prev: AppModel): AppModel {
+    prev.removeComponent(this.component.id);
+    return prev;
   }
 }
