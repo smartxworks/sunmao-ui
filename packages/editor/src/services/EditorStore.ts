@@ -26,6 +26,7 @@ export class EditorStore {
     version: '',
     name: '',
   };
+
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
@@ -36,9 +37,9 @@ export class EditorStore {
     private eventBus: EventBusType,
     private registry: Registry,
     private stateManager: StateManager,
-    private appStorage: AppStorage
+    public appStorage: AppStorage
   ) {
-    this.schemaValidator = new SchemaValidator(this.registry)
+    this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
       components: observable.shallow,
       setComponents: action,
@@ -74,6 +75,7 @@ export class EditorStore {
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
+
   get app() {
     return this.appStorage.app;
   }
@@ -153,21 +155,27 @@ export class EditorStore {
       version,
     };
   };
+
   setSelectedComponentId = (val: string) => {
     this._selectedComponentId = val;
   };
+
   setHoverComponentId = (val: string) => {
     this._hoverComponentId = val;
   };
+
   setComponents = (val: ComponentSchema[]) => {
     this.components = val;
   };
+
   setDragOverComponentId = (val: string) => {
     this._dragOverComponentId = val;
   };
+
   setCurrentComponentsVersion = (val: number) => {
     this.currentComponentsVersion = val;
   };
+
   setLastSavedComponentsVersion = (val: number) => {
     this.lastSavedComponentsVersion = val;
   };

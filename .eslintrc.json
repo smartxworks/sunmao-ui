@@ -24,6 +24,10 @@
     "semi": ["error", "always"],
     "linebreak-style": ["error", "unix"],
     "no-case-declarations": "off",
+    "no-use-before-define": "off",
+    "comma-dangle": "off",
+    "space-before-function-paren": "off",
+    "multiline-ternary": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -33,15 +37,16 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-indent": ["error", 2],
     "react/jsx-indent-props": ["error", 2],
-    "react/self-closing-comp": ["error", {
-      "component": true,
-      "html": true
-    }],
+    "react/self-closing-comp": [
+      "error",
+      {
+        "component": true,
+        "html": true
+      }
+    ],
     "react/jsx-equals-spacing": ["error", "never"],
     "react/jsx-wrap-multilines": ["error"],
-    "react/jsx-tag-spacing": ["error"],
-    "react/jsx-max-props-per-line": ["error"],
-    "react/jsx-sort-props": ["warn"]
+    "react/jsx-tag-spacing": ["error"]
   },
-  "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html"]
+  "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html", "*.spec.ts", "*.spec.tsx"]
 }

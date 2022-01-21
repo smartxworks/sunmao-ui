@@ -2,7 +2,6 @@ import { Divider, HStack, IconButton, Text, Tooltip, VStack } from '@chakra-ui/r
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { EditorServices } from '../../types';
 
 type ExplorerTreeProps = {
@@ -52,7 +51,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(
       />
     );
 
-    const moduleItems = modules.map((module: ImplementedRuntimeModule) => {
+    const moduleItems = modules.map((module) => {
       const moduleItemId = genItemId('module', module.version, module.metadata.name);
       const onClickModule = () => {
         setSelectedItem(moduleItemId);
