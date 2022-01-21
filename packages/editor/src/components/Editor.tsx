@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Application } from '@sunmao-ui/core';
 import { GridCallbacks, DIALOG_CONTAINER_ID, initSunmaoUI } from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
@@ -156,7 +156,7 @@ export const Editor: React.FC<Props> = observer(
               </TabList>
               <TabPanels flex="1" overflow="auto">
                 <TabPanel>
-                  <Explorer services={services}/>
+                  <Explorer services={services} />
                 </TabPanel>
                 <TabPanel p={0}>
                   <StructureTree
