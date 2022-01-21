@@ -8,9 +8,13 @@ export class AppModelManager implements IUndoRedoManager {
   appModel: AppModel;
   operationStack: OperationList<IOperation> = new OperationList();
 
-  constructor(private eventBus: EventBusType, private registry: Registry, initComponents: ComponentSchema[]) {
-    this.appModel = new AppModel(initComponents, this.registry)
-  
+  constructor(
+    private eventBus: EventBusType,
+    private registry: Registry,
+    initComponents: ComponentSchema[]
+  ) {
+    this.appModel = new AppModel(initComponents, this.registry);
+
     eventBus.on('undo', () => this.undo());
     eventBus.on('redo', () => this.redo());
     eventBus.on('operation', o => this.do(o));
@@ -69,7 +73,7 @@ export class AppModelManager implements IUndoRedoManager {
     if (newComponents) {
       this.updateComponents(newComponents);
     } else {
-      //rollback move prev
+      // rollback move prev
       this.operationStack.moveNext();
       console.warn('cannot undo as cursor has no operation', this.operationStack);
     }

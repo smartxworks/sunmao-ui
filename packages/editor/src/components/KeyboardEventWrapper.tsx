@@ -5,6 +5,8 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { genOperation } from '../operations';
 import { PasteManager } from '../operations/PasteManager';
 import { EditorServices } from '../types';
+import { AppModel } from '../AppModel/AppModel';
+import { ComponentId } from '../AppModel/IAppModel';
 
 type Props = {
   selectedComponentId: string;
@@ -18,7 +20,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   services,
   children,
 }) => {
-  const { eventBus,registry } = services;
+  const { eventBus, registry } = services;
   const pasteManager = useRef(new PasteManager());
   const style = css`
     &:focus {
@@ -55,12 +57,24 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
       case 'c':
         // FIXME: detect os version and set redo/undo logic
         if (e.metaKey || e.ctrlKey) {
-          pasteManager.current.setPasteComponents(selectedComponentId, components);
+          const appModel = new AppModel(components, registry);
+          const copiedComponent = appModel.getComponentById(
+            selectedComponentId as ComponentId
+          );
+          if (copiedComponent) {
+            pasteManager.current.setPasteComponents(selectedComponentId, copiedComponent);
+          }
         }
         break;
       case 'x':
         if (e.metaKey || e.ctrlKey) {
-          pasteManager.current.setPasteComponents(selectedComponentId, components);
+          const appModel = new AppModel(components, registry);
+          const copiedComponent = appModel.getComponentById(
+            selectedComponentId as ComponentId
+          );
+          if (copiedComponent) {
+            pasteManager.current.setPasteComponents(selectedComponentId, copiedComponent);
+          }
           eventBus.send(
             'operation',
             genOperation(registry, 'removeComponent', {
@@ -71,17 +85,19 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
         break;
       case 'v':
         if (e.metaKey || e.ctrlKey) {
-          eventBus.send(
-            'operation',
-            genOperation(registry, 'pasteComponent', {
-              parentId: selectedComponentId,
-              slot: 'content',
-              rootComponentId: pasteManager.current.rootComponentId,
-              components: pasteManager.current.componentsCache,
-              copyTimes: pasteManager.current.copyTimes,
-            })
-          );
-          pasteManager.current.copyTimes++;
+          if (pasteManager.current.componentCache) {
+            eventBus.send(
+              'operation',
+              genOperation(registry, 'pasteComponent', {
+                parentId: selectedComponentId,
+                slot: 'content',
+                rootComponentId: pasteManager.current.rootComponentId,
+                component: pasteManager.current.componentCache,
+                copyTimes: pasteManager.current.copyTimes,
+              })
+            );
+            pasteManager.current.copyTimes++;
+          }
         }
         break;
     }
