@@ -12,7 +12,7 @@ const ButtonPropsSchema = Type.Object({
 const ButtonStateSchema = Type.Object({});
 
 const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
-  const { slotsElements, customStyle, callbackMap } = props;
+  const { slotsElements, customStyle, text, callbackMap } = props;
   const { className, ...cProps } = getComponentProps(props);
 
   return (
@@ -22,6 +22,7 @@ const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
       {...cProps}
     >
       {slotsElements.content}
+      {text}
     </BaseButton>
   );
 };
