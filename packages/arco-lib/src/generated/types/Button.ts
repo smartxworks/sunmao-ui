@@ -1,8 +1,9 @@
 
 import { Type } from "@sinclair/typebox";
-import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
+import { StringUnion } from '../../sunmao-helper';
 
 export const ButtonPropsSchema = {
+  'text': Type.Optional(Type.String()),
   'htmlType': Type.Optional(StringUnion(['button', 'submit', 'reset'])),
   'type': Type.Optional(StringUnion(['default', 'primary', 'secondary', 'dashed', 'text', 'outline'])),
   'status': Type.Optional(StringUnion(['default', 'warning', 'danger', 'success'])),
