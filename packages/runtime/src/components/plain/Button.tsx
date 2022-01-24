@@ -31,7 +31,7 @@ export default implementRuntimeComponent({
     properties: PropsSchema,
     state: StateSchema,
     methods: {
-      click: void 0,
+      click: undefined,
     },
     slots: [],
     styleSlots: ['content'],

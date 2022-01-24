@@ -22,11 +22,20 @@ import {
   ImplementedRuntimeTrait,
   ImplementedRuntimeModule,
 } from '../types';
+import { ApiService } from './apiService';
+
+export type UtilMethod = {
+  name: string;
+  method: (parameters?: any) => void;
+};
+
+export type UtilMethodFactory = () => UtilMethod[];
 
 export type SunmaoLib = {
   components?: ImplementedRuntimeComponent<string, string, string, string>[];
   traits?: ImplementedRuntimeTrait[];
   modules?: ImplementedRuntimeModule[];
+  utilMethods?: UtilMethodFactory[];
 };
 
 type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
@@ -40,6 +49,12 @@ export class Registry {
   components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
+  utilMethods = new Map<string, UtilMethod['method']>();
+  private apiService: ApiService;
+
+  constructor(apiService: ApiService) {
+    this.apiService = apiService;
+  }
 
   registerComponent(c: AnyImplementedRuntimeComponent) {
     if (this.components.get(c.version)?.has(c.metadata.name)) {
@@ -146,15 +161,40 @@ export class Registry {
     return this.getModule(version, name);
   }
 
+  registerUtilMethod(m: UtilMethod) {
+    if (this.utilMethods.get(m.name)) {
+      throw new Error(`Already has utilMethod ${m.name} in this registry.`);
+    }
+    this.utilMethods.set(m.name, m.method);
+  }
+
   installLib(lib: SunmaoLib) {
     lib.components?.forEach(c => this.registerComponent(c));
     lib.traits?.forEach(t => this.registerTrait(t));
     lib.modules?.forEach(m => this.registerModule(m));
+    if (lib.utilMethods) {
+      lib.utilMethods.forEach(factory => {
+        const methods = factory();
+        methods.forEach(m => this.registerUtilMethod(m));
+      });
+      this.mountUtilMethods();
+    }
+  }
+
+  private mountUtilMethods() {
+    this.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
+      if (componentId === '$utils') {
+        const utilMethod = this.utilMethods.get(name);
+        if (utilMethod) {
+          utilMethod(parameters);
+        }
+      }
+    });
   }
 }
 
-export function initRegistry(): Registry {
-  const registry = new Registry();
+export function initRegistry(apiService: ApiService): Registry {
+  const registry = new Registry(apiService);
   registry.registerComponent(PlainButton);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);
