@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FormControl,
   FormLabel,
@@ -51,7 +51,6 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
   if (hidden) {
     return <div className="hidden">{children}</div>;
   }
-  console.log({ isExpression });
 
   return (
     <FormControl isRequired={required} id={id} mt="1">
@@ -86,8 +85,11 @@ type Props = FieldProps & {
 };
 
 const SchemaField: React.FC<Props> = props => {
-  const { schema, label, formData, onChange, registry } = props;
-  const [isExpression, setIsExpression] = useState(false);
+  const { schema, label, formData, onChange, registry, stateManager } = props;
+  const [isExpression, setIsExpression] = useState(
+    // FIXME: regexp copied from FieldModel.ts, is this a stable way to check expression?
+    () => typeof formData === 'string' && /.*{{.*}}.*/.test(formData)
+  );
 
   if (isEmpty(schema)) {
     return null;
@@ -96,7 +98,9 @@ const SchemaField: React.FC<Props> = props => {
   let Component = UnsupportedField;
 
   // customize widgets
-  if (schema.widget && widgets[schema.widget]) {
+  if (isExpression) {
+    Component = widgets.expression;
+  } else if (schema.widget && widgets[schema.widget]) {
     Component = widgets[schema.widget];
   }
   // type fields
@@ -129,16 +133,13 @@ const SchemaField: React.FC<Props> = props => {
       isExpression={isExpression}
       setIsExpression={setIsExpression}
     >
-      {isExpression ? (
-        <>oh no</>
-      ) : (
-        <Component
-          schema={schema}
-          formData={formData}
-          onChange={onChange}
-          registry={registry}
-        />
-      )}
+      <Component
+        schema={schema}
+        formData={formData}
+        onChange={onChange}
+        registry={registry}
+        stateManager={stateManager}
+      />
     </DefaultTemplate>
   );
 };

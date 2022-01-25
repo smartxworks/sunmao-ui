@@ -1,5 +1,5 @@
 import { Component } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { Registry, StateManager } from '@sunmao-ui/runtime';
 
 type Schema = Component<string, string, string, string>['spec']['properties'];
 type EditorSchema = {
@@ -9,6 +9,7 @@ type EditorSchema = {
 export type FieldProps = {
   schema: Schema & EditorSchema;
   registry: Registry;
+  stateManager: StateManager;
   formData: any;
   onChange: (v: any) => void;
 };

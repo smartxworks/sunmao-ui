@@ -5,7 +5,7 @@ import SchemaField from '../SchemaField';
 
 type Props = FieldProps;
 
-const ModuleWidget: React.FC<Props> = props => {
+export const ModuleWidget: React.FC<Props> = props => {
   const { formData, onChange, schema, registry } = props;
   const moduleTypes = useMemo(() => {
     const res: string[] = [];
@@ -74,5 +74,3 @@ const ModuleWidget: React.FC<Props> = props => {
     </Box>
   );
 };
-
-export default ModuleWidget;
