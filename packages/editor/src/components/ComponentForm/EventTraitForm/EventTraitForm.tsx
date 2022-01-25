@@ -5,20 +5,20 @@ import { Static } from '@sinclair/typebox';
 import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
-import { eventBus } from '../../../eventBus';
 import { EventHandlerForm } from './EventHandlerForm';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation } from '../../../operations';
+import { EditorServices } from '../../../types';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
 type Props = {
-  registry: Registry;
   component: ComponentSchema;
+  services: EditorServices;
 };
 
 export const EventTraitForm: React.FC<Props> = props => {
-  const { component, registry } = props;
+  const { component, services } = props;
+  const { eventBus, registry } = services;
 
   const handlers: EventHandler[] = useMemo(() => {
     return component.traits.find(t => t.type === 'core/v1/event')?.properties
@@ -48,7 +48,7 @@ export const EventTraitForm: React.FC<Props> = props => {
     if (!handlers) {
       eventBus.send(
         'operation',
-        genOperation('createTrait', {
+        genOperation(registry, 'createTrait', {
           componentId: component.id,
           traitType: 'core/v1/event',
           properties: { handlers: [newHandler] }
@@ -59,7 +59,7 @@ export const EventTraitForm: React.FC<Props> = props => {
       const index = component.traits.findIndex(t => t.type === 'core/v1/event');
       eventBus.send(
         'operation',
-        genOperation('modifyTraitProperty', {
+        genOperation(registry, 'modifyTraitProperty', {
           componentId: component.id,
           traitIndex: index,
           properties: { handlers: [...handlers, newHandler] }
@@ -77,7 +77,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         });
         eventBus.send(
           'operation',
-          genOperation('modifyTraitProperty', {
+          genOperation(registry, 'modifyTraitProperty', {
             componentId: component.id,
             traitIndex: index,
             properties: {
@@ -94,7 +94,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         });
         eventBus.send(
           'operation',
-          genOperation('modifyTraitProperty', {
+          genOperation(registry, 'modifyTraitProperty', {
             componentId: component.id,
             traitIndex: index,
             properties: {
@@ -110,7 +110,7 @@ export const EventTraitForm: React.FC<Props> = props => {
           key={i}
           onChange={onChange}
           onRemove={onRemove}
-          registry={registry}
+          services={services}
         />
       );
     });

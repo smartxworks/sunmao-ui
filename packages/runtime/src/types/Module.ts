@@ -1,6 +1,6 @@
 import { EventHandlerSchema } from './TraitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
-import { ComponentSchema, RuntimeModule } from '@sunmao-ui/core';
+import { RuntimeModule } from '@sunmao-ui/core';
 
 export const ModuleSchema = Type.Object({
   id: Type.String(),
@@ -9,6 +9,4 @@ export const ModuleSchema = Type.Object({
   handlers: Type.Array(EventHandlerSchema),
 });
 
-export type ImplementedRuntimeModule = RuntimeModule & {
-  impl: ComponentSchema[];
-};
+export type ImplementedRuntimeModule = RuntimeModule;

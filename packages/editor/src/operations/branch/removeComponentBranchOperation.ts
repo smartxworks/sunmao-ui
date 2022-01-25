@@ -14,13 +14,13 @@ export type RemoveComponentBranchOperationContext = {
 
 export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveComponentBranchOperationContext> {
   do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const parent = appModel.getComponentById(this.context.componentId as ComponentId);
 
     if (parent && parent.type === 'core/v1/grid_layout') {
       // modify layout property of parent grid layout component
       this.operationStack.insert(
-        new ModifyComponentPropertiesLeafOperation({
+        new ModifyComponentPropertiesLeafOperation(this.registry, {
           componentId: parent.id,
           properties: {
             layout: (prev: Array<ReactGridLayout.Layout>) => {
@@ -41,7 +41,7 @@ export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveCo
 
     // free component from schema
     this.operationStack.insert(
-      new RemoveComponentLeafOperation({ componentId: this.context.componentId })
+      new RemoveComponentLeafOperation(this.registry, { componentId: this.context.componentId })
     );
 
     // do the operation in order

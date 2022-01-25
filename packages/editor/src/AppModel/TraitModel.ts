@@ -1,5 +1,5 @@
 import { TraitSchema, RuntimeTrait } from '@sunmao-ui/core';
-import { registry } from '../setup';
+import { Registry } from '@sunmao-ui/runtime';
 import {
   IComponentModel,
   TraitType,
@@ -20,22 +20,26 @@ export class TraitModel implements ITraitModel {
   properties: IFieldModel;
   _isDirty = false;
 
-  constructor(trait: TraitSchema, public parent: IComponentModel) {
+  constructor(
+    trait: TraitSchema,
+    public parent: IComponentModel,
+    private registry: Registry
+  ) {
     this.schema = trait;
     this.parent = parent;
     this.type = trait.type as TraitType;
     this.id = `${this.parent.id}_trait${traitIdCount++}` as TraitId;
-    this.spec = registry.getTraitByType(this.type);
+    this.spec = this.registry.getTraitByType(this.type);
 
-      this.properties = new FieldModel(trait.properties);
+    this.properties = new FieldModel(trait.properties);
   }
 
   get rawProperties() {
-    return this.properties.rawValue
+    return this.properties.rawValue;
   }
 
   get methods() {
-    return this.spec ? this.spec.spec.methods : []
+    return this.spec ? this.spec.spec.methods : [];
   }
 
   toSchema(): TraitSchema {
@@ -46,7 +50,7 @@ export class TraitModel implements ITraitModel {
   }
 
   updateProperty(key: string, value: any) {
-    this.properties.update({[key]: value})
+    this.properties.update({ [key]: value });
     this._isDirty = true;
     this.parent._isDirty = true;
   }

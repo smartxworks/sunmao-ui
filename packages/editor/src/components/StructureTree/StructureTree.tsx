@@ -1,27 +1,27 @@
 import React, { useMemo } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { genOperation as genOperation } from '../../operations';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
+import { EditorServices } from '../../types';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ComponentSchema[]>;
 
 type Props = {
-  registry: Registry;
   components: ComponentSchema[];
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
+  services: EditorServices;
 };
 
 export const StructureTree: React.FC<Props> = props => {
-  const { components, selectedComponentId, onSelectComponent, registry } = props;
+  const { components, selectedComponentId, onSelectComponent, services } = props;
+  const { eventBus, registry } = services;
 
   const [realComponents, dataSources] = useMemo(() => {
     const _realComponent: ComponentSchema[] = [];
@@ -37,7 +37,8 @@ export const StructureTree: React.FC<Props> = props => {
   }, [components]);
 
   const componentEles = useMemo(() => {
-    const { topLevelComponents, childrenMap } = resolveApplicationComponents(realComponents);
+    const { topLevelComponents, childrenMap } =
+      resolveApplicationComponents(realComponents);
 
     return topLevelComponents.map(c => (
       <ComponentTree
@@ -46,17 +47,17 @@ export const StructureTree: React.FC<Props> = props => {
         childrenMap={childrenMap}
         selectedComponentId={selectedComponentId}
         onSelectComponent={onSelectComponent}
-        registry={registry}
+        services={services}
       />
     ));
-  }, [realComponents, selectedComponentId, onSelectComponent, registry]);
+  }, [realComponents, selectedComponentId, onSelectComponent, services]);
 
   const dataSourceEles = useMemo(() => {
     return dataSources.map(dummy => {
       const onClickRemove = () => {
         eventBus.send(
           'operation',
-          genOperation('removeComponent', {
+          genOperation(registry, 'removeComponent', {
             componentId: dummy.id,
           })
         );
@@ -75,14 +76,14 @@ export const StructureTree: React.FC<Props> = props => {
         />
       );
     });
-  }, [dataSources, selectedComponentId, onSelectComponent]);
+  }, [dataSources, selectedComponentId, eventBus, registry, onSelectComponent]);
 
   return (
     <VStack spacing="2" padding="5" alignItems="start">
       <Text fontSize="lg" fontWeight="bold">
         Components
       </Text>
-      <RootItem />
+      <RootItem services={services} />
       {componentEles}
       <Text fontSize="lg" fontWeight="bold">
         DataSources
@@ -92,11 +93,12 @@ export const StructureTree: React.FC<Props> = props => {
   );
 };
 
-function RootItem() {
+function RootItem(props: { services: EditorServices }) {
+  const { eventBus, registry } = props.services;
   const onCreateComponent = (creatingComponent: string) => {
     eventBus.send(
       'operation',
-      genOperation('createComponent', {
+      genOperation(registry, 'createComponent', {
         componentType: creatingComponent,
       })
     );
@@ -105,7 +107,7 @@ function RootItem() {
     if (movingComponent === 'root') return;
     eventBus.send(
       'operation',
-      genOperation('moveComponent', {
+      genOperation(registry, 'moveComponent', {
         fromId: movingComponent,
         toId: '__root__',
         slot: '__root__',

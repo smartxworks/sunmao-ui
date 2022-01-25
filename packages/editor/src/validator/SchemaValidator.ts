@@ -52,7 +52,7 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   validate(components: ComponentSchema[]) {
-    const appModel = new AppModel(components);
+    const appModel = new AppModel(components, this.registry);
     this.genComponentIdSpecMap(components);
     this.result = [];
     const baseContext = {

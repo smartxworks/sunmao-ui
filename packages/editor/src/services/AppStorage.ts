@@ -1,18 +1,25 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import { Application, ComponentSchema } from '@sunmao-ui/core';
-import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
-import { produce } from 'immer';
-import { DefaultNewModule, EmptyAppSchema } from './constants';
-import { addModuleId, removeModuleId } from './utils/addModuleId';
+import { Application, ComponentSchema, Module } from '@sunmao-ui/core';
 import { cloneDeep } from 'lodash-es';
+import { produce } from 'immer';
+import { DefaultNewModule, EmptyAppSchema } from '../constants';
+import { addModuleId, removeModuleId } from '../utils/addModuleId';
+import { StorageHandler } from '../types';
 
 export class AppStorage {
-  app: Application = this.getDefaultAppFromLS();
-  modules: ImplementedRuntimeModule[] = this.getModulesFromLS();
+  app: Application;
+  modules: Module[];
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
-  constructor() {
+  constructor(
+    defaultApplication?: Application,
+    defaultModules?: Module[],
+    private storageHanlder?: StorageHandler
+  ) {
+    this.app = defaultApplication || EmptyAppSchema;
+    this.modules = defaultModules?.map(removeModuleId) || []
+
     makeObservable(this, {
       app: observable.shallow,
       modules: observable.shallow,
@@ -21,33 +28,9 @@ export class AppStorage {
     });
   }
 
-  getDefaultAppFromLS(): Application {
-    try {
-      const appFromLS = localStorage.getItem(AppStorage.AppLSKey);
-      if (appFromLS) {
-        return JSON.parse(appFromLS);
-      }
-      return EmptyAppSchema;
-    } catch (error) {
-      return EmptyAppSchema;
-    }
-  }
-
-  getModulesFromLS(): ImplementedRuntimeModule[] {
-    try {
-      const modulesFromLS = localStorage.getItem(AppStorage.ModulesLSKey);
-      if (modulesFromLS) {
-        return JSON.parse(modulesFromLS).map(removeModuleId);
-      }
-      return [];
-    } catch (error) {
-      return [];
-    }
-  }
-
   createModule() {
     this.setModules([...this.modules, DefaultNewModule]);
-    this.saveModulesInLS();
+    this.saveModules();
   }
 
   removeModule(v: string, n: string) {
@@ -56,10 +39,10 @@ export class AppStorage {
         ({ version, metadata: { name } }) => version !== v && name !== n
       )
     );
-    this.saveModulesInLS();
+    this.saveModules();
   }
 
-  saveComponentsInLS(
+  saveComponents(
     type: 'app' | 'module',
     version: string,
     name: string,
@@ -71,7 +54,7 @@ export class AppStorage {
           draft.spec.components = components;
         });
         this.setApp(newApp);
-        this.saveAppInLS();
+        this.saveApplication();
         break;
       case 'module':
         const i = this.modules.findIndex(
@@ -81,21 +64,21 @@ export class AppStorage {
           draft[i].impl = components;
         });
         this.setModules(newModules);
-        this.saveModulesInLS();
+        this.saveModules();
         break;
     }
   }
 
-  saveAppMetaDataInLS({ version, name }: { version: string; name: string }) {
+  saveAppMetaData({ version, name }: { version: string; name: string }) {
     const newApp = produce(toJS(this.app), draft => {
       draft.metadata.name = name;
       draft.version = version;
     });
     this.setApp(newApp);
-    this.saveAppInLS();
+    this.saveApplication();
   }
 
-  saveModuleMetaDataInLS(
+  saveModuleMetaData(
     { originName, originVersion }: { originName: string; originVersion: string },
     {
       version,
@@ -116,22 +99,22 @@ export class AppStorage {
       draft[i].version = version;
     });
     this.setModules(newModules);
-    this.saveModulesInLS();
+    this.saveModules();
   }
 
-  private saveAppInLS() {
-    localStorage.setItem(AppStorage.AppLSKey, JSON.stringify(this.app));
+  private saveApplication() {
+    this.storageHanlder?.onSaveApp && this.storageHanlder?.onSaveApp(toJS(this.app));
   }
 
-  private saveModulesInLS() {
-    const modules = cloneDeep(this.modules).map(addModuleId)
-    localStorage.setItem(AppStorage.ModulesLSKey, JSON.stringify(modules));
+  private saveModules() {
+    const modules = cloneDeep(this.modules).map(addModuleId);
+    this.storageHanlder?.onSaveModules && this.storageHanlder?.onSaveModules(modules);
   }
 
   setApp(app: Application) {
     this.app = app;
   }
-  setModules(modules: ImplementedRuntimeModule[]) {
+  setModules(modules: Module[]) {
     this.modules = modules;
   }
 }

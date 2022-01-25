@@ -1,5 +1,6 @@
+import { merge } from 'lodash-es';
+import { parseTypeBox, Registry } from '@sunmao-ui/runtime';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
-import { registry } from '../setup';
 import { genComponent, genTrait } from './utils';
 import {
   ComponentId,
@@ -17,8 +18,6 @@ import {
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
-import { merge } from 'lodash-es';
-import { parseTypeBox } from '@sunmao-ui/runtime';
 
 const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
 
@@ -41,17 +40,21 @@ export class ComponentModel implements IComponentModel {
   stateExample: Record<string, any> = {};
   _isDirty = false;
 
-  constructor(public appModel: IAppModel, private schema: ComponentSchema) {
+  constructor(
+    public appModel: IAppModel,
+    private schema: ComponentSchema,
+    private registry: Registry
+  ) {
     this.schema = schema;
 
     this.id = schema.id as ComponentId;
     this.type = schema.type as ComponentType;
-    this.spec = registry.getComponentByType(this.type) as any;
+    this.spec = this.registry.getComponentByType(this.type) as any;
 
-    this.traits = schema.traits.map(t => new TraitModel(t, this));
-    this.genStateExample()
+    this.traits = schema.traits.map(t => new TraitModel(t, this, this.registry));
+    this.genStateExample();
     this.parentId = this._slotTrait?.rawProperties.container.id;
-    this.parentSlot = this._slotTrait?.rawProperties.container.slot; 
+    this.parentSlot = this._slotTrait?.rawProperties.container.slot;
     this.properties = new FieldModel(schema.properties);
   }
 
@@ -120,7 +123,7 @@ export class ComponentModel implements IComponentModel {
       this._isDirty = false;
       const newProperties = this.rawProperties;
       const newTraits = this.traits.map(t => t.toSchema());
-      const newSchema = genComponent(this.type, this.id, newProperties, newTraits);
+      const newSchema = genComponent(this.registry, this.type, this.id, newProperties, newTraits);
       this.schema = newSchema;
     }
     return this.schema;
@@ -133,10 +136,10 @@ export class ComponentModel implements IComponentModel {
 
   addTrait(traitType: TraitType, properties: Record<string, unknown>): ITraitModel {
     const traitSchema = genTrait(traitType, properties);
-    const trait = new TraitModel(traitSchema, this);
+    const trait = new TraitModel(traitSchema, this, this.registry);
     this.traits.push(trait);
     this._isDirty = true;
-    this.genStateExample()
+    this.genStateExample();
     return trait;
   }
 
@@ -178,7 +181,7 @@ export class ComponentModel implements IComponentModel {
     if (traitIndex === -1) return;
     this.traits.splice(traitIndex, 1);
     this._isDirty = true;
-    this.genStateExample()
+    this.genStateExample();
   }
 
   changeId(newId: ComponentId) {

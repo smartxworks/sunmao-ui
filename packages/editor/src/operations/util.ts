@@ -1,9 +1,9 @@
 import { ComponentSchema, parseType } from '@sunmao-ui/core';
+import { Registry } from '@sunmao-ui/runtime';
 import { isDraft, original } from 'immer';
 import { get } from 'lodash-es';
-import { registry } from '../setup';
 
-export function genComponent(type: string, id: string): ComponentSchema {
+export function genComponent(registry: Registry, type: string, id: string): ComponentSchema {
   const { version, name } = parseType(type);
   const cImpl = registry.getComponent(version, name);
   const initProperties = cImpl.metadata.exampleProperties;
