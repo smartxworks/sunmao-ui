@@ -24,7 +24,7 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
     }
     // insert a new component to schema
     this.operationStack.insert(
-      new CreateComponentLeafOperation({
+      new CreateComponentLeafOperation(this.registry, {
         componentId: this.context.componentId!,
         componentType: this.context.componentType,
         parentId: this.context.parentId as ComponentId,
@@ -43,7 +43,7 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
       } else if (parentComponent.type === 'core/v1/grid_layout') {
         this.operationStack.insert(
           // update grid layout for the new created component, it was pushed into layout by react-grid-layout, so we need to find it and update its id
-          new ModifyComponentPropertiesLeafOperation({
+          new ModifyComponentPropertiesLeafOperation(this.registry, {
             componentId: parentComponent.id,
             properties: {
               layout: (prev: Array<ReactGridLayout.Layout>) => {

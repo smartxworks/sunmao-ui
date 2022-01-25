@@ -1,12 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Text } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
-import { observer } from 'mobx-react-lite';
-import { editorStore } from '../EditorStore';
-import { registry } from '../setup';
-import { eventBus } from '../eventBus';
+
 import { genOperation } from '../operations';
-import { Text } from '@chakra-ui/react';
+import { EditorServices } from '../types';
 
 type ComponentEditorState = 'drag' | 'select' | 'hover' | 'idle';
 
@@ -113,163 +113,166 @@ const outlineMaskStyle = css`
   }
 `;
 
-export const ComponentWrapper: ComponentWrapperType = observer(props => {
-  const { component, parentType } = props;
-  const {
-    selectedComponentId,
-    setSelectedComponentId,
-    hoverComponentId,
-    setHoverComponentId,
-    dragOverComponentId,
-    setDragOverComponentId,
-  } = editorStore;
+export function useComponentWrapper(services: EditorServices): ComponentWrapperType {
+  const { editorStore, registry, eventBus } = services;
+  return observer(props => {
+    const { component, parentType } = props;
+    const {
+      selectedComponentId,
+      setSelectedComponentId,
+      hoverComponentId,
+      setHoverComponentId,
+      dragOverComponentId,
+      setDragOverComponentId,
+    } = editorStore;
 
-  const [slots, isDroppable] = useMemo(() => {
-    const slots = registry.getComponentByType(component.type).spec.slots;
-    return [slots, slots.length > 0];
-  }, [component.type]);
+    const [slots, isDroppable] = useMemo(() => {
+      const slots = registry.getComponentByType(component.type).spec.slots;
+      return [slots, slots.length > 0];
+    }, [component.type]);
 
-  const [currentSlot, setCurrentSlot] = useState<string>();
+    const [currentSlot, setCurrentSlot] = useState<string>();
 
-  const componentEditorState: ComponentEditorState = useMemo(() => {
-    if (dragOverComponentId === component.id) {
-      return 'drag';
-    } else if (selectedComponentId === component.id) {
-      return 'select';
-    } else if (hoverComponentId === component.id) {
-      return 'hover';
-    } else {
-      return 'idle';
-    }
-  }, [dragOverComponentId, selectedComponentId, hoverComponentId, component.id]);
+    const componentEditorState: ComponentEditorState = useMemo(() => {
+      if (dragOverComponentId === component.id) {
+        return 'drag';
+      } else if (selectedComponentId === component.id) {
+        return 'select';
+      } else if (hoverComponentId === component.id) {
+        return 'hover';
+      } else {
+        return 'idle';
+      }
+    }, [dragOverComponentId, selectedComponentId, hoverComponentId, component.id]);
 
-  const [inline, fullHeight, vertical] = useMemo(() => {
-    return [
-      inlineList.includes(component.type),
-      fullHeightList.includes(parentType),
-      verticalStackList.includes(component.type),
-    ];
-  }, [component.type, parentType]);
+    const [inline, fullHeight, vertical] = useMemo(() => {
+      return [
+        inlineList.includes(component.type),
+        fullHeightList.includes(parentType),
+        verticalStackList.includes(component.type),
+      ];
+    }, [component.type, parentType]);
 
-  const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setSelectedComponentId(component.id);
-  };
-  const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setHoverComponentId(component.id);
-  };
-  const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setHoverComponentId('');
-  };
+    const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      setSelectedComponentId(component.id);
+    };
+    const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      setHoverComponentId(component.id);
+    };
+    const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      setHoverComponentId('');
+    };
 
-  const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
-    if (!isDroppable) {
-      return;
-    }
-    e.stopPropagation();
-    const enter = findRelatedWrapper(e.target as HTMLElement);
-    if (!enter) {
-      // if enter a non-wrapper element (seems won't happen)
-      setDragOverComponentId(dragOverComponentId);
-      setCurrentSlot(undefined);
-      return;
-    }
-    if (!enter.droppable) {
-      // if not droppable element
+    const onDragEnter = (e: React.DragEvent<HTMLElement>) => {
+      if (!isDroppable) {
+        return;
+      }
+      e.stopPropagation();
+      const enter = findRelatedWrapper(e.target as HTMLElement);
+      if (!enter) {
+        // if enter a non-wrapper element (seems won't happen)
+        setDragOverComponentId(dragOverComponentId);
+        setCurrentSlot(undefined);
+        return;
+      }
+      if (!enter.droppable) {
+        // if not droppable element
+        setDragOverComponentId('');
+        setCurrentSlot(undefined);
+        return;
+      }
+      // update dragover component id
+      if (dragOverComponentId !== enter.id) {
+        setDragOverComponentId(enter.id);
+        setCurrentSlot(enter.slot);
+      } else if (currentSlot !== enter.slot && enter.slot) {
+        setCurrentSlot(enter.slot);
+      }
+    };
+
+    const onDragLeave = (e: React.DragEvent<HTMLElement>) => {
+      // not processing leave event when no element is marked as dragover
+      if (!isDroppable || !dragOverComponentId) {
+        return;
+      }
+      e.stopPropagation();
+      const enter = findRelatedWrapper(e.relatedTarget as HTMLElement);
+      if (!enter) {
+        // if entered element is not a sunmao wrapper, set dragId to ''
+        setDragOverComponentId('');
+        setCurrentSlot(undefined);
+      } else if ((!enter.slot && !enter.droppable) || enter.id !== component.id) {
+        setCurrentSlot(undefined);
+      }
+    };
+
+    const onDragOver = (e: React.DragEvent<HTMLElement>) => {
+      e.stopPropagation();
+      if (!isDroppable) return;
+      e.preventDefault();
+    };
+
+    const onDrop = (e: React.DragEvent) => {
+      if (!isDroppable) return;
+      e.stopPropagation();
+      e.preventDefault();
       setDragOverComponentId('');
       setCurrentSlot(undefined);
-      return;
-    }
-    // update dragover component id
-    if (dragOverComponentId !== enter.id) {
-      setDragOverComponentId(enter.id);
-      setCurrentSlot(enter.slot);
-    } else if (currentSlot !== enter.slot && enter.slot) {
-      setCurrentSlot(enter.slot);
-    }
-  };
+      const creatingComponent = e.dataTransfer?.getData('component') || '';
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'createComponent', {
+          componentType: creatingComponent,
+          parentId: component.id,
+          slot: currentSlot,
+        })
+      );
+    };
 
-  const onDragLeave = (e: React.DragEvent<HTMLElement>) => {
-    // not processing leave event when no element is marked as dragover
-    if (!isDroppable || !dragOverComponentId) {
-      return;
-    }
-    e.stopPropagation();
-    const enter = findRelatedWrapper(e.relatedTarget as HTMLElement);
-    if (!enter) {
-      // if entered element is not a sunmao wrapper, set dragId to ''
-      setDragOverComponentId('');
-      setCurrentSlot(undefined);
-    } else if ((!enter.slot && !enter.droppable) || enter.id !== component.id) {
-      setCurrentSlot(undefined);
-    }
-  };
-
-  const onDragOver = (e: React.DragEvent<HTMLElement>) => {
-    e.stopPropagation();
-    if (!isDroppable) return;
-    e.preventDefault();
-  };
-
-  const onDrop = (e: React.DragEvent) => {
-    if (!isDroppable) return;
-    e.stopPropagation();
-    e.preventDefault();
-    setDragOverComponentId('');
-    setCurrentSlot(undefined);
-    const creatingComponent = e.dataTransfer?.getData('component') || '';
-    eventBus.send(
-      'operation',
-      genOperation('createComponent', {
-        componentType: creatingComponent,
-        parentId: component.id,
-        slot: currentSlot,
-      })
+    return (
+      <div
+        data-component={component.id}
+        data-droppable={isDroppable}
+        onDragEnter={onDragEnter}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
+        onClick={onClickWrapper}
+        onMouseEnter={onMouseEnterWrapper}
+        onMouseLeave={onMouseLeaveWrapper}
+        onDragOver={onDragOver}
+        className={cx(
+          ComponentWrapperStyle,
+          inline ? 'inline' : undefined,
+          fullHeight ? 'full-height' : undefined
+        )}
+      >
+        <Text className={cx(outlineMaskTextStyle, componentEditorState)}>
+          {component.id}
+        </Text>
+        {props.children}
+        {isDroppable && componentEditorState === 'drag' ? (
+          <div className={cx('slots-wrapper', vertical ? 'vertical' : undefined)}>
+            {slots.map(slot => {
+              return (
+                <SlotWrapper
+                  componentId={component.id}
+                  state={slot === currentSlot ? 'over' : 'sibling'}
+                  key={slot}
+                  slotId={slot}
+                ></SlotWrapper>
+              );
+            })}
+          </div>
+        ) : (
+          <div className={cx(outlineMaskStyle, 'component', componentEditorState)}></div>
+        )}
+      </div>
     );
-  };
-
-  return (
-    <div
-      data-component={component.id}
-      data-droppable={isDroppable}
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
-      onDrop={onDrop}
-      onClick={onClickWrapper}
-      onMouseEnter={onMouseEnterWrapper}
-      onMouseLeave={onMouseLeaveWrapper}
-      onDragOver={onDragOver}
-      className={cx(
-        ComponentWrapperStyle,
-        inline ? 'inline' : undefined,
-        fullHeight ? 'full-height' : undefined
-      )}
-    >
-      <Text className={cx(outlineMaskTextStyle, componentEditorState)}>
-        {component.id}
-      </Text>
-      {props.children}
-      {isDroppable && componentEditorState === 'drag' ? (
-        <div className={cx('slots-wrapper', vertical ? 'vertical' : undefined)}>
-          {slots.map(slot => {
-            return (
-              <SlotWrapper
-                componentId={component.id}
-                state={slot === currentSlot ? 'over' : 'sibling'}
-                key={slot}
-                slotId={slot}
-              ></SlotWrapper>
-            );
-          })}
-        </div>
-      ) : (
-        <div className={cx(outlineMaskStyle, 'component', componentEditorState)}></div>
-      )}
-    </div>
-  );
-});
+  });
+}
 
 const SlotWrapperTyle = css`
   flex-grow: 1;

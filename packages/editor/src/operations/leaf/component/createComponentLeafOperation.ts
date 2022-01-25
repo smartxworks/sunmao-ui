@@ -14,7 +14,7 @@ export class CreateComponentLeafOperation extends BaseLeafOperation<CreateCompon
   private component!: IComponentModel;
 
   do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.createComponent(this.context.componentType as ComponentType, this.context.componentId as ComponentId);
     if (this.context.parentId) {
       const parent = appModel.getComponentById(this.context.parentId);
@@ -34,7 +34,7 @@ export class CreateComponentLeafOperation extends BaseLeafOperation<CreateCompon
   }
 
   undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     appModel.removeComponent(this.component.id)
     return appModel.toSchema()
   }

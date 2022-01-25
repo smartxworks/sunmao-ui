@@ -1,6 +1,6 @@
 import mitt from 'mitt';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { IOperation } from './operations/type';
+import { IOperation } from '../operations/type';
 
 export type EventNames = {
   operation: IOperation;
@@ -14,10 +14,14 @@ export type EventNames = {
   selectComponent: string;
 };
 
-const emitter = mitt<EventNames>();
 
-export const eventBus = {
-  on: emitter.on,
-  off: emitter.off,
-  send: emitter.emit,
-};
+export const initEventBus = () => {
+  const emitter = mitt<EventNames>();
+  return {
+    on: emitter.on,
+    off: emitter.off,
+    send: emitter.emit,
+  };
+}
+
+export type EventBusType = ReturnType<typeof initEventBus>

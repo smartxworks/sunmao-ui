@@ -1,24 +1,24 @@
+import React, { useMemo, useState } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
-import React, { useMemo, useState } from 'react';
-import { eventBus } from '../../eventBus';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
 import { genOperation } from '../../operations';
+import { EditorServices } from '../../types';
 
 type Props = {
-  registry: Registry;
   component: ComponentSchema;
   childrenMap: ChildrenMap;
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
+  services: EditorServices;
 };
 
 export const ComponentTree: React.FC<Props> = props => {
-  const { component, childrenMap, selectedComponentId, onSelectComponent, registry } =
+  const { component, childrenMap, selectedComponentId, onSelectComponent, services } =
     props;
+  const { registry, eventBus } = services;
   const slots = registry.getComponentByType(component.type).spec.slots;
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -39,7 +39,7 @@ export const ComponentTree: React.FC<Props> = props => {
               childrenMap={childrenMap}
               selectedComponentId={selectedComponentId}
               onSelectComponent={onSelectComponent}
-              registry={registry}
+              services={services}
             />
           );
         });
@@ -53,7 +53,7 @@ export const ComponentTree: React.FC<Props> = props => {
       const onCreateComponent = (creatingComponent: string) => {
         eventBus.send(
           'operation',
-          genOperation('createComponent', {
+          genOperation(registry, 'createComponent', {
             componentType: creatingComponent,
             parentId: component.id,
             slot,
@@ -65,7 +65,7 @@ export const ComponentTree: React.FC<Props> = props => {
         if (movingComponent === component.id) return;
         eventBus.send(
           'operation',
-          genOperation('moveComponent', {
+          genOperation(registry, 'moveComponent', {
             fromId: movingComponent,
             toId: component.id,
             slot,
@@ -74,7 +74,10 @@ export const ComponentTree: React.FC<Props> = props => {
       };
 
       const slotName = (
-        <DropComponentWrapper onCreateComponent={onCreateComponent} onMoveComponent={onMoveComponent}>
+        <DropComponentWrapper
+          onCreateComponent={onCreateComponent}
+          onMoveComponent={onMoveComponent}
+        >
           <Text color="gray.500" fontWeight="medium">
             Slot: {slot}
           </Text>
@@ -92,12 +95,12 @@ export const ComponentTree: React.FC<Props> = props => {
         </Box>
       );
     });
-  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, registry]);
+  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services, eventBus, registry]);
 
   const onClickRemove = () => {
     eventBus.send(
       'operation',
-      genOperation('removeComponent', {
+      genOperation(registry, 'removeComponent', {
         componentId: component.id,
       })
     );
@@ -107,7 +110,7 @@ export const ComponentTree: React.FC<Props> = props => {
     if (slots.length === 0) return;
     eventBus.send(
       'operation',
-      genOperation('createComponent', {
+      genOperation(registry, 'createComponent', {
         componentType: creatingComponent,
         parentId: component.id,
         slot: slots[0],
@@ -118,7 +121,7 @@ export const ComponentTree: React.FC<Props> = props => {
   const onMoveUp = () => {
     eventBus.send(
       'operation',
-      genOperation('adjustComponentOrder', {
+      genOperation(registry, 'adjustComponentOrder', {
         componentId: component.id,
         orientation: 'up',
       })
@@ -128,7 +131,7 @@ export const ComponentTree: React.FC<Props> = props => {
   const onMoveDown = () => {
     eventBus.send(
       'operation',
-      genOperation('adjustComponentOrder', {
+      genOperation(registry, 'adjustComponentOrder', {
         componentId: component.id,
         orientation: 'down',
       })
@@ -139,7 +142,7 @@ export const ComponentTree: React.FC<Props> = props => {
     if (movingComponent === component.id) return;
     eventBus.send(
       'operation',
-      genOperation('moveComponent', {
+      genOperation(registry, 'moveComponent', {
         fromId: movingComponent,
         toId: component.id,
         slot: slots[0],
@@ -154,7 +157,10 @@ export const ComponentTree: React.FC<Props> = props => {
       width="full"
       alignItems="start"
     >
-      <DropComponentWrapper onCreateComponent={onCreateComponent} onMoveComponent={onMoveComponent}>
+      <DropComponentWrapper
+        onCreateComponent={onCreateComponent}
+        onMoveComponent={onMoveComponent}
+      >
         <ComponentItemView
           id={component.id}
           title={component.id}

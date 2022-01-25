@@ -5,18 +5,19 @@ import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
 import { renderField } from '../ComponentForm';
 import { formWrapperCSS } from '../style';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { EditorServices } from '../../../types';
 
 type Props = {
-  registry: Registry;
   component: ComponentSchema;
   trait: TraitSchema;
   traitIndex: number;
   onRemove: () => void;
+  services: EditorServices;
 };
 
 export const GeneralTraitForm: React.FC<Props> = props => {
-  const { trait, traitIndex, component, onRemove, registry } = props;
+  const { trait, traitIndex, component, onRemove, services } = props;
+  const { registry } = services;
 
   const tImpl = registry.getTraitByType(trait.type);
   const properties = Object.assign(
@@ -32,6 +33,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
       fullKey: key,
       type: trait.type,
       selectedComponentId: component.id,
+      services,
     });
   });
   return (

@@ -1,23 +1,22 @@
 import React from 'react';
 import { flatten } from 'lodash-es';
+import { observer } from 'mobx-react-lite';
 import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/runtime';
-import { eventBus } from '../../eventBus';
+
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
 import { FetchTraitForm } from './FetchTraitForm';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import SchemaField from './JsonSchemaForm/SchemaField';
 import { genOperation } from '../../operations';
-import { editorStore } from '../../EditorStore';
-import { observer } from 'mobx-react-lite';
 import ErrorBoundary from '../ErrorBoundary';
 import { StyleTraitForm } from './StyleTraitForm';
+import { EditorServices } from '../../types';
 
 type Props = {
-  registry: Registry;
+  services: EditorServices;
 };
 
 export const renderField = (properties: {
@@ -27,20 +26,22 @@ export const renderField = (properties: {
   fullKey: string;
   selectedComponentId: string;
   index: number;
+  services: EditorServices;
 }) => {
-  const { value, type, fullKey, selectedComponentId, index } = properties;
+  const { value, type, fullKey, selectedComponentId, index, services } = properties;
+  const { eventBus, registry } = services;
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
       const operation = type
-        ? genOperation('modifyTraitProperty', {
+        ? genOperation(registry, 'modifyTraitProperty', {
             componentId: selectedComponentId,
             traitIndex: index,
             properties: {
               [fullKey]: ref.current?.value,
             },
           })
-        : genOperation('modifyComponentProperty', {
+        : genOperation(registry, 'modifyComponentProperty', {
             componentId: selectedComponentId,
             properties: {
               [fullKey]: ref.current?.value,
@@ -65,6 +66,7 @@ export const renderField = (properties: {
           type: type,
           fullKey: `${fullKey}.${childKey}`,
           selectedComponentId,
+          services,
         });
       })
     );
@@ -73,7 +75,8 @@ export const renderField = (properties: {
 };
 
 export const ComponentForm: React.FC<Props> = observer(props => {
-  const { registry } = props;
+  const { services } = props;
+  const { editorStore, registry, eventBus } = services;
   const { selectedComponent, selectedComponentId } = editorStore;
   if (!selectedComponentId) {
     return <div>No components selected. Click on a component to select it.</div>;
@@ -92,7 +95,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   const changeComponentId = (selectedComponentId: string, value: string) => {
     eventBus.send(
       'operation',
-      genOperation('modifyComponentId', {
+      genOperation(registry, 'modifyComponentId', {
         componentId: selectedComponentId,
         newId: value,
       })
@@ -136,7 +139,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
               onChange={newFormData => {
                 eventBus.send(
                   'operation',
-                  genOperation('modifyComponentProperty', {
+                  genOperation(registry, 'modifyComponentProperty', {
                     componentId: selectedComponentId,
                     properties: newFormData,
                   })
@@ -146,10 +149,10 @@ export const ComponentForm: React.FC<Props> = observer(props => {
             />
           </VStack>
         </VStack>
-        <EventTraitForm component={selectedComponent} registry={registry} />
-        <FetchTraitForm component={selectedComponent} registry={registry} />
-        <StyleTraitForm component={selectedComponent} registry={registry} />
-        <GeneralTraitFormList component={selectedComponent} registry={registry} />
+        <EventTraitForm component={selectedComponent} services={services} />
+        <FetchTraitForm component={selectedComponent} services={services} />
+        <StyleTraitForm component={selectedComponent} services={services} />
+        <GeneralTraitFormList component={selectedComponent} services={services} />
       </VStack>
     </ErrorBoundary>
   );

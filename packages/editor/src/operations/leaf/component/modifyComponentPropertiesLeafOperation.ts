@@ -11,7 +11,7 @@ export type ModifyComponentPropertiesLeafOperationContext = {
 export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<ModifyComponentPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
   do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (component) {
       for (const property in this.context.properties) {
@@ -35,7 +35,7 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     return newSchema;
   }
   redo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
@@ -48,7 +48,7 @@ export class ModifyComponentPropertiesLeafOperation extends BaseLeafOperation<Mo
     return appModel.toSchema();
   }
   undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev);
+    const appModel = new AppModel(prev, this.registry);
     const component = appModel.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
