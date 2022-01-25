@@ -1,3 +1,4 @@
+import React from 'react';
 import { FieldProps } from '../fields';
 import ModuleWidget from './ModuleWidget';
 
