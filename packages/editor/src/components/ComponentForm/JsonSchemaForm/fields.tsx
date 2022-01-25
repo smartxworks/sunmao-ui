@@ -22,3 +22,22 @@ export function getDisplayLabel(schema: Schema, label: string): boolean {
   }
   return true;
 }
+
+export function getCodeMode(schema: Schema): boolean {
+  switch (schema.type) {
+    case 'array':
+    case 'object':
+    case 'boolean':
+      return true;
+    default:
+  }
+  // multi schema
+  if ('anyOf' in schema || 'oneOf' in schema) {
+    return true;
+  }
+  // enum
+  if (schema.type === 'string' && Array.isArray(schema.enum)) {
+    return true;
+  }
+  return false;
+}
