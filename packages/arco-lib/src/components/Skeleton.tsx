@@ -1,4 +1,4 @@
-import { Skeleton as BaseSkeleton } from "@arco-design/web-react";
+import { Skeleton as BaseSkeleton, SkeletonTextProps } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
@@ -11,12 +11,15 @@ const SkeletonStateSchema = Type.Object({});
 const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSchema>> = (
   props
 ) => {
-  const { ...cProps } = getComponentProps(props);
+  const { text, ...cProps } = getComponentProps(props);
   const { customStyle, className, slotsElements } = props;
+  // TODO: Typebox Static cannot convert SkeletonTextProps to type correctly
+  const _text = text as SkeletonTextProps
 
   return (
     <BaseSkeleton
       className={cx(className, css(customStyle?.content))}
+      text={_text}
       {...cProps}
     >
       {slotsElements.content}

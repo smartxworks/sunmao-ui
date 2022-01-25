@@ -88,7 +88,7 @@ export const Modal = implementRuntimeComponent({
       setVisible: Type.Object({
         visible: Type.String(),
       }),
-    },
+    } as Record<string, any>,
     slots: ["title", "content", "footer"],
     styleSlots: ["content"],
     events: ["afterOpen", "afterClose", "onCancel", "onOk"],
