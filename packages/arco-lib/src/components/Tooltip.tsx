@@ -31,10 +31,11 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
         _setPopupVisible(!!visible);
       },
     });
-  }, []);
+  }, [subscribeMethods]);
+
   useEffect(() => {
     mergeState({ visible: popupVisible });
-  }, [popupVisible]);
+  }, [mergeState, popupVisible]);
 
   // two components in the array will be wrapped by span respectively
   // and arco does not support `array.length===1` think it is a bug
@@ -86,7 +87,7 @@ const options = {
     state: TooltipStateSchema,
     methods: {
       setPopupVisible: Type.String(),
-    },
+    } as Record<string, any>,
     slots: ["content"],
     styleSlots: ["content"],
     events: [],

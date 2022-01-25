@@ -1,14 +1,33 @@
 {
-  "name": "sunmao-ui-arco-lib",
+  "name": "@sunmao-ui/arco-lib",
   "version": "0.0.0",
+  "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webzard-io/sunmao-ui-arco-lib.git"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "typings": "tsc --emitDeclarationOnly",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
     "serve": "vite preview",
     "lk": "yarn link @sunmao-ui/runtime @sunmao-ui/editor @sunmao-ui/core",
     "unlk": "yarn unlink @sunmao-ui/runtime @sunmao-ui/editor @sunmao-ui/core",
     "lint": "eslint ./src --ext .ts --ext .tsx",
-    "fix-lint": "eslint --fix ./src --ext .ts --ext .tsx"
+    "fix-lint": "eslint --fix ./src --ext .ts --ext .tsx",
+    "prepublish": "npm run build && npm run typings"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.26.1",
@@ -32,6 +51,7 @@
     "eslint-plugin-react": "^7.25.1",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
+    "tsup": "^5.11.11",
     "typescript": "^4.3.2",
     "vite": "^2.6.4"
   },

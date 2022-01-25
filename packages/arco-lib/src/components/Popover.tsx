@@ -92,7 +92,7 @@ const options = {
     state: PopoverStateSchema,
     methods: {
       setPopupVisible: Type.String(),
-    },
+    } as Record<string, any>,
     slots: ["popupContent", "content"],
     styleSlots: ["content"],
     events: [],
