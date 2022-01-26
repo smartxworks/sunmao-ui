@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FieldProps } from './fields';
 import {
   NumberInput,
@@ -13,6 +13,10 @@ type Props = FieldProps;
 const NumberField: React.FC<Props> = props => {
   const { formData, onChange } = props;
   const [value, setValue] = useState(String(formData));
+
+  useEffect(() => {
+    setValue(String(formData));
+  }, [formData]);
 
   return (
     <NumberInput

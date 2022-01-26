@@ -2,7 +2,7 @@ import {
   ComponentSchema,
   TraitSchema,
   MethodSchema,
-  RuntimeTrait,
+  RuntimeTrait
 } from '@sunmao-ui/core';
 
 export type ComponentId = string & {
@@ -116,7 +116,7 @@ export interface ITraitModel {
 export interface IFieldModel {
   // value: any;
   isDynamic: boolean;
-  update: (value: unknown) => void;
+  update: (value: unknown, shouldExtendValues: boolean) => void;
   getProperty: (key: string) => IFieldModel | void;
   getValue: () => unknown | void | IFieldModel;
   traverse: (cb: (f: IFieldModel, key: string) => void) => void;

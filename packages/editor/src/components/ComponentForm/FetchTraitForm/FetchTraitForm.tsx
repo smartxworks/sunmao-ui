@@ -92,7 +92,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
     <FormControl>
       <FormLabel>Body</FormLabel>
       <KeyValueEditor
-        initValue={formik.values.body}
+        value={formik.values.body}
         onChange={json => {
           formik.setFieldValue('body', json);
           formik.submitForm();
@@ -105,7 +105,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
     <FormControl>
       <FormLabel>Headers</FormLabel>
       <KeyValueEditor
-        initValue={formik.values.headers}
+        value={formik.values.headers}
         onChange={json => {
           formik.setFieldValue('headers', json);
           formik.submitForm();
