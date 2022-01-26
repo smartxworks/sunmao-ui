@@ -5,17 +5,11 @@ import { css } from '@emotion/react';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/foldgutter.css';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/ayu-mirage.css';
 // tern
 import 'codemirror/addon/tern/tern';
 import 'codemirror/addon/selection/active-line';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/dialog/dialog.css';
-import 'codemirror/addon/hint/show-hint.css';
-import 'codemirror/addon/tern/tern.css';
 import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
 import ecma from 'tern/defs/ecmascript.json';
