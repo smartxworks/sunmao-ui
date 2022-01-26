@@ -31,7 +31,7 @@ export const EventCallBackHandlerSchema = Type.Object(BaseEventSchema);
 export const FetchTraitPropertiesSchema = Type.Object({
   url: Type.String(), // {format:uri}?;
   method: Type.String(), // {pattern: /^(get|post|put|delete)$/i}
-  lazy: Type.Optional(Type.Boolean()),
+  lazy: Type.Boolean(),
   headers: Type.Record(Type.String(), Type.String()),
   body: Type.Record(Type.String(), Type.String()),
   onComplete: Type.Optional(Type.Array(EventCallBackHandlerSchema)),

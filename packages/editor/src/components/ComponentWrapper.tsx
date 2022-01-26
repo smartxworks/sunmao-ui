@@ -43,6 +43,7 @@ const verticalStackList = ['chakra_ui/v1/vstack'];
 const ComponentWrapperStyle = css`
   display: block;
   position: relative;
+  width: 100%;
   &.inline {
     display: inline-block;
   }

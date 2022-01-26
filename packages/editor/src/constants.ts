@@ -4,8 +4,12 @@ import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 export const ignoreTraitsList = [
   'core/v1/slot',
   'core/v1/event',
-  'core/v1/fetch',
   'core/v1/style',
+];
+
+export const hasSpecialFormTraitList = [
+  ...ignoreTraitsList,
+  'core/v1/fetch',
 ];
 
 export const EmptyAppSchema: Application = {
