@@ -76,7 +76,7 @@ export const renderField = (properties: {
 
 export const ComponentForm: React.FC<Props> = observer(props => {
   const { services } = props;
-  const { editorStore, registry, eventBus } = services;
+  const { editorStore, registry, eventBus, stateManager } = services;
   const { selectedComponent, selectedComponentId } = editorStore;
   if (!selectedComponentId) {
     return <div>No components selected. Click on a component to select it.</div>;
@@ -148,6 +148,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
                 );
               }}
               registry={registry}
+              stateManager={stateManager}
             />
           </VStack>
         </VStack>
