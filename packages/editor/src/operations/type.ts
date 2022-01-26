@@ -1,5 +1,5 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
+import { AppModel } from "../AppModel/AppModel";
 
 export const leafSymbol = Symbol('leaf');
 export const branchSymbol = Symbol('branch');
@@ -131,9 +131,9 @@ export interface IOperation<TContext = any> extends IUndoRedo {
    * infer the type of operation, leaf or branch
    */
   type: symbol;
-  do(prev: ComponentSchema[]): ComponentSchema[];
-  redo(prev: ComponentSchema[]): ComponentSchema[];
-  undo(prev: ComponentSchema[]): ComponentSchema[];
+  do(prev: AppModel): AppModel;
+  redo(prev: AppModel): AppModel;
+  undo(prev: AppModel): AppModel;
 }
 
 /**
@@ -153,13 +153,13 @@ export abstract class BaseLeafOperation<TContext> implements IOperation<TContext
    * @param prev prev application schema
    * @returns changed application schema
    */
-  abstract do(prev: ComponentSchema[]): ComponentSchema[];
+  abstract do(prev: AppModel): AppModel;
   /**
    * for leaf operation, most time redo is the same as do, override it if not
    * @param prev prev application schema
    * @returns changed application schema
    */
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
+  redo(prev: AppModel): AppModel {
     return this.do(prev);
   }
   /**
@@ -167,7 +167,7 @@ export abstract class BaseLeafOperation<TContext> implements IOperation<TContext
    * @param prev prev application schema
    * @returns changed application schema
    */
-  abstract undo(prev: ComponentSchema[]): ComponentSchema[];
+  abstract undo(prev: AppModel): AppModel;
 
   static isLeafOperation<T>(op: IOperation<T>): op is BaseLeafOperation<T> {
     return op.type === leafSymbol;
@@ -196,14 +196,14 @@ export abstract class BaseBranchOperation<TContext>
    * @param prev prev application schema
    * @returns changed application schema
    */
-  abstract do(prev: ComponentSchema[]): ComponentSchema[];
+  abstract do(prev: AppModel): AppModel;
 
   /**
    * for branch operation, redo is the same as do
    * @param prev prev application schema
    * @returns changed application schema
    */
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
+  redo(prev: AppModel): AppModel {
     return this.operationStack.reduce((prev, node) => {
       prev = node.redo(prev);
       return prev;
@@ -216,7 +216,7 @@ export abstract class BaseBranchOperation<TContext>
    * @param prev prev application schema
    * @returns changed application schema
    */
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
+  undo(prev: AppModel): AppModel {
     return this.operationStack.reduceRight((prev, node) => {
       prev = node.undo(prev);
       return prev;

@@ -1,5 +1,5 @@
 import { Editor as _Editor } from './components/Editor';
-import { initSunmaoUI, SunmaoUIRuntimeProps } from '@sunmao-ui/runtime';
+import { initSunmaoUI, SunmaoLib, SunmaoUIRuntimeProps } from '@sunmao-ui/runtime';
 import { AppModelManager } from './operations/AppModelManager';
 import React from 'react';
 import {
@@ -15,6 +15,7 @@ import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
 
 type SunmaoUIEditorProps = {
+  libs?: SunmaoLib[];
   runtimeProps?: SunmaoUIRuntimeProps;
   storageHanlder?: StorageHandler;
   defaultApplication?: Application;
@@ -45,14 +46,18 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
 
   const App = ui.App;
   const registry = ui.registry;
+  props.libs?.forEach(lib => {
+    registry.installLib(lib);
+  });
+
   const stateManager = ui.stateManager;
   const eventBus = initEventBus();
-  const appModelManager = new AppModelManager(eventBus);
   const appStorage = new AppStorage(
     props.defaultApplication,
     props.defaultModules,
     props.storageHanlder
   );
+  const appModelManager = new AppModelManager(eventBus, registry, appStorage.app.spec.components);
   const editorStore = new EditorStore(eventBus, registry, stateManager, appStorage);
   const services = {
     App,

@@ -44,6 +44,7 @@ export interface IAppModel {
   // all components, including orphan component
   allComponentsWithOrphan: IComponentModel[];
   toSchema(): ComponentSchema[];
+  genId(type: ComponentType): ComponentId;
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel;
   getComponentById(id: ComponentId): IComponentModel | undefined;
   removeComponent(componentId: ComponentId): void;

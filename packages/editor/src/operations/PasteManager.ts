@@ -1,14 +1,12 @@
-import { ComponentSchema } from '@sunmao-ui/core';
-import { getComponentAndChildrens } from './util';
+import { IComponentModel } from '../AppModel/IAppModel';
 
 export class PasteManager {
   rootComponentId = ''
-  componentsCache: ComponentSchema[] = [];
+  componentCache: IComponentModel | undefined;
   copyTimes = 0;
 
-  setPasteComponents(componentId: string, allComponents: ComponentSchema[]) {
+  setPasteComponents(componentId: string, component: IComponentModel) {
     this.rootComponentId = componentId;
-    const children = getComponentAndChildrens(componentId, allComponents);
-    this.componentsCache = [...children];
+    this.componentCache = component;
   }
 }
