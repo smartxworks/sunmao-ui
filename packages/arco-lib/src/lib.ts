@@ -21,6 +21,7 @@ import { Cascader } from "./components/Cascader";
 import { Skeleton } from "./components/Skeleton";
 import { Timeline } from "./components/Timeline";
 import { TreeSelect } from "./components/TreeSelect";
+import { Checkbox } from './components/Checkbox';
 import { Modal } from "./components/Modal";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
@@ -55,6 +56,7 @@ export const components: Component[] = [
   Cascader,
   Skeleton,
   Timeline,
+  Checkbox
 ];
 export const traits: Trait[] = [];
 export const modules: Module[] = [];
