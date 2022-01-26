@@ -15,7 +15,7 @@ class ModuleValidatorRule implements ComponentValidatorRule {
     const results: ValidateErrorResult[] = [];
     let moduleSpec;
     try {
-      moduleSpec = registry.getModuleByType(component.rawProperties.type.value as string);
+      moduleSpec = registry.getModuleByType(component.rawProperties.type);
     } catch (err) {
       moduleSpec = undefined;
     }

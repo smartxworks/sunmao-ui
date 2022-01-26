@@ -5,7 +5,7 @@ import { HStack, VStack } from '@chakra-ui/react';
 
 import { AddTraitButton } from './AddTraitButton';
 import { GeneralTraitForm } from './GeneralTraitForm';
-import { ignoreTraitsList } from '../../../constants';
+import { hasSpecialFormTraitList } from '../../../constants';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 
@@ -32,7 +32,7 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
   };
 
   const traitFields = component.traits.map((trait, index) => {
-    if (ignoreTraitsList.includes(trait.type)) {
+    if (hasSpecialFormTraitList.includes(trait.type)) {
       return null;
     }
     const onRemoveTrait = () => {

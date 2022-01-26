@@ -17,6 +17,8 @@ import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EditorServices } from '../../../types';
+import { ComponentModel } from '../../../AppModel/ComponentModel';
+import { AppModel } from '../../../AppModel/AppModel';
 
 type Props = {
   eventTypes: readonly string[];
@@ -40,13 +42,21 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
     }
   });
 
-  const updateMethods = useCallback((componentId: string) => {
-    const type = components.find(c => c.id === componentId)?.type;
-    if (type) {
-      const componentSpec = registry.getComponentByType(type).spec;
-      setMethods(Object.keys(componentSpec.methods));
-    }
-  }, [components, registry]);
+  const updateMethods = useCallback(
+    (componentId: string) => {
+      const component = components.find(c => c.id === componentId);
+      if (component) {
+        const componentModel = new ComponentModel(
+          new AppModel([], registry),
+          component,
+          registry
+        );
+
+        setMethods(componentModel.methods.map(m => m.name));
+      }
+    },
+    [components, registry]
+  );
 
   useEffect(() => {
     formik.setValues(handler);

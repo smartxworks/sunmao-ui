@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import produce from 'immer';
 import { AddIcon, CloseIcon } from '@chakra-ui/icons';
 import {
@@ -123,7 +123,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
         updateStyles(newStyles);
       };
       return (
-        <VStack key={`${styleSlot}-${i}`} css={formWrapperCSS} spacing="2">
+        <VStack key={`${styleSlot}-${i}`} css={formWrapperCSS} width="full" spacing="2">
           <FormControl id={styleSlot}>
             <FormLabel marginInlineEnd="0">
               <HStack width="full" justify="space-between">

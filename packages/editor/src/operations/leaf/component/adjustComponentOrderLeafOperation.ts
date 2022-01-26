@@ -1,4 +1,3 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -8,20 +7,20 @@ export type AdjustComponentOrderLeafOperationContext = {
 };
 
 export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustComponentOrderLeafOperationContext> {
-  do(prev: ComponentSchema[]): ComponentSchema[] {
+  do(prev: AppModel): AppModel {
     return this.move(prev, this.context.orientation);
   }
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
-    return this.do(prev)
+
+  redo(prev: AppModel): AppModel {
+    return this.do(prev);
   }
 
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
+  undo(prev: AppModel): AppModel {
     return this.move(prev, this.context.orientation === 'up' ? 'down' : 'up');
   }
 
-  private move(prev: ComponentSchema[], orientation: 'up' | 'down'): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+  private move(prev: AppModel, orientation: 'up' | 'down'): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -43,6 +42,6 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
         component.moveAfter(component.nextSilbing || null);
         break;
     }
-    return appModel.toSchema();
+    return prev;
   }
 }

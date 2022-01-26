@@ -1,4 +1,3 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import _ from 'lodash-es';
 import { BaseLeafOperation } from '../../type';
 import { AppModel } from '../../../AppModel/AppModel';
@@ -12,9 +11,8 @@ export type ModifyTraitPropertiesLeafOperationContext = {
 
 export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<ModifyTraitPropertiesLeafOperationContext> {
   private previousState: Record<string, any> = {};
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+  do(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -32,11 +30,11 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       trait.updateProperty(property, this.context.properties[property]);
     }
 
-    return appModel.toSchema();
+    return prev;
   }
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+
+  redo(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -47,12 +45,11 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       trait.updateProperty(property, this.context.properties[property]);
     }
 
-    return appModel.toSchema();
+    return prev;
   }
 
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+  undo(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -63,6 +60,6 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       trait.updateProperty(property, this.previousState[property]);
     }
 
-    return appModel.toSchema();
+    return prev;
   }
 }

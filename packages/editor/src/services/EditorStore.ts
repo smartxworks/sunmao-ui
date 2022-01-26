@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash-es';
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
 import { Registry, StateManager } from '@sunmao-ui/runtime';
@@ -6,7 +5,7 @@ import { Registry, StateManager } from '@sunmao-ui/runtime';
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
-import { addModuleId } from '../utils/addModuleId';
+import { removeModuleId } from '../utils/addModuleId';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -30,7 +29,6 @@ export class EditorStore {
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
-
   schemaValidator: SchemaValidator;
 
   constructor(
@@ -119,7 +117,10 @@ export class EditorStore {
             m.version === this.currentEditingTarget.version &&
             m.metadata.name === this.currentEditingTarget.name
         );
-        return module?.impl || [];
+        if (module) {
+          return removeModuleId(module).impl;
+        }
+        return [];
       case 'app':
         return this.app.spec.components;
     }
@@ -129,7 +130,7 @@ export class EditorStore {
     this.stateManager.clear();
     // reregister all modules
     this.modules.forEach(m => {
-      const modules = createModule(addModuleId(cloneDeep(m)));
+      const modules = createModule(m);
       this.registry.registerModule(modules, true);
     });
   }

@@ -8,6 +8,7 @@ import {
   IconButton,
   Input,
   Select,
+  Switch,
   VStack,
 } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
@@ -114,6 +115,18 @@ export const FetchTraitForm: React.FC<Props> = props => {
     </FormControl>
   );
 
+  const lazyField = (
+    <FormControl>
+      <FormLabel>Lazy</FormLabel>
+      <Switch
+        name="lazy"
+        onChange={formik.handleChange}
+        onBlur={() => formik.submitForm()}
+        isChecked={formik.values.lazy}
+      />
+    </FormControl>
+  );
+
   const onAddHandler = () => {
     const newHandler: EventHandler = {
       componentId: '',
@@ -184,6 +197,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
           {methodField}
           {bodyField}
           {headersField}
+          {lazyField}
           {onCompleteField}
         </VStack>
       </HStack>
