@@ -110,6 +110,17 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
       },
     ],
   },
+  {
+    id: 'text3',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{ Math.random2() }}',
+        format: 'md',
+      },
+    },
+    traits: [],
+  },
 ];
 
 export const TraitInvalidSchema: ComponentSchema[] = [

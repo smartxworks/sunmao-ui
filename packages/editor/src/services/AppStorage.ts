@@ -3,7 +3,7 @@ import { Application, ComponentSchema, Module } from '@sunmao-ui/core';
 import { cloneDeep } from 'lodash-es';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from '../constants';
-import { addModuleId, removeModuleId } from '../utils/addModuleId';
+import { addModuleId } from '../utils/addModuleId';
 import { StorageHandler } from '../types';
 
 export class AppStorage {
@@ -18,7 +18,7 @@ export class AppStorage {
     private storageHanlder?: StorageHandler
   ) {
     this.app = defaultApplication || EmptyAppSchema;
-    this.modules = defaultModules?.map(removeModuleId) || []
+    this.modules = defaultModules || [];
 
     makeObservable(this, {
       app: observable.shallow,
@@ -114,6 +114,7 @@ export class AppStorage {
   setApp(app: Application) {
     this.app = app;
   }
+
   setModules(modules: Module[]) {
     this.modules = modules;
   }

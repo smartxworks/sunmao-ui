@@ -95,7 +95,7 @@ export const renderField = (properties: {
 
 export const ComponentForm: React.FC<Props> = observer(props => {
   const { services } = props;
-  const { editorStore, registry, eventBus } = services;
+  const { editorStore, registry, eventBus, stateManager } = services;
   const { selectedComponent, selectedComponentId } = editorStore;
   if (!selectedComponentId) {
     return <div>No components selected. Click on a component to select it.</div>;
@@ -125,6 +125,8 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     // prevent form keyboard events to accidentally trigger operation shortcut
     e.stopPropagation();
   };
+
+  const hasFetchTrait = !!selectedComponent.traits.find(t => t.type === 'core/v1/fetch');
 
   return (
     <ErrorBoundary>
@@ -165,11 +167,12 @@ export const ComponentForm: React.FC<Props> = observer(props => {
                 );
               }}
               registry={registry}
+              stateManager={stateManager}
             />
           </VStack>
         </VStack>
         <EventTraitForm component={selectedComponent} services={services} />
-        <FetchTraitForm component={selectedComponent} services={services} />
+        { hasFetchTrait ? <FetchTraitForm component={selectedComponent} services={services} /> : null }
         <StyleTraitForm component={selectedComponent} services={services} />
         <GeneralTraitFormList component={selectedComponent} services={services} />
       </VStack>

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FormControl,
   FormLabel,
   FormHelperText,
   FormErrorMessage,
   Text,
+  Button,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
-import { FieldProps, getDisplayLabel } from './fields';
+import { FieldProps, getCodeMode, getDisplayLabel } from './fields';
 import { widgets } from './widgets/widgets';
 import StringField from './StringField';
 import ObjectField from './ObjectField';
@@ -27,6 +28,9 @@ type TemplateProps = {
   hidden?: boolean;
   required?: boolean;
   displayLabel?: boolean;
+  codeMode?: boolean;
+  isExpression?: boolean;
+  setIsExpression?: (v: boolean) => void;
 };
 
 const DefaultTemplate: React.FC<TemplateProps> = props => {
@@ -40,16 +44,32 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     hidden,
     required,
     displayLabel,
+    codeMode,
+    isExpression,
+    setIsExpression,
   } = props;
   if (hidden) {
     return <div className="hidden">{children}</div>;
   }
 
   return (
-    <FormControl isRequired={required} id={id}>
+    <FormControl isRequired={required} id={id} mt="1">
       {displayLabel && (
         <>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {codeMode && (
+              <Button
+                size="xs"
+                ml="2"
+                colorScheme="blue"
+                variant={isExpression ? 'solid' : 'outline'}
+                onClick={() => setIsExpression?.(!isExpression)}
+              >
+                JS
+              </Button>
+            )}
+          </FormLabel>
           {description && <Text fontSize="sm">{description}</Text>}
         </>
       )}
@@ -65,7 +85,11 @@ type Props = FieldProps & {
 };
 
 const SchemaField: React.FC<Props> = props => {
-  const { schema, label, formData, onChange, registry } = props;
+  const { schema, label, formData, onChange, registry, stateManager } = props;
+  const [isExpression, setIsExpression] = useState(
+    // FIXME: regexp copied from FieldModel.ts, is this a stable way to check expression?
+    () => typeof formData === 'string' && /.*{{.*}}.*/.test(formData)
+  );
 
   if (isEmpty(schema)) {
     return null;
@@ -74,7 +98,9 @@ const SchemaField: React.FC<Props> = props => {
   let Component = UnsupportedField;
 
   // customize widgets
-  if (schema.widget && widgets[schema.widget]) {
+  if (isExpression) {
+    Component = widgets.expression;
+  } else if (schema.widget && widgets[schema.widget]) {
     Component = widgets[schema.widget];
   }
   // type fields
@@ -97,14 +123,22 @@ const SchemaField: React.FC<Props> = props => {
   }
 
   const displayLabel = getDisplayLabel(schema, label);
+  const codeMode = getCodeMode(schema);
 
   return (
-    <DefaultTemplate label={label} displayLabel={displayLabel}>
+    <DefaultTemplate
+      label={label}
+      displayLabel={displayLabel}
+      codeMode={codeMode}
+      isExpression={isExpression}
+      setIsExpression={setIsExpression}
+    >
       <Component
         schema={schema}
         formData={formData}
         onChange={onChange}
         registry={registry}
+        stateManager={stateManager}
       />
     </DefaultTemplate>
   );

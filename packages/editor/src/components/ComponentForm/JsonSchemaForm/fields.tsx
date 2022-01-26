@@ -1,5 +1,5 @@
 import { Component } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { Registry, StateManager } from '@sunmao-ui/runtime';
 
 type Schema = Component<string, string, string, string>['spec']['properties'];
 type EditorSchema = {
@@ -9,6 +9,7 @@ type EditorSchema = {
 export type FieldProps = {
   schema: Schema & EditorSchema;
   registry: Registry;
+  stateManager: StateManager;
   formData: any;
   onChange: (v: any) => void;
 };
@@ -21,4 +22,23 @@ export function getDisplayLabel(schema: Schema, label: string): boolean {
     return false;
   }
   return true;
+}
+
+export function getCodeMode(schema: Schema): boolean {
+  switch (schema.type) {
+    case 'array':
+    case 'object':
+    case 'boolean':
+      return true;
+    default:
+  }
+  // multi schema
+  if ('anyOf' in schema || 'oneOf' in schema) {
+    return true;
+  }
+  // enum
+  if (schema.type === 'string' && Array.isArray(schema.enum)) {
+    return true;
+  }
+  return false;
 }
