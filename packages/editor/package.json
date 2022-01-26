@@ -5,17 +5,17 @@
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
   "license": "MIT",
-  "main": "dist/main.js",
-  "module": "dist/esm/main.js",
-  "unpkg": "dist/iife/main.js",
-  "types": "lib/main.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
     "lib"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsup src/main.tsx --format cjs,esm,iife --legacy-output --inject ../runtime/react-import.js --clean --no-splitting --sourcemap",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ../runtime/react-import.js --clean --no-splitting --sourcemap",
     "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
     "prepublish": "npm run build && npm run typings"
