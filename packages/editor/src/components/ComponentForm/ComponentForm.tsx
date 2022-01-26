@@ -107,6 +107,8 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     e.stopPropagation();
   };
 
+  const hasFetchTrait = !!selectedComponent.traits.find(t => t.type === 'core/v1/fetch');
+
   return (
     <ErrorBoundary>
       <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
@@ -150,7 +152,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           </VStack>
         </VStack>
         <EventTraitForm component={selectedComponent} services={services} />
-        <FetchTraitForm component={selectedComponent} services={services} />
+        { hasFetchTrait ? <FetchTraitForm component={selectedComponent} services={services} /> : null }
         <StyleTraitForm component={selectedComponent} services={services} />
         <GeneralTraitFormList component={selectedComponent} services={services} />
       </VStack>

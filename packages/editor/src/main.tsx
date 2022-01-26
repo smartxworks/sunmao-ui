@@ -18,7 +18,7 @@ const lsManager = new LocalStorageManager();
 const { Editor, registry } = initSunmaoUIEditor({
   storageHanlder: {
     onSaveApp(app) {
-       lsManager.saveAppInLS(app);
+      lsManager.saveAppInLS(app);
     },
     onSaveModules(modules) {
       lsManager.saveModulesInLS(modules);
