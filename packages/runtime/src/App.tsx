@@ -22,10 +22,11 @@ export const App: React.FC<AppProps> = props => {
     debugStore = true,
     debugEvent = true,
   } = props;
+  console.log('执行')
   const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
   const app = runtimeAppSchemaManager.current.update(options);
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
-  
+
   const { childrenMap, topLevelComponents } = resolveChildrenMap(app.spec.components);
   return (
     <div className="App" style={{ height: '100vh', overflow: 'auto' }}>
