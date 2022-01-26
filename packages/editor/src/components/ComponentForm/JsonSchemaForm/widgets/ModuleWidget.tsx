@@ -6,7 +6,7 @@ import SchemaField from '../SchemaField';
 type Props = FieldProps;
 
 export const ModuleWidget: React.FC<Props> = props => {
-  const { formData, onChange, schema, registry } = props;
+  const { formData, onChange, schema, registry, stateManager } = props;
   const moduleTypes = useMemo(() => {
     const res: string[] = [];
     for (const version of registry.modules.keys()) {
@@ -28,6 +28,7 @@ export const ModuleWidget: React.FC<Props> = props => {
       <SchemaField
         schema={schema.properties!.id! as FieldProps['schema']}
         registry={registry}
+        stateManager={stateManager}
         label="Module ID"
         formData={formData?.id}
         onChange={v =>
@@ -61,6 +62,7 @@ export const ModuleWidget: React.FC<Props> = props => {
             title: 'Module Properties',
           }}
           registry={registry}
+          stateManager={stateManager}
           label="Module Properties"
           formData={formData?.properties}
           onChange={v =>
