@@ -1,4 +1,7 @@
-import { Type, Static } from '@sinclair/typebox';
+import { Type, Static, TProperties, TObject } from '@sinclair/typebox';
+import { createStandaloneToast } from '@chakra-ui/react';
+import { UtilMethod } from '@sunmao-ui/runtime';
+
 const ToastPosition = Type.Union([
   Type.Literal('top'),
   Type.Literal('top-right'),
@@ -39,3 +42,49 @@ export const ToastCloseParameterSchema = Type.Object({
 
 export type ToastOpenParameter = Static<typeof ToastOpenParamterSchema>;
 export type ToastCloseParameter = Static<typeof ToastCloseParameterSchema>;
+
+const pickProperty = <T, U extends Record<string, any>>(
+  schema: TObject<T>,
+  object: U
+): Partial<Static<TObject<T>>> => {
+  const result: Partial<TProperties> = {};
+  for (const key in schema.properties) {
+    result[key] = object[key];
+  }
+  return result as Partial<Static<TObject<T>>>;
+};
+
+export default function ToastUtilMethodFactory() {
+  let toast: ReturnType<typeof createStandaloneToast> | undefined;
+  const toastOpen: UtilMethod = {
+    name: 'toast.open',
+    method(parameters: Static<typeof ToastOpenParamterSchema>) {
+      if (!toast) {
+        toast = createStandaloneToast();
+      }
+      if (parameters) {
+        toast(pickProperty(ToastOpenParamterSchema, parameters));
+      }
+    },
+  };
+
+  const toastClose: UtilMethod = {
+    name: 'toast.close',
+    method(parameters: Static<typeof ToastCloseParameterSchema>) {
+      if (!toast) {
+        return;
+      }
+      if (!parameters) {
+        toast.closeAll();
+      } else {
+        const closeParameters = pickProperty(ToastCloseParameterSchema, parameters);
+        if (closeParameters.id !== undefined) {
+          toast.close(closeParameters.id);
+        } else {
+          toast.closeAll(closeParameters);
+        }
+      }
+    },
+  };
+  return [toastOpen, toastClose];
+}
