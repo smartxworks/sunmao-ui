@@ -5,6 +5,7 @@ import { initSunmaoUI } from '@sunmao-ui/runtime';
 import React from 'react';
 import ErrorBoundary from '../ErrorBoundary';
 import { GeneralModal } from '../GeneralModal';
+import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
 
 type Props = {
   app: Application;
@@ -15,7 +16,8 @@ type Props = {
 export const PreviewModal: React.FC<Props> = ({ app, modules, onClose }) => {
   const { App, registry } = initSunmaoUI();
   modules.forEach(m => registry.registerModule(createModule(m)));
-  sunmaoChakraUILib.components?.forEach(c => registry.registerComponent(c));
+  registry.installLib(sunmaoChakraUILib);
+  registry.installLib(ArcoDesignLib);
 
   return (
     <GeneralModal onClose={onClose} title="Preview Modal">

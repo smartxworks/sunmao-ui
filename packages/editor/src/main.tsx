@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { Registry } from '@sunmao-ui/runtime';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
+import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
 import { initSunmaoUIEditor } from './init';
 import { LocalStorageManager } from './LocalStorageManager';
 
@@ -39,6 +40,8 @@ export default function renderApp(options: Options = {}) {
   components.forEach(c => registry.registerComponent(c));
   traits.forEach(t => registry.registerTrait(t));
   modules.forEach(m => registry.registerModule(m));
+  registry.installLib(sunmaoChakraUILib);
+  registry.installLib(ArcoDesignLib);
 
   ReactDOM.render(
     <StrictMode>

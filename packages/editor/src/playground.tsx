@@ -7,6 +7,7 @@ import './styles.css';
 
 import { initSunmaoUIEditor } from './init';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
+import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
 
 type Example = {
   name: string;
@@ -22,6 +23,8 @@ const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
     libs: [sunmaoChakraUILib],
     defaultApplication: example?.value.app,
   });
+  registry.installLib(sunmaoChakraUILib);
+  registry.installLib(ArcoDesignLib);
   example?.value.modules?.forEach(m => registry.registerModule(m));
 
   return (
