@@ -80,7 +80,7 @@ export class AppModel implements IAppModel {
     component.appModel = this;
   }
 
-  private genId(type: ComponentType): ComponentId {
+  genId(type: ComponentType): ComponentId {
     const { name } = parseType(type);
     const newId = `${name}${this.componentsCount++}` as ComponentId;
     if (this.allComponents.some(c => c.id === newId)) {

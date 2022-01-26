@@ -1,4 +1,3 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, ITraitModel } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -10,9 +9,8 @@ export type RemoveTraitLeafOperationContext = {
 
 export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafOperationContext> {
   private deletedTrait!: ITraitModel;
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+  do(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
@@ -20,22 +18,21 @@ export class RemoveTraitLeafOperation extends BaseLeafOperation<RemoveTraitLeafO
 
     this.deletedTrait = component.traits[this.context.index];
     component.removeTrait(this.deletedTrait.id);
-    return appModel.toSchema();
+    return prev;
   }
 
-  redo(prev: ComponentSchema[]): ComponentSchema[] {
+  redo(prev: AppModel): AppModel {
     return this.do(prev);
   }
 
-  undo(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const component = appModel.getComponentById(this.context.componentId as ComponentId);
+  undo(prev: AppModel): AppModel {
+    const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
       console.warn('component not found');
       return prev;
     }
 
     component.addTrait(this.deletedTrait.type, this.deletedTrait.rawProperties);
-    return appModel.toSchema();
+    return prev;
   }
 }

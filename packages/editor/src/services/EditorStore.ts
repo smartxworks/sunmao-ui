@@ -29,7 +29,6 @@ export class EditorStore {
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
-
   schemaValidator: SchemaValidator;
 
   constructor(

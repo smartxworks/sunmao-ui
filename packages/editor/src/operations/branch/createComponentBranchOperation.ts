@@ -1,12 +1,12 @@
-import { ComponentSchema } from '@sunmao-ui/core';
+import { AppModel } from '../../AppModel/AppModel';
+import ReactGridLayout from 'react-grid-layout';
 import produce from 'immer';
-import { ComponentId, SlotName } from '../../AppModel/IAppModel';
+import { ComponentId, ComponentType, SlotName } from '../../AppModel/IAppModel';
 import {
   CreateComponentLeafOperation,
   ModifyComponentPropertiesLeafOperation,
 } from '../leaf';
 import { BaseBranchOperation } from '../type';
-import { genId } from '../util';
 
 export type CreateComponentBranchOperationContext = {
   componentType: string;
@@ -17,10 +17,10 @@ export type CreateComponentBranchOperationContext = {
 };
 
 export class CreateComponentBranchOperation extends BaseBranchOperation<CreateComponentBranchOperationContext> {
-  do(prev: ComponentSchema[]): ComponentSchema[] {
+  do(prev: AppModel): AppModel {
     // gen component id
     if (!this.context.componentId) {
-      this.context.componentId = genId(this.context.componentType, prev);
+      this.context.componentId = prev.genId(this.context.componentType as ComponentType);
     }
     // insert a new component to schema
     this.operationStack.insert(
@@ -34,9 +34,7 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
     // add a slot trait if it has a parent
     if (this.context.parentId && this.context.slot) {
       // try to find parent
-      const parentComponent = prev.find(
-        c => c.id === this.context.parentId
-      );
+      const parentComponent = prev.getComponentById(this.context.parentId as ComponentId);
 
       if (!parentComponent) {
         console.warn("insert element has an invalid parent, it won't show in the view");

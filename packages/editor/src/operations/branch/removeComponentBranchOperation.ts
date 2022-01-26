@@ -1,5 +1,5 @@
-import { ComponentSchema } from '@sunmao-ui/core';
 import produce from 'immer';
+import ReactGridLayout from 'react-grid-layout';
 import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
 import {
@@ -13,9 +13,8 @@ export type RemoveComponentBranchOperationContext = {
 };
 
 export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveComponentBranchOperationContext> {
-  do(prev: ComponentSchema[]): ComponentSchema[] {
-    const appModel = new AppModel(prev, this.registry);
-    const parent = appModel.getComponentById(this.context.componentId as ComponentId);
+  do(prev: AppModel): AppModel {
+    const parent = prev.getComponentById(this.context.componentId as ComponentId);
 
     if (parent && parent.type === 'core/v1/grid_layout') {
       // modify layout property of parent grid layout component
