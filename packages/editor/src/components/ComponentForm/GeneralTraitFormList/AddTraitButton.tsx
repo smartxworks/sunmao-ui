@@ -1,5 +1,5 @@
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { Box, IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import { useMemo } from 'react';
 import { ignoreTraitsList } from '../../../constants';
@@ -14,7 +14,7 @@ export const AddTraitButton: React.FC<Props> = props => {
 
   const traitTypes = useMemo(() => {
     return registry.getAllTraitTypes().filter(type => !ignoreTraitsList.includes(type));
-  }, []);
+  }, [registry]);
 
   const menuItems = traitTypes.map(type => {
     return (
@@ -24,17 +24,19 @@ export const AddTraitButton: React.FC<Props> = props => {
     );
   });
   return (
-    <Menu>
-      <MenuButton
-        as={IconButton}
-        aria-label="add event"
-        size="sm"
-        variant="ghost"
-        colorScheme="blue"
-        icon={<AddIcon />}
-        rightIcon={<ChevronDownIcon />}
-      />
-      <MenuList>{menuItems}</MenuList>
-    </Menu>
+    <Box>
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="add event"
+          size="sm"
+          variant="ghost"
+          colorScheme="blue"
+          icon={<AddIcon />}
+          rightIcon={<ChevronDownIcon />}
+        />
+        <MenuList>{menuItems}</MenuList>
+      </Menu>
+    </Box>
   );
 };
