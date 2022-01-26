@@ -18,9 +18,35 @@ export function initApiService() {
       eventType: string;
     };
   }>();
-  return {
+  const apiService = {
     on: emitter.on,
     off: emitter.off,
     send: emitter.emit,
   };
+
+  mountSystemMethods(apiService);
+  return apiService;
+}
+
+function mountSystemMethods(apiService: ApiService) {
+  apiService.on('uiMethod', ({ componentId, name, parameters }) => {
+    switch (componentId) {
+      // hanlder as module event
+      case '$module':
+        apiService.send('moduleEvent', {
+          fromId: parameters.moduleId,
+          eventType: name,
+        });
+        break;
+      case '$utils':
+        // handle as window function
+        if (name in window) {
+          const method = window[name as keyof Window];
+          if (typeof method === 'function') {
+            method(parameters);
+          }
+        }
+        break;
+    }
+  });
 }
