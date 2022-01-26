@@ -2,14 +2,14 @@ import {
   Checkbox as BaseCheckbox, 
 } from '@arco-design/web-react';
 import { Type, Static } from '@sinclair/typebox';
-import { ComponentImpl, implementRuntimeComponent, observer } from '@sunmao-ui/runtime';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { 
   CheckboxPropsSchema as BaseCheckboxPropsSchema, 
   CheckboxOptionSchema as BaseCheckboxOptionSchema
 } from '../generated/types/Checkbox';
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { css, cx } from '@emotion/css';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 
 const CheckboxPropsSchema = Type.Object({
   ...BaseCheckboxPropsSchema,
@@ -20,7 +20,7 @@ const CheckboxStateSchema = Type.Object({
   isCheckAll: Type.Boolean()
 });
 
-const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = observer((props)=> {
+const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = props => {
   const {
     mergeState,
     subscribeMethods,
@@ -60,7 +60,7 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = observer
     });
     callbackMap?.onChange?.();
   };
-  const checkAll = ()=> {
+  const checkAll =  useCallback(()=> {
     const newCheckedValues = enabledOptions.map(({value})=> value);
 
     setCheckedValues(newCheckedValues);
@@ -68,14 +68,14 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = observer
       checkedValues: newCheckedValues,
       isCheckAll: true
     });
-  };
-  const uncheckAll = ()=> {
+  }, [enabledOptions, mergeState]);
+  const uncheckAll = useCallback(()=> {
     setCheckedValues([]);
     mergeState({ 
       checkedValues: [],
       isCheckAll: false
     });
-  };
+  }, [mergeState]);
   const onCheckAll = ()=> {
     if (checkedValues.length !== enabledOptions.length) {
       checkAll();
@@ -122,7 +122,7 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = observer
       checkAll,
       uncheckAll,
     });
-  }, [subscribeMethods, mergeState, checkedValues, options]);
+  }, [subscribeMethods, mergeState, checkedValues, options, checkAll, uncheckAll]);
 
   const CheckAll = showCheckAll ? (
     <BaseCheckbox
@@ -170,9 +170,9 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = observer
       {CheckboxList}
     </>
   );
-});
+};
 
-const exampleProperties: Static<typeof CheckboxPropsSchema> = {
+const exampleProperties = {
   className: 'checkbox',
   options: [],
   direction: 'horizontal',
@@ -192,20 +192,20 @@ const options = {
   spec: {
     properties: CheckboxPropsSchema,
     state: CheckboxStateSchema,
-    methods: {
+    methods: Type.Object({
       setCheckedValues: Type.Object({
         values: Type.Array(Type.String())
       }),
-      checkAll: void 0,
-      uncheckAll: void 0,
+      checkAll: Type.Object({}),
+      uncheckAll: Type.Object({}),
       toggleValues: Type.Object({
         values: BaseCheckboxOptionSchema
       })
-    },
+    }),
     styleSlots: ['content'],
     slots:[],
     events: ['onChange']
   }
 };
 
-export const Checkbox = implementRuntimeComponent(options)(CheckboxImpl);
+export const Checkbox = implementRuntimeComponent(options)(CheckboxImpl as any);

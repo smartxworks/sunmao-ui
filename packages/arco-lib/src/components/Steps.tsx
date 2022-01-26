@@ -7,6 +7,7 @@ import {
   StepsPropsSchema as BaseStepsPropsSchema,
   StepItemSchema,
 } from "../generated/types/Steps";
+import { isArray } from "lodash-es";
 
 const StepsPropsSchema = Type.Object(BaseStepsPropsSchema);
 const StepsStateSchema = Type.Object({});
@@ -23,7 +24,7 @@ const StepsImpl: ComponentImpl<Static<typeof StepsPropsSchema>> = (props) => {
         items.map((stepItem: StepItem, idx: number) => {
           return (
             <BaseSteps.Step
-              icon={slotsElements.icons && slotsElements.icons[idx]}
+              icon={isArray(slotsElements.icons) && slotsElements.icons[idx]}
               key={idx}
               title={stepItem.title}
               description={stepItem.description}

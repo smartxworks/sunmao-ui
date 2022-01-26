@@ -5,6 +5,7 @@ import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { TooltipPropsSchema as BaseTooltipPropsSchema } from "../generated/types/Tooltip";
 import { useEffect, useState } from "react";
+import { isArray } from "lodash-es";
 
 const TooltipPropsSchema = Type.Object(BaseTooltipPropsSchema);
 const TooltipStateSchema = Type.Object({
@@ -40,7 +41,7 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
   // two components in the array will be wrapped by span respectively
   // and arco does not support `array.length===1` think it is a bug
   // TODO only support arco componets slot now
-  const content = slotsElements.content && slotsElements.content[0];
+  const content = isArray(slotsElements.content) ? slotsElements.content[0] : slotsElements.content;
 
   return controlled ? (
     <BaseTooltip

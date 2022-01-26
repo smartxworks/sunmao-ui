@@ -8,6 +8,7 @@ import {
   CascaderValueSchema,
 } from "../generated/types/Cascader";
 import { useState, useEffect } from "react";
+import { isArray } from "lodash-es";
 
 const CascaderPropsSchema = Type.Object(BaseCascaderPropsSchema);
 const CascaderStateSchema = Type.Object({
@@ -67,7 +68,7 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
   const { multiple, placeholder, ...cProps } = getComponentProps(props);
   const { mergeState, slotsElements, customStyle, className, options } = props;
 
-  const content = slotsElements.content && slotsElements.content[0];
+  const content = isArray(slotsElements.content) ? slotsElements.content[0] : slotsElements.content;
 
   const mode: "multiple" | undefined = multiple ? "multiple" : undefined;
 
