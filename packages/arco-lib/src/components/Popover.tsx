@@ -5,6 +5,7 @@ import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { PopoverPropsSchema as BasePopoverPropsSchema } from "../generated/types/Popover";
 import { useEffect, useState } from "react";
+import { isArray } from "lodash-es";
 
 const PopoverPropsSchema = Type.Object(BasePopoverPropsSchema);
 const PopoverStateSchema = Type.Object({
@@ -37,7 +38,7 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
   }, [popupVisible, mergeState]);
 
   // TODO only support arco componets slot now (same as Tooltip)
-  const content = slotsElements.content && slotsElements.content[0];
+  const content = isArray(slotsElements.content) ? slotsElements.content[0] : slotsElements.content;
 
   return controlled ? (
     <BasePopover
