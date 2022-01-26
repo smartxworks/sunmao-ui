@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { flatten } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
 import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
@@ -29,30 +29,49 @@ export const renderField = (properties: {
   services: EditorServices;
 }) => {
   const { value, type, fullKey, selectedComponentId, index, services } = properties;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [textareaValue, setTextareaValue] = useState(value as string);
   const { eventBus, registry } = services;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (typeof value !== 'object') {
+      setTextareaValue(value as string);
+    }
+  }, [value]);
+
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
       const operation = type
         ? genOperation(registry, 'modifyTraitProperty', {
-            componentId: selectedComponentId,
-            traitIndex: index,
-            properties: {
-              [fullKey]: ref.current?.value,
-            },
-          })
+          componentId: selectedComponentId,
+          traitIndex: index,
+          properties: {
+            [fullKey]: ref.current?.value,
+          },
+        })
         : genOperation(registry, 'modifyComponentProperty', {
-            componentId: selectedComponentId,
-            properties: {
-              [fullKey]: ref.current?.value,
-            },
-          });
+          componentId: selectedComponentId,
+          properties: {
+            [fullKey]: ref.current?.value,
+          },
+        });
       eventBus.send('operation', operation);
     };
+    const onChange = (event: any) => {
+      setTextareaValue(event.target.value);
+    };
+
     return (
       <FormControl key={`${selectedComponentId}-${fullKey}`}>
         <FormLabel>{fullKey}</FormLabel>
-        <Textarea ref={ref} onBlur={onBlur} defaultValue={value as string} />
+        <Textarea
+          ref={ref}
+          onChange={onChange}
+          onBlur={onBlur}
+          value={textareaValue}
+        />
       </FormControl>
     );
   } else {

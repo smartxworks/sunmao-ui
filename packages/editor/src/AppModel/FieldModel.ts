@@ -5,18 +5,18 @@ import { simple as simpleWalk } from 'acorn-walk';
 import { flattenDeep, isArray, isObject } from 'lodash-es';
 import { ComponentId, IFieldModel, ModuleId } from './IAppModel';
 
-const regExp = new RegExp('.*{{.*}}.*');
+const regExp = /.*{{.*}}.*/;
 
 export class FieldModel implements IFieldModel {
   isDynamic = false;
   refs: Record<ComponentId | ModuleId, string[]> = {};
   private value: unknown | Array<IFieldModel> | Record<string, IFieldModel>;
 
-  constructor(value: unknown) {
+  constructor (value: unknown) {
     this.update(value);
   }
 
-  get rawValue() {
+  get rawValue () {
     if (isObject(this.value)) {
       if (isArray(this.value)) {
         return this.value.map(field => field.rawValue);
@@ -32,21 +32,30 @@ export class FieldModel implements IFieldModel {
     return this.value;
   }
 
-  update(value: unknown) {
+  update (value: unknown, shouldExtendValues = true) {
     if (isObject(value)) {
-      if (!isObject(this.value)) {
-        this.value = isArray(value) ? [] : {};
-      }
+      const isArrayValue = isArray(value);
+      const isOldValueObject = isObject(this.value);
 
-      for (const key in value) {
-        const val = (value as Record<string, unknown>)[key];
-        const _thisValue = this.value as Record<string, IFieldModel>;
-        if (!_thisValue[key]) {
-          _thisValue[key] = new FieldModel(val);
+      this.value = (Object.keys(value) as Array<keyof typeof value>).reduce((result, key) => {
+        const oldValue: IFieldModel | null = isObject(this.value) ? this.value[key] : null;
+        let newValue: FieldModel;
+
+        if (oldValue) {
+          (oldValue as IFieldModel).update(value[key], false);
+          newValue = oldValue;
         } else {
-          _thisValue[key].update(val);
+          newValue = new FieldModel(value[key]);
         }
-      }
+
+        if (isArray(result)) {
+          result.push(newValue);
+        } else {
+          result[key] = newValue;
+        }
+
+        return result;
+      }, (isArrayValue ? [] : (shouldExtendValues && isOldValueObject ? this.value : {})) as Record<string, IFieldModel>);
     } else {
       this.value = value;
     }
@@ -54,19 +63,19 @@ export class FieldModel implements IFieldModel {
     this.parseReferences();
   }
 
-  getProperty(key: string | number): FieldModel | undefined {
+  getProperty (key: string | number): FieldModel | undefined {
     if (typeof this.value === 'object') {
       return (this.value as any)[key];
     }
     return undefined;
   }
 
-  getValue() {
-    return this.value
+  getValue () {
+    return this.value;
   }
 
-  traverse(cb: (f: IFieldModel, key: string) => void) {
-    function _traverse(field: FieldModel, key: string) {
+  traverse (cb: (f: IFieldModel, key: string) => void) {
+    function _traverse (field: FieldModel, key: string) {
       if (isObject(field.value)) {
         for (const _key in field.value) {
           const val = field.getProperty(_key);
@@ -81,7 +90,7 @@ export class FieldModel implements IFieldModel {
     _traverse(this, '');
   }
 
-  private parseReferences() {
+  private parseReferences () {
     if (!this.isDynamic || typeof this.value !== 'string') return;
 
     const exps = flattenDeep(
@@ -102,13 +111,13 @@ export class FieldModel implements IFieldModel {
               const str = exp.slice(node.start, node.end);
               let path = str.replace(lastIdentifier, '');
               if (path.startsWith('.')) {
-                path = path.slice(1, path.length)
+                path = path.slice(1, path.length);
               }
               this.refs[lastIdentifier].push(path);
               break;
             default:
           }
-        },
+        }
       });
     });
   }
