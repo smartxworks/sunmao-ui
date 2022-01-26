@@ -16,10 +16,10 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     validators,
   }: PropertiesValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
-    let validate
+    let validate;
 
     if (trait) {
-      validate = validators.traits[trait.type]
+      validate = validators.traits[trait.type];
     } else {
       validate = validators.components[component.type];
     }
@@ -29,7 +29,7 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     const valid = validate(properties.rawValue);
     if (valid) return results;
     validate.errors!.forEach(error => {
-      // todo: detect deep error 
+      // todo: detect deep error
       const { instancePath, params } = error;
       let key = '';
       if (instancePath) {
@@ -69,16 +69,11 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
     properties.traverse((fieldModel, key) => {
       Object.keys(fieldModel.refs).forEach((id: string) => {
         const targetComponent = appModel.getComponentById(id as ComponentId);
-        if (!targetComponent) {
-          results.push({
-            message: `Cannot find '${id}' in store.`,
-            componentId: component.id,
-            property: key,
-            traitType: trait?.type,
-          });
-        } else {
-          const paths = fieldModel.refs[id as ComponentId];
-          paths.forEach(path => {
+        const paths = fieldModel.refs[id as ComponentId];
+
+        if (targetComponent) {
+          // case 1: id is a component
+          for (const path of paths) {
             if (!has(targetComponent.stateExample, path)) {
               results.push({
                 message: `Component '${id}' does not have property '${path}'.`,
@@ -86,7 +81,29 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
                 property: key,
                 traitType: trait?.type,
               });
+              break;
             }
+          }
+        } else if (id in window) {
+          // case 2: id is a global variable
+          for (const path of paths) {
+            if (!has(window[id as keyof Window], path)) {
+              results.push({
+                message: `Window object '${id}' does not have property '${path}'.`,
+                componentId: component.id,
+                property: key,
+                traitType: trait?.type,
+              });
+              break;
+            }
+          }
+        } else {
+          // case 3: id doesn't exist
+          results.push({
+            message: `Cannot find '${id}' in store or window.`,
+            componentId: component.id,
+            property: key,
+            traitType: trait?.type,
           });
         }
       });
@@ -95,4 +112,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
     return results;
   }
 }
-export const PropertiesRules = [new PropertySchemaValidatorRule(), new ExpressionValidatorRule()];
+export const PropertiesRules = [
+  new PropertySchemaValidatorRule(),
+  new ExpressionValidatorRule(),
+];
