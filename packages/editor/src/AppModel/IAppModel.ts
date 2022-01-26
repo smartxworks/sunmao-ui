@@ -117,7 +117,7 @@ export interface ITraitModel {
 export interface IFieldModel {
   // value: any;
   isDynamic: boolean;
-  update: (value: unknown, shouldExtendValues: boolean) => void;
+  update: (value: unknown, shouldExtendValues?: boolean) => void;
   getProperty: (key: string) => IFieldModel | void;
   getValue: () => unknown | void | IFieldModel;
   traverse: (cb: (f: IFieldModel, key: string) => void) => void;
