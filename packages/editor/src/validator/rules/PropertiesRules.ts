@@ -1,5 +1,5 @@
 import { get, has } from 'lodash-es';
-import { ComponentId } from '../../AppModel/IAppModel';
+import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
   PropertiesValidateContext,
@@ -97,8 +97,11 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
               break;
             }
           }
+        } else if (appModel.moduleIds.includes(id as ModuleId)) {
+          // case 3: id is a module
+          // TODO: check module stateMap
         } else {
-          // case 3: id doesn't exist
+          // case 4: id doesn't exist
           results.push({
             message: `Cannot find '${id}' in store or window.`,
             componentId: component.id,
