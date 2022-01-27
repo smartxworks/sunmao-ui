@@ -1,4 +1,8 @@
 import mitt from 'mitt';
+import {
+  GLOBAL_UTILS_ID,
+  GLOBAL_MODULE_ID
+} from '../constants';
 
 export type ApiService = ReturnType<typeof initApiService>;
 
@@ -32,13 +36,13 @@ function mountSystemMethods(apiService: ApiService) {
   apiService.on('uiMethod', ({ componentId, name, parameters }) => {
     switch (componentId) {
       // hanlder as module event
-      case '$module':
+      case GLOBAL_MODULE_ID:
         apiService.send('moduleEvent', {
           fromId: parameters.moduleId,
           eventType: name,
         });
         break;
-      case '$utils':
+      case GLOBAL_UTILS_ID:
         // handle as window function
         if (name in window) {
           const method = window[name as keyof Window];

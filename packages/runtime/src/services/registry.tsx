@@ -1,4 +1,5 @@
 import { parseType } from '@sunmao-ui/core';
+import { GLOBAL_UTILS_ID } from '../constants';
 // components
 /* --- plain --- */
 import PlainButton from '../components/plain/Button';
@@ -183,7 +184,7 @@ export class Registry {
 
   private mountUtilMethods() {
     this.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-      if (componentId === '$utils') {
+      if (componentId === GLOBAL_UTILS_ID) {
         const utilMethod = this.utilMethods.get(name);
         if (utilMethod) {
           utilMethod(parameters);
