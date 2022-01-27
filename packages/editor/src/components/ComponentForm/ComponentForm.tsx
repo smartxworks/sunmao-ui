@@ -153,7 +153,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           </VStack>
         </VStack>
         <EventTraitForm component={selectedComponent} services={services} />
-        { hasFetchTrait ? <FetchTraitForm component={selectedComponent} services={services} /> : null }
+        { hasFetchTrait ? <FetchTraitForm key={selectedComponent.id} component={selectedComponent} services={services} /> : null }
         <StyleTraitForm component={selectedComponent} services={services} />
         <GeneralTraitFormList component={selectedComponent} services={services} />
       </VStack>

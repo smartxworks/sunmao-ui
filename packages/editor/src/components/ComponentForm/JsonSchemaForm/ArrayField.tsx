@@ -33,7 +33,7 @@ const ArrayField: React.FC<Props> = props => {
     <>
       {formData.map((v, idx) => {
         return (
-          <Box key={idx} mb={2}>
+          <Box key={idx} mb={2} border='1px solid black' borderColor='gray.200' borderRadius='4' padding='8px'>
             <ButtonGroup
               spacing={0}
               size="xs"
