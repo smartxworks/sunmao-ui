@@ -48,7 +48,7 @@ const options = {
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
-    name: "Progress",
+    name: "progress",
     displayName: "Progress",
     exampleProperties,
   },

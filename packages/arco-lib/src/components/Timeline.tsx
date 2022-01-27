@@ -68,7 +68,7 @@ const options = {
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
-    name: "Timeline",
+    name: "timeline",
     displayName: "Timeline",
     exampleProperties,
   },

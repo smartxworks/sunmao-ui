@@ -42,7 +42,7 @@ const options = {
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
-    name: "Badge",
+    name: "badge",
     displayName: "Badge",
     exampleProperties,
   },
