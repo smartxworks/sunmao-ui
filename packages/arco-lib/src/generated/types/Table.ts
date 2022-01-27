@@ -1,34 +1,29 @@
 
 import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
-
-export const handlerSchema = Type.Array(Type.Object({
-  componentId: Type.String(),
-  type: Type.String(),
-  method: Type.Object({
-    name: Type.String(),
-    parameters: Type.Optional(Type.Object(Type.Any()))
-  })
-}))
+import { EventHandlerSchema, ModuleSchema } from '@sunmao-ui/runtime'
 
 export const ColumnSchema = Type.Object({
   title: Type.String(),
   dataIndex: Type.String(),
   sorter: Type.Optional(Type.Boolean()),
-  filter:Type.Optional(Type.Boolean()),
-  sortDirections: Type.Optional(Type.Array(StringUnion(["descend" ,"ascend"]))),
-  defaultSortOrder: Type.Optional(StringUnion(["descend" ,"ascend"])),
-  type: Type.Optional(Type.String()),
+  filter: Type.Optional(Type.Boolean()),
+  sortDirections: Type.Optional(Type.Array(StringUnion(["descend", "ascend"]))),
+  defaultSortOrder: Type.Optional(StringUnion(["descend", "ascend"])),
+  type: Type.Optional(Type.KeyOf(
+    Type.Object({
+      text: Type.String(),
+      image: Type.String(),
+      link: Type.String(),
+      button: Type.String(),
+      module: Type.String(),
+    })
+  )),
   btnCfg: Type.Optional(Type.Object({
     text: Type.String(),
-    handlers: handlerSchema,
+    handlers: Type.Array(EventHandlerSchema),
   })),
-  module: Type.Optional(Type.Object({
-    id: Type.String(),
-    handlers: handlerSchema,
-    properties: Type.Array(Type.Any()),
-    type: Type.String()
-  }))
+  module: Type.Optional(ModuleSchema)
 })
 
 
@@ -40,9 +35,9 @@ export const TablePropsSchema = Type.Object({
   defaultExpandAllRows: Type.Optional(Type.Boolean()),
   showHeader: Type.Optional(Type.Boolean()),
   stripe: Type.Optional(Type.Boolean()),
-  pagination:Type.Object({
-    pageSize:Type.Number(),
-    current:Type.Number(),
+  pagination: Type.Object({
+    pageSize: Type.Number(),
+    current: Type.Number(),
   }),
   size: Type.Optional(StringUnion(['default', 'middle', 'small', 'mini'])),
   pagePosition: Type.Optional(StringUnion(['br', 'bl', 'tr', 'tl', 'topCenter', 'bottomCenter'])),
