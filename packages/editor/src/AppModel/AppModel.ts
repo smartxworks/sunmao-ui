@@ -6,6 +6,7 @@ import {
   ComponentType,
   IAppModel,
   IComponentModel,
+  ModuleId,
   SlotName,
 } from './IAppModel';
 import { genComponent } from './utils';
@@ -34,6 +35,10 @@ export class AppModel implements IAppModel {
   // get from componentMap
   get allComponentsWithOrphan(): IComponentModel[] {
     return Object.values(this.componentMap);
+  }
+
+  get moduleIds(): ModuleId[] {
+    return this.allComponents.filter(c => c.type === 'core/v1/moduleContainer').map(c => c.properties.rawValue.id);
   }
 
   toSchema(): ComponentSchema[] {
