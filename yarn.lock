@@ -2925,19 +2925,29 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sunmao-ui/arco-lib@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/arco-lib/-/arco-lib-0.0.1.tgz#b0ac89149d63095a5278113de784d85ac87fdf38"
-  integrity sha512-IWaWF6JYx1S9kkJLT7ju/kKYLnv4Jdn9vzLrewGjKpinMvtwm+90McEbYlGx6SKHmetQ9Mu6HqieUAKmJJZv1A==
+"@sunmao-ui/arco-lib@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/arco-lib/-/arco-lib-0.0.4.tgz#d501eb60d4b0e32faed2e7514803d2476462265d"
+  integrity sha512-m9Oilym6YMq2psLDoxiq+14JiDL2DdKXHWOISqcyl2AR81BeXzp2kRy41bsWYsQrrIyYtyEcvMZUP8oprM7DQg==
   dependencies:
     "@arco-design/web-react" "^2.26.1"
     "@emotion/css" "^11.5.0"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.3.5"
-    "@sunmao-ui/runtime" "^0.3.9"
+    "@sunmao-ui/core" "^0.3.6"
+    "@sunmao-ui/runtime" "^0.3.10"
     eslint-plugin-react-hooks "^4.3.0"
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
     react "^17.0.2"
     react-dom "^17.0.2"
+
+"@sunmao-ui/core@^0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/core/-/core-0.3.6.tgz#236e448db7881773c89f6a38c1669c22e9c5ee05"
+  integrity sha512-WURF0l7FdweCJUiEas5rseZlUIgLPaJSQx9tTvJcUqao3W9RxWZ5tfsUPMx+9vxb4xyfFEruiD9JrpespgeIrg==
+  dependencies:
+    "@types/json-schema" "^7.0.7"
+    lodash-es "^4.17.21"
 
 "@sunmao-ui/echarts-lib@^0.0.0":
   version "0.0.0"
@@ -2953,6 +2963,32 @@
     eslint-plugin-react-hooks "^4.3.0"
     react "^17.0.2"
     react-dom "^17.0.2"
+
+"@sunmao-ui/runtime@^0.3.10":
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.3.10.tgz#e3659569cb9009a3a8b78fd890cd41a63a6182ee"
+  integrity sha512-Aiiim/4tsjZVJ6JFyhwfHwdEf0QwiHxMwYY7GjpYGDEm7a9DzOFyT+3t06TJDygHibF1Fezd+1EgalsHbS2L2g==
+  dependencies:
+    "@emotion/css" "^11.7.1"
+    "@emotion/styled" "^11"
+    "@sinclair/typebox" "^0.21.2"
+    "@sunmao-ui/core" "^0.3.6"
+    "@vue/reactivity" "^3.1.5"
+    "@vue/shared" "^3.2.20"
+    copy-to-clipboard "^3.3.1"
+    dayjs "^1.10.6"
+    lodash-es "^4.17.21"
+    mitt "^3.0.0"
+    nanoid "^3.1.23"
+    path-to-regexp "^6.2.0"
+    react "^17.0.0"
+    react-dom "^17.0.0"
+    react-grid-layout "^1.3.0"
+    react-markdown "^7.1.0"
+    react-resize-detector "^6.7.6"
+    react-simple-code-editor "^0.11.0"
+    use-deep-compare "^1.1.0"
+    wouter "^2.7.4"
 
 "@swc/core-android-arm64@^1.2.121":
   version "1.2.121"

@@ -8,10 +8,9 @@ import {
   RuntimeApplication,
   RuntimeComponentSchema,
 } from '@sunmao-ui/core';
-import { UIServices, ModuleSchema } from '../../types';
+import { UIServices, ModuleSchema, ImplementedRuntimeModule, EventHandlerSchema } from '../../types';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
-import { ImplementedRuntimeModule, EventHandlerSchema } from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 
 type Props = Static<typeof ModuleSchema> & {

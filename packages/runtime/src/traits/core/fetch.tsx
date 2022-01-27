@@ -39,7 +39,6 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
         error: undefined,
       },
     });
-
     // fetch data
     fetch(url, {
       method,

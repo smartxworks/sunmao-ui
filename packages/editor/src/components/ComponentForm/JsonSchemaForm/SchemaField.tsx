@@ -6,6 +6,9 @@ import {
   FormErrorMessage,
   Text,
   Button,
+  Spacer,
+  HStack,
+  IconButton,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
 import { FieldProps, getCodeMode, getDisplayLabel } from './fields';
@@ -18,6 +21,7 @@ import NumberField from './NumberField';
 import NullField from './NullField';
 import MultiSchemaField from './MultiSchemaField';
 import UnsupportedField from './UnsupportedField';
+import { ArrowDownIcon, ArrowLeftIcon, ChevronDownIcon, ChevronLeftIcon } from '@chakra-ui/icons';
 
 type TemplateProps = {
   id?: string;
@@ -48,6 +52,8 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     isExpression,
     setIsExpression,
   } = props;
+
+  const [isExpanded, setIsExpanded] = useState(true);
   if (hidden) {
     return <div className="hidden">{children}</div>;
   }
@@ -56,7 +62,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     <FormControl isRequired={required} id={id} mt="1">
       {displayLabel && (
         <>
-          <FormLabel>
+          <FormLabel display='flex'>
             {label}
             {codeMode && (
               <Button
@@ -69,11 +75,19 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
                 JS
               </Button>
             )}
+            <Spacer display='inline' />
+            <IconButton
+              size="smx"
+              variant="ghost"
+              aria-label="toggle-expand"
+              icon={isExpanded ? <ChevronDownIcon size /> : <ChevronLeftIcon />}
+              onClick={() => setIsExpanded(prev => !prev)}
+            />
           </FormLabel>
           {description && <Text fontSize="sm">{description}</Text>}
         </>
       )}
-      {children}
+      {isExpanded ? children : null}
       {errors && <FormErrorMessage>{errors}</FormErrorMessage>}
       {help && <FormHelperText>{help}</FormHelperText>}
     </FormControl>
