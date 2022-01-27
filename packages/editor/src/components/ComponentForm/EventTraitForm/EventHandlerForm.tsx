@@ -13,7 +13,7 @@ import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
-import { EventHandlerSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSchema, GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
 import { formWrapperCSS } from '../style';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EditorServices } from '../../../types';
@@ -32,20 +32,26 @@ type Props = {
 export const EventHandlerForm: React.FC<Props> = observer(props => {
   const { handler, eventTypes, onChange, onRemove, hideEventType, services } = props;
   const { registry, editorStore } = services;
+  const { utilMethods } = registry;
   const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
 
   const updateMethods = useCallback(
     (componentId: string) => {
-      const component = components.find(c => c.id === componentId);
-      if (component) {
-        const componentModel = new ComponentModel(
-          new AppModel([], registry),
-          component,
-          registry
-        );
+      if (componentId === GLOBAL_UTILS_ID) {
+        setMethods(Array.from(utilMethods.keys()));
+      } else {
+        const component = components.find(c => c.id === componentId);
 
-        setMethods(componentModel.methods.map(m => m.name));
+        if (component) {
+          const componentModel = new ComponentModel(
+            new AppModel([], registry),
+            component,
+            registry
+          );
+
+          setMethods(componentModel.methods.map(m => m.name));
+        }
       }
     },
     [components, registry]
@@ -99,7 +105,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
         onBlur={() => formik.submitForm()}
         value={formik.values.componentId}
       >
-        {components.map(c => (
+        {[{ id: GLOBAL_UTILS_ID }].concat(components).map(c => (
           <option key={c.id} value={c.id}>
             {c.id}
           </option>
