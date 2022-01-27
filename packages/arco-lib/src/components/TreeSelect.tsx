@@ -100,7 +100,7 @@ const options = {
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
-    name: "TreeSelect",
+    name: "treeSelect",
     displayName: "TreeSelect",
     exampleProperties,
   },

@@ -20,7 +20,7 @@ import {
 
 const TableStateSchema = Type.Object({
   selectedRows: Type.Array(Type.Any()),
-  selectedItem: Type.Optional(Type.Any()),
+  currentOperatedItem: Type.Optional(Type.Any()),
 });
 
 type SortRule = {
@@ -59,7 +59,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
   const [filterRule, setFilterRule] = useState();
 
   const filteredData = useMemo(() => {
-    let filteredData = data || [];
+    let filteredData = Array.isArray(data) ? data : [];
     if (filterRule) {
       Object.keys(filterRule).forEach((colIdx) => {
         const value = filterRule[colIdx][0];
@@ -86,10 +86,6 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
     currentPage * pageSize
   );
 
-  const clearState = () => {
-    mergeState({ selectedRows: [] });
-    mergeState({ selectedItem: undefined });
-  };
   const inputRef = useRef(null);
 
   const columns = cProps.columns!.map((column) => {
@@ -209,12 +205,13 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
           setSelectedRowKeys(selectedRowKeys.map(Number));
         },
         onSelect: (selected, record, selectedRows) => {
-          if (!selected) {
-            clearState();
-            return;
-          }
+          selected
+            ? mergeState({ currentOperatedItem: record })
+            : mergeState({ currentOperatedItem: undefined });
           mergeState({ selectedRows });
-          mergeState({ selectedItem: record });
+        },
+        onSelectAll(selected, selectedRows) {
+          mergeState({ selectedRows });
         },
       }}
     />
@@ -260,7 +257,7 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
       },
     },
   ],
-  data: Array(200)
+  data: Array(13)
     .fill("")
     .map((_, index) => ({
       key: index,
@@ -294,7 +291,7 @@ export const Table = implementRuntimeComponent({
   metadata: {
     ...FALLBACK_METADATA,
     exampleProperties,
-    name: "Table",
+    name: "table",
     displayName: "Table",
   },
   spec: {

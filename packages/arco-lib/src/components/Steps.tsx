@@ -55,7 +55,7 @@ const options = {
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
-    name: "Steps",
+    name: "steps",
     displayName: "Steps",
     exampleProperties,
   },

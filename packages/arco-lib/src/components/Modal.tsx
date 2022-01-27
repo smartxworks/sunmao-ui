@@ -67,8 +67,8 @@ const exampleProperties: Static<typeof ModalPropsSchema> = {
   title: "Modal title",
   mask: true,
   simple: false,
-  okText: "确定",
-  cancelText: "取消",
+  okText: "confirm",
+  cancelText: "cancel",
   closable: true,
   maskClosable: true,
   confirmLoading: false,
@@ -78,7 +78,7 @@ export const Modal = implementRuntimeComponent({
   metadata: {
     ...FALLBACK_METADATA,
     exampleProperties,
-    name: "Modal",
+    name: "modal",
     displayName: "Modal",
   },
   spec: {
