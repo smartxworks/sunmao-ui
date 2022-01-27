@@ -106,8 +106,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
         value={formik.values.componentId}
       >
         {[{ id: GLOBAL_UTILS_ID }].concat(components).map(c => (
-          <option key={c.id}
-            value={c.id}>
+          <option key={c.id} value={c.id}>
             {c.id}
           </option>
         ))}
