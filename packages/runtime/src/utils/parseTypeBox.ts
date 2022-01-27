@@ -9,6 +9,7 @@ import {
   TSchema,
   OptionalModifier,
   UnionKind,
+  AnyKind,
 } from '@sinclair/typebox';
 
 export function parseTypeBox(tSchema: TSchema, noOptional = false): Static<typeof tSchema> {
@@ -40,6 +41,8 @@ export function parseTypeBox(tSchema: TSchema, noOptional = false): Static<typeo
       const subSchema = (tSchema.anyOf || tSchema.oneOf)[0];
       return parseTypeBox(subSchema, noOptional);
     }
+    case tSchema.kind === AnyKind:
+      return undefined;
     default:
       return {};
   }
