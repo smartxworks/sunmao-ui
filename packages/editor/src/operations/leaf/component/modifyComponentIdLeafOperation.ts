@@ -9,12 +9,15 @@ export type ModifyComponentIdLeafOperationContext = {
 
 export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComponentIdLeafOperationContext> {
   do(prev: AppModel): AppModel {
-    const component = prev.getComponentById(this.context.componentId as ComponentId);
+    const oldId = this.context.componentId as ComponentId;
+    const newId = this.context.newId as ComponentId;
+    const component = prev.getComponentById(oldId);
     if (!component) {
       console.warn('component not found');
       return prev;
     }
-    component.changeId(this.context.newId as ComponentId);
+    component.changeId(newId);
+    prev.changeComponentMapId(oldId, newId);
     return prev;
   }
 
