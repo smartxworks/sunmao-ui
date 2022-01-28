@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { sortBy } from 'lodash-es';
+import { isArray, sortBy } from 'lodash-es';
 import {
   Table as BaseTable,
   Thead,
@@ -63,6 +63,7 @@ export const TableImpl = implementTable(
     }, [data, updateSelectedItem, updateSelectedItems]);
 
     const sortedData = useMemo(() => {
+      if (!isArray(data)) return [];
       if (!sortRule) return data;
       const sorted = sortBy(data, sortRule.key);
       return sortRule.desc ? sorted.reverse() : sorted;

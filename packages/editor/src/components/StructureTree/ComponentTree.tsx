@@ -160,6 +160,7 @@ export const ComponentTree: React.FC<Props> = props => {
       <DropComponentWrapper
         onCreateComponent={onCreateComponent}
         onMoveComponent={onMoveComponent}
+        droppable={slots.length !== 0}
       >
         <ComponentItemView
           id={component.id}

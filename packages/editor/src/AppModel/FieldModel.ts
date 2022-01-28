@@ -5,7 +5,7 @@ import { simple as simpleWalk } from 'acorn-walk';
 import { flattenDeep, isArray, isObject } from 'lodash-es';
 import { ComponentId, IFieldModel, ModuleId } from './IAppModel';
 
-const regExp = new RegExp('.*{{.*}}.*');
+const regExp = /.*{{.*}}.*/;
 
 export class FieldModel implements IFieldModel {
   isDynamic = false;
@@ -32,26 +32,48 @@ export class FieldModel implements IFieldModel {
     return this.value;
   }
 
-  update(value: unknown) {
+  private updateValue(value: unknown, shouldExtendValues = true) {
     if (isObject(value)) {
-      if (!isObject(this.value)) {
-        this.value = isArray(value) ? [] : {};
-      }
+      const isArrayValue = isArray(value);
+      const isOldValueObject = isObject(this.value);
 
-      for (const key in value) {
-        const val = (value as Record<string, unknown>)[key];
-        const _thisValue = this.value as Record<string, IFieldModel>;
-        if (!_thisValue[key]) {
-          _thisValue[key] = new FieldModel(val);
-        } else {
-          _thisValue[key].update(val);
-        }
-      }
+      this.value = (Object.keys(value) as Array<keyof typeof value>).reduce(
+        (result, key) => {
+          const oldValue: IFieldModel | null = isObject(this.value)
+            ? this.value[key]
+            : null;
+          let newValue: FieldModel;
+
+          if (oldValue) {
+            (oldValue as FieldModel).updateValue(value[key], false);
+            newValue = oldValue;
+          } else {
+            newValue = new FieldModel(value[key]);
+          }
+
+          if (isArray(result)) {
+            result.push(newValue);
+          } else {
+            result[key] = newValue;
+          }
+
+          return result;
+        },
+        (isArrayValue
+          ? []
+          : shouldExtendValues && isOldValueObject
+            ? this.value
+            : {}) as Record<string, IFieldModel>
+      );
     } else {
       this.value = value;
     }
     this.isDynamic = typeof value === 'string' && regExp.test(value);
     this.parseReferences();
+  }
+
+  update(value: unknown) {
+    this.updateValue(value);
   }
 
   getProperty(key: string | number): FieldModel | undefined {
@@ -62,7 +84,7 @@ export class FieldModel implements IFieldModel {
   }
 
   getValue() {
-    return this.value
+    return this.value;
   }
 
   traverse(cb: (f: IFieldModel, key: string) => void) {
@@ -102,7 +124,7 @@ export class FieldModel implements IFieldModel {
               const str = exp.slice(node.start, node.end);
               let path = str.replace(lastIdentifier, '');
               if (path.startsWith('.')) {
-                path = path.slice(1, path.length)
+                path = path.slice(1, path.length);
               }
               this.refs[lastIdentifier].push(path);
               break;
