@@ -44,7 +44,7 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
         </Tr>
       );
     });
-  }, [isCollapsed, editorStore]);
+  }, [isCollapsed, editorStore.validateResult]);
 
   const savedBadge = useMemo(() => {
     return <Badge colorScheme="green">Saved</Badge>;
@@ -75,6 +75,7 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
       paddingY="2"
       paddingX="4"
       boxShadow="0 0 4px rgba(0, 0, 0, 0.1)"
+      background='white'
     >
       <HStack width="full" justifyContent="space-between">
         <Text fontSize="md" fontWeight="bold">

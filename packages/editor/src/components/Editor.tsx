@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Application } from '@sunmao-ui/core';
 import { GridCallbacks, DIALOG_CONTAINER_ID, initSunmaoUI } from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
@@ -35,6 +35,12 @@ export const Editor: React.FC<Props> = observer(
     const [preview, setPreview] = useState(false);
     const [codeMode, setCodeMode] = useState(false);
     const [code, setCode] = useState('');
+    const [recoverKey, setRecoverKey] = useState(0);
+    const [isError, setIsError] = useState<boolean>(false);
+
+    const onError = (err: Error | null) => {
+      setIsError(err !== null);
+    };
 
     const gridCallbacks: GridCallbacks = useMemo(() => {
       return {
@@ -83,7 +89,10 @@ export const Editor: React.FC<Props> = observer(
 
     const appComponent = useMemo(() => {
       return (
-        <ErrorBoundary>
+        <ErrorBoundary
+          key={recoverKey}
+          onError={onError}
+        >
           <App
             options={app}
             debugEvent={false}
@@ -93,7 +102,7 @@ export const Editor: React.FC<Props> = observer(
           />
         </ErrorBoundary>
       );
-    }, [App, ComponentWrapper, app, gridCallbacks]);
+    }, [App, ComponentWrapper, app, gridCallbacks, recoverKey]);
 
     const renderMain = () => {
       const appBox = (
@@ -204,6 +213,12 @@ export const Editor: React.FC<Props> = observer(
         </>
       );
     };
+
+    useEffect(() => {
+      if (isError) {
+        setRecoverKey(recoverKey + 1);
+      }
+    }, [app]);
 
     return (
       <KeyboardEventWrapper

@@ -31,7 +31,7 @@ describe('format to module schema', () => {
             type: 'test/v1/child',
             properties: {
               test: '{{ value.BE_CAREFUL.toFixed(2) }}',
-              add: '{{ input1.value }} / {{ BE_CAREFUL.value }}'
+              add: '{{ input1.value }} / {{ BE_CAREFUL.value }}',
             },
 
             traits: [],
@@ -57,6 +57,33 @@ describe('format to module schema', () => {
         },
       ]
     `);
+  });
+
+  it('will add module id in stateMap', () => {
+    expect(
+      addModuleId({
+        version: 'test/v1',
+        kind: 'Module',
+        metadata: {
+          name: 'test',
+        },
+        spec: {
+          properties: {},
+          events: [],
+          stateMap: {
+            value: 'input1.value',
+          },
+        },
+        impl: [
+          {
+            id: 'input1',
+            type: 'test/v1/input',
+            properties: {},
+            traits: [],
+          },
+        ],
+      }).spec.stateMap
+    ).toEqual({ value: '{{ $moduleId }}__input1.value' });
   });
 
   it('will remove module id in expression', () => {
@@ -88,7 +115,7 @@ describe('format to module schema', () => {
             type: 'test/v1/child',
             properties: {
               test: '{{ value.BE_CAREFUL.toFixed(2) }}',
-              add: '{{ {{ $moduleId }}__input1.value }} / {{ {{ $moduleId }}__BE_CAREFUL.value }}'
+              add: '{{ {{ $moduleId }}__input1.value }} / {{ {{ $moduleId }}__BE_CAREFUL.value }}',
             },
 
             traits: [],
@@ -114,5 +141,32 @@ describe('format to module schema', () => {
         },
       ]
     `);
+  });
+
+  it('will remove module id in stateMap', () => {
+    expect(
+      removeModuleId({
+        version: 'test/v1',
+        kind: 'Module',
+        metadata: {
+          name: 'test',
+        },
+        spec: {
+          properties: {},
+          events: [],
+          stateMap: {
+            value: '{{ $moduleId }}__input1.value',
+          },
+        },
+        impl: [
+          {
+            id: '{{ $moduleId }}__input1',
+            type: 'test/v1/input',
+            properties: {},
+            traits: [],
+          },
+        ],
+      }).spec.stateMap
+    ).toEqual({ value: 'input1.value' });
   });
 });
