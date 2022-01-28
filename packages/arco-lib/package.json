@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/arco-lib",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
   "license": "MIT",
   "publishConfig": {
@@ -42,7 +42,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@sunmao-ui/editor": "^0.3.9",
+    "@sunmao-ui/editor": "0.3.9",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/lodash": "^4.14.170",
