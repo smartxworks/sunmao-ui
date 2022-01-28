@@ -42,4 +42,26 @@ describe('Field test', () => {
     expect(field.getProperty('data')!.getProperty(1)!.isDynamic).toEqual(true);
     expect(field.getProperty('data')!.getProperty(1)!.refs).toEqual({ fetch: ['data'] });
   });
+
+  it('update array property', () => {
+    const field = new FieldModel({ data: ['A', 'B'] });
+    
+    expect(field.rawValue).toEqual({ data: ['A', 'B'] });
+    field.update({data: ['B']});
+    expect(field.rawValue).toEqual({ data: ['B'] });
+    field.update({data: ['C']});
+    expect(field.rawValue).toEqual({ data: ['C'] });
+  })
+
+  it('update object property', () => {
+    const field = new FieldModel({ data: { a: 1, b: 2 }, value: '' });
+
+    expect(field.rawValue).toEqual({ data: { a: 1, b: 2 }, value: '' });
+    field.update({ data: { a: 1 } });
+    expect(field.rawValue).toEqual({ data: { a: 1 }, value: '' });
+    field.update({ data: { a: 2 } });
+    expect(field.rawValue).toEqual({ data: { a: 2 }, value: '' });
+    field.update({ value: 'text' });
+    expect(field.rawValue).toEqual({ data: { a: 2 }, value: 'text' });
+  })
 });
