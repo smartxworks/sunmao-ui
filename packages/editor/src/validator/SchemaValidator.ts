@@ -133,15 +133,21 @@ export class SchemaValidator implements ISchemaValidator {
       components: {},
       traits: {},
     };
-    // this.registry.getAllComponents().forEach(c => {
-    //   this.validatorMap.components[`${c.version}/${c.metadata.name}`] = this.ajv.compile(
-    //     c.spec.properties
-    //   );
-    // });
-    // this.registry.getAllTraits().forEach(t => {
-    //   this.validatorMap.traits[`${t.version}/${t.metadata.name}`] = this.ajv.compile(
-    //     t.spec.properties
-    //   );
-    // });
+    this.registry.getAllComponents().forEach(c => {
+      try {
+        this.validatorMap.components[`${c.version}/${c.metadata.name}`] =
+          this.ajv.compile(c.spec.properties);
+      } catch (e) {
+        console.error(
+          'ajv compile component spec error: ',
+          `${c.version}/${c.metadata.name}`
+        );
+      }
+    });
+    this.registry.getAllTraits().forEach(t => {
+      this.validatorMap.traits[`${t.version}/${t.metadata.name}`] = this.ajv.compile(
+        t.spec.properties
+      );
+    });
   }
 }
