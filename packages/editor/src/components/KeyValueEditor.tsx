@@ -2,17 +2,21 @@ import { CloseIcon } from '@chakra-ui/icons';
 import { Button, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 type Props = {
   onChange: (json: Record<string, string>) => void;
-  initValue?: Record<string, string>;
+  value?: Record<string, string>;
 };
 
 export const KeyValueEditor: React.FC<Props> = props => {
   const [rows, setRows] = useState<Array<[string, string]>>(() => {
-    return toPairs(props.initValue);
+    return toPairs(props.value);
   });
+
+  useEffect(() => {
+    setRows(toPairs(props.value));
+  }, [props.value]);
 
   const emitDataChange = (newRows: Array<[string, string]>) => {
     const json = fromPairs(newRows);
