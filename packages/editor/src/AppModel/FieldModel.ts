@@ -12,11 +12,11 @@ export class FieldModel implements IFieldModel {
   refs: Record<ComponentId | ModuleId, string[]> = {};
   private value: unknown | Array<IFieldModel> | Record<string, IFieldModel>;
 
-  constructor (value: unknown) {
+  constructor(value: unknown) {
     this.update(value);
   }
 
-  get rawValue () {
+  get rawValue() {
     if (isObject(this.value)) {
       if (isArray(this.value)) {
         return this.value.map(field => field.rawValue);
@@ -32,30 +32,39 @@ export class FieldModel implements IFieldModel {
     return this.value;
   }
 
-  update (value: unknown, shouldExtendValues = true) {
+  private updateValue(value: unknown, shouldExtendValues = true) {
     if (isObject(value)) {
       const isArrayValue = isArray(value);
       const isOldValueObject = isObject(this.value);
 
-      this.value = (Object.keys(value) as Array<keyof typeof value>).reduce((result, key) => {
-        const oldValue: IFieldModel | null = isObject(this.value) ? this.value[key] : null;
-        let newValue: FieldModel;
+      this.value = (Object.keys(value) as Array<keyof typeof value>).reduce(
+        (result, key) => {
+          const oldValue: IFieldModel | null = isObject(this.value)
+            ? this.value[key]
+            : null;
+          let newValue: FieldModel;
 
-        if (oldValue) {
-          (oldValue as IFieldModel).update(value[key], false);
-          newValue = oldValue;
-        } else {
-          newValue = new FieldModel(value[key]);
-        }
+          if (oldValue) {
+            (oldValue as IFieldModel).update(value[key], false);
+            newValue = oldValue;
+          } else {
+            newValue = new FieldModel(value[key]);
+          }
 
-        if (isArray(result)) {
-          result.push(newValue);
-        } else {
-          result[key] = newValue;
-        }
+          if (isArray(result)) {
+            result.push(newValue);
+          } else {
+            result[key] = newValue;
+          }
 
-        return result;
-      }, (isArrayValue ? [] : (shouldExtendValues && isOldValueObject ? this.value : {})) as Record<string, IFieldModel>);
+          return result;
+        },
+        (isArrayValue
+          ? []
+          : shouldExtendValues && isOldValueObject
+            ? this.value
+            : {}) as Record<string, IFieldModel>
+      );
     } else {
       this.value = value;
     }
@@ -63,19 +72,23 @@ export class FieldModel implements IFieldModel {
     this.parseReferences();
   }
 
-  getProperty (key: string | number): FieldModel | undefined {
+  update(value: unknown) {
+    this.updateValue(value);
+  }
+
+  getProperty(key: string | number): FieldModel | undefined {
     if (typeof this.value === 'object') {
       return (this.value as any)[key];
     }
     return undefined;
   }
 
-  getValue () {
+  getValue() {
     return this.value;
   }
 
-  traverse (cb: (f: IFieldModel, key: string) => void) {
-    function _traverse (field: FieldModel, key: string) {
+  traverse(cb: (f: IFieldModel, key: string) => void) {
+    function _traverse(field: FieldModel, key: string) {
       if (isObject(field.value)) {
         for (const _key in field.value) {
           const val = field.getProperty(_key);
@@ -90,7 +103,7 @@ export class FieldModel implements IFieldModel {
     _traverse(this, '');
   }
 
-  private parseReferences () {
+  private parseReferences() {
     if (!this.isDynamic || typeof this.value !== 'string') return;
 
     const exps = flattenDeep(
@@ -117,7 +130,7 @@ export class FieldModel implements IFieldModel {
               break;
             default:
           }
-        }
+        },
       });
     });
   }

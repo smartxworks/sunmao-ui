@@ -7,7 +7,7 @@ import {
   Input,
   Select,
   Switch,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
@@ -40,7 +40,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
     initialValues: handler,
     onSubmit: values => {
       onChange(values);
-    }
+    },
   });
 
   const updateMethods = useCallback(
@@ -89,8 +89,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
         value={formik.values.type}
       >
         {eventTypes.map(e => (
-          <option key={e}
-            value={e}>
+          <option key={e} value={e}>
             {e}
           </option>
         ))}
@@ -129,8 +128,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
         value={formik.values.method.name}
       >
         {methods.map(m => (
-          <option key={m}
-            value={m}>
+          <option key={m} value={m}>
             {m}
           </option>
         ))}
@@ -192,8 +190,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
   );
 
   return (
-    <Box position="relative"
-      width="100%">
+    <Box position="relative" width="100%">
       <VStack className={formWrapperCSS}>
         {hideEventType ? null : typeField}
         {targetField}
