@@ -43,20 +43,26 @@ export const renderField = (properties: {
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
-      const operation = type
-        ? genOperation(registry, 'modifyTraitProperty', {
+      const operation = type ? genOperation(
+        registry,
+        'modifyTraitProperty',
+        {
           componentId: selectedComponentId,
           traitIndex: index,
           properties: {
             [fullKey]: ref.current?.value,
           },
-        })
-        : genOperation(registry, 'modifyComponentProperty', {
+        }
+      ) : genOperation(
+        registry,
+        'modifyComponentProperty',
+        {
           componentId: selectedComponentId,
           properties: {
             [fullKey]: ref.current?.value,
           },
-        });
+        }
+      );
       eventBus.send('operation', operation);
     };
     const onChange = (event: any) => {
@@ -66,12 +72,7 @@ export const renderField = (properties: {
     return (
       <FormControl key={`${selectedComponentId}-${fullKey}`}>
         <FormLabel>{fullKey}</FormLabel>
-        <Textarea
-          ref={ref}
-          onChange={onChange}
-          onBlur={onBlur}
-          value={textareaValue}
-        />
+        <Textarea ref={ref} onChange={onChange} onBlur={onBlur} value={textareaValue} />
       </FormControl>
     );
   } else {
