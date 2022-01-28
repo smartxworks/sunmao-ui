@@ -1065,15 +1065,15 @@
   integrity sha512-YeGOsWyjmGS26VxfvxbDgO7In4em8riCI5hEe/NnjM72ifoLQNUeHxwFNufXVIcaaPEK4fCV+fYoLKgmpPKjsA==
 
 "@sunmao-ui/chakra-ui-lib@^0.1.3":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/chakra-ui-lib/-/chakra-ui-lib-0.1.4.tgz#1c549d8d506d49f6cef9e338e37f30456f8642e7"
-  integrity sha512-melhV4nvPjcD/qUuhyz8V5v4rVhIdpf3FoXMHH/kLd33E5ruh6Z2sTasf1Sm69PbQZo33LCq0v+iRN6/FR/AAA==
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/chakra-ui-lib/-/chakra-ui-lib-0.1.5.tgz#f6d54312478f887ffb2a3616782e194f5534a3d7"
+  integrity sha512-ulXS5Rk0bm1V3GCVQ6h3LyTfID6nls0qIjLzBtxR3uiEUX5mvUzz/g9QEC/sveF9Gul3tX03GpUhDUeyD6riPg==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
     "@sinclair/typebox" "^0.21.2"
     "@sunmao-ui/core" "^0.3.6"
-    "@sunmao-ui/runtime" "^0.3.10"
+    "@sunmao-ui/runtime" "^0.3.11"
     chakra-react-select "^1.3.2"
     framer-motion "^4"
     lodash-es "^4.17.21"
@@ -1111,10 +1111,36 @@
     react "^17.0.2"
     react-dom "^17.0.2"
 
-"@sunmao-ui/runtime@^0.3.10", "@sunmao-ui/runtime@^0.3.9":
+"@sunmao-ui/runtime@^0.3.10":
   version "0.3.10"
   resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.3.10.tgz#e3659569cb9009a3a8b78fd890cd41a63a6182ee"
   integrity sha512-Aiiim/4tsjZVJ6JFyhwfHwdEf0QwiHxMwYY7GjpYGDEm7a9DzOFyT+3t06TJDygHibF1Fezd+1EgalsHbS2L2g==
+  dependencies:
+    "@emotion/css" "^11.7.1"
+    "@emotion/styled" "^11"
+    "@sinclair/typebox" "^0.21.2"
+    "@sunmao-ui/core" "^0.3.6"
+    "@vue/reactivity" "^3.1.5"
+    "@vue/shared" "^3.2.20"
+    copy-to-clipboard "^3.3.1"
+    dayjs "^1.10.6"
+    lodash-es "^4.17.21"
+    mitt "^3.0.0"
+    nanoid "^3.1.23"
+    path-to-regexp "^6.2.0"
+    react "^17.0.0"
+    react-dom "^17.0.0"
+    react-grid-layout "^1.3.0"
+    react-markdown "^7.1.0"
+    react-resize-detector "^6.7.6"
+    react-simple-code-editor "^0.11.0"
+    use-deep-compare "^1.1.0"
+    wouter "^2.7.4"
+
+"@sunmao-ui/runtime@^0.3.11", "@sunmao-ui/runtime@^0.3.9":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.3.11.tgz#f57fe601babc39ddc4ea6a9f3a63b8cefde72503"
+  integrity sha512-6rOwVW96o1Ky2VxEJk7yKNrQ59c/HY6/FugHZPCKXOhWSPrdw3YU2nh256ipjUn9JaUe9FG4X/EluQboJwql5A==
   dependencies:
     "@emotion/css" "^11.7.1"
     "@emotion/styled" "^11"
