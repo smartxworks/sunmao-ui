@@ -80,6 +80,11 @@ export class AppModel implements IAppModel {
     }
   }
 
+  changeComponentMapId(oldId: ComponentId, newId: ComponentId) {
+    this.componentMap[newId] = this.componentMap[oldId];
+    delete this.componentMap[oldId];
+  }
+
   _bindComponentToModel(component: IComponentModel) {
     this.componentMap[component.id] = component;
     component.appModel = this;
