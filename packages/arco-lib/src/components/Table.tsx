@@ -50,7 +50,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
   const rowSelectionType: "checkbox" | "radio" | undefined =
     cProps.rowSelectionType === "default" ? undefined : cProps.rowSelectionType;
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortRule, setSortRule] = useState<SortRule>({
     field: "name",
@@ -186,7 +186,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
 
     setFilterRule(filter);
   };
-
+  
   return (
     <BaseTable
       className={cx(className, css(customStyle?.content))}
@@ -202,7 +202,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
         type: rowSelectionType,
         selectedRowKeys,
         onChange(selectedRowKeys, selectedRows) {
-          setSelectedRowKeys(selectedRowKeys.map(Number));
+          setSelectedRowKeys(selectedRowKeys as string[]);
         },
         onSelect: (selected, record, selectedRows) => {
           selected
@@ -260,7 +260,7 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
   data: Array(13)
     .fill("")
     .map((_, index) => ({
-      key: index,
+      key: `key ${index}`,
       name: `${Math.random() > 0.5 ? "Kevin Sandra" : "xzdry"}${index}`,
       link: `link${Math.random() > 0.5 ? "-A" : "-B"}`,
       salary: Math.floor(Math.random() * 1000),
@@ -283,7 +283,7 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
   pagePosition: "bottomCenter",
   indentSize: 15,
   virtualized: false,
-  rowSelectionType: "checkbox",
+  rowSelectionType: "radio",
 };
 
 export const Table = implementRuntimeComponent({

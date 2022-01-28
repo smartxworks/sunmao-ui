@@ -36,11 +36,11 @@ export const TreeSelectPropsSchema = {
     maxTagCount: Type.Optional(Type.Number()),
     animation: Type.Optional(Type.Boolean()),
     treeData: Type.Array(
-        Type.Rec(Self => Type.Object({
+        Type.Object({
             key: Type.String(),
             title: Type.String(),
             disabled: Type.Optional(Type.Boolean()),
-            children: Type.Array(Self)
-        }))
+            children: Type.Array(Type.Any())
+        })
     ),
 }
