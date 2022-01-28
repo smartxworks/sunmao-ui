@@ -52,7 +52,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
         <FormControl>
           <FormLabel>Module StateMap</FormLabel>
           <KeyValueEditor
-            initValue={formik.values.stateMap}
+            value={formik.values.stateMap}
             onChange={json => {
               formik.setFieldValue('stateMap', json);
               formik.submitForm();
