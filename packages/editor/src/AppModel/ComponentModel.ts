@@ -91,19 +91,27 @@ export class ComponentModel implements IComponentModel {
   }
 
   get prevSilbling() {
-    if (!this.parent) return null;
-    const parentChildren = this.parent.children[this.parentSlot!];
-    const index = parentChildren.indexOf(this);
+    let components:IComponentModel[];
+    if (!this.parent) {
+      components = this.appModel.topComponents;
+    } else {
+      components = this.parent.children[this.parentSlot!];
+    }
+    const index = components.indexOf(this);
     if (index === 0) return null;
-    return parentChildren[index - 1];
+    return components[index - 1];
   }
 
   get nextSilbing() {
-    if (!this.parent) return null;
-    const parentChildren = this.parent.children[this.parentSlot!];
-    const index = parentChildren.indexOf(this);
-    if (index === parentChildren.length - 1) return null;
-    return parentChildren[index + 1];
+    let components:IComponentModel[];
+    if (!this.parent) {
+      components = this.appModel.topComponents;
+    } else {
+      components = this.parent.children[this.parentSlot!];
+    }
+    const index = components.indexOf(this);
+    if (index === components.length - 1) return null;
+    return components[index + 1];
   }
 
   get _slotTrait() {
