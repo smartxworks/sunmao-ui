@@ -45,7 +45,7 @@ export class FieldModel implements IFieldModel {
           let newValue: FieldModel;
 
           if (oldValue) {
-            (oldValue as IFieldModel).update(value[key], false);
+            (oldValue as FieldModel).updateValue(value[key], false);
             newValue = oldValue;
           } else {
             newValue = new FieldModel(value[key]);
