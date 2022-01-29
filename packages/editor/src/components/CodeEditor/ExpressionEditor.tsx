@@ -12,7 +12,7 @@ import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/hint/show-hint';
 import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
-import ecma from 'tern/defs/ecmascript.json';
+import ecma from '../../constants/ecmascript';
 import tern, { Def } from 'tern';
 
 // TODO: tern uses global variable, maybe there is some workaround
