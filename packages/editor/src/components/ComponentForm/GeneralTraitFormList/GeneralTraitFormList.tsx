@@ -60,7 +60,11 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     <VStack width="full" alignItems="start">
       <HStack width="full" justify="space-between">
         <strong>Traits</strong>
-        <AddTraitButton onAddTrait={onAddTrait} registry={registry} />
+        <AddTraitButton
+          onAddTrait={onAddTrait}
+          registry={registry}
+          component={component}
+        />
       </HStack>
       {traitFields}
     </VStack>
