@@ -8,7 +8,7 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { useComponentWrapper } from './ComponentWrapper';
-import { StateEditor, SchemaEditor } from './CodeEditor';
+import { StateViewer, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
@@ -89,10 +89,7 @@ export const Editor: React.FC<Props> = observer(
 
     const appComponent = useMemo(() => {
       return (
-        <ErrorBoundary
-          key={recoverKey}
-          onError={onError}
-        >
+        <ErrorBoundary key={recoverKey} onError={onError}>
           <App
             options={app}
             debugEvent={false}
@@ -176,7 +173,7 @@ export const Editor: React.FC<Props> = observer(
                   />
                 </TabPanel>
                 <TabPanel p={0} height="100%">
-                  <StateEditor code={JSON.stringify(stateStore, null, 2)} />
+                  <StateViewer store={stateStore} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
