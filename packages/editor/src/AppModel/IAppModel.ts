@@ -50,6 +50,7 @@ export interface IAppModel {
   getComponentById(id: ComponentId): IComponentModel | undefined;
   removeComponent(componentId: ComponentId): void;
   appendChild(component: IComponentModel): void;
+  changeComponentMapId(oldId: ComponentId, newId: ComponentId): void;
   _bindComponentToModel(component: IComponentModel): void;
 }
 
