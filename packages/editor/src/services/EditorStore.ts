@@ -19,6 +19,10 @@ export class EditorStore {
   _selectedComponentId = '';
   _hoverComponentId = '';
   _dragOverComponentId = '';
+  // default left tab: Explorer
+  _leftTabIdx = 0;
+  // default right tab: Insert
+  _rightTabIdx = 1;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -107,6 +111,14 @@ export class EditorStore {
     return this.currentComponentsVersion === this.lastSavedComponentsVersion;
   }
 
+  get leftTabIdx() {
+    return this._leftTabIdx;
+  }
+
+  get rightTabIdx() {
+    return this._rightTabIdx;
+  }
+
   // origin components of app of module
   // when switch app or module, components should refresh
   get originComponents(): ComponentSchema[] {
@@ -180,4 +192,12 @@ export class EditorStore {
   setLastSavedComponentsVersion = (val: number) => {
     this.lastSavedComponentsVersion = val;
   };
+
+  setLeftTabIdx = (val: number) => {
+    this._leftTabIdx = val;
+  }
+
+  setRightTabIdx = (val: number) => {
+    this._rightTabIdx = val;
+  }
 }
