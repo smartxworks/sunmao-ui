@@ -42,6 +42,6 @@ export const FetchTraitPropertiesSchema = Type.Object({
   lazy: Type.Boolean(),
   headers: Type.Record(Type.String(), Type.String()),
   body: Type.Record(Type.String(), Type.String()),
-  onComplete: Type.Optional(Type.Array(EventCallBackHandlerSchema)),
-  onError: Type.Optional(Type.Array(EventCallBackHandlerSchema)),
+  onComplete: Type.Array(EventCallBackHandlerSchema),
+  onError: Type.Array(EventCallBackHandlerSchema),
 });
