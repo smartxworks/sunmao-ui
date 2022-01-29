@@ -170,7 +170,7 @@ export class ComponentModel implements IComponentModel {
   removeChild(child: IComponentModel) {
     const slotChildren = this.children[child.parentSlot!];
     if (slotChildren) {
-      const index = slotChildren.indexOf(child)
+      const index = slotChildren.indexOf(child);
       if (index > -1) {
         slotChildren.splice(slotChildren.indexOf(child), 1);
         child._isDirty = true;
@@ -188,10 +188,10 @@ export class ComponentModel implements IComponentModel {
   }
 
   changeId(newId: ComponentId) {
+    const oldId = this.id;
     const isIdExist = !!this.appModel.getComponentById(newId);
     if (isIdExist) {
       throw Error(`Id ${newId} already exist`);
-      return this;
     }
     this.id = newId;
     for (const slot in this.children) {
@@ -207,6 +207,7 @@ export class ComponentModel implements IComponentModel {
       });
     }
     this._isDirty = true;
+    this.appModel.changeComponentMapId(oldId, newId);
     return this;
   }
 
