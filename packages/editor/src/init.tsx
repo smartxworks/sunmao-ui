@@ -13,6 +13,7 @@ import { EditorStore } from './services/EditorStore';
 import { StorageHandler } from './types';
 import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
+import './styles.css';
 
 type SunmaoUIEditorProps = {
   libs?: SunmaoLib[];
