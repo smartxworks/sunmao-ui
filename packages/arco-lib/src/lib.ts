@@ -23,6 +23,7 @@ import { Timeline } from "./components/Timeline";
 import { TreeSelect } from "./components/TreeSelect";
 import { Checkbox } from './components/Checkbox';
 import { Modal } from "./components/Modal";
+import { Radio } from './components/Radio';
 import { Table } from "./components/Table";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
@@ -58,6 +59,7 @@ export const components: Component[] = [
   Cascader,
   Skeleton,
   Timeline,
+  Radio,
   Checkbox
 ];
 export const traits: Trait[] = [];
