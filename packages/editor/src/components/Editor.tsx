@@ -29,7 +29,15 @@ type Props = {
 export const Editor: React.FC<Props> = observer(
   ({ App, registry, stateStore, services }) => {
     const { eventBus, editorStore } = services;
-    const { components, selectedComponentId, modules } = editorStore;
+    const {
+      components,
+      selectedComponentId,
+      modules,
+      setLeftTabIdx,
+      setRightTabIdx,
+      leftTabIdx,
+      rightTabIdx,
+    } = editorStore;
 
     const [scale, setScale] = useState(100);
     const [preview, setPreview] = useState(false);
@@ -89,10 +97,7 @@ export const Editor: React.FC<Props> = observer(
 
     const appComponent = useMemo(() => {
       return (
-        <ErrorBoundary
-          key={recoverKey}
-          onError={onError}
-        >
+        <ErrorBoundary key={recoverKey} onError={onError}>
           <App
             options={app}
             debugEvent={false}
@@ -157,6 +162,10 @@ export const Editor: React.FC<Props> = observer(
               flexDirection="column"
               textAlign="left"
               isLazy
+              index={leftTabIdx}
+              onChange={idx => {
+                setLeftTabIdx(idx);
+              }}
             >
               <TabList background="gray.50">
                 <Tab>Explorer</Tab>
@@ -195,6 +204,10 @@ export const Editor: React.FC<Props> = observer(
               height="100%"
               display="flex"
               flexDirection="column"
+              index={rightTabIdx}
+              onChange={idx => {
+                setRightTabIdx(idx);
+              }}
             >
               <TabList background="gray.50">
                 <Tab>Inspect</Tab>

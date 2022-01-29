@@ -125,6 +125,8 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       setHoverComponentId,
       dragOverComponentId,
       setDragOverComponentId,
+      setLeftTabIdx,
+      setRightTabIdx
     } = editorStore;
 
     const [slots, isDroppable] = useMemo(() => {
@@ -156,6 +158,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
 
     const onClickWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
+      setRightTabIdx(0);
       setSelectedComponentId(component.id);
     };
     const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
@@ -222,6 +225,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       e.preventDefault();
       setDragOverComponentId('');
       setCurrentSlot(undefined);
+      setLeftTabIdx(1);
       const creatingComponent = e.dataTransfer?.getData('component') || '';
       eventBus.send(
         'operation',
