@@ -5,8 +5,6 @@ import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
 import { initSunmaoUIEditor } from './init';
 import { LocalStorageManager } from './LocalStorageManager';
 
-import './styles.css';
-
 type Options = Partial<{
   components: Parameters<Registry['registerComponent']>[0][];
   traits: Parameters<Registry['registerTrait']>[0][];
