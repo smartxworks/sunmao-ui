@@ -17,7 +17,6 @@ export class ModifyComponentIdLeafOperation extends BaseLeafOperation<ModifyComp
       return prev;
     }
     component.changeId(newId);
-    prev.changeComponentMapId(oldId, newId);
     return prev;
   }
 
