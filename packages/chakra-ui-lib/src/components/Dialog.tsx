@@ -39,8 +39,14 @@ export default implementRuntimeComponent({
     isResizable: false,
     exampleProperties: {
       title: 'Dialog',
-      confirmButton: 'Confirm',
-      cancelButton: 'Cancel',
+      confirmButton: {
+        text: 'Confirm',
+        colorScheme: 'blue',
+      },
+      cancelButton: {
+        text: 'Cancel',
+        colorScheme: 'gray',
+      },
       disableConfirm: false,
     },
     exampleSize: [6, 6],

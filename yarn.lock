@@ -2925,10 +2925,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sunmao-ui/arco-lib@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/arco-lib/-/arco-lib-0.0.4.tgz#d501eb60d4b0e32faed2e7514803d2476462265d"
-  integrity sha512-m9Oilym6YMq2psLDoxiq+14JiDL2DdKXHWOISqcyl2AR81BeXzp2kRy41bsWYsQrrIyYtyEcvMZUP8oprM7DQg==
+"@sunmao-ui/arco-lib@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/arco-lib/-/arco-lib-0.0.5.tgz#df043aeeb2b0175e23b13c71d6f6493cbff91f31"
+  integrity sha512-5oEsu5IF0WPx0rPXks0o6kIn0NONfhYAtrKGsSliq+yc9fCylF7kzue/4rFarPUTqeavXN8i5R+JV8mg59UySQ==
   dependencies:
     "@arco-design/web-react" "^2.26.1"
     "@emotion/css" "^11.5.0"

@@ -7,7 +7,6 @@ import {
   Text,
   Button,
   Spacer,
-  HStack,
   IconButton,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
@@ -21,7 +20,7 @@ import NumberField from './NumberField';
 import NullField from './NullField';
 import MultiSchemaField from './MultiSchemaField';
 import UnsupportedField from './UnsupportedField';
-import { ArrowDownIcon, ArrowLeftIcon, ChevronDownIcon, ChevronLeftIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, ChevronLeftIcon } from '@chakra-ui/icons';
 
 type TemplateProps = {
   id?: string;
