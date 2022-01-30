@@ -57,7 +57,7 @@ export class AppStorage {
   removeModule(v: string, n: string) {
     this.setModules(
       this.modules.filter(
-        ({ version, metadata: { name } }) => version !== v && name !== n
+        ({ version, metadata: { name } }) => version !== v || name !== n
       )
     );
     this.saveModules();
