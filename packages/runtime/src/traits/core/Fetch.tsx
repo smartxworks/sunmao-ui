@@ -1,7 +1,7 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImpl } from '../../types';
-import { FetchTraitPropertiesSchema } from '../../types/TraitPropertiesSchema';
+import { FetchTraitPropertiesSchema } from '../../types/traitPropertiesSchema';
 
 const hasFetchedMap = new Map<string, boolean>();
 
