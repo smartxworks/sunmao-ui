@@ -24,24 +24,32 @@ export function addModuleId(module: Module): Module {
       ids.push((c.properties.template as any).id);
     }
   });
-  function traverse(tree: Record<string, any>) {
+  function traverse(tree: Record<string, any>, isValueExp = false) {
     for (const key in tree) {
       const val = tree[key];
       if (typeof val === 'string') {
-        if (ids.includes(val)) {
+        if (isValueExp) {
+          // case 1: value is expression, replace it
+          const newField = replaceIdsInExp(val, ids);
+          tree[key] = newField;
+        } else if (ids.includes(val)) {
+          // case 2: value is equal to a component id
           tree[key] = `${ModuleIdPrefix}${val}`;
         } else {
+          // case 3: value is normal string, try to replace the componentIds in this string
           const newField = replaceIdsInProperty(val, ids);
           tree[key] = newField;
         }
       } else if (typeof val === 'object') {
-        traverse(val);
+        // case 4: value is object, recurse it
+        traverse(val, isValueExp);
       }
     }
   }
 
   traverse(module.impl);
-  traverse(module.spec.stateMap);
+  // value of stateMap is expression, not property
+  traverse(module.spec.stateMap, true);
   return module;
 }
 
@@ -65,8 +73,7 @@ export function removeModuleId(module: Module): Module {
 
 // example: replaceIdsInExp('{{input1.value}} + {{input2.value}}', ids: ['input1']])
 function replaceIdsInProperty(property: string, ids: string[]): string {
-  const expRegExp = new RegExp('{{(.*?)}}', 'g');
-  const matches = [...property.matchAll(expRegExp)];
+  const matches = [...property.matchAll(/{{(.*?)}}/g)];
 
   if (matches.length === 0) return property;
 
@@ -106,7 +113,7 @@ function replaceIdsInExp(exp: string, ids: string[]): string | void {
   });
 
   if (identifierPos.length === 0) {
-    null;
+    return exp;
   }
   const newExp = identifierPos.reverse().reduce((result, { start, end, replaceStr }) => {
     return result.slice(0, start) + `${replaceStr}` + result.slice(end);

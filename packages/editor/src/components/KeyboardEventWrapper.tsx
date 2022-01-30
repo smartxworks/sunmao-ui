@@ -32,6 +32,10 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
     switch (e.key) {
       case 'Delete':
       case 'Backspace':
+        // if `selectionStart` available,think it is textarea or text input
+        if ((e.target as any).selectionStart !== undefined) {
+          return;
+        }
         eventBus.send(
           'operation',
           genOperation(registry, 'removeComponent', {

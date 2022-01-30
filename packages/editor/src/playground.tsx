@@ -3,7 +3,6 @@ import { Application } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
 import React, { StrictMode, useState } from 'react';
 import ReactDOM from 'react-dom';
-import './styles.css';
 
 import { initSunmaoUIEditor } from './init';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';

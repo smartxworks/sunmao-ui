@@ -41,7 +41,7 @@ export const FetchTraitForm: React.FC<Props> = props => {
     ?.properties as Static<typeof FetchTraitPropertiesSchema>;
 
   const formik = useFormik({
-    initialValues: { onComplete: [], onError: [], ...fetchTrait },
+    initialValues: { ...fetchTrait },
     onSubmit: values => {
       const index = component.traits.findIndex(t => t.type === 'core/v1/fetch');
       eventBus.send(
