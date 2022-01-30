@@ -2,7 +2,7 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash-es';
 import { CallbackMap, TraitImpl } from '../../types';
-import { EventHandlerSchema } from '../../types/TraitPropertiesSchema';
+import { EventHandlerSchema } from '../../types/traitPropertiesSchema';
 
 const useEventTrait: TraitImpl<Static<typeof PropsSchema>> = ({
   handlers,

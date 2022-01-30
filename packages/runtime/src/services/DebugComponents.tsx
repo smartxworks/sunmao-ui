@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StateManager } from './stateStore';
+import { StateManager } from './StateManager';
 import { ApiService } from './apiService';
 import { watch } from '../utils/watchReactivity';
 import copy from 'copy-to-clipboard';

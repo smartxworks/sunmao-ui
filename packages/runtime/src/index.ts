@@ -1,6 +1,6 @@
-import { StateManager } from './services/stateStore';
+import { StateManager } from './services/StateManager';
 import { genApp } from './App';
-import { initRegistry, UtilMethod } from './services/registry';
+import { initRegistry, UtilMethod } from './services/Registry';
 import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
 import './style.css';
@@ -29,10 +29,10 @@ export * from './utils/parseTypeBox';
 export * from './utils/buildKit';
 export * from './utils/encodeDragDataTransfer';
 export * from './types';
-export * from './types/TraitPropertiesSchema';
+export * from './types/traitPropertiesSchema';
 export * from './constants';
-export * from './services/registry';
-export * from './services/stateStore';
+export * from './services/Registry';
+export * from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { default as Text, TextPropertySchema } from './components/_internal/Text';
 

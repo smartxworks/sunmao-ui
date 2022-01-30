@@ -10,14 +10,14 @@ import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
 
 // traits
-import CoreArrayState from '../traits/core/arrayState';
-import CoreState from '../traits/core/state';
-import CoreEvent from '../traits/core/event';
-import CoreSlot from '../traits/core/slot';
-import CoreStyle from '../traits/core/style';
-import CoreHidden from '../traits/core/hidden';
-import CoreFetch from '../traits/core/fetch';
-import CoreValidation from '../traits/core/validation';
+import CoreArrayState from '../traits/core/ArrayState';
+import CoreState from '../traits/core/State';
+import CoreEvent from '../traits/core/Event';
+import CoreSlot from '../traits/core/Slot';
+import CoreStyle from '../traits/core/Style';
+import CoreHidden from '../traits/core/Hidden';
+import CoreFetch from '../traits/core/Fetch';
+import CoreValidation from '../traits/core/Validation';
 import {
   ImplementedRuntimeComponent,
   ImplementedRuntimeTrait,
