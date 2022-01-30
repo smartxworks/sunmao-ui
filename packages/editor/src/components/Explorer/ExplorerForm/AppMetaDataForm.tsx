@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
 
-type AppMetaDataFormData = {
+export type AppMetaDataFormData = {
   name: string;
   version: string;
 };
@@ -12,13 +12,15 @@ type AppMetaDataFormData = {
 type AppMetaDataFormProps = {
   data: AppMetaDataFormData;
   services: EditorServices;
+  onSubmit?: (data: AppMetaDataFormData) => void;
 };
 
 export const AppMetaDataForm: React.FC<AppMetaDataFormProps> = observer(
-  ({ data, services }) => {
+  ({ data, services, onSubmit: onSubmitForm }) => {
     const { editorStore } = services;
     const onSubmit = (value: AppMetaDataFormData) => {
       editorStore.appStorage.saveAppMetaData(value);
+      onSubmitForm?.(value);
     };
     const formik = useFormik({
       initialValues: data,
