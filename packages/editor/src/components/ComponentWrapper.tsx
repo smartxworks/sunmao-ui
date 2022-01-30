@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Text } from '@chakra-ui/react';
 import { css, cx } from '@emotion/css';
 import { ComponentWrapperType } from '@sunmao-ui/runtime';
+import { HEADER_HEIGHT } from '../constants/layout';
 
 import { genOperation } from '../operations';
 import { EditorServices } from '../types';
@@ -17,15 +18,15 @@ type ComponentEditorState = 'drag' | 'select' | 'hover' | 'idle';
  */
 const findRelatedWrapper = (e: HTMLElement) => {
   let node: HTMLElement | null = e;
-  let slot: string | undefined = undefined;
+  let slot: string | undefined;
   while (node && node.tagName !== 'BODY') {
     if ('slot' in node.dataset) {
-      slot = node.dataset['slot'];
+      slot = node.dataset.slot;
     }
     if ('component' in node.dataset) {
       return {
-        id: node.dataset['component']!,
-        droppable: node.dataset['droppable'] === 'true',
+        id: node.dataset.component!,
+        droppable: node.dataset.droppable === 'true',
         slot,
       };
     }
@@ -68,9 +69,8 @@ const ComponentWrapperStyle = css`
 
 const outlineMaskTextStyle = css`
   position: absolute;
-  top: -4px;
-  right: 0;
-  transform: translateY(-100%);
+  z-index: 1;
+  right: -4px;
   padding: 0 4px;
   font-size: 14px;
   font-weight: black;
@@ -84,6 +84,16 @@ const outlineMaskTextStyle = css`
   &.idle,
   &.drag {
     display: none;
+  }
+  &.top {
+    top: -4px;
+    transform: translateY(-100%);
+    border-radius: 3px 3px 0px 0px;
+  }
+  &.bottom {
+    bottom: -4px;
+    transform: translateY(100%);
+    border-radius: 0px 0px 3px 3px;
   }
 `;
 
@@ -127,6 +137,8 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       setDragOverComponentId,
     } = editorStore;
 
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
     const [slots, isDroppable] = useMemo(() => {
       const slots = registry.getComponentByType(component.type).spec.slots;
       return [slots, slots.length > 0];
@@ -145,6 +157,23 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
         return 'idle';
       }
     }, [dragOverComponentId, selectedComponentId, hoverComponentId, component.id]);
+
+    const labelPosition = useMemo(() => {
+      const SHOW_LABEL_STATES = ['hover', 'select'];
+      const TEXT_HEIGHT = 24;
+
+      if (SHOW_LABEL_STATES.includes(componentEditorState)) {
+        const rect = wrapperRef.current?.getBoundingClientRect();
+
+        if ((rect?.top || 0) < TEXT_HEIGHT + HEADER_HEIGHT) {
+          return 'bottom';
+        } else {
+          return 'top';
+        }
+      }
+
+      return 'top';
+    }, [componentEditorState]);
 
     const [inline, fullHeight, vertical] = useMemo(() => {
       return [
@@ -235,6 +264,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
 
     return (
       <div
+        ref={wrapperRef}
         data-component={component.id}
         data-droppable={isDroppable}
         onDragEnter={onDragEnter}
@@ -250,7 +280,13 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
           fullHeight ? 'full-height' : undefined
         )}
       >
-        <Text className={cx(outlineMaskTextStyle, componentEditorState)}>
+        <Text
+          className={cx(
+            outlineMaskTextStyle,
+            componentEditorState,
+            labelPosition
+          )}
+        >
           {component.id}
         </Text>
         {props.children}
@@ -263,12 +299,12 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
                   state={slot === currentSlot ? 'over' : 'sibling'}
                   key={slot}
                   slotId={slot}
-                ></SlotWrapper>
+                />
               );
             })}
           </div>
         ) : (
-          <div className={cx(outlineMaskStyle, 'component', componentEditorState)}></div>
+          <div className={cx(outlineMaskStyle, 'component', componentEditorState)} />
         )}
       </div>
     );
@@ -344,7 +380,7 @@ const SlotWrapper: React.FC<{
       <Text className={cx('text')}>
         {componentId}-{slotId}
       </Text>
-      <div className={cx('outline')}></div>
+      <div className={cx('outline')} />
     </div>
   );
 };
