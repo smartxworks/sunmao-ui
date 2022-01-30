@@ -33,10 +33,10 @@ export const Editor: React.FC<Props> = observer(
       components,
       selectedComponentId,
       modules,
-      setLeftTabIdx,
-      setRightTabIdx,
-      leftTabIdx,
-      rightTabIdx,
+      toolMenuTab,
+      exploreMenuTab,
+      setToolMenuTab,
+      setExploreMenuTab
     } = editorStore;
 
     const [scale, setScale] = useState(100);
@@ -162,9 +162,9 @@ export const Editor: React.FC<Props> = observer(
               flexDirection="column"
               textAlign="left"
               isLazy
-              index={leftTabIdx}
-              onChange={idx => {
-                setLeftTabIdx(idx);
+              index={exploreMenuTab}
+              onChange={activatedTab => {
+                setExploreMenuTab(activatedTab);
               }}
             >
               <TabList background="gray.50">
@@ -204,9 +204,9 @@ export const Editor: React.FC<Props> = observer(
               height="100%"
               display="flex"
               flexDirection="column"
-              index={rightTabIdx}
-              onChange={idx => {
-                setRightTabIdx(idx);
+              index={toolMenuTab}
+              onChange={activatedTab => {
+                setToolMenuTab(activatedTab);
               }}
             >
               <TabList background="gray.50">
