@@ -6,6 +6,7 @@ import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
+import { ExploreMenuTabs, ToolMenuTabs } from './enum';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -19,10 +20,8 @@ export class EditorStore {
   _selectedComponentId = '';
   _hoverComponentId = '';
   _dragOverComponentId = '';
-  // default left tab: Explorer
-  _leftTabIdx = 0;
-  // default right tab: Insert
-  _rightTabIdx = 1;
+  exploreMenuTab = ExploreMenuTabs.EXPLORE;
+  toolMenuTab = ToolMenuTabs.INSERT;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -75,6 +74,12 @@ export class EditorStore {
       }
     );
 
+    reaction(
+      () => this.selectedComponentId,
+      () => {
+        this.setToolMenuTab(ToolMenuTabs.INSPECT);
+      });
+
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
 
@@ -109,14 +114,6 @@ export class EditorStore {
 
   get isSaved() {
     return this.currentComponentsVersion === this.lastSavedComponentsVersion;
-  }
-
-  get leftTabIdx() {
-    return this._leftTabIdx;
-  }
-
-  get rightTabIdx() {
-    return this._rightTabIdx;
   }
 
   // origin components of app of module
@@ -193,11 +190,11 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
-  setLeftTabIdx = (val: number) => {
-    this._leftTabIdx = val;
+  setExploreMenuTab = (val: ExploreMenuTabs) => {
+    this.exploreMenuTab = val;
   }
 
-  setRightTabIdx = (val: number) => {
-    this._rightTabIdx = val;
+  setToolMenuTab = (val: ToolMenuTabs) => {
+    this.toolMenuTab = val;
   }
 }
