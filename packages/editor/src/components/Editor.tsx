@@ -1,6 +1,11 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Application } from '@sunmao-ui/core';
-import { GridCallbacks, DIALOG_CONTAINER_ID, initSunmaoUI } from '@sunmao-ui/runtime';
+import {
+  GridCallbacks,
+  DIALOG_CONTAINER_ID,
+  initSunmaoUI,
+  watch,
+} from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import { StructureTree } from './StructureTree';
@@ -37,6 +42,13 @@ export const Editor: React.FC<Props> = observer(
     const [code, setCode] = useState('');
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
+    const [store, setStore] = useState(stateStore);
+
+    useEffect(() => {
+      watch(store, newValue => {
+        setStore(JSON.parse(JSON.stringify(newValue)));
+      });
+    }, [store]);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -173,7 +185,7 @@ export const Editor: React.FC<Props> = observer(
                   />
                 </TabPanel>
                 <TabPanel p={0} height="100%">
-                  <StateViewer store={stateStore} />
+                  <StateViewer store={store} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

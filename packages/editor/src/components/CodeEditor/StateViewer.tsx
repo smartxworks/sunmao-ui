@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Box } from '@chakra-ui/react';
+import React, { useMemo, useState } from 'react';
+import { Box, Input } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { JSONTree } from 'react-json-tree';
-import { watch } from '@sunmao-ui/runtime';
+import { pickBy } from 'lodash-es';
 import ErrorBoundary from '../ErrorBoundary';
 
 const theme = {
@@ -26,25 +26,31 @@ const theme = {
   base0F: '#cc6633',
 };
 
-export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ store }) => {
-  const [data, setData] = useState(store);
-  useEffect(() => {
-    watch(store, newValue => {
-      setData(JSON.parse(JSON.stringify(newValue)));
-    });
-  }, [store]);
+const style = css`
+  ul {
+    padding-left: 0.25em !important;
+    flex: 1;
+    margin: 0 !important;
+  }
+`;
 
-  const style = css`
-    ul {
-      padding-left: 0.25em !important;
-      height: 100%;
-      margin: 0 !important;
-    }
-  `;
+export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ store }) => {
+  const [filterText, setFilterText] = useState('');
+  const data = useMemo(() => {
+    return pickBy(store, (_v, key) => {
+      return filterText ? key.includes(filterText) : true;
+    });
+  }, [store, filterText]);
+
   return (
     <ErrorBoundary>
-      <Box height="100%" className={style}>
-        <JSONTree data={data} theme={theme} hideRoot />
+      <Box height="100%" className={style} display="flex" flexDirection="column">
+        <Input
+          placeholder="filter the states"
+          value={filterText}
+          onChange={evt => setFilterText(evt.currentTarget.value)}
+        />
+        <JSONTree data={data} theme={theme} hideRoot sortObjectKeys />
       </Box>
     </ErrorBoundary>
   );
