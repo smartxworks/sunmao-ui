@@ -8,6 +8,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
+import { AnyKind, UnknownKind } from '@sinclair/typebox';
 import { FieldProps, getCodeMode, getDisplayLabel } from './fields';
 import { widgets } from './widgets/widgets';
 import StringField from './StringField';
@@ -118,6 +119,10 @@ const SchemaField: React.FC<Props> = props => {
     Component = NullField;
   } else if ('anyOf' in schema || 'oneOf' in schema) {
     Component = MultiSchemaField;
+  } else if (
+    [AnyKind, UnknownKind].includes((schema as unknown as { kind: symbol }).kind)
+  ) {
+    Component = widgets.expression;
   } else {
     console.info('Found unsupported schema', schema);
   }
