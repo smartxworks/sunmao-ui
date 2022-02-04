@@ -1,4 +1,3 @@
-export function isExpression (str: unknown) {
-  const regExp = new RegExp('.*{{.*}}.*');
-  return typeof str === 'string' && regExp.test(str)
+export function isExpression(str: unknown) {
+  return typeof str === 'string' && /[\s\S]*{{[\s\S]*}}[\s\S]*/m.test(str);
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   toNumber,
   isString,
@@ -11,6 +11,7 @@ import {
 } from 'lodash-es';
 import { FieldProps } from '../fields';
 import { ExpressionEditor } from '../../../CodeEditor';
+import { isExpression } from '../../../../validator/utils';
 
 type Props = FieldProps;
 
@@ -89,27 +90,52 @@ const customTreeTypeDefCreator = (dataTree: Record<string, Record<string, unknow
   return { ...def };
 };
 
+const getDefaultCode = (value: unknown): { defaultCode: string; type: string } => {
+  const type = typeof value;
+  if (type === 'object' || type === 'boolean') {
+    value = JSON.stringify(value, null, 2);
+  } else {
+    value = String(value);
+  }
+  return {
+    defaultCode: value as string,
+    type,
+  };
+};
+
+const getParsedValue = (raw: string, type: string) => {
+  if (isExpression(raw)) {
+    return raw;
+  }
+  if (type === 'object' || type === 'boolean') {
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      // TODO: handle error
+      return {};
+    }
+  }
+  if (type === 'number') {
+    return toNumber(raw);
+  }
+  return raw;
+};
+
 export const ExpressionWidget: React.FC<Props> = props => {
   const { formData, onChange, stateManager } = props;
   const [defs, setDefs] = useState<any>();
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
   }, [stateManager]);
+  const { defaultCode, type } = useMemo(() => {
+    return getDefaultCode(formData);
+  }, [formData]);
 
   return (
     <ExpressionEditor
-      // TODO: better serialization
-      defaultCode={String(formData)}
+      defaultCode={defaultCode}
       onBlur={_v => {
-        // TODO: move into expression editor?
-        let v: string | number | boolean = _v;
-        if (isNumeric(v)) {
-          v = toNumber(v);
-        } else if (v === 'true') {
-          v = true;
-        } else if (v === 'false') {
-          v = false;
-        }
+        const v = getParsedValue(_v, type);
         onChange(v);
       }}
       defs={defs}
