@@ -29,6 +29,7 @@ export function getCodeMode(schema: Schema): boolean {
     case 'array':
     case 'object':
     case 'boolean':
+    case 'number':
       return true;
     default:
   }
