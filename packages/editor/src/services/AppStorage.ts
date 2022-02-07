@@ -1,5 +1,5 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import { Application, ComponentSchema, Module } from '@sunmao-ui/core';
+import { Application, ComponentSchema, Module, RuntimeModule } from '@sunmao-ui/core';
 import { cloneDeep } from 'lodash-es';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from '../constants';
@@ -29,14 +29,35 @@ export class AppStorage {
   }
 
   createModule() {
-    this.setModules([...this.modules, DefaultNewModule]);
+    let index = this.modules.length;
+
+    this.modules.forEach((module) => {
+      if (module.metadata.name === `myModule${index}`) {
+        index++;
+      }
+    });
+
+    const name = `myModule${index}`;
+    const newModule: RuntimeModule = {
+      ...DefaultNewModule,
+      parsedVersion: {
+        ...DefaultNewModule.parsedVersion,
+        value: name,
+      },
+      metadata: {
+        ...DefaultNewModule.metadata,
+        name,
+      }
+    };
+
+    this.setModules([...this.modules, newModule]);
     this.saveModules();
   }
 
   removeModule(v: string, n: string) {
     this.setModules(
       this.modules.filter(
-        ({ version, metadata: { name } }) => version !== v && name !== n
+        ({ version, metadata: { name } }) => version !== v || name !== n
       )
     );
     this.saveModules();

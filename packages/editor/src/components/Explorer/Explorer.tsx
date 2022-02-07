@@ -29,6 +29,8 @@ export const Explorer: React.FC<Props> = ({ services }) => {
           formType={formType}
           version={currentVersion}
           name={currentName}
+          setCurrentVersion={setCurrentVersion}
+          setCurrentName={setCurrentName}
           onBack={onBack}
           services={services}
         />
