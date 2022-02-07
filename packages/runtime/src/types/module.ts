@@ -1,4 +1,4 @@
-import { EventHandlerSchema } from './TraitPropertiesSchema';
+import { EventHandlerSchema } from './traitPropertiesSchema';
 import { Type } from '@sinclair/typebox';
 import { RuntimeModule } from '@sunmao-ui/core';
 

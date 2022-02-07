@@ -1,6 +1,6 @@
 import { Flex, Box, ChakraProvider, Button } from '@chakra-ui/react';
 import { Application } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime';
 import React, { StrictMode, useState } from 'react';
 import ReactDOM from 'react-dom';
 
