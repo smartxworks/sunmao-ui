@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { KeyValueEditor } from '../../KeyValueEditor';
 import { EditorServices } from '../../../types';
 
-type ModuleMetaDataFormData = {
+export type ModuleMetaDataFormData = {
   name: string;
   version: string;
   stateMap: Record<string, string>;
@@ -14,16 +14,18 @@ type ModuleMetaDataFormData = {
 type ModuleMetaDataFormProps = {
   initData: ModuleMetaDataFormData;
   services: EditorServices;
+  onSubmit?: (value: ModuleMetaDataFormData) => void;
 };
 
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
-  ({ initData, services }) => {
+  ({ initData, services, onSubmit: onSubmitForm }) => {
     const { editorStore } = services;
     const onSubmit = (value: ModuleMetaDataFormData) => {
       editorStore.appStorage.saveModuleMetaData(
         { originName: initData.name, originVersion: initData.version },
         value
       );
+      onSubmitForm?.(value);
     };
     const formik = useFormik({
       initialValues: initData,
