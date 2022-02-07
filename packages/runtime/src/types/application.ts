@@ -1,8 +1,8 @@
 import RGL from 'react-grid-layout';
 import { ApiService } from '../services/apiService';
 import { GlobalHandlerMap } from '../services/handler';
-import { Registry } from '../services/registry';
-import { StateManager } from '../services/stateStore';
+import { Registry } from '../services/Registry';
+import { StateManager } from '../services/StateManager';
 import { Application, RuntimeComponentSchema } from '@sunmao-ui/core';
 import React from 'react';
 

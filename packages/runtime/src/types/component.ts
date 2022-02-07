@@ -4,8 +4,8 @@ import {
   RuntimeComponent,
 } from '@sunmao-ui/core';
 import React from 'react';
-import { UIServices, ComponentParamsFromApp } from './Application';
-import { TraitResult } from './Trait';
+import { UIServices, ComponentParamsFromApp } from './application';
+import { TraitResult } from './trait';
 
 // TODO: (type-safe), remove fallback type
 export type ImplWrapperProps<KSlot extends string = string> = {

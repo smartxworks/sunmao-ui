@@ -10,7 +10,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime';
 
 type Props = {
   registry: Registry;

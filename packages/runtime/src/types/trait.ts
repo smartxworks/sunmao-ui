@@ -1,6 +1,6 @@
 import { RuntimeTrait } from '@sunmao-ui/core';
-import { UIServices } from './Application';
-import { RuntimeFunctions } from './Component';
+import { UIServices } from './application';
+import { RuntimeFunctions } from './component';
 
 export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
   props: {

@@ -1,4 +1,4 @@
-import { StateManager, parseExpression } from '../src/services/stateStore';
+import { StateManager, parseExpression } from '../src/services/StateManager';
 
 describe('parseExpression function', () => {
   it('can parse {{}} expression', () => {

@@ -59,7 +59,7 @@ const ArrayStateTrait: TraitImpl<Static<typeof PropsSchema>> = ({
         newItem: any;
       }) {
         const _arr = [...services.stateManager.store[componentId][key]];
-        const index = _arr.findIndex(v => v[itemIdKey] === itemId)
+        const index = _arr.findIndex(v => v[itemIdKey] === itemId);
         _arr.splice(index, 1, newItem);
         mergeState({ [key]: _arr });
       },
