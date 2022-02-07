@@ -6,7 +6,7 @@ import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
-import { ExploreMenuTabs, ToolMenuTabs } from './enum';
+import { ExplorerMenuTabs, ToolMenuTabs } from './enum';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -20,7 +20,7 @@ export class EditorStore {
   _selectedComponentId = '';
   _hoverComponentId = '';
   _dragOverComponentId = '';
-  exploreMenuTab = ExploreMenuTabs.EXPLORE;
+  explorerMenuTab = ExplorerMenuTabs.EXPLORER;
   toolMenuTab = ToolMenuTabs.INSERT;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
@@ -190,8 +190,8 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
-  setExploreMenuTab = (val: ExploreMenuTabs) => {
-    this.exploreMenuTab = val;
+  setExplorerMenuTab = (val: ExplorerMenuTabs) => {
+    this.explorerMenuTab = val;
   }
 
   setToolMenuTab = (val: ToolMenuTabs) => {
