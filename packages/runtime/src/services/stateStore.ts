@@ -33,7 +33,7 @@ export class StateManager {
 
   clear = () => {
     this.store = reactive<Record<string, any>>({});
-  }
+  };
 
   evalExp = (expChunk: ExpChunk, scopeObject = {}): unknown => {
     if (typeof expChunk === 'string') {
@@ -43,7 +43,10 @@ export class StateManager {
     const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
     let evaled;
     try {
-      evaled = new Function(`with(this) { return ${evalText} }`).call({
+      evaled = new Function(
+        // trim leading space and newline
+        `with(this) { return ${evalText.replace(/^\s+/g, '')} }`
+      ).call({
         ...this.store,
         ...this.dependencies,
         ...scopeObject,
@@ -178,8 +181,8 @@ export const parseExpression = (exp: string, parseListItem = false): ExpChunk[] 
     let item;
 
     while ((item = tokens.shift())) {
-      if (item == '}}') return result;
-      result.push(item == '{{' ? build(tokens) : item);
+      if (item === '}}') return result;
+      result.push(item === '{{' ? build(tokens) : item);
     }
     return result;
   }
