@@ -2,6 +2,7 @@ import { Module } from '@sunmao-ui/core';
 import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';
+import produce from 'immer';
 
 const ModuleIdPrefix = '{{ $moduleId }}__';
 
@@ -12,63 +13,65 @@ type StringPos = {
 };
 
 // add {{$moduleId}} in moduleSchema
-export function addModuleId(module: Module): Module {
-  const ids: string[] = [];
-  module.impl.forEach(c => {
-    ids.push(c.id);
-    if (c.type === 'core/v1/moduleContainer') {
-      ids.push(c.properties.id as string);
-    }
+export function addModuleId(originModule: Module): Module {
+  return produce(originModule, module => {
+    const ids: string[] = [];
+    module.impl.forEach(c => {
+      ids.push(c.id);
+      if (c.type === 'core/v1/moduleContainer') {
+        ids.push(c.properties.id as string);
+      }
 
-    if (c.type === 'chakra_ui/v1/list') {
-      ids.push((c.properties.template as any).id);
-    }
-  });
-  function traverse(tree: Record<string, any>, isValueExp = false) {
-    for (const key in tree) {
-      const val = tree[key];
-      if (typeof val === 'string') {
-        if (isValueExp) {
-          // case 1: value is expression, replace it
-          const newField = replaceIdsInExp(val, ids);
-          tree[key] = newField;
-        } else if (ids.includes(val)) {
-          // case 2: value is equal to a component id
-          tree[key] = `${ModuleIdPrefix}${val}`;
-        } else {
-          // case 3: value is normal string, try to replace the componentIds in this string
-          const newField = replaceIdsInProperty(val, ids);
-          tree[key] = newField;
+      if (c.type === 'chakra_ui/v1/list') {
+        ids.push((c.properties.template as any).id);
+      }
+    });
+    function traverse(tree: Record<string, any>, isValueExp = false) {
+      for (const key in tree) {
+        const val = tree[key];
+        if (typeof val === 'string') {
+          if (isValueExp) {
+            // case 1: value is expression, replace it
+            const newField = replaceIdsInExp(val, ids);
+            tree[key] = newField;
+          } else if (ids.includes(val)) {
+            // case 2: value is equal to a component id
+            tree[key] = `${ModuleIdPrefix}${val}`;
+          } else {
+            // case 3: value is normal string, try to replace the componentIds in this string
+            const newField = replaceIdsInProperty(val, ids);
+            tree[key] = newField;
+          }
+        } else if (typeof val === 'object') {
+          // case 4: value is object, recurse it
+          traverse(val, isValueExp);
         }
-      } else if (typeof val === 'object') {
-        // case 4: value is object, recurse it
-        traverse(val, isValueExp);
       }
     }
-  }
 
-  traverse(module.impl);
-  // value of stateMap is expression, not property
-  traverse(module.spec.stateMap, true);
-  return module;
+    traverse(module.impl);
+    // value of stateMap is expression, not property
+    traverse(module.spec.stateMap, true);
+  });
 }
 
 // remove '{{$moduleId}}__' in moduleSchema
-export function removeModuleId(module: Module): Module {
-  function traverse(tree: Record<string, any>) {
-    for (const key in tree) {
-      const val = tree[key];
-      if (typeof val === 'string') {
-        tree[key] = val.replace(/{{ \$moduleId }}__/g, '');
-      } else if (typeof val === 'object') {
-        traverse(val);
+export function removeModuleId(originModule: Module): Module {
+  return produce(originModule, module => {
+    function traverse(tree: Record<string, any>) {
+      for (const key in tree) {
+        const val = tree[key];
+        if (typeof val === 'string') {
+          tree[key] = val.replace(/{{ \$moduleId }}__/g, '');
+        } else if (typeof val === 'object') {
+          traverse(val);
+        }
       }
     }
-  }
 
-  traverse(module.impl);
-  traverse(module.spec.stateMap);
-  return module;
+    traverse(module.impl);
+    traverse(module.spec.stateMap);
+  });
 }
 
 // example: replaceIdsInExp('{{input1.value}} + {{input2.value}}', ids: ['input1']])
