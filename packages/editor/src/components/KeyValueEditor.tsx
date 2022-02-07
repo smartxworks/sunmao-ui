@@ -7,9 +7,11 @@ import React, { useState, useEffect } from 'react';
 type Props = {
   onChange: (json: Record<string, string>) => void;
   value?: Record<string, string>;
+  onlySetValue?: boolean;
 };
 
 export const KeyValueEditor: React.FC<Props> = props => {
+  const { onlySetValue } = props;
   const [rows, setRows] = useState<Array<[string, string]>>(() => {
     return toPairs(props.value);
   });
@@ -54,6 +56,7 @@ export const KeyValueEditor: React.FC<Props> = props => {
           size="sm"
           onChange={onInputChange}
           onBlur={onBlur}
+          isDisabled={onlySetValue}
         />
         <Input
           name="value"
@@ -63,13 +66,15 @@ export const KeyValueEditor: React.FC<Props> = props => {
           onChange={onInputChange}
           onBlur={onBlur}
         />
-        <IconButton
-          aria-label="remove row"
-          icon={<CloseIcon />}
-          size="xs"
-          onClick={() => onRemoveRow(i)}
-          variant="ghost"
-        />
+        {onlySetValue ? null : (
+          <IconButton
+            aria-label="remove row"
+            icon={<CloseIcon />}
+            size="xs"
+            onClick={() => onRemoveRow(i)}
+            variant="ghost"
+          />
+        )}
       </HStack>
     );
   });
@@ -77,9 +82,11 @@ export const KeyValueEditor: React.FC<Props> = props => {
   return (
     <VStack spacing="1" alignItems="start">
       {rowItems}
-      <Button onClick={onAddRow} size="xs">
-        + Add
-      </Button>
+      {onlySetValue ? null : (
+        <Button onClick={onAddRow} size="xs">
+          + Add
+        </Button>
+      )}
     </VStack>
   );
 };
