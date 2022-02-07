@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
-enum ExploreMenuTabs {
-    EXPLORE = 0,
+enum ExplorerMenuTabs {
+    EXPLORER = 0,
     UI_TREE = 1,
     STATE = 2
 }
@@ -10,4 +9,4 @@ enum ToolMenuTabs {
     INSERT = 1
 }
 
-export { ExploreMenuTabs, ToolMenuTabs };
+export { ExplorerMenuTabs, ToolMenuTabs };

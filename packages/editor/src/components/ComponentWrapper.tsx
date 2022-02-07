@@ -7,7 +7,7 @@ import { ComponentWrapperType } from '@sunmao-ui/runtime';
 
 import { genOperation } from '../operations';
 import { EditorServices } from '../types';
-import { ExploreMenuTabs } from '../services/enum';
+import { ExplorerMenuTabs } from '../services/enum';
 
 type ComponentEditorState = 'drag' | 'select' | 'hover' | 'idle';
 
@@ -126,7 +126,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       setHoverComponentId,
       dragOverComponentId,
       setDragOverComponentId,
-      setExploreMenuTab,
+      setExplorerMenuTab,
     } = editorStore;
 
     const [slots, isDroppable] = useMemo(() => {
@@ -224,7 +224,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       e.preventDefault();
       setDragOverComponentId('');
       setCurrentSlot(undefined);
-      setExploreMenuTab(ExploreMenuTabs.UI_TREE);
+      setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
       const creatingComponent = e.dataTransfer?.getData('component') || '';
       eventBus.send(
         'operation',
