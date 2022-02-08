@@ -14,7 +14,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     services,
     childrenMap,
   } = props;
-  const { registry, stateManager, globalHandlerMap, apiService } = props.services;
+  const { registry, stateManager, globalHandlerMap, apiService, eleMap } = props.services;
   const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
   const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
@@ -24,6 +24,23 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   }
 
   const handlerMap = useRef(globalHandlerMap.get(c.id)!);
+  const eleRef = useRef<HTMLElement>();
+  const onRef = (ele: HTMLElement) => {
+    console.log('onRef', ele);
+    eleMap.set(c.id, ele);
+  };
+
+  useEffect(() => {
+    if (eleRef.current) {
+      eleMap.set(c.id, eleRef.current);
+      console.log('挂载了', c.id, eleRef);
+    }
+    return () => {
+      console.log('卸载了', c.id);
+      eleMap.delete(c.id);
+    };
+  }, [c.id, eleMap]);
+
   useEffect(() => {
     const handler = (s: { componentId: string; name: string; parameters?: any }) => {
       if (s.componentId !== c.id) {
@@ -164,7 +181,6 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     }
     return res;
   }
-
   const C = unmount ? null : (
     <Impl
       key={c.id}
@@ -173,6 +189,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
       slotsElements={genSlotsElements()}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
+      $ref={eleRef}
+      $onRef={onRef}
     />
   );
 

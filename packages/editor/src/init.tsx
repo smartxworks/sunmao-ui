@@ -75,6 +75,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
       <ChakraProvider theme={editorTheme}>
         <_Editor
           App={App}
+          eleMap={ui.eleMap}
           registry={registry}
           stateStore={stateManager.store}
           services={services}

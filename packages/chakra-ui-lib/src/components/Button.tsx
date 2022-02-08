@@ -55,6 +55,7 @@ export default implementRuntimeComponent({
     colorScheme,
     isLoading,
     customStyle,
+    $onRef,
   }) => {
     useEffect(() => {
       mergeState({ value: text.raw });
@@ -68,6 +69,12 @@ export default implementRuntimeComponent({
         },
       });
     }, [subscribeMethods]);
+
+    useEffect(() => {
+      if ($onRef && ref.current) {
+        $onRef(ref.current);
+      }
+    }, [$onRef]);
 
     return (
       <BaseButton

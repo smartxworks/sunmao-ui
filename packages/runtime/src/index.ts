@@ -15,13 +15,15 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   const globalHandlerMap = initGlobalHandlerMap();
   const apiService = initApiService();
   const registry = initRegistry(apiService);
+  const eleMap = new Map<string, HTMLElement>();
 
   return {
-    App: genApp({ registry, stateManager, globalHandlerMap, apiService }),
+    App: genApp({ registry, stateManager, globalHandlerMap, apiService, eleMap }),
     stateManager,
     registry,
     globalHandlerMap,
     apiService,
+    eleMap,
   };
 }
 

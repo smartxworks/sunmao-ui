@@ -11,6 +11,7 @@ export type UIServices = {
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
   apiService: ApiService;
+  eleMap: Map<string, HTMLElement>;
 };
 
 export type ComponentWrapperProps = {
