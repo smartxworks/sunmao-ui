@@ -2,6 +2,7 @@
 import React, { useMemo, useRef } from 'react';
 import { css, cx } from '@emotion/css';
 import { EditorServices } from '../types';
+import { observer } from 'mobx-react-lite';
 
 const MaskWrapperStyle = css`
   position: absolute;
@@ -73,43 +74,76 @@ type Props = {
   eleMap: Map<string, HTMLElement>;
 };
 
-export const ComponentContainerMask: React.FC<Props> = props => {
-  const { eleMap } = props;
+export const ComponentContainerMask: React.FC<Props> = observer((props: Props) => {
+  const { services, eleMap } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
-  // const { hoverComponentId } = editorStore;'
-  const rects = Array.from(eleMap.keys()).map(id => {
+  const { hoverComponentId, setHoverComponentId } = services.editorStore;
+  const rects: Record<string, DOMRect> = {};
+  for (const id of eleMap.keys()) {
     const ele = eleMap.get(id);
-    return {
-      id,
-      rect: ele?.getBoundingClientRect(),
-    };
-  });
+    const rect = ele?.getBoundingClientRect();
+    if (rect) {
+      rects[id] = rect;
+    }
+  }
+  console.log('rects', rects)
 
   const borders = useMemo(() => {
     if (!wrapperRef.current) {
       return null;
     }
     const wrapperRect = wrapperRef.current.getBoundingClientRect();
-    return rects.map(({ id, rect }) => {
-      console.log('rect', rect)
-      console.log('wrapperRect', wrapperRect)
-      const style = {
-        top: (rect?.top || 0) - wrapperRect.top - 2,
-        left: (rect?.left || 0) - wrapperRect.left - 2,
-        height: (rect?.height || 0) + 4,
-        width: (rect?.width || 0) + 4,
-      };
-      return (
-        <div key={id} className={cx([outlineMaskStyle, 'hover'])} style={style}>
-          <span className={cx([outlineMaskTextStyle, 'hover'])}>{id}</span>
-        </div>
-      );
-    });
-  }, [rects]);
+    return Object.keys(rects)
+      .filter(id => id === hoverComponentId)
+      .map(id => {
+        console.log('id', id);
+        const rect = rects[id];
+        const style = {
+          top: rect.top - wrapperRect.top - 2,
+          left: rect.left - wrapperRect.left - 2,
+          height: rect.height + 4,
+          width: rect.width + 4,
+        };
+        return (
+          <div key={id} className={cx([outlineMaskStyle, 'hover'])} style={style}>
+            <span className={cx([outlineMaskTextStyle, 'hover'])}>{id}</span>
+          </div>
+        );
+      });
+  }, [hoverComponentId, rects]);
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const id = whereIsMouse(e.clientX, e.clientY, rects);
+    setHoverComponentId(id);
+    console.log(id)
+  };
 
   return (
-    <div className={MaskWrapperStyle} ref={wrapperRef}>
+    <div className={MaskWrapperStyle} ref={wrapperRef} data-is-mask onMouseMove={onMouseMove}>
       {borders}
     </div>
   );
-};
+});
+
+function whereIsMouse(left: number, top: number, rects: Record<string, DOMRect>): string {
+  let nearest = {
+    id: '',
+    sum: 0,
+  };
+  for (const id in rects) {
+    const rect = rects[id];
+    if (
+      top < rect.top ||
+      left < rect.left ||
+      top > rect.top + rect.height ||
+      left > rect.left + rect.width
+    ) {
+      continue;
+    }
+    const sum = rect.top + rect.left;
+    if (sum > nearest.sum) {
+      nearest = { id, sum };
+    }
+  }
+  return nearest.id;
+}
