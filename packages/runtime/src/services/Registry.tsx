@@ -28,6 +28,7 @@ import { ApiService } from './apiService';
 export type UtilMethod = {
   name: string;
   method: (parameters?: any) => void;
+  parameters?: any;
 };
 
 export type UtilMethodFactory = () => UtilMethod[];
@@ -50,7 +51,7 @@ export class Registry {
   components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
-  utilMethods = new Map<string, UtilMethod['method']>();
+  utilMethods = new Map<string, UtilMethod>();
   private apiService: ApiService;
 
   constructor(apiService: ApiService) {
@@ -166,7 +167,7 @@ export class Registry {
     if (this.utilMethods.get(m.name)) {
       throw new Error(`Already has utilMethod ${m.name} in this registry.`);
     }
-    this.utilMethods.set(m.name, m.method);
+    this.utilMethods.set(m.name, m);
   }
 
   installLib(lib: SunmaoLib) {
@@ -185,9 +186,19 @@ export class Registry {
   private mountUtilMethods() {
     this.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
       if (componentId === GLOBAL_UTILS_ID) {
-        const utilMethod = this.utilMethods.get(name);
+        const utilMethod = this.utilMethods.get(name)?.method;
         if (utilMethod) {
-          utilMethod(parameters);
+          const params: Record<string, unknown> = {};
+
+          for (const key in parameters) {
+            const value = parameters[key];
+
+            if (value !== undefined && value !== '') {
+              params[key] = value;
+            }
+          }
+
+          utilMethod(params);
         }
       }
     });
