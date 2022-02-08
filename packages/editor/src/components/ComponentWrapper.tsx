@@ -8,6 +8,7 @@ import { HEADER_HEIGHT } from '../constants/layout';
 
 import { genOperation } from '../operations';
 import { EditorServices } from '../types';
+import { ExplorerMenuTabs } from '../services/enum';
 
 type ComponentEditorState = 'drag' | 'select' | 'hover' | 'idle';
 
@@ -135,6 +136,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       setHoverComponentId,
       dragOverComponentId,
       setDragOverComponentId,
+      setExplorerMenuTab,
     } = editorStore;
 
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -251,6 +253,7 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       e.preventDefault();
       setDragOverComponentId('');
       setCurrentSlot(undefined);
+      setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
       const creatingComponent = e.dataTransfer?.getData('component') || '';
       eventBus.send(
         'operation',
