@@ -8,8 +8,8 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "standard"
+    "standard",
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -48,5 +48,13 @@
     "react/jsx-wrap-multilines": ["error"],
     "react/jsx-tag-spacing": ["error"]
   },
-  "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html", "*.spec.ts", "*.spec.tsx"]
+  "ignorePatterns": [
+    "node_modules",
+    "*.d.ts",
+    "*.js",
+    "package.json",
+    "*.html",
+    "*.spec.ts",
+    "*.spec.tsx"
+  ]
 }
