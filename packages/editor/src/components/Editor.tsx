@@ -12,7 +12,6 @@ import { StructureTree } from './StructureTree';
 import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
-import { useComponentWrapper } from './ComponentWrapper';
 import { StateViewer, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
 import { genOperation } from '../operations';
@@ -21,18 +20,20 @@ import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
+import { ComponentContainerMask } from './ComponentContainerMask';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
 type Props = {
   App: ReturnOfInit['App'];
+  eleMap: ReturnOfInit['eleMap'];
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
 };
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, services }) => {
+  ({ App, registry, stateStore, eleMap, services }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
@@ -51,6 +52,10 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
+
+    useEffect(() => {
+      console.log('eleMap', eleMap);
+    }, [eleMap]);
 
     useEffect(() => {
       watch(store, newValue => {
@@ -103,9 +108,9 @@ export const Editor: React.FC<Props> = observer(
       };
     }, [components]);
 
-    const ComponentWrapper = useMemo(() => {
-      return useComponentWrapper(services);
-    }, [services]);
+    // const ComponentWrapper = useMemo(() => {
+    //   return useComponentWrapper(services);
+    // }, [services]);
 
     const appComponent = useMemo(() => {
       return (
@@ -115,11 +120,11 @@ export const Editor: React.FC<Props> = observer(
             debugEvent={false}
             debugStore={false}
             gridCallbacks={gridCallbacks}
-            componentWrapper={ComponentWrapper}
+            // componentWrapper={ComponentWrapper}
           />
         </ErrorBoundary>
       );
-    }, [App, ComponentWrapper, app, gridCallbacks, recoverKey]);
+    }, [App, app, gridCallbacks, recoverKey]);
 
     const renderMain = () => {
       const appBox = (
@@ -138,8 +143,9 @@ export const Editor: React.FC<Props> = observer(
               height="full"
               position="absolute"
             />
-            <Box width="full" overflow="auto">
+            <Box width="full" overflow="auto" position="relative">
               {appComponent}
+              <ComponentContainerMask services={services} eleMap={eleMap} />
             </Box>
             <WarningArea services={services} />
           </Box>

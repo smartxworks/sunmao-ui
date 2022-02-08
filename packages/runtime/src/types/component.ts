@@ -25,6 +25,8 @@ export type ComponentImplProps<
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods> & {
     slotsElements: Record<KSlot, React.ReactElement[] | React.ReactElement>;
+    $ref?: React.Ref<any>;
+    $onRef?: (ele: HTMLElement) => void;
   };
 
 export type ComponentImpl<

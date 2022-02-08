@@ -102,6 +102,7 @@ export default implementRuntimeComponent({
     subscribeMethods,
     defaultValue,
     customStyle,
+    $ref,
   }) => {
     const [value, setValue] = React.useState(defaultValue || ''); // TODO: pin input
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -125,9 +126,9 @@ export default implementRuntimeComponent({
         },
       });
     }, [defaultValue, subscribeMethods]);
-
+    console.log('input', $ref);
     return (
-      <InputGroup size={size} background="white">
+      <InputGroup size={size} background="white" ref={$ref as any}>
         {left ? (
           left.type === 'addon' ? (
             <InputLeftAddon>{left.children}</InputLeftAddon>
