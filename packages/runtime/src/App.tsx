@@ -28,7 +28,7 @@ export const App: React.FC<AppProps> = props => {
 
   const { childrenMap, topLevelComponents } = resolveChildrenMap(app.spec.components);
   return (
-    <div className="App" style={{ height: '100vh', overflow: 'auto' }}>
+    <div className="App" style={{ height: '100%', overflow: 'auto' }}>
       {topLevelComponents.map(c => {
         return (
           <ImplWrapper
