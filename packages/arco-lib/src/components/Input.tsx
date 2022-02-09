@@ -34,10 +34,10 @@ const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
       value={value}
       onChange={(value) => {
         setValue(value);
-        callbackMap?.onChange();
+        callbackMap?.onChange?.();
       }}
-      onBlur={() => callbackMap?.onBlur()}
-      onFocus={() => callbackMap?.onFocus()}
+      onBlur={() => callbackMap?.onBlur?.()}
+      onFocus={() => callbackMap?.onFocus?.()}
       {...cProps}
     />
   );

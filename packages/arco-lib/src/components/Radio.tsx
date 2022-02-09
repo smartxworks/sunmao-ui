@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 
 const RadioPropsSchema = Type.Object({
   ...BaseRadioPropsSchema,
-  className: Type.Optional(Type.String()),
 });
 const RadioStateSchema = Type.Object({
   checkedValue: Type.String(),
@@ -16,8 +15,7 @@ const RadioStateSchema = Type.Object({
 
 const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
   const { customStyle, callbackMap, mergeState, subscribeMethods } = props;
-  const { className, defaultCheckedValue, ...cProps } =
-    getComponentProps(props);
+  const { defaultCheckedValue, ...cProps } = getComponentProps(props);
   const [checkedValue, setCheckedValue] = useState<string>("");
   const [isInit, setIsInit] = useState(false);
 
@@ -49,7 +47,7 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
   return (
     <BaseRadio.Group
       {...cProps}
-      className={cx(className, css(customStyle?.group))}
+      className={css(customStyle?.group)}
       value={checkedValue}
       onChange={onChange}
     ></BaseRadio.Group>
@@ -57,9 +55,9 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof RadioPropsSchema> = {
-  className: "",
   options: [],
   type: "radio",
+  defaultCheckedValue:'',
   direction: "horizontal",
   size: "default",
 };

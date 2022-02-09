@@ -1,6 +1,6 @@
 import { Mentions as BaseMentions } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { MentionsPropsSchema as BaseMentionsPropsSchema } from "../generated/types/Mentions";
@@ -14,8 +14,8 @@ const MentionsStateSchema = Type.Object({
 const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSchema>> = (
   props
 ) => {
-  const { className, defaultValue, ...cProps } = getComponentProps(props);
-  const { mergeState, customStyle } = props;
+  const { defaultValue, ...cProps } = getComponentProps(props);
+  const { mergeState, customStyle, callbackMap } = props;
 
   const [value, setValue] = useState(defaultValue);
 
@@ -25,26 +25,23 @@ const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSchema>> = (
 
   const onChange = (value: string) => {
     setValue(value);
-  };
-
-  const onSearch = (text: string, prefix: string) => {
-    // TODO complete onSearch methods
+    callbackMap?.onChange?.();
   };
 
   const onClear = () => {
-    // TODO complete onClear methods
+    callbackMap?.onClear?.();
   };
 
-  const onPressEnter = (e: any) => {
+  const onPressEnter = () => {
     // TODO complete onPressEnter methods
+    callbackMap?.onPressEnter?.();
   };
 
   return (
     <BaseMentions
       onPressEnter={onPressEnter}
       onClear={onClear}
-      className={cx(className, css(customStyle?.content))}
-      onSearch={onSearch}
+      className={css(customStyle?.content)}
       onChange={onChange}
       {...cProps}
       value={value}
@@ -77,7 +74,7 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ["content"],
-    events: [],
+    events: ["onChange", "onClear", "onPressEnter"],
   },
 };
 

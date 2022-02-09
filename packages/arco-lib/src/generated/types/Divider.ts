@@ -1,8 +1,7 @@
 
-import { Type } from "@sinclair/typebox";
-import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
+import { StringUnion } from '../../sunmao-helper';
 
 export const DividerPropsSchema = {
-  'type': Type.Optional(StringUnion(['vertical', 'horizontal'])),
-  'orientation': Type.Optional(StringUnion(['center', 'left', 'right']))
+  'type': StringUnion(['vertical', 'horizontal']),
+  'orientation': StringUnion(['center', 'left', 'right'])
 };

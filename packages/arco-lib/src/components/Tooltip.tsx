@@ -1,10 +1,11 @@
-import { Tooltip as BaseTooltip } from "@arco-design/web-react";
+import { Tooltip as BaseTooltip, Button } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { TooltipPropsSchema as BaseTooltipPropsSchema } from "../generated/types/Tooltip";
 import { isArray } from "lodash-es";
+import { useState, useEffect } from "react";
 
 const TooltipPropsSchema = Type.Object(BaseTooltipPropsSchema);
 const TooltipStateSchema = Type.Object({});
@@ -12,8 +13,21 @@ const TooltipStateSchema = Type.Object({});
 const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
   props
 ) => {
-  const { controlled, popupVisible, ...cProps } = getComponentProps(props);
-  const { slotsElements, customStyle, className } = props;
+  const { controlled, ...cProps } = getComponentProps(props);
+  const { subscribeMethods, slotsElements, customStyle } = props;
+
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  useEffect(() => {
+    subscribeMethods({
+      openTooltip() {
+        setPopupVisible(true);
+      },
+      closeTooltip() {
+        setPopupVisible(false);
+      },
+    });
+  }, [subscribeMethods]);
 
   // two components in the array will be wrapped by span respectively
   // and arco does not support `array.length===1` think it is a bug
@@ -24,34 +38,28 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
 
   return controlled ? (
     <BaseTooltip
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       {...cProps}
       popupVisible={popupVisible}
     >
-      {content}
+      {content || <Button>Click</Button>}
     </BaseTooltip>
   ) : (
-    <BaseTooltip
-      className={cx(className, css(customStyle?.content))}
-      {...cProps}
-    >
-      {content}
+    <BaseTooltip className={css(customStyle?.content)} {...cProps}>
+      {content || <Button>Click</Button>}
     </BaseTooltip>
   );
 };
 const exampleProperties: Static<typeof TooltipPropsSchema> = {
-  className: "",
-  color: "red",
+  color: "#bbb",
   position: "bottom",
   mini: false,
   unmountOnExit: true,
-  popupVisible: false,
-  popupHoverStay: true,
-  blurToHide: true,
   disabled: false,
   content: "This is tooltip",
+  // TODO There are some problems with hover mode that need to be verified later
+  trigger: "click",
   controlled: false,
-  trigger: ["hover", "click"],
 };
 
 const options = {
@@ -65,7 +73,10 @@ const options = {
   spec: {
     properties: TooltipPropsSchema,
     state: TooltipStateSchema,
-    methods: {} as Record<string, any>,
+    methods: {
+      openTooltip: Type.String(),
+      closeTooltip: Type.String(),
+    } as Record<string, any>,
     slots: ["content"],
     styleSlots: ["content"],
     events: [],

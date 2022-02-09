@@ -1,6 +1,6 @@
 import { Steps as BaseSteps } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import {
@@ -15,11 +15,11 @@ const StepsStateSchema = Type.Object({});
 type StepItem = Static<typeof StepItemSchema>;
 
 const StepsImpl: ComponentImpl<Static<typeof StepsPropsSchema>> = (props) => {
-  const { className, items, ...cProps } = getComponentProps(props);
+  const { items, ...cProps } = getComponentProps(props);
   const { customStyle, slotsElements } = props;
 
   return (
-    <BaseSteps className={cx(className, css(customStyle?.content))} {...cProps}>
+    <BaseSteps className={css(customStyle?.content)} {...cProps}>
       {items &&
         items.map((stepItem: StepItem, idx: number) => {
           return (
@@ -36,7 +36,6 @@ const StepsImpl: ComponentImpl<Static<typeof StepsPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof StepsPropsSchema> = {
-  className: "",
   type: "default",
   size: "default",
   direction: "horizontal",
@@ -46,7 +45,7 @@ const exampleProperties: Static<typeof StepsPropsSchema> = {
   lineless: false,
   items: [
     { title: "Succeeded", description: "This is a description" },
-    { title: "Processing" },
+    { title: "Processing",description:'' },
     { title: "Pending", description: "This is a description" },
   ],
 };

@@ -1,35 +1,31 @@
 import { Modal as BaseModal } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { ModalPropsSchema as BaseModalPropsSchema } from "../generated/types/Modal";
 import { useEffect, useState } from "react";
 
 const ModalPropsSchema = Type.Object(BaseModalPropsSchema);
-const ModalStateSchema = Type.Object({
-  visible: Type.Boolean(),
-});
+const ModalStateSchema = Type.Object({});
 
 const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
   const {
     subscribeMethods,
-    mergeState,
     slotsElements,
     customStyle,
     callbackMap,
   } = props;
-  const { className, title, ...cProps } = getComponentProps(props);
-  const [visible, _setVisible] = useState(true);
-
-  useEffect(() => {
-    mergeState({ visible });
-  }, [visible, mergeState]);
+  const { title, ...cProps } = getComponentProps(props);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     subscribeMethods({
-      setVisible({ visible }) {
-        _setVisible(!!visible);
+      openModal() {
+        setVisible(true);
+      },
+      closeModal() {
+        setVisible(false);
       },
     });
   }, [subscribeMethods]);
@@ -44,17 +40,17 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
         </>
       }
       onCancel={() => {
-        _setVisible(false);
-        callbackMap?.onCancel();
+        setVisible(false);
+        callbackMap?.onCancel?.();
       }}
       onOk={() => {
-        _setVisible(false);
-        callbackMap?.onOk();
+        setVisible(false);
+        callbackMap?.onOk?.();
       }}
       afterClose={callbackMap?.afterClose}
       afterOpen={callbackMap?.afterOpen}
       footer={slotsElements.footer}
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       {...cProps}
     >
       {slotsElements.content}
@@ -63,7 +59,6 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof ModalPropsSchema> = {
-  className: "",
   title: "Modal title",
   mask: true,
   simple: false,
@@ -85,9 +80,8 @@ export const Modal = implementRuntimeComponent({
     properties: ModalPropsSchema,
     state: ModalStateSchema,
     methods: {
-      setVisible: Type.Object({
-        visible: Type.String(),
-      }),
+      openModal: Type.String(),
+      closeModal: Type.String(),
     } as Record<string, any>,
     slots: ["title", "content", "footer"],
     styleSlots: ["content"],
