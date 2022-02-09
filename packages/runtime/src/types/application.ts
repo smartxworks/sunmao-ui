@@ -41,4 +41,5 @@ export type AppProps = {
 
 export type AppLifeCycles = {
   didMount?: () => void;
+  didUpdate?: () => void;
 };

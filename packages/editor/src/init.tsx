@@ -44,11 +44,14 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   );
 
   const didMount = () => {
-    editorStore.setEleMap(ui.eleMap);
-    console.log('editor listen didMount');
+    editorStore.eleMap = ui.eleMap;
+    eventBus.send('HTMLElementsUpdated');
+  };
+  const didUpdate = () => {
+    eventBus.send('HTMLElementsUpdated');
   };
 
-  const ui = initSunmaoUI({ ...props.runtimeProps, didMount });
+  const ui = initSunmaoUI({ ...props.runtimeProps, lifeCycles: { didMount, didUpdate } });
 
   const App = ui.App;
   const registry = ui.registry;

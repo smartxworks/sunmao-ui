@@ -29,6 +29,7 @@ export class EditorStore {
     name: '',
   };
 
+  // not observable, just reference
   eleMap = new Map<string, HTMLElement>();
   isDraggingNewComponent = false;
 
@@ -45,6 +46,7 @@ export class EditorStore {
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
+      eleMap: false,
       components: observable.shallow,
       setComponents: action,
       setDragOverComponentId: action,
@@ -203,9 +205,5 @@ export class EditorStore {
 
   setIsDraggingNewComponent = (val: boolean) => {
     this.isDraggingNewComponent = val;
-  };
-
-  setEleMap = (val: Map<string, HTMLElement>) => {
-    this.eleMap = val;
   };
 }
