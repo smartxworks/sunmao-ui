@@ -25,6 +25,9 @@ export default implementRuntimeComponent({
       href: 'https://www.google.com',
     },
     exampleSize: [2, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,

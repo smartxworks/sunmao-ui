@@ -40,6 +40,9 @@ export default implementRuntimeComponent({
       helperText: '',
     },
     exampleSize: [4, 2],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -70,7 +73,10 @@ export default implementRuntimeComponent({
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
     const [hideInvalid, setHideInvalid] = useState(true);
-    const inputId = useMemo(() => first(childrenMap[component.id]?.content)?.id || '', [component.id, childrenMap]);
+    const inputId = useMemo(
+      () => first(childrenMap[component.id]?.content)?.id || '',
+      [component.id, childrenMap]
+    );
     const [validResult, setValidResult] = useState({
       isInvalid: false,
       errorMsg: '',

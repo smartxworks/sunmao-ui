@@ -71,6 +71,9 @@ export default implementRuntimeComponent({
       defaultValue: '',
     },
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -79,7 +82,7 @@ export default implementRuntimeComponent({
       setInputValue: Type.Object({
         value: Type.String(),
       }),
-      resetInputValue: void 0,
+      resetInputValue: undefined,
     },
     slots: [],
     styleSlots: ['content'],

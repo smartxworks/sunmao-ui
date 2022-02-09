@@ -33,6 +33,9 @@ export default implementRuntimeComponent({
       initialSelectedTabIndex: 0,
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
