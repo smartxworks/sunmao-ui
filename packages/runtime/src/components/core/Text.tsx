@@ -25,6 +25,9 @@ export default implementRuntimeComponent({
       },
     },
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,

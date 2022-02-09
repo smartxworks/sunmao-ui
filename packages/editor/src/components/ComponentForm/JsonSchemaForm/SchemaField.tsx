@@ -134,6 +134,7 @@ const SchemaField: React.FC<Props> = props => {
   return (
     <DefaultTemplate
       label={label}
+      description={schema.description}
       displayLabel={displayLabel}
       codeMode={codeMode}
       isExpression={isExpression}
