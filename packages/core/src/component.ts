@@ -1,10 +1,7 @@
 import { JSONSchema7 } from 'json-schema';
-import { parseVersion } from './version';
+import { parseVersion, Version } from './version';
 import { ComponentMetadata } from './metadata';
 import { MethodSchema } from './method';
-import { Version } from './version';
-
-// TODO: (type-safe), rename version 2 to normal version
 
 type ComponentSpec<
   KMethodName extends string,

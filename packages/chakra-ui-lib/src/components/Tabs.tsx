@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/css';
 import {
   Tabs as BaseTabs,
@@ -74,7 +74,9 @@ export default implementRuntimeComponent({
       </TabList>
       <TabPanels>
         {tabNames.map((_, idx) => {
-          const ele = slotsElements.content ? ([] as React.ReactElement[]).concat(slotsElements.content)[idx] : placeholder;
+          const ele = slotsElements.content
+            ? ([] as React.ReactElement[]).concat(slotsElements.content)[idx]
+            : placeholder;
           return (
             <TabPanel
               key={idx}
