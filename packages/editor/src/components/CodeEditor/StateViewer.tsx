@@ -6,24 +6,22 @@ import { pickBy } from 'lodash-es';
 import ErrorBoundary from '../ErrorBoundary';
 
 const theme = {
-  scheme: 'monokai',
-  author: 'wimer hazenberg (http://www.monokai.nl)',
-  base00: '#272822',
-  base01: '#383830',
-  base02: '#49483e',
-  base03: '#75715e',
-  base04: '#a59f85',
-  base05: '#f8f8f2',
-  base06: '#f5f4f1',
-  base07: '#f9f8f5',
-  base08: '#f92672',
-  base09: '#fd971f',
-  base0A: '#f4bf75',
-  base0B: '#a6e22e',
-  base0C: '#a1efe4',
-  base0D: '#66d9ef',
-  base0E: '#ae81ff',
-  base0F: '#cc6633',
+  base0A: '#fded02',
+  base0B: '#01a252',
+  base0C: '#b5e4f4',
+  base0D: '#01a0e4',
+  base0E: '#a16a94',
+  base0F: '#cdab53',
+  base00: '#090300',
+  base01: '#3a3432',
+  base02: '#4a4543',
+  base03: '#5c5855',
+  base04: '#807d7c',
+  base05: '#a5a2a2',
+  base06: '#d6d5d4',
+  base07: '#f7f7f7',
+  base08: '#db2d20',
+  base09: '#e8bbd0',
 };
 
 const style = css`
@@ -31,6 +29,7 @@ const style = css`
     padding-left: 0.25em !important;
     flex: 1;
     margin: 0 !important;
+    background-color: white !important;
   }
 `;
 
