@@ -4,44 +4,23 @@ import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { TooltipPropsSchema as BaseTooltipPropsSchema } from "../generated/types/Tooltip";
-import { useEffect, useState } from "react";
 import { isArray } from "lodash-es";
 
 const TooltipPropsSchema = Type.Object(BaseTooltipPropsSchema);
-const TooltipStateSchema = Type.Object({
-  visible: Type.String(),
-});
+const TooltipStateSchema = Type.Object({});
 
 const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
   props
 ) => {
-  const { controlled, ...cProps } = getComponentProps(props);
-  const {
-    mergeState,
-    subscribeMethods,
-    slotsElements,
-    customStyle,
-    className,
-  } = props;
-
-  const [popupVisible, _setPopupVisible] = useState(false);
-
-  useEffect(() => {
-    subscribeMethods({
-      setPopupVisible({ visible }) {
-        _setPopupVisible(!!visible);
-      },
-    });
-  }, [subscribeMethods]);
-
-  useEffect(() => {
-    mergeState({ visible: popupVisible });
-  }, [mergeState, popupVisible]);
+  const { controlled, popupVisible, ...cProps } = getComponentProps(props);
+  const { slotsElements, customStyle, className } = props;
 
   // two components in the array will be wrapped by span respectively
   // and arco does not support `array.length===1` think it is a bug
   // TODO only support arco componets slot now
-  const content = isArray(slotsElements.content) ? slotsElements.content[0] : slotsElements.content;
+  const content = isArray(slotsElements.content)
+    ? slotsElements.content[0]
+    : slotsElements.content;
 
   return controlled ? (
     <BaseTooltip
@@ -66,7 +45,7 @@ const exampleProperties: Static<typeof TooltipPropsSchema> = {
   position: "bottom",
   mini: false,
   unmountOnExit: true,
-  defaultPopupVisible: false,
+  popupVisible: false,
   popupHoverStay: true,
   blurToHide: true,
   disabled: false,
@@ -86,9 +65,7 @@ const options = {
   spec: {
     properties: TooltipPropsSchema,
     state: TooltipStateSchema,
-    methods: {
-      setPopupVisible: Type.String(),
-    } as Record<string, any>,
+    methods: {} as Record<string, any>,
     slots: ["content"],
     styleSlots: ["content"],
     events: [],
