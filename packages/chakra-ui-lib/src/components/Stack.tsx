@@ -58,6 +58,9 @@ export default implementRuntimeComponent({
       spacing: 10,
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,
