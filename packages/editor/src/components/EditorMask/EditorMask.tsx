@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { css, cx } from '@emotion/css';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
-import { Box } from '@chakra-ui/react';
+import { debounce } from 'lodash-es';
 
 const MaskWrapperStyle = css`
   position: absolute;
@@ -79,21 +79,48 @@ type Props = {
 
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const { services, mousePosition } = props;
-  const { eleMap, setHoverComponentId, selectedComponentId } = services.editorStore;
+  const { setHoverComponentId, selectedComponentId, eleMap } = services.editorStore;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wrapperRect = useRef<DOMRect>();
+  const [rects, setRects] = useState<Record<string, DOMRect>>({});
 
-  const rects = useMemo(() => {
-    const _rects: Record<string, DOMRect> = {};
+  const updateRects = useCallback(
+    (eleMap: Map<string, HTMLElement>) => {
+      const _rects: Record<string, DOMRect> = {};
+      for (const id of eleMap.keys()) {
+        const ele = eleMap.get(id);
+        const rect = ele?.getBoundingClientRect();
+        if (rect) {
+          _rects[id] = rect;
+        }
+      }
+      setRects(_rects);
+    },
+    [setRects]
+  );
+
+  useEffect(() => {
+    services.eventBus.on('HTMLElementsUpdated', () => {
+      updateRects(eleMap);
+    });
+  }, [eleMap, services.eventBus, updateRects]);
+
+  useEffect(() => {
+    const debouncedUpdateRects = debounce(updateRects, 50);
+    const resizeObserver = new ResizeObserver(() => {
+      debouncedUpdateRects(eleMap);
+    });
     for (const id of eleMap.keys()) {
       const ele = eleMap.get(id);
-      const rect = ele?.getBoundingClientRect();
-      if (rect) {
-        _rects[id] = rect;
+      if (ele) {
+        resizeObserver.observe(ele);
       }
     }
-    return _rects;
-  }, [eleMap]);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [eleMap, setRects, updateRects]);
 
   useEffect(() => {
     wrapperRect.current = wrapperRef.current?.getBoundingClientRect();

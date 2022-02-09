@@ -37,11 +37,11 @@ export const App: React.FC<AppProps> = props => {
 
   useEffect(() => {
     console.log('runtime didUpdate');
-    if (lifeCycles?.didMount) {
-      lifeCycles.didMount();
+    if (lifeCycles?.didUpdate) {
+      lifeCycles.didUpdate();
     }
   }, [lifeCycles, options]);
-  console.log('did get new options');
+
   return (
     <div className="App" style={{ height: '100%', overflow: 'auto' }}>
       {topLevelComponents.map(c => {

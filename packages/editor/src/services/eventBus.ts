@@ -12,8 +12,8 @@ export type EventNames = {
   componentsChange: ComponentSchema[];
   // it is only used for some operations' side effect
   selectComponent: string;
+  HTMLElementsUpdated: undefined;
 };
-
 
 export const initEventBus = () => {
   const emitter = mitt<EventNames>();
