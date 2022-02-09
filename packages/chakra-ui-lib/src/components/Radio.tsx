@@ -30,33 +30,37 @@ const PropsSchema = Type.Object({
 });
 
 export default implementRuntimeComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'radio',
-      displayName: 'Radio',
-      description: 'chakra-ui radio',
-      isDraggable: true,
-      isResizable: true,
-      exampleProperties: {
-        text: {
-          raw: 'Radio',
-          format: 'plain',
-        },
-        value: 'Radio 1',
-        isDisabled: false,
-        size: 'md',
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'radio',
+    displayName: 'Radio',
+    description: 'chakra-ui radio',
+    isDraggable: true,
+    isResizable: true,
+    exampleProperties: {
+      text: {
+        raw: 'Radio',
+        format: 'plain',
       },
-      exampleSize: [3, 1],
+      value: 'Radio 1',
+      isDisabled: false,
+      size: 'md',
     },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: {},
-      slots: [],
-      styleSlots: ['content'],
-      events: [],
+    exampleSize: [3, 1],
+    annotations: {
+      category: 'Input',
     },
-  })(({
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(
+  ({
     text,
     value,
     isDisabled,
@@ -74,11 +78,11 @@ export default implementRuntimeComponent({
     useEffect(() => {
       mergeState({ value: text.raw });
     }, [mergeState, text.raw]);
-  
+
     useEffect(() => {
       mergeState({ value });
     }, [mergeState, value]);
-  
+
     return (
       <BaseRadio
         height="10"
@@ -99,4 +103,5 @@ export default implementRuntimeComponent({
         <Text value={text} />
       </BaseRadio>
     );
-  })
+  }
+);

@@ -39,6 +39,16 @@ function getCategoryOrder(name: string): number {
     : 0;
 }
 
+function getTagColor(version: string): string {
+  if (version.startsWith('chakra_ui/')) {
+    return 'teal';
+  } else if (version.startsWith('core/v1')) {
+    return 'yellow';
+  } else {
+    return 'blackAlpha';
+  }
+}
+
 export const ComponentList: React.FC<Props> = ({ registry }) => {
   const [filterText, setFilterText] = useState('');
   const categories = useMemo<Category[]>(() => {
@@ -116,7 +126,7 @@ export const ComponentList: React.FC<Props> = ({ registry }) => {
                       onDragStart={onDragStart}
                     >
                       {c.metadata.displayName}
-                      <Tag colorScheme="blue" size="sm">
+                      <Tag colorScheme={getTagColor(c.version)} size="sm">
                         {c.version}
                       </Tag>
                     </Flex>

@@ -53,6 +53,9 @@ export default implementRuntimeComponent({
       size: 'md',
     },
     exampleSize: [3, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,

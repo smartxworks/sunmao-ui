@@ -68,6 +68,9 @@ export default implementRuntimeComponent({
     isDraggable: true,
     exampleProperties,
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
