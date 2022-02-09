@@ -20,7 +20,7 @@ import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
-import { ComponentContainerMask } from './ComponentContainerMask';
+import { EditorMask } from './EditorMask';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -38,11 +38,13 @@ export const Editor: React.FC<Props> = observer(
     const {
       components,
       selectedComponentId,
-      modules,
       toolMenuTab,
       explorerMenuTab,
       setToolMenuTab,
-      setExplorerMenuTab
+      setExplorerMenuTab,
+      setSelectedComponentId,
+      hoverComponentId,
+      modules,
     } = editorStore;
 
     const [scale, setScale] = useState(100);
@@ -52,6 +54,7 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
+    const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
 
     useEffect(() => {
       watch(store, newValue => {
@@ -123,6 +126,12 @@ export const Editor: React.FC<Props> = observer(
     }, [App, app, gridCallbacks, recoverKey]);
 
     const renderMain = () => {
+      const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        setMousePosition([e.clientX, e.clientY]);
+      };
+      const onClick = () => {
+        setSelectedComponentId(hoverComponentId);
+      };
       const appBox = (
         <Box flex="1" background="gray.50" p={1} overflow="hidden">
           <Box
@@ -139,9 +148,15 @@ export const Editor: React.FC<Props> = observer(
               height="full"
               position="absolute"
             />
-            <Box width="full" overflow="auto" position="relative">
+            <Box
+              width="full"
+              overflow="auto"
+              position="relative"
+              onMouseMove={onMouseMove}
+              onClick={onClick}
+            >
               {appComponent}
-              <ComponentContainerMask services={services} />
+              <EditorMask services={services} mousePosition={mousePosition} />
             </Box>
             <WarningArea services={services} />
           </Box>
@@ -245,7 +260,7 @@ export const Editor: React.FC<Props> = observer(
       if (isError) {
         setRecoverKey(recoverKey + 1);
       }
-    }, [app]);
+    }, [app, isError, recoverKey]);
 
     return (
       <KeyboardEventWrapper

@@ -104,6 +104,7 @@ export default implementRuntimeComponent({
     customStyle,
     $ref,
   }) => {
+    console.log('input')
     const [value, setValue] = React.useState(defaultValue || ''); // TODO: pin input
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
       setValue(event.target.value);
