@@ -41,7 +41,7 @@ export const App: React.FC<AppProps> = props => {
       lifeCycles.didMount();
     }
   }, [lifeCycles, options]);
-  console.log('did get new options')
+  console.log('did get new options');
   return (
     <div className="App" style={{ height: '100%', overflow: 'auto' }}>
       {topLevelComponents.map(c => {

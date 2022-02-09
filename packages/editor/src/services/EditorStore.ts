@@ -30,6 +30,7 @@ export class EditorStore {
   };
 
   eleMap = new Map<string, HTMLElement>();
+  isDraggingNewComponent = false;
 
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
@@ -199,6 +200,10 @@ export class EditorStore {
   setToolMenuTab = (val: ToolMenuTabs) => {
     this.toolMenuTab = val;
   }
+
+  setIsDraggingNewComponent = (val: boolean) => {
+    this.isDraggingNewComponent = val;
+  };
 
   setEleMap = (val: Map<string, HTMLElement>) => {
     this.eleMap = val;
