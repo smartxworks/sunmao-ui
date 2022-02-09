@@ -29,6 +29,8 @@ export class EditorStore {
     name: '',
   };
 
+  eleMap = new Map<string, HTMLElement>();
+
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
@@ -197,4 +199,8 @@ export class EditorStore {
   setToolMenuTab = (val: ToolMenuTabs) => {
     this.toolMenuTab = val;
   }
+
+  setEleMap = (val: Map<string, HTMLElement>) => {
+    this.eleMap = val;
+  };
 }
