@@ -6,11 +6,11 @@ import {
   PaginationProps,
 } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { TablePropsSchema, ColumnSchema } from "../generated/types/Table";
-import { ReactNode, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { sortBy } from "lodash-es";
 import {
   LIST_ITEM_EXP,
@@ -20,7 +20,8 @@ import {
 
 const TableStateSchema = Type.Object({
   selectedRows: Type.Array(Type.Any()),
-  currentOperatedItem: Type.Optional(Type.Any()),
+  selectedRow: Type.Optional(Type.Any()),
+  selectedRowKeys: Type.Array(Type.Number()),
 });
 
 type SortRule = {
@@ -45,7 +46,7 @@ type filterDropdownParam = {
 const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
   const { app, mergeState, customStyle, services, data } = props;
 
-  const { className, pagination, ...cProps } = getComponentProps(props);
+  const { pagination, ...cProps } = getComponentProps(props);
 
   const rowSelectionType: "checkbox" | "radio" | undefined =
     cProps.rowSelectionType === "default" ? undefined : cProps.rowSelectionType;
@@ -86,6 +87,12 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
     currentPage * pageSize
   );
 
+  useEffect(() => {
+    mergeState({
+      selectedRowKeys,
+    });
+  }, [selectedRowKeys, mergeState]);
+
   const inputRef = useRef(null);
 
   const columns = cProps.columns!.map((column) => {
@@ -122,7 +129,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
 
       switch (newColumn.type) {
         case "button":
-          const handleClick = (record: any) => {
+          const handleClick = () => {
             newColumn.btnCfg?.handlers.forEach((handler) => {
               services.apiService.send("uiMethod", {
                 componentId: handler.componentId,
@@ -134,7 +141,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
           colItem = (
             <Button
               onClick={() => {
-                handleClick(record);
+                handleClick();
               }}
             >
               {newColumn.btnCfg?.text}
@@ -186,10 +193,10 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
 
     setFilterRule(filter);
   };
-  
+
   return (
     <BaseTable
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       {...cProps}
       columns={columns}
       pagination={{
@@ -202,13 +209,11 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
       rowSelection={{
         type: rowSelectionType,
         selectedRowKeys,
-        onChange(selectedRowKeys, selectedRows) {
+        onChange(selectedRowKeys) {
           setSelectedRowKeys(selectedRowKeys as string[]);
         },
         onSelect: (selected, record, selectedRows) => {
-          selected
-            ? mergeState({ currentOperatedItem: record })
-            : mergeState({ currentOperatedItem: undefined });
+          selected && mergeState({ selectedRow: record });
           mergeState({ selectedRows });
         },
         onSelectAll(selected, selectedRows) {
@@ -234,22 +239,27 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
       title: "Salary",
       dataIndex: "salary",
       sorter: true,
+      filter: false,
     },
     {
       title: "Time",
       dataIndex: "time",
       sorter: true,
+      filter: false,
     },
     {
       title: "Link",
       dataIndex: "link",
       type: "link",
       filter: true,
+      sorter: false,
     },
     {
       title: "CustomComponent",
       dataIndex: "customComponent",
       type: "module",
+      filter: false,
+      sorter: false,
       module: {
         id: "clistItemName-{{$listItem.id}}",
         handlers: [],
@@ -273,17 +283,11 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
     pageSize: 6,
     current: 0,
   },
-  className: "",
   tableLayoutFixed: false,
   borderCell: false,
-  hover: true,
-  defaultExpandAllRows: false,
-  showHeader: true,
   stripe: false,
   size: "default",
   pagePosition: "bottomCenter",
-  indentSize: 15,
-  virtualized: false,
   rowSelectionType: "radio",
 };
 

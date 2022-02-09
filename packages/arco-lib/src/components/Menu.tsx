@@ -1,6 +1,6 @@
 import { Menu as BaseMenu } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { MenuPropsSchema as BaseMenuPropsSchema } from "../generated/types/Menu";
@@ -17,7 +17,6 @@ const MenuPropsSchema = Type.Object({
       })
     )
   ),
-  className: Type.Optional(Type.String()),
 });
 const MenuStateSchema = Type.Object({
   activeKey: Type.Optional(Type.String()),
@@ -25,7 +24,7 @@ const MenuStateSchema = Type.Object({
 
 const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
   const { customStyle, callbackMap, mergeState } = props;
-  const { items = [], className, ...cProps } = getComponentProps(props);
+  const { items = [], ...cProps } = getComponentProps(props);
   const [activeKey, setActiveKey] = useState<string>();
   useEffect(() => {
     mergeState({
@@ -35,10 +34,10 @@ const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
 
   return (
     <BaseMenu
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       onClickMenuItem={(key) => {
         setActiveKey(key);
-        callbackMap?.onClick();
+        callbackMap?.onClick?.();
       }}
       {...cProps}
     >

@@ -1,14 +1,14 @@
 
 import { Type } from "@sinclair/typebox";
-import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
+import { StringUnion } from '../../sunmao-helper';
 
 export const InputPropsSchema = {
-  'allowClear': Type.Optional(Type.Boolean()),
-  'disabled': Type.Optional(Type.Boolean()),
-  'readOnly': Type.Optional(Type.Boolean()),
-  'defaultValue': Type.Optional(Type.String()),
-  'placeholder': Type.Optional(Type.String()),
-  'error': Type.Optional(Type.Boolean()),
-  'size': Type.Optional(StringUnion(['default', 'mini', 'small', 'large'])),
-  'showWordLimit': Type.Optional(Type.Boolean())
+  'allowClear': Type.Boolean(),
+  'disabled': Type.Boolean(),
+  'readOnly': Type.Boolean(),
+  'defaultValue': Type.String(),
+  'placeholder': Type.String(),
+  'error': Type.Boolean(),
+  'size': StringUnion(['default', 'mini', 'small', 'large']),
+  'showWordLimit': Type.Boolean()
 };

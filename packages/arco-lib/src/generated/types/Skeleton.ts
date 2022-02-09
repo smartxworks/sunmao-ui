@@ -2,8 +2,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from "../../sunmao-helper";
 
 export const SkeletonTextPropsSchema = {
-  className: Type.Optional(Type.String()),
-  rows: Type.Optional(Type.Number()),
+  rows: Type.Number(),
   width: Type.Optional(
     Type.Union([
       Type.Number(),
@@ -16,20 +15,14 @@ export const SkeletonTextPropsSchema = {
 };
 
 export const SkeletonImagePropsSchema = {
-  className: Type.Optional(Type.String()),
-  shape: Type.Optional(StringUnion(["circle", "square"])),
-  size: Type.Optional(StringUnion(["small", "default", "large"])),
-  position: Type.Optional(StringUnion(["left", "right"])),
+  shape: StringUnion(["circle", "square"]),
+  size: StringUnion(["small", "default", "large"]),
+  position: StringUnion(["left", "right"]),
 };
 
 export const SkeletonPropsSchema = {
-  className: Type.Optional(Type.String()),
-  animation: Type.Optional(Type.Boolean()),
-  loading: Type.Optional(Type.Boolean()),
-  image: Type.Optional(
-    Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSchema)])
-  ),
-  text: Type.Optional(
-    Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSchema)])
-  ),
+  animation: Type.Boolean(),
+  loading: Type.Boolean(),
+  image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSchema)]),
+  text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSchema)])
 };

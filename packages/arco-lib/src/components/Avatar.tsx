@@ -1,6 +1,6 @@
 import { Avatar as BaseAvatar } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { AvatarPropsSchema as BaseAvatarPropsSchema } from "../generated/types/Avatar";
@@ -16,10 +16,7 @@ const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
   const { className, ...cProps } = getComponentProps(props);
 
   return (
-    <BaseAvatar
-      className={cx(className, css(customStyle?.content))}
-      {...cProps}
-    >
+    <BaseAvatar className={css(customStyle?.content)} {...cProps}>
       {slotsElements.content}
     </BaseAvatar>
   );

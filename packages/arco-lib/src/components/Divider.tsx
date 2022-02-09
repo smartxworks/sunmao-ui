@@ -7,7 +7,6 @@ import { DividerPropsSchema as BaseDividerPropsSchema } from "../generated/types
 
 const DividerPropsSchema = Type.Object({
   ...BaseDividerPropsSchema,
-  className: Type.Optional(Type.String()),
 });
 const DividerStateSchema = Type.Object({});
 
@@ -15,18 +14,17 @@ const DividerImpl: ComponentImpl<Static<typeof DividerPropsSchema>> = (
   props
 ) => {
   const { customStyle } = props;
-  const { className, ...cProps } = getComponentProps(props);
+  const { ...cProps } = getComponentProps(props);
 
   return (
     <BaseDivider
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       {...cProps}
     ></BaseDivider>
   );
 };
 
 const exampleProperties: Static<typeof DividerPropsSchema> = {
-  className: "",
   type: "horizontal",
   orientation: "center",
 };

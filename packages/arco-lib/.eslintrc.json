@@ -23,6 +23,8 @@
     "linebreak-style": ["error", "unix"],
     "react/prop-types": "off",
     "no-case-declarations": "off",
+    "no-unused-vars":"off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",

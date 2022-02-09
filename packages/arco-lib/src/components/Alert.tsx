@@ -1,6 +1,6 @@
 import { Alert as BaseAlert } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { AlertPropsSchema as BaseAlertPropsSchema } from "../generated/types/Alert";
@@ -10,7 +10,7 @@ const AlertStateSchema = Type.Object({});
 
 const AlertImpl: ComponentImpl<Static<typeof AlertPropsSchema>> = (props) => {
   const { visible, content, title, ...cProps } = getComponentProps(props);
-  const { customStyle, className, slotsElements } = props;
+  const { customStyle, slotsElements } = props;
 
   return visible ? (
     <BaseAlert
@@ -28,19 +28,21 @@ const AlertImpl: ComponentImpl<Static<typeof AlertPropsSchema>> = (props) => {
           {slotsElements.title}
         </>
       }
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       {...cProps}
     />
   ) : null;
 };
 
 const exampleProperties: Static<typeof AlertPropsSchema> = {
-  className: "",
   disabled: false,
   closable: true,
   title: "info",
   content: "Here is an example text",
   visible: "true",
+  showIcon: true,
+  banner: false,
+  type: "info",
 };
 
 const options = {

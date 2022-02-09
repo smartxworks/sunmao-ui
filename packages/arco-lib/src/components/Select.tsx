@@ -46,7 +46,7 @@ const SelectImpl: ComponentImpl<Static<typeof SelectPropsSchema>> = (
       className={css(customStyle?.content)}
       onChange={(v) => {
         setValue(v);
-        callbackMap?.onChange();
+        callbackMap?.onChange?.();
       }}
       value={value}
       {...cProps}

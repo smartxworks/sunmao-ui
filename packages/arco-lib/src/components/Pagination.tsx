@@ -4,7 +4,7 @@ import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { PaginationPropsSchema as BasePaginationPropsSchema } from "../generated/types/Pagination";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const PaginationPropsSchema = Type.Object(BasePaginationPropsSchema);
 const PaginationStateSchema = Type.Object({
@@ -14,8 +14,8 @@ const PaginationStateSchema = Type.Object({
 const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
   props
 ) => {
-  const { callbackMap, defaultCurrent, ...cProps } = getComponentProps(props);
-  const { customStyle, className, mergeState } = props;
+  const { defaultCurrent, ...cProps } = getComponentProps(props);
+  const { customStyle, mergeState, callbackMap } = props;
 
   const [current, setCurrent] = useState<number>(defaultCurrent || 0);
 
@@ -31,7 +31,7 @@ const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
 
   return (
     <BasePagination
-      className={cx(className, css(customStyle?.content))}
+      className={cx(css(customStyle?.content))}
       {...cProps}
       current={current}
       onChange={handleChange}
@@ -40,7 +40,6 @@ const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
 };
 
 const exampleProperties: Static<typeof PaginationPropsSchema> = {
-  className: "",
   pageSize: 10,
   total: 300,
   defaultCurrent: 3,

@@ -1,23 +1,22 @@
 import { Button as BaseButton } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { ButtonPropsSchema as BaseButtonPropsSchema } from "../generated/types/Button";
 
 const ButtonPropsSchema = Type.Object({
-  ...BaseButtonPropsSchema,
-  className: Type.Optional(Type.String()),
+  ...BaseButtonPropsSchema
 });
 const ButtonStateSchema = Type.Object({});
 
 const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
   const { slotsElements, customStyle, text, callbackMap } = props;
-  const { className, ...cProps } = getComponentProps(props);
+  const { ...cProps } = getComponentProps(props);
 
   return (
     <BaseButton
-      className={cx(className, css(customStyle?.content))}
+      className={css(customStyle?.content)}
       onClick={callbackMap?.onClick}
       {...cProps}
     >
@@ -28,7 +27,6 @@ const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof ButtonPropsSchema> = {
-  className: "button",
   htmlType: "button",
   type: "default",
   status: "default",
@@ -40,6 +38,8 @@ const exampleProperties: Static<typeof ButtonPropsSchema> = {
   loading: false,
   loadingFixedWidth: false,
   iconOnly: false,
+  shape: "square",
+  text: "button",
 };
 
 const options = {

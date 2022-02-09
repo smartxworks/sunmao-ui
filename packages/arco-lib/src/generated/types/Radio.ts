@@ -1,6 +1,6 @@
 
 import { Type } from "@sinclair/typebox";
-import { IntoStringUnion, StringUnion } from '../../sunmao-helper';
+import { StringUnion } from '../../sunmao-helper';
 
 const RadioItemSchema = Type.Object({
   'value': Type.String(),
@@ -10,7 +10,7 @@ const RadioItemSchema = Type.Object({
 
 export const RadioPropsSchema = {
   options: Type.Array(RadioItemSchema),
-  defaultCheckedValue: Type.Optional(Type.String()),
+  defaultCheckedValue: Type.String(),
   type: StringUnion(['radio', 'button']),
   direction: StringUnion(['horizontal', 'vertical']),
   size: StringUnion(['small', 'default', 'large', 'mini']),

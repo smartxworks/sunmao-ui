@@ -25,6 +25,8 @@ import { Checkbox } from './components/Checkbox';
 import { Modal } from "./components/Modal";
 import { Radio } from './components/Radio';
 import { Table } from "./components/Table";
+import { Pagination } from "./components/Pagination";
+import { Steps } from "./components/Steps";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -32,6 +34,8 @@ type Module = Parameters<Registry["registerModule"]>[0];
 
 export const components: Component[] = [
   Table,
+  Pagination,
+  Steps,
   TreeSelect,
   Modal,
   Button,
