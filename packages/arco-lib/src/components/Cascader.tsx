@@ -66,9 +66,18 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
   props
 ) => {
   const { multiple, placeholder, ...cProps } = getComponentProps(props);
-  const { mergeState, slotsElements, customStyle, className, options } = props;
+  const {
+    mergeState,
+    callbackMap,
+    slotsElements,
+    customStyle,
+    className,
+    options,
+  } = props;
 
-  const content = isArray(slotsElements.content) ? slotsElements.content[0] : slotsElements.content;
+  const content = isArray(slotsElements.content)
+    ? slotsElements.content[0]
+    : slotsElements.content;
 
   const mode: "multiple" | undefined = multiple ? "multiple" : undefined;
 
@@ -92,6 +101,7 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
 
   const onChange = (value: (string | string[])[]) => {
     _setValue(value);
+    callbackMap?.onChange?.();
   };
 
   return (
@@ -155,7 +165,7 @@ const options = {
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],
-    events: [],
+    events: ["onChange"],
   },
 };
 

@@ -14,7 +14,7 @@ const PaginationStateSchema = Type.Object({
 const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
   props
 ) => {
-  const { defaultCurrent, ...cProps } = getComponentProps(props);
+  const { callbackMap, defaultCurrent, ...cProps } = getComponentProps(props);
   const { customStyle, className, mergeState } = props;
 
   const [current, setCurrent] = useState<number>(defaultCurrent || 0);
@@ -23,12 +23,10 @@ const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
     Reflect.deleteProperty(cProps, "pageSize");
   }
 
-  useEffect(() => {
-    mergeState({ currentPage: current });
-  }, [current, mergeState]);
-
   const handleChange = (pageNum: number) => {
     setCurrent(pageNum);
+    mergeState({ currentPage: current });
+    callbackMap?.onChange?.();
   };
 
   return (
@@ -70,7 +68,7 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ["content"],
-    events: [],
+    events: ["onChange"],
   },
 };
 
