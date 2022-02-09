@@ -10,6 +10,7 @@ const MaskWrapperStyle = css`
   left: 0;
   right: 0;
   bottom: 0;
+  pointer-events: none;
 `;
 
 const outlineMaskTextStyle = css`
@@ -71,22 +72,23 @@ const outlineMaskStyle = css`
 
 type Props = {
   services: EditorServices;
-  eleMap: Map<string, HTMLElement>;
 };
 
 export const ComponentContainerMask: React.FC<Props> = observer((props: Props) => {
-  const { services, eleMap } = props;
+  const { services } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { hoverComponentId, setHoverComponentId } = services.editorStore;
-  const rects: Record<string, DOMRect> = {};
-  for (const id of eleMap.keys()) {
-    const ele = eleMap.get(id);
-    const rect = ele?.getBoundingClientRect();
-    if (rect) {
-      rects[id] = rect;
+  const { hoverComponentId, setHoverComponentId, eleMap } = services.editorStore;
+  const rects = useMemo(() => {
+    const _rects: Record<string, DOMRect> = {};
+    for (const id of eleMap.keys()) {
+      const ele = eleMap.get(id);
+      const rect = ele?.getBoundingClientRect();
+      if (rect) {
+        _rects[id] = rect;
+      }
     }
-  }
-  console.log('rects', rects)
+    return _rects;
+  }, [eleMap]);
 
   const borders = useMemo(() => {
     if (!wrapperRef.current) {
@@ -96,7 +98,6 @@ export const ComponentContainerMask: React.FC<Props> = observer((props: Props) =
     return Object.keys(rects)
       .filter(id => id === hoverComponentId)
       .map(id => {
-        console.log('id', id);
         const rect = rects[id];
         const style = {
           top: rect.top - wrapperRect.top - 2,
@@ -115,11 +116,15 @@ export const ComponentContainerMask: React.FC<Props> = observer((props: Props) =
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const id = whereIsMouse(e.clientX, e.clientY, rects);
     setHoverComponentId(id);
-    console.log(id)
   };
 
   return (
-    <div className={MaskWrapperStyle} ref={wrapperRef} data-is-mask onMouseMove={onMouseMove}>
+    <div
+      className={MaskWrapperStyle}
+      ref={wrapperRef}
+      data-is-mask
+      onMouseMove={onMouseMove}
+    >
       {borders}
     </div>
   );

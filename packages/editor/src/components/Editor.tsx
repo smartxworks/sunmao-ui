@@ -33,7 +33,7 @@ type Props = {
 };
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, eleMap, services }) => {
+  ({ App, registry, stateStore, services }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
@@ -52,10 +52,6 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
-
-    useEffect(() => {
-      console.log('eleMap', eleMap);
-    }, [eleMap]);
 
     useEffect(() => {
       watch(store, newValue => {
@@ -145,7 +141,7 @@ export const Editor: React.FC<Props> = observer(
             />
             <Box width="full" overflow="auto" position="relative">
               {appComponent}
-              <ComponentContainerMask services={services} eleMap={eleMap} />
+              <ComponentContainerMask services={services} />
             </Box>
             <WarningArea services={services} />
           </Box>

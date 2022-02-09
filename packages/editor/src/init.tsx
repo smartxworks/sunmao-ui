@@ -43,7 +43,12 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     })
   );
 
-  const ui = initSunmaoUI(props.runtimeProps);
+  const didMount = () => {
+    editorStore.setEleMap(ui.eleMap);
+    console.log('editor listen didMount');
+  };
+
+  const ui = initSunmaoUI({ ...props.runtimeProps, didMount });
 
   const App = ui.App;
   const registry = ui.registry;
@@ -58,7 +63,11 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     props.defaultModules,
     props.storageHanlder
   );
-  const appModelManager = new AppModelManager(eventBus, registry, appStorage.app.spec.components);
+  const appModelManager = new AppModelManager(
+    eventBus,
+    registry,
+    appStorage.app.spec.components
+  );
   const editorStore = new EditorStore(eventBus, registry, stateManager, appStorage);
   const services = {
     App,
