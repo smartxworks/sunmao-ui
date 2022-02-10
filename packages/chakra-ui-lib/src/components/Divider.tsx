@@ -25,12 +25,13 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ customStyle }) => {
+})(({ customStyle, $ref }) => {
   return (
     <Divider
       className={css`
         ${customStyle?.content}
       `}
+      ref={$ref}
     />
   );
 });

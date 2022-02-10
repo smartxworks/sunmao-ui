@@ -295,7 +295,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ customStyle, slotsElements, ...restProps }) => {
+})(({ customStyle, slotsElements, $ref, ...restProps }) => {
   const styleProps = pick(restProps, StyleProps);
   return (
     <BaseBox
@@ -309,6 +309,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={$ref}
     >
       {slotsElements.content}
     </BaseBox>

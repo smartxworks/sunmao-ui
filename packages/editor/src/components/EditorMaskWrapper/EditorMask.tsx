@@ -124,8 +124,8 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
 
   const getMaskPosition = useCallback(
     (componentId: string) => {
-      if (!wrapperRect.current) return;
       const rect = rects[componentId];
+      if (!wrapperRect.current || !rect) return;
       return {
         id: componentId,
         style: {
