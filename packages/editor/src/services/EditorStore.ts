@@ -18,7 +18,8 @@ export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
-  _hoverComponentId = '';
+  // not observable, caculated in EditorMask
+  hoverComponentId = '';
   _dragOverComponentId = '';
   explorerMenuTab = ExplorerMenuTabs.EXPLORER;
   toolMenuTab = ToolMenuTabs.INSERT;
@@ -46,6 +47,7 @@ export class EditorStore {
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
+      hoverComponentId: false,
       eleMap: false,
       components: observable.shallow,
       setComponents: action,
@@ -98,11 +100,6 @@ export class EditorStore {
 
   get selectedComponent() {
     return this.components.find(c => c.id === this._selectedComponentId);
-  }
-
-  // to avoid get out-of-dated value here, we should use getter to lazy load primitive type
-  get hoverComponentId() {
-    return this._hoverComponentId;
   }
 
   get selectedComponentId() {
@@ -173,10 +170,6 @@ export class EditorStore {
 
   setSelectedComponentId = (val: string) => {
     this._selectedComponentId = val;
-  };
-
-  setHoverComponentId = (val: string) => {
-    this._hoverComponentId = val;
   };
 
   setComponents = (val: ComponentSchema[]) => {

@@ -133,7 +133,6 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
       selectedComponentId,
       setSelectedComponentId,
       hoverComponentId,
-      setHoverComponentId,
       dragOverComponentId,
       setDragOverComponentId,
       setExplorerMenuTab,
@@ -191,11 +190,9 @@ export function useComponentWrapper(services: EditorServices): ComponentWrapperT
     };
     const onMouseEnterWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      setHoverComponentId(component.id);
     };
     const onMouseLeaveWrapper = (e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-      setHoverComponentId('');
     };
 
     const onDragEnter = (e: React.DragEvent<HTMLElement>) => {

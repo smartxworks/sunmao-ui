@@ -37,7 +37,7 @@ export default implementRuntimeComponent({
   spec: {
     properties: PropsSchema,
     state: Type.Object({}),
-    slots: ['content'],
+    slots: ['content', 'body', 'header'],
     styleSlots: ['content'],
     methods: {},
     events: [],

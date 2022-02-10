@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { css, cx } from '@emotion/css';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { SlotDropArea } from './SlotDropArea';
 
-const inlineList = ['chakra_ui/v1/checkbox', 'chakra_ui/v1/radio'];
 // FIXME: add vertical property for component
 const verticalStackList = ['chakra_ui/v1/vstack'];
 
@@ -15,7 +14,6 @@ const DropSlotMaskStyle = css`
   bottom: 0;
   left: 0;
   right: 0;
-  pointer-events: none;
   display: flex;
 
   &.vertical {
@@ -25,26 +23,41 @@ const DropSlotMaskStyle = css`
 
 type Props = {
   services: EditorServices;
-  componentType: string;
   hoverId: string;
+  mousePosition: [number, number];
+  onDragOverSlotChange: (slot: string) => void;
 };
 
 export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
-  const { services, componentType, hoverId } = props;
+  const { services, hoverId, mousePosition, onDragOverSlotChange } = props;
   const { registry } = services;
+  const [dragOverSlot, setDragOverSlot] = useState('');
+  const maskRef = useRef<HTMLDivElement>(null);
+
+  const componentType =
+    services.editorStore.components.find(c => c.id === hoverId)?.type || 'core/v1/text';
 
   const slots = useMemo(() => {
     return registry.getComponentByType(componentType).spec.slots || [];
   }, [componentType, registry]);
 
+  useEffect(() => {
+    if (!maskRef.current) return;
+    const maskRect = maskRef.current?.getBoundingClientRect();
+    console.log('mouse', mousePosition[0], maskRect.left, slots.length);
+    const index = Math.floor(
+      (mousePosition[0] - maskRect.left) / (maskRect.width / slots.length)
+    );
+    console.log('index', index);
+    setDragOverSlot(slots[index]);
+    onDragOverSlotChange(slots[index]);
+  }, [mousePosition, slots, onDragOverSlotChange]);
+
   const isDroppable = slots.length > 0;
 
-  const [inline, vertical] = useMemo(() => {
-    if (!componentType) return [false, false];
-    return [
-      inlineList.includes(componentType),
-      verticalStackList.includes(componentType),
-    ];
+  const vertical = useMemo(() => {
+    if (!componentType) return false;
+    verticalStackList.includes(componentType);
   }, [componentType]);
 
   if (!isDroppable) {
@@ -52,12 +65,15 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
   }
 
   return (
-    <div className={cx(DropSlotMaskStyle, vertical ? 'vertical' : undefined)}>
+    <div
+      className={cx(DropSlotMaskStyle, vertical ? 'vertical' : undefined)}
+      ref={maskRef}
+    >
       {slots.map(slot => {
         return (
           <SlotDropArea
             componentId={hoverId}
-            // state={slot === currentSlot ? 'over' : 'sibling'}
+            isOver={dragOverSlot === slot}
             key={slot}
             slotId={slot}
           />

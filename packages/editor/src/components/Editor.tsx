@@ -127,6 +127,7 @@ export const Editor: React.FC<Props> = observer(
 
     const renderMain = () => {
       const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        console.log('onMouseMove');
         setMousePosition([e.clientX, e.clientY]);
       };
       const onClick = () => {
@@ -247,7 +248,7 @@ export const Editor: React.FC<Props> = observer(
                   <ComponentForm services={services} />
                 </TabPanel>
                 <TabPanel p={0}>
-                  <ComponentList registry={registry} />
+                  <ComponentList services={services} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
