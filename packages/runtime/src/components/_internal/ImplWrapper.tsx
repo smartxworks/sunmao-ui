@@ -10,7 +10,6 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     component: c,
     app,
     children,
-    componentWrapper: ComponentWrapper,
     services,
     childrenMap,
   } = props;
@@ -26,17 +25,14 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   const handlerMap = useRef(globalHandlerMap.get(c.id)!);
   const eleRef = useRef<HTMLElement>();
   const onRef = (ele: HTMLElement) => {
-    console.log('onRef', ele);
     eleMap.set(c.id, ele);
   };
 
   useEffect(() => {
     if (eleRef.current) {
       eleMap.set(c.id, eleRef.current);
-      console.log('挂载了', c.id, eleRef);
     }
     return () => {
-      console.log('卸载了', c.id);
       eleMap.delete(c.id);
     };
   }, [c.id, eleMap]);
@@ -210,23 +206,10 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
       c => c.id === (slotTrait.properties.container as any).id
     );
   }
-  // wrap component, but grid_layout is root component and cannot be chosen, so don't wrap it
-  if (
-    ComponentWrapper &&
-    c.parsedType.name !== 'dummy' &&
-    c.parsedType.name !== 'grid_layout'
-  ) {
-    result = (
-      <ComponentWrapper component={c} parentType={parentComponent?.type || ''}>
-        {result}
-      </ComponentWrapper>
-    );
-  }
 
   if (parentComponent?.parsedType.name === 'grid_layout') {
-    // prevent react componentWrapper
     /* eslint-disable */
-    const { component, services, app, componentWrapper, gridCallbacks, ...restProps } =
+    const { component, services, app, gridCallbacks, ...restProps } =
       props;
     /* eslint-enable */
     result = (

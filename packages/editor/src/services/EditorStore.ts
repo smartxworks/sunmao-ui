@@ -18,8 +18,6 @@ export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
-  // not observable, caculated in EditorMask
-  hoverComponentId = '';
   _dragOverComponentId = '';
   explorerMenuTab = ExplorerMenuTabs.EXPLORER;
   toolMenuTab = ToolMenuTabs.INSERT;
@@ -47,7 +45,6 @@ export class EditorStore {
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
-      hoverComponentId: false,
       eleMap: false,
       components: observable.shallow,
       setComponents: action,

@@ -17,7 +17,6 @@ export const App: React.FC<AppProps> = props => {
   const {
     options,
     services,
-    componentWrapper,
     gridCallbacks,
     debugStore = true,
     debugEvent = true,
@@ -29,14 +28,12 @@ export const App: React.FC<AppProps> = props => {
   const { childrenMap, topLevelComponents } = resolveChildrenMap(app.spec.components);
 
   useEffect(() => {
-    console.log('runtime didmount');
     if (lifeCycles?.didMount) {
       lifeCycles.didMount();
     }
   }, [lifeCycles]);
 
   useEffect(() => {
-    console.log('runtime didUpdate');
     if (lifeCycles?.didUpdate) {
       lifeCycles.didUpdate();
     }
@@ -52,7 +49,6 @@ export const App: React.FC<AppProps> = props => {
             services={services}
             childrenMap={childrenMap}
             app={app}
-            componentWrapper={componentWrapper}
             gridCallbacks={gridCallbacks}
           />
         );

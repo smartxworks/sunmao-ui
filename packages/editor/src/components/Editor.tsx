@@ -20,7 +20,7 @@ import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
-import { EditorMask } from './EditorMask';
+import { EditorMaskWrapper } from './EditorMaskWrapper';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -42,8 +42,6 @@ export const Editor: React.FC<Props> = observer(
       explorerMenuTab,
       setToolMenuTab,
       setExplorerMenuTab,
-      setSelectedComponentId,
-      hoverComponentId,
       modules,
     } = editorStore;
 
@@ -54,8 +52,6 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
-    const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
-
     useEffect(() => {
       watch(store, newValue => {
         setStore(JSON.parse(JSON.stringify(newValue)));
@@ -107,10 +103,6 @@ export const Editor: React.FC<Props> = observer(
       };
     }, [components]);
 
-    // const ComponentWrapper = useMemo(() => {
-    //   return useComponentWrapper(services);
-    // }, [services]);
-
     const appComponent = useMemo(() => {
       return (
         <ErrorBoundary key={recoverKey} onError={onError}>
@@ -119,20 +111,12 @@ export const Editor: React.FC<Props> = observer(
             debugEvent={false}
             debugStore={false}
             gridCallbacks={gridCallbacks}
-            // componentWrapper={ComponentWrapper}
           />
         </ErrorBoundary>
       );
     }, [App, app, gridCallbacks, recoverKey]);
 
     const renderMain = () => {
-      const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        console.log('onMouseMove');
-        setMousePosition([e.clientX, e.clientY]);
-      };
-      const onClick = () => {
-        setSelectedComponentId(hoverComponentId);
-      };
       const appBox = (
         <Box flex="1" background="gray.50" p={1} overflow="hidden">
           <Box
@@ -149,15 +133,10 @@ export const Editor: React.FC<Props> = observer(
               height="full"
               position="absolute"
             />
-            <Box
-              width="full"
-              overflow="auto"
-              position="relative"
-              onMouseMove={onMouseMove}
-              onClick={onClick}
-            >
-              {appComponent}
-              <EditorMask services={services} mousePosition={mousePosition} />
+            <Box width="full" overflow="auto" position="relative">
+              <EditorMaskWrapper services={services}>
+                {appComponent}
+              </EditorMaskWrapper>
             </Box>
             <WarningArea services={services} />
           </Box>

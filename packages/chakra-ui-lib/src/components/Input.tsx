@@ -126,9 +126,8 @@ export default implementRuntimeComponent({
         },
       });
     }, [defaultValue, subscribeMethods]);
-    console.log('input', $ref);
     return (
-      <InputGroup size={size} background="white" ref={$ref as any}>
+      <InputGroup size={size} background="white" ref={$ref}>
         {left ? (
           left.type === 'addon' ? (
             <InputLeftAddon>{left.children}</InputLeftAddon>
