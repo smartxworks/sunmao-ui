@@ -32,12 +32,15 @@ export default implementRuntimeComponent({
       isLoading: false,
     },
     exampleSize: [2, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
     state: StateSchema,
     methods: {
-      click: void 0,
+      click: undefined,
     },
     slots: [],
     styleSlots: ['content'],

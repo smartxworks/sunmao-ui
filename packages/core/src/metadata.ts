@@ -1,9 +1,19 @@
-export type Metadata = {
+export type Metadata<TAnnotations = Record<string, unknown>> = {
   name: string;
   description?: string;
+  annotations?: Record<string, any> & TAnnotations;
 };
 
-export type ComponentMetadata = Metadata & {
+type ComponentCategory =
+  | (string & {})
+  | 'Layout'
+  | 'Input'
+  | 'Display'
+  | 'Advance'
+  | undefined;
+
+export type ComponentMetadata = Metadata<{ category?: ComponentCategory }> & {
+  // TODO:(yanzhen): move to annotations
   isDraggable: boolean;
   isResizable: boolean;
   displayName: string;

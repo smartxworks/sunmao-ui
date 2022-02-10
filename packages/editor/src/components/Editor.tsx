@@ -53,6 +53,10 @@ export const Editor: React.FC<Props> = observer(
       modules,
       activeDataSource,
       activeDataSourceType,
+      toolMenuTab,
+      explorerMenuTab,
+      setToolMenuTab,
+      setExplorerMenuTab,
     } = editorStore;
 
     const [scale, setScale] = useState(100);
@@ -182,7 +186,18 @@ export const Editor: React.FC<Props> = observer(
             position="relative"
             zIndex="2"
           >
-            <Tabs height="100%" display="flex" flexDirection="column" isLazy>
+            <Tabs
+              align="center"
+              height="100%"
+              display="flex"
+              flexDirection="column"
+              textAlign="left"
+              isLazy
+              index={explorerMenuTab}
+              onChange={activatedTab => {
+                setExplorerMenuTab(activatedTab);
+              }}
+            >
               <TabList background="gray.50" overflow="auto" whiteSpace="nowrap">
                 <Tab>Explorer</Tab>
                 <Tab>UI Tree</Tab>
@@ -233,6 +248,10 @@ export const Editor: React.FC<Props> = observer(
                 height="100%"
                 display="flex"
                 flexDirection="column"
+                index={toolMenuTab}
+                onChange={activatedTab => {
+                  setToolMenuTab(activatedTab);
+                }}
               >
                 <TabList background="gray.50">
                   <Tab>Inspect</Tab>

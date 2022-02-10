@@ -9,10 +9,11 @@ type Props = {
   value?: Record<string, string>;
   isShowHeader?: boolean;
   minNum?: number;
+  onlySetValue?: boolean;
 };
 
 export const KeyValueEditor: React.FC<Props> = props => {
-  const { minNum = 0 } = props;
+  const { minNum = 0, onlySetValue } = props;
   const generateRows = (currentRows: Array<[string, string]> = []) => {
     let newRows = toPairs(props.value);
 
@@ -67,6 +68,7 @@ export const KeyValueEditor: React.FC<Props> = props => {
           placeholder="key"
           onChange={onInputChange}
           onBlur={onBlur}
+          isDisabled={onlySetValue}
         />
         <Input
           flex={1}
@@ -76,14 +78,16 @@ export const KeyValueEditor: React.FC<Props> = props => {
           onChange={onInputChange}
           onBlur={onBlur}
         />
-        <IconButton
-          aria-label="remove row"
-          icon={<CloseIcon />}
-          size="xs"
-          onClick={() => onRemoveRow(i)}
-          variant="ghost"
-          isDisabled={minNum >= rows.length}
-        />
+        {onlySetValue ? null : (
+          <IconButton
+            aria-label="remove row"
+            icon={<CloseIcon />}
+            size="xs"
+            onClick={() => onRemoveRow(i)}
+            variant="ghost"
+            isDisabled={minNum >= rows.length}
+          />
+        )}
       </HStack>
     );
   });
@@ -97,9 +101,11 @@ export const KeyValueEditor: React.FC<Props> = props => {
         </HStack>
       ) : null}
       {rowItems}
-      <Button onClick={onAddRow} size="xs" alignSelf="start">
-        + Add
-      </Button>
+      {onlySetValue ? null : (
+        <Button onClick={onAddRow} size="xs" alignSelf="start">
+          + Add
+        </Button>
+      )}
     </VStack>
   );
 };

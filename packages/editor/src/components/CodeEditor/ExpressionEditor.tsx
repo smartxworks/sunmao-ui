@@ -22,7 +22,12 @@ function installTern(cm: CodeMirror.Editor) {
   const t = new CodeMirror.TernServer({ defs: [ecma as unknown as Def] });
   cm.on('cursorActivity', cm => t.updateArgHints(cm));
   cm.on('change', (_instance, change) => {
-    if (change.text.length === 1 && change.text[0] === '.') {
+    if (
+      // change happened
+      change.text.length + (change.removed?.length || 0) > 0 &&
+      // not changed by auto-complete
+      change.origin !== 'complete'
+    ) {
       t.complete(cm);
     }
   });
@@ -69,6 +74,9 @@ export const ExpressionEditor: React.FC<{
         },
         theme: 'ayu-mirage',
         viewportMargin: Infinity,
+        hintOptions: {
+          completeSingle: false,
+        },
       });
       const t = installTern(cm.current);
       tServer.current = t.server;
@@ -93,5 +101,14 @@ export const ExpressionEditor: React.FC<{
     }
   }, [defs]);
 
-  return <Box css={style} ref={wrapperEl} height="100%" width="100%" />;
+  return (
+    <Box
+      css={style}
+      ref={wrapperEl}
+      height="100%"
+      width="100%"
+      borderRadius="2"
+      overflow="hidden"
+    />
+  );
 };

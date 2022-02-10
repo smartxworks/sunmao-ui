@@ -46,6 +46,9 @@ export default implementRuntimeComponent({
       text: 'tooltip',
     },
     exampleSize: [2, 1],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,

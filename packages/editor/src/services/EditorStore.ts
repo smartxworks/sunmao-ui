@@ -9,6 +9,7 @@ import { removeModuleId } from '../utils/addModuleId';
 import { DataSourceType } from '../components/DataSource';
 import { TSchema } from '@sinclair/typebox';
 import { genOperation } from '../operations';
+import { ExplorerMenuTabs, ToolMenuTabs } from './enum';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -22,6 +23,8 @@ export class EditorStore {
   _selectedComponentId = '';
   _hoverComponentId = '';
   _dragOverComponentId = '';
+  explorerMenuTab = ExplorerMenuTabs.EXPLORER;
+  toolMenuTab = ToolMenuTabs.INSERT;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -77,6 +80,12 @@ export class EditorStore {
         }
       }
     );
+
+    reaction(
+      () => this.selectedComponentId,
+      () => {
+        this.setToolMenuTab(ToolMenuTabs.INSPECT);
+      });
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
@@ -279,4 +288,12 @@ export class EditorStore {
 
     this.setActiveDataSource(component!);
   };
+  
+  setExplorerMenuTab = (val: ExplorerMenuTabs) => {
+    this.explorerMenuTab = val;
+  }
+
+  setToolMenuTab = (val: ToolMenuTabs) => {
+    this.toolMenuTab = val;
+  }
 }

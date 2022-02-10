@@ -30,6 +30,9 @@ export default implementRuntimeComponent({
     exampleSize: [6, 6],
     isDraggable: true,
     isResizable: true,
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,

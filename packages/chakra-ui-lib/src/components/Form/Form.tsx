@@ -20,6 +20,9 @@ export default implementRuntimeComponent({
       hideSubmit: false,
     },
     exampleSize: [4, 6],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -28,7 +31,7 @@ export default implementRuntimeComponent({
       disableSubmit: Type.Boolean(),
     }),
     methods: {
-      resetForm: void 0,
+      resetForm: undefined,
     },
     slots: ['content'],
     styleSlots: ['content'],
@@ -44,7 +47,7 @@ export default implementRuntimeComponent({
     customStyle,
     slotsElements,
     childrenMap,
-    component
+    component,
   }) => {
     const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
     const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
