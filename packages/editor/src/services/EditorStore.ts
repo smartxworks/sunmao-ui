@@ -1,11 +1,14 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
-import { Registry, StateManager } from '@sunmao-ui/runtime';
+import { Registry, StateManager, parseTypeBox } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
+import { DataSourceType } from '../components/DataSource';
+import { TSchema } from '@sinclair/typebox';
+import { genOperation } from '../operations';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -30,6 +33,10 @@ export class EditorStore {
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
   schemaValidator: SchemaValidator;
+
+  // data source
+  activeDataSource: ComponentSchema | null = null;
+  activeDataSourceType: DataSourceType | null = null;
 
   constructor(
     private eventBus: EventBusType,
@@ -179,5 +186,97 @@ export class EditorStore {
 
   setLastSavedComponentsVersion = (val: number) => {
     this.lastSavedComponentsVersion = val;
+  };
+
+  setActiveDataSource = (dataSource: ComponentSchema | null) => {
+    this.activeDataSource = dataSource;
+  };
+
+  setActiveDataSourceType = (dataSourceType: DataSourceType | null) => {
+    this.activeDataSourceType = dataSourceType;
+  };
+
+  getDataSources = () => {
+    const apis: ComponentSchema[] = [];
+    const states: ComponentSchema[] = [];
+
+    this.components.forEach(component => {
+      if (component.type === 'core/v1/dummy') {
+        component.traits.forEach(trait => {
+          if (trait.type === 'core/v1/fetch') {
+            apis.push(component);
+          }
+
+          if (trait.type === 'core/v1/state') {
+            states.push(component);
+          }
+        });
+      }
+    });
+
+    return { apis, states };
+  };
+
+  createDataSource = (type: DataSourceType) => {
+    const { apis, states } = this.getDataSources();
+    const id =
+      type === DataSourceType.API ? `api${apis.length}` : `state${states.length}`;
+    const traitType = type === DataSourceType.API ? 'core/v1/fetch' : 'core/v1/state';
+    const traitSpec = this.registry.getTraitByType(traitType).spec;
+    const initProperties = parseTypeBox(traitSpec.properties as TSchema);
+
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'createComponent', {
+        componentType: 'core/v1/dummy',
+        componentId: id,
+      })
+    );
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'createTrait', {
+        componentId: id,
+        traitType: traitType,
+        properties:
+          type === DataSourceType.API
+            ? {
+                ...initProperties,
+                method: 'get',
+              }
+            : initProperties,
+      })
+    );
+
+    const component = this.components.find(({ id: componentId }) => id === componentId);
+
+    this.setActiveDataSource(component!);
+    this.setActiveDataSourceType(type);
+  };
+
+  removeDataSource = (dataSource: ComponentSchema) => {
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'removeComponent', {
+        componentId: dataSource.id,
+      })
+    );
+    if (this.activeDataSource?.id === dataSource.id) {
+      this.setActiveDataSource(null);
+      this.setActiveDataSourceType(null);
+    }
+  };
+
+  changeDataSourceName = (dataSource: ComponentSchema, name: string) => {
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'modifyComponentId', {
+        componentId: dataSource.id,
+        newId: name,
+      })
+    );
+
+    const component = this.components.find(({ id: componentId }) => componentId === name);
+
+    this.setActiveDataSource(component!);
   };
 }
