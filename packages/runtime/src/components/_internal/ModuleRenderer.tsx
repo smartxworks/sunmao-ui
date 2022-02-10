@@ -8,10 +8,14 @@ import {
   RuntimeApplication,
   RuntimeComponentSchema,
 } from '@sunmao-ui/core';
-import { UIServices, ModuleSchema } from '../../types';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
-import { ImplementedRuntimeModule, EventHandlerSchema } from '../../types';
+import {
+  ImplementedRuntimeModule,
+  EventHandlerSchema,
+  UIServices,
+  ModuleSchema,
+} from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 
 type Props = Static<typeof ModuleSchema> & {
@@ -20,19 +24,20 @@ type Props = Static<typeof ModuleSchema> & {
   app?: RuntimeApplication;
 };
 
-export const ModuleRenderer: React.FC<Props> = props => {
+export const ModuleRenderer = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { type, services } = props;
   try {
     const moduleSpec = services.registry.getModuleByType(type);
     return <ModuleRendererContent {...props} moduleSpec={moduleSpec} />;
   } catch {
-    return <span>Cannot find Module {type}.</span>;
+    return <div ref={ref}>Cannot find Module {type}.</div>;
   }
-};
+});
 
-const ModuleRendererContent: React.FC<
+const ModuleRendererContent = React.forwardRef<
+  HTMLDivElement,
   Props & { moduleSpec: ImplementedRuntimeModule }
-> = props => {
+>((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
   const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string;
 
@@ -159,8 +164,8 @@ const ModuleRendererContent: React.FC<
     });
   }, [evaledModuleTemplate, services, app]);
 
-  return <>{result}</>;
-};
+  return <div ref={ref}>{result}</div>;
+});
 
 function parseTypeComponents(
   c: Application['spec']['components'][0]

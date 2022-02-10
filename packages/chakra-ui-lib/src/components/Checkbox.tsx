@@ -80,6 +80,7 @@ export default implementRuntimeComponent({
     colorScheme,
     mergeState,
     customStyle,
+    elementRef,
   }) => {
     const groupContext = useCheckboxGroupContext();
     let _defaultIsChecked = false;
@@ -133,6 +134,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
+        ref={elementRef}
       >
         <Text value={text} />
       </BaseCheckbox>

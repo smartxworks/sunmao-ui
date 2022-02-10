@@ -86,6 +86,7 @@ export default implementRuntimeComponent({
     mergeState,
     subscribeMethods,
     customStyle,
+    elementRef,
   }) => {
     const [value, setValue] = useState(defaultValue);
     const onChange = (_: string, valueAsNumber: number) => setValue(valueAsNumber || 0);
@@ -125,6 +126,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
+        ref={elementRef}
       >
         <NumberInputField />
         <NumberInputStepper>
