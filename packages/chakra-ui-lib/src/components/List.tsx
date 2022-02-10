@@ -44,6 +44,9 @@ export default implementRuntimeComponent({
     isResizable: true,
     exampleProperties,
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,

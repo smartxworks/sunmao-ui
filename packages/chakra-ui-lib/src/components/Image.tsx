@@ -103,6 +103,9 @@ export default implementRuntimeComponent({
       fallbackSrc: 'https://via.placeholder.com/150',
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -151,7 +154,7 @@ export default implementRuntimeComponent({
         ignoreFallback={ignoreFallback}
         borderRadius={borderRadius}
         fallbackSrc={fallbackSrc}
-      ></BaseImage>
+      />
     );
   }
 );

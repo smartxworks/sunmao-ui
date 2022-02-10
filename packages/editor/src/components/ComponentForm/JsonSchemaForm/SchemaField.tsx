@@ -88,10 +88,7 @@ type Props = FieldProps & {
 
 const SchemaField: React.FC<Props> = props => {
   const { schema, label, formData, onChange, registry, stateManager } = props;
-  const [isExpression, setIsExpression] = useState(
-    // FIXME: regexp copied from FieldModel.ts, is this a stable way to check expression?
-    () => _isExpression(formData)
-  );
+  const [isExpression, setIsExpression] = useState(() => _isExpression(formData));
 
   if (isEmpty(schema)) {
     return null;
@@ -134,6 +131,7 @@ const SchemaField: React.FC<Props> = props => {
   return (
     <DefaultTemplate
       label={label}
+      description={schema.description}
       displayLabel={displayLabel}
       codeMode={codeMode}
       isExpression={isExpression}

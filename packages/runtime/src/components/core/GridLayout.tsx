@@ -31,6 +31,9 @@ export default implementRuntimeComponent({
       layout: [],
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,

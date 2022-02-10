@@ -18,6 +18,12 @@ const NumberField: React.FC<Props> = props => {
     setValue(String(formData));
   }, [formData]);
 
+  useEffect(() => {
+    if (typeof formData !== 'number') {
+      onChange(1);
+    }
+  }, [formData, onChange]);
+
   return (
     <NumberInput
       value={value}

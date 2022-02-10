@@ -8,8 +8,8 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "standard"
+    "standard",
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -25,12 +25,15 @@
     "linebreak-style": ["error", "unix"],
     "no-case-declarations": "off",
     "no-use-before-define": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "comma-dangle": "off",
     "space-before-function-paren": "off",
     "multiline-ternary": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/ban-types": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
     "react/jsx-uses-react": "off",
@@ -48,5 +51,13 @@
     "react/jsx-wrap-multilines": ["error"],
     "react/jsx-tag-spacing": ["error"]
   },
-  "ignorePatterns": ["node_modules", "*.d.ts", "*.js", "package.json", "*.html", "*.spec.ts", "*.spec.tsx"]
+  "ignorePatterns": [
+    "node_modules",
+    "*.d.ts",
+    "*.js",
+    "package.json",
+    "*.html",
+    "*.spec.ts",
+    "*.spec.tsx"
+  ]
 }

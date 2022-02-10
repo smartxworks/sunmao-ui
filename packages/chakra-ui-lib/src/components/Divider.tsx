@@ -13,6 +13,9 @@ export default implementRuntimeComponent({
     isResizable: true,
     exampleProperties: {},
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: Type.Object({}),

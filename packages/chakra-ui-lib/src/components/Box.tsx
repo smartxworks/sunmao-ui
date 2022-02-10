@@ -283,6 +283,9 @@ export default implementRuntimeComponent({
       border: '1px solid black',
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: StyleSchema,

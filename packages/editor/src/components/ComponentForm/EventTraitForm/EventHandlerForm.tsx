@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import {
   Box,
   FormControl,
@@ -19,6 +19,7 @@ import { KeyValueEditor } from '../../KeyValueEditor';
 import { EditorServices } from '../../../types';
 import { ComponentModel } from '../../../AppModel/ComponentModel';
 import { AppModel } from '../../../AppModel/AppModel';
+import { ComponentId } from '../../../AppModel/IAppModel';
 
 type Props = {
   eventTypes: readonly string[];
@@ -31,7 +32,7 @@ type Props = {
 
 export const EventHandlerForm: React.FC<Props> = observer(props => {
   const { handler, eventTypes, onChange, onRemove, hideEventType, services } = props;
-  const { registry, editorStore } = services;
+  const { registry, editorStore, appModelManager } = services;
   const { utilMethods } = registry;
   const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
@@ -42,6 +43,41 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
       onChange(values);
     },
   });
+
+  const hasParams = useMemo(
+    () => Object.keys(formik.values.method.parameters ?? {}).length,
+    [formik.values.method.parameters]
+  );
+  const params = useMemo(() => {
+    const params: Record<string, string> = {};
+    const { values } = formik;
+    const methodName = values.method.name;
+
+    if (values.method.name) {
+      let parameters = {};
+
+      if (handler.componentId === GLOBAL_UTILS_ID) {
+        const targetMethod = utilMethods.get(methodName);
+
+        parameters = targetMethod?.parameters?.properties ?? {};
+      } else {
+        const targetComponent = appModelManager.appModel.getComponentById(
+          handler.componentId as ComponentId
+        );
+        const targetMethod = (targetComponent?.methods ?? []).find(
+          ({ name }) => name === formik.values.method.name
+        );
+
+        parameters = targetMethod?.parameters?.properties ?? {};
+      }
+
+      for (const key in parameters) {
+        params[key] = values.method.parameters?.[key] ?? '';
+      }
+    }
+
+    return params;
+  }, [formik.values.method.name]);
 
   const updateMethods = useCallback(
     (componentId: string) => {
@@ -69,6 +105,10 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
   }, [handler]);
 
   useEffect(() => {
+    formik.setFieldValue('method.parameters', params);
+  }, [params]);
+
+  useEffect(() => {
     if (handler.componentId) {
       updateMethods(handler.componentId);
     }
@@ -76,6 +116,8 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
 
   const onTargetComponentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateMethods(e.target.value);
+    formik.handleChange(e);
+    formik.setFieldValue('method', { name: '', parameters: {} });
   };
 
   const typeField = (
@@ -102,10 +144,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
       <Select
         name="componentId"
         onBlur={() => formik.submitForm()}
-        onChange={e => {
-          onTargetComponentChange(e);
-          formik.handleChange(e);
-        }}
+        onChange={onTargetComponentChange}
         placeholder="Select Target Component"
         value={formik.values.componentId}
       >
@@ -145,6 +184,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
           formik.setFieldValue('method.parameters', json);
           formik.submitForm();
         }}
+        onlySetValue={true}
       />
     </FormControl>
   );
@@ -195,7 +235,7 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
         {hideEventType ? null : typeField}
         {targetField}
         {methodField}
-        {parametersField}
+        {hasParams ? parametersField : null}
         {waitTypeField}
         {waitTimeField}
         {disabledField}
