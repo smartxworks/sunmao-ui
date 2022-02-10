@@ -1,12 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { css, cx } from '@emotion/css';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
-import { debounce, throttle } from 'lodash-es';
-import { ExplorerMenuTabs } from '../../services/enum';
-import { genOperation } from '../../operations';
+import { debounce } from 'lodash-es';
 
 const MaskWrapperStyle = css`
   position: absolute;
@@ -15,10 +12,6 @@ const MaskWrapperStyle = css`
   right: 0;
   bottom: 0;
   pointer-events: none;
-
-  &.enable-pointer-events {
-    pointer-events: auto;
-  }
 `;
 
 const outlineMaskTextStyle = css`
@@ -35,20 +28,6 @@ const outlineMaskTextStyle = css`
   &.select {
     background-color: red;
   }
-  &.idle,
-  &.drag {
-    display: none;
-  }
-  &.top {
-    top: -4px;
-    transform: translateY(-100%);
-    border-radius: 3px 3px 0px 0px;
-  }
-  &.bottom {
-    bottom: -4px;
-    transform: translateY(100%);
-    border-radius: 0px 0px 3px 3px;
-  }
 `;
 
 const outlineMaskStyle = css`
@@ -63,9 +42,6 @@ const outlineMaskStyle = css`
   height: 0;
   pointer-events: none;
 
-  &.idle {
-    display: none;
-  }
   &.hover {
     border-color: black;
   }
@@ -82,23 +58,23 @@ const outlineMaskStyle = css`
 type Props = {
   services: EditorServices;
   mousePosition: [number, number];
+  dragOverSlotRef: React.MutableRefObject<string>;
+  hoverComponentIdRef: React.MutableRefObject<string>;
 };
 
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
-  const { services } = props;
-  const { registry, eventBus, editorStore } = services;
-  const { selectedComponentId, eleMap, isDraggingNewComponent, setExplorerMenuTab } =
-    editorStore;
+  const { services, mousePosition, hoverComponentIdRef, dragOverSlotRef } = props;
+  const { eventBus, editorStore } = services;
+  const { selectedComponentId, eleMap, isDraggingNewComponent } = editorStore;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wrapperRect = useRef<DOMRect>();
-  const dragOverSlotRef = useRef<string>();
   const [rects, setRects] = useState<Record<string, DOMRect>>({});
-  const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
-    setMousePosition(props.mousePosition);
-  }, [props.mousePosition, setMousePosition]);
+    wrapperRect.current = wrapperRef.current?.getBoundingClientRect();
+  }, []);
 
+  // get rects of all elements
   const updateRects = useCallback(
     (eleMap: Map<string, HTMLElement>) => {
       const _rects: Record<string, DOMRect> = {};
@@ -120,6 +96,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     });
   }, [eleMap, eventBus, updateRects]);
 
+  // listen elements resize and update rects
   useEffect(() => {
     const debouncedUpdateRects = debounce(updateRects, 50);
     const resizeObserver = new ResizeObserver(() => {
@@ -137,17 +114,13 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     };
   }, [eleMap, setRects, updateRects]);
 
-  useEffect(() => {
-    wrapperRect.current = wrapperRef.current?.getBoundingClientRect();
-  }, []);
-
   const hoverComponentId = useMemo(() => {
     return whereIsMouse(...mousePosition, rects);
   }, [mousePosition, rects]);
 
   useEffect(() => {
-    services.editorStore.hoverComponentId = hoverComponentId;
-  }, [hoverComponentId, services.editorStore]);
+    hoverComponentIdRef.current = hoverComponentId;
+  }, [hoverComponentIdRef, hoverComponentId]);
 
   const getMaskPosition = useCallback(
     (componentId: string) => {
@@ -196,43 +169,13 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
         services={services}
         hoverId={hoverComponentId}
         mousePosition={mousePosition}
-        onDragOverSlotChange={slot => (dragOverSlotRef.current = slot)}
+        dragOverSlotRef={dragOverSlotRef}
       />
     </div>
   );
 
-  const onDragOver = useMemo(() => {
-    return throttle((e: React.MouseEvent<HTMLDivElement>) => {
-      console.log('onDragOver');
-      setMousePosition([e.clientX, e.clientY]);
-    }, 50);
-  }, []);
-
-  const onDrop = (e: React.DragEvent) => {
-    console.log('drop到了', hoverComponentId, dragOverSlotRef.current);
-    e.stopPropagation();
-    e.preventDefault();
-    setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
-    const creatingComponent = e.dataTransfer?.getData('component') || '';
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'createComponent', {
-        componentType: creatingComponent,
-        parentId: hoverComponentId,
-        slot: dragOverSlotRef.current,
-      })
-    );
-  };
   return (
-    <div
-      className={cx([
-        MaskWrapperStyle,
-        isDraggingNewComponent ? 'enable-pointer-events' : undefined,
-      ])}
-      ref={wrapperRef}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-    >
+    <div className={cx([MaskWrapperStyle])} ref={wrapperRef}>
       {isDraggingNewComponent ? dragMask : hoverMask}
       <div
         className={cx([outlineMaskStyle, 'select'])}
