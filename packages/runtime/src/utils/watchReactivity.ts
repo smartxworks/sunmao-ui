@@ -40,8 +40,9 @@ export function callWithAsyncErrorHandling(
   }
 
   const values = [];
-  for (let i = 0; i < fn.length; i++)
+  for (let i = 0; i < fn.length; i++) {
     values.push(callWithAsyncErrorHandling(fn[i], type, args));
+  }
 
   return values;
 }

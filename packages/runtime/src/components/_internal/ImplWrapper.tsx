@@ -39,6 +39,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     return () => {
       apiService.off('uiMethod', handler);
       globalHandlerMap.delete(c.id);
+      delete stateManager.store[c.id];
     };
   }, [apiService, c.id, globalHandlerMap, handlerMap]);
 
