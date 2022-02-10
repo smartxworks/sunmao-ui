@@ -37,7 +37,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ text, href, isExternal, customStyle, $ref }) => {
+})(({ text, href, isExternal, customStyle, elementRef }) => {
   return (
     <Link
       href={href}
@@ -46,7 +46,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
-      ref={$ref}
+      ref={elementRef}
     >
       <Text value={text} />
     </Link>

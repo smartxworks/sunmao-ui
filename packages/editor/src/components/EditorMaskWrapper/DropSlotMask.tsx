@@ -1,23 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { css, cx } from '@emotion/css';
 import { observer } from 'mobx-react-lite';
+import { Box } from '@chakra-ui/react';
 import { SlotDropArea } from './SlotDropArea';
 import { EditorServices } from '../../types';
 
 const verticalStackList = ['chakra_ui/v1/vstack'];
-
-const DropSlotMaskStyle = css`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-
-  &.vertical {
-    flex-direction: column;
-  }
-`;
 
 type Props = {
   services: EditorServices;
@@ -62,8 +49,14 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
   }
 
   return (
-    <div
-      className={cx(DropSlotMaskStyle, vertical ? 'vertical' : undefined)}
+    <Box
+      position="absolute"
+      top="0"
+      bottom="0"
+      left="0"
+      right="0"
+      display="flex"
+      flexDirection={vertical ? 'column' : 'row'}
       ref={maskRef}
     >
       {slots.map(slot => {
@@ -76,6 +69,6 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
           />
         );
       })}
-    </div>
+    </Box>
   );
 });

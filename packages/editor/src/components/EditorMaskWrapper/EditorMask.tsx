@@ -1,18 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
 import { debounce } from 'lodash-es';
-
-const MaskWrapperStyle = css`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-`;
+import { Box, Text } from '@chakra-ui/react';
 
 const outlineMaskTextStyle = css`
   position: absolute;
@@ -22,12 +14,6 @@ const outlineMaskTextStyle = css`
   font-size: 14px;
   font-weight: black;
   color: white;
-  &.hover {
-    background-color: black;
-  }
-  &.select {
-    background-color: red;
-  }
 `;
 
 const outlineMaskStyle = css`
@@ -41,18 +27,6 @@ const outlineMaskStyle = css`
   width: 0;
   height: 0;
   pointer-events: none;
-
-  &.hover {
-    border-color: black;
-  }
-
-  &.select {
-    border-color: red;
-  }
-
-  &.drag {
-    border-color: orange;
-  }
 `;
 
 type Props = {
@@ -125,14 +99,15 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const getMaskPosition = useCallback(
     (componentId: string) => {
       const rect = rects[componentId];
+      const padding = 4;
       if (!wrapperRect.current || !rect) return;
       return {
         id: componentId,
         style: {
-          top: rect.top - wrapperRect.current.top - 2,
-          left: rect.left - wrapperRect.current.left - 2,
-          height: rect.height + 4,
-          width: rect.width + 4,
+          top: rect.top - wrapperRect.current.top - padding,
+          left: rect.left - wrapperRect.current.left - padding,
+          height: rect.height + padding * 2,
+          width: rect.width + padding * 2,
         },
       };
     },
@@ -157,39 +132,66 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     return getMaskPosition(selectedComponentId);
   }, [selectedComponentId, getMaskPosition]);
 
-  const hoverMask = (
-    <div className={cx([outlineMaskStyle, 'hover'])} style={hoverMaskPosition?.style}>
-      <span className={cx([outlineMaskTextStyle, 'hover'])}>{hoverMaskPosition?.id}</span>
-    </div>
-  );
+  const hoverMask = hoverMaskPosition ? (
+    <Box
+      className={outlineMaskStyle}
+      borderColor="black"
+      style={hoverMaskPosition.style}
+    >
+      <Text className={outlineMaskTextStyle} background="black">
+        {hoverMaskPosition.id}
+      </Text>
+    </Box>
+  ) : undefined;
 
-  const dragMask = (
-    <div className={cx([outlineMaskStyle, 'drag'])} style={hoverMaskPosition?.style}>
+  const dragMask = hoverMaskPosition ? (
+    <Box
+      className={outlineMaskStyle}
+      borderColor="orange"
+      style={hoverMaskPosition.style}
+    >
       <DropSlotMask
         services={services}
         hoverId={hoverComponentId}
         mousePosition={mousePosition}
         dragOverSlotRef={dragOverSlotRef}
       />
-    </div>
-  );
+    </Box>
+  ) : undefined;
+
+  const selectMask = selectedMaskPosition ? (
+    <Box
+      className={outlineMaskStyle}
+      borderColor="red"
+      style={selectedMaskPosition.style}
+    >
+      <Text className={outlineMaskTextStyle} background="red">
+        {selectedMaskPosition.id}
+      </Text>
+    </Box>
+  ) : undefined;
 
   return (
-    <div className={cx([MaskWrapperStyle])} ref={wrapperRef}>
+    <Box
+      position="absolute"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
+      pointerEvents="none"
+      ref={wrapperRef}
+    >
       {isDraggingNewComponent ? dragMask : hoverMask}
-      <div
-        className={cx([outlineMaskStyle, 'select'])}
-        style={selectedMaskPosition?.style}
-      >
-        <span className={cx([outlineMaskTextStyle, 'select'])}>
-          {selectedMaskPosition?.id}
-        </span>
-      </div>
-    </div>
+      {selectMask}
+    </Box>
   );
 });
 
-function whereIsMouse(left: number, top: number, rects: Record<string, DOMRect>): string {
+export function whereIsMouse(
+  left: number,
+  top: number,
+  rects: Record<string, DOMRect>
+): string {
   let nearest = {
     id: '',
     sum: 0,

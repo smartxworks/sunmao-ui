@@ -42,7 +42,7 @@ export default implementRuntimeComponent({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle, $ref }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle, elementRef }) => {
   return (
     <BaseHStack
       height="full"
@@ -55,7 +55,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
-      ref={$ref}
+      ref={elementRef}
       {...{ direction, wrap, align, justify, spacing }}
     >
       {slotsElements.content}

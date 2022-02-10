@@ -68,7 +68,7 @@ export default implementRuntimeComponent({
     isDisabled,
     defaultIsOpen,
     slotsElements,
-    $ref,
+    elementRef,
   }) => {
     return (
       /* 
@@ -83,7 +83,7 @@ export default implementRuntimeComponent({
         isDisabled={isDisabled}
         defaultIsOpen={defaultIsOpen}
         shouldWrapChildren={shouldWrapChildren}
-        ref={$ref}
+        ref={elementRef}
       >
         {slotsElements.content}
       </Tooltip>

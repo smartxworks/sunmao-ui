@@ -95,7 +95,7 @@ export default implementRuntimeComponent({
     variant,
     mergeState,
     customStyle,
-    $ref,
+    elementRef,
   }) => {
     const [value, setValue] = useState<string | undefined>(defaultValue);
 
@@ -124,7 +124,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
-        ref={$ref}
+        ref={elementRef}
       >
         {options.map(opt => (
           <option key={opt.value} value={opt.value}>

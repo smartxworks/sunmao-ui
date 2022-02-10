@@ -14,7 +14,7 @@ type Props = {
 export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const { children, services } = props;
   const { editorStore, eventBus, registry } = services;
-  const { setSelectedComponentId, setExplorerMenuTab } = editorStore;
+  const { setSelectedComponentId, setExplorerMenuTab} = editorStore;
   const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
   const dragOverSlotRef = useRef<string>('');
   const hoverComponentIdRef = useRef<string>('');

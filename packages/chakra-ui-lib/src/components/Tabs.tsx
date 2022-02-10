@@ -47,7 +47,7 @@ export default implementRuntimeComponent({
     events: [],
   },
 })(props => {
-  const { tabNames, mergeState, initialSelectedTabIndex, customStyle, slotsElements, $ref } =
+  const { tabNames, mergeState, initialSelectedTabIndex, customStyle, slotsElements, elementRef } =
     props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialSelectedTabIndex ?? 0);
 
@@ -62,7 +62,7 @@ export default implementRuntimeComponent({
     <BaseTabs
       defaultIndex={initialSelectedTabIndex}
       onChange={idx => setSelectedTabIndex(idx)}
-      ref={$ref}
+      ref={elementRef}
     >
       <TabList>
         {tabNames.map((name, idx) => (

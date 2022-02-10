@@ -185,8 +185,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
       slotsElements={genSlotsElements()}
       mergeState={mergeState}
       subscribeMethods={subscribeMethods}
-      $ref={eleRef}
-      $onRef={onRef}
+      elementRef={eleRef}
+      getElement={onRef}
     />
   );
 

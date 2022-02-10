@@ -37,6 +37,6 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ value, customStyle, $ref }) => {
-  return <_Text value={value} cssStyle={customStyle?.content} ref={$ref} />;
+})(({ value, customStyle, elementRef }) => {
+  return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
 });

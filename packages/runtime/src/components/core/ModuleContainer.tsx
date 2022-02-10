@@ -27,7 +27,7 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ id, type, properties, handlers, services, app, $ref }) => {
+})(({ id, type, properties, handlers, services, app, elementRef }) => {
   if (!type) {
     return <span>Please choose a module to render.</span>;
   }
@@ -43,7 +43,7 @@ export default implementRuntimeComponent({
       handlers={handlers}
       services={services}
       app={app}
-      ref={$ref}
+      ref={elementRef}
     />
   );
 });
