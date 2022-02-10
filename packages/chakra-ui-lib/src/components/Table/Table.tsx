@@ -32,7 +32,7 @@ export const TableImpl = implementTable(
     mergeState,
     services,
     app,
-    $ref,
+    elementRef,
   }) => {
     const [selectedItem, setSelectedItem] = useState<Record<string, any> | undefined>();
     const [selectedItems, setSelectedItems] = useState<Array<Record<string, any>>>([]);
@@ -223,7 +223,7 @@ export const TableImpl = implementTable(
         borderColor="gray.200"
         borderRadius="base"
         overflow="auto"
-        ref={$ref}
+        ref={elementRef}
       >
         {!data ? loadingSpinner : tableContent}
       </Box>

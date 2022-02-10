@@ -48,7 +48,7 @@ export default implementRuntimeComponent({
     slotsElements,
     childrenMap,
     component,
-    $ref,
+    elementRef,
   }) => {
     const [invalidArray, setInvalidArray] = useState<boolean[]>([]);
     const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
@@ -152,7 +152,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
-        ref={$ref}
+        ref={elementRef}
       >
         {slotsElements.content}
         {hideSubmit ? undefined : (

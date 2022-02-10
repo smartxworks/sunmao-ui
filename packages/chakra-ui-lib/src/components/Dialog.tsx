@@ -75,7 +75,7 @@ export default implementRuntimeComponent({
       colorScheme: 'blue',
     },
     customStyle,
-    $ref,
+    elementRef,
   }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [title, setTitle] = useState(customerTitle || '');
@@ -130,7 +130,7 @@ export default implementRuntimeComponent({
           <AlertDialogContent
             className={`${customStyle?.content}`}
             {...(containerRef.current ? dialogContentProps : {})}
-            ref={$ref}
+            ref={elementRef}
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
             <AlertDialogBody>{slotsElements.content}</AlertDialogBody>

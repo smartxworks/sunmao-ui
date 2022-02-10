@@ -24,7 +24,7 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ slotsElements, $ref }) => {
+})(({ slotsElements, elementRef }) => {
   return (
     <ChakraProvider
       theme={extendTheme({
@@ -32,7 +32,7 @@ export default implementRuntimeComponent({
         useSystemColorMode: false,
       })}
     >
-      <div ref={$ref}>{slotsElements.root}</div>
+      <div ref={elementRef}>{slotsElements.root}</div>
     </ChakraProvider>
   );
 });

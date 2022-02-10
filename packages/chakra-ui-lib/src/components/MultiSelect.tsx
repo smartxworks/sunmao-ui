@@ -96,7 +96,7 @@ export default implementRuntimeComponent({
     variant,
     mergeState,
     customStyle,
-    $ref,
+    elementRef,
   }) => {
     useEffect(() => {
       const newValue = (defaultValue || []).map(o => o.value);
@@ -114,7 +114,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
-        ref={$ref}
+        ref={elementRef}
       >
         <BaseMultiSelect
           isMulti

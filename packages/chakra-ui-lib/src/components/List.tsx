@@ -56,7 +56,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ listData, template, app, services, customStyle, $ref }) => {
+})(({ listData, template, app, services, customStyle, elementRef }) => {
   if (!listData) {
     return null;
   }
@@ -88,7 +88,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
-      ref={$ref}
+      ref={elementRef}
     >
       {listItems}
     </BaseList>

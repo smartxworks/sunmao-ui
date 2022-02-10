@@ -27,10 +27,10 @@ export type AppProps = {
   services: UIServices;
   debugStore?: boolean;
   debugEvent?: boolean;
-  lifeCycles?: AppLifeCycles;
+  hooks?: AppHooks;
 } & ComponentParamsFromApp;
 
-export type AppLifeCycles = {
+export type AppHooks = {
   didMount?: () => void;
   didUpdate?: () => void;
 };

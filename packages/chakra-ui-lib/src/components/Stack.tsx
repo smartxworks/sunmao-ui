@@ -70,9 +70,9 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements, $ref }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements, elementRef }) => {
   return (
-    <BaseStack {...{ direction, wrap, align, justify, spacing }} ref={$ref}>
+    <BaseStack {...{ direction, wrap, align, justify, spacing }} ref={elementRef}>
       {slotsElements.content}
     </BaseStack>
   );

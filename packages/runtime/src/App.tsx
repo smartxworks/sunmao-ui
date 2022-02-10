@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { initStateAndMethod } from './utils/initStateAndMethod';
 import { ImplWrapper } from './components/_internal/ImplWrapper';
-import { AppProps, UIServices, AppLifeCycles } from './types';
+import { AppProps, UIServices, AppHooks } from './types';
 import { DebugEvent, DebugStore } from './services/DebugComponents';
 import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
 import { resolveChildrenMap } from './utils/resolveChildrenMap';
 
 // inject modules to App
-export function genApp(services: UIServices, lifeCycles?: AppLifeCycles) {
+export function genApp(services: UIServices, hooks?: AppHooks) {
   return (props: Omit<AppProps, 'services'>) => {
-    return <App {...props} services={services} lifeCycles={lifeCycles} />;
+    return <App {...props} services={services} hooks={hooks} />;
   };
 }
 
@@ -20,7 +20,7 @@ export const App: React.FC<AppProps> = props => {
     gridCallbacks,
     debugStore = true,
     debugEvent = true,
-    lifeCycles,
+    hooks,
   } = props;
   const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
   const app = runtimeAppSchemaManager.current.update(options);
@@ -28,16 +28,16 @@ export const App: React.FC<AppProps> = props => {
   const { childrenMap, topLevelComponents } = resolveChildrenMap(app.spec.components);
 
   useEffect(() => {
-    if (lifeCycles?.didMount) {
-      lifeCycles.didMount();
+    if (hooks?.didMount) {
+      hooks.didMount();
     }
-  }, [lifeCycles]);
+  }, [hooks]);
 
   useEffect(() => {
-    if (lifeCycles?.didUpdate) {
-      lifeCycles.didUpdate();
+    if (hooks?.didUpdate) {
+      hooks.didUpdate();
     }
-  }, [lifeCycles, options]);
+  }, [hooks, options]);
 
   return (
     <div className="App" style={{ height: '100%', overflow: 'auto' }}>

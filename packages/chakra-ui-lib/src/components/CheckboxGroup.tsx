@@ -40,14 +40,14 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ size, defaultValue, isDisabled, slotsElements, mergeState, $ref }) => {
+})(({ size, defaultValue, isDisabled, slotsElements, mergeState, elementRef }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({ value });
   }, [mergeState, value]);
 
   return (
-    <Box ref={$ref}>
+    <Box ref={elementRef}>
       <BaseCheckboxGroup
         size={size}
         defaultValue={defaultValue}

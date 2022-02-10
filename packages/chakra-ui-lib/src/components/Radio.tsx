@@ -74,7 +74,7 @@ export default implementRuntimeComponent({
     colorScheme,
     mergeState,
     customStyle,
-    $ref,
+    elementRef,
   }) => {
     useEffect(() => {
       mergeState({ value: text.raw });
@@ -100,7 +100,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
-        ref={$ref}
+        ref={elementRef}
       >
         <Text value={text} />
       </BaseRadio>

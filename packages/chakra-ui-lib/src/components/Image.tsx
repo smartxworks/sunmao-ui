@@ -129,7 +129,7 @@ export default implementRuntimeComponent({
     crossOrigin,
     callbackMap,
     customStyle,
-    $ref,
+    elementRef,
   }) => {
     const style = boxSize
       ? css`
@@ -155,7 +155,7 @@ export default implementRuntimeComponent({
         ignoreFallback={ignoreFallback}
         borderRadius={borderRadius}
         fallbackSrc={fallbackSrc}
-        ref={$ref}
+        ref={elementRef}
       />
     );
   }
