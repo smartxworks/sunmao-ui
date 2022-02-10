@@ -3,22 +3,15 @@ import { ApiService } from '../services/apiService';
 import { GlobalHandlerMap } from '../services/handler';
 import { Registry } from '../services/Registry';
 import { StateManager } from '../services/StateManager';
-import { Application, RuntimeComponentSchema } from '@sunmao-ui/core';
-import React from 'react';
+import { Application } from '@sunmao-ui/core';
 
 export type UIServices = {
   registry: Registry;
   stateManager: StateManager;
   globalHandlerMap: GlobalHandlerMap;
   apiService: ApiService;
+  eleMap: Map<string, HTMLElement>;
 };
-
-export type ComponentWrapperProps = {
-  parentType: string;
-  component: RuntimeComponentSchema;
-};
-
-export type ComponentWrapperType = React.FC<ComponentWrapperProps>;
 
 export type GridCallbacks = {
   onDragStop?: (id: string, layout: RGL.Layout[]) => void;
@@ -27,7 +20,6 @@ export type GridCallbacks = {
 
 export type ComponentParamsFromApp = {
   gridCallbacks?: GridCallbacks;
-  componentWrapper?: ComponentWrapperType;
 };
 
 export type AppProps = {
@@ -35,4 +27,10 @@ export type AppProps = {
   services: UIServices;
   debugStore?: boolean;
   debugEvent?: boolean;
+  hooks?: AppHooks;
 } & ComponentParamsFromApp;
+
+export type AppHooks = {
+  didMount?: () => void;
+  didUpdate?: () => void;
+};
