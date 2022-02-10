@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css, cx } from '@emotion/css';
 import { Text } from '@chakra-ui/react';
 
@@ -12,7 +12,7 @@ const SlotDropAreaStyle = css`
     left: 4px;
     right: 4px;
     position: absolute;
-    pointer-events: none;
+    border: 1px solid black;
     /* create a bfc */
     transform: translate3d(0, 0, 0);
     z-index: 10;
@@ -28,18 +28,7 @@ const SlotDropAreaStyle = css`
     z-index: 13;
   }
 
-  &.sibling {
-    .outline {
-      background-color: grey;
-      z-index: 11;
-    }
-    .text {
-      display: none;
-    }
-  }
-
   &.over {
-    pointer-events: none;
     .outline {
       background-color: orange;
       box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
@@ -54,18 +43,12 @@ const SlotDropAreaStyle = css`
 export const SlotDropArea: React.FC<{
   componentId: string;
   slotId: string;
-  // state: 'sibling' | 'over';
-}> = ({ componentId, slotId }) => {
+  isOver: boolean;
+}> = ({ componentId, slotId, isOver }) => {
   return (
     <div
-      // onDragLeave={e => {
-      //   const leave = findRelatedWrapper(e.target as HTMLElement);
-      //   if (leave) {
-      //     e.stopPropagation();
-      //   }
-      // }}
       data-slot={slotId}
-      className={cx(SlotDropAreaStyle)}
+      className={cx([SlotDropAreaStyle, isOver ? 'over' : undefined])}
     >
       <Text className={cx('text')}>
         {componentId}-{slotId}

@@ -4,7 +4,9 @@ import { css, cx } from '@emotion/css';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
-import { debounce } from 'lodash-es';
+import { debounce, throttle } from 'lodash-es';
+import { ExplorerMenuTabs } from '../../services/enum';
+import { genOperation } from '../../operations';
 
 const MaskWrapperStyle = css`
   position: absolute;
@@ -13,6 +15,10 @@ const MaskWrapperStyle = css`
   right: 0;
   bottom: 0;
   pointer-events: none;
+
+  &.enable-pointer-events {
+    pointer-events: auto;
+  }
 `;
 
 const outlineMaskTextStyle = css`
@@ -48,7 +54,6 @@ const outlineMaskTextStyle = css`
 const outlineMaskStyle = css`
   position: absolute;
   border: 1px solid;
-  pointer-events: none;
   /* create a bfc */
   transform: translate3d(0, 0, 0);
   z-index: 10;
@@ -56,6 +61,8 @@ const outlineMaskStyle = css`
   left: 0;
   width: 0;
   height: 0;
+  pointer-events: none;
+
   &.idle {
     display: none;
   }
@@ -78,11 +85,19 @@ type Props = {
 };
 
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
-  const { services, mousePosition } = props;
-  const { setHoverComponentId, selectedComponentId, eleMap } = services.editorStore;
+  const { services } = props;
+  const { registry, eventBus, editorStore } = services;
+  const { selectedComponentId, eleMap, isDraggingNewComponent, setExplorerMenuTab } =
+    editorStore;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wrapperRect = useRef<DOMRect>();
+  const dragOverSlotRef = useRef<string>();
   const [rects, setRects] = useState<Record<string, DOMRect>>({});
+  const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
+
+  useEffect(() => {
+    setMousePosition(props.mousePosition);
+  }, [props.mousePosition, setMousePosition]);
 
   const updateRects = useCallback(
     (eleMap: Map<string, HTMLElement>) => {
@@ -100,10 +115,10 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   );
 
   useEffect(() => {
-    services.eventBus.on('HTMLElementsUpdated', () => {
+    eventBus.on('HTMLElementsUpdated', () => {
       updateRects(eleMap);
     });
-  }, [eleMap, services.eventBus, updateRects]);
+  }, [eleMap, eventBus, updateRects]);
 
   useEffect(() => {
     const debouncedUpdateRects = debounce(updateRects, 50);
@@ -131,8 +146,25 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   }, [mousePosition, rects]);
 
   useEffect(() => {
-    setHoverComponentId(hoverComponentId);
-  }, [hoverComponentId, setHoverComponentId]);
+    services.editorStore.hoverComponentId = hoverComponentId;
+  }, [hoverComponentId, services.editorStore]);
+
+  const getMaskPosition = useCallback(
+    (componentId: string) => {
+      if (!wrapperRect.current) return;
+      const rect = rects[componentId];
+      return {
+        id: componentId,
+        style: {
+          top: rect.top - wrapperRect.current.top - 2,
+          left: rect.left - wrapperRect.current.left - 2,
+          height: rect.height + 4,
+          width: rect.width + 4,
+        },
+      };
+    },
+    [rects]
+  );
 
   const hoverMaskPosition = useMemo(() => {
     if (
@@ -143,40 +175,65 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
       return undefined;
     }
 
-    const rect = rects[hoverComponentId];
-    return {
-      id: hoverComponentId,
-      style: {
-        top: rect.top - wrapperRect.current.top - 2,
-        left: rect.left - wrapperRect.current.left - 2,
-        height: rect.height + 4,
-        width: rect.width + 4,
-      },
-    };
-  }, [hoverComponentId, rects, selectedComponentId]);
+    return getMaskPosition(hoverComponentId);
+  }, [hoverComponentId, selectedComponentId, getMaskPosition]);
 
   const selectedMaskPosition = useMemo(() => {
     if (!wrapperRect.current || !selectedComponentId) return undefined;
 
-    const rect = rects[selectedComponentId];
-    return {
-      id: selectedComponentId,
-      style: {
-        top: rect.top - wrapperRect.current.top - 2,
-        left: rect.left - wrapperRect.current.left - 2,
-        height: rect.height + 4,
-        width: rect.width + 4,
-      },
-    };
-  }, [selectedComponentId, rects]);
+    return getMaskPosition(selectedComponentId);
+  }, [selectedComponentId, getMaskPosition]);
 
+  const hoverMask = (
+    <div className={cx([outlineMaskStyle, 'hover'])} style={hoverMaskPosition?.style}>
+      <span className={cx([outlineMaskTextStyle, 'hover'])}>{hoverMaskPosition?.id}</span>
+    </div>
+  );
+
+  const dragMask = (
+    <div className={cx([outlineMaskStyle, 'drag'])} style={hoverMaskPosition?.style}>
+      <DropSlotMask
+        services={services}
+        hoverId={hoverComponentId}
+        mousePosition={mousePosition}
+        onDragOverSlotChange={slot => (dragOverSlotRef.current = slot)}
+      />
+    </div>
+  );
+
+  const onDragOver = useMemo(() => {
+    return throttle((e: React.MouseEvent<HTMLDivElement>) => {
+      console.log('onDragOver');
+      setMousePosition([e.clientX, e.clientY]);
+    }, 50);
+  }, []);
+
+  const onDrop = (e: React.DragEvent) => {
+    console.log('drop到了', hoverComponentId, dragOverSlotRef.current);
+    e.stopPropagation();
+    e.preventDefault();
+    setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
+    const creatingComponent = e.dataTransfer?.getData('component') || '';
+    eventBus.send(
+      'operation',
+      genOperation(registry, 'createComponent', {
+        componentType: creatingComponent,
+        parentId: hoverComponentId,
+        slot: dragOverSlotRef.current,
+      })
+    );
+  };
   return (
-    <div className={MaskWrapperStyle} ref={wrapperRef}>
-      <div className={cx([outlineMaskStyle, 'hover'])} style={hoverMaskPosition?.style}>
-        <span className={cx([outlineMaskTextStyle, 'hover'])}>
-          {hoverMaskPosition?.id}
-        </span>
-      </div>
+    <div
+      className={cx([
+        MaskWrapperStyle,
+        isDraggingNewComponent ? 'enable-pointer-events' : undefined,
+      ])}
+      ref={wrapperRef}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      {isDraggingNewComponent ? dragMask : hoverMask}
       <div
         className={cx([outlineMaskStyle, 'select'])}
         style={selectedMaskPosition?.style}
@@ -184,13 +241,6 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
         <span className={cx([outlineMaskTextStyle, 'select'])}>
           {selectedMaskPosition?.id}
         </span>
-      </div>
-      <div className={cx([outlineMaskStyle, 'drag'])} style={hoverMaskPosition?.style}>
-        <DropSlotMask
-          services={services}
-          componentType="chakra_ui/v1/hstack"
-          hoverId={hoverComponentId}
-        />
       </div>
     </div>
   );
