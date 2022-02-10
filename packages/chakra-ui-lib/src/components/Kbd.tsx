@@ -39,7 +39,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ text, mergeState, customStyle }) => {
+})(({ text, mergeState, customStyle, $ref }) => {
   useEffect(() => {
     mergeState({ value: text.raw });
   }, [mergeState, text.raw]);
@@ -49,6 +49,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={$ref}
     >
       <Text value={text} />
     </BaseKbd>

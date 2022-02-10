@@ -69,6 +69,7 @@ export default implementRuntimeComponent({
     slotsElements,
     childrenMap,
     component,
+    $ref,
   }) => {
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
@@ -147,6 +148,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
+        ref={$ref}
       >
         <HStack width="full">
           <FormLabel flex="0 0 auto" width="33%" margin="auto 0">
