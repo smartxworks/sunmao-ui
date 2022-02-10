@@ -8,7 +8,7 @@ const BooleanField: React.FC<Props> = props => {
   const { formData, onChange } = props;
 
   useEffect(() => {
-    if (typeof formData !== 'boolean') {
+    if (formData !== undefined && typeof formData !== 'boolean') {
       onChange(false);
     }
   }, [formData, onChange]);
