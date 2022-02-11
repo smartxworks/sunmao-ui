@@ -14,7 +14,7 @@ type Props = {
 export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const { children, services } = props;
   const { editorStore, eventBus, registry } = services;
-  const { setSelectedComponentId, setExplorerMenuTab} = editorStore;
+  const { setSelectedComponentId, setExplorerMenuTab } = editorStore;
   const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
   const dragOverSlotRef = useRef<string>('');
   const hoverComponentIdRef = useRef<string>('');
@@ -29,11 +29,16 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
     setSelectedComponentId(hoverComponentIdRef.current);
   };
 
-  const onDragOver = useMemo(() => {
-    return throttle((e: React.MouseEvent<HTMLDivElement>) => {
-      setMousePosition([e.clientX, e.clientY]);
+  const throttleSetMousePosition = useMemo(() => {
+    return throttle((position: [number, number]) => {
+      setMousePosition(position);
     }, 50);
-  }, []);
+  }, [setMousePosition]);
+
+  const onDragOver = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    throttleSetMousePosition([e.clientX, e.clientY]);
+  };
 
   const onDrop = (e: React.DragEvent) => {
     e.stopPropagation();
