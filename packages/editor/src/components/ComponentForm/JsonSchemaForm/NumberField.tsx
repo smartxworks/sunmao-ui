@@ -19,7 +19,7 @@ const NumberField: React.FC<Props> = props => {
   }, [formData]);
 
   useEffect(() => {
-    if (typeof formData !== 'number') {
+    if (formData !== undefined && typeof formData !== 'number') {
       onChange(1);
     }
   }, [formData, onChange]);

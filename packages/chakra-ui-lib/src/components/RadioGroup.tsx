@@ -38,7 +38,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ defaultValue, isNumerical, slotsElements, mergeState, customStyle }) => {
+})(({ defaultValue, isNumerical, slotsElements, mergeState, customStyle, elementRef }) => {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
@@ -56,6 +56,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
     >
       {slotsElements.content}
     </BaseRadioGroup>

@@ -21,7 +21,6 @@ export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
-  _hoverComponentId = '';
   _dragOverComponentId = '';
   explorerMenuTab = ExplorerMenuTabs.EXPLORER;
   toolMenuTab = ToolMenuTabs.INSERT;
@@ -31,6 +30,10 @@ export class EditorStore {
     version: '',
     name: '',
   };
+
+  // not observable, just reference
+  eleMap = new Map<string, HTMLElement>();
+  isDraggingNewComponent = false;
 
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
@@ -49,6 +52,7 @@ export class EditorStore {
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
+      eleMap: false,
       components: observable.shallow,
       setComponents: action,
       setDragOverComponentId: action,
@@ -102,11 +106,6 @@ export class EditorStore {
 
   get selectedComponent() {
     return this.components.find(c => c.id === this._selectedComponentId);
-  }
-
-  // to avoid get out-of-dated value here, we should use getter to lazy load primitive type
-  get hoverComponentId() {
-    return this._hoverComponentId;
   }
 
   get selectedComponentId() {
@@ -177,10 +176,6 @@ export class EditorStore {
 
   setSelectedComponentId = (val: string) => {
     this._selectedComponentId = val;
-  };
-
-  setHoverComponentId = (val: string) => {
-    this._hoverComponentId = val;
   };
 
   setComponents = (val: ComponentSchema[]) => {
@@ -302,4 +297,8 @@ export class EditorStore {
   setToolMenuTab = (val: ToolMenuTabs) => {
     this.toolMenuTab = val;
   }
+
+  setIsDraggingNewComponent = (val: boolean) => {
+    this.isDraggingNewComponent = val;
+  };
 }

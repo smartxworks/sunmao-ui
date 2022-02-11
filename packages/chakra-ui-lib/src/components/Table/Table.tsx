@@ -32,6 +32,7 @@ export const TableImpl = implementTable(
     mergeState,
     services,
     app,
+    elementRef,
   }) => {
     const [selectedItem, setSelectedItem] = useState<Record<string, any> | undefined>();
     const [selectedItems, setSelectedItems] = useState<Array<Record<string, any>>>([]);
@@ -86,7 +87,7 @@ export const TableImpl = implementTable(
         let newSelectedItems;
         if (isItemSelected(item)) {
           newSelectedItems = selectedItems.filter(
-            selectedItem => selectedItem[majorKey] != item[majorKey]
+            selectedItem => selectedItem[majorKey] !== item[majorKey]
           );
         } else {
           newSelectedItems = selectedItems.concat(item);
@@ -115,7 +116,7 @@ export const TableImpl = implementTable(
             isIndeterminate={isIndeterminate}
             checked={isAllChecked}
             onChange={onChange}
-          ></Checkbox>
+          />
         </Th>
       );
     }, [data, isMultiSelect, selectedItems.length, updateSelectedItems]);
@@ -169,7 +170,7 @@ export const TableImpl = implementTable(
                   key="$checkbox"
                   onClick={onClickCheckbox}
                 >
-                  <Checkbox size="lg" isChecked={isSelected}></Checkbox>
+                  <Checkbox size="lg" isChecked={isSelected} />
                 </Td>
               );
 
@@ -222,6 +223,7 @@ export const TableImpl = implementTable(
         borderColor="gray.200"
         borderRadius="base"
         overflow="auto"
+        ref={elementRef}
       >
         {!data ? loadingSpinner : tableContent}
       </Box>

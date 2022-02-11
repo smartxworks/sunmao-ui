@@ -10,23 +10,19 @@ import {
   Input,
   Tag,
 } from '@chakra-ui/react';
-import {
-  encodeDragDataTransfer,
-  DROP_EXAMPLE_SIZE_PREFIX,
-  Registry,
-} from '@sunmao-ui/runtime';
+import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
 import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../services/enum';
+import { RuntimeComponent } from '@sunmao-ui/core';
 
 type Props = {
-  registry: Registry;
   services: EditorServices;
 };
 
 type Category = {
   name: string;
-  components: ReturnType<Registry['getAllComponents']>;
+  components: RuntimeComponent<string, string, string, string>[];
 };
 
 const PRESET_CATEGORY_ORDER = {
@@ -54,8 +50,8 @@ function getTagColor(version: string): string {
 
 const IGNORE_COMPONENTS = ['Dummy'];
 
-export const ComponentList: React.FC<Props> = ({ registry, services }) => {
-  const { editorStore } = services;
+export const ComponentList: React.FC<Props> = ({ services }) => {
+  const { registry, editorStore } = services;
   const [filterText, setFilterText] = useState('');
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
@@ -113,6 +109,10 @@ export const ComponentList: React.FC<Props> = ({ registry, services }) => {
                     );
 
                     editorStore.setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
+                    editorStore.setIsDraggingNewComponent(true);
+                  };
+                  const onDragEnd = () => {
+                    editorStore.setIsDraggingNewComponent(false);
                   };
                   const cEle = (
                     <Flex
@@ -134,6 +134,7 @@ export const ComponentList: React.FC<Props> = ({ registry, services }) => {
                       draggable
                       unselectable="on"
                       onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
                     >
                       {c.metadata.displayName}
                       <Tag colorScheme={getTagColor(c.version)} size="sm">

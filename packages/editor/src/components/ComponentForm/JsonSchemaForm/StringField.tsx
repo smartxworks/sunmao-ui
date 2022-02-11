@@ -10,7 +10,7 @@ const EnumField: React.FC<FieldProps> = props => {
   const options = (schema.enum || []).map(item => item?.toString() || '');
   useEffect(() => {
     // reset to valid enum
-    if (options.length && !options.includes(formData)) {
+    if (formData !== undefined && options.length && !options.includes(formData)) {
       onChange(options[0]);
     }
   }, [options, formData, onChange]);
