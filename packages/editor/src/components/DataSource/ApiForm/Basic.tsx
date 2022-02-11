@@ -22,7 +22,6 @@ import {
 } from '@sunmao-ui/runtime';
 import { Static } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
-import produce from 'immer';
 
 type Values = Static<typeof FetchTraitPropertiesSchema>;
 type EventHandler = Static<typeof EventCallBackHandlerSchema>;
