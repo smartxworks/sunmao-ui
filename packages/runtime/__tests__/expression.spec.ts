@@ -1,4 +1,4 @@
-import { StateManager, parseExpression } from '../src/services/stateStore';
+import { StateManager, parseExpression } from '../src/services/StateManager';
 
 describe('parseExpression function', () => {
   it('can parse {{}} expression', () => {
@@ -22,6 +22,19 @@ describe('parseExpression function', () => {
       [' input1.value '],
       '!',
     ]);
+
+    const multiline = parseExpression(`{{
+    { id: 1 }
+    }}`);
+    expect(multiline).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "
+          { id: 1 }
+          ",
+        ],
+      ]
+    `);
   });
 
   it('can parse $listItem expression', () => {

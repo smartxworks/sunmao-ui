@@ -4,8 +4,8 @@ import {
   RuntimeComponent,
 } from '@sunmao-ui/core';
 import React from 'react';
-import { UIServices, ComponentParamsFromApp } from './Application';
-import { TraitResult } from './Trait';
+import { UIServices, ComponentParamsFromApp } from './application';
+import { TraitResult } from './trait';
 
 // TODO: (type-safe), remove fallback type
 export type ImplWrapperProps<KSlot extends string = string> = {
@@ -25,6 +25,8 @@ export type ComponentImplProps<
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods> & {
     slotsElements: Record<KSlot, React.ReactElement[] | React.ReactElement>;
+    elementRef?: React.Ref<any>;
+    getElement?: (ele: HTMLElement) => void;
   };
 
 export type ComponentImpl<

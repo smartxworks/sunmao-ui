@@ -1,14 +1,18 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Application } from '@sunmao-ui/core';
-import { GridCallbacks, DIALOG_CONTAINER_ID, initSunmaoUI } from '@sunmao-ui/runtime';
+import {
+  GridCallbacks,
+  DIALOG_CONTAINER_ID,
+  initSunmaoUI,
+  watch,
+} from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import { StructureTree } from './StructureTree';
 import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
-import { useComponentWrapper } from './ComponentWrapper';
-import { StateEditor, SchemaEditor } from './CodeEditor';
+import { StateViewer, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
@@ -16,11 +20,13 @@ import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
+import { EditorMaskWrapper } from './EditorMaskWrapper';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
 type Props = {
   App: ReturnOfInit['App'];
+  eleMap: ReturnOfInit['eleMap'];
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
@@ -29,7 +35,15 @@ type Props = {
 export const Editor: React.FC<Props> = observer(
   ({ App, registry, stateStore, services }) => {
     const { eventBus, editorStore } = services;
-    const { components, selectedComponentId, modules } = editorStore;
+    const {
+      components,
+      selectedComponentId,
+      toolMenuTab,
+      explorerMenuTab,
+      setToolMenuTab,
+      setExplorerMenuTab,
+      modules,
+    } = editorStore;
 
     const [scale, setScale] = useState(100);
     const [preview, setPreview] = useState(false);
@@ -37,6 +51,12 @@ export const Editor: React.FC<Props> = observer(
     const [code, setCode] = useState('');
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
+    const [store, setStore] = useState(stateStore);
+    useEffect(() => {
+      watch(store, newValue => {
+        setStore(JSON.parse(JSON.stringify(newValue)));
+      });
+    }, [store]);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -83,26 +103,18 @@ export const Editor: React.FC<Props> = observer(
       };
     }, [components]);
 
-    const ComponentWrapper = useMemo(() => {
-      return useComponentWrapper(services);
-    }, [services]);
-
     const appComponent = useMemo(() => {
       return (
-        <ErrorBoundary
-          key={recoverKey}
-          onError={onError}
-        >
+        <ErrorBoundary key={recoverKey} onError={onError}>
           <App
             options={app}
             debugEvent={false}
             debugStore={false}
             gridCallbacks={gridCallbacks}
-            componentWrapper={ComponentWrapper}
           />
         </ErrorBoundary>
       );
-    }, [App, ComponentWrapper, app, gridCallbacks, recoverKey]);
+    }, [App, app, gridCallbacks, recoverKey]);
 
     const renderMain = () => {
       const appBox = (
@@ -121,8 +133,10 @@ export const Editor: React.FC<Props> = observer(
               height="full"
               position="absolute"
             />
-            <Box width="full" overflow="auto">
-              {appComponent}
+            <Box width="full" overflow="auto" position="relative">
+              <EditorMaskWrapper services={services}>
+                {appComponent}
+              </EditorMaskWrapper>
             </Box>
             <WarningArea services={services} />
           </Box>
@@ -157,6 +171,10 @@ export const Editor: React.FC<Props> = observer(
               flexDirection="column"
               textAlign="left"
               isLazy
+              index={explorerMenuTab}
+              onChange={activatedTab => {
+                setExplorerMenuTab(activatedTab);
+              }}
             >
               <TabList background="gray.50">
                 <Tab>Explorer</Tab>
@@ -176,7 +194,7 @@ export const Editor: React.FC<Props> = observer(
                   />
                 </TabPanel>
                 <TabPanel p={0} height="100%">
-                  <StateEditor code={JSON.stringify(stateStore, null, 2)} />
+                  <StateViewer store={store} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -195,6 +213,10 @@ export const Editor: React.FC<Props> = observer(
               height="100%"
               display="flex"
               flexDirection="column"
+              index={toolMenuTab}
+              onChange={activatedTab => {
+                setToolMenuTab(activatedTab);
+              }}
             >
               <TabList background="gray.50">
                 <Tab>Inspect</Tab>
@@ -205,7 +227,7 @@ export const Editor: React.FC<Props> = observer(
                   <ComponentForm services={services} />
                 </TabPanel>
                 <TabPanel p={0}>
-                  <ComponentList registry={registry} />
+                  <ComponentList services={services} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -218,7 +240,7 @@ export const Editor: React.FC<Props> = observer(
       if (isError) {
         setRecoverKey(recoverKey + 1);
       }
-    }, [app]);
+    }, [app, isError, recoverKey]);
 
     return (
       <KeyboardEventWrapper

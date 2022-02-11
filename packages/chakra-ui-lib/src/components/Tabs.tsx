@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/css';
 import {
   Tabs as BaseTabs,
@@ -33,6 +33,9 @@ export default implementRuntimeComponent({
       initialSelectedTabIndex: 0,
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -44,7 +47,7 @@ export default implementRuntimeComponent({
     events: [],
   },
 })(props => {
-  const { tabNames, mergeState, initialSelectedTabIndex, customStyle, slotsElements } =
+  const { tabNames, mergeState, initialSelectedTabIndex, customStyle, slotsElements, elementRef } =
     props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialSelectedTabIndex ?? 0);
 
@@ -59,6 +62,7 @@ export default implementRuntimeComponent({
     <BaseTabs
       defaultIndex={initialSelectedTabIndex}
       onChange={idx => setSelectedTabIndex(idx)}
+      ref={elementRef}
     >
       <TabList>
         {tabNames.map((name, idx) => (
@@ -74,7 +78,9 @@ export default implementRuntimeComponent({
       </TabList>
       <TabPanels>
         {tabNames.map((_, idx) => {
-          const ele = slotsElements.content ? ([] as React.ReactElement[]).concat(slotsElements.content)[idx] : placeholder;
+          const ele = slotsElements.content
+            ? ([] as React.ReactElement[]).concat(slotsElements.content)[idx]
+            : placeholder;
           return (
             <TabPanel
               key={idx}

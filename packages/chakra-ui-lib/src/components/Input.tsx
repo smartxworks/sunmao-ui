@@ -71,6 +71,9 @@ export default implementRuntimeComponent({
       defaultValue: '',
     },
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -79,7 +82,7 @@ export default implementRuntimeComponent({
       setInputValue: Type.Object({
         value: Type.String(),
       }),
-      resetInputValue: void 0,
+      resetInputValue: undefined,
     },
     slots: [],
     styleSlots: ['content'],
@@ -99,6 +102,7 @@ export default implementRuntimeComponent({
     subscribeMethods,
     defaultValue,
     customStyle,
+    elementRef,
   }) => {
     const [value, setValue] = React.useState(defaultValue || ''); // TODO: pin input
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -122,9 +126,8 @@ export default implementRuntimeComponent({
         },
       });
     }, [defaultValue, subscribeMethods]);
-
     return (
-      <InputGroup size={size} background="white">
+      <InputGroup size={size} background="white" ref={elementRef}>
         {left ? (
           left.type === 'addon' ? (
             <InputLeftAddon>{left.children}</InputLeftAddon>

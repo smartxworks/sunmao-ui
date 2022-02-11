@@ -25,6 +25,9 @@ export default implementRuntimeComponent({
       href: 'https://www.google.com',
     },
     exampleSize: [2, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -34,7 +37,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ text, href, isExternal, customStyle }) => {
+})(({ text, href, isExternal, customStyle, elementRef }) => {
   return (
     <Link
       href={href}
@@ -43,6 +46,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
     >
       <Text value={text} />
     </Link>

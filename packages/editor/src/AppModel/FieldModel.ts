@@ -3,9 +3,8 @@ import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';
 import { flattenDeep, isArray, isObject } from 'lodash-es';
+import { isExpression } from '../validator/utils';
 import { ComponentId, IFieldModel, ModuleId } from './IAppModel';
-
-const regExp = /.*{{.*}}.*/;
 
 export class FieldModel implements IFieldModel {
   isDynamic = false;
@@ -62,13 +61,13 @@ export class FieldModel implements IFieldModel {
         (isArrayValue
           ? []
           : shouldExtendValues && isOldValueObject
-            ? this.value
-            : {}) as Record<string, IFieldModel>
+          ? this.value
+          : {}) as Record<string, IFieldModel>
       );
     } else {
       this.value = value;
     }
-    this.isDynamic = typeof value === 'string' && regExp.test(value);
+    this.isDynamic = isExpression(value);
     this.parseReferences();
   }
 

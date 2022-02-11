@@ -49,6 +49,9 @@ export const implementTable = implementRuntimeComponent({
     isResizable: true,
     exampleProperties,
     exampleSize: [8, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -58,4 +61,4 @@ export const implementTable = implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})
+});

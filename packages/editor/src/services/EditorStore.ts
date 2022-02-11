@@ -6,6 +6,7 @@ import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
+import { ExplorerMenuTabs, ToolMenuTabs } from './enum';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -17,14 +18,19 @@ export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
-  _hoverComponentId = '';
   _dragOverComponentId = '';
+  explorerMenuTab = ExplorerMenuTabs.EXPLORER;
+  toolMenuTab = ToolMenuTabs.INSERT;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
     version: '',
     name: '',
   };
+
+  // not observable, just reference
+  eleMap = new Map<string, HTMLElement>();
+  isDraggingNewComponent = false;
 
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
@@ -39,6 +45,7 @@ export class EditorStore {
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
+      eleMap: false,
       components: observable.shallow,
       setComponents: action,
       setDragOverComponentId: action,
@@ -71,6 +78,12 @@ export class EditorStore {
       }
     );
 
+    reaction(
+      () => this.selectedComponentId,
+      () => {
+        this.setToolMenuTab(ToolMenuTabs.INSPECT);
+      });
+
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
 
@@ -84,11 +97,6 @@ export class EditorStore {
 
   get selectedComponent() {
     return this.components.find(c => c.id === this._selectedComponentId);
-  }
-
-  // to avoid get out-of-dated value here, we should use getter to lazy load primitive type
-  get hoverComponentId() {
-    return this._hoverComponentId;
   }
 
   get selectedComponentId() {
@@ -161,10 +169,6 @@ export class EditorStore {
     this._selectedComponentId = val;
   };
 
-  setHoverComponentId = (val: string) => {
-    this._hoverComponentId = val;
-  };
-
   setComponents = (val: ComponentSchema[]) => {
     this.components = val;
   };
@@ -179,5 +183,17 @@ export class EditorStore {
 
   setLastSavedComponentsVersion = (val: number) => {
     this.lastSavedComponentsVersion = val;
+  };
+
+  setExplorerMenuTab = (val: ExplorerMenuTabs) => {
+    this.explorerMenuTab = val;
+  }
+
+  setToolMenuTab = (val: ToolMenuTabs) => {
+    this.toolMenuTab = val;
+  }
+
+  setIsDraggingNewComponent = (val: boolean) => {
+    this.isDraggingNewComponent = val;
   };
 }
