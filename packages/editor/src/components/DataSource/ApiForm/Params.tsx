@@ -30,7 +30,7 @@ export const Params: React.FC<Props> = props => {
 
   const onChange = (values: Record<string, string>) => {
     const parameters = new URLSearchParams(values);
-    const paramsString = parameters.toString().replace(/%7B%7B(.+)%7D%7D/g, '{{$1}}');
+    const paramsString = parameters.toString().replace(/%7B%7B(.+?)%7D%7D/g, '{{$1}}');
     const newUrl =
       index === -1
         ? `${url}?${paramsString}`
