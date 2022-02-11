@@ -184,7 +184,6 @@ export const Editor: React.FC<Props> = observer(
             zIndex="2"
           >
             <Tabs
-              align="center"
               height="100%"
               display="flex"
               flexDirection="column"
