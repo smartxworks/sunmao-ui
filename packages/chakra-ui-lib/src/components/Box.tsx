@@ -283,6 +283,9 @@ export default implementRuntimeComponent({
       border: '1px solid black',
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: StyleSchema,
@@ -292,7 +295,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ customStyle, slotsElements, ...restProps }) => {
+})(({ customStyle, slotsElements, elementRef, ...restProps }) => {
   const styleProps = pick(restProps, StyleProps);
   return (
     <BaseBox
@@ -306,6 +309,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
     >
       {slotsElements.content}
     </BaseBox>

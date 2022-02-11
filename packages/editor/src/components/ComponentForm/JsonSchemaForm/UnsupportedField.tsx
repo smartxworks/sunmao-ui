@@ -9,7 +9,13 @@ const UnsupportedField: React.FC<Props> = props => {
   return (
     <div>
       Unsupported field schema
+      <p>
+        <b>schema:</b>
+      </p>
       <pre>{JSON.stringify(schema, null, 2)}</pre>
+      <p>
+        <b>value:</b>
+      </p>
       <pre>{JSON.stringify(formData, null, 2)}</pre>
     </div>
   );

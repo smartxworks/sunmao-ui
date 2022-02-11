@@ -40,6 +40,9 @@ export default implementRuntimeComponent({
       helperText: '',
     },
     exampleSize: [4, 2],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -66,11 +69,15 @@ export default implementRuntimeComponent({
     slotsElements,
     childrenMap,
     component,
+    elementRef,
   }) => {
     const [inputValue, setInputValue] = useState('');
     // don't show Invalid state on component mount
     const [hideInvalid, setHideInvalid] = useState(true);
-    const inputId = useMemo(() => first(childrenMap[component.id]?.content)?.id || '', [component.id, childrenMap]);
+    const inputId = useMemo(
+      () => first(childrenMap[component.id]?.content)?.id || '',
+      [component.id, childrenMap]
+    );
     const [validResult, setValidResult] = useState({
       isInvalid: false,
       errorMsg: '',
@@ -141,6 +148,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
+        ref={elementRef}
       >
         <HStack width="full">
           <FormLabel flex="0 0 auto" width="33%" margin="auto 0">

@@ -2,7 +2,7 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash-es';
 import { TraitImpl } from '../../types';
-import { ValidResultSchema } from '../../types/ValidResultSchema';
+import { ValidResultSchema } from '../../types/validResultSchema';
 
 type ValidationResult = Static<typeof ValidResultSchema>;
 type ValidationRule = (text: string) => ValidationResult;

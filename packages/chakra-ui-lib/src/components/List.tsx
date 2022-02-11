@@ -44,6 +44,9 @@ export default implementRuntimeComponent({
     isResizable: true,
     exampleProperties,
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -53,7 +56,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ listData, template, app, services, customStyle }) => {
+})(({ listData, template, app, services, customStyle, elementRef }) => {
   if (!listData) {
     return null;
   }
@@ -85,6 +88,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
     >
       {listItems}
     </BaseList>

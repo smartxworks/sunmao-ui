@@ -8,6 +8,8 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
+import { AnyKind, UnknownKind } from '@sinclair/typebox';
+import { isExpression as _isExpression } from '../../../validator/utils';
 import { FieldProps, getCodeMode, getDisplayLabel } from './fields';
 import { widgets } from './widgets/widgets';
 import StringField from './StringField';
@@ -86,10 +88,7 @@ type Props = FieldProps & {
 
 const SchemaField: React.FC<Props> = props => {
   const { schema, label, formData, onChange, registry, stateManager } = props;
-  const [isExpression, setIsExpression] = useState(
-    // FIXME: regexp copied from FieldModel.ts, is this a stable way to check expression?
-    () => typeof formData === 'string' && /.*{{.*}}.*/.test(formData)
-  );
+  const [isExpression, setIsExpression] = useState(() => _isExpression(formData));
 
   if (isEmpty(schema)) {
     return null;
@@ -118,6 +117,10 @@ const SchemaField: React.FC<Props> = props => {
     Component = NullField;
   } else if ('anyOf' in schema || 'oneOf' in schema) {
     Component = MultiSchemaField;
+  } else if (
+    [AnyKind, UnknownKind].includes((schema as unknown as { kind: symbol }).kind)
+  ) {
+    Component = widgets.expression;
   } else {
     console.info('Found unsupported schema', schema);
   }
@@ -128,6 +131,7 @@ const SchemaField: React.FC<Props> = props => {
   return (
     <DefaultTemplate
       label={label}
+      description={schema.description}
       displayLabel={displayLabel}
       codeMode={codeMode}
       isExpression={isExpression}

@@ -54,6 +54,9 @@ export default implementRuntimeComponent({
       defaultValue: 0,
     },
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -62,7 +65,7 @@ export default implementRuntimeComponent({
       setInputValue: Type.Object({
         value: Type.Number(),
       }),
-      resetInputValue: void 0,
+      resetInputValue: undefined,
     },
     slots: [],
     styleSlots: ['content'],
@@ -83,6 +86,7 @@ export default implementRuntimeComponent({
     mergeState,
     subscribeMethods,
     customStyle,
+    elementRef,
   }) => {
     const [value, setValue] = useState(defaultValue);
     const onChange = (_: string, valueAsNumber: number) => setValue(valueAsNumber || 0);
@@ -122,6 +126,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
+        ref={elementRef}
       >
         <NumberInputField />
         <NumberInputStepper>

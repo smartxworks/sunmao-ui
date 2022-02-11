@@ -25,6 +25,9 @@ export default implementRuntimeComponent({
       },
     },
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -34,6 +37,6 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ value, customStyle }) => {
-  return <_Text value={value} cssStyle={customStyle?.content} />;
+})(({ value, customStyle, elementRef }) => {
+  return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
 });

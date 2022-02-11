@@ -13,6 +13,9 @@ export default implementRuntimeComponent({
     isResizable: true,
     exampleProperties: {},
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: Type.Object({}),
@@ -22,12 +25,13 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ customStyle }) => {
+})(({ customStyle, elementRef }) => {
   return (
     <Divider
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
     />
   );
 });

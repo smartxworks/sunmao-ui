@@ -12,6 +12,9 @@ export default implementRuntimeComponent({
     isResizable: true,
     exampleProperties: {},
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Advance',
+    },
   },
   spec: {
     properties: Type.Object({}),
@@ -21,7 +24,7 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ slotsElements }) => {
+})(({ slotsElements, elementRef }) => {
   return (
     <ChakraProvider
       theme={extendTheme({
@@ -29,7 +32,7 @@ export default implementRuntimeComponent({
         useSystemColorMode: false,
       })}
     >
-      <>{slotsElements.root}</>
+      <div ref={elementRef}>{slotsElements.root}</div>
     </ChakraProvider>
   );
 });

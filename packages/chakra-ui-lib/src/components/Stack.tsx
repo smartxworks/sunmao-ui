@@ -58,6 +58,9 @@ export default implementRuntimeComponent({
       spacing: 10,
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -67,9 +70,9 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements, elementRef }) => {
   return (
-    <BaseStack {...{ direction, wrap, align, justify, spacing }}>
+    <BaseStack {...{ direction, wrap, align, justify, spacing }} ref={elementRef}>
       {slotsElements.content}
     </BaseStack>
   );

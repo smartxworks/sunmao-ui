@@ -46,6 +46,9 @@ export default implementRuntimeComponent({
       text: 'tooltip',
     },
     exampleSize: [2, 1],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -65,6 +68,7 @@ export default implementRuntimeComponent({
     isDisabled,
     defaultIsOpen,
     slotsElements,
+    elementRef,
   }) => {
     return (
       /* 
@@ -79,6 +83,7 @@ export default implementRuntimeComponent({
         isDisabled={isDisabled}
         defaultIsOpen={defaultIsOpen}
         shouldWrapChildren={shouldWrapChildren}
+        ref={elementRef}
       >
         {slotsElements.content}
       </Tooltip>

@@ -68,6 +68,9 @@ export default implementRuntimeComponent({
     isDraggable: true,
     exampleProperties,
     exampleSize: [4, 1],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -92,6 +95,7 @@ export default implementRuntimeComponent({
     variant,
     mergeState,
     customStyle,
+    elementRef,
   }) => {
     const [value, setValue] = useState<string | undefined>(defaultValue);
 
@@ -120,6 +124,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
+        ref={elementRef}
       >
         {options.map(opt => (
           <option key={opt.value} value={opt.value}>

@@ -10,7 +10,7 @@ const ToastPosition = Type.Union([
   Type.Literal('bottom-right'),
   Type.Literal('bottom-left'),
 ]);
-export const ToastOpenParamterSchema = Type.Object({
+export const ToastOpenParameterSchema = Type.Object({
   position: Type.Optional(ToastPosition),
   duration: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
   title: Type.Optional(Type.String()),
@@ -40,7 +40,7 @@ export const ToastCloseParameterSchema = Type.Object({
   positions: Type.Optional(Type.Array(ToastPosition)),
 });
 
-export type ToastOpenParameter = Static<typeof ToastOpenParamterSchema>;
+export type ToastOpenParameter = Static<typeof ToastOpenParameterSchema>;
 export type ToastCloseParameter = Static<typeof ToastCloseParameterSchema>;
 
 const pickProperty = <T, U extends Record<string, any>>(
@@ -58,14 +58,15 @@ export default function ToastUtilMethodFactory() {
   let toast: ReturnType<typeof createStandaloneToast> | undefined;
   const toastOpen: UtilMethod = {
     name: 'toast.open',
-    method(parameters: Static<typeof ToastOpenParamterSchema>) {
+    method(parameters: Static<typeof ToastOpenParameterSchema>) {
       if (!toast) {
         toast = createStandaloneToast();
       }
       if (parameters) {
-        toast(pickProperty(ToastOpenParamterSchema, parameters));
+        toast(pickProperty(ToastOpenParameterSchema, parameters));
       }
     },
+    parameters: ToastOpenParameterSchema,
   };
 
   const toastClose: UtilMethod = {
@@ -85,6 +86,7 @@ export default function ToastUtilMethodFactory() {
         }
       }
     },
+    parameters: ToastCloseParameterSchema,
   };
   return [toastOpen, toastClose];
 }

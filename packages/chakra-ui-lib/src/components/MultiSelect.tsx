@@ -64,25 +64,29 @@ const exampleProperties = {
 };
 
 export default implementRuntimeComponent({
-    version: 'chakra_ui/v1',
-    metadata: {
-      name: 'multiSelect',
-      displayName: 'MultiSelect',
-      description: 'chakra-ui MultiSelect',
-      isResizable: true,
-      isDraggable: true,
-      exampleProperties,
-      exampleSize: [4, 1],
+  version: 'chakra_ui/v1',
+  metadata: {
+    name: 'multiSelect',
+    displayName: 'MultiSelect',
+    description: 'chakra-ui MultiSelect',
+    isResizable: true,
+    isDraggable: true,
+    exampleProperties,
+    exampleSize: [4, 1],
+    annotations: {
+      category: 'Input',
     },
-    spec: {
-      properties: PropsSchema,
-      state: StateSchema,
-      methods: {},
-      slots: [],
-      styleSlots: ['content'],
-      events: [],
-    },
-  })(({
+  },
+  spec: {
+    properties: PropsSchema,
+    state: StateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ['content'],
+    events: [],
+  },
+})(
+  ({
     options,
     placeholder,
     defaultValue,
@@ -92,23 +96,25 @@ export default implementRuntimeComponent({
     variant,
     mergeState,
     customStyle,
+    elementRef,
   }) => {
     useEffect(() => {
       const newValue = (defaultValue || []).map(o => o.value);
       mergeState({ value: newValue });
     }, [defaultValue, mergeState]);
-  
+
     const onChange = (options: Static<typeof OptionsSchema>) => {
       const newValue = options.map(o => o.value);
       mergeState({ value: newValue });
     };
-  
+
     return (
       <Box
         width="full"
         className={css`
           ${customStyle?.content}
         `}
+        ref={elementRef}
       >
         <BaseMultiSelect
           isMulti
@@ -123,4 +129,5 @@ export default implementRuntimeComponent({
         />
       </Box>
     );
-  })
+  }
+);

@@ -1,6 +1,5 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
 import { Application, ComponentSchema, Module, RuntimeModule } from '@sunmao-ui/core';
-import { cloneDeep } from 'lodash-es';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from '../constants';
 import { addModuleId } from '../utils/addModuleId';
@@ -128,7 +127,7 @@ export class AppStorage {
   }
 
   private saveModules() {
-    const modules = cloneDeep(this.modules).map(addModuleId);
+    const modules = this.modules.map(addModuleId);
     this.storageHanlder?.onSaveModules && this.storageHanlder?.onSaveModules(modules);
   }
 

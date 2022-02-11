@@ -30,6 +30,9 @@ export default implementRuntimeComponent({
     exampleSize: [6, 6],
     isDraggable: true,
     isResizable: true,
+    annotations: {
+      category: 'Layout',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -39,7 +42,7 @@ export default implementRuntimeComponent({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle, elementRef }) => {
   return (
     <BaseVStack
       width="full"
@@ -52,6 +55,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
       {...{ direction, wrap, align, justify, spacing }}
     >
       {slotsElements.content}

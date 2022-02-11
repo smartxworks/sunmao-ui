@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
-import { CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
+import { Box, CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
 
@@ -28,6 +28,9 @@ export default implementRuntimeComponent({
       defaultValue: [],
     },
     exampleSize: [3, 3],
+    annotations: {
+      category: 'Input',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -37,20 +40,22 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ size, defaultValue, isDisabled, slotsElements, mergeState }) => {
+})(({ size, defaultValue, isDisabled, slotsElements, mergeState, elementRef }) => {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({ value });
   }, [mergeState, value]);
 
   return (
-    <BaseCheckboxGroup
-      size={size}
-      defaultValue={defaultValue}
-      isDisabled={isDisabled}
-      onChange={val => setValue(val)}
-    >
-      {slotsElements.content}
-    </BaseCheckboxGroup>
+    <Box ref={elementRef}>
+      <BaseCheckboxGroup
+        size={size}
+        defaultValue={defaultValue}
+        isDisabled={isDisabled}
+        onChange={val => setValue(val)}
+      >
+        {slotsElements.content}
+      </BaseCheckboxGroup>
+    </Box>
   );
 });

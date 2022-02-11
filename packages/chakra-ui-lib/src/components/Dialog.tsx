@@ -1,8 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import {
-  implementRuntimeComponent,
-  DIALOG_CONTAINER_ID,
-} from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, DIALOG_CONTAINER_ID } from '@sunmao-ui/runtime';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -44,6 +41,9 @@ export default implementRuntimeComponent({
       disableConfirm: false,
     },
     exampleSize: [6, 6],
+    annotations: {
+      category: 'Display',
+    },
   },
   spec: {
     properties: PropsSchema,
@@ -52,8 +52,8 @@ export default implementRuntimeComponent({
       openDialog: Type.Object({
         title: Type.String(),
       }),
-      confirmDialog: void 0,
-      cancelDialog: void 0,
+      confirmDialog: undefined,
+      cancelDialog: undefined,
     },
     slots: ['content'],
     styleSlots: ['content'],
@@ -75,6 +75,7 @@ export default implementRuntimeComponent({
       colorScheme: 'blue',
     },
     customStyle,
+    elementRef,
   }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [title, setTitle] = useState(customerTitle || '');
@@ -129,11 +130,10 @@ export default implementRuntimeComponent({
           <AlertDialogContent
             className={`${customStyle?.content}`}
             {...(containerRef.current ? dialogContentProps : {})}
+            ref={elementRef}
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
-            <AlertDialogBody>
-              {slotsElements.content}
-            </AlertDialogBody>
+            <AlertDialogBody>{slotsElements.content}</AlertDialogBody>
 
             <AlertDialogFooter>
               <Button

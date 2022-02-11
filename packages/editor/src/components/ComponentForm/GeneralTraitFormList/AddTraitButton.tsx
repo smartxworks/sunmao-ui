@@ -1,6 +1,6 @@
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { Box, IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
-import { Registry } from '@sunmao-ui/runtime/lib/services/registry';
+import { Registry } from '@sunmao-ui/runtime';
 import { useMemo } from 'react';
 import { ignoreTraitsList } from '../../../constants';
 import { ComponentSchema } from '@sunmao-ui/core';

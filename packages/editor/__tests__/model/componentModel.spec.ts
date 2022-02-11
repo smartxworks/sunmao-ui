@@ -226,15 +226,24 @@ describe('move component', () => {
     expect(newSchema[6].id).toEqual('text1');
   });
 
-  it('can move top level component', () => {
+  describe('can move top level component', () => {
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
-    hstack1.moveAfter(apiFetch);
-    const newSchema = appModel.toSchema();
-    expect(appModel.topComponents[0].id).toEqual('apiFetch');
-    expect(appModel.topComponents[1].id).toEqual('hstack1');
-    expect(newSchema[0].id).toEqual('apiFetch');
-    expect(newSchema[1].id).toEqual('hstack1');
-  });
+
+    it('can get the next sibling of the top-level component', () => {
+      expect(hstack1.nextSilbing).toBe(apiFetch);
+    });
+
+    it('can move top level component', () => {
+      hstack1.moveAfter(apiFetch);
+      const newSchema = appModel.toSchema();
+      expect(appModel.topComponents[0].id).toEqual('apiFetch');
+      expect(appModel.topComponents[1].id).toEqual('hstack1');
+      expect(newSchema[0].id).toEqual('apiFetch');
+      expect(newSchema[1].id).toEqual('hstack1');
+    });
+  })
+
+
   it('can move component to the first', () => {
     hstack1.moveAfter(null);
     const newSchema = appModel.toSchema();
