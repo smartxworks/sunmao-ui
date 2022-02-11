@@ -120,6 +120,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         newId: value,
       })
     );
+    editorStore.setSelectedComponentId(value);
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
