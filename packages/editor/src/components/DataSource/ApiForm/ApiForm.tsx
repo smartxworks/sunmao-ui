@@ -5,9 +5,7 @@ import { Static } from '@sinclair/typebox';
 import {
   VStack,
   HStack,
-  Box,
   IconButton,
-  Flex,
   Text,
   Tabs,
   TabPanels,
@@ -18,12 +16,6 @@ import {
   Input,
   Button,
   CloseButton,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Spinner,
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
@@ -31,8 +23,7 @@ import { Basic } from './Basic';
 import { Headers as HeadersForm } from './Headers';
 import { Params } from './Params';
 import { Body } from './Body';
-import { Response } from './Response';
-import { Error as ErrorInfo } from './Error';
+import { Response as ResponseInfo } from './Respose';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
 
@@ -72,11 +63,6 @@ export const ApiForm: React.FC<Props> = props => {
   const result = useMemo(() => {
     return store[api.id]?.fetch ?? {};
   }, [store[api.id], api.id]);
-  const data = useMemo(() => {
-    return result.data instanceof Object
-      ? JSON.stringify(result.data, null, 2)
-      : String(result.data);
-  }, [result.data]);
 
   const onFetch = async () => {
     services.apiService.send('uiMethod', {
@@ -211,31 +197,7 @@ export const ApiForm: React.FC<Props> = props => {
           </TabPanels>
         </VStack>
       </Tabs>
-      {result.data || result.error || result.loading ? (
-        <Accordion defaultIndex={0} allowToggle border="solid" borderColor="inherit">
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  Response
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4} padding={0} height="250px">
-              <Flex alignItems="center" justifyContent="center" height="100%">
-                {result.loading ? (
-                  <Spinner />
-                ) : result.error ? (
-                  <ErrorInfo error={result.error} />
-                ) : (
-                  <Response defaultCode={data} />
-                )}
-              </Flex>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-      ) : null}
+      <ResponseInfo data={result.data} error={result.error} loading={result.loading} />
     </VStack>
   );
 };

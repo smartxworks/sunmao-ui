@@ -68,16 +68,12 @@ export const Basic: React.FC<Props> = props => {
       <Accordion allowMultiple>
         {(formik.values[type] ?? []).map((handler, i) => {
           const onChange = (handler: EventHandler) => {
-            const newOnComplete = produce(formik.values[type] || [], draft => {
-              draft[i] = handler;
-            });
+            const newOnComplete = formik.values[type].map((onComplete, index)=> index === i ? handler : onComplete);
             formik.setFieldValue(type, newOnComplete);
             formik.submitForm();
           };
           const onRemove = () => {
-            const newOnComplete = produce(formik.values[type] || [], draft => {
-              draft.splice(i, 1);
-            });
+            const newOnComplete = formik.values[type].filter((_, index)=> i !== index);
             formik.setFieldValue(type, newOnComplete);
             formik.submitForm();
           };

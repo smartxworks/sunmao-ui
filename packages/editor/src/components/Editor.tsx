@@ -23,7 +23,7 @@ import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
@@ -216,7 +216,6 @@ export const Editor: React.FC<Props> = observer(
                 </TabPanel>
                 <TabPanel p={0}>
                   <DataSource
-                    components={components}
                     active={activeDataSource?.id ?? ''}
                     services={services}
                   />
@@ -272,7 +271,7 @@ export const Editor: React.FC<Props> = observer(
                 api={activeDataSource}
                 services={services}
                 store={store}
-                className={cx(ApiFormStyle)}
+                className={ApiFormStyle}
               />
             ) : null}
           </Flex>

@@ -1,13 +1,12 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
-import { Registry, StateManager, parseTypeBox } from '@sunmao-ui/runtime';
+import { Registry, StateManager } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
 import { DataSourceType } from '../components/DataSource';
-import { TSchema } from '@sinclair/typebox';
 import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from './enum';
 
@@ -15,6 +14,10 @@ type EditingTarget = {
   kind: 'app' | 'module';
   version: string;
   name: string;
+};
+type DataSources = {
+  apis: ComponentSchema[];
+  states: ComponentSchema[];
 };
 
 export class EditorStore {
@@ -91,7 +94,8 @@ export class EditorStore {
         this.setToolMenuTab(ToolMenuTabs.INSPECT);
         this.setActiveDataSource(null);
         this.setActiveDataSourceType(null);
-      });
+      }
+    );
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
@@ -141,6 +145,27 @@ export class EditorStore {
       case 'app':
         return this.app.spec.components;
     }
+  }
+
+  get dataSources(): DataSources {
+    const apis: ComponentSchema[] = [];
+    const states: ComponentSchema[] = [];
+
+    this.components.forEach(component => {
+      if (component.type === 'core/v1/dummy') {
+        component.traits.forEach(trait => {
+          if (trait.type === 'core/v1/fetch') {
+            apis.push(component);
+          }
+
+          if (trait.type === 'core/v1/state') {
+            states.push(component);
+          }
+        });
+      }
+    });
+
+    return { apis, states };
   }
 
   clearSunmaoGlobalState() {
@@ -202,54 +227,16 @@ export class EditorStore {
     this.activeDataSourceType = dataSourceType;
   };
 
-  getDataSources = () => {
-    const apis: ComponentSchema[] = [];
-    const states: ComponentSchema[] = [];
-
-    this.components.forEach(component => {
-      if (component.type === 'core/v1/dummy') {
-        component.traits.forEach(trait => {
-          if (trait.type === 'core/v1/fetch') {
-            apis.push(component);
-          }
-
-          if (trait.type === 'core/v1/state') {
-            states.push(component);
-          }
-        });
-      }
-    });
-
-    return { apis, states };
-  };
-
   createDataSource = (type: DataSourceType) => {
-    const { apis, states } = this.getDataSources();
+    const { apis, states } = this.dataSources;
     const id =
       type === DataSourceType.API ? `api${apis.length}` : `state${states.length}`;
-    const traitType = type === DataSourceType.API ? 'core/v1/fetch' : 'core/v1/state';
-    const traitSpec = this.registry.getTraitByType(traitType).spec;
-    const initProperties = parseTypeBox(traitSpec.properties as TSchema);
 
     this.eventBus.send(
       'operation',
-      genOperation(this.registry, 'createComponent', {
-        componentType: 'core/v1/dummy',
-        componentId: id,
-      })
-    );
-    this.eventBus.send(
-      'operation',
-      genOperation(this.registry, 'createTrait', {
-        componentId: id,
-        traitType: traitType,
-        properties:
-          type === DataSourceType.API
-            ? {
-                ...initProperties,
-                method: 'get',
-              }
-            : initProperties,
+      genOperation(this.registry, 'createDataSource', {
+        id,
+        type
       })
     );
 
@@ -289,14 +276,14 @@ export class EditorStore {
 
     this.setActiveDataSource(component!);
   };
-  
+
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
     this.explorerMenuTab = val;
-  }
+  };
 
   setToolMenuTab = (val: ToolMenuTabs) => {
     this.toolMenuTab = val;
-  }
+  };
 
   setIsDraggingNewComponent = (val: boolean) => {
     this.isDraggingNewComponent = val;

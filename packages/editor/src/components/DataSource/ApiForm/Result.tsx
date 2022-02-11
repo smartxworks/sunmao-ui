@@ -6,7 +6,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
 
-export const Response: React.FC<{
+export const Result: React.FC<{
   defaultCode: string;
 }> = ({ defaultCode }) => {
   const style = css`

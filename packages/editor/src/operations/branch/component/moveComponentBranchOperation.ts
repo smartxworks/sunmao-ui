@@ -1,11 +1,11 @@
-import { AppModel } from '../../AppModel/AppModel';
-import { BaseBranchOperation } from '../type';
+import { AppModel } from '../../../AppModel/AppModel';
+import { BaseBranchOperation } from '../../type';
 import {
   CreateTraitLeafOperation,
   ModifyTraitPropertiesLeafOperation,
   RemoveTraitLeafOperation,
-} from '../leaf';
-import { ComponentId } from '../../AppModel/IAppModel';
+} from '../../leaf';
+import { ComponentId } from '../../../AppModel/IAppModel';
 
 export type MoveComponentBranchOperationContext = {
   fromId: string;
