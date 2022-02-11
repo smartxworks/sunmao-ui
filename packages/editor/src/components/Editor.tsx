@@ -12,7 +12,6 @@ import { StructureTree } from './StructureTree';
 import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
-import { useComponentWrapper } from './ComponentWrapper';
 import { StateViewer, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
 import { DataSource, DataSourceType } from './DataSource';
@@ -25,11 +24,13 @@ import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
 import { css, cx } from '@emotion/css';
+import { EditorMaskWrapper } from './EditorMaskWrapper';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
 type Props = {
   App: ReturnOfInit['App'];
+  eleMap: ReturnOfInit['eleMap'];
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
@@ -66,7 +67,6 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
-
     useEffect(() => {
       const stop = watch(stateStore, newValue => {
         setStore({ ...newValue });
@@ -120,10 +120,6 @@ export const Editor: React.FC<Props> = observer(
       };
     }, [components]);
 
-    const ComponentWrapper = useMemo(() => {
-      return useComponentWrapper(services);
-    }, [services]);
-
     const appComponent = useMemo(() => {
       return (
         <ErrorBoundary key={recoverKey} onError={onError}>
@@ -132,11 +128,10 @@ export const Editor: React.FC<Props> = observer(
             debugEvent={false}
             debugStore={false}
             gridCallbacks={gridCallbacks}
-            componentWrapper={ComponentWrapper}
           />
         </ErrorBoundary>
       );
-    }, [App, ComponentWrapper, app, gridCallbacks, recoverKey]);
+    }, [App, app, gridCallbacks, recoverKey]);
 
     const renderMain = () => {
       const appBox = (
@@ -155,8 +150,10 @@ export const Editor: React.FC<Props> = observer(
               height="full"
               position="absolute"
             />
-            <Box width="full" overflow="auto">
-              {appComponent}
+            <Box width="full" overflow="auto" position="relative">
+              <EditorMaskWrapper services={services}>
+                {appComponent}
+              </EditorMaskWrapper>
             </Box>
             <WarningArea services={services} />
           </Box>
@@ -177,7 +174,7 @@ export const Editor: React.FC<Props> = observer(
         );
       }
       return (
-        <Flex direction="row" flex={1}>
+        <>
           <Box
             width="280px"
             minWidth="280px"
@@ -266,7 +263,7 @@ export const Editor: React.FC<Props> = observer(
                     )}
                   </TabPanel>
                   <TabPanel p={0}>
-                    <ComponentList registry={registry} services={services} />
+                    <ComponentList services={services} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -280,7 +277,7 @@ export const Editor: React.FC<Props> = observer(
               />
             ) : null}
           </Flex>
-        </Flex>
+        </>
       );
     };
 
@@ -288,7 +285,7 @@ export const Editor: React.FC<Props> = observer(
       if (isError) {
         setRecoverKey(recoverKey + 1);
       }
-    }, [app]);
+    }, [app, isError, recoverKey]);
 
     return (
       <KeyboardEventWrapper

@@ -43,7 +43,15 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     })
   );
 
-  const ui = initSunmaoUI(props.runtimeProps);
+  const didMount = () => {
+    editorStore.eleMap = ui.eleMap;
+    eventBus.send('HTMLElementsUpdated');
+  };
+  const didUpdate = () => {
+    eventBus.send('HTMLElementsUpdated');
+  };
+
+  const ui = initSunmaoUI({ ...props.runtimeProps, hooks: { didMount, didUpdate } });
 
   const App = ui.App;
   const registry = ui.registry;
@@ -58,7 +66,11 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     props.defaultModules,
     props.storageHanlder
   );
-  const appModelManager = new AppModelManager(eventBus, registry, appStorage.app.spec.components);
+  const appModelManager = new AppModelManager(
+    eventBus,
+    registry,
+    appStorage.app.spec.components
+  );
   const editorStore = new EditorStore(eventBus, registry, stateManager, appStorage);
   const services = {
     App,
@@ -75,6 +87,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
       <ChakraProvider theme={editorTheme}>
         <_Editor
           App={App}
+          eleMap={ui.eleMap}
           registry={registry}
           stateStore={stateManager.store}
           services={services}

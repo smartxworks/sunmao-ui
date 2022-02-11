@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from '@emotion/styled';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
@@ -17,14 +18,14 @@ export type TextProps = {
   cssStyle?: string;
 };
 
-const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
+const Text = React.forwardRef<HTMLDivElement, TextProps>(({ value, cssStyle }, ref) => {
   const text = typeof value.raw === 'string' ? value.raw : `${value.raw}`;
   if (value.format === 'md') {
     const Div = styled.div`
       ${cssStyle}
     `;
     return (
-      <Div>
+      <Div ref={ref}>
         <ReactMarkdown>{text}</ReactMarkdown>
       </Div>
     );
@@ -34,7 +35,7 @@ const Text: React.FC<TextProps> = ({ value, cssStyle }) => {
   const Span = styled.span`
     ${cssStyle}
   `;
-  return <Span>{text}</Span>;
-};
+  return <Span ref={ref}>{text}</Span>;
+});
 
 export default Text;

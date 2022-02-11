@@ -42,7 +42,7 @@ export default implementRuntimeComponent({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle }) => {
+})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle, elementRef }) => {
   return (
     <BaseVStack
       width="full"
@@ -55,6 +55,7 @@ export default implementRuntimeComponent({
       className={css`
         ${customStyle?.content}
       `}
+      ref={elementRef}
       {...{ direction, wrap, align, justify, spacing }}
     >
       {slotsElements.content}
