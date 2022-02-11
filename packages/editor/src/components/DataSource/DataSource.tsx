@@ -16,6 +16,7 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { Api } from './Api';
 import { State } from './State';
 import { EditorServices } from '../../types';
+import { ToolMenuTabs } from '../../services/enum';
 
 export enum DataSourceType {
   API = 'Api',
@@ -46,6 +47,7 @@ export const DataSource: React.FC<Props> = props => {
   const onStateItemClick = (state: ComponentSchema) => {
     editorStore.setActiveDataSource(state);
     editorStore.setActiveDataSourceType(DataSourceType.STATE);
+    editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
   };
   const onApiItemRemove = (api: ComponentSchema) => {
     editorStore.removeDataSource(api);
