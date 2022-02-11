@@ -1,9 +1,9 @@
-import { AppModel } from '../../AppModel/AppModel';
-import { BaseBranchOperation } from '../type';
+import { AppModel } from '../../../AppModel/AppModel';
+import { BaseBranchOperation } from '../../type';
 import {
   ModifyComponentIdLeafOperation,
   UpdateSelectComponentLeafOperation,
-} from '../leaf';
+} from '../../leaf';
 
 export type ModifyComponentIdBranchOperationContext = {
   componentId: string;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   VStack,
   Flex,
@@ -24,7 +24,6 @@ export enum DataSourceType {
 }
 
 interface Props {
-  components: ComponentSchema[];
   active: string;
   services: EditorServices;
 }
@@ -32,11 +31,9 @@ interface Props {
 const DATASOURCE_TYPES = [DataSourceType.API, DataSourceType.STATE];
 
 export const DataSource: React.FC<Props> = props => {
-  const { components, active, services } = props;
+  const { active, services } = props;
   const { editorStore } = services;
-  const { apis, states } = useMemo(() => {
-    return editorStore.getDataSources();
-  }, [components]);
+  const { apis, states } = editorStore.dataSources;
   const onMenuItemClick = (type: DataSourceType) => {
     editorStore.createDataSource(type);
   };

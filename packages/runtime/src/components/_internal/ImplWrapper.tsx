@@ -52,7 +52,6 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     return () => {
       apiService.off('uiMethod', handler);
       globalHandlerMap.delete(c.id);
-      delete stateManager.store[c.id];
     };
   }, [apiService, c.id, globalHandlerMap, handlerMap]);
 
@@ -155,7 +154,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     );
     // must keep this line, reason is the same as above
     setEvaledComponentProperties({ ...result });
-    return stop;
+
+    return ()=> {
+      stop();
+      delete stateManager.store[c.id];
+    };
   }, [c.properties, stateManager]);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };

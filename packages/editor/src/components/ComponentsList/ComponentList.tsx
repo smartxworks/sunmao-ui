@@ -48,7 +48,7 @@ function getTagColor(version: string): string {
   }
 }
 
-const IGNORE_COMPONENTS = ['Dummy'];
+const IGNORE_COMPONENTS = ['dummy'];
 
 export const ComponentList: React.FC<Props> = ({ services }) => {
   const { registry, editorStore } = services;
@@ -56,7 +56,7 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
-        if (IGNORE_COMPONENTS.includes(c.metadata.displayName)) {
+        if (IGNORE_COMPONENTS.includes(c.metadata.name)) {
           return false;
         } else if (!filterText) {
           return true;
