@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Text,
+  Input,
   AccordionItem,
   AccordionButton,
   AccordionIcon,
@@ -26,11 +27,16 @@ const STATE_MAP: Record<string, string> = {
 };
 
 export const State: React.FC<Props> = props => {
+  const [search, setSearch] = useState('');
   const { states, active, onItemClick, onItemRemove } = props;
+  const list = useMemo(
+    () => states.filter(({ id }) => id.includes(search)),
+    [search, states]
+  );
 
   const StateItems = () => (
     <>
-      {states.map(state => {
+      {list.map(state => {
         const trait = state.traits.find(({ type }) => type === 'core/v1/state');
         const properties = trait!.properties;
 
@@ -64,7 +70,14 @@ export const State: React.FC<Props> = props => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb="4" padding="0">
-        {states.length ? <StateItems /> : <Text padding="2">No States.</Text>}
+        <Input
+          placeholder="filter the states"
+          value={search}
+          onChange={e => {
+            setSearch(e.target.value);
+          }}
+        />
+        {list.length ? <StateItems /> : <Text padding="2">No States.</Text>}
       </AccordionPanel>
     </AccordionItem>
   );

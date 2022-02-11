@@ -85,6 +85,8 @@ export class EditorStore {
       () => this.selectedComponentId,
       () => {
         this.setToolMenuTab(ToolMenuTabs.INSPECT);
+        this.setActiveDataSource(null);
+        this.setActiveDataSourceType(null);
       });
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
@@ -260,6 +262,10 @@ export class EditorStore {
 
     this.setActiveDataSource(component!);
     this.setActiveDataSourceType(type);
+
+    if (type === DataSourceType.STATE) {
+      this.setToolMenuTab(ToolMenuTabs.INSPECT);
+    }
   };
 
   removeDataSource = (dataSource: ComponentSchema) => {
