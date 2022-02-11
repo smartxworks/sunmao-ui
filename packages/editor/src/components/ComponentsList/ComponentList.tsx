@@ -16,9 +16,12 @@ import {
   Registry,
 } from '@sunmao-ui/runtime';
 import { groupBy, sortBy } from 'lodash-es';
+import { EditorServices } from '../../types';
+import { ExplorerMenuTabs } from '../../services/enum';
 
 type Props = {
   registry: Registry;
+  services: EditorServices;
 };
 
 type Category = {
@@ -49,12 +52,17 @@ function getTagColor(version: string): string {
   }
 }
 
-export const ComponentList: React.FC<Props> = ({ registry }) => {
+const IGNORE_COMPONENTS = ['Dummy'];
+
+export const ComponentList: React.FC<Props> = ({ registry, services }) => {
+  const { editorStore } = services;
   const [filterText, setFilterText] = useState('');
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
-        if (!filterText) {
+        if (IGNORE_COMPONENTS.includes(c.metadata.displayName)) {
+          return false;
+        } else if (!filterText) {
           return true;
         }
         return new RegExp(filterText, 'i').test(c.metadata.displayName);
@@ -103,6 +111,8 @@ export const ComponentList: React.FC<Props> = ({ registry }) => {
                       ),
                       ''
                     );
+
+                    editorStore.setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
                   };
                   const cEle = (
                     <Flex

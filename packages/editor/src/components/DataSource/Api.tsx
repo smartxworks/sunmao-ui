@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Text,
+  Input,
   AccordionItem,
   AccordionButton,
   AccordionIcon,
@@ -26,10 +27,15 @@ interface Props {
 }
 
 export const Api: React.FC<Props> = props => {
+  const [search, setSearch] = useState('');
   const { apis, active, onItemClick, onItemRemove } = props;
+  const list = useMemo(
+    () => apis.filter(({ id }) => id.includes(search)),
+    [search, apis]
+  );
   const ApiItems = () => (
     <>
-      {apis.map(api => {
+      {list.map(api => {
         const trait = api.traits.find(({ type }) => type === 'core/v1/fetch');
         const properties = trait!.properties;
         const method = (
@@ -63,7 +69,14 @@ export const Api: React.FC<Props> = props => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb="4" padding="0">
-        {apis.length ? <ApiItems /> : <Text padding="2">No Apis.</Text>}
+        <Input
+          placeholder="filter the apis"
+          value={search}
+          onChange={e => {
+            setSearch(e.target.value);
+          }}
+        />
+        {list.length ? <ApiItems /> : <Text padding="2">No Apis.</Text>}
       </AccordionPanel>
     </AccordionItem>
   );

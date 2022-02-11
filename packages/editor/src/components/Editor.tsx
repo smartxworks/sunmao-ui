@@ -266,7 +266,7 @@ export const Editor: React.FC<Props> = observer(
                     )}
                   </TabPanel>
                   <TabPanel p={0}>
-                    <ComponentList registry={registry} />
+                    <ComponentList registry={registry} services={services} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
