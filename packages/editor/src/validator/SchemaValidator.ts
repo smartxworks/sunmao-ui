@@ -24,6 +24,7 @@ export class SchemaValidator implements ISchemaValidator {
     string,
     RuntimeComponent<string, string, string, string>
   > = {};
+
   private ajv!: Ajv;
   private validatorMap!: ValidatorMap;
 
@@ -127,7 +128,12 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   private initAjv() {
-    this.ajv = new Ajv({}).addKeyword('kind').addKeyword('modifier');
+    this.ajv = new Ajv({})
+      .addKeyword('kind')
+      .addKeyword('modifier')
+      .addKeyword('widget')
+      .addKeyword('weight')
+      .addKeyword('category');
 
     this.validatorMap = {
       components: {},
