@@ -10,6 +10,7 @@ export type FieldProps = {
   schema: Schema & EditorSchema;
   registry: Registry;
   stateManager: StateManager;
+  isTopLevel?: boolean;
   formData: any;
   onChange: (v: any) => void;
 };
