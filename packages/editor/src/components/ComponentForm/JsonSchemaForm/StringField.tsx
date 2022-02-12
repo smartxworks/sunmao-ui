@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FieldProps } from './fields';
-import { Input, Select } from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react';
+import { widgets } from './widgets/widgets';
 
 type Props = FieldProps;
 
@@ -25,8 +26,8 @@ const EnumField: React.FC<FieldProps> = props => {
 };
 
 const StringField: React.FC<Props> = props => {
-  const { schema, formData, onChange } = props;
-  const [value, setValue] = useState(formData);
+  const { schema, formData } = props;
+  const [, setValue] = useState(formData);
 
   useEffect(() => {
     setValue(formData);
@@ -37,13 +38,7 @@ const StringField: React.FC<Props> = props => {
     return <EnumField {...props} />;
   }
 
-  return (
-    <Input
-      value={value}
-      onChange={evt => setValue(evt.currentTarget.value)}
-      onBlur={evt => onChange(evt.currentTarget.value)}
-    />
-  );
+  return <widgets.expression {...props} />;
 };
 
 export default StringField;
