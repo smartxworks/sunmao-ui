@@ -1,10 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CodeMirror from 'codemirror';
-import { Box } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import {
+  Box,
+  IconButton,
+  Modal,
+  ModalOverlay,
+  ModalHeader,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { css, Global } from '@emotion/react';
+import { parseExpression } from '@sunmao-ui/runtime';
 import 'codemirror/mode/javascript/javascript';
-import 'codemirror/addon/fold/brace-fold';
-import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/mode/multiplex';
+import 'codemirror/addon/mode/overlay';
 // tern
 import 'codemirror/addon/tern/tern';
 import 'codemirror/addon/selection/active-line';
@@ -18,10 +30,56 @@ import tern, { Def } from 'tern';
 // TODO: tern uses global variable, maybe there is some workaround
 (window as unknown as { tern: typeof tern }).tern = tern;
 
+const checkIfCursorInsideBinding = (editor: CodeMirror.Editor): boolean => {
+  let cursorBetweenBinding = false;
+  const value = editor.getValue();
+  const cursorIndex = getCursorIndex(editor);
+  const chunks = parseExpression(value);
+  // count of chars processed
+  let current = 0;
+  chunks.forEach(chunk => {
+    if (typeof chunk === 'string') {
+      current += chunk.length;
+    } else {
+      const start = current + '{{'.length;
+      const end = start + chunk.join('').length + '}}'.length;
+      if (start <= cursorIndex && cursorIndex <= end) {
+        cursorBetweenBinding = true;
+      }
+      current = end;
+    }
+  });
+  return cursorBetweenBinding;
+};
+
+const getCursorIndex = (editor: CodeMirror.Editor) => {
+  const cursor = editor.getCursor();
+  let cursorIndex = cursor.ch;
+  if (cursor.line > 0) {
+    for (let lineIndex = 0; lineIndex < cursor.line; lineIndex++) {
+      const line = editor.getLine(lineIndex);
+      cursorIndex = cursorIndex + line.length + 1;
+    }
+  }
+  return cursorIndex;
+};
+
 function installTern(cm: CodeMirror.Editor) {
   const t = new CodeMirror.TernServer({ defs: [ecma as unknown as Def] });
   cm.on('cursorActivity', cm => t.updateArgHints(cm));
   cm.on('change', (_instance, change) => {
+    if (!checkIfCursorInsideBinding(_instance)) {
+      return;
+    }
+    if (
+      change.text
+        .concat(change.removed || [])
+        .join('')
+        .trim() === ''
+    ) {
+      // do not auto complete when input newline/space
+      return;
+    }
     if (
       // change happened
       change.text.length + (change.removed?.length || 0) > 0 &&
@@ -34,18 +92,84 @@ function installTern(cm: CodeMirror.Editor) {
   return t;
 }
 
-export const ExpressionEditor: React.FC<{
+CodeMirror.defineMode('text-js', config => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: No types available
+  return CodeMirror.multiplexingMode(CodeMirror.getMode(config, 'text/plain'), {
+    open: '{{',
+    close: '}}',
+    mode: CodeMirror.getMode(config, {
+      name: 'javascript',
+    }),
+  });
+});
+
+CodeMirror.defineMode('sunmao-ui', (config, parseConfig) => {
+  return CodeMirror.overlayMode(
+    CodeMirror.getMode(config, parseConfig.backdrop || 'text-js'),
+    {
+      startState: () => ({
+        inExpression: false,
+      }),
+      token: (stream, state) => {
+        let ch: string | null = null;
+        if (!state.inExpression && stream.match('{{')) {
+          state.inExpression = true;
+        }
+        if (state.inExpression) {
+          while ((ch = stream.next()) != null) {
+            const next = stream.next();
+            if (ch === '}' && next === '}') {
+              stream.eat('}');
+              state.inExpression = false;
+            }
+          }
+          return 'sunmao-ui';
+        }
+        while (stream.next() != null && !stream.match('{{', false)) {
+          // loop
+        }
+        return null;
+      },
+    },
+    true
+  );
+});
+
+type EditorProps = {
   defaultCode: string;
   onChange?: (v: string) => void;
   onBlur?: (v: string) => void;
-  lineNumbers?: boolean;
   defs?: tern.Def[];
-}> = ({ defaultCode, onChange, onBlur, lineNumbers, defs }) => {
+  compact?: boolean;
+};
+
+export const BaseExpressionEditor: React.FC<EditorProps> = ({
+  defaultCode,
+  onChange,
+  onBlur,
+  defs,
+  compact,
+}) => {
   const style = css`
     .CodeMirror {
       width: 100%;
       height: 100%;
-      padding: 2px 0;
+      padding: 2px ${compact ? '8px' : 0};
+      border-radius: var(--chakra-radii-sm);
+      border: 2px solid;
+      border-color: var(--chakra-colors-transparent);
+      background: var(--chakra-colors-gray-100);
+      color: var(--chakra-colors-gray-800);
+      transition-property: var(--chakra-transition-property-common);
+      transition-duration: var(--chakra-transition-duration-normal);
+      &:hover {
+        background: var(--chakra-colors-gray-200);
+      }
+
+      .cm-sunmao-ui {
+        background: var(--chakra-colors-green-100);
+      }
     }
   `;
 
@@ -60,23 +184,26 @@ export const ExpressionEditor: React.FC<{
       cm.current = CodeMirror(wrapperEl.current, {
         value: defaultCode,
         mode: {
-          name: 'javascript',
-          json: true,
+          name: 'sunmao-ui',
         },
-        foldGutter: true,
         lineWrapping: true,
-        lineNumbers,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        foldOptions: {
-          widget: () => {
-            return '\u002E\u002E\u002E';
-          },
-        },
-        theme: 'ayu-mirage',
+        theme: 'neat',
         viewportMargin: Infinity,
         hintOptions: {
           completeSingle: false,
         },
+        ...(compact
+          ? {}
+          : {
+              lineNumbers: true,
+              foldGutter: true,
+              gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+              foldOptions: {
+                widget: () => {
+                  return '\u002E\u002E\u002E';
+                },
+              },
+            }),
       });
       const t = installTern(cm.current);
       tServer.current = t.server;
@@ -93,7 +220,7 @@ export const ExpressionEditor: React.FC<{
       cm.current?.off('change', changeHandler);
       cm.current?.off('blur', blurHandler);
     };
-  }, [defaultCode, lineNumbers, onChange, onBlur]);
+  }, [defaultCode, onChange, onBlur, compact]);
   useEffect(() => {
     if (defs) {
       tServer.current?.deleteDefs('customDataTree');
@@ -102,13 +229,79 @@ export const ExpressionEditor: React.FC<{
   }, [defs]);
 
   return (
-    <Box
-      css={style}
-      ref={wrapperEl}
-      height="100%"
-      width="100%"
-      borderRadius="2"
-      overflow="hidden"
-    />
+    <Box css={style} ref={wrapperEl} height="100%" width="100%" overflow="hidden">
+      <Global
+        styles={{
+          '.CodeMirror-hints': {
+            zIndex: 1800,
+          },
+        }}
+      />
+    </Box>
+  );
+};
+
+export const ExpressionEditor: React.FC<EditorProps> = props => {
+  const style = css`
+    .expand-icon {
+      display: none;
+    }
+    &:hover,
+    &:focus-within {
+      .expand-icon {
+        display: inherit;
+      }
+    }
+  `;
+  const [showModal, setShowModal] = useState(false);
+  const [renderKey, setRenderKey] = useState(0);
+  const onClose = () => {
+    setShowModal(false);
+    setRenderKey(renderKey + 1);
+  };
+
+  return (
+    <Box position="relative" css={style}>
+      {/* Force re-render CodeMirror when editted in modal, since it's not reactive */}
+      <BaseExpressionEditor {...props} key={renderKey} compact />
+      <IconButton
+        aria-label="expand editor"
+        position="absolute"
+        right="0"
+        bottom="0"
+        size="xs"
+        variant="ghost"
+        colorScheme="blue"
+        zIndex="9"
+        className="expand-icon"
+        onClick={() => setShowModal(true)}
+      >
+        <ExternalLinkIcon />
+      </IconButton>
+      {showModal && (
+        <Modal
+          size="xl"
+          isOpen
+          onClose={onClose}
+          closeOnEsc={false}
+          closeOnOverlayClick={false}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Expression Editor</ModalHeader>
+            <ModalBody>
+              <Box height="500">
+                <BaseExpressionEditor {...props} compact={false} />
+              </Box>
+            </ModalBody>
+            <ModalFooter>
+              <Button size="sm" colorScheme="blue" onClick={onClose}>
+                Done
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </Box>
   );
 };

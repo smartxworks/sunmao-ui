@@ -59,7 +59,7 @@ export const SchemaEditor: React.FC<{
     return () => {
       cm.current?.off('change', handler);
     };
-  }, [defaultCode]);
+  }, [defaultCode, onChange]);
 
-  return <Box className={style} ref={wrapperEl} height="100%" width="100%"></Box>;
+  return <Box className={style} ref={wrapperEl} height="100%" width="100%" />;
 };
