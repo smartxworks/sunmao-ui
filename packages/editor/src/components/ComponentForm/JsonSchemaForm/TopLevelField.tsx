@@ -32,14 +32,13 @@ const TopLevelField: React.FC<FieldProps> = props => {
     const properties = (schema.properties || {}) as Property;
     Object.keys(properties).forEach(name => {
       const schema = properties[name];
-      if (!schema.title) {
-        schema.name = name;
-      }
+      schema.name = name;
     });
     const grouped = groupBy(properties, c => c.category || 'Basic');
+
     return Object.keys(grouped).map(name => ({
       name,
-      schemas: sortBy(grouped[name], c => c.weight || -Infinity),
+      schemas: sortBy(grouped[name],'weight'),
     }));
   }, [schema.properties]);
 
@@ -58,7 +57,7 @@ const TopLevelField: React.FC<FieldProps> = props => {
             </AccordionButton>
             <AccordionPanel bg="white">
               {schemas.map(schema => {
-                const name = schema.title || schema.name;
+                const name = schema.name;
                 if (typeof schema === 'boolean') {
                   return null;
                 }
@@ -66,7 +65,7 @@ const TopLevelField: React.FC<FieldProps> = props => {
                   <SchemaField
                     key={name}
                     schema={schema}
-                    label={name!}
+                    label={schema.title || name!}
                     formData={formData?.[name!]}
                     onChange={value => {
                       onChange({
