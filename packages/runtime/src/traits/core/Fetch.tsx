@@ -16,6 +16,7 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
   subscribeMethods,
   componentId,
   onComplete,
+  onError,
 }) => {
   const hashId = `#${componentId}@${'fetch'}`;
   const hasFetched = hasFetchedMap.get(hashId);
@@ -75,6 +76,13 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
               error,
             },
           });
+          onError?.forEach(event => {
+            services.apiService.send('uiMethod', {
+              componentId: event.componentId,
+              name: event.method.name,
+              parameters: event.method.parameters,
+            });
+          });
         }
       },
       async error => {
@@ -85,6 +93,13 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
             data: undefined,
             error: error instanceof Error ? error : new Error(error),
           },
+        });
+        onError?.forEach(event => {
+          services.apiService.send('uiMethod', {
+            componentId: event.componentId,
+            name: event.method.name,
+            parameters: event.method.parameters,
+          });
         });
       }
     );

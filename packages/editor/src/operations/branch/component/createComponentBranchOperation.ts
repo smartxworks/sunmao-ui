@@ -1,12 +1,12 @@
-import { AppModel } from '../../AppModel/AppModel';
+import { AppModel } from '../../../AppModel/AppModel';
 import ReactGridLayout from 'react-grid-layout';
 import produce from 'immer';
-import { ComponentId, ComponentType, SlotName } from '../../AppModel/IAppModel';
+import { ComponentId, ComponentType, SlotName } from '../../../AppModel/IAppModel';
 import {
   CreateComponentLeafOperation,
   ModifyComponentPropertiesLeafOperation,
-} from '../leaf';
-import { BaseBranchOperation } from '../type';
+} from '../../leaf';
+import { BaseBranchOperation } from '../../type';
 
 export type CreateComponentBranchOperationContext = {
   componentType: string;
