@@ -6,12 +6,18 @@ import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
+import { DataSourceType } from '../components/DataSource';
+import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from './enum';
 
 type EditingTarget = {
   kind: 'app' | 'module';
   version: string;
   name: string;
+};
+type DataSources = {
+  apis: ComponentSchema[];
+  states: ComponentSchema[];
 };
 
 export class EditorStore {
@@ -36,6 +42,10 @@ export class EditorStore {
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
   schemaValidator: SchemaValidator;
+
+  // data source
+  activeDataSource: ComponentSchema | null = null;
+  activeDataSourceType: DataSourceType | null = null;
 
   constructor(
     private eventBus: EventBusType,
@@ -82,7 +92,10 @@ export class EditorStore {
       () => this.selectedComponentId,
       () => {
         this.setToolMenuTab(ToolMenuTabs.INSPECT);
-      });
+        this.setActiveDataSource(null);
+        this.setActiveDataSourceType(null);
+      }
+    );
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
   }
@@ -132,6 +145,27 @@ export class EditorStore {
       case 'app':
         return this.app.spec.components;
     }
+  }
+
+  get dataSources(): DataSources {
+    const apis: ComponentSchema[] = [];
+    const states: ComponentSchema[] = [];
+
+    this.components.forEach(component => {
+      if (component.type === 'core/v1/dummy') {
+        component.traits.forEach(trait => {
+          if (trait.type === 'core/v1/fetch') {
+            apis.push(component);
+          }
+
+          if (trait.type === 'core/v1/state') {
+            states.push(component);
+          }
+        });
+      }
+    });
+
+    return { apis, states };
   }
 
   clearSunmaoGlobalState() {
@@ -185,13 +219,71 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
+  setActiveDataSource = (dataSource: ComponentSchema | null) => {
+    this.activeDataSource = dataSource;
+  };
+
+  setActiveDataSourceType = (dataSourceType: DataSourceType | null) => {
+    this.activeDataSourceType = dataSourceType;
+  };
+
+  createDataSource = (type: DataSourceType) => {
+    const { apis, states } = this.dataSources;
+    const id =
+      type === DataSourceType.API ? `api${apis.length}` : `state${states.length}`;
+
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'createDataSource', {
+        id,
+        type
+      })
+    );
+
+    const component = this.components.find(({ id: componentId }) => id === componentId);
+
+    this.setActiveDataSource(component!);
+    this.setActiveDataSourceType(type);
+
+    if (type === DataSourceType.STATE) {
+      this.setToolMenuTab(ToolMenuTabs.INSPECT);
+    }
+  };
+
+  removeDataSource = (dataSource: ComponentSchema) => {
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'removeComponent', {
+        componentId: dataSource.id,
+      })
+    );
+    if (this.activeDataSource?.id === dataSource.id) {
+      this.setActiveDataSource(null);
+      this.setActiveDataSourceType(null);
+    }
+  };
+
+  changeDataSourceName = (dataSource: ComponentSchema, name: string) => {
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'modifyComponentId', {
+        componentId: dataSource.id,
+        newId: name,
+      })
+    );
+
+    const component = this.components.find(({ id: componentId }) => componentId === name);
+
+    this.setActiveDataSource(component!);
+  };
+
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
     this.explorerMenuTab = val;
-  }
+  };
 
   setToolMenuTab = (val: ToolMenuTabs) => {
     this.toolMenuTab = val;
-  }
+  };
 
   setIsDraggingNewComponent = (val: boolean) => {
     this.isDraggingNewComponent = val;

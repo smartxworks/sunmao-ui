@@ -4,7 +4,7 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentItemView } from './ComponentItemView';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
-import { genOperation as genOperation } from '../../operations';
+import { genOperation } from '../../operations';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
 import { EditorServices } from '../../types';
@@ -21,9 +21,8 @@ type Props = {
 
 export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, services } = props;
-  const { eventBus, registry } = services;
 
-  const [realComponents, dataSources] = useMemo(() => {
+  const [realComponents] = useMemo(() => {
     const _realComponent: ComponentSchema[] = [];
     const _datasources: ComponentSchema[] = [];
     components.forEach(c => {
@@ -52,32 +51,6 @@ export const StructureTree: React.FC<Props> = props => {
     ));
   }, [realComponents, selectedComponentId, onSelectComponent, services]);
 
-  const dataSourceEles = useMemo(() => {
-    return dataSources.map(dummy => {
-      const onClickRemove = () => {
-        eventBus.send(
-          'operation',
-          genOperation(registry, 'removeComponent', {
-            componentId: dummy.id,
-          })
-        );
-      };
-      return (
-        <ComponentItemView
-          id={dummy.id}
-          key={dummy.id}
-          title={dummy.id}
-          isSelected={dummy.id === selectedComponentId}
-          onClick={() => {
-            onSelectComponent(dummy.id);
-          }}
-          onClickRemove={onClickRemove}
-          noChevron={true}
-        />
-      );
-    });
-  }, [dataSources, selectedComponentId, eventBus, registry, onSelectComponent]);
-
   return (
     <VStack spacing="2" padding="5" alignItems="start">
       <Text fontSize="lg" fontWeight="bold">
@@ -85,10 +58,6 @@ export const StructureTree: React.FC<Props> = props => {
       </Text>
       <RootItem services={services} />
       {componentEles}
-      <Text fontSize="lg" fontWeight="bold">
-        DataSources
-      </Text>
-      {dataSourceEles}
     </VStack>
   );
 };

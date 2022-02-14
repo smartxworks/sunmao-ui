@@ -14,12 +14,16 @@ import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer, SchemaEditor } from './CodeEditor';
 import { Explorer } from './Explorer';
+import { DataSource, DataSourceType } from './DataSource';
+import { ApiForm } from './DataSource/ApiForm';
+import { StateForm } from './DataSource/StateForm';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
+import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
@@ -32,17 +36,28 @@ type Props = {
   services: EditorServices;
 };
 
+const ApiFormStyle = css`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+`;
+
 export const Editor: React.FC<Props> = observer(
   ({ App, registry, stateStore, services }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
       selectedComponentId,
+      modules,
+      activeDataSource,
+      activeDataSourceType,
       toolMenuTab,
       explorerMenuTab,
       setToolMenuTab,
       setExplorerMenuTab,
-      modules,
     } = editorStore;
 
     const [scale, setScale] = useState(100);
@@ -53,10 +68,12 @@ export const Editor: React.FC<Props> = observer(
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
     useEffect(() => {
-      watch(store, newValue => {
-        setStore(JSON.parse(JSON.stringify(newValue)));
+      const stop = watch(stateStore, newValue => {
+        setStore({ ...newValue });
       });
-    }, [store]);
+
+      return stop;
+    }, [stateStore]);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -163,9 +180,10 @@ export const Editor: React.FC<Props> = observer(
             minWidth="280px"
             borderRightWidth="1px"
             borderColor="gray.200"
+            position="relative"
+            zIndex="2"
           >
             <Tabs
-              align="center"
               height="100%"
               display="flex"
               flexDirection="column"
@@ -176,9 +194,10 @@ export const Editor: React.FC<Props> = observer(
                 setExplorerMenuTab(activatedTab);
               }}
             >
-              <TabList background="gray.50">
+              <TabList background="gray.50" overflow="auto" whiteSpace="nowrap">
                 <Tab>Explorer</Tab>
                 <Tab>UI Tree</Tab>
+                <Tab>DataSource</Tab>
                 <Tab>State</Tab>
               </TabList>
               <TabPanels flex="1" overflow="auto">
@@ -189,7 +208,15 @@ export const Editor: React.FC<Props> = observer(
                   <StructureTree
                     components={components}
                     selectedComponentId={selectedComponentId}
-                    onSelectComponent={id => editorStore.setSelectedComponentId(id)}
+                    onSelectComponent={id => {
+                      editorStore.setSelectedComponentId(id);
+                    }}
+                    services={services}
+                  />
+                </TabPanel>
+                <TabPanel p={0}>
+                  <DataSource
+                    active={activeDataSource?.id ?? ''}
                     services={services}
                   />
                 </TabPanel>
@@ -199,39 +226,55 @@ export const Editor: React.FC<Props> = observer(
               </TabPanels>
             </Tabs>
           </Box>
-          {appBox}
-          <Box
-            width="320px"
-            minWidth="320px"
-            borderLeftWidth="1px"
-            borderColor="gray.200"
-            overflow="auto"
-          >
-            <Tabs
-              align="center"
-              textAlign="left"
-              height="100%"
-              display="flex"
-              flexDirection="column"
-              index={toolMenuTab}
-              onChange={activatedTab => {
-                setToolMenuTab(activatedTab);
-              }}
+          <Flex flex={1} position="relative">
+            {appBox}
+            <Box
+              width="320px"
+              minWidth="320px"
+              borderLeftWidth="1px"
+              borderColor="gray.200"
+              overflow="auto"
+              position="relative"
+              zIndex="0"
             >
-              <TabList background="gray.50">
-                <Tab>Inspect</Tab>
-                <Tab>Insert</Tab>
-              </TabList>
-              <TabPanels flex="1" overflow="auto" background="gray.50">
-                <TabPanel p={0}>
-                  <ComponentForm services={services} />
-                </TabPanel>
-                <TabPanel p={0}>
-                  <ComponentList services={services} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </Box>
+              <Tabs
+                align="center"
+                textAlign="left"
+                height="100%"
+                display="flex"
+                flexDirection="column"
+                index={toolMenuTab}
+                onChange={activatedTab => {
+                  setToolMenuTab(activatedTab);
+                }}
+              >
+                <TabList background="gray.50">
+                  <Tab>Inspect</Tab>
+                  <Tab>Insert</Tab>
+                </TabList>
+                <TabPanels flex="1" overflow="auto" background="gray.50">
+                  <TabPanel p={0}>
+                    {activeDataSource && activeDataSourceType === DataSourceType.STATE ? (
+                      <StateForm state={activeDataSource} services={services} />
+                    ) : (
+                      <ComponentForm services={services} />
+                    )}
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    <ComponentList services={services} />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </Box>
+            {activeDataSource && activeDataSourceType === DataSourceType.API ? (
+              <ApiForm
+                api={activeDataSource}
+                services={services}
+                store={store}
+                className={ApiFormStyle}
+              />
+            ) : null}
+          </Flex>
         </>
       );
     };

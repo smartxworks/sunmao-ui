@@ -8,6 +8,8 @@ import {
   RemoveComponentBranchOperationContext,
   MoveComponentBranchOperation,
   MoveComponentBranchOperationContext,
+  CreateDataSourceBranchOperation,
+  CreateDataSourceBranchOperationContext,
 } from './branch';
 import {
   AdjustComponentOrderLeafOperation,
@@ -42,6 +44,7 @@ const OperationConstructors: Record<
   replaceApp: ReplaceAppLeafOperation,
   pasteComponent: PasteComponentLeafOperation,
   moveComponent: MoveComponentBranchOperation,
+  createDataSource: CreateDataSourceBranchOperation,
 };
 
 type OperationTypes = keyof OperationConfigMaps;
@@ -95,12 +98,16 @@ type OperationConfigMaps = {
     MoveComponentBranchOperation,
     MoveComponentBranchOperationContext
   >;
+  createDataSource: OperationConfigMap<
+    CreateDataSourceBranchOperation,
+    CreateDataSourceBranchOperationContext
+  >;
 };
 
 export const genOperation = <T extends OperationTypes>(
   registry: Registry,
   type: T,
-  context: OperationConfigMaps[T]['context'],
+  context: OperationConfigMaps[T]['context']
 ): IOperation => {
   const OperationConstructor = OperationConstructors[
     type
