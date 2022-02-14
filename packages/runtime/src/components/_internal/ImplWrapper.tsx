@@ -154,8 +154,12 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     );
     // must keep this line, reason is the same as above
     setEvaledComponentProperties({ ...result });
+
     return stop;
   }, [c.properties, stateManager]);
+  useEffect(()=> {
+    delete stateManager.store[c.id];
+  }, []);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 

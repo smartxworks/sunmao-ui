@@ -4,8 +4,8 @@ import {
   FormLabel,
   FormHelperText,
   FormErrorMessage,
-  Text,
   Button,
+  Tooltip
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
 import { AnyKind, UnknownKind } from '@sinclair/typebox';
@@ -19,6 +19,7 @@ import BooleanField from './BooleanField';
 import NumberField from './NumberField';
 import NullField from './NullField';
 import MultiSchemaField from './MultiSchemaField';
+import TopLevelField from './TopLevelField';
 import UnsupportedField from './UnsupportedField';
 
 type TemplateProps = {
@@ -57,7 +58,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
   return (
     <FormControl isRequired={required} id={id} mt="1">
       {displayLabel && (
-        <>
+        <Tooltip label={description} placement='auto-start'>
           <FormLabel>
             {label}
             {codeMode && (
@@ -72,8 +73,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
               </Button>
             )}
           </FormLabel>
-          {description && <Text fontSize="sm">{description}</Text>}
-        </>
+        </Tooltip>
       )}
       {children}
       {errors && <FormErrorMessage>{errors}</FormErrorMessage>}
@@ -87,7 +87,7 @@ type Props = FieldProps & {
 };
 
 const SchemaField: React.FC<Props> = props => {
-  const { schema, label, formData, onChange, registry, stateManager } = props;
+  const { schema, isTopLevel, label, formData, onChange, registry, stateManager } = props;
   const [isExpression, setIsExpression] = useState(() => _isExpression(formData));
 
   if (isEmpty(schema)) {
@@ -101,6 +101,8 @@ const SchemaField: React.FC<Props> = props => {
     Component = widgets.expression;
   } else if (schema.widget && widgets[schema.widget]) {
     Component = widgets[schema.widget];
+  } else if (isTopLevel) {
+    Component = TopLevelField;
   }
   // type fields
   else if (schema.type === 'object') {

@@ -43,26 +43,20 @@ export const renderField = (properties: {
   if (typeof value !== 'object') {
     const ref = React.createRef<HTMLTextAreaElement>();
     const onBlur = () => {
-      const operation = type ? genOperation(
-        registry,
-        'modifyTraitProperty',
-        {
-          componentId: selectedComponentId,
-          traitIndex: index,
-          properties: {
-            [fullKey]: ref.current?.value,
-          },
-        }
-      ) : genOperation(
-        registry,
-        'modifyComponentProperty',
-        {
-          componentId: selectedComponentId,
-          properties: {
-            [fullKey]: ref.current?.value,
-          },
-        }
-      );
+      const operation = type
+        ? genOperation(registry, 'modifyTraitProperty', {
+            componentId: selectedComponentId,
+            traitIndex: index,
+            properties: {
+              [fullKey]: ref.current?.value,
+            },
+          })
+        : genOperation(registry, 'modifyComponentProperty', {
+            componentId: selectedComponentId,
+            properties: {
+              [fullKey]: ref.current?.value,
+            },
+          });
       eventBus.send('operation', operation);
     };
     const onChange = (event: any) => {
@@ -120,6 +114,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         newId: value,
       })
     );
+    editorStore.setSelectedComponentId(value);
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -145,19 +140,13 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         </FormControl>
         <VStack width="full" alignItems="start">
           <strong>Properties</strong>
-          <VStack
-            width="full"
-            padding="2"
-            background="white"
-            border="1px solid"
-            borderColor="gray.200"
-            borderRadius="4"
-          >
+          <VStack width="full" background="white">
             <SchemaField
               schema={cImpl.spec.properties}
               label=""
               key={selectedComponent.id}
               formData={properties}
+              isTopLevel={true}
               onChange={newFormData => {
                 eventBus.send(
                   'operation',
@@ -173,7 +162,13 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           </VStack>
         </VStack>
         <EventTraitForm component={selectedComponent} services={services} />
-        { hasFetchTrait ? <FetchTraitForm key={selectedComponent.id} component={selectedComponent} services={services} /> : null }
+        {hasFetchTrait ? (
+          <FetchTraitForm
+            key={selectedComponent.id}
+            component={selectedComponent}
+            services={services}
+          />
+        ) : null}
         <StyleTraitForm component={selectedComponent} services={services} />
         <GeneralTraitFormList component={selectedComponent} services={services} />
       </VStack>

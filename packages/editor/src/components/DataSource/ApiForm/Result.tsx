@@ -6,10 +6,9 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
 
-export const SchemaEditor: React.FC<{
+export const Result: React.FC<{
   defaultCode: string;
-  onChange: (v: string) => void;
-}> = ({ defaultCode, onChange }) => {
+}> = ({ defaultCode }) => {
   const style = css`
     .CodeMirror {
       width: 100%;
@@ -19,6 +18,7 @@ export const SchemaEditor: React.FC<{
 
   const wrapperEl = useRef<HTMLDivElement>(null);
   const cm = useRef<CodeMirror.Editor | null>(null);
+
   useEffect(() => {
     if (!wrapperEl.current) {
       return;
@@ -39,27 +39,14 @@ export const SchemaEditor: React.FC<{
             return '\u002E\u002E\u002E';
           },
         },
-        theme: 'ayu-mirage',
-        /**
-         * Codemirror has a serach addon which can search all the content
-         * without render all.
-         * But it's search behavior is differnet with popular code editors
-         * and the native UX of the browser:
-         * https://github.com/codemirror/CodeMirror/issues/4491#issuecomment-284741358
-         * So since our schema is not that large, currently we will render
-         * all content to support native search.
-         */
         viewportMargin: Infinity,
+        readOnly: true,
       });
     }
-    const handler = (instance: CodeMirror.Editor) => {
-      onChange(instance.getValue());
-    };
-    cm.current.on('change', handler);
-    return () => {
-      cm.current?.off('change', handler);
-    };
-  }, [defaultCode, onChange]);
+    setTimeout(() => {
+      cm.current?.refresh();
+    });
+  }, [defaultCode]);
 
   return <Box className={style} ref={wrapperEl} height="100%" width="100%" />;
 };

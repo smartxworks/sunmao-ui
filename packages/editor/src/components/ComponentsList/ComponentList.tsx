@@ -13,6 +13,7 @@ import {
 import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
 import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';
+import { ExplorerMenuTabs } from '../../services/enum';
 import { RuntimeComponent } from '@sunmao-ui/core';
 
 type Props = {
@@ -47,13 +48,17 @@ function getTagColor(version: string): string {
   }
 }
 
+const IGNORE_COMPONENTS = ['dummy'];
+
 export const ComponentList: React.FC<Props> = ({ services }) => {
   const { registry, editorStore } = services;
   const [filterText, setFilterText] = useState('');
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
-        if (!filterText) {
+        if (IGNORE_COMPONENTS.includes(c.metadata.name)) {
+          return false;
+        } else if (!filterText) {
           return true;
         }
         return new RegExp(filterText, 'i').test(c.metadata.displayName);
@@ -102,6 +107,8 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
                       ),
                       ''
                     );
+
+                    editorStore.setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
                     editorStore.setIsDraggingNewComponent(true);
                   };
                   const onDragEnd = () => {
