@@ -1,16 +1,17 @@
 import { AppModel } from '../../../AppModel/AppModel';
 import { BaseBranchOperation } from '../../type';
 import {
-  CreateTraitLeafOperation,
-  ModifyTraitPropertiesLeafOperation,
-  RemoveTraitLeafOperation,
+  AdjustComponentOrderLeafOperation,
+  MoveComponentLeafOperation,
 } from '../../leaf';
 import { ComponentId } from '../../../AppModel/IAppModel';
 
 export type MoveComponentBranchOperationContext = {
   fromId: string;
-  toId: string;
-  slot: string;
+  toId?: string;
+  slot?: string;
+  targetId?: string;
+  direction?: 'prev' | 'next';
 };
 
 export class MoveComponentBranchOperation extends BaseBranchOperation<MoveComponentBranchOperationContext> {
@@ -18,36 +19,24 @@ export class MoveComponentBranchOperation extends BaseBranchOperation<MoveCompon
     const from = prev.getComponentById(this.context.fromId as ComponentId);
     if (!from) return prev;
 
-    const traitIndex = from.traits.findIndex(t => t.type === 'core/v1/slot');
-
-    if (this.context.toId === '__root__') {
+    if (from.parentId !== this.context.toId || from.parentSlot !== this.context.slot) {
       this.operationStack.insert(
-        new RemoveTraitLeafOperation(this.registry, {
+        new MoveComponentLeafOperation(this.registry, {
           componentId: this.context.fromId,
-          index: traitIndex,
+          parent: this.context.toId,
+          slot: this.context.slot,
         })
       );
-    } else {
-      const newSlotProperties = {
-        container: { id: this.context.toId, slot: this.context.slot },
-      };
-      if (traitIndex > -1) {
-        this.operationStack.insert(
-          new ModifyTraitPropertiesLeafOperation(this.registry, {
-            componentId: this.context.fromId,
-            traitIndex,
-            properties: newSlotProperties,
-          })
-        );
-      } else {
-        this.operationStack.insert(
-          new CreateTraitLeafOperation(this.registry, {
-            componentId: this.context.fromId,
-            traitType: 'core/v1/slot',
-            properties: newSlotProperties,
-          })
-        );
-      }
+    }
+
+    if (this.context.targetId && this.context.direction) {
+      this.operationStack.insert(
+        new AdjustComponentOrderLeafOperation(this.registry, {
+          componentId: this.context.fromId as ComponentId,
+          targetId: this.context.targetId as ComponentId,
+          direction: this.context.direction,
+        })
+      );
     }
 
     return this.operationStack.reduce((prev, node) => {
