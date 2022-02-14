@@ -22,6 +22,7 @@ import 'codemirror/addon/tern/tern';
 import 'codemirror/addon/selection/active-line';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/display/autorefresh';
 import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
 import ecma from '../../constants/ecmascript';
@@ -192,6 +193,7 @@ export const BaseExpressionEditor: React.FC<EditorProps> = ({
         hintOptions: {
           completeSingle: false,
         },
+        autoRefresh: { delay: 50 },
         ...(compact
           ? {}
           : {
