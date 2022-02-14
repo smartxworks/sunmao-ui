@@ -134,7 +134,8 @@ export const Editor: React.FC<Props> = observer(
       if (isError) {
         setRecoverKey(recoverKey + 1);
       }
-    }, [app, isError]);  // it only should depend on the app schema to update
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [app, isError]); // it only should depend on the app schema and `isError` to update
     useEffect(() => {
       const stop = watch(stateStore, newValue => {
         setStore({ ...newValue });
@@ -219,12 +220,6 @@ export const Editor: React.FC<Props> = observer(
                     onSelectComponent={id => {
                       editorStore.setSelectedComponentId(id);
                     }}
-                    services={services}
-                  />
-                </TabPanel>
-                <TabPanel p={0}>
-                  <DataSource
-                    active={activeDataSource?.id ?? ''}
                     services={services}
                   />
                 </TabPanel>
