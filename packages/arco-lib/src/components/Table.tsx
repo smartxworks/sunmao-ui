@@ -281,7 +281,6 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
     })),
   pagination: {
     pageSize: 6,
-    current: 0,
   },
   tableLayoutFixed: false,
   borderCell: false,
