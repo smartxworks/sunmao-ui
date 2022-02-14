@@ -91,7 +91,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   get prevSilbling() {
-    let components:IComponentModel[];
+    let components: IComponentModel[];
     if (!this.parent) {
       components = this.appModel.topComponents;
     } else {
@@ -103,7 +103,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   get nextSilbing() {
-    let components:IComponentModel[];
+    let components: IComponentModel[];
     if (!this.parent) {
       components = this.appModel.topComponents;
     } else {
@@ -131,7 +131,13 @@ export class ComponentModel implements IComponentModel {
       this._isDirty = false;
       const newProperties = this.rawProperties;
       const newTraits = this.traits.map(t => t.toSchema());
-      const newSchema = genComponent(this.registry, this.type, this.id, newProperties, newTraits);
+      const newSchema = genComponent(
+        this.registry,
+        this.type,
+        this.id,
+        newProperties,
+        newTraits
+      );
       this.schema = newSchema;
     }
     return this.schema;
@@ -238,6 +244,8 @@ export class ComponentModel implements IComponentModel {
   appendChild(child: IComponentModel, slot: SlotName) {
     if (child.parent) {
       child.parent.removeChild(child);
+    } else {
+      child.appModel.removeComponent(child.id);
     }
     if (!this.children[slot]) {
       this.children[slot] = [];

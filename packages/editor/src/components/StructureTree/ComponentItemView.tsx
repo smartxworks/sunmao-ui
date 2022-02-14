@@ -1,12 +1,6 @@
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  DeleteIcon,
-} from '@chakra-ui/icons';
+import { ChevronDownIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import React from 'react';
 
 type Props = {
   id: string;
@@ -17,10 +11,6 @@ type Props = {
   noChevron: boolean;
   isExpanded?: boolean;
   onToggleExpanded?: () => void;
-  isDroppable?: boolean;
-  isSortable?: boolean;
-  onMoveUp?: () => void;
-  onMoveDown?: () => void;
 };
 
 export const ComponentItemView: React.FC<Props> = props => {
@@ -33,13 +23,7 @@ export const ComponentItemView: React.FC<Props> = props => {
     onClick,
     onToggleExpanded,
     onClickRemove,
-    isDroppable,
-    isSortable = false,
-    onMoveUp,
-    onMoveDown,
   } = props;
-
-  const [isDragOver, setIsDragOver] = useState(false);
 
   const expandIcon = (
     <IconButton
@@ -56,27 +40,12 @@ export const ComponentItemView: React.FC<Props> = props => {
     />
   );
 
-  const onDragOver = () => {
-    if (isDroppable) {
-      setIsDragOver(true);
-    }
-  };
-
   const onDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('moveComponent', id);
-  }
+  };
 
   return (
-    <Box
-      width="full"
-      onDragStart={onDragStart}
-      // onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
-      onDragLeave={() => setIsDragOver(false)}
-      onDrop={() => setIsDragOver(false)}
-      background={isDragOver ? 'gray.100' : undefined}
-      draggable
-    >
+    <Box width="full" padding="1" onDragStart={onDragStart} draggable>
       {noChevron ? null : expandIcon}
       <HStack width="full" justify="space-between">
         <Text
@@ -89,35 +58,15 @@ export const ComponentItemView: React.FC<Props> = props => {
         >
           {title}
         </Text>
-        <HStack spacing="1">
-          {onClickRemove ? (
-            <IconButton
-              variant="ghost"
-              size="smx"
-              aria-label="remove"
-              icon={<DeleteIcon />}
-              onClick={onClickRemove}
-            />
-          ) : null}
-          {isSortable ? (
-            <>
-              <IconButton
-                variant="ghost"
-                size="smx"
-                aria-label="remove"
-                icon={<ArrowUpIcon />}
-                onClick={onMoveUp}
-              />
-              <IconButton
-                variant="ghost"
-                size="smx"
-                aria-label="remove"
-                icon={<ArrowDownIcon />}
-                onClick={onMoveDown}
-              />
-            </>
-          ) : null}
-        </HStack>
+        {onClickRemove ? (
+          <IconButton
+            variant="ghost"
+            size="smx"
+            aria-label="remove"
+            icon={<DeleteIcon />}
+            onClick={onClickRemove}
+          />
+        ) : null}
       </HStack>
     </Box>
   );

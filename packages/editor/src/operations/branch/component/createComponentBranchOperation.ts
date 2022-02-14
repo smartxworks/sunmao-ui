@@ -3,6 +3,7 @@ import ReactGridLayout from 'react-grid-layout';
 import produce from 'immer';
 import { ComponentId, ComponentType, SlotName } from '../../../AppModel/IAppModel';
 import {
+  AdjustComponentOrderLeafOperation,
   CreateComponentLeafOperation,
   ModifyComponentPropertiesLeafOperation,
 } from '../../leaf';
@@ -14,6 +15,8 @@ export type CreateComponentBranchOperationContext = {
   slot?: string;
   parentId?: string;
   layout?: ReactGridLayout.Layout[];
+  targetId?: string;
+  direction?: 'prev' | 'next';
 };
 
 export class CreateComponentBranchOperation extends BaseBranchOperation<CreateComponentBranchOperationContext> {
@@ -83,6 +86,17 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
         );
       }
     }
+
+    if (this.context.targetId && this.context.direction) {
+      this.operationStack.insert(
+        new AdjustComponentOrderLeafOperation(this.registry, {
+          componentId: this.context.componentId as ComponentId,
+          targetId: this.context.targetId as ComponentId,
+          direction: this.context.direction,
+        })
+      );
+    }
+
     return this.operationStack.reduce((prev, node) => {
       prev = node.do(prev);
       return prev;
