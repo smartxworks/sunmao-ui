@@ -9,6 +9,8 @@ import { EditorServices } from '../../types';
 
 type Props = {
   component: ComponentSchema;
+  parentId: string | undefined;
+  slot: string | undefined;
   childrenMap: ChildrenMap;
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
@@ -16,26 +18,35 @@ type Props = {
 };
 
 export const ComponentTree: React.FC<Props> = props => {
-  const { component, childrenMap, selectedComponentId, onSelectComponent, services } =
-    props;
+  const {
+    component,
+    childrenMap,
+    parentId,
+    slot,
+    selectedComponentId,
+    onSelectComponent,
+    services,
+  } = props;
   const { registry, eventBus } = services;
   const slots = registry.getComponentByType(component.type).spec.slots;
   const [isExpanded, setIsExpanded] = useState(true);
 
   const slotsEle = useMemo(() => {
     if (slots.length === 0) {
-      return null;
+      return undefined;
     }
     const children = childrenMap.get(component.id);
-    return slots.map(slot => {
+    return slots.map(_slot => {
       let slotContent;
-      const slotChildren = children?.get(slot);
+      const slotChildren = children?.get(_slot);
       if (slotChildren && slotChildren.length > 0) {
         slotContent = slotChildren.map(c => {
           return (
             <ComponentTree
               key={c.id}
               component={c}
+              parentId={component.id}
+              slot={_slot}
               childrenMap={childrenMap}
               selectedComponentId={selectedComponentId}
               onSelectComponent={onSelectComponent}
@@ -45,57 +56,38 @@ export const ComponentTree: React.FC<Props> = props => {
         });
       } else {
         slotContent = (
-          <Text fontSize="sm" color="gray.500">
-            Empty
-          </Text>
+          <DropComponentWrapper
+            componentId={undefined}
+            parentId={component.id}
+            parentSlot={_slot}
+            services={services}
+            isDropInOnly
+          >
+            <Text fontSize="sm" color="gray.500">
+              Empty
+            </Text>
+          </DropComponentWrapper>
         );
       }
-      const onCreateComponent = (creatingComponent: string) => {
-        eventBus.send(
-          'operation',
-          genOperation(registry, 'createComponent', {
-            componentType: creatingComponent,
-            parentId: component.id,
-            slot,
-          })
-        );
-      };
-
-      const onMoveComponent = (movingComponent: string) => {
-        if (movingComponent === component.id) return;
-        eventBus.send(
-          'operation',
-          genOperation(registry, 'moveComponent', {
-            fromId: movingComponent,
-            toId: component.id,
-            slot,
-          })
-        );
-      };
 
       const slotName = (
-        <DropComponentWrapper
-          onCreateComponent={onCreateComponent}
-          onMoveComponent={onMoveComponent}
-        >
-          <Text color="gray.500" fontWeight="medium">
-            Slot: {slot}
-          </Text>
-        </DropComponentWrapper>
+        <Text color="gray.500" fontWeight="medium">
+          Slot: {_slot}
+        </Text>
       );
 
       return (
-        <Box key={slot} paddingLeft="3" width="full">
+        <Box key={_slot} paddingLeft="3" width="full">
           {/* although component can have multiple slots, but for now, most components have only one slot
           so we hide slot name to save more view area */}
-          {slots.length > 1 ? slotName : null}
-          <VStack spacing="2" width="full" alignItems="start">
+          {slots.length > 1 ? slotName : undefined}
+          <VStack spacing="0" width="full" alignItems="start">
             {slotContent}
           </VStack>
         </Box>
       );
     });
-  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services, eventBus, registry]);
+  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services]);
 
   const onClickRemove = () => {
     eventBus.send(
@@ -106,61 +98,20 @@ export const ComponentTree: React.FC<Props> = props => {
     );
   };
 
-  const onCreateComponent = (creatingComponent: string) => {
-    if (slots.length === 0) return;
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'createComponent', {
-        componentType: creatingComponent,
-        parentId: component.id,
-        slot: slots[0],
-      })
-    );
-  };
-
-  const onMoveUp = () => {
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'adjustComponentOrder', {
-        componentId: component.id,
-        orientation: 'up',
-      })
-    );
-  };
-
-  const onMoveDown = () => {
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'adjustComponentOrder', {
-        componentId: component.id,
-        orientation: 'down',
-      })
-    );
-  };
-
-  const onMoveComponent = (movingComponent: string) => {
-    if (movingComponent === component.id) return;
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'moveComponent', {
-        fromId: movingComponent,
-        toId: component.id,
-        slot: slots[0],
-      })
-    );
-  };
   return (
     <VStack
       key={component.id}
       position="relative"
-      spacing="2"
+      spacing="0"
       width="full"
       alignItems="start"
+      marginTop='0 !important'
     >
       <DropComponentWrapper
-        onCreateComponent={onCreateComponent}
-        onMoveComponent={onMoveComponent}
-        droppable={slots.length !== 0}
+        componentId={component.id}
+        parentSlot={slot}
+        parentId={parentId}
+        services={props.services}
       >
         <ComponentItemView
           id={component.id}
@@ -173,13 +124,9 @@ export const ComponentTree: React.FC<Props> = props => {
           noChevron={slots.length === 0}
           isExpanded={isExpanded}
           onToggleExpanded={() => setIsExpanded(prev => !prev)}
-          isDroppable={slots.length > 0}
-          isSortable={true}
-          onMoveUp={onMoveUp}
-          onMoveDown={onMoveDown}
         />
       </DropComponentWrapper>
-      {isExpanded ? slotsEle : null}
+      {isExpanded ? slotsEle : undefined}
     </VStack>
   );
 };
