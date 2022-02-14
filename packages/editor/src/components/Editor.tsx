@@ -194,10 +194,10 @@ export const Editor: React.FC<Props> = observer(
                 setExplorerMenuTab(activatedTab);
               }}
             >
-              <TabList background="gray.50" overflow="auto" whiteSpace="nowrap">
+              <TabList background="gray.50" whiteSpace="nowrap">
                 <Tab>Explorer</Tab>
-                <Tab>UI Tree</Tab>
-                <Tab>DataSource</Tab>
+                <Tab>UI</Tab>
+                <Tab>Data</Tab>
                 <Tab>State</Tab>
               </TabList>
               <TabPanels flex="1" overflow="auto">

@@ -126,15 +126,21 @@ describe('append to another component', () => {
 });
 
 describe('append component as child to self', () => {
+  const appModel = new AppModel(AppSchema.spec.components, registry);
+  const origin = appModel.toSchema();
+  const hstack1 = appModel.getComponentById('hstack1' as any)!;
+  const text1 = appModel.getComponentById('text1' as any)!;
   it('append component to top level', () => {
-    const appModel = new AppModel(AppSchema.spec.components, registry);
-    const origin = appModel.toSchema();
-    const hstack1 = appModel.getComponentById('hstack1' as any)!;
-    const text1 = appModel.getComponentById('text1' as any)!;
     hstack1.appendChild(text1, 'content' as SlotName);
     const newSchema = appModel.toSchema();
     expect(newSchema[8].id).toBe('text1');
     expect(newSchema.length).toBe(origin.length);
+  });
+  it('append top level component', () => {
+    const apiFetch = appModel.getComponentById('apiFetch' as any)!;
+    hstack1.appendChild(apiFetch, 'content' as SlotName);
+    const children = hstack1.children['content']
+    expect(children[children.length - 1].id).toBe('apiFetch');
   });
 });
 

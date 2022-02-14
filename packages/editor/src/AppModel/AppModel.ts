@@ -38,7 +38,9 @@ export class AppModel implements IAppModel {
   }
 
   get moduleIds(): ModuleId[] {
-    return this.allComponents.filter(c => c.type === 'core/v1/moduleContainer').map(c => c.properties.rawValue.id);
+    return this.allComponents
+      .filter(c => c.type === 'core/v1/moduleContainer')
+      .map(c => c.properties.rawValue.id);
   }
 
   toSchema(): ComponentSchema[] {
@@ -50,6 +52,7 @@ export class AppModel implements IAppModel {
   }
 
   appendChild(component: IComponentModel) {
+    component.appModel.removeComponent(component.id);
     component.parentId = null;
     component.parentSlot = null;
     component.parent = null;
@@ -71,6 +74,7 @@ export class AppModel implements IAppModel {
 
   removeComponent(componentId: ComponentId) {
     const comp = this.componentMap[componentId];
+    if (!comp) return;
     delete this.componentMap[componentId];
     if (comp.parentSlot && comp.parent) {
       const children = comp.parent.children[comp.parentSlot];
