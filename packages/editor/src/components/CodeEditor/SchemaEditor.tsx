@@ -5,6 +5,7 @@ import { css } from '@emotion/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/display/autorefresh';
 
 export const SchemaEditor: React.FC<{
   defaultCode: string;
@@ -50,6 +51,7 @@ export const SchemaEditor: React.FC<{
          * all content to support native search.
          */
         viewportMargin: Infinity,
+        autoRefresh: { delay: 50 },
       });
     }
     const handler = (instance: CodeMirror.Editor) => {
