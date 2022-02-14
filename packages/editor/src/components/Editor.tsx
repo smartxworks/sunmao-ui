@@ -67,13 +67,6 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
-    useEffect(() => {
-      const stop = watch(stateStore, newValue => {
-        setStore({ ...newValue });
-      });
-
-      return stop;
-    }, [stateStore]);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -133,6 +126,23 @@ export const Editor: React.FC<Props> = observer(
       );
     }, [App, app, gridCallbacks, recoverKey]);
 
+    useEffect(() => {
+      // when errors happened, `ErrorBoundary` wouldn't update until rerender
+      // so after the errors are fixed, would trigger this effect before `setError(false)`
+      // the process to handle the error is:
+      // app change -> error happen -> setError(true) -> setRecoverKey(recoverKey + 1) -> app change -> setRecoverKey(recoverKey + 1) -> setError(false)
+      if (isError) {
+        setRecoverKey(recoverKey + 1);
+      }
+    }, [app, isError]);  // it only should depend on the app schema to update
+    useEffect(() => {
+      const stop = watch(stateStore, newValue => {
+        setStore({ ...newValue });
+      });
+
+      return stop;
+    }, [stateStore]);
+
     const renderMain = () => {
       const appBox = (
         <Box flex="1" background="gray.50" p={1} overflow="hidden">
@@ -151,9 +161,7 @@ export const Editor: React.FC<Props> = observer(
               position="absolute"
             />
             <Box width="full" overflow="auto" position="relative">
-              <EditorMaskWrapper services={services}>
-                {appComponent}
-              </EditorMaskWrapper>
+              <EditorMaskWrapper services={services}>{appComponent}</EditorMaskWrapper>
             </Box>
             <WarningArea services={services} />
           </Box>
@@ -220,6 +228,9 @@ export const Editor: React.FC<Props> = observer(
                     services={services}
                   />
                 </TabPanel>
+                <TabPanel p={0}>
+                  <DataSource active={activeDataSource?.id ?? ''} services={services} />
+                </TabPanel>
                 <TabPanel p={0} height="100%">
                   <StateViewer store={store} />
                 </TabPanel>
@@ -278,12 +289,6 @@ export const Editor: React.FC<Props> = observer(
         </>
       );
     };
-
-    useEffect(() => {
-      if (isError) {
-        setRecoverKey(recoverKey + 1);
-      }
-    }, [app, isError, recoverKey]);
 
     return (
       <KeyboardEventWrapper
