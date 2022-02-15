@@ -9,33 +9,81 @@ import {
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
+import { BASIC, BEHAVIOR, APPEARANCE } from './constants/category';
 
 const PropsSchema = Type.Object({
-  defaultValue: Type.Optional(Type.Number()),
-  min: Type.Optional(Type.Number()),
-  max: Type.Optional(Type.Number()),
-  step: Type.Optional(Type.Number()),
-  precision: Type.Optional(Type.Number()),
-  clampValueOnBlur: Type.Optional(Type.Boolean()),
-  allowMouseWheel: Type.Optional(Type.Boolean()),
+  defaultValue: Type.Number({
+    title: 'Default Value',
+    category: BASIC,
+  }),
+  min: Type.Number({
+    title: 'Min',
+    category: BASIC,
+  }),
+  max: Type.Number({
+    title: 'Max',
+    category: BASIC,
+  }),
+  step: Type.Number({
+    title: 'Step',
+    description: 'The amount to increase or decrease the value by.',
+    category: BASIC,
+  }),
+  precision: Type.Number({
+    title: 'Precision',
+    category: BASIC,
+  }),
+  clampValueOnBlur: Type.Boolean({
+    title: 'Clamp Value On Blur',
+    category: BEHAVIOR,
+  }),
+  allowMouseWheel: Type.Boolean({
+    title: 'Allow Mouse Wheel',
+    description: 'Whether or not to allow the mouse wheel to control the number input.',
+    category: BEHAVIOR,
+  }),
   size: Type.KeyOf(
     Type.Object({
       sm: Type.String(),
       md: Type.String(),
       lg: Type.String(),
       xs: Type.String(),
-    })
+    }),
+    {
+      title: 'Size',
+      category: APPEARANCE,
+    }
   ),
-  customerIncrement: Type.Object({
-    bg: Type.Optional(Type.String()),
-    children: Type.Optional(Type.String()),
-    _active: Type.Object({ bg: Type.String() }),
-  }),
-  customerDecrement: Type.Object({
-    bg: Type.Optional(Type.String()),
-    children: Type.Optional(Type.String()),
-    _active: Type.Object({ bg: Type.String() }),
-  }),
+  customerIncrement: Type.Object(
+    {
+      bg: Type.String({
+        title: 'Background',
+      }),
+      children: Type.String({
+        title: 'Text',
+      }),
+      _active: Type.Object({ bg: Type.String() }),
+    },
+    {
+      title: 'Increment Button',
+      category: APPEARANCE,
+    }
+  ),
+  customerDecrement: Type.Object(
+    {
+      bg: Type.String({
+        title: 'Background',
+      }),
+      children: Type.String({
+        title: 'Text',
+      }),
+      _active: Type.Object({ bg: Type.String() }),
+    },
+    {
+      title: 'Decrement Button',
+      category: APPEARANCE,
+    }
+  ),
 });
 
 const StateSchema = Type.Object({
@@ -45,13 +93,22 @@ const StateSchema = Type.Object({
 export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
-    name: 'number_input',
+    name: 'numberInput',
     description: 'chakra_ui number input',
     displayName: 'Number Input',
     isDraggable: true,
     isResizable: true,
     exampleProperties: {
       defaultValue: 0,
+      min: Number.MIN_SAFE_INTEGER,
+      max: Number.MAX_SAFE_INTEGER,
+      step: 1,
+      precision: 0,
+      clampValueOnBlur: false,
+      allowMouseWheel: false,
+      size: 'md',
+      customerIncrement: {},
+      customerDecrement: {},
     },
     exampleSize: [4, 1],
     annotations: {

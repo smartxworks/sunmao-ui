@@ -3,9 +3,13 @@ import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { Button, VStack } from '@chakra-ui/react';
 import { implementRuntimeComponent, watch } from '@sunmao-ui/runtime';
+import { BEHAVIOR } from '../constants/category';
 
 const PropsSchema = Type.Object({
-  hideSubmit: Type.Boolean(),
+  hideSubmit: Type.Boolean({
+    title: 'Hide Submit',
+    category: BEHAVIOR,
+  }),
 });
 
 export default implementRuntimeComponent({

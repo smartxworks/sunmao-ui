@@ -3,17 +3,22 @@ import { Type } from '@sinclair/typebox';
 import { Box, CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
+import { BASIC } from './constants/category';
 
-const DefaultValueSchema = Type.Array(Type.Union([Type.String(), Type.Number()]));
+const DefaultValueSchema = Type.Array(Type.Union([Type.String(), Type.Number()]), {
+  title: 'Default Value',
+  description: 'The default value of the checkbox group to be checked',
+  category: BASIC,
+});
 
 const StateSchema = Type.Object({
   value: DefaultValueSchema,
 });
 
 const PropsSchema = Type.Object({
-  size: SizePropertySchema,
+  defaultValue: DefaultValueSchema,
   isDisabled: IsDisabledSchema,
-  defaultValue: Type.Optional(DefaultValueSchema),
+  size: SizePropertySchema,
 });
 
 export default implementRuntimeComponent({
@@ -25,6 +30,8 @@ export default implementRuntimeComponent({
     isDraggable: true,
     isResizable: true,
     exampleProperties: {
+      size: '',
+      isDisabled: false,
       defaultValue: [],
     },
     exampleSize: [3, 3],

@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { Radio as BaseRadio } from '@chakra-ui/react';
 import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
-import { ColorSchemePropertySchema } from './Types/ColorScheme';
+import { getColorSchemePropertySchema } from './Types/ColorScheme';
 import { css } from '@emotion/css';
+import { BASIC, BEHAVIOR, APPEARANCE, LAYOUT } from './constants/category';
 
 const StateSchema = Type.Object({
   value: Type.Union([Type.String(), Type.Number()]),
@@ -11,22 +12,53 @@ const StateSchema = Type.Object({
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
-  value: Type.Union([Type.String(), Type.Number()]),
-  isDisabled: Type.Optional(Type.Boolean()),
-  isFocusable: Type.Optional(Type.Boolean()),
-  isInValid: Type.Optional(Type.Boolean()),
-  isReadOnly: Type.Optional(Type.Boolean()),
-  isRequired: Type.Optional(Type.Boolean()),
-  name: Type.Optional(Type.String()),
+  value: Type.Union([Type.String(), Type.Number()], {
+    title: 'Value',
+    category: BASIC,
+  }),
+  name: Type.String({
+    title: 'Name',
+    category: BASIC,
+  }),
+  isDisabled: Type.Boolean({
+    title: 'Disabled',
+    category: BEHAVIOR,
+  }),
+  isFocusable: Type.Boolean({
+    title: 'Focusable',
+    category: BEHAVIOR,
+  }),
+  isInValid: Type.Boolean({
+    title: 'Invalid',
+    category: BEHAVIOR,
+  }),
+  isReadOnly: Type.Boolean({
+    title: 'Read Only',
+    category: BEHAVIOR,
+  }),
+  isRequired: Type.Boolean({
+    title: 'Required',
+    category: BEHAVIOR,
+  }),
+  spacing: Type.String({
+    title: 'Spacing',
+    category: LAYOUT,
+  }),
+  colorScheme: getColorSchemePropertySchema({
+    title: 'Color Scheme',
+    category: APPEARANCE,
+  }),
   size: Type.KeyOf(
     Type.Object({
       sm: Type.String(),
       md: Type.String(),
       lg: Type.String(),
-    })
+    }),
+    {
+      title: 'Size',
+      category: APPEARANCE,
+    }
   ),
-  spacing: Type.Optional(Type.String()),
-  colorScheme: ColorSchemePropertySchema,
 });
 
 export default implementRuntimeComponent({

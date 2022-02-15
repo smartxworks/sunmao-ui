@@ -8,9 +8,13 @@ import {
   ModuleRenderer,
 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
+import { BASIC } from './constants/category';
 
 const PropsSchema = Type.Object({
-  listData: Type.Array(Type.Record(Type.String(), Type.String())),
+  listData: Type.Array(Type.Record(Type.String(), Type.String()), {
+    title: 'Data',
+    category: BASIC,
+  }),
   template: ModuleSchema,
 });
 

@@ -12,6 +12,7 @@ import {
 import { css } from '@emotion/css';
 import { implementRuntimeComponent, watch } from '@sunmao-ui/runtime';
 import { CheckboxStateSchema } from '../Checkbox';
+import { BASIC, BEHAVIOR } from '../constants/category';
 
 const FormItemCSS = {
   flex: '0 0 auto',
@@ -19,10 +20,22 @@ const FormItemCSS = {
 };
 
 const PropsSchema = Type.Object({
-  label: Type.String(),
-  fieldName: Type.String(),
-  isRequired: Type.Boolean(),
-  helperText: Type.String(),
+  label: Type.String({
+    title: 'Label',
+    category: BASIC,
+  }),
+  fieldName: Type.String({
+    title: 'Field Name',
+    category: BASIC,
+  }),
+  helperText: Type.String({
+    title: 'Helper Text',
+    category: BASIC,
+  }),
+  isRequired: Type.Boolean({
+    title: 'Required',
+    category: BEHAVIOR,
+  }),
 });
 
 export default implementRuntimeComponent({
