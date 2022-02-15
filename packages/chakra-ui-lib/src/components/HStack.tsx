@@ -25,6 +25,10 @@ export default implementRuntimeComponent({
     description: 'chakra-ui hstack',
     displayName: 'HStack',
     exampleProperties: {
+      direction: 'row',
+      wrap: 'wrap',
+      align: '',
+      justify: '',
       spacing: '24px',
     },
     exampleSize: [6, 6],
@@ -42,23 +46,34 @@ export default implementRuntimeComponent({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle, elementRef }) => {
-  return (
-    <BaseHStack
-      height="full"
-      width="full"
-      padding="4"
-      background="white"
-      border="1px solid"
-      borderColor="gray.200"
-      borderRadius="4"
-      className={css`
-        ${customStyle?.content}
-      `}
-      ref={elementRef}
-      {...{ direction, wrap, align, justify, spacing }}
-    >
-      {slotsElements.content}
-    </BaseHStack>
-  );
-});
+})(
+  ({
+    direction,
+    wrap,
+    align,
+    justify,
+    spacing,
+    slotsElements,
+    customStyle,
+    elementRef,
+  }) => {
+    return (
+      <BaseHStack
+        height="full"
+        width="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+        className={css`
+          ${customStyle?.content}
+        `}
+        ref={elementRef}
+        {...{ direction, wrap, align, justify, spacing }}
+      >
+        {slotsElements.content}
+      </BaseHStack>
+    );
+  }
+);

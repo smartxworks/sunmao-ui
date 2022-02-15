@@ -13,10 +13,10 @@ import {
 const PropsSchema = Type.Object({
   data: DataPropertySchema,
   majorKey: MajorKeyPropertySchema,
-  rowsPerPage: RowsPerPagePropertySchema,
-  size: TableSizePropertySchema,
   columns: ColumnsPropertySchema,
   isMultiSelect: IsMultiSelectPropertySchema,
+  rowsPerPage: RowsPerPagePropertySchema,
+  size: TableSizePropertySchema,
 });
 
 const exampleProperties = {
@@ -36,6 +36,7 @@ const exampleProperties = {
   majorKey: 'id',
   rowsPerPage: 5,
   isMultiSelect: false,
+  size: 'md',
 };
 
 export const implementTable = implementRuntimeComponent({

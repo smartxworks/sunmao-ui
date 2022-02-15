@@ -10,48 +10,82 @@ import {
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
+import { BASIC, APPEARANCE, BEHAVIOR } from './constants/category';
 
-const AppendElementPropertySchema = Type.Union([
-  Type.Object({
-    type: Type.KeyOf(Type.Object({ addon: Type.String() })),
-    children: Type.Optional(Type.String()), // TODO: ReactNode
-  }),
-  Type.Object({
-    type: Type.KeyOf(Type.Object({ element: Type.String() })),
-    children: Type.Optional(Type.String()), // TODO: ReactNode
-    fontSize: Type.Optional(Type.String()),
-    color: Type.Optional(Type.String()),
-  }),
-]);
+const getAppendElementPropertySchema = (options?: Record<string, any>) =>
+  Type.Union(
+    [
+      Type.Object({
+        type: Type.KeyOf(Type.Object({ addon: Type.String() })),
+        children: Type.Optional(Type.String()), // TODO: ReactNode
+      }),
+      Type.Object({
+        type: Type.KeyOf(Type.Object({ element: Type.String() })),
+        children: Type.Optional(Type.String()), // TODO: ReactNode
+        fontSize: Type.Optional(Type.String()),
+        color: Type.Optional(Type.String()),
+      }),
+    ],
+    options
+  );
 
 const StateSchema = Type.Object({
   value: Type.String(),
 });
 
 const PropsSchema = Type.Object({
+  defaultValue: Type.String({
+    title: 'Default Value',
+    category: BASIC,
+  }),
+  placeholder: Type.String({
+    title: 'Placeholder',
+    category: BASIC,
+  }),
+  isDisabled: Type.Boolean({
+    title: 'Disabled',
+    category: BEHAVIOR,
+  }),
+  isRequired: Type.Boolean({
+    title: 'Required',
+    category: BEHAVIOR,
+  }),
   variant: Type.KeyOf(
     Type.Object({
       outline: Type.String(),
       unstyled: Type.String(),
       filled: Type.String(),
       flushed: Type.String(),
-    })
+    }),
+    {
+      title: 'Variant',
+      category: APPEARANCE,
+    }
   ),
-  placeholder: Type.Optional(Type.String()),
   size: Type.KeyOf(
     Type.Object({
       sm: Type.String(),
       md: Type.String(),
       lg: Type.String(),
       xs: Type.String(),
-    })
+    }),
+    {
+      title: 'Size',
+      category: APPEARANCE,
+    }
   ),
-  focusBorderColor: Type.Optional(Type.String()),
-  isDisabled: Type.Optional(Type.Boolean()),
-  isRequired: Type.Optional(Type.Boolean()),
-  left: Type.Optional(AppendElementPropertySchema),
-  right: Type.Optional(AppendElementPropertySchema),
-  defaultValue: Type.Optional(Type.String()),
+  left: getAppendElementPropertySchema({
+    title: 'Left Append',
+    category: APPEARANCE,
+  }),
+  right: getAppendElementPropertySchema({
+    title: 'Right Append',
+    category: APPEARANCE,
+  }),
+  focusBorderColor: Type.String({
+    title: 'Border Color Of Focusing',
+    category: APPEARANCE,
+  }),
 });
 
 export default implementRuntimeComponent({
@@ -66,8 +100,11 @@ export default implementRuntimeComponent({
       variant: 'outline',
       placeholder: 'Please input value',
       size: 'md',
+      focusBorderColor: '',
       isDisabled: false,
       isRequired: false,
+      left: {},
+      right: {},
       defaultValue: '',
     },
     exampleSize: [4, 1],

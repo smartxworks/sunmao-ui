@@ -1,37 +1,58 @@
 import { Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
 import { implementRuntimeComponent, TextPropertySchema } from '@sunmao-ui/runtime';
-import { ColorSchemePropertySchema } from './Types/ColorScheme';
+import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { BASIC, LAYOUT, BEHAVIOR, APPEARANCE } from './constants/category';
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
-  colorScheme: ColorSchemePropertySchema,
-  shouldWrapChildren: Type.Boolean(),
-  defaultIsOpen: Type.Boolean(),
-  hasArrow: Type.Boolean(),
-  isDisabled: Type.Boolean(),
-  isOpen: Type.Boolean(),
-  placement: Type.Optional(
-    Type.KeyOf(
-      Type.Object({
-        top: Type.String(),
-        right: Type.String(),
-        bottom: Type.String(),
-        left: Type.String(),
-        auto: Type.String(),
-        'auto-start': Type.String(),
-        'auto-end': Type.String(),
-        'top-start': Type.String(),
-        'top-end': Type.String(),
-        'bottom-start': Type.String(),
-        'bottom-end': Type.String(),
-        'right-start': Type.String(),
-        'right-end': Type.String(),
-        'left-start': Type.String(),
-        'left-end': Type.String(),
-      })
-    )
+  defaultIsOpen: Type.Boolean({
+    title: 'Default Is Open',
+    category: BASIC,
+  }),
+  placement: Type.KeyOf(
+    Type.Object({
+      top: Type.String(),
+      right: Type.String(),
+      bottom: Type.String(),
+      left: Type.String(),
+      auto: Type.String(),
+      'auto-start': Type.String(),
+      'auto-end': Type.String(),
+      'top-start': Type.String(),
+      'top-end': Type.String(),
+      'bottom-start': Type.String(),
+      'bottom-end': Type.String(),
+      'right-start': Type.String(),
+      'right-end': Type.String(),
+      'left-start': Type.String(),
+      'left-end': Type.String(),
+    }),
+    {
+      title: 'Placement',
+      category: LAYOUT,
+    }
   ),
+  shouldWrapChildren: Type.Boolean({
+    title: 'Should Wrap Children',
+    category: BEHAVIOR,
+  }),
+  isDisabled: Type.Boolean({
+    title: 'Disabled',
+    category: BEHAVIOR,
+  }),
+  isOpen: Type.Boolean({
+    title: 'Open State',
+    category: BEHAVIOR,
+  }),
+  hasArrow: Type.Boolean({
+    title: 'Has Arrow',
+    category: APPEARANCE,
+  }),
+  colorScheme: getColorSchemePropertySchema({
+    title: 'Color Scheme',
+    category: APPEARANCE,
+  }),
 });
 
 export default implementRuntimeComponent({

@@ -10,14 +10,21 @@ import {
 } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { BASIC } from './constants/category';
 
 const StateSchema = Type.Object({
   selectedTabIndex: Type.Number(),
 });
 
 const PropsSchema = Type.Object({
-  tabNames: Type.Array(Type.String()),
-  initialSelectedTabIndex: Type.Optional(Type.Number()),
+  tabNames: Type.Array(Type.String(), {
+    title: 'Tab Names',
+    category: BASIC,
+  }),
+  initialSelectedTabIndex: Type.Number({
+    title: 'Default Selected Tab Index',
+    category: BASIC,
+  }),
 });
 
 export default implementRuntimeComponent({
@@ -47,8 +54,14 @@ export default implementRuntimeComponent({
     events: [],
   },
 })(props => {
-  const { tabNames, mergeState, initialSelectedTabIndex, customStyle, slotsElements, elementRef } =
-    props;
+  const {
+    tabNames,
+    mergeState,
+    initialSelectedTabIndex,
+    customStyle,
+    slotsElements,
+    elementRef,
+  } = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialSelectedTabIndex ?? 0);
 
   useEffect(() => {

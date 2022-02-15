@@ -1,16 +1,30 @@
 import { Type } from '@sinclair/typebox';
 import { ModuleSchema, EventHandlerSchema } from '@sunmao-ui/runtime';
+import { BASIC, APPEARANCE, BEHAVIOR } from '../constants/category';
 
-export const MajorKeyPropertySchema = Type.String();
-export const RowsPerPagePropertySchema = Type.Number();
-export const DataPropertySchema = Type.Array(Type.Any());
-export const TableSizePropertySchema = Type.Optional(Type.KeyOf(
+export const MajorKeyPropertySchema = Type.String({
+  title: 'Major key',
+  description: 'The key of the data item object to use as the major key',
+  category: BASIC,
+});
+export const RowsPerPagePropertySchema = Type.Number({
+  title: '',
+  category: BEHAVIOR,
+});
+export const DataPropertySchema = Type.Array(Type.Any(), {
+  title: 'Data',
+  category: BASIC,
+});
+export const TableSizePropertySchema = Type.KeyOf(
   Type.Object({
     sm: Type.String(),
     md: Type.String(),
     lg: Type.String(),
-  })
-));
+  }), {
+    title: 'Size',
+    category: APPEARANCE,
+  }
+);
 
 export const TdTypeSchema = Type.KeyOf(
   Type.Object({
@@ -19,7 +33,10 @@ export const TdTypeSchema = Type.KeyOf(
     link: Type.String(),
     button: Type.String(),
     module: Type.String(),
-  })
+  }), {
+    title: 'TD Type',
+    category: APPEARANCE,
+  }
 );
 export const ColumnSchema = Type.Object({
   key: Type.String(),
@@ -31,10 +48,18 @@ export const ColumnSchema = Type.Object({
     handlers: Type.Array(EventHandlerSchema),
   }),
   module: ModuleSchema,
+}, {
+  title: 'Column'
 });
 
-export const ColumnsPropertySchema = Type.Array(ColumnSchema);
-export const IsMultiSelectPropertySchema = Type.Boolean();
+export const ColumnsPropertySchema = Type.Array(ColumnSchema, {
+  title: 'Columns',
+  category: BASIC,
+});
+export const IsMultiSelectPropertySchema = Type.Boolean({
+  title: 'Enable Multiple Select',
+  category: BEHAVIOR,
+});
 
 export const TableStateSchema = Type.Object({
   selectedItem: Type.Optional(Type.Object({})),
