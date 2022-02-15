@@ -12,17 +12,17 @@ import {
   Accordion,
 } from '@chakra-ui/react';
 
-type ExpandedSpec = {
+type ExpandSpec = {
   category?: string;
-  weight?: string;
+  weight?: number;
   name?: string;
 };
 
-type Property = Record<string, JSONSchema7 & ExpandedSpec>;
+type Property = Record<string, JSONSchema7 & ExpandSpec>;
 
 type Category = {
   name: string;
-  schemas: (JSONSchema7 & ExpandedSpec)[];
+  schemas: (JSONSchema7 & ExpandSpec)[];
 };
 
 const TopLevelField: React.FC<FieldProps> = props => {
@@ -34,12 +34,23 @@ const TopLevelField: React.FC<FieldProps> = props => {
       const schema = properties[name];
       schema.name = name;
     });
-    const grouped = groupBy(properties, c => c.category || 'Basic');
+    const grouped = groupBy(properties, c => c.category || 'Advance');
 
-    return Object.keys(grouped).map(name => ({
+    const advance = grouped.Advance;
+    Reflect.deleteProperty(grouped, 'Advance');
+
+    const categories = Object.keys(grouped).map(name => ({
       name,
-      schemas: sortBy(grouped[name],'weight'),
+      schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
     }));
+    if (advance) {
+      categories.push({
+        name: 'Advance',
+        schemas: sortBy(advance, c => -(c.weight ?? -Infinity)),
+      });
+    }
+
+    return categories;
   }, [schema.properties]);
 
   return (
