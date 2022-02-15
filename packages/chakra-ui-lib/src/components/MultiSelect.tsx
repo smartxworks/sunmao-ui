@@ -12,8 +12,12 @@ const StateSchema = Type.Object({
 
 const OptionsSchema = Type.Array(
   Type.Object({
-    label: Type.String(),
-    value: Type.String(),
+    label: Type.String({
+      title: 'Label',
+    }),
+    value: Type.String({
+      title: 'Value',
+    }),
   }),
   {
     title: 'Options',

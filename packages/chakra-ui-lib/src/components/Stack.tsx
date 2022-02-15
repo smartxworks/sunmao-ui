@@ -3,9 +3,17 @@ import { Stack as BaseStack } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { LAYOUT } from './constants/category';
 
-export const DirectionSchema = Type.Optional(
-  Type.Union(
-    [
+export const DirectionSchema = Type.Union(
+  [
+    Type.KeyOf(
+      Type.Object({
+        column: Type.String(),
+        'column-reverse': Type.String(),
+        row: Type.String(),
+        'row-reverse': Type.String(),
+      })
+    ),
+    Type.Array(
       Type.KeyOf(
         Type.Object({
           column: Type.String(),
@@ -13,23 +21,13 @@ export const DirectionSchema = Type.Optional(
           row: Type.String(),
           'row-reverse': Type.String(),
         })
-      ),
-      Type.Array(
-        Type.KeyOf(
-          Type.Object({
-            column: Type.String(),
-            'column-reverse': Type.String(),
-            row: Type.String(),
-            'row-reverse': Type.String(),
-          })
-        )
-      ),
-    ],
-    {
-      title: 'Flex Direction',
-      category: LAYOUT,
-    }
-  )
+      )
+    ),
+  ],
+  {
+    title: 'Flex Direction',
+    category: LAYOUT,
+  }
 );
 export const FlexWrapSchema = Type.KeyOf(
   Type.Object({

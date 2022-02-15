@@ -65,6 +65,13 @@ export default implementRuntimeComponent({
     isResizable: false,
     exampleProperties: {
       text: 'tooltip',
+      defaultIsOpen: false,
+      placement: 'top',
+      shouldWrapChildren: false,
+      isDisabled: false,
+      isOpen: false,
+      hasArrow: true,
+      colorScheme: 'blue',
     },
     exampleSize: [2, 1],
     annotations: {

@@ -54,7 +54,7 @@ const PropsSchema = Type.Object({
       category: APPEARANCE,
     }
   ),
-  customerIncrement: Type.Object(
+  customerIncrement: Type.Optional(Type.Object(
     {
       bg: Type.String({
         title: 'Background',
@@ -62,14 +62,20 @@ const PropsSchema = Type.Object({
       children: Type.String({
         title: 'Text',
       }),
-      _active: Type.Object({ bg: Type.String() }),
+      _active: Type.Object({
+        bg: Type.String({
+          title: 'Active Background',
+        }),
+      }, {
+        title: 'Active',
+      }),
     },
     {
       title: 'Increment Button',
       category: APPEARANCE,
     }
-  ),
-  customerDecrement: Type.Object(
+  )),
+  customerDecrement: Type.Optional(Type.Object(
     {
       bg: Type.String({
         title: 'Background',
@@ -77,13 +83,22 @@ const PropsSchema = Type.Object({
       children: Type.String({
         title: 'Text',
       }),
-      _active: Type.Object({ bg: Type.String() }),
+      _active: Type.Object(
+        {
+          bg: Type.String({
+            title: 'Active Background',
+          }),
+        },
+        {
+          title: 'Active',
+        }
+      ),
     },
     {
       title: 'Decrement Button',
       category: APPEARANCE,
     }
-  ),
+  )),
 });
 
 const StateSchema = Type.Object({
@@ -107,8 +122,6 @@ export default implementRuntimeComponent({
       clampValueOnBlur: false,
       allowMouseWheel: false,
       size: 'md',
-      customerIncrement: {},
-      customerDecrement: {},
     },
     exampleSize: [4, 1],
     annotations: {
