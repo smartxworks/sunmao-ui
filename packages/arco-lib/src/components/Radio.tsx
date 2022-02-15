@@ -1,6 +1,6 @@
 import { Radio as BaseRadio } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { RadioPropsSchema as BaseRadioPropsSchema } from "../generated/types/Radio";
@@ -55,9 +55,12 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof RadioPropsSchema> = {
-  options: [],
+  options: [
+    { label: 'A', value: 'a',disabled: false },
+    { label: 'B', value: 'b',disabled: true },
+  ],
   type: "radio",
-  defaultCheckedValue:'',
+  defaultCheckedValue:'b',
   direction: "horizontal",
   size: "default",
 };
@@ -69,6 +72,9 @@ const options = {
     name: "radio",
     displayName: "Radio",
     exampleProperties,
+    annotations: {
+      category: "Input",
+    }
   },
   spec: {
     properties: RadioPropsSchema,

@@ -5,16 +5,11 @@ import { Type, Static } from "@sinclair/typebox";
 import {
   FALLBACK_METADATA,
   getComponentProps,
-  StringUnion,
 } from "../sunmao-helper";
 import { SpacePropsSchema as BaseSpacePropsSchema } from "../generated/types/Space";
 
 const SpacePropsSchema = Type.Object({
   ...BaseSpacePropsSchema,
-  size: Type.Union([
-    Type.Optional(StringUnion(["mini", "small", "medium", "large"])),
-    Type.Number(),
-  ]),
 });
 const SpaceStateSchema = Type.Object({});
 
@@ -40,6 +35,9 @@ export const Space = implementRuntimeComponent({
   metadata: {
     ...FALLBACK_METADATA,
     exampleProperties,
+    annotations: {
+      category: "Layout",
+    },
     name: "space",
     displayName: "Space",
   },

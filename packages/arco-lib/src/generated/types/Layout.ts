@@ -1,157 +1,31 @@
 
 import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
+import { Category } from '../../constants/category'
 
-export const LayoutPropsSchema = {
-  'hasSider': Type.Boolean(),
-  'defaultChecked': Type.Boolean(),
-  'suppressContentEditableWarning': Type.Boolean(),
-  'suppressHydrationWarning': Type.Boolean(),
-  'accessKey': Type.String(),
-  'contextMenu': Type.String(),
-  'dir': Type.String(),
-  'hidden': Type.Boolean(),
-  'id': Type.String(),
-  'lang': Type.String(),
-  'placeholder': Type.String(),
-  'slot': Type.String(),
-  'title': Type.String(),
-  'translate': StringUnion(['yes', 'no']),
-  'radioGroup': Type.String(),
-  'about': Type.String(),
-  'datatype': Type.String(),
-  'prefix': Type.String(),
-  'property': Type.String(),
-  'resource': Type.String(),
-  'typeof': Type.String(),
-  'vocab': Type.String(),
-  'autoCapitalize': Type.String(),
-  'autoCorrect': Type.String(),
-  'autoSave': Type.String(),
-  'color': Type.String(),
-  'itemProp': Type.String(),
-  'itemScope': Type.Boolean(),
-  'itemType': Type.String(),
-  'itemID': Type.String(),
-  'itemRef': Type.String(),
-  'security': Type.String(),
-  'unselectable': StringUnion(['on', 'off']),
-  'inputMode': StringUnion(['text', 'none', 'search', 'tel', 'url', 'email', 'numeric', 'decimal']),
-  'is': Type.String()
-};
-export const HeaderPropsSchema = {
-  'defaultChecked': Type.Boolean(),
-  'suppressContentEditableWarning': Type.Boolean(),
-  'suppressHydrationWarning': Type.Boolean(),
-  'accessKey': Type.String(),
-  'contextMenu': Type.String(),
-  'dir': Type.String(),
-  'hidden': Type.Boolean(),
-  'id': Type.String(),
-  'lang': Type.String(),
-  'placeholder': Type.String(),
-  'slot': Type.String(),
-  'title': Type.String(),
-  'translate': StringUnion(['yes', 'no']),
-  'radioGroup': Type.String(),
-  'about': Type.String(),
-  'datatype': Type.String(),
-  'prefix': Type.String(),
-  'property': Type.String(),
-  'resource': Type.String(),
-  'typeof': Type.String(),
-  'vocab': Type.String(),
-  'autoCapitalize': Type.String(),
-  'autoCorrect': Type.String(),
-  'autoSave': Type.String(),
-  'color': Type.String(),
-  'itemProp': Type.String(),
-  'itemScope': Type.Boolean(),
-  'itemType': Type.String(),
-  'itemID': Type.String(),
-  'itemRef': Type.String(),
-  'security': Type.String(),
-  'unselectable': StringUnion(['on', 'off']),
-  'inputMode': StringUnion(['text', 'none', 'search', 'tel', 'url', 'email', 'numeric', 'decimal']),
-  'is': Type.String()
-};
-export const FooterPropsSchema = {
-  'defaultChecked': Type.Boolean(),
-  'suppressContentEditableWarning': Type.Boolean(),
-  'suppressHydrationWarning': Type.Boolean(),
-  'accessKey': Type.String(),
-  'contextMenu': Type.String(),
-  'dir': Type.String(),
-  'hidden': Type.Boolean(),
-  'id': Type.String(),
-  'lang': Type.String(),
-  'placeholder': Type.String(),
-  'slot': Type.String(),
-  'title': Type.String(),
-  'translate': StringUnion(['yes', 'no']),
-  'radioGroup': Type.String(),
-  'about': Type.String(),
-  'datatype': Type.String(),
-  'prefix': Type.String(),
-  'property': Type.String(),
-  'resource': Type.String(),
-  'typeof': Type.String(),
-  'vocab': Type.String(),
-  'autoCapitalize': Type.String(),
-  'autoCorrect': Type.String(),
-  'autoSave': Type.String(),
-  'color': Type.String(),
-  'itemProp': Type.String(),
-  'itemScope': Type.Boolean(),
-  'itemType': Type.String(),
-  'itemID': Type.String(),
-  'itemRef': Type.String(),
-  'security': Type.String(),
-  'unselectable': StringUnion(['on', 'off']),
-  'inputMode': StringUnion(['text', 'none', 'search', 'tel', 'url', 'email', 'numeric', 'decimal']),
-  'is': Type.String()
-};
-export const ContentPropsSchema = {
-  'defaultChecked': Type.Boolean(),
-  'suppressContentEditableWarning': Type.Boolean(),
-  'suppressHydrationWarning': Type.Boolean(),
-  'accessKey': Type.String(),
-  'contextMenu': Type.String(),
-  'dir': Type.String(),
-  'hidden': Type.Boolean(),
-  'id': Type.String(),
-  'lang': Type.String(),
-  'placeholder': Type.String(),
-  'slot': Type.String(),
-  'title': Type.String(),
-  'translate': StringUnion(['yes', 'no']),
-  'radioGroup': Type.String(),
-  'about': Type.String(),
-  'datatype': Type.String(),
-  'prefix': Type.String(),
-  'property': Type.String(),
-  'resource': Type.String(),
-  'typeof': Type.String(),
-  'vocab': Type.String(),
-  'autoCapitalize': Type.String(),
-  'autoCorrect': Type.String(),
-  'autoSave': Type.String(),
-  'color': Type.String(),
-  'itemProp': Type.String(),
-  'itemScope': Type.Boolean(),
-  'itemType': Type.String(),
-  'itemID': Type.String(),
-  'itemRef': Type.String(),
-  'security': Type.String(),
-  'unselectable': StringUnion(['on', 'off']),
-  'inputMode': StringUnion(['text', 'none', 'search', 'tel', 'url', 'email', 'numeric', 'decimal']),
-  'is': Type.String()
-};
+
+export const LayoutPropsSchema = {};
+export const HeaderPropsSchema = {};
+export const FooterPropsSchema = {};
+export const ContentPropsSchema = {};
 export const SiderPropsSchema = {
-  'theme': StringUnion(['dark', 'light']),
-  'collapsed': Type.Boolean(),
-  'collapsible': Type.Boolean(),
-  'defaultCollapsed': Type.Boolean(),
-  'reverseArrow': Type.Boolean(),
-  'breakpoint': StringUnion(['xxl', 'xl', 'lg', 'md', 'sm', 'xs'])
+  theme: StringUnion(['dark', 'light'],{
+    category:Category.Style
+  }),
+  collapsed: Type.Boolean({
+    category:Category.Style
+  }),
+  collapsible: Type.Boolean({
+    category:Category.Style
+  }),
+  collapsedWidth: Type.Number({
+    category:Category.Style
+  }),
+  reverseArrow: Type.Boolean({
+    category:Category.Style
+  }),
+  breakpoint: StringUnion(['xxl', 'xl', 'lg', 'md', 'sm', 'xs'],{
+    Description:'Breakpoint in responsive layout',
+    category:Category.Layout
+  })
 };

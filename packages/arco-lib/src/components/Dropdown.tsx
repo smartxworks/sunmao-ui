@@ -88,6 +88,9 @@ const options = {
     name: "dropdown",
     displayName: "Dropdown",
     exampleProperties,
+    annotations: {
+      category: "Input",
+    }
   },
   spec: {
     properties: DropdownPropsSchema,

@@ -1,5 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { StringUnion } from "../../sunmao-helper";
+import { Category } from '../../constants/category'
+
 
 export const SkeletonTextPropsSchema = {
   rows: Type.Number(),
@@ -21,8 +23,17 @@ export const SkeletonImagePropsSchema = {
 };
 
 export const SkeletonPropsSchema = {
-  animation: Type.Boolean(),
-  loading: Type.Boolean(),
-  image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSchema)]),
-  text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSchema)])
+  animation: Type.Boolean({
+    category:Category.Style
+  }),
+  loading: Type.Boolean({
+    category:Category.Style
+  }),
+  // TODO remove union type
+  image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSchema)],{
+    category:Category.General
+  }),
+  text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSchema)],{
+    category:Category.General
+  })
 };

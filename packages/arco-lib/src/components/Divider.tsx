@@ -1,6 +1,6 @@
 import { Divider as BaseDivider } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { DividerPropsSchema as BaseDividerPropsSchema } from "../generated/types/Divider";
@@ -36,6 +36,9 @@ const options = {
     name: "divider",
     displayName: "Divider",
     exampleProperties,
+    annotations: {
+      category: "Layout",
+    }
   },
   spec: {
     properties: DividerPropsSchema,

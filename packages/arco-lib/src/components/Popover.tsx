@@ -59,7 +59,6 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
 const exampleProperties: Static<typeof PopoverPropsSchema> = {
   color: "#eee",
   position: "bottom",
-  mini: false,
   unmountOnExit: true,
   disabled: false,
   controlled: false,
@@ -75,6 +74,9 @@ const options = {
     name: "popover",
     displayName: "Popover",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: PopoverPropsSchema,

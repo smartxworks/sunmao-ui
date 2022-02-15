@@ -75,6 +75,9 @@ export const Modal = implementRuntimeComponent({
     exampleProperties,
     name: "modal",
     displayName: "Modal",
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: ModalPropsSchema,

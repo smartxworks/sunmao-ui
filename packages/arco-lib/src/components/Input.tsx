@@ -1,6 +1,6 @@
 import { Input as BaseInput } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css, cx } from "@emotion/css";
+import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { InputPropsSchema as BaseInputPropsSchema } from "../generated/types/Input";
@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 
 const InputPropsSchema = Type.Object({
   ...BaseInputPropsSchema,
-  className: Type.Optional(Type.String()),
 });
 const InputStateSchema = Type.Object({
   value: Type.String(),
@@ -16,7 +15,7 @@ const InputStateSchema = Type.Object({
 
 const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
   const { slotsElements, customStyle, callbackMap, mergeState } = props;
-  const { className, defaultValue, ...cProps } = getComponentProps(props);
+  const { defaultValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({
@@ -26,7 +25,7 @@ const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
 
   return (
     <BaseInput
-      className={cx(className, css(customStyle?.input))}
+      className={css(customStyle?.input)}
       addAfter={slotsElements.addAfter}
       addBefore={slotsElements.addBefore}
       prefix={slotsElements.prefix}
@@ -44,7 +43,6 @@ const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof InputPropsSchema> = {
-  className: "",
   allowClear: false,
   disabled: false,
   readOnly: false,
@@ -52,7 +50,6 @@ const exampleProperties: Static<typeof InputPropsSchema> = {
   placeholder: "please input",
   error: false,
   size: "default",
-  showWordLimit: false,
 };
 
 const options = {
@@ -62,6 +59,9 @@ const options = {
     name: "input",
     displayName: "Input",
     exampleProperties,
+    annotations: {
+      category: "Input",
+    },
   },
   spec: {
     properties: InputPropsSchema,

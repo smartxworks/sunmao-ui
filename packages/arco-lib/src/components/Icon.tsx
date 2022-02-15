@@ -26,6 +26,9 @@ export const Icon = implementRuntimeComponent({
       name: "IconArrowUp",
       spin: false,
     },
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: IconPropsSchema,

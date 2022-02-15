@@ -1,5 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
+import { Category } from '../../constants/category';
+
 
 export const TimelineItemPropsSchema = {
     label: Type.String(),
@@ -11,12 +13,22 @@ export const TimelineItemPropsSchema = {
 }
 
 export const TimelinePropsSchema = {
-    reverse: Type.Boolean(),
-    direction: StringUnion(['horizontal', 'vertical']),
-    mode: StringUnion(['left', 'right', 'alternate']),
-    labelPosition: StringUnion(['relative', 'same']),
     items: Type.Array(Type.Object(
         TimelineItemPropsSchema
-    ))
+    ),{
+        category:Category.Data
+    }),
+    reverse: Type.Boolean({
+        category:Category.Style
+    }),
+    direction: StringUnion(['horizontal', 'vertical'],{
+        category:Category.Style
+    }),
+    mode: StringUnion(['left', 'right', 'alternate'],{
+        category:Category.Style
+    }),
+    labelPosition: StringUnion(['relative', 'same'],{
+        category:Category.Style
+    }),
 }
 

@@ -23,43 +23,6 @@ const LayoutImpl: ComponentImpl<Static<typeof LayoutPropsSchema>> = (props) => {
     </BaseLayout>
   );
 };
-const layoutExampleProperties: Static<typeof LayoutPropsSchema> = {
-  about: "",
-  accessKey: "",
-  autoCapitalize: "",
-  autoCorrect: "",
-  autoSave: "",
-  color: "",
-  contextMenu: "",
-  datatype: "",
-  defaultChecked: false,
-  dir: "",
-  hasSider: false,
-  hidden: false,
-  id: "",
-  inputMode: "text",
-  is: "",
-  itemID: "",
-  itemProp: "",
-  itemRef: "",
-  itemScope: false,
-  itemType: "",
-  lang: "",
-  placeholder: "",
-  prefix: "",
-  property: "",
-  radioGroup: "",
-  resource: "",
-  security: "",
-  slot: "",
-  suppressContentEditableWarning: false,
-  suppressHydrationWarning: false,
-  title: "",
-  translate: "yes",
-  typeof: "",
-  unselectable: "on",
-  vocab: "",
-};
 
 export const Layout = implementRuntimeComponent({
   version: "arco/v1",
@@ -67,7 +30,10 @@ export const Layout = implementRuntimeComponent({
     ...FALLBACK_METADATA,
     name: "layout",
     displayName: "Layout",
-    exampleProperties: layoutExampleProperties,
+    exampleProperties: {},
+    annotations: {
+      category: "Layout",
+    },
   },
   spec: {
     properties: LayoutPropsSchema,
@@ -92,42 +58,6 @@ const HeaderImpl: ComponentImpl<Static<typeof HeaderPropsSchema>> = (props) => {
     </BaseLayout.Header>
   );
 };
-const headerExampleProperties: Static<typeof HeaderPropsSchema> = {
-  about: "",
-  accessKey: "",
-  autoCapitalize: "",
-  autoCorrect: "",
-  autoSave: "",
-  color: "",
-  contextMenu: "",
-  datatype: "",
-  defaultChecked: false,
-  dir: "",
-  hidden: false,
-  id: "",
-  inputMode: "text",
-  is: "",
-  itemID: "",
-  itemProp: "",
-  itemRef: "",
-  itemScope: false,
-  itemType: "",
-  lang: "",
-  placeholder: "",
-  prefix: "",
-  property: "",
-  radioGroup: "",
-  resource: "",
-  security: "",
-  slot: "",
-  suppressContentEditableWarning: false,
-  suppressHydrationWarning: false,
-  title: "",
-  translate: "yes",
-  typeof: "",
-  unselectable: "on",
-  vocab: "",
-};
 
 export const Header = implementRuntimeComponent({
   version: "arco/v1",
@@ -135,7 +65,10 @@ export const Header = implementRuntimeComponent({
     ...FALLBACK_METADATA,
     name: "header",
     displayName: "Header",
-    exampleProperties: headerExampleProperties,
+    exampleProperties: {},
+    annotations: {
+      category: "Layout",
+    },
   },
   spec: {
     properties: HeaderPropsSchema,
@@ -161,50 +94,16 @@ const FooterImpl: ComponentImpl<Static<typeof FooterPropsSchema>> = (props) => {
   );
 };
 
-const footerExampleProperties = {
-  defaultChecked: false,
-  suppressContentEditableWarning: false,
-  suppressHydrationWarning: false,
-  accessKey: "",
-  contextMenu: "",
-  dir: "",
-  hidden: false,
-  id: "",
-  lang: "",
-  placeholder: "",
-  slot: "",
-  title: "",
-  translate: "yes",
-  radioGroup: "",
-  about: "",
-  datatype: "",
-  prefix: "",
-  property: "",
-  resource: "",
-  typeof: "",
-  vocab: "",
-  autoCapitalize: "",
-  autoCorrect: "",
-  autoSave: "",
-  color: "",
-  itemProp: "",
-  itemScope: false,
-  itemType: "",
-  itemID: "",
-  itemRef: "",
-  security: "",
-  unselectable: "on",
-  inputMode: "text",
-  is: "",
-};
-
 export const Footer = implementRuntimeComponent({
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
     name: "footer",
     displayName: "Footer",
-    exampleProperties: footerExampleProperties,
+    exampleProperties: {},
+    annotations: {
+      category: "Layout",
+    },
   },
   spec: {
     properties: FooterPropsSchema,
@@ -232,42 +131,6 @@ const ContentImpl: ComponentImpl<Static<typeof ContentPropsSchema>> = (
   );
 };
 
-const contentExampleProperties = {
-  defaultChecked: false,
-  suppressContentEditableWarning: false,
-  suppressHydrationWarning: false,
-  accessKey: "",
-  contextMenu: "",
-  dir: "",
-  hidden: false,
-  id: "",
-  lang: "",
-  placeholder: "",
-  slot: "",
-  title: "",
-  translate: "yes",
-  radioGroup: "",
-  about: "",
-  datatype: "",
-  prefix: "",
-  property: "",
-  resource: "",
-  typeof: "",
-  vocab: "",
-  autoCapitalize: "",
-  autoCorrect: "",
-  autoSave: "",
-  color: "",
-  itemProp: "",
-  itemScope: false,
-  itemType: "",
-  itemID: "",
-  itemRef: "",
-  security: "",
-  unselectable: "on",
-  inputMode: "text",
-  is: "",
-};
 
 export const Content = implementRuntimeComponent({
   version: "arco/v1",
@@ -275,7 +138,10 @@ export const Content = implementRuntimeComponent({
     ...FALLBACK_METADATA,
     name: "content",
     displayName: "Content",
-    exampleProperties: contentExampleProperties,
+    exampleProperties: {},
+    annotations: {
+      category: "Layout",
+    },
   },
   spec: {
     properties: ContentPropsSchema,
@@ -305,9 +171,9 @@ const sideExampleProperties: Static<typeof SiderPropsSchema> = {
   breakpoint: "xl",
   collapsed: false,
   collapsible: false,
-  defaultCollapsed: false,
   reverseArrow: false,
   theme: "dark",
+  collapsedWidth: 48,
 };
 
 export const Sider = implementRuntimeComponent({
@@ -317,6 +183,9 @@ export const Sider = implementRuntimeComponent({
     name: "sider",
     displayName: "Sider",
     exampleProperties: sideExampleProperties,
+    annotations: {
+      category: "Layout",
+    },
   },
   spec: {
     properties: SiderPropsSchema,
