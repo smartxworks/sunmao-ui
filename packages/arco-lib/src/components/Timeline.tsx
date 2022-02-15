@@ -12,10 +12,10 @@ const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSchema>> = (
   props
 ) => {
   const { items, ...cProps } = getComponentProps(props);
-  const { customStyle } = props;
+  const { elementRef, customStyle } = props;
 
   return (
-    <BaseTimeline className={css(customStyle?.content)} {...cProps}>
+    <BaseTimeline ref={elementRef} className={css(customStyle?.content)} {...cProps}>
       {items?.map((item, idx) => (
         <BaseTimeline.Item
           key={idx}

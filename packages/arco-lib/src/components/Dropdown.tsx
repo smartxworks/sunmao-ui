@@ -1,32 +1,23 @@
-import { 
-  Dropdown as BaseDropdown, 
-  Menu as BaseMenu 
-} from "@arco-design/web-react";
 import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+  Dropdown as BaseDropdown,
+  Menu as BaseMenu,
+} from "@arco-design/web-react";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { 
-  DropdownPropsSchema as BaseDropdownPropsSchema 
-} from "../generated/types/Dropdown";
+import { DropdownPropsSchema as BaseDropdownPropsSchema } from "../generated/types/Dropdown";
 
 const DropdownPropsSchema = Type.Object(BaseDropdownPropsSchema);
 const DropdownStateSchema = Type.Object({
   selectedItemKey: Type.String(),
   keyPath: Type.Optional(Type.Array(Type.String())),
-  visible: Type.Boolean()
+  visible: Type.Boolean(),
 });
 
-const DropdownImpl: ComponentImpl<
-  Static<typeof DropdownPropsSchema>
-> = (props) => {
-  const { 
-    slotsElements,
-    callbackMap,
-    mergeState
-  } = props;
+const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSchema>> = (
+  props
+) => {
+  const { elementRef, slotsElements, callbackMap, mergeState } = props;
   const cProps = getComponentProps(props);
   const { list, dropdownType, ...restProps } = cProps;
   const typeMap = {
@@ -34,33 +25,32 @@ const DropdownImpl: ComponentImpl<
     button: BaseDropdown.Button,
   };
 
-  const onClickMenuItem = (key: string, event: any, keyPath: string[])=> {
+  const onClickMenuItem = (key: string, event: any, keyPath: string[]) => {
     mergeState({
       selectedItemKey: key,
-      keyPath: keyPath || []
+      keyPath: keyPath || [],
     });
     callbackMap?.onClickMenuItem?.();
-  }
-  const onVisibleChange = (visible: boolean)=> {
+  };
+  const onVisibleChange = (visible: boolean) => {
     mergeState({
-      visible
+      visible,
     });
     callbackMap?.onVisibleChange?.();
-  }
+  };
 
   const Dropdown = typeMap[dropdownType];
   const droplist = (
     <BaseMenu onClickMenuItem={onClickMenuItem}>
-      {
-        (list || []).map((item)=> (
-          <BaseMenu.Item key={item.key}>{item.label}</BaseMenu.Item>
-        ))
-      }
+      {(list || []).map((item) => (
+        <BaseMenu.Item key={item.key}>{item.label}</BaseMenu.Item>
+      ))}
     </BaseMenu>
   );
 
   return (
-    <Dropdown 
+    <Dropdown
+      ref={elementRef}
       {...restProps}
       droplist={droplist}
       onVisibleChange={onVisibleChange}
@@ -72,13 +62,13 @@ const DropdownImpl: ComponentImpl<
 };
 
 const exampleProperties: Static<typeof DropdownPropsSchema> = {
-  dropdownType: 'default',
-  trigger: 'hover',
+  dropdownType: "default",
+  trigger: "hover",
   position: "bl",
   disabled: false,
   unmountOnExit: false,
   defaultPopupVisible: false,
-  list: []
+  list: [],
 };
 
 const options = {
@@ -96,16 +86,10 @@ const options = {
     properties: DropdownPropsSchema,
     state: DropdownStateSchema,
     methods: {},
-    slots: ['trigger'],
+    slots: ["trigger"],
     styleSlots: [],
-    events: [
-      'onClickMenuItem', 
-      'onVisibleChange',
-      'onButtonClick'
-    ],
+    events: ["onClickMenuItem", "onVisibleChange", "onButtonClick"],
   },
 };
 
-export const Dropdown = implementRuntimeComponent(options)(
-  DropdownImpl
-);
+export const Dropdown = implementRuntimeComponent(options)(DropdownImpl);

@@ -14,7 +14,7 @@ const PaginationStateSchema = Type.Object({
 const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
   props
 ) => {
-  const { defaultCurrent, ...cProps } = getComponentProps(props);
+  const { elementRef, defaultCurrent, ...cProps } = getComponentProps(props);
   const { customStyle, mergeState, callbackMap } = props;
 
   const [current, setCurrent] = useState<number>(defaultCurrent || 0);
@@ -31,6 +31,7 @@ const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
 
   return (
     <BasePagination
+      ref={elementRef}
       className={cx(css(customStyle?.content))}
       {...cProps}
       current={current}

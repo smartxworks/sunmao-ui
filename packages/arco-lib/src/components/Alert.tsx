@@ -9,11 +9,13 @@ const AlertPropsSchema = Type.Object(BaseAlertPropsSchema);
 const AlertStateSchema = Type.Object({});
 
 const AlertImpl: ComponentImpl<Static<typeof AlertPropsSchema>> = (props) => {
-  const { visible, content, title, ...cProps } = getComponentProps(props);
+  const { visible, content, title, elementRef, ...cProps } =
+    getComponentProps(props);
   const { customStyle, slotsElements } = props;
 
   return visible ? (
     <BaseAlert
+      ref={elementRef}
       action={slotsElements.action}
       icon={slotsElements.icon}
       content={

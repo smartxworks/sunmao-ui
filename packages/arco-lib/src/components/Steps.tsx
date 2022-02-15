@@ -16,10 +16,14 @@ type StepItem = Static<typeof StepItemSchema>;
 
 const StepsImpl: ComponentImpl<Static<typeof StepsPropsSchema>> = (props) => {
   const { items, ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements } = props;
+  const { elementRef, customStyle, slotsElements } = props;
 
   return (
-    <BaseSteps className={css(customStyle?.content)} {...cProps}>
+    <BaseSteps
+      ref={elementRef}
+      className={css(customStyle?.content)}
+      {...cProps}
+    >
       {items &&
         items.map((stepItem: StepItem, idx: number) => {
           return (
@@ -45,7 +49,7 @@ const exampleProperties: Static<typeof StepsPropsSchema> = {
   lineless: false,
   items: [
     { title: "Succeeded", description: "This is a description" },
-    { title: "Processing",description:'' },
+    { title: "Processing", description: "" },
     { title: "Pending", description: "This is a description" },
   ],
 };

@@ -13,7 +13,7 @@ const PopoverStateSchema = Type.Object({});
 const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
   props
 ) => {
-  const { controlled, ...cProps } = getComponentProps(props);
+  const { elementRef, controlled, ...cProps } = getComponentProps(props);
   const { subscribeMethods, slotsElements, customStyle } = props;
 
   const [popupVisible, setPopupVisible] = useState(false);
@@ -32,15 +32,16 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
   // TODO only support arco componets slot now (same as Tooltip)
   const content = isArray(slotsElements.content)
     ? slotsElements.content[0]
-    : slotsElements.content
+    : slotsElements.content;
 
   return controlled ? (
     <BasePopover
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
       content={slotsElements.popupContent}
     >
-      {content||<Button>Click</Button>}
+      {content || <Button>Click</Button>}
     </BasePopover>
   ) : (
     <BasePopover
@@ -49,10 +50,10 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
       content={slotsElements.popupContent}
       popupVisible={popupVisible}
       onVisibleChange={(visible) => {
-        setPopupVisible(visible)
+        setPopupVisible(visible);
       }}
     >
-      {content||<Button>Click</Button>}
+      {content || <Button>Click</Button>}
     </BasePopover>
   );
 };

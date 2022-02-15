@@ -14,11 +14,11 @@ const SpacePropsSchema = Type.Object({
 const SpaceStateSchema = Type.Object({});
 
 const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSchema>> = (props) => {
-  const { slotsElements, customStyle } = props;
+  const { elementRef, slotsElements, customStyle } = props;
   const cProps = getComponentProps(props);
 
   return (
-    <BaseSpace className={css(customStyle?.content)} {...cProps} size="large">
+    <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps} size="large">
       {slotsElements.content}
     </BaseSpace>
   );

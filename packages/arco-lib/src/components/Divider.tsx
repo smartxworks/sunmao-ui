@@ -13,11 +13,12 @@ const DividerStateSchema = Type.Object({});
 const DividerImpl: ComponentImpl<Static<typeof DividerPropsSchema>> = (
   props
 ) => {
-  const { customStyle } = props;
+  const { elementRef, customStyle } = props;
   const { ...cProps } = getComponentProps(props);
 
   return (
     <BaseDivider
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
     ></BaseDivider>

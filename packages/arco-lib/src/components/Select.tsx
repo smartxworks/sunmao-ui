@@ -14,17 +14,24 @@ const SelectStateSchema = Type.Object({
 });
 
 const SelectImpl: ComponentImpl<Static<typeof SelectPropsSchema>> = (props) => {
-  const { customStyle, callbackMap, mergeState, defaultValue = "" } = props;
+  const {
+    elementRef,
+    customStyle,
+    callbackMap,
+    mergeState,
+    defaultValue = "",
+  } = props;
   const { options = [], ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<string>(defaultValue);
   useEffect(() => {
     mergeState({
       value,
     });
-  }, [value]);
+  }, [mergeState, value]);
 
   return (
     <BaseSelect
+      ref={elementRef}
       className={css(customStyle?.content)}
       onChange={(v) => {
         setValue(v);
@@ -75,7 +82,7 @@ export const Select = implementRuntimeComponent({
     exampleProperties,
     annotations: {
       category: "Input",
-    }
+    },
   },
   spec: {
     properties: SelectPropsSchema,

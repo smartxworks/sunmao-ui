@@ -44,7 +44,7 @@ type filterDropdownParam = {
   confirm?: Function;
 };
 const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
-  const { app, mergeState, customStyle, services, data } = props;
+  const { elementRef, app, mergeState, customStyle, services, data } = props;
 
   const { pagination, ...cProps } = getComponentProps(props);
 
@@ -196,6 +196,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
 
   return (
     <BaseTable
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
       columns={columns}

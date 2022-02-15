@@ -10,13 +10,8 @@ const ModalPropsSchema = Type.Object(BaseModalPropsSchema);
 const ModalStateSchema = Type.Object({});
 
 const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
-  const {
-    subscribeMethods,
-    slotsElements,
-    customStyle,
-    callbackMap,
-  } = props;
-  const { title, ...cProps } = getComponentProps(props);
+  const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
+  const { elementRef, title, ...cProps } = getComponentProps(props);
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -53,7 +48,7 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
       className={css(customStyle?.content)}
       {...cProps}
     >
-      {slotsElements.content}
+      <div ref={elementRef}>{slotsElements.content}</div>
     </BaseModal>
   );
 };

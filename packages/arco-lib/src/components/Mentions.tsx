@@ -14,7 +14,7 @@ const MentionsStateSchema = Type.Object({
 const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSchema>> = (
   props
 ) => {
-  const { defaultValue, ...cProps } = getComponentProps(props);
+  const { elementRef, defaultValue, ...cProps } = getComponentProps(props);
   const { mergeState, customStyle, callbackMap } = props;
 
   const [value, setValue] = useState(defaultValue);
@@ -39,6 +39,7 @@ const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSchema>> = (
 
   return (
     <BaseMentions
+    ref={elementRef}
       onPressEnter={onPressEnter}
       onClear={onClear}
       className={css(customStyle?.content)}

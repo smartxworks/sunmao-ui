@@ -11,11 +11,11 @@ const AvatarPropsSchema = Type.Object({
 const AvatarStateSchema = Type.Object({});
 
 const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
-  const { slotsElements, customStyle } = props;
+  const { elementRef, slotsElements, customStyle } = props;
   const { ...cProps } = getComponentProps(props);
 
   return (
-    <BaseAvatar className={css(customStyle?.content)} {...cProps}>
+    <BaseAvatar ref={elementRef} className={css(customStyle?.content)} {...cProps}>
       {slotsElements.content}
     </BaseAvatar>
   );

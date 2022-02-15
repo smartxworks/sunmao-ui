@@ -5,7 +5,7 @@ import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { MenuPropsSchema as BaseMenuPropsSchema } from "../generated/types/Menu";
 import { useEffect, useState } from "react";
-import { Category } from "src/constants/category";
+import { Category } from "../constants/category";
 
 const MenuPropsSchema = Type.Object({
   ...BaseMenuPropsSchema,
@@ -24,7 +24,7 @@ const MenuStateSchema = Type.Object({
 });
 
 const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
-  const { customStyle, callbackMap, mergeState } = props;
+  const { elementRef, customStyle, callbackMap, mergeState } = props;
   const { items = [], ...cProps } = getComponentProps(props);
   const [activeKey, setActiveKey] = useState<string>();
   useEffect(() => {
@@ -35,6 +35,7 @@ const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
 
   return (
     <BaseMenu
+    ref={elementRef}
       className={css(customStyle?.content)}
       onClickMenuItem={(key) => {
         setActiveKey(key);

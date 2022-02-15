@@ -14,18 +14,20 @@ const InputStateSchema = Type.Object({
 });
 
 const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
-  const { slotsElements, customStyle, callbackMap, mergeState } = props;
+  const { elementRef, slotsElements, customStyle, callbackMap, mergeState } =
+    props;
   const { defaultValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     mergeState({
       value,
     });
-  }, [value]);
+  }, [mergeState, value]);
 
   return (
     <BaseInput
       className={css(customStyle?.input)}
+      ref={elementRef}
       addAfter={slotsElements.addAfter}
       addBefore={slotsElements.addBefore}
       prefix={slotsElements.prefix}

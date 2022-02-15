@@ -11,11 +11,15 @@ const SkeletonStateSchema = Type.Object({});
 const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSchema>> = (
   props
 ) => {
-  const { ...cProps } = getComponentProps(props);
+  const { elementRef, ...cProps } = getComponentProps(props);
   const { customStyle, slotsElements } = props;
 
   return (
-    <BaseSkeleton className={css(customStyle?.content)} {...cProps}>
+    <BaseSkeleton
+      ref={elementRef}
+      className={css(customStyle?.content)}
+      {...cProps}
+    >
       {slotsElements.content}
     </BaseSkeleton>
   );

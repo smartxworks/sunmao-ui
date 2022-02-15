@@ -10,10 +10,16 @@ const IconPropsSchema = Type.Object({
 });
 
 const impl: ComponentImpl<Static<typeof IconPropsSchema>> = (props) => {
-  const { name, spin, customStyle } = props;
-  const _Icon = Icons[name]
+  const { elementRef, name, spin, customStyle } = props;
+  const _Icon = Icons[name];
 
-  return <_Icon className={cx(css(customStyle?.content))} spin={spin} />
+  return (
+    <_Icon
+      ref={elementRef}
+      className={cx(css(customStyle?.content))}
+      spin={spin}
+    />
+  );
 };
 
 export const Icon = implementRuntimeComponent({
