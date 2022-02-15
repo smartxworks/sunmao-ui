@@ -12,17 +12,17 @@ import {
   Accordion,
 } from '@chakra-ui/react';
 
-type ExpandedSpec = {
+type ExpandSpec = {
   category?: string;
-  weight?: string;
+  weight?: number;
   name?: string;
 };
 
-type Property = Record<string, JSONSchema7 & ExpandedSpec>;
+type Property = Record<string, JSONSchema7 & ExpandSpec>;
 
 type Category = {
   name: string;
-  schemas: (JSONSchema7 & ExpandedSpec)[];
+  schemas: (JSONSchema7 & ExpandSpec)[];
 };
 
 const TopLevelField: React.FC<FieldProps> = props => {
@@ -32,15 +32,25 @@ const TopLevelField: React.FC<FieldProps> = props => {
     const properties = (schema.properties || {}) as Property;
     Object.keys(properties).forEach(name => {
       const schema = properties[name];
-      if (!schema.title) {
-        schema.name = name;
-      }
+      schema.name = name;
     });
-    const grouped = groupBy(properties, c => c.category || 'Basic');
-    return Object.keys(grouped).map(name => ({
+    const grouped = groupBy(properties, c => c.category || 'Advance');
+
+    const advance = grouped.Advance;
+    Reflect.deleteProperty(grouped, 'Advance');
+
+    const categories = Object.keys(grouped).map(name => ({
       name,
-      schemas: sortBy(grouped[name], c => c.weight || -Infinity),
+      schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
     }));
+    if (advance) {
+      categories.push({
+        name: 'Advance',
+        schemas: sortBy(advance, c => -(c.weight ?? -Infinity)),
+      });
+    }
+
+    return categories;
   }, [schema.properties]);
 
   return (
@@ -58,7 +68,7 @@ const TopLevelField: React.FC<FieldProps> = props => {
             </AccordionButton>
             <AccordionPanel bg="white">
               {schemas.map(schema => {
-                const name = schema.title || schema.name;
+                const name = schema.name;
                 if (typeof schema === 'boolean') {
                   return null;
                 }
@@ -66,7 +76,7 @@ const TopLevelField: React.FC<FieldProps> = props => {
                   <SchemaField
                     key={name}
                     schema={schema}
-                    label={name!}
+                    label={schema.title || name!}
                     formData={formData?.[name!]}
                     onChange={value => {
                       onChange({
