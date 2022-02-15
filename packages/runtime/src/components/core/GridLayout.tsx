@@ -9,13 +9,27 @@ const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 const PropsSchema = Type.Object({
   layout: Type.Array(
     Type.Object({
-      x: Type.Number(),
-      y: Type.Number(),
-      w: Type.Number(),
-      h: Type.Number(),
+      x: Type.Number({
+        title: 'X',
+      }),
+      y: Type.Number({
+        title: 'Y',
+      }),
+      w: Type.Number({
+        title: 'Width',
+      }),
+      h: Type.Number({
+        title: 'Height',
+      }),
       i: Type.String(),
-      isResizable: Type.Optional(Type.Boolean()),
-    })
+      isResizable: Type.Boolean({
+        title: 'Resizable',
+      }),
+    }),
+    {
+      title: 'Layout',
+      category: 'Layout',
+    }
   ),
 });
 

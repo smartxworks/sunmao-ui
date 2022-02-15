@@ -1,9 +1,10 @@
 import { Type } from '@sinclair/typebox';
 import { Stack as BaseStack } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { LAYOUT } from './constants/category';
 
-export const DirectionSchema = Type.Optional(
-  Type.Union([
+export const DirectionSchema = Type.Union(
+  [
     Type.KeyOf(
       Type.Object({
         column: Type.String(),
@@ -22,20 +23,35 @@ export const DirectionSchema = Type.Optional(
         })
       )
     ),
-  ])
+  ],
+  {
+    title: 'Flex Direction',
+    category: LAYOUT,
+  }
 );
-export const FlexWrapSchema = Type.Optional(
-  Type.KeyOf(
-    Type.Object({
-      nowrap: Type.String(),
-      wrap: Type.String(),
-      'wrap-reverse': Type.String(),
-    })
-  )
+export const FlexWrapSchema = Type.KeyOf(
+  Type.Object({
+    nowrap: Type.String(),
+    wrap: Type.String(),
+    'wrap-reverse': Type.String(),
+  }),
+  {
+    title: 'Flex Wrap',
+    category: LAYOUT,
+  }
 );
-export const AlignItemsSchema = Type.Optional(Type.String());
-export const JustifyContentSchema = Type.Optional(Type.String());
-export const SpacingSchema = Type.Optional(Type.Union([Type.String(), Type.Number()]));
+export const AlignItemsSchema = Type.String({
+  title: 'Align Items',
+  category: LAYOUT,
+});
+export const JustifyContentSchema = Type.String({
+  title: 'Justify Content',
+  category: LAYOUT,
+});
+export const SpacingSchema = Type.Union([Type.String(), Type.Number()], {
+  title: 'Spacing',
+  category: LAYOUT,
+});
 
 const PropsSchema = Type.Object({
   direction: DirectionSchema,

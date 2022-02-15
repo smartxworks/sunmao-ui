@@ -4,6 +4,7 @@ import { Select as BaseMultiSelect } from 'chakra-react-select';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
+import { BASIC, BEHAVIOR, APPEARANCE } from './constants/category';
 
 const StateSchema = Type.Object({
   value: Type.Array(Type.String()),
@@ -11,30 +12,53 @@ const StateSchema = Type.Object({
 
 const OptionsSchema = Type.Array(
   Type.Object({
-    label: Type.String(),
-    value: Type.String(),
-  })
+    label: Type.String({
+      title: 'Label',
+    }),
+    value: Type.String({
+      title: 'Value',
+    }),
+  }),
+  {
+    title: 'Options',
+    category: BASIC,
+  }
 );
 
 const PropsSchema = Type.Object({
   options: OptionsSchema,
-  placeholder: Type.Optional(Type.String()),
-  defaultValue: Type.Optional(
-    Type.Array(
-      Type.Object({
-        label: Type.String(),
-        value: Type.String(),
-      })
-    )
+  placeholder: Type.String({
+    title: 'Placeholder',
+    category: BASIC,
+  }),
+  defaultValue: Type.Array(
+    Type.Object({
+      label: Type.String(),
+      value: Type.String(),
+    }),
+    {
+      title: 'Default Value',
+      category: BASIC,
+    }
   ),
-  isDisabled: Type.Optional(Type.Boolean()),
-  isRequired: Type.Optional(Type.Boolean()),
+  isDisabled: Type.Boolean({
+    title: 'Disabled',
+    category: BEHAVIOR,
+  }),
+  isRequired: Type.Boolean({
+    title: 'Required',
+    category: BEHAVIOR,
+  }),
   size: Type.KeyOf(
     Type.Object({
       sm: Type.String(),
       md: Type.String(),
       lg: Type.String(),
-    })
+    }),
+    {
+      title: 'Size',
+      category: APPEARANCE,
+    }
   ),
   variant: Type.KeyOf(
     Type.Object({
@@ -42,7 +66,11 @@ const PropsSchema = Type.Object({
       unstyled: Type.String(),
       filled: Type.String(),
       flushed: Type.String(),
-    })
+    }),
+    {
+      title: 'Variant',
+      category: APPEARANCE,
+    }
   ),
 });
 
@@ -61,6 +89,12 @@ const exampleProperties = {
       value: 'value3',
     },
   ],
+  placeholder: '',
+  defaultValue: [],
+  isDisabled: false,
+  isRequired: false,
+  size: 'md',
+  variant: 'outline',
 };
 
 export default implementRuntimeComponent({

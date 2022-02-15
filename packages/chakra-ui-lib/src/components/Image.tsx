@@ -2,9 +2,10 @@ import { Image as BaseImage } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { BASIC, LAYOUT, BEHAVIOR, APPEARANCE } from './constants/category';
 
-const BoxSizePropertySchema = Type.Optional(
-  Type.Union([
+const BoxSizePropertySchema = Type.Union(
+  [
     Type.KeyOf(
       Type.Object({
         sm: Type.String(),
@@ -14,7 +15,11 @@ const BoxSizePropertySchema = Type.Optional(
       })
     ),
     Type.String(),
-  ])
+  ],
+  {
+    title: 'Box Size',
+    category: APPEARANCE,
+  }
 );
 
 const GlobalCssSchema = Type.KeyOf(
@@ -27,8 +32,8 @@ const GlobalCssSchema = Type.KeyOf(
   })
 );
 
-const ObjectFitSchema = Type.Optional(
-  Type.Union([
+const ObjectFitSchema = Type.Union(
+  [
     GlobalCssSchema,
     Type.KeyOf(
       Type.Object({
@@ -39,11 +44,16 @@ const ObjectFitSchema = Type.Optional(
         'scale-down': Type.String(),
       })
     ),
-  ])
+  ],
+  {
+    title: 'Object Fit',
+    description: 'How the image should be scaled to fit the element.',
+    category: BEHAVIOR,
+  }
 );
 
-const BorderRadiusSchema = Type.Optional(
-  Type.Union([
+const BorderRadiusSchema = Type.Union(
+  [
     GlobalCssSchema,
     Type.Number(),
     Type.String(),
@@ -60,7 +70,11 @@ const BorderRadiusSchema = Type.Optional(
         '3xl': Type.String(),
       })
     ),
-  ])
+  ],
+  {
+    title: 'Border Radius',
+    category: APPEARANCE,
+  }
 );
 
 const StateSchema = Type.Object({
@@ -68,23 +82,52 @@ const StateSchema = Type.Object({
 });
 
 const PropsSchema = Type.Object({
-  src: Type.String(),
-  fallbackSrc: Type.Optional(Type.String()),
-  boxSize: BoxSizePropertySchema,
+  // basic
+  src: Type.String({
+    title: 'Src',
+    description: 'The source of the image',
+    category: BASIC,
+  }),
+  fallbackSrc: Type.String({
+    title: 'Fallback Src',
+    description: 'The source of the image to use when the src fails to load',
+    category: BASIC,
+  }),
+  alt: Type.String({
+    title: 'Alt Text',
+    description:
+      'An accessible description of the image for screen readers. This is also rendered as a fallback if the image fails to load.',
+    category: BASIC,
+  }),
+  ignoreFallback: Type.Boolean({
+    title: 'Ignore Fallback',
+    description: 'Whether to ignore the fallback image when the src fails to load',
+    category: BEHAVIOR,
+  }),
   objectFit: ObjectFitSchema,
-  borderRadius: BorderRadiusSchema,
-  ignoreFallback: Type.Optional(Type.Boolean()),
-  alt: Type.Optional(Type.String()),
-  htmlHeight: Type.Optional(Type.Union([Type.String(), Type.Number()])),
-  htmlWidth: Type.Optional(Type.Union([Type.String(), Type.Number()])),
-  crossOrigin: Type.Optional(
-    Type.KeyOf(
-      Type.Object({
-        anonymous: Type.String(),
-        'use-credentials': Type.String(),
-      })
-    )
+  crossOrigin: Type.KeyOf(
+    Type.Object({
+      anonymous: Type.String(),
+      'use-credentials': Type.String(),
+    }),
+    {
+      title: 'Cross Origin',
+      description: 'How the image should be loaded',
+      category: BEHAVIOR,
+    }
   ),
+  // layout
+  htmlHeight: Type.Union([Type.String(), Type.Number()], {
+    title: 'Height',
+    category: LAYOUT,
+  }),
+  htmlWidth: Type.Union([Type.String(), Type.Number()], {
+    title: 'Width',
+    category: LAYOUT,
+  }),
+  // style
+  boxSize: BoxSizePropertySchema,
+  borderRadius: BorderRadiusSchema,
 });
 
 export default implementRuntimeComponent({
@@ -97,10 +140,15 @@ export default implementRuntimeComponent({
     isResizable: true,
     exampleProperties: {
       src: 'https://bit.ly/dan-abramov',
-      alt: 'dan-abramov',
-      objectFit: 'cover',
-      borderRadius: 5,
       fallbackSrc: 'https://via.placeholder.com/150',
+      alt: 'dan-abramov',
+      ignoreFallback: false,
+      objectFit: 'cover',
+      crossOrigin: 'anonymous',
+      boxSize: 'md',
+      htmlHeight: '',
+      htmlWidth: '',
+      borderRadius: 5,
     },
     exampleSize: [6, 6],
     annotations: {

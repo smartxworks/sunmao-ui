@@ -74,6 +74,7 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
     properties: {
       variant: 'outline',
       placeholder: '{{data.value}}',
+      focusBorderColor: '',
       size: 'md',
       isDisabled: false,
       isRequired: false,
@@ -89,6 +90,8 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
         raw: '{{fetch.data.value}}',
         format: 'md',
       },
+      isLoading: false,
+      colorScheme: 'blue',
     },
     traits: [
       {
@@ -169,6 +172,7 @@ export const EventTraitSchema: ComponentSchema[] = [
       isDisabled: false,
       isRequired: false,
       defaultValue: '',
+      focusBorderColor: '',
     },
     traits: [],
   },
@@ -180,6 +184,8 @@ export const EventTraitSchema: ComponentSchema[] = [
         raw: 'hello',
         format: 'md',
       },
+      isLoading: false,
+      colorScheme: 'blue',
     },
     traits: [
       {
@@ -258,6 +264,8 @@ export const EventTraitTraitMethodSchema: ComponentSchema[] = [
         raw: 'hello',
         format: 'md',
       },
+      isLoading: false,
+      colorScheme: 'blue',
     },
     traits: [
       {
