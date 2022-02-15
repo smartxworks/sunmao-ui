@@ -4,13 +4,20 @@ import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 
 export const TextPropertySchema = Type.Object({
-  raw: Type.String(),
+  raw: Type.String({
+    title: 'Raw',
+  }),
   format: Type.KeyOf(
     Type.Object({
       plain: Type.String(),
       md: Type.String(),
-    })
+    }), {
+      title: 'Format',
+    }
   ),
+}, {
+  title: 'Text',
+  category: 'Basic',
 });
 
 export type TextProps = {

@@ -31,6 +31,10 @@ export default implementRuntimeComponent({
     isDraggable: true,
     isResizable: true,
     annotations: {
+      direction: 'column',
+      wrap: 'wrap',
+      align: '',
+      justify: '',
       category: 'Layout',
     },
   },
@@ -42,23 +46,34 @@ export default implementRuntimeComponent({
     methods: {},
     events: [],
   },
-})(({ direction, wrap, align, justify, spacing, slotsElements, customStyle, elementRef }) => {
-  return (
-    <BaseVStack
-      width="full"
-      height="full"
-      padding="4"
-      background="white"
-      border="1px solid"
-      borderColor="gray.200"
-      borderRadius="4"
-      className={css`
-        ${customStyle?.content}
-      `}
-      ref={elementRef}
-      {...{ direction, wrap, align, justify, spacing }}
-    >
-      {slotsElements.content}
-    </BaseVStack>
-  );
-});
+})(
+  ({
+    direction,
+    wrap,
+    align,
+    justify,
+    spacing,
+    slotsElements,
+    customStyle,
+    elementRef,
+  }) => {
+    return (
+      <BaseVStack
+        width="full"
+        height="full"
+        padding="4"
+        background="white"
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="4"
+        className={css`
+          ${customStyle?.content}
+        `}
+        ref={elementRef}
+        {...{ direction, wrap, align, justify, spacing }}
+      >
+        {slotsElements.content}
+      </BaseVStack>
+    );
+  }
+);

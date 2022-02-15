@@ -3,7 +3,8 @@ import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
 import { Text, TextPropertySchema, implementRuntimeComponent } from '@sunmao-ui/runtime';
-import { ColorSchemePropertySchema } from './Types/ColorScheme';
+import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { BEHAVIOR, APPEARANCE } from './constants/category';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -11,8 +12,15 @@ const StateSchema = Type.Object({
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
-  colorScheme: ColorSchemePropertySchema,
-  isLoading: Type.Optional(Type.Boolean()),
+  isLoading: Type.Boolean({
+    title: 'Loading',
+    description: 'Whether the button is in a loading state',
+    category: BEHAVIOR,
+  }),
+  colorScheme: getColorSchemePropertySchema({
+    title: 'Color Scheme',
+    category: APPEARANCE,
+  }),
 });
 
 export default implementRuntimeComponent({
@@ -28,8 +36,8 @@ export default implementRuntimeComponent({
         raw: 'text',
         format: 'plain',
       },
-      colorScheme: 'blue',
       isLoading: false,
+      colorScheme: 'blue',
     },
     exampleSize: [2, 1],
     annotations: {
