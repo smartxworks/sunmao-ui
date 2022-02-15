@@ -14,8 +14,9 @@ const MenuPropsSchema = Type.Object({
       key: Type.String(),
       text: Type.String(),
       disabled: Type.Optional(Type.Boolean()),
-    }),{
-      category:Category.Data
+    }),
+    {
+      category: Category.Data,
     }
   ),
 });
@@ -35,7 +36,7 @@ const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
 
   return (
     <BaseMenu
-    ref={elementRef}
+      ref={elementRef}
       className={css(customStyle?.content)}
       onClickMenuItem={(key) => {
         setActiveKey(key);

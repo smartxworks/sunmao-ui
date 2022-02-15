@@ -18,6 +18,7 @@ import {
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
 } from "@sunmao-ui/runtime";
+import { TableInstance } from "@arco-design/web-react/es/Table/table";
 
 const TableStateSchema = Type.Object({
   selectedRows: Type.Array(Type.Any()),
@@ -45,8 +46,9 @@ type filterDropdownParam = {
   confirm?: Function;
 };
 const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
-  const { elementRef, app, mergeState, customStyle, services, data } = props;
+  const { getElement, app, mergeState, customStyle, services, data } = props;
 
+  const ref = useRef<TableInstance | null>(null);
   const { pagination, ...cProps } = getComponentProps(props);
 
   const rowSelectionType: "checkbox" | "radio" | undefined =
@@ -195,9 +197,16 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
     setFilterRule(filter);
   };
 
+  useEffect(() => {
+    const ele = ref.current?.getRootDomElement();
+    if (ele && getElement) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
   return (
     <BaseTable
-      ref={elementRef}
+      ref={ref}
       className={css(customStyle?.content)}
       {...cProps}
       columns={columns}

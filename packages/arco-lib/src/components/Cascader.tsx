@@ -9,6 +9,8 @@ import {
 } from "../generated/types/Cascader";
 import { useState, useEffect } from "react";
 import { isArray } from "lodash-es";
+import { SelectViewHandle } from "@arco-design/web-react/es/_class/select-view";
+import { useRef } from "react";
 
 const CascaderPropsSchema = Type.Object(BaseCascaderPropsSchema);
 const CascaderStateSchema = Type.Object({
@@ -65,9 +67,10 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
 const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
   props
 ) => {
-  const { elementRef, callbackMap, multiple, placeholder, ...cProps } =
+  const { getElement, callbackMap, multiple, placeholder, ...cProps } =
     getComponentProps(props);
   const { mergeState, slotsElements, customStyle, options } = props;
+  const ref = useRef<SelectViewHandle | null>(null);
 
   const content = isArray(slotsElements.content)
     ? slotsElements.content[0]
@@ -93,6 +96,13 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
     mergeState({ value });
   }, [value, mergeState]);
 
+  useEffect(() => {
+    const ele = ref.current?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
   const onChange = (value: (string | string[])[]) => {
     _setValue(value);
     callbackMap?.onChange?.();
@@ -100,7 +110,7 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
 
   return (
     <BaseCascader
-      ref={elementRef}
+      ref={ref}
       className={css(customStyle?.content)}
       {...cProps}
       mode={mode}

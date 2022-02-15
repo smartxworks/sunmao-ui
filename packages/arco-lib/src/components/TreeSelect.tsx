@@ -5,6 +5,8 @@ import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { TreeSelectPropsSchema as BaseTreeSelectPropsSchema } from "../generated/types/TreeSelect";
 import { useState, useEffect } from "react";
+import { useRef } from "react";
+import { RefTreeSelectType } from "@arco-design/web-react/es/TreeSelect";
 
 const TreeSelectPropsSchema = Type.Object(BaseTreeSelectPropsSchema);
 const TreeSelectStateSchema = Type.Object({
@@ -15,11 +17,20 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
   props
 ) => {
   const { defaultValue, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle, mergeState, callbackMap } = props;
+  const { getElement, customStyle, mergeState, callbackMap } = props;
+  const ref = useRef<RefTreeSelectType | null>(null);
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     defaultValue!
   );
+
+  useEffect(() => {
+    // arco definition doesn't declare dom, but it actually has.
+    const ele = (ref.current as any)?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
 
   useEffect(() => {
     mergeState({ selectedOptions });
@@ -38,7 +49,7 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
 
   return (
     <BaseTreeSelect
-      ref={elementRef}
+      ref={ref}
       onChange={handleChange}
       className={css(customStyle?.content)}
       filterTreeNode={filterTreeNode}
