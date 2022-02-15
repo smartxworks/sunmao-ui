@@ -1,8 +1,5 @@
 import { Image as BaseImage } from "@arco-design/web-react";
-import {
-  ComponentImpl,
-  implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
+import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -11,15 +8,13 @@ import { ImagePropsSchema as BaseImagePropsSchema } from "../generated/types/Ima
 const ImagePropsSchema = Type.Object(BaseImagePropsSchema);
 const ImageStateSchema = Type.Object({});
 
-
-const ImageImpl: ComponentImpl<Static<typeof ImagePropsSchema>> = (
-  props
-) => {
-  const { customStyle, callbackMap } = props;
+const ImageImpl: ComponentImpl<Static<typeof ImagePropsSchema>> = (props) => {
+  const { elementRef, customStyle, callbackMap } = props;
   const cProps = getComponentProps(props);
 
   return (
     <BaseImage
+      ref={elementRef}
       className={css(customStyle?.content)}
       onClick={callbackMap?.onClick}
       {...cProps}

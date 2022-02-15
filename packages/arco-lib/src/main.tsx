@@ -1,25 +1,14 @@
-import renderApp from "@sunmao-ui/editor";
-import { components, traits, modules } from "./lib";
-import '@sunmao-ui/editor/dist/esm/main.css'
+import ReactDom from "react-dom";
+import { initSunmaoUIEditor } from "@sunmao-ui/editor";
+import { sunmaoChakraUILib } from "@sunmao-ui/chakra-ui-lib";
+import { ArcoDesignLib } from ".";
+import { StrictMode } from "react";
 
-((window as unknown) as { resetApp: Function }).resetApp = () => {
-  localStorage.setItem(
-    "schema",
-    JSON.stringify({
-      kind: "Application",
-      version: "arco/v1",
-      metadata: {
-        name: "scf",
-      },
-      spec: {
-        components: [],
-      },
-    })
-  );
-};
+const { Editor } = initSunmaoUIEditor({ libs: [ArcoDesignLib, sunmaoChakraUILib] });
 
-renderApp({
-  components,
-  traits,
-  modules,
-});
+ReactDom.render(
+  <StrictMode>
+    <Editor />
+  </StrictMode>,
+  document.getElementById("root")
+);

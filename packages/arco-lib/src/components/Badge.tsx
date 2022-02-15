@@ -10,7 +10,7 @@ const BadgeStateSchema = Type.Object({});
 
 const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSchema>> = (props) => {
   const { ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements } = props;
+  const { elementRef, customStyle, slotsElements } = props;
 
   // TODO need to be optimized
   // In arco-design, if `status` and `color` are set, even if `dot` is not set, it will be in dot mode
@@ -22,7 +22,7 @@ const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSchema>> = (props) => {
   }
 
   return (
-    <BaseBadge className={css(customStyle?.content)} {...cProps}>
+    <BaseBadge ref={elementRef} className={css(customStyle?.content)} {...cProps}>
       {slotsElements.content}
     </BaseBadge>
   );

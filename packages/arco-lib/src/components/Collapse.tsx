@@ -11,21 +11,18 @@ import { useEffect, useState } from "react";
 
 const CollapsePropsSchema = Type.Object(BaseCollapsePropsSchema);
 const CollapseStateSchema = Type.Object({
-  activeKey: Type.Array(Type.String())
+  activeKey: Type.Array(Type.String()),
 });
 
 const CollapseImpl: ComponentImpl<Static<typeof CollapsePropsSchema>> = (
   props
 ) => {
-  const { defaultActiveKey,...cProps } = getComponentProps(props);
-  const {
-    mergeState,
-    slotsElements,
-    customStyle,
-    callbackMap,
-  } = props;
+  const { defaultActiveKey, ...cProps } = getComponentProps(props);
+  const { mergeState, slotsElements, customStyle, callbackMap } = props;
 
-  const [activeKey, setActiveKey] = useState<string[]>(defaultActiveKey.map(String));
+  const [activeKey, setActiveKey] = useState<string[]>(
+    defaultActiveKey.map(String)
+  );
 
   useEffect(() => {
     mergeState({ activeKey });
@@ -84,22 +81,22 @@ export const Collapse = implementRuntimeComponent(options)(
 const CollapseItemPropsSchema = Type.Object(BaseCollapseItemPropsSchema);
 const CollapseItemStateSchema = Type.Object({});
 
-const CollapseItemImpl: ComponentImpl<
-  Static<typeof CollapseItemPropsSchema>
-> = (props) => {
-  const { name, ...cProps } = getComponentProps(props);
-  const { slotsElements, customStyle } = props;
+const CollapseItemImpl: ComponentImpl<Static<typeof CollapseItemPropsSchema>> =
+  (props) => {
+    const { elementRef, name, ...cProps } = getComponentProps(props);
+    const { slotsElements, customStyle } = props;
 
-  return (
-    <BaseCollapse.Item
-      name={String(name)}
-      className={css(customStyle?.content)}
-      {...cProps}
-    >
-      {slotsElements.content}
-    </BaseCollapse.Item>
-  );
-};
+    return (
+      <BaseCollapse.Item
+        ref={elementRef}
+        name={String(name)}
+        className={css(customStyle?.content)}
+        {...cProps}
+      >
+        {slotsElements.content}
+      </BaseCollapse.Item>
+    );
+  };
 
 export const CollapseItem = implementRuntimeComponent({
   version: "arco/v1",

@@ -6,16 +6,17 @@ import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { ButtonPropsSchema as BaseButtonPropsSchema } from "../generated/types/Button";
 
 const ButtonPropsSchema = Type.Object({
-  ...BaseButtonPropsSchema
+  ...BaseButtonPropsSchema,
 });
 const ButtonStateSchema = Type.Object({});
 
 const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
-  const { slotsElements, customStyle, text, callbackMap } = props;
+  const { elementRef, slotsElements, customStyle, text, callbackMap } = props;
   const { ...cProps } = getComponentProps(props);
 
   return (
     <BaseButton
+      ref={elementRef}
       className={css(customStyle?.content)}
       onClick={callbackMap?.onClick}
       {...cProps}

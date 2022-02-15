@@ -15,10 +15,14 @@ const LayoutPropsSchema = Type.Object(BaseLayoutPropsSchema);
 const LayoutStateSchema = Type.Object({});
 
 const LayoutImpl: ComponentImpl<Static<typeof LayoutPropsSchema>> = (props) => {
-  const { slotsElements, customStyle } = props;
+  const { elementRef, slotsElements, customStyle } = props;
   const cProps = getComponentProps(props);
   return (
-    <BaseLayout className={css(customStyle?.content)} {...cProps}>
+    <BaseLayout
+      ref={elementRef}
+      className={css(customStyle?.content)}
+      {...cProps}
+    >
       {slotsElements.content}
     </BaseLayout>
   );

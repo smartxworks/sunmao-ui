@@ -20,7 +20,7 @@ const CheckboxStateSchema = Type.Object({
 const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = (
   props
 ) => {
-  const { mergeState, subscribeMethods, callbackMap, customStyle } = props;
+  const { elementRef, mergeState, subscribeMethods, callbackMap, customStyle } = props;
   const {
     options = [],
     defaultCheckedValues,
@@ -183,10 +183,10 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = (
     );
 
   return (
-    <>
+    <div ref={elementRef}>
       {CheckAll}
       {CheckboxList}
-    </>
+    </div>
   );
 };
 

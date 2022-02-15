@@ -65,7 +65,7 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
 const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
   props
 ) => {
-  const { callbackMap, multiple, placeholder, ...cProps } =
+  const { elementRef, callbackMap, multiple, placeholder, ...cProps } =
     getComponentProps(props);
   const { mergeState, slotsElements, customStyle, options } = props;
 
@@ -100,6 +100,7 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
 
   return (
     <BaseCascader
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
       mode={mode}

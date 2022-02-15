@@ -11,11 +11,12 @@ const ProgressStateSchema = Type.Object({});
 const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSchema>> = (
   props
 ) => {
-  const { ...cProps } = getComponentProps(props);
+  const { elementRef, ...cProps } = getComponentProps(props);
   const { customStyle } = props;
 
   return (
     <BaseProgress
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
     />
@@ -30,7 +31,7 @@ const exampleProperties: Static<typeof ProgressPropsSchema> = {
   showText: true,
   percent: 0,
   width: 100,
-  size: "default"
+  size: "default",
 };
 
 const options = {

@@ -1,5 +1,5 @@
 
-import { Category } from 'src/constants/category';
+import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
 export const DividerPropsSchema = {

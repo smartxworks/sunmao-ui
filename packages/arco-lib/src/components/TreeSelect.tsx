@@ -3,9 +3,7 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import {
-  TreeSelectPropsSchema as BaseTreeSelectPropsSchema,
-} from "../generated/types/TreeSelect";
+import { TreeSelectPropsSchema as BaseTreeSelectPropsSchema } from "../generated/types/TreeSelect";
 import { useState, useEffect } from "react";
 
 const TreeSelectPropsSchema = Type.Object(BaseTreeSelectPropsSchema);
@@ -13,14 +11,15 @@ const TreeSelectStateSchema = Type.Object({
   selectedOptions: Type.String(),
 });
 
-
 const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
   props
 ) => {
   const { defaultValue, ...cProps } = getComponentProps(props);
-  const { customStyle, mergeState, callbackMap } = props;
+  const { elementRef, customStyle, mergeState, callbackMap } = props;
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultValue!);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    defaultValue!
+  );
 
   useEffect(() => {
     mergeState({ selectedOptions });
@@ -39,6 +38,7 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
 
   return (
     <BaseTreeSelect
+      ref={elementRef}
       onChange={handleChange}
       className={css(customStyle?.content)}
       filterTreeNode={filterTreeNode}

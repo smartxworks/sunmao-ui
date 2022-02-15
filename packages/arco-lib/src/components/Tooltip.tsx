@@ -14,7 +14,7 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
   props
 ) => {
   const { controlled, ...cProps } = getComponentProps(props);
-  const { subscribeMethods, slotsElements, customStyle } = props;
+  const { elementRef, subscribeMethods, slotsElements, customStyle } = props;
 
   const [popupVisible, setPopupVisible] = useState(false);
 
@@ -38,6 +38,7 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
 
   return controlled ? (
     <BaseTooltip
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
       popupVisible={popupVisible}
@@ -45,7 +46,7 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
       {content || <Button>Click</Button>}
     </BaseTooltip>
   ) : (
-    <BaseTooltip className={css(customStyle?.content)} {...cProps}>
+    <BaseTooltip elementRef className={css(customStyle?.content)} {...cProps}>
       {content || <Button>Click</Button>}
     </BaseTooltip>
   );
