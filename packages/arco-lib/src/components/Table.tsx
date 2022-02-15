@@ -202,7 +202,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
       pagination={{
         total: sortedData!.length,
         current: currentPage,
-        pageSize
+        pageSize,
       }}
       data={currentPageData}
       onChange={handleChange}
@@ -240,12 +240,14 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
       dataIndex: "salary",
       sorter: true,
       filter: false,
+      type: "text",
     },
     {
       title: "Time",
       dataIndex: "time",
       sorter: true,
       filter: false,
+      type: "text",
     },
     {
       title: "Link",
@@ -295,6 +297,9 @@ export const Table = implementRuntimeComponent({
   metadata: {
     ...FALLBACK_METADATA,
     exampleProperties,
+    annotations: {
+      category: "Display",
+    },
     name: "table",
     displayName: "Table",
   },

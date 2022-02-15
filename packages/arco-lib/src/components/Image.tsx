@@ -27,7 +27,7 @@ const ImageImpl: ComponentImpl<Static<typeof ImagePropsSchema>> = (
   );
 };
 const exampleProperties: Static<typeof ImagePropsSchema> = {
-  src :'https://camo.githubusercontent.com/e90098399ac24211c2fbb2c97111caaaeea182ba4df4a889798c3af3f9c3478f/68747470733a2f2f62616467656e2e6e65742f6769746875622f73746172732f7765627a6172642d696f2f73756e6d616f2d7569',
+  src :'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp',
   title:"stars",
   description:"sunmao-ui's stars",
   footerPosition:'inner',
@@ -41,7 +41,10 @@ const options = {
     ...FALLBACK_METADATA,
     name: "image",
     displayName: "Image",
-    exampleProperties
+    exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: ImagePropsSchema,

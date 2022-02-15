@@ -34,6 +34,9 @@ const options = {
     ...FALLBACK_METADATA,
     name: "link",
     displayName: "Link",
+    annotations: {
+      category: "Input",
+    },
     exampleProperties,
   },
   spec: {

@@ -1,17 +1,38 @@
 
 import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
+import { Category } from '../../constants/category'
 
 export const PaginationPropsSchema = {
-  pageSize: Type.Number(),
-  total: Type.Number(),
-  defaultCurrent: Type.Number(),
-  defaultPageSize: Type.Number(),
-  disabled: Type.Boolean(),
-  hideOnSinglePage: Type.Boolean(),
-  size: StringUnion(['mini', 'small', 'default', 'large']),
-  sizeCanChange: Type.Boolean(),
-  pageSizeChangeResetCurrent: Type.Boolean(),
-  simple: Type.Boolean(),
-  showJumper: Type.Boolean(),
+  pageSize: Type.Number({
+    category:Category.General,
+  }),
+  total: Type.Number({
+    category:Category.General,
+  }),
+  defaultCurrent: Type.Number({
+    category:Category.General,
+  }),
+  defaultPageSize: Type.Number({
+    category:Category.General,
+  }),
+  disabled: Type.Boolean({
+    category:Category.General,
+  }),
+  hideOnSinglePage: Type.Boolean({
+    category:Category.Style
+  }),
+  size: StringUnion(['mini', 'small', 'default', 'large'], {
+    category: Category.Style
+  }),
+  sizeCanChange: Type.Boolean({
+    category:Category.General,
+  }),
+  simple: Type.Boolean({
+    category: Category.Style
+  }),
+  showJumper: Type.Boolean({
+    category:Category.General,
+    description: 'Whether to display quick jump'
+  }),
 };

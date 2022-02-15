@@ -5,17 +5,18 @@ import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { MenuPropsSchema as BaseMenuPropsSchema } from "../generated/types/Menu";
 import { useEffect, useState } from "react";
+import { Category } from "src/constants/category";
 
 const MenuPropsSchema = Type.Object({
   ...BaseMenuPropsSchema,
-  items: Type.Optional(
-    Type.Array(
-      Type.Object({
-        key: Type.String(),
-        text: Type.String(),
-        disabled: Type.Optional(Type.Boolean()),
-      })
-    )
+  items: Type.Array(
+    Type.Object({
+      key: Type.String(),
+      text: Type.String(),
+      disabled: Type.Optional(Type.Boolean()),
+    }),{
+      category:Category.Data
+    }
   ),
 });
 const MenuStateSchema = Type.Object({
@@ -51,9 +52,6 @@ const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof MenuPropsSchema> = {
-  prefixCls: "",
-  isMenu: false,
-  inDropdown: false,
   theme: "dark",
   mode: "vertical",
   autoOpen: false,

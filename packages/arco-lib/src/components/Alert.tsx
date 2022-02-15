@@ -39,7 +39,7 @@ const exampleProperties: Static<typeof AlertPropsSchema> = {
   closable: true,
   title: "info",
   content: "Here is an example text",
-  visible: "true",
+  visible: true,
   showIcon: true,
   banner: false,
   type: "info",
@@ -52,6 +52,9 @@ const options = {
     name: "alert",
     displayName: "Alert",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    },
   },
   spec: {
     properties: AlertPropsSchema,

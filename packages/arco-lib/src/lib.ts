@@ -27,6 +27,8 @@ import { Radio } from './components/Radio';
 import { Table } from "./components/Table";
 import { Pagination } from "./components/Pagination";
 import { Steps } from "./components/Steps";
+import { Alert } from './components/Alert';
+import { Link } from "./components/Link";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -64,7 +66,9 @@ export const components: Component[] = [
   Skeleton,
   Timeline,
   Radio,
-  Checkbox
+  Checkbox,
+  Alert,
+  Link
 ];
 export const traits: Trait[] = [];
 export const modules: Module[] = [];

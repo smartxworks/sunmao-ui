@@ -57,6 +57,9 @@ const options = {
     name: "steps",
     displayName: "Steps",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: StepsPropsSchema,

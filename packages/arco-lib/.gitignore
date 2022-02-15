@@ -1,6 +1,20 @@
 node_modules
 .DS_Store
+*.local
+
+.vscode
+.idea
+
+# log
+*.log
+*.log.*
+
+# dist
+lib
 dist
 dist-ssr
-*.local
-lib
+tsconfig.tsbuildinfo
+typings
+
+# jest test coverage
+coverage

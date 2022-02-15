@@ -40,6 +40,9 @@ const options = {
     name: "progress",
     displayName: "Progress",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: ProgressPropsSchema,

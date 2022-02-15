@@ -48,7 +48,6 @@ const exampleProperties: Static<typeof PaginationPropsSchema> = {
   hideOnSinglePage: true,
   size: "default",
   sizeCanChange: true,
-  pageSizeChangeResetCurrent: true,
   simple: false,
   showJumper: false,
 };
@@ -60,6 +59,9 @@ const options = {
     name: "pagination",
     displayName: "Pagination",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: PaginationPropsSchema,

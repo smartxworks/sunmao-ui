@@ -7,13 +7,12 @@ import { AvatarPropsSchema as BaseAvatarPropsSchema } from "../generated/types/A
 
 const AvatarPropsSchema = Type.Object({
   ...BaseAvatarPropsSchema,
-  className: Type.Optional(Type.String()),
 });
 const AvatarStateSchema = Type.Object({});
 
 const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
   const { slotsElements, customStyle } = props;
-  const { className, ...cProps } = getComponentProps(props);
+  const { ...cProps } = getComponentProps(props);
 
   return (
     <BaseAvatar className={css(customStyle?.content)} {...cProps}>
@@ -23,10 +22,10 @@ const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof AvatarPropsSchema> = {
-  className: "avatar",
   shape: "circle",
   autoFixFontSize: false,
   triggerType: "button",
+  size:50
 };
 
 const options = {
@@ -36,6 +35,9 @@ const options = {
     name: "avatar",
     displayName: "Avatar",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: AvatarPropsSchema,

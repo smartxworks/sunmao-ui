@@ -35,6 +35,9 @@ const options = {
     name: "skeleton",
     displayName: "Skeleton",
     exampleProperties,
+    annotations: {
+      category: "Display",
+    }
   },
   spec: {
     properties: SkeletonPropsSchema,

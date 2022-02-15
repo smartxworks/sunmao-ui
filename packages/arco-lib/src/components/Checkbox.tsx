@@ -205,6 +205,9 @@ const options = {
     name: "checkbox",
     displayName: "Checkbox",
     exampleProperties,
+    annotations: {
+      category: "Input",
+    }
   },
   spec: {
     properties: CheckboxPropsSchema,

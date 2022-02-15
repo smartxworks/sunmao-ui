@@ -49,6 +49,9 @@ const options = {
     name: "button",
     displayName: "Button",
     exampleProperties,
+    annotations: {
+      category: "Input",
+    }
   },
   spec: {
     properties: ButtonPropsSchema,
