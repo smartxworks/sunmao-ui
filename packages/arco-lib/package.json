@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/arco-lib",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
   "license": "MIT",
   "publishConfig": {
@@ -33,9 +33,9 @@
     "@arco-design/web-react": "^2.29.0",
     "@emotion/css": "^11.5.0",
     "@sinclair/typebox": "^0.21.2",
+    "@sunmao-ui/chakra-ui-lib": "^0.2.0-alpha.1",
     "@sunmao-ui/core": "^0.4.0-alpha.0",
     "@sunmao-ui/runtime": "^0.4.0-alpha.1",
-    "@sunmao-ui/chakra-ui-lib": "^0.2.0-alpha.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
@@ -44,10 +44,10 @@
   },
   "devDependencies": {
     "@sunmao-ui/editor": "^0.4.0-alpha.1",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
     "@types/lodash": "^4.14.170",
     "@types/lodash-es": "^4.17.5",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "@vitejs/plugin-react": "^1.0.0",
