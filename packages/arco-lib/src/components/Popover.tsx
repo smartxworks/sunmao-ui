@@ -36,12 +36,11 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
 
   return controlled ? (
     <BasePopover
-      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
       content={slotsElements.popupContent}
     >
-      {content || <Button>Click</Button>}
+      {content || <Button ref={elementRef}>Click</Button>}
     </BasePopover>
   ) : (
     <BasePopover
@@ -53,7 +52,7 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
         setPopupVisible(visible);
       }}
     >
-      {content || <Button>Click</Button>}
+      {content || <Button ref={elementRef}>Click</Button>}
     </BasePopover>
   );
 };
@@ -77,7 +76,7 @@ const options = {
     exampleProperties,
     annotations: {
       category: "Display",
-    }
+    },
   },
   spec: {
     properties: PopoverPropsSchema,

@@ -50,13 +50,12 @@ const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSchema>> = (
 
   return (
     <Dropdown
-      ref={elementRef}
       {...restProps}
       droplist={droplist}
       onVisibleChange={onVisibleChange}
       onClick={callbackMap?.onButtonClick}
     >
-      {slotsElements.trigger}
+      <div ref={elementRef}>{slotsElements.trigger}</div>
     </Dropdown>
   );
 };
@@ -80,7 +79,7 @@ const options = {
     exampleProperties,
     annotations: {
       category: "Input",
-    }
+    },
   },
   spec: {
     properties: DropdownPropsSchema,

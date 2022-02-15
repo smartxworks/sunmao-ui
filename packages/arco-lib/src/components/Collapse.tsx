@@ -18,7 +18,7 @@ const CollapseImpl: ComponentImpl<Static<typeof CollapsePropsSchema>> = (
   props
 ) => {
   const { defaultActiveKey, ...cProps } = getComponentProps(props);
-  const { mergeState, slotsElements, customStyle, callbackMap } = props;
+  const { elementRef, mergeState, slotsElements, customStyle, callbackMap } = props;
 
   const [activeKey, setActiveKey] = useState<string[]>(
     defaultActiveKey.map(String)
@@ -35,6 +35,7 @@ const CollapseImpl: ComponentImpl<Static<typeof CollapsePropsSchema>> = (
 
   return (
     <BaseCollapse
+      ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
       defaultActiveKey={defaultActiveKey}
