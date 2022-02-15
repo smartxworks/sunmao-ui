@@ -31,6 +31,7 @@ const exampleProperties = {
       key: 'name',
       title: 'Name',
       type: 'text',
+      displayValue: '',
     },
   ],
   majorKey: 'id',

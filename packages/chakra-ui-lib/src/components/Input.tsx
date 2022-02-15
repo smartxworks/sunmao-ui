@@ -13,20 +13,34 @@ import { css } from '@emotion/css';
 import { BASIC, APPEARANCE, BEHAVIOR } from './constants/category';
 
 const getAppendElementPropertySchema = (options?: Record<string, any>) =>
-  Type.Union(
-    [
-      Type.Object({
-        type: Type.KeyOf(Type.Object({ addon: Type.String() })),
-        children: Type.Optional(Type.String()), // TODO: ReactNode
-      }),
-      Type.Object({
-        type: Type.KeyOf(Type.Object({ element: Type.String() })),
-        children: Type.Optional(Type.String()), // TODO: ReactNode
-        fontSize: Type.Optional(Type.String()),
-        color: Type.Optional(Type.String()),
-      }),
-    ],
-    options
+  Type.Optional(
+    Type.Union(
+      [
+        Type.Object({
+          type: Type.KeyOf(Type.Object({ addon: Type.String() }), {
+            title: 'Type',
+          }),
+          children: Type.String({
+            title: 'Content',
+          }), // TODO: ReactNode
+        }),
+        Type.Object({
+          type: Type.KeyOf(Type.Object({ element: Type.String() }), {
+            title: 'Type',
+          }),
+          children: Type.String({
+            title: 'Content',
+          }), // TODO: ReactNode
+          fontSize: Type.String({
+            title: 'Font Size',
+          }),
+          color: Type.String({
+            title: 'Color',
+          }),
+        }),
+      ],
+      options
+    )
   );
 
 const StateSchema = Type.Object({
@@ -103,8 +117,6 @@ export default implementRuntimeComponent({
       focusBorderColor: '',
       isDisabled: false,
       isRequired: false,
-      left: {},
-      right: {},
       defaultValue: '',
     },
     exampleSize: [4, 1],

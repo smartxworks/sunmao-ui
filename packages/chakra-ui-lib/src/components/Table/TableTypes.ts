@@ -8,7 +8,7 @@ export const MajorKeyPropertySchema = Type.String({
   category: BASIC,
 });
 export const RowsPerPagePropertySchema = Type.Number({
-  title: '',
+  title: 'Per Page Number',
   category: BEHAVIOR,
 });
 export const DataPropertySchema = Type.Array(Type.Any(), {
@@ -39,13 +39,23 @@ export const TdTypeSchema = Type.KeyOf(
   }
 );
 export const ColumnSchema = Type.Object({
-  key: Type.String(),
-  title: Type.String(),
-  displayValue: Type.Optional(Type.String()),
+  key: Type.String({
+    title: 'Key',
+  }),
+  title: Type.String({
+    title: 'Title',
+  }),
+  displayValue: Type.String({
+    title: 'Display value',
+  }),
   type: TdTypeSchema,
   buttonConfig: Type.Object({
-    text: Type.String(),
+    text: Type.String({
+      title: 'Text',
+    }),
     handlers: Type.Array(EventHandlerSchema),
+  }, {
+    title: 'Button Config',
   }),
   module: ModuleSchema,
 }, {
