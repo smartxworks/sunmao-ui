@@ -26,7 +26,7 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
     return registry.getComponentByType(hoverComponentType).spec.slots || [];
   }, [hoverComponentType, registry]);
 
-  // caculate the slot which is being dragged over
+  // calculate the slot which is being dragged over
   useEffect(() => {
     if (!maskRef.current) return;
     const maskRect = maskRef.current?.getBoundingClientRect();
@@ -58,6 +58,7 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
       display="flex"
       flexDirection={vertical ? 'column' : 'row'}
       ref={maskRef}
+      border='1px solid orange'
     >
       {slots.map(slot => {
         return (

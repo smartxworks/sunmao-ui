@@ -18,7 +18,7 @@ const outlineMaskTextStyle = css`
 
 const outlineMaskStyle = css`
   position: absolute;
-  border: 1px solid;
+  border: 1px solid transparent;
   /* create a bfc */
   transform: translate3d(0, 0, 0);
   z-index: 10;
@@ -115,16 +115,12 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   );
 
   const hoverMaskPosition = useMemo(() => {
-    if (
-      !wrapperRect.current ||
-      !hoverComponentId ||
-      hoverComponentId === selectedComponentId
-    ) {
+    if (!wrapperRect.current || !hoverComponentId) {
       return undefined;
     }
 
     return getMaskPosition(hoverComponentId);
-  }, [hoverComponentId, selectedComponentId, getMaskPosition]);
+  }, [hoverComponentId, getMaskPosition]);
 
   const selectedMaskPosition = useMemo(() => {
     if (!wrapperRect.current || !selectedComponentId) return undefined;
@@ -133,11 +129,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   }, [selectedComponentId, getMaskPosition]);
 
   const hoverMask = hoverMaskPosition ? (
-    <Box
-      className={outlineMaskStyle}
-      borderColor="black"
-      style={hoverMaskPosition.style}
-    >
+    <Box className={outlineMaskStyle} borderColor="black" style={hoverMaskPosition.style}>
       <Text className={outlineMaskTextStyle} background="black">
         {hoverMaskPosition.id}
       </Text>
@@ -145,11 +137,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   ) : undefined;
 
   const dragMask = hoverMaskPosition ? (
-    <Box
-      className={outlineMaskStyle}
-      borderColor="orange"
-      style={hoverMaskPosition.style}
-    >
+    <Box className={outlineMaskStyle} style={hoverMaskPosition.style}>
       <DropSlotMask
         services={services}
         hoverId={hoverComponentId}
