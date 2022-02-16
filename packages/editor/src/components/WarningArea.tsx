@@ -75,7 +75,8 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
       paddingY="2"
       paddingX="4"
       boxShadow="0 0 4px rgba(0, 0, 0, 0.1)"
-      background='white'
+      background="white"
+      zIndex="1"
     >
       <HStack width="full" justifyContent="space-between">
         <Text fontSize="md" fontWeight="bold">
