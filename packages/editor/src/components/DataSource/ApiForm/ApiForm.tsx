@@ -27,6 +27,12 @@ import { Response as ResponseInfo } from './Respose';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
 
+enum TabIndex {
+  Basic,
+  Headers,
+  Params,
+  Body,
+}
 interface Props {
   api: ComponentSchema;
   services: EditorServices;
@@ -41,6 +47,7 @@ export const ApiForm: React.FC<Props> = props => {
   const { editorStore } = services;
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
+  const [tabIndex, setTabIndex] = useState(0);
   const { registry, eventBus } = services;
   const traitIndex = api.traits.findIndex(({ type }) => type === 'core/v1/fetch');
   const trait = api.traits[traitIndex];
@@ -81,11 +88,19 @@ export const ApiForm: React.FC<Props> = props => {
       setIsEditing(false);
     }
   };
+  const onMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    formik.handleChange(e);
+    formik.handleSubmit();
+    if (e.target.value === 'get' && tabIndex === TabIndex.Body) {
+      setTabIndex(0);
+    }
+  };
 
   useEffect(() => {
     formik.setValues({
       ...(trait?.properties as Static<typeof FetchTraitPropertiesSchema>),
     });
+    setTabIndex(0);
   }, [trait.properties]);
   useEffect(() => {
     if (api.id) {
@@ -149,10 +164,7 @@ export const ApiForm: React.FC<Props> = props => {
             width={200}
             name="method"
             value={values.method}
-            onChange={e => {
-              formik.handleChange(e);
-              formik.handleSubmit();
-            }}
+            onChange={onMethodChange}
             size="md"
           >
             {METHODS.map(method => (
@@ -173,7 +185,14 @@ export const ApiForm: React.FC<Props> = props => {
           Run
         </Button>
       </HStack>
-      <Tabs flex={1} overflow="hidden">
+      <Tabs
+        flex={1}
+        overflow="hidden"
+        index={tabIndex}
+        onChange={index => {
+          setTabIndex(index);
+        }}
+      >
         <VStack height="100%" alignItems="stretch">
           <TabList>
             <Tab>Basic</Tab>
