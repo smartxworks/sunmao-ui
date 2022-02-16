@@ -40,7 +40,7 @@ export const App: React.FC<AppProps> = props => {
   }, [hooks, options]);
 
   return (
-    <div className="App" style={{ height: '100%', overflow: 'auto' }}>
+    <div className="App">
       {topLevelComponents.map(c => {
         return (
           <ImplWrapper
