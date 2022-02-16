@@ -1,6 +1,7 @@
 enum ExplorerMenuTabs {
-    EXPLORER = 0,
-    UI_TREE = 1,
+    // EXPLORER = 0,
+    UI_TREE = 0,
+    DATA = 1,
     STATE = 2
 }
 
