@@ -14,7 +14,7 @@ export class AppStorage {
   constructor(
     defaultApplication?: Application,
     defaultModules?: Module[],
-    private storageHanlder?: StorageHandler
+    private storageHandler?: StorageHandler
   ) {
     this.app = defaultApplication || EmptyAppSchema;
     this.modules = defaultModules || [];
@@ -123,12 +123,12 @@ export class AppStorage {
   }
 
   private saveApplication() {
-    this.storageHanlder?.onSaveApp && this.storageHanlder?.onSaveApp(toJS(this.app));
+    this.storageHandler?.onSaveApp && this.storageHandler?.onSaveApp(toJS(this.app));
   }
 
   private saveModules() {
     const modules = this.modules.map(addModuleId);
-    this.storageHanlder?.onSaveModules && this.storageHanlder?.onSaveModules(modules);
+    this.storageHandler?.onSaveModules && this.storageHandler?.onSaveModules(modules);
   }
 
   setApp(app: Application) {
