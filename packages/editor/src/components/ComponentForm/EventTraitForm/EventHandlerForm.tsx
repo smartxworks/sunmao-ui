@@ -24,7 +24,7 @@ import { ComponentId } from '../../../AppModel/IAppModel';
 type Props = {
   eventTypes: readonly string[];
   handler: Static<typeof EventHandlerSchema>;
-  onChange: (hanlder: Static<typeof EventHandlerSchema>) => void;
+  onChange: (handler: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
   hideEventType?: boolean;
   services: EditorServices;
