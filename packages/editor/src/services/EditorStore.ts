@@ -25,7 +25,7 @@ export class EditorStore {
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
   _dragOverComponentId = '';
-  explorerMenuTab = ExplorerMenuTabs.EXPLORER;
+  explorerMenuTab = ExplorerMenuTabs.UI_TREE;
   toolMenuTab = ToolMenuTabs.INSERT;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
