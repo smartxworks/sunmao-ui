@@ -149,7 +149,7 @@ export const DuplicatedIdSchema: ComponentSchema[] = [
   },
 ];
 
-export const EventHanlderMockSchema: ComponentSchema[] = [
+export const EventHandlerMockSchema: ComponentSchema[] = [
   {
     id: 'button1',
     type: 'chakra_ui/v1/button',

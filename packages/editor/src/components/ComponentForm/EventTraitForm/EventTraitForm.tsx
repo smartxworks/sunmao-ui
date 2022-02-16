@@ -72,7 +72,7 @@ export const EventTraitForm: React.FC<Props> = props => {
     (handlers || []).map((h, i) => {
       const onChange = (handler: EventHandler) => {
         const index = component.traits.findIndex(t => t.type === 'core/v1/event');
-        const newHanlders = produce(handlers!, draft => {
+        const newHandlers = produce(handlers!, draft => {
           draft[i] = handler;
         });
         eventBus.send(
@@ -81,7 +81,7 @@ export const EventTraitForm: React.FC<Props> = props => {
             componentId: component.id,
             traitIndex: index,
             properties: {
-              handlers: newHanlders
+              handlers: newHandlers
             }
           })
         );
@@ -89,7 +89,7 @@ export const EventTraitForm: React.FC<Props> = props => {
 
       const onRemove = () => {
         const index = component.traits.findIndex(t => t.type === 'core/v1/event');
-        const newHanlders = produce(handlers!, draft => {
+        const newHandlers = produce(handlers!, draft => {
           draft.splice(i, 1);
         });
         eventBus.send(
@@ -98,7 +98,7 @@ export const EventTraitForm: React.FC<Props> = props => {
             componentId: component.id,
             traitIndex: index,
             properties: {
-              handlers: newHanlders
+              handlers: newHandlers
             }
           })
         );

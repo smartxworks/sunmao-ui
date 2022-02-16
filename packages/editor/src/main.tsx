@@ -15,7 +15,7 @@ type Options = Partial<{
 const lsManager = new LocalStorageManager();
 const { Editor, registry } = initSunmaoUIEditor({
   libs: [sunmaoChakraUILib],
-  storageHanlder: {
+  storageHandler: {
     onSaveApp(app) {
       lsManager.saveAppInLS(app);
     },

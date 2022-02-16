@@ -13,7 +13,6 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer, SchemaEditor } from './CodeEditor';
-import { Explorer } from './Explorer';
 import { DataSource, DataSourceType } from './DataSource';
 import { ApiForm } from './DataSource/ApiForm';
 import { StateForm } from './DataSource/StateForm';
@@ -203,16 +202,16 @@ export const Editor: React.FC<Props> = observer(
                 setExplorerMenuTab(activatedTab);
               }}
             >
-              <TabList background="gray.50" whiteSpace="nowrap">
-                <Tab>Explorer</Tab>
+              <TabList background="gray.50" whiteSpace="nowrap" justifyContent="center">
+                {/* <Tab>Explorer</Tab> */}
                 <Tab>UI</Tab>
                 <Tab>Data</Tab>
                 <Tab>State</Tab>
               </TabList>
               <TabPanels flex="1" overflow="auto">
-                <TabPanel>
+                {/* <TabPanel>
                   <Explorer services={services} />
-                </TabPanel>
+                </TabPanel> */}
                 <TabPanel p={0}>
                   <StructureTree
                     components={components}

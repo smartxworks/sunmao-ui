@@ -5,7 +5,7 @@ import {
   SlotName,
   TraitType,
 } from '../../src/AppModel/IAppModel';
-import { AppSchema, EventHanlderMockSchema } from './mock';
+import { AppSchema, EventHandlerMockSchema } from './mock';
 import { produce } from 'immer';
 import { get } from 'lodash-es';
 import { registry } from '../sevices';
@@ -58,7 +58,7 @@ describe('update component property', () => {
 });
 
 describe('update event trait handlers(array) property', () => {
-  const appModel = new AppModel(EventHanlderMockSchema, registry);
+  const appModel = new AppModel(EventHandlerMockSchema, registry);
   const button1 = appModel.getComponentById('button1' as any)!;
   const oldHandlers = button1.traits[0].rawProperties.handlers;
   const newHandlers = produce(oldHandlers, (draft: any) => {

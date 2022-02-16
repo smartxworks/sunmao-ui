@@ -146,6 +146,7 @@ export default implementRuntimeComponent({
         onClose={() => setIsOpen(false)}
         trapFocus={false}
         portalProps={containerRef.current ? portalProps : undefined}
+        blockScrollOnMount={false}
       >
         <AlertDialogOverlay {...(containerRef.current ? dialogOverlayProps : {})}>
           <AlertDialogContent
