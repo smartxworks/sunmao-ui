@@ -3,20 +3,28 @@ import { Type } from '@sinclair/typebox';
 import { RadioGroup as BaseRadioGroup } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
+import { BASIC, BEHAVIOR } from './constants/category';
 
 const StateSchema = Type.Object({
   value: Type.Union([Type.String(), Type.Number()]),
 });
 
 const PropsSchema = Type.Object({
-  defaultValue: Type.Union([Type.String(), Type.Number()]),
-  isNumerical: Type.Optional(Type.Boolean()),
+  defaultValue: Type.Union([Type.String(), Type.Number()], {
+    title: 'Default Value',
+    category: BASIC,
+  }),
+  isNumerical: Type.Boolean({
+    title: 'Numerical',
+    description: 'Whether the value is a number',
+    category: BEHAVIOR,
+  }),
 });
 
 export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
-    name: 'radio_group',
+    name: 'radioGroup',
     displayName: 'RadioGroup',
     description: 'chakra-ui radio group',
     isDraggable: true,
@@ -38,27 +46,29 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ defaultValue, isNumerical, slotsElements, mergeState, customStyle, elementRef }) => {
-  const [value, setValue] = useState(defaultValue);
+})(
+  ({ defaultValue, isNumerical, slotsElements, mergeState, customStyle, elementRef }) => {
+    const [value, setValue] = useState(defaultValue);
 
-  useEffect(() => {
-    mergeState({ value });
-  }, [mergeState, value]);
+    useEffect(() => {
+      mergeState({ value });
+    }, [mergeState, value]);
 
-  useEffect(() => {
-    setValue(defaultValue);
-  }, [defaultValue]);
+    useEffect(() => {
+      setValue(defaultValue);
+    }, [defaultValue]);
 
-  return (
-    <BaseRadioGroup
-      value={value}
-      onChange={val => setValue(isNumerical ? Number(val) : val)}
-      className={css`
-        ${customStyle?.content}
-      `}
-      ref={elementRef}
-    >
-      {slotsElements.content}
-    </BaseRadioGroup>
-  );
-});
+    return (
+      <BaseRadioGroup
+        value={value}
+        onChange={val => setValue(isNumerical ? Number(val) : val)}
+        className={css`
+          ${customStyle?.content}
+        `}
+        ref={elementRef}
+      >
+        {slotsElements.content}
+      </BaseRadioGroup>
+    );
+  }
+);

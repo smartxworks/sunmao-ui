@@ -18,7 +18,7 @@ import './styles.css';
 type SunmaoUIEditorProps = {
   libs?: SunmaoLib[];
   runtimeProps?: SunmaoUIRuntimeProps;
-  storageHanlder?: StorageHandler;
+  storageHandler?: StorageHandler;
   defaultApplication?: Application;
   defaultModules?: Module[];
 };
@@ -64,7 +64,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   const appStorage = new AppStorage(
     props.defaultApplication,
     props.defaultModules,
-    props.storageHanlder
+    props.storageHandler
   );
   const appModelManager = new AppModelManager(
     eventBus,

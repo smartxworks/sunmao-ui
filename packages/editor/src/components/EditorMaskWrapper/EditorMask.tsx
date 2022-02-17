@@ -18,7 +18,7 @@ const outlineMaskTextStyle = css`
 
 const outlineMaskStyle = css`
   position: absolute;
-  border: 1px solid;
+  border: 1px solid transparent;
   /* create a bfc */
   transform: translate3d(0, 0, 0);
   z-index: 10;
@@ -34,45 +34,51 @@ type Props = {
   mousePosition: [number, number];
   dragOverSlotRef: React.MutableRefObject<string>;
   hoverComponentIdRef: React.MutableRefObject<string>;
+  wrapperRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
+
+// Read this pr to understand the coordinates system before you modify this component.
+// https://github.com/webzard-io/sunmao-ui/pull/286
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
-  const { services, mousePosition, hoverComponentIdRef, dragOverSlotRef } = props;
+  const { services, mousePosition, wrapperRef, hoverComponentIdRef, dragOverSlotRef } =
+    props;
   const { eventBus, editorStore } = services;
   const { selectedComponentId, eleMap, isDraggingNewComponent } = editorStore;
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const wrapperRect = useRef<DOMRect>();
-  const [rects, setRects] = useState<Record<string, DOMRect>>({});
+  const maskContainerRef = useRef<HTMLDivElement>(null);
+  const maskContainerRect = useRef<DOMRect>();
+  const [coordinates, setCoordinates] = useState<Record<string, DOMRect>>({});
+  const [coordinatesOffset, setCoordinatedOffset] = useState<[number, number]>([0, 0]);
 
-  useEffect(() => {
-    wrapperRect.current = wrapperRef.current?.getBoundingClientRect();
-  }, []);
-
-  // get rects of all elements
-  const updateRects = useCallback(
+  // establish the coordinateSystem by getting all the rect of elements,
+  // and recording the current scroll Offset
+  // and the updating maskContainerRect, because maskContainer shares the same coordinates with app
+  const updateCoordinateSystem = useCallback(
     (eleMap: Map<string, HTMLElement>) => {
+      if (!wrapperRef.current) return;
       const _rects: Record<string, DOMRect> = {};
       for (const id of eleMap.keys()) {
         const ele = eleMap.get(id);
         const rect = ele?.getBoundingClientRect();
-        if (rect) {
-          _rects[id] = rect;
-        }
+        if (!rect) continue;
+        _rects[id] = rect;
       }
-      setRects(_rects);
+      maskContainerRect.current = maskContainerRef.current?.getBoundingClientRect();
+      setCoordinates(_rects);
+      setCoordinatedOffset([wrapperRef.current.scrollLeft, wrapperRef.current.scrollTop]);
     },
-    [setRects]
+    [wrapperRef]
   );
 
   useEffect(() => {
     eventBus.on('HTMLElementsUpdated', () => {
-      updateRects(eleMap);
+      updateCoordinateSystem(eleMap);
     });
-  }, [eleMap, eventBus, updateRects]);
+  }, [eleMap, eventBus, updateCoordinateSystem]);
 
-  // listen elements resize and update rects
+  // listen elements resize and update coordinates
   useEffect(() => {
-    const debouncedUpdateRects = debounce(updateRects, 50);
+    const debouncedUpdateRects = debounce(updateCoordinateSystem, 50);
     const resizeObserver = new ResizeObserver(() => {
       debouncedUpdateRects(eleMap);
     });
@@ -86,11 +92,16 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, [eleMap, setRects, updateRects]);
+  }, [eleMap, setCoordinates, updateCoordinateSystem]);
 
   const hoverComponentId = useMemo(() => {
-    return whereIsMouse(...mousePosition, rects);
-  }, [mousePosition, rects]);
+    const where = whereIsMouse(
+      mousePosition[0] - coordinatesOffset[0],
+      mousePosition[1] - coordinatesOffset[1],
+      coordinates
+    );
+    return where;
+  }, [coordinatesOffset, mousePosition, coordinates]);
 
   useEffect(() => {
     hoverComponentIdRef.current = hoverComponentId;
@@ -98,46 +109,38 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
 
   const getMaskPosition = useCallback(
     (componentId: string) => {
-      const rect = rects[componentId];
+      const rect = coordinates[componentId];
       const padding = 4;
-      if (!wrapperRect.current || !rect) return;
+      if (!maskContainerRect.current || !wrapperRef.current || !rect) return;
       return {
         id: componentId,
         style: {
-          top: rect.top - wrapperRect.current.top - padding,
-          left: rect.left - wrapperRect.current.left - padding,
+          top: rect.top - maskContainerRect.current.top - padding,
+          left: rect.left - maskContainerRect.current.left - padding,
           height: rect.height + padding * 2,
           width: rect.width + padding * 2,
         },
       };
     },
-    [rects]
+    [coordinates, wrapperRef]
   );
 
   const hoverMaskPosition = useMemo(() => {
-    if (
-      !wrapperRect.current ||
-      !hoverComponentId ||
-      hoverComponentId === selectedComponentId
-    ) {
+    if (!maskContainerRect.current || !hoverComponentId) {
       return undefined;
     }
 
     return getMaskPosition(hoverComponentId);
-  }, [hoverComponentId, selectedComponentId, getMaskPosition]);
+  }, [hoverComponentId, getMaskPosition]);
 
   const selectedMaskPosition = useMemo(() => {
-    if (!wrapperRect.current || !selectedComponentId) return undefined;
+    if (!maskContainerRect.current || !selectedComponentId) return undefined;
 
     return getMaskPosition(selectedComponentId);
   }, [selectedComponentId, getMaskPosition]);
 
   const hoverMask = hoverMaskPosition ? (
-    <Box
-      className={outlineMaskStyle}
-      borderColor="black"
-      style={hoverMaskPosition.style}
-    >
+    <Box className={outlineMaskStyle} borderColor="black" style={hoverMaskPosition.style}>
       <Text className={outlineMaskTextStyle} background="black">
         {hoverMaskPosition.id}
       </Text>
@@ -145,11 +148,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   ) : undefined;
 
   const dragMask = hoverMaskPosition ? (
-    <Box
-      className={outlineMaskStyle}
-      borderColor="orange"
-      style={hoverMaskPosition.style}
-    >
+    <Box className={outlineMaskStyle} style={hoverMaskPosition.style}>
       <DropSlotMask
         services={services}
         hoverId={hoverComponentId}
@@ -173,13 +172,14 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
 
   return (
     <Box
+      id="editor-mask-container"
       position="absolute"
       top="0"
       left="0"
       right="0"
       bottom="0"
       pointerEvents="none"
-      ref={wrapperRef}
+      ref={maskContainerRef}
     >
       {isDraggingNewComponent ? dragMask : hoverMask}
       {selectMask}

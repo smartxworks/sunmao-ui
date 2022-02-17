@@ -5,6 +5,7 @@ import { css } from '@emotion/css';
 import 'codemirror/mode/css/css';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/display/autorefresh';
 
 export const CssEditor: React.FC<{
   defaultCode: string;
@@ -41,6 +42,7 @@ export const CssEditor: React.FC<{
           },
         },
         theme: 'ayu-mirage',
+        autoRefresh: { delay: 50 },
       });
     } else {
       cm.current.setValue(defaultCode);

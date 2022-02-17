@@ -15,14 +15,14 @@ export const Body: React.FC<Props> = props => {
   const { values } = formik;
 
   const onChange = (value: Record<string, unknown>) => {
-    formik.setFieldValue('headers', value);
+    formik.setFieldValue('body', value);
     formik.submitForm();
   };
 
   return (
     <Box>
       <KeyValueEditor
-        value={values.headers}
+        value={values.body}
         onChange={onChange}
         minNum={1}
         isShowHeader

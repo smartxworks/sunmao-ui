@@ -2,11 +2,20 @@ import { Link } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { BASIC, BEHAVIOR } from './constants/category';
 
 const PropsSchema = Type.Object({
   text: TextPropertySchema,
-  href: Type.String(),
-  isExternal: Type.Optional(Type.Boolean()),
+  href: Type.String({
+    title: 'Href',
+    description: 'The URL to link to.',
+    category: BASIC,
+  }),
+  isExternal: Type.Boolean({
+    title: 'External',
+    description: 'Whether the link should open in a new tab.',
+    category: BEHAVIOR,
+  }),
 });
 
 export default implementRuntimeComponent({
@@ -23,6 +32,7 @@ export default implementRuntimeComponent({
         format: 'plain',
       },
       href: 'https://www.google.com',
+      isExternal: false,
     },
     exampleSize: [2, 1],
     annotations: {

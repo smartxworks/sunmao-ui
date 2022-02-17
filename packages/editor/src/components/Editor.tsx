@@ -13,7 +13,6 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer, SchemaEditor } from './CodeEditor';
-import { Explorer } from './Explorer';
 import { DataSource, DataSourceType } from './DataSource';
 import { ApiForm } from './DataSource/ApiForm';
 import { StateForm } from './DataSource/StateForm';
@@ -67,13 +66,6 @@ export const Editor: React.FC<Props> = observer(
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
     const [store, setStore] = useState(stateStore);
-    useEffect(() => {
-      const stop = watch(stateStore, newValue => {
-        setStore({ ...newValue });
-      });
-
-      return stop;
-    }, [stateStore]);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -133,28 +125,42 @@ export const Editor: React.FC<Props> = observer(
       );
     }, [App, app, gridCallbacks, recoverKey]);
 
+    useEffect(() => {
+      // when errors happened, `ErrorBoundary` wouldn't update until rerender
+      // so after the errors are fixed, would trigger this effect before `setError(false)`
+      // the process to handle the error is:
+      // app change -> error happen -> setError(true) -> setRecoverKey(recoverKey + 1) -> app change -> setRecoverKey(recoverKey + 1) -> setError(false)
+      if (isError) {
+        setRecoverKey(recoverKey + 1);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [app, isError]); // it only should depend on the app schema and `isError` to update
+    useEffect(() => {
+      const stop = watch(stateStore, newValue => {
+        setStore({ ...newValue });
+      });
+
+      return stop;
+    }, [stateStore]);
+
     const renderMain = () => {
       const appBox = (
-        <Box flex="1" background="gray.50" p={1} overflow="hidden">
-          <Box
-            width="full"
-            height="full"
-            background="white"
-            overflow="auto"
-            transform={`scale(${scale / 100})`}
-            position="relative"
-          >
-            <Box
-              id={DIALOG_CONTAINER_ID}
-              width="full"
-              height="full"
-              position="absolute"
-            />
-            <Box width="full" overflow="auto" position="relative">
-              <EditorMaskWrapper services={services}>
-                {appComponent}
-              </EditorMaskWrapper>
-            </Box>
+        <Box
+          id="editor-main"
+          display="flex"
+          flexDirection="column"
+          width="full"
+          height="full"
+          overflow="auto"
+          p={1}
+          transform={`scale(${scale / 100})`}
+          position="relative"
+        >
+          <EditorMaskWrapper services={services}>
+            {appComponent}
+            <Box id={DIALOG_CONTAINER_ID} />
+          </EditorMaskWrapper>
+          <Box id="warning-area" height="48px" position="relative" flex="0 0 auto">
             <WarningArea services={services} />
           </Box>
         </Box>
@@ -194,16 +200,16 @@ export const Editor: React.FC<Props> = observer(
                 setExplorerMenuTab(activatedTab);
               }}
             >
-              <TabList background="gray.50" overflow="auto" whiteSpace="nowrap">
-                <Tab>Explorer</Tab>
-                <Tab>UI Tree</Tab>
-                <Tab>DataSource</Tab>
+              <TabList background="gray.50" whiteSpace="nowrap" justifyContent="center">
+                {/* <Tab>Explorer</Tab> */}
+                <Tab>UI</Tab>
+                <Tab>Data</Tab>
                 <Tab>State</Tab>
               </TabList>
               <TabPanels flex="1" overflow="auto">
-                <TabPanel>
+                {/* <TabPanel>
                   <Explorer services={services} />
-                </TabPanel>
+                </TabPanel> */}
                 <TabPanel p={0}>
                   <StructureTree
                     components={components}
@@ -215,10 +221,7 @@ export const Editor: React.FC<Props> = observer(
                   />
                 </TabPanel>
                 <TabPanel p={0}>
-                  <DataSource
-                    active={activeDataSource?.id ?? ''}
-                    services={services}
-                  />
+                  <DataSource active={activeDataSource?.id ?? ''} services={services} />
                 </TabPanel>
                 <TabPanel p={0} height="100%">
                   <StateViewer store={store} />
@@ -278,12 +281,6 @@ export const Editor: React.FC<Props> = observer(
         </>
       );
     };
-
-    useEffect(() => {
-      if (isError) {
-        setRecoverKey(recoverKey + 1);
-      }
-    }, [app, isError, recoverKey]);
 
     return (
       <KeyboardEventWrapper

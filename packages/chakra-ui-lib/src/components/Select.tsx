@@ -3,6 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Select as BaseSelect } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
+import { BASIC, BEHAVIOR, APPEARANCE } from './constants/category';
 
 const StateSchema = Type.Object({
   value: Type.String(),
@@ -11,25 +12,53 @@ const StateSchema = Type.Object({
 const PropsSchema = Type.Object({
   options: Type.Array(
     Type.Object({
-      label: Type.String(),
-      value: Type.String(),
-    })
+      label: Type.String({
+        title: 'Label',
+      }),
+      value: Type.String({
+        title: 'Value',
+      }),
+    }),
+    {
+      title: 'Options',
+      category: BASIC,
+    }
   ),
-  placeholder: Type.Optional(Type.String()),
-  defaultValue: Type.Optional(Type.String()),
-  errorBorderColor: Type.Optional(Type.String()),
-  focusBorderColor: Type.Optional(Type.String()),
-  isDisabled: Type.Optional(Type.Boolean()),
-  isInvalid: Type.Optional(Type.Boolean()),
-  isReadOnly: Type.Optional(Type.Boolean()),
-  isRequired: Type.Optional(Type.Boolean()),
+  placeholder: Type.String({
+    title: 'Placeholder',
+    category: BASIC,
+  }),
+  defaultValue: Type.String({
+    title: 'Default Value',
+    category: BASIC,
+  }),
+  isDisabled: Type.Boolean({
+    title: 'Disabled',
+    category: BEHAVIOR,
+  }),
+  isInvalid: Type.Boolean({
+    title: 'Invalid',
+    category: BEHAVIOR,
+  }),
+  isReadOnly: Type.Boolean({
+    title: 'Read Only',
+    category: BEHAVIOR,
+  }),
+  isRequired: Type.Boolean({
+    title: 'Required',
+    category: BEHAVIOR,
+  }),
   size: Type.KeyOf(
     Type.Object({
       xs: Type.String(),
       sm: Type.String(),
       md: Type.String(),
       lg: Type.String(),
-    })
+    }),
+    {
+      title: 'Size',
+      category: APPEARANCE,
+    }
   ),
   variant: Type.KeyOf(
     Type.Object({
@@ -37,8 +66,20 @@ const PropsSchema = Type.Object({
       unstyled: Type.String(),
       filled: Type.String(),
       flushed: Type.String(),
-    })
+    }),
+    {
+      title: 'Variant',
+      category: APPEARANCE,
+    }
   ),
+  errorBorderColor: Type.String({
+    title: 'Border Color Of Error',
+    category: APPEARANCE,
+  }),
+  focusBorderColor: Type.String({
+    title: 'Border Color Of Focus',
+    category: APPEARANCE,
+  }),
 });
 
 const exampleProperties = {
@@ -56,6 +97,16 @@ const exampleProperties = {
       value: 'value3',
     },
   ],
+  placeholder: 'Select an option',
+  defaultValue: '',
+  isDisabled: false,
+  isInvalid: false,
+  isReadOnly: false,
+  isRequired: false,
+  size: 'md',
+  variant: 'outline',
+  errorBorderColor: 'red',
+  focusBorderColor: 'blue',
 };
 
 export default implementRuntimeComponent({

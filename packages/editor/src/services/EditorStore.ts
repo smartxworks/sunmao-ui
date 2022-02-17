@@ -25,7 +25,7 @@ export class EditorStore {
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
   _dragOverComponentId = '';
-  explorerMenuTab = ExplorerMenuTabs.EXPLORER;
+  explorerMenuTab = ExplorerMenuTabs.UI_TREE;
   toolMenuTab = ToolMenuTabs.INSERT;
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
@@ -69,9 +69,7 @@ export class EditorStore {
       this.setComponents(components);
       this.setCurrentComponentsVersion(this.currentComponentsVersion + 1);
 
-      if (this.validateResult.length === 0) {
-        this.saveCurrentComponents();
-      }
+      this.saveCurrentComponents();
     });
 
     // when switch app or module, components should refresh
@@ -125,7 +123,8 @@ export class EditorStore {
   }
 
   get isSaved() {
-    return this.currentComponentsVersion === this.lastSavedComponentsVersion;
+    // return this.currentComponentsVersion === this.lastSavedComponentsVersion;
+    return true;
   }
 
   // origin components of app of module
@@ -236,7 +235,7 @@ export class EditorStore {
       'operation',
       genOperation(this.registry, 'createDataSource', {
         id,
-        type
+        type,
       })
     );
 

@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-export const ColorSchemePropertySchema = Type.Optional(
+export const getColorSchemePropertySchema = (options?: Record<string, any>) =>
   Type.KeyOf(
     Type.Object({
       whiteAlpha: Type.String(),
@@ -21,6 +21,6 @@ export const ColorSchemePropertySchema = Type.Optional(
       whatsapp: Type.String(),
       twitter: Type.String(),
       telegram: Type.String(),
-    })
-  )
-);
+    }),
+    options
+  );

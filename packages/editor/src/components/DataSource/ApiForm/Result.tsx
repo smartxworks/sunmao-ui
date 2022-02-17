@@ -5,6 +5,7 @@ import { css } from '@emotion/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/display/autorefresh';
 
 export const Result: React.FC<{
   defaultCode: string;
@@ -41,6 +42,7 @@ export const Result: React.FC<{
         },
         viewportMargin: Infinity,
         readOnly: true,
+        autoRefresh: { delay: 50 },
       });
     }
     setTimeout(() => {

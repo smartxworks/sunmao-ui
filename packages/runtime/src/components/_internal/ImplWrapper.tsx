@@ -158,7 +158,9 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     return stop;
   }, [c.properties, stateManager]);
   useEffect(()=> {
-    delete stateManager.store[c.id];
+    return ()=> {
+      delete stateManager.store[c.id];
+    };
   }, []);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
