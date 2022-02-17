@@ -91,6 +91,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
           registry={registry}
           stateStore={stateManager.store}
           services={services}
+          libs={props.libs || []}
         />
       </ChakraProvider>
     );

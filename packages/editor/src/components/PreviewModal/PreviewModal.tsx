@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { Application, createModule, Module } from '@sunmao-ui/core';
-import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
-import { initSunmaoUI } from '@sunmao-ui/runtime';
+import { initSunmaoUI, SunmaoLib } from '@sunmao-ui/runtime';
 import React from 'react';
 import ErrorBoundary from '../ErrorBoundary';
 import { GeneralModal } from '../GeneralModal';
@@ -9,13 +8,14 @@ import { GeneralModal } from '../GeneralModal';
 type Props = {
   app: Application;
   modules: Module[];
+  libs: SunmaoLib[];
   onClose: () => void;
 };
 
-export const PreviewModal: React.FC<Props> = ({ app, modules, onClose }) => {
+export const PreviewModal: React.FC<Props> = ({ app, modules, libs, onClose }) => {
   const { App, registry } = initSunmaoUI();
   modules.forEach(m => registry.registerModule(createModule(m)));
-  sunmaoChakraUILib.components?.forEach(c => registry.registerComponent(c));
+  libs.forEach(lib => registry.installLib(lib));
 
   return (
     <GeneralModal onClose={onClose} title="Preview Modal">
