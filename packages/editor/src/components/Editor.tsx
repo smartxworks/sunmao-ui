@@ -5,6 +5,7 @@ import {
   DIALOG_CONTAINER_ID,
   initSunmaoUI,
   watch,
+  SunmaoLib,
 } from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
@@ -33,6 +34,7 @@ type Props = {
   registry: ReturnOfInit['registry'];
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
+  libs: SunmaoLib[];
 };
 
 const ApiFormStyle = css`
@@ -45,7 +47,7 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, services }) => {
+  ({ App, registry, stateStore, services, libs }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
@@ -311,7 +313,12 @@ export const Editor: React.FC<Props> = observer(
           </Box>
         </Box>
         {preview && (
-          <PreviewModal onClose={() => setPreview(false)} app={app} modules={modules} />
+          <PreviewModal
+            onClose={() => setPreview(false)}
+            app={app}
+            modules={modules}
+            libs={libs}
+          />
         )}
       </KeyboardEventWrapper>
     );
