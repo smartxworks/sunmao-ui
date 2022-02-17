@@ -16,6 +16,7 @@ import ChakraUIMultiSelect from './components/MultiSelect';
 import ChakraUICheckboxGroup from './components/CheckboxGroup';
 import ChakraUICheckbox from './components/Checkbox';
 import ChakraUIStack from './components/Stack';
+import ChakraUISwitch from './components/Switch';
 import ChakraUITooltip from './components/Tooltip';
 import ChakraUIHStack from './components/HStack';
 import ChakraUIVStack from './components/VStack';
@@ -45,6 +46,7 @@ export const sunmaoChakraUILib: SunmaoLib = {
     ChakraUICheckbox,
     ChakraUICheckboxGroup,
     ChakraUIStack,
+    ChakraUISwitch,
     ChakraUITooltip,
     ChakraUIHStack,
     ChakraUIVStack,

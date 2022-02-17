@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",
-    "@emotion/styled": "^11",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.3.6",
     "@vue/reactivity": "^3.1.5",

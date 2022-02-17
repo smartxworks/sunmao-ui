@@ -37,7 +37,6 @@ type Props = {
   wrapperRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
-
 // Read this pr to understand the coordinates system before you modify this component.
 // https://github.com/webzard-io/sunmao-ui/pull/286
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
@@ -49,7 +48,6 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const maskContainerRect = useRef<DOMRect>();
   const [coordinates, setCoordinates] = useState<Record<string, DOMRect>>({});
   const [coordinatesOffset, setCoordinatedOffset] = useState<[number, number]>([0, 0]);
-
   // establish the coordinateSystem by getting all the rect of elements,
   // and recording the current scroll Offset
   // and the updating maskContainerRect, because maskContainer shares the same coordinates with app
@@ -70,29 +68,39 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     [wrapperRef]
   );
 
+  const resizeObserver = useMemo(() => {
+    const debouncedUpdateRects = debounce(updateCoordinateSystem, 50);
+    return new ResizeObserver(() => {
+      debouncedUpdateRects(eleMap);
+    });
+  }, [eleMap, updateCoordinateSystem]);
+
+  const observeResize = useCallback(
+    (eleMap: Map<string, HTMLElement>) => {
+      for (const id of eleMap.keys()) {
+        const ele = eleMap.get(id);
+        if (ele) {
+          resizeObserver.observe(ele);
+        }
+      }
+    },
+    [resizeObserver]
+  );
+
   useEffect(() => {
     eventBus.on('HTMLElementsUpdated', () => {
+      observeResize(eleMap);
       updateCoordinateSystem(eleMap);
     });
-  }, [eleMap, eventBus, updateCoordinateSystem]);
+  }, [eleMap, eventBus, observeResize, updateCoordinateSystem]);
 
   // listen elements resize and update coordinates
   useEffect(() => {
-    const debouncedUpdateRects = debounce(updateCoordinateSystem, 50);
-    const resizeObserver = new ResizeObserver(() => {
-      debouncedUpdateRects(eleMap);
-    });
-    for (const id of eleMap.keys()) {
-      const ele = eleMap.get(id);
-      if (ele) {
-        resizeObserver.observe(ele);
-      }
-    }
-
+    observeResize(eleMap);
     return () => {
       resizeObserver.disconnect();
     };
-  }, [eleMap, setCoordinates, updateCoordinateSystem]);
+  }, [eleMap, observeResize, resizeObserver]);
 
   const hoverComponentId = useMemo(() => {
     const where = whereIsMouse(
