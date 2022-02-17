@@ -145,24 +145,22 @@ export const Editor: React.FC<Props> = observer(
 
     const renderMain = () => {
       const appBox = (
-        <Box flex="1" background="gray.50" p={1} overflow="hidden">
-          <Box
-            width="full"
-            height="full"
-            background="white"
-            overflow="auto"
-            transform={`scale(${scale / 100})`}
-            position="relative"
-          >
-            <Box
-              id={DIALOG_CONTAINER_ID}
-              width="full"
-              height="full"
-              position="absolute"
-            />
-            <Box width="full" overflow="auto" position="relative">
-              <EditorMaskWrapper services={services}>{appComponent}</EditorMaskWrapper>
-            </Box>
+        <Box
+          id="editor-main"
+          display="flex"
+          flexDirection="column"
+          width="full"
+          height="full"
+          overflow="auto"
+          p={1}
+          transform={`scale(${scale / 100})`}
+          position="relative"
+        >
+          <EditorMaskWrapper services={services}>
+            {appComponent}
+            <Box id={DIALOG_CONTAINER_ID} />
+          </EditorMaskWrapper>
+          <Box id="warning-area" height="48px" position="relative" flex="0 0 auto">
             <WarningArea services={services} />
           </Box>
         </Box>

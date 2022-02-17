@@ -16,6 +16,8 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const { editorStore, eventBus, registry } = services;
   const { setSelectedComponentId, setExplorerMenuTab } = editorStore;
   const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
+  const [scrollOffset, setScrollOffset] = useState<[number, number]>([0, 0]);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const dragOverSlotRef = useRef<string>('');
   const hoverComponentIdRef = useRef<string>('');
 
@@ -23,8 +25,14 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
     setMousePosition([e.clientX, e.clientY]);
   };
   const onMouseLeave = () => {
-    setMousePosition([-1, -1]);
+    setMousePosition([-Infinity, -Infinity]);
   };
+  const onScroll = () => {
+    if (wrapperRef.current) {
+      setScrollOffset([wrapperRef.current.scrollLeft, wrapperRef.current.scrollTop]);
+    }
+  };
+
   const onClick = () => {
     setSelectedComponentId(hoverComponentIdRef.current);
   };
@@ -55,9 +63,17 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
     );
   };
 
+  const mousePositionWithOffset: [number, number] = [
+    mousePosition[0] + scrollOffset[0],
+    mousePosition[1] + scrollOffset[1],
+  ];
+
   return (
     <Box
+      id="editor-mask-wrapper"
       width="full"
+      height="0"
+      flex="1"
       overflow="auto"
       position="relative"
       onMouseMove={onMouseMove}
@@ -65,13 +81,16 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
       onClick={onClick}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      onScroll={onScroll}
+      ref={wrapperRef}
     >
       {children}
       <EditorMask
         services={services}
-        mousePosition={mousePosition}
+        mousePosition={mousePositionWithOffset}
         hoverComponentIdRef={hoverComponentIdRef}
         dragOverSlotRef={dragOverSlotRef}
+        wrapperRef={wrapperRef}
       />
     </Box>
   );
