@@ -95,6 +95,10 @@ export const ApiForm: React.FC<Props> = props => {
       setTabIndex(0);
     }
   };
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    // prevent form keyboard events to accidentally trigger operation shortcut
+    e.stopPropagation();
+  };
 
   useEffect(() => {
     formik.setValues({
@@ -116,6 +120,7 @@ export const ApiForm: React.FC<Props> = props => {
       paddingBottom="0"
       align="stretch"
       spacing="4"
+      onKeyDown={onKeyDown}
     >
       <HStack
         alignItems="center"

@@ -89,9 +89,11 @@ export class EditorStore {
     reaction(
       () => this.selectedComponentId,
       () => {
-        this.setToolMenuTab(ToolMenuTabs.INSPECT);
-        this.setActiveDataSource(null);
-        this.setActiveDataSourceType(null);
+        if (this.selectedComponentId) {
+          this.setToolMenuTab(ToolMenuTabs.INSPECT);
+          this.setActiveDataSource(null);
+          this.setActiveDataSourceType(null);
+        }
       }
     );
 
