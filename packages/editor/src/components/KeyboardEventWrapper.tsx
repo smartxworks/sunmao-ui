@@ -7,6 +7,7 @@ import { PasteManager } from '../operations/PasteManager';
 import { EditorServices } from '../types';
 import { AppModel } from '../AppModel/AppModel';
 import { ComponentId } from '../AppModel/IAppModel';
+import { RootId } from '../constants';
 
 type Props = {
   selectedComponentId: string;
@@ -101,7 +102,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
             eventBus.send(
               'operation',
               genOperation(registry, 'pasteComponent', {
-                parentId: selectedComponentId,
+                parentId: selectedComponentId || RootId,
                 slot: 'content',
                 component: clonedComponent!,
                 copyTimes: pasteManager.current.copyTimes,
