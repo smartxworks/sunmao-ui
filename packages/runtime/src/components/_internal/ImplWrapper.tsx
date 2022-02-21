@@ -69,7 +69,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     [c.id, globalHandlerMap]
   );
 
-  const excecuteTrait = useCallback(
+  const executeTrait = useCallback(
     (trait: RuntimeTraitSchema, traitProperty: RuntimeTraitSchema['properties']) => {
       const tImpl = registry.getTrait(
         trait.parsedType.version,
@@ -87,11 +87,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   );
 
   // result returned from traits
-  const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(() => {
-    return c.traits.map(trait =>
-      excecuteTrait(trait, stateManager.deepEval(trait.properties).result)
-    );
-  });
+  const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>([]);
 
   // eval traits' properties then excecute traits
   useEffect(() => {
@@ -101,7 +97,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
       const { result, stop } = stateManager.deepEval(
         t.properties,
         ({ result: property }: any) => {
-          const traitResult = excecuteTrait(t, property);
+          const traitResult = executeTrait(t, property);
           setTraitResults(oldResults => {
             // assume traits number and order will not change
             const newResults = [...oldResults];
@@ -115,9 +111,9 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     });
     // although traitResults has initialized in useState, it must be set here again
     // because mergeState will be called during the first render of component, and state will change
-    setTraitResults(c.traits.map((trait, i) => excecuteTrait(trait, properties[i])));
+    setTraitResults(c.traits.map((trait, i) => executeTrait(trait, properties[i])));
     return () => stops.forEach(s => s());
-  }, [c.traits, excecuteTrait, stateManager]);
+  }, [c.traits, executeTrait, stateManager]);
 
   // reduce traitResults
   const propsFromTraits: TraitResult<string, string>['props'] = useMemo(() => {
