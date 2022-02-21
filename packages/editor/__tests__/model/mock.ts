@@ -80,7 +80,7 @@ export const AppSchema: Application = {
       },
       {
         id: 'button1',
-        type: 'plain/v1/button',
+        type: 'chakra_ui/v1/button',
         properties: {
           text: { raw: 'text', format: 'plain' },
         },
