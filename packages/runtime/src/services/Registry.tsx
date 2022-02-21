@@ -1,8 +1,7 @@
 import { parseType } from '@sunmao-ui/core';
 import { GLOBAL_UTILS_ID } from '../constants';
 // components
-/* --- plain --- */
-import PlainButton from '../components/plain/Button';
+/* --- core --- */
 import CoreText from '../components/core/Text';
 import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
@@ -207,7 +206,6 @@ export class Registry {
 
 export function initRegistry(apiService: ApiService): Registry {
   const registry = new Registry(apiService);
-  registry.registerComponent(PlainButton);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);
   registry.registerComponent(CoreRouter);
