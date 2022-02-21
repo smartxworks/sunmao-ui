@@ -3,7 +3,7 @@ import { StateManager, parseExpression } from '../src/services/StateManager';
 describe('parseExpression function', () => {
   it('can parse {{}} expression', () => {
     expect(parseExpression('value')).toMatchObject(['value']);
-    // wrong: {{{id: 123}}}. Must have space between {{ and {
+    expect(parseExpression('{{{id: 123}}}')).toMatchObject([['{id: 123}']]);
     expect(parseExpression('{{ {id: 123} }}')).toMatchObject([[' {id: 123} ']]);
     expect(parseExpression('Hello, {{ value }}!')).toMatchObject([
       'Hello, ',
