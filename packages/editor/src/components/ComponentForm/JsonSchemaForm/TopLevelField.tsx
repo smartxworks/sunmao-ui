@@ -18,6 +18,23 @@ type ExpandSpec = {
   name?: string;
 };
 
+const PRESET_PROPERTY_CATEGORY_WEIGHT = {
+  Data: 100,
+  Basic: 99,
+  Behavior: 3,
+  Layout: 2,
+  Style: 1,
+  Advance: -Infinity,
+};
+
+function getCategoryOrder(name: string): number {
+  return name in PRESET_PROPERTY_CATEGORY_WEIGHT
+    ? PRESET_PROPERTY_CATEGORY_WEIGHT[
+        name as keyof typeof PRESET_PROPERTY_CATEGORY_WEIGHT
+      ]
+    : 0;
+}
+
 type Property = Record<string, JSONSchema7 & ExpandSpec>;
 
 type Category = {
@@ -36,21 +53,13 @@ const TopLevelField: React.FC<FieldProps> = props => {
     });
     const grouped = groupBy(properties, c => c.category || 'Advance');
 
-    const advance = grouped.Advance;
-    Reflect.deleteProperty(grouped, 'Advance');
-
-    const categories = Object.keys(grouped).map(name => ({
-      name,
-      schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
-    }));
-    if (advance) {
-      categories.push({
-        name: 'Advance',
-        schemas: sortBy(advance, c => -(c.weight ?? -Infinity)),
-      });
-    }
-
-    return categories;
+    return sortBy(
+      Object.keys(grouped).map(name => ({
+        name,
+        schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
+      })),
+      c => -getCategoryOrder(c.name)
+    );
   }, [schema.properties]);
 
   return (
