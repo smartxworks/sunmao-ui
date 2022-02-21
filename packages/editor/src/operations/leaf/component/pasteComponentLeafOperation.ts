@@ -5,7 +5,6 @@ import { BaseLeafOperation } from '../../type';
 export type PasteComponentLeafOperationContext = {
   parentId: string;
   slot: string;
-  rootComponentId: string;
   component: IComponentModel;
   copyTimes: number;
 };
@@ -22,6 +21,7 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
     if (!component) {
       return prev;
     }
+
     component.allComponents.forEach(c => {
       c.changeId(`${c.id}_copy${this.context.copyTimes}` as ComponentId);
     });
@@ -32,7 +32,13 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
   }
 
   redo(prev: AppModel): AppModel {
-    return this.do(prev);
+    const targetParent = prev.getComponentById(this.context.parentId as ComponentId);
+    if (!targetParent) {
+      return prev;
+    }
+
+    targetParent.appendChild(this.componentCopy, this.context.slot as SlotName);
+    return prev;
   }
 
   undo(prev: AppModel): AppModel {

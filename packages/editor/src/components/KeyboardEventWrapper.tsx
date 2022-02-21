@@ -66,7 +66,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
             selectedComponentId as ComponentId
           );
           if (copiedComponent) {
-            pasteManager.current.setPasteComponents(selectedComponentId, copiedComponent);
+            pasteManager.current.setPasteComponents(copiedComponent);
           }
         }
         break;
@@ -77,7 +77,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
             selectedComponentId as ComponentId
           );
           if (copiedComponent) {
-            pasteManager.current.setPasteComponents(selectedComponentId, copiedComponent);
+            pasteManager.current.setPasteComponents(copiedComponent);
           }
           eventBus.send(
             'operation',
@@ -90,13 +90,20 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
       case 'v':
         if (e.metaKey || e.ctrlKey) {
           if (pasteManager.current.componentCache) {
+            // Clone the component which is going to copy, otherwise the new component will have the same reference.
+            const copiedComponentId = pasteManager.current.componentCache.id;
+            const copiedComponentsSchema =
+              pasteManager.current.componentCache.allComponents.map(c => c.toSchema());
+            const clonedComponent = new AppModel(
+              copiedComponentsSchema,
+              registry
+            ).getComponentById(copiedComponentId);
             eventBus.send(
               'operation',
               genOperation(registry, 'pasteComponent', {
                 parentId: selectedComponentId,
                 slot: 'content',
-                rootComponentId: pasteManager.current.rootComponentId,
-                component: pasteManager.current.componentCache,
+                component: clonedComponent!,
                 copyTimes: pasteManager.current.copyTimes,
               })
             );
