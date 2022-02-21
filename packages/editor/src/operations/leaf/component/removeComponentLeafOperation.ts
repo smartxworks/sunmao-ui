@@ -15,7 +15,7 @@ export class RemoveComponentLeafOperation extends BaseLeafOperation<RemoveCompon
     this.deletedComponent = prev.getComponentById(
       this.context.componentId as ComponentId
     );
-    this.prevComponent = this.deletedComponent?.prevSilbling || undefined;
+    this.prevComponent = this.deletedComponent?.prevSibling || undefined;
     prev.removeComponent(this.context.componentId as ComponentId);
     return prev;
   }

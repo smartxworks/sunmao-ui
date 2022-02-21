@@ -1,11 +1,11 @@
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, IComponentModel, SlotName } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
+import { RootId } from '../../../constants';
 
 export type PasteComponentLeafOperationContext = {
   parentId: string;
   slot: string;
-  rootComponentId: string;
   component: IComponentModel;
   copyTimes: number;
 };
@@ -14,29 +14,33 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
   private componentCopy!: IComponentModel;
 
   do(prev: AppModel): AppModel {
-    const targetParent = prev.getComponentById(this.context.parentId as ComponentId);
-    if (!targetParent) {
-      return prev;
-    }
-    const component = this.context.component;
-    if (!component) {
-      return prev;
-    }
-    component.allComponents.forEach(c => {
+    this.context.component.allComponents.forEach(c => {
       c.changeId(`${c.id}_copy${this.context.copyTimes}` as ComponentId);
     });
-    targetParent.appendChild(component, this.context.slot as SlotName);
-    this.componentCopy = component;
 
-    return prev;
+    this.componentCopy = this.context.component;
+
+    return this.pasteComponent(prev);
   }
 
   redo(prev: AppModel): AppModel {
-    return this.do(prev);
+    return this.pasteComponent(prev);
   }
 
   undo(prev: AppModel): AppModel {
     prev.removeComponent(this.componentCopy.id);
+    return prev;
+  }
+
+  private pasteComponent(prev: AppModel): AppModel {
+    if (this.context.parentId === RootId) {
+      prev.appendChild(this.componentCopy);
+    } else {
+      const targetParent = prev.getComponentById(this.context.parentId as ComponentId);
+      if (targetParent && targetParent.slots.includes(this.context.slot as SlotName)) {
+        targetParent.appendChild(this.componentCopy, this.context.slot as SlotName);
+      }
+    }
     return prev;
   }
 }
