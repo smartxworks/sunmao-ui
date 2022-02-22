@@ -61,7 +61,6 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
 };
 
 const exampleProperties: Static<typeof TreeSelectPropsSchema> = {
-  unmountOnExit: false,
   multiple: false,
   defaultValue: ["node1"],
   treeData: [
@@ -92,8 +91,7 @@ const exampleProperties: Static<typeof TreeSelectPropsSchema> = {
       ],
     },
   ],
-  treeCheckStrictly: false,
-  bordered: false,
+  bordered: true,
   placeholder: "Select option(s)",
   labelInValue: true,
   size: "default",
@@ -102,8 +100,6 @@ const exampleProperties: Static<typeof TreeSelectPropsSchema> = {
   showSearch: true,
   loading: false,
   allowClear: true,
-  maxTagCount: 20,
-  animation: false,
 };
 
 const options = {

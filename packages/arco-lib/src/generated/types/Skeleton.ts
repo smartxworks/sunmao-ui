@@ -24,16 +24,22 @@ export const SkeletonImagePropsSchema = {
 
 export const SkeletonPropsSchema = {
   animation: Type.Boolean({
-    category:Category.Style
+    title:'Animation',
+    category:Category.Basic
   }),
   loading: Type.Boolean({
-    category:Category.Style
+    title:'Loading',
+    category:Category.Basic
   }),
   // TODO remove union type
   image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSchema)],{
-    category:Category.General
+    title:'Image Placeholder',
+    description:'Whether to show the picture placeholder',
+    category:Category.Basic
   }),
   text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSchema)],{
-    category:Category.General
+    title:'Text Placeholder',
+    description:'Whether to show text placeholder',
+    category:Category.Basic
   })
 };

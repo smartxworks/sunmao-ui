@@ -51,8 +51,6 @@ const exampleProperties: Static<typeof CollapsePropsSchema> = {
   accordion: false,
   expandIconPosition: "left",
   bordered: false,
-  lazyload: true,
-  destroyOnHide: true,
 };
 
 const options = {

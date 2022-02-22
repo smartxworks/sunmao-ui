@@ -5,20 +5,25 @@ import { Category } from '../../constants/category'
 
 export const LinkPropsSchema = {
     href: Type.String({
-        category: Category.General,
-        weight: 0
+        title:'Href',
+        category: Category.Basic,
+        weight: 2
     }),
     content: Type.String({
-        category: Category.General,
+        title:'Content',
+        category: Category.Basic,
         weight: 1
     }),
     hoverable: Type.Boolean({
+        title:'Hoverable',
         category: Category.Style
     }),
     status: StringUnion(['success', 'warning', 'error'], {
+        title:'Status',
         category: Category.Style
     }),
     disabled: Type.Boolean({
-        category: Category.General
+        title:'Disabled',
+        category: Category.Basic
     }),
 }

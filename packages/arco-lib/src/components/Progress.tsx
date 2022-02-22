@@ -24,12 +24,11 @@ const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSchema>> = (
 };
 const exampleProperties: Static<typeof ProgressPropsSchema> = {
   type: "line",
-  animation: true,
   status: "normal",
-  color: "red",
-  trailColor: "blue",
+  color: "#3c92dc",
+  trailColor: "",
   showText: true,
-  percent: 0,
+  percent: 20,
   width: 100,
   size: "default",
 };

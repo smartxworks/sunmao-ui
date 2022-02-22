@@ -5,33 +5,41 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const MentionsPropsSchema = {
   options: Type.Array(Type.String(), {
-    weight: 0,
+    title:'Options',
+    weight: 3,
     category:Category.Data
   }),
   defaultValue: Type.String({
-    weight: 1,
+    title:'Default Value',
+    weight: 2,
     category:Category.Data
   }),
   prefix: Type.String({
-    category:Category.General,
+    title:'Prefix',
+    category:Category.Basic,
   }),
   placeholder: Type.String({
-    category:Category.General,
-
+    title:'Placeholder',
+    category:Category.Basic,
   }),
   disabled: Type.Boolean({
-    category:Category.General,
+    title:'Disabled',
+    category:Category.Basic,
   }),
   error: Type.Boolean({
-    category:Category.General,
+    title:'Error',
+    category:Category.Basic,
   }),
   allowClear: Type.Boolean({
-    category:Category.General,
+    title:'Allow Clear',
+    category:Category.Basic,
   }),
   split: Type.String({
-    category:Category.General,
+    title:'Split',
+    category:Category.Basic,
   }),
   position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br'], {
+    title:'Position',
     category: Category.Layout
   })
 }

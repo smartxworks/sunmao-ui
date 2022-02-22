@@ -5,28 +5,35 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const DropdownPropsSchema = {
   dropdownType: StringUnion(['default', 'button'], {
-    category: Category.Style
+    title:'Type',
+    category: Category.Basic
   }),
   position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br'], {
+    title:'Position',
     category: Category.Layout
   }),
   trigger: StringUnion(['hover', 'click'], {
-    category: Category.General
+    title:'Trigger',
+    category: Category.Basic
   }),
   disabled: Type.Boolean({
-    category: Category.General
-  }),
-  unmountOnExit: Type.Boolean({
-    category: Category.General
+    title:'Disabled',
+    category: Category.Basic
   }),
   defaultPopupVisible: Type.Boolean({
-    category: Category.General
+    title:'Default Visible',
+    category: Category.Basic
   }),
   list: Type.Array(Type.Object({
-    key: Type.String(),
-    label: Type.String(),
+    key: Type.String({
+      title:'Key'
+    }),
+    label: Type.String({
+      title:'Label'
+    }),
   }), {
-    category: Category.General,
-    weight: 0
+    title:'List',
+    category: Category.Basic,
+    weight: 10
   })
 };

@@ -18,11 +18,11 @@ const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSchema>> = (props) => {
   // If `dot` is not set, delete status and color from props
   if (!cProps.dot) {
     Reflect.deleteProperty(cProps, "status");
-    Reflect.deleteProperty(cProps, "color");
+    Reflect.deleteProperty(cProps, "dotColor");
   }
 
   return (
-    <BaseBadge ref={elementRef} className={css(customStyle?.content)} {...cProps}>
+    <BaseBadge ref={elementRef} className={css(customStyle?.content)} {...cProps} color={cProps.dotColor}>
       {slotsElements.content}
     </BaseBadge>
   );
@@ -32,10 +32,9 @@ const exampleProperties: Static<typeof BadgePropsSchema> = {
   text: "",
   dot: true,
   count: 1,
-  color: "red",
+  dotColor: "red",
   maxCount: 99,
   offset: [6, -2],
-  status: "default",
 };
 
 const options = {

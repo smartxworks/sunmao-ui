@@ -10,7 +10,7 @@ const LinkStateSchema = Type.Object({});
 
 const LinkImpl: ComponentImpl<Static<typeof LinkPropsSchema>> = (props) => {
   const { elementRef, content, status, ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements } = props;
+  const { customStyle } = props;
 
   return (
     <BaseLink
@@ -20,7 +20,6 @@ const LinkImpl: ComponentImpl<Static<typeof LinkPropsSchema>> = (props) => {
       {...cProps}
     >
       {content}
-      {slotsElements.content}
     </BaseLink>
   );
 };
@@ -48,7 +47,7 @@ const options = {
     properties: LinkPropsSchema,
     state: LinkStateSchema,
     methods: {},
-    slots: ["content"],
+    slots: [],
     styleSlots: ["content"],
     events: [],
   },

@@ -5,21 +5,27 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const ImagePropsSchema = {
   src: Type.String({
-    category: Category.General
+    title:'Src',
+    category: Category.Basic
   }),
   title: Type.String({
-    category: Category.General
+    title:'Title',
+    category: Category.Basic
   }),
   description: Type.String({
-    category: Category.General
+    title:'Description',
+    category: Category.Basic
   }),
   footerPosition: StringUnion(['inner', 'outer'], {
+    title:'Footer Position',
     category: Category.Layout
   }),
   simple: Type.Boolean({
+    title:'Simple',
     category: Category.Style
   }),
   preview: Type.Boolean({
-    category: Category.General
+    title:'Preview',
+    category: Category.Basic
   })
 };

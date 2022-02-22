@@ -5,41 +5,40 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const CollapsePropsSchema = {
     defaultActiveKey: Type.Array(Type.String(), {
-        category: Category.General
+        title:'Default Active Key',
+        category: Category.Basic
     }),
     accordion: Type.Boolean({
+        title:'Accordion',
         category: Category.Style
     }),
     expandIconPosition: StringUnion(['left', 'right'], {
-        category: Category.Style
+        title:'Expand Icon Position',
+        category: Category.Layout
     }),
     bordered: Type.Boolean({
+        title:'Bordered',
         category: Category.Style
-    }),
-    lazyload: Type.Boolean({
-        category: Category.General
-    }),
-    destroyOnHide: Type.Boolean({
-        category: Category.General
-    }),
+    })
 }
 
 export const CollapseItemPropsSchema = {
     name: Type.String({
-        category: Category.General,
-        weight: 0
+        title:'Name',
+        category: Category.Basic,
+        weight: 2
     }),
     disabled: Type.Boolean({
-        category: Category.General
+        title:'Disabled',
+        category: Category.Basic
     }),
     showExpandIcon: Type.Boolean({
-        category: Category.General
-    }),
-    destroyOnHide: Type.Boolean({
-        category: Category.General
+        title:'Show Expand Icon',
+        category: Category.Basic
     }),
     header: Type.String({
-        category: Category.General,
+        title:'Header',
+        category: Category.Basic,
         weight: 1
     })
 }

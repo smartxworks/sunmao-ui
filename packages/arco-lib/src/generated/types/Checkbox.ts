@@ -1,4 +1,4 @@
-import {Type} from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
@@ -8,23 +8,29 @@ export const CheckboxOptionSchema = Type.Array(
     value: Type.String(),
     disabled: Type.Boolean(),
     indeterminate: Type.Boolean(),
-  }),{
-    category:Category.Data
-  }
+  }), {
+  title: 'Options',
+  category: Category.Data,
+  widget: 'expression'
+}
 );
 
 export const CheckboxPropsSchema = {
   options: CheckboxOptionSchema,
-  direction: StringUnion(['horizontal', 'vertical'],{
-    category:Category.Layout
+  direction: StringUnion(['horizontal', 'vertical'], {
+    title: 'Direction',
+    category: Category.Layout
   }),
-  defaultCheckedValues: Type.Array(Type.String(),{
-    category:Category.Data
+  defaultCheckedValues: Type.Array(Type.String(), {
+    title: 'Default Value',
+    category: Category.Data,
   }),
   showCheckAll: Type.Boolean({
-    category:Category.General
+    title: 'Show Check All',
+    category: Category.Basic
   }),
   checkAllText: Type.String({
-    category:Category.Data
+    title: 'Check All Text',
+    category: Category.Data
   }),
 };

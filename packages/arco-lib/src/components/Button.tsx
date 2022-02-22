@@ -28,17 +28,12 @@ const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof ButtonPropsSchema> = {
-  htmlType: "button",
   type: "default",
   status: "default",
   long: false,
   size: "default",
-  href: "",
-  target: "",
   disabled: false,
   loading: false,
-  loadingFixedWidth: false,
-  iconOnly: false,
   shape: "square",
   text: "button",
 };

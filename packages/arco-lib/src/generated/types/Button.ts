@@ -5,41 +5,36 @@ import { Category } from '../../constants/category'
 
 export const ButtonPropsSchema = {
   text: Type.String({
-    category:Category.General,
-  }),
-  htmlType: StringUnion(['button', 'submit', 'reset'],{
-    category:Category.General,
+    title:'Text',
+    category:Category.Basic,
   }),
   type: StringUnion(['default', 'primary', 'secondary', 'dashed', 'text', 'outline'], {
+    title:'Type',
     category: Category.Style
   }),
   status: StringUnion(['default', 'warning', 'danger', 'success'], {
+    title:'Status',
     category: Category.Style
   }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {
+    title:'Size',
     category: Category.Style
   }),
   shape: StringUnion(['circle', 'round', 'square'], {
+    title:'Shape',
     category: Category.Style
   }),
-  href: Type.String({
-    category:Category.General,
+  disabled: Type.Boolean({
+    title:'Disabled',
+    category:Category.Basic
   }),
-  target: Type.String({
-    category:Category.General,
-  }),
-  disabled: Type.Boolean(),
   loading: Type.Boolean({
-    category:Category.Style
-  }),
-  loadingFixedWidth: Type.Boolean({
-    category:Category.Style,
-    description:'The width of the button remains unchanged on loading'
-  }),
-  iconOnly: Type.Boolean({
-    category:Category.Style
+    title:'Loading',
+    category:Category.Basic
   }),
   long: Type.Boolean({
-    category: Category.Style
+    title:'Long',
+    description:'Whether the width of the button should adapt to the container',
+    category: Category.Basic
   })
 };

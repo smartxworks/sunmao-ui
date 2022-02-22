@@ -1,4 +1,4 @@
-import { Modal as BaseModal } from "@arco-design/web-react";
+import { Modal as BaseModal, ConfigProvider } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
@@ -26,30 +26,27 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
   }, [subscribeMethods]);
 
   return (
-    <BaseModal
-      visible={visible}
-      title={
-        <>
-          {title}
-          {slotsElements.title}
-        </>
-      }
-      onCancel={() => {
-        setVisible(false);
-        callbackMap?.onCancel?.();
-      }}
-      onOk={() => {
-        setVisible(false);
-        callbackMap?.onOk?.();
-      }}
-      afterClose={callbackMap?.afterClose}
-      afterOpen={callbackMap?.afterOpen}
-      footer={slotsElements.footer}
-      className={css(customStyle?.content)}
-      {...cProps}
-    >
-      <div ref={elementRef}>{slotsElements.content}</div>
-    </BaseModal>
+    <ConfigProvider focusLock={{ modal: false }}>
+      <BaseModal
+        visible={visible}
+        title={title}
+        onCancel={() => {
+          setVisible(false);
+          callbackMap?.onCancel?.();
+        }}
+        onOk={() => {
+          setVisible(false);
+          callbackMap?.onOk?.();
+        }}
+        afterClose={callbackMap?.afterClose}
+        afterOpen={callbackMap?.afterOpen}
+        footer={slotsElements.footer}
+        className={css(customStyle?.content)}
+        {...cProps}
+      >
+        <div ref={elementRef}>{slotsElements.content}</div>
+      </BaseModal>
+    </ConfigProvider>
   );
 };
 
@@ -72,7 +69,7 @@ export const Modal = implementRuntimeComponent({
     displayName: "Modal",
     annotations: {
       category: "Display",
-    }
+    },
   },
   spec: {
     properties: ModalPropsSchema,
@@ -81,7 +78,7 @@ export const Modal = implementRuntimeComponent({
       openModal: Type.String(),
       closeModal: Type.String(),
     } as Record<string, any>,
-    slots: ["title", "content", "footer"],
+    slots: ["content", "footer"],
     styleSlots: ["content"],
     events: ["afterOpen", "afterClose", "onCancel", "onOk"],
   },

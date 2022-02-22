@@ -6,18 +6,18 @@ import { Category } from '../../constants/category';
 
 export const ColumnSchema = Type.Object({
   title: Type.String({
-    title: 'title',
-    category: Category.General
+    title: 'Title',
+    category: Category.Basic
   }),
   dataIndex: Type.String({
-    title: 'dataIndex',
+    title: 'Data Index',
     description: 'The key corresponding to the column data in the data item is used to display the value'
   }),
   sorter: Type.Boolean({
-    title: 'Show sorter button'
+    title: 'Sortable'
   }),
   filter: Type.Boolean({
-    title: 'Show filter button'
+    title: 'Filterable'
   }),
   sortDirections: Type.Optional(Type.Array(StringUnion(["descend", "ascend"]))),
   defaultSortOrder: Type.Optional(StringUnion(["descend", "ascend"])),
@@ -28,7 +28,9 @@ export const ColumnSchema = Type.Object({
       link: Type.String(),
       button: Type.String(),
       module: Type.String(),
-    })
+    }),{
+      title:'Type'
+    }
   ),
   btnCfg: Type.Optional(Type.Object({
     text: Type.String(),
@@ -39,54 +41,58 @@ export const ColumnSchema = Type.Object({
 
 export const TablePropsSchema = Type.Object({
   data: Type.Array(Type.Any(), {
-    title: 'data',
+    title: 'Data',
     widget: 'CodeEditor',
     category: 'Data',
     weight: 0
   }),
   columns: Type.Array(ColumnSchema, {
-    title: 'columns',
+    title: 'Columns',
     widget: 'ColumnsForm',
     description: '',
     category: 'Columns',
     weight: 0
   }),
   tableLayoutFixed: Type.Boolean({
-    title: 'tableLayoutFixed',
+    title: 'Layout Fixed',
     description: "The table's table-layout property is set to fixed. After set to fixed, the width of the table will not be stretched by the content beyond 100%",
     category: Category.Layout,
     weight: 1
   }),
   borderCell: Type.Boolean({
-    title: 'borderCell',
+    title: 'Border Cell',
     description: 'Whether to display the table cell border',
     category: Category.Style,
     weight: 1
   }),
   stripe: Type.Boolean({
-    title: 'stripe',
+    title: 'Stripe',
     widget: 'boolean',
     description: 'Whether to show stripe style',
     category: Category.Style,
     weight: 2
   }),
   pagination: Type.Object({
-    pageSize: Type.Number(),
+    pageSize: Type.Number({
+      title:'PageSize',
+    }),
+  },{
+    category:Category.Layout
   }),
   size: StringUnion(['default', 'middle', 'small', 'mini'], {
-    title: 'size',
+    title: 'Size',
     description: 'table size',
     category: Category.Style,
     weight: 0
   }),
   pagePosition: StringUnion(['br', 'bl', 'tr', 'tl', 'topCenter', 'bottomCenter'], {
-    title: 'pagePosition',
+    title: 'Page Position',
     description: '',
     category: Category.Layout,
     weight: 10
   }),
   rowSelectionType: StringUnion(["checkbox", "radio", "default"], {
-    title: 'rowSelectionType',
+    title: 'Row Selection Type',
     weight: 3,
     category: Category.Style
   }),
