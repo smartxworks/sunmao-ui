@@ -10,17 +10,29 @@ type Props = {
   isExpanded: boolean;
   // only can be drop in and cannot drop before or after
   isDropInOnly?: boolean;
+  droppable: boolean;
   services: EditorServices;
 };
 
 export const DropComponentWrapper: React.FC<Props> = props => {
-  const { componentId, parentId, parentSlot, services, isDropInOnly, isExpanded } = props;
+  const {
+    componentId,
+    parentId,
+    parentSlot,
+    services,
+    isDropInOnly,
+    isExpanded,
+    droppable,
+  } = props;
   const { registry, eventBus } = services;
   const ref = useRef<HTMLDivElement>(null);
   const [dragDirection, setDragDirection] = useState<'prev' | 'next' | undefined>();
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
   const onDragOver = (e: React.DragEvent) => {
+    if (!droppable) {
+      return;
+    }
     setIsDragOver(true);
     e.preventDefault();
     e.stopPropagation();
@@ -39,11 +51,17 @@ export const DropComponentWrapper: React.FC<Props> = props => {
   };
 
   const onDragLeave = () => {
+    if (!droppable) {
+      return;
+    }
     setDragDirection(undefined);
     setIsDragOver(false);
   };
 
   const onDrop = (e: React.DragEvent) => {
+    if (!droppable) {
+      return;
+    }
     e.stopPropagation();
     e.preventDefault();
     const creatingComponent = e.dataTransfer?.getData('component') || '';
@@ -55,7 +73,6 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     if (dragDirection === 'next' && isExpanded) {
       targetParentId = componentId;
       targetParentSlot = 'content';
-      // should be the first of children
       targetId = undefined;
     }
 
@@ -94,9 +111,9 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     if (isDropInOnly) return '';
     switch (dragDirection) {
       case 'prev':
-        return '0 -1px 0 0 red';
+        return '0 -2px 0 0 #ff8080';
       case 'next':
-        return '0 1px 0 0 red';
+        return '0 2px 0 0 #ff8080';
     }
   }, [dragDirection, isDropInOnly]);
 
@@ -105,7 +122,7 @@ export const DropComponentWrapper: React.FC<Props> = props => {
       ref={ref}
       width="full"
       boxShadow={boxShadow}
-      background={isDropInOnly && isDragOver ? 'pink' : undefined}
+      background={ isDragOver ? '#ffc6c6' : undefined}
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
