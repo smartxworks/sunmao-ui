@@ -19,7 +19,7 @@ type ModuleMetaDataFormProps = {
 
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
   ({ initData, services, onSubmit: onSubmitForm }) => {
-    const { editorStore } = services;
+    const { editorStore, registry, stateManager } = services;
     const onSubmit = (value: ModuleMetaDataFormData) => {
       editorStore.appStorage.saveModuleMetaData(
         { originName: initData.name, originVersion: initData.version },
@@ -54,6 +54,8 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
         <FormControl>
           <FormLabel>Module StateMap</FormLabel>
           <KeyValueEditor
+            registry={registry}
+            stateManager={stateManager}
             value={formik.values.stateMap}
             onChange={json => {
               formik.setFieldValue('stateMap', json);

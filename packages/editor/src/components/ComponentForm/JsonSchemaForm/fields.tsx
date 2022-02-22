@@ -1,9 +1,14 @@
 import { Component } from '@sunmao-ui/core';
 import { Registry, StateManager } from '@sunmao-ui/runtime';
+import { ExpressionEditorProps } from '../../CodeEditor/ExpressionEditor';
 
 type Schema = Component<string, string, string, string>['spec']['properties'];
 type EditorSchema = {
   widget?: string;
+};
+
+type ExpressionOptions = {
+  compactOptions?: ExpressionEditorProps['compactOptions'];
 };
 
 export type FieldProps = {
@@ -12,6 +17,7 @@ export type FieldProps = {
   stateManager: StateManager;
   isTopLevel?: boolean;
   formData: any;
+  expressionOptions?: ExpressionOptions;
   onChange: (v: any) => void;
 };
 

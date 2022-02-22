@@ -19,7 +19,7 @@ import { EditorServices } from '../../types';
 import { ToolMenuTabs } from '../../services/enum';
 
 export enum DataSourceType {
-  API = 'Api',
+  API = 'API',
   STATE = 'State',
 }
 
