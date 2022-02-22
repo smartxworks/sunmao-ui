@@ -87,7 +87,7 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
       }
     }
 
-    if (this.context.targetId && this.context.direction) {
+    if (this.context.direction) {
       this.operationStack.insert(
         new AdjustComponentOrderLeafOperation(this.registry, {
           componentId: this.context.componentId as ComponentId,

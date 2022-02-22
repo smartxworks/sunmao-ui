@@ -61,6 +61,7 @@ export const ComponentTree: React.FC<Props> = props => {
             parentId={component.id}
             parentSlot={_slot}
             services={services}
+            isExpanded={isExpanded}
             isDropInOnly
           >
             <Text fontSize="sm" color="gray.500">
@@ -87,7 +88,15 @@ export const ComponentTree: React.FC<Props> = props => {
         </Box>
       );
     });
-  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services]);
+  }, [
+    slots,
+    childrenMap,
+    component.id,
+    selectedComponentId,
+    onSelectComponent,
+    services,
+    isExpanded,
+  ]);
 
   const onClickRemove = () => {
     eventBus.send(
@@ -105,13 +114,14 @@ export const ComponentTree: React.FC<Props> = props => {
       spacing="0"
       width="full"
       alignItems="start"
-      marginTop='0 !important'
+      marginTop="0 !important"
     >
       <DropComponentWrapper
         componentId={component.id}
         parentSlot={slot}
         parentId={parentId}
         services={props.services}
+        isExpanded={isExpanded}
       >
         <ComponentItemView
           id={component.id}
