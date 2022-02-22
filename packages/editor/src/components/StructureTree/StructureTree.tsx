@@ -38,6 +38,7 @@ export const StructureTree: React.FC<Props> = props => {
         selectedComponentId={selectedComponentId}
         onSelectComponent={onSelectComponent}
         services={services}
+        isAncestorDragging={false}
       />
     ));
   }, [realComponents, selectedComponentId, onSelectComponent, services]);
@@ -63,6 +64,7 @@ function Placeholder(props: { services: EditorServices }) {
           services={props.services}
           isDropInOnly
           isExpanded={false}
+          droppable
         >
           <Text padding="2" border="2px dashed" color="gray.400" borderColor="gray.400">
             There is no components now. You can drag component into here to create it.
