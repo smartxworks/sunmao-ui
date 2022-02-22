@@ -38,7 +38,12 @@ const StringField: React.FC<Props> = props => {
     return <EnumField {...props} />;
   }
 
-  return <widgets.expression {...props} />;
+  return (
+    <widgets.expression
+      {...props}
+      compactOptions={props.expressionOptions?.compactOptions}
+    />
+  );
 };
 
 export default StringField;
