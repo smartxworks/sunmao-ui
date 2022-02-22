@@ -5,17 +5,16 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const AvatarPropsSchema = {
   shape: StringUnion(['circle', 'square'], {
+    title:'Shape',
     category: Category.Style
   }),
   size:Type.Number({
+    title:'Size',
     category: Category.Style
   }),
-  autoFixFontSize: Type.Boolean({
-    category: Category.Layout,
-    description:'Whether to automatically adjust the font size according to the size of the avatar'
-  }),
   triggerType: StringUnion(['button', 'mask'],{
-    category: Category.General,
+    title:'Trigger Type',
+    category: Category.Basic,
     description:'Clickable avatar interaction type'
   })
 };

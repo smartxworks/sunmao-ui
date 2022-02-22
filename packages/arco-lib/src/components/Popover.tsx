@@ -59,7 +59,6 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
 const exampleProperties: Static<typeof PopoverPropsSchema> = {
   color: "#eee",
   position: "bottom",
-  unmountOnExit: true,
   disabled: false,
   controlled: false,
   // TODO There are some problems with hover mode that need to be verified later
@@ -82,7 +81,8 @@ const options = {
     properties: PopoverPropsSchema,
     state: PopoverStateSchema,
     methods: {
-      setPopupVisible: Type.String(),
+      openPopover: Type.String(),
+      closePopover: Type.String(),
     } as Record<string, any>,
     slots: ["popupContent", "content"],
     styleSlots: ["content"],

@@ -44,11 +44,10 @@ const exampleProperties: Static<typeof PaginationPropsSchema> = {
   pageSize: 10,
   total: 300,
   defaultCurrent: 3,
-  defaultPageSize: 20,
   disabled: false,
   hideOnSinglePage: true,
   size: "default",
-  sizeCanChange: true,
+  sizeCanChange: false,
   simple: false,
   showJumper: false,
 };

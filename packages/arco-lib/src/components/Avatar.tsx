@@ -23,7 +23,6 @@ const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
 
 const exampleProperties: Static<typeof AvatarPropsSchema> = {
   shape: "circle",
-  autoFixFontSize: false,
   triggerType: "button",
   size:50
 };

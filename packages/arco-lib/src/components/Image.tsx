@@ -23,10 +23,10 @@ const ImageImpl: ComponentImpl<Static<typeof ImagePropsSchema>> = (props) => {
 };
 const exampleProperties: Static<typeof ImagePropsSchema> = {
   src :'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp',
-  title:"stars",
-  description:"sunmao-ui's stars",
+  title:"A user’s avatar",
+  description:"Present by Arco Design",
   footerPosition:'inner',
-  simple:true,
+  simple:false,
   preview:false,
 };
 

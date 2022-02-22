@@ -55,7 +55,6 @@ const exampleProperties: Static<typeof TooltipPropsSchema> = {
   color: "#bbb",
   position: "bottom",
   mini: false,
-  unmountOnExit: true,
   disabled: false,
   content: "This is tooltip",
   // TODO There are some problems with hover mode that need to be verified later

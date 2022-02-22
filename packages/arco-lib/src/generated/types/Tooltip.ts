@@ -5,28 +5,33 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const TooltipPropsSchema = {
     color: Type.String({
+        title:'Color',
         category: Category.Style
     }),
     position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br', 'left', 'lt', 'lb', 'right', 'rt', 'rb'], {
-        category: Category.Style
+        title:'Position',
+        category: Category.Layout
     }),
     mini: Type.Boolean({
+        title:'Mini',
         category: Category.Style
     }),
     disabled: Type.Boolean({
-        category: Category.General
+        title:'Disabled',
+        category: Category.Basic
     }),
     content: Type.String({
-        category:Category.General,
-        weight: 0
+        title:'Content',
+        category:Category.Basic,
+        weight: 100
     }),
     controlled: Type.Boolean({
-        category: Category.General
+        title:'Controlled',
+        category: Category.Basic
     }),
     trigger: StringUnion(["click", "hover"],{
-        category: Category.General
-    }),
-    unmountOnExit: Type.Boolean({
-        category: Category.General
+        title:'Trigger',
+        category: Category.Basic,
+        weight:3
     }),
 }

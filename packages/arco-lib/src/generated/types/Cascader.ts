@@ -4,54 +4,61 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
 export const CascaderValueSchema = Type.Array(Type.Union([Type.String(), Type.Array(Type.String())]), {
+    title:'Default Value',
     category: Category.Data
 })
 
 export const CascaderPropsSchema = {
     options: Type.Array(Type.Array(Type.String()), {
-        weight: 0,
+        title:'Options',
+        weight: 10,
         description: `An array of arrays`,
         category: Category.Data
     }),
     expandTrigger: StringUnion(['click', 'hover'],{
-        category:Category.General
+        title:'Expand Trigger',
+        category:Category.Basic
     }),
     multiple: Type.Boolean({
-        category: Category.General
+        title:'Multiple',
+        category: Category.Basic
     }),
     showSearch: Type.Boolean({
-        category: Category.General
+        title:'Show Search',
+        category: Category.Basic
     }),
     placeholder: Type.String({
+        title:'Placeholder',
         weight: 1,
-        category: Category.General
+        category: Category.Basic
     }),
     disabled: Type.Boolean({
-        category: Category.General
-    }),
-    error: Type.Boolean({
-        category: Category.General
-    }),
-    changeOnSelect: Type.Boolean({
-        category: Category.General
+        title:'Disabled',
+        category: Category.Basic
     }),
     loading: Type.Boolean({
-        category: Category.Style
+        title:'Loading',
+        category: Category.Basic
     }),
     bordered: Type.Boolean({
+        title:'Bordered',
         category: Category.Style
     }),
     size: StringUnion(['mini', 'small', 'default', 'large'], {
+        title:'Size',
         category: Category.Style
     }),
     allowClear: Type.Boolean({
-        category: Category.General
+        title:'Allow Clear',
+        category: Category.Basic
     }),
     allowCreate: Type.Boolean({
-        category: Category.General
+        title:'Allow Create',
+        category: Category.Basic
     }),
     maxTagCount: Type.Number({
-        category: Category.General
+        title:'Max Tag Count',
+        category: Category.Basic
     }),
     defaultValue: CascaderValueSchema,
 }

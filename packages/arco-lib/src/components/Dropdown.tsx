@@ -1,6 +1,7 @@
 import {
   Dropdown as BaseDropdown,
   Menu as BaseMenu,
+  Button,
 } from "@arco-design/web-react";
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { Type, Static } from "@sinclair/typebox";
@@ -54,20 +55,24 @@ const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSchema>> = (
       droplist={droplist}
       onVisibleChange={onVisibleChange}
       onClick={callbackMap?.onButtonClick}
+      unmountOnExit={false}
     >
-      <div ref={elementRef}>{slotsElements.trigger}</div>
+      <div ref={elementRef}>{slotsElements.trigger||<Button>Click</Button>}</div>
     </Dropdown>
   );
 };
 
 const exampleProperties: Static<typeof DropdownPropsSchema> = {
   dropdownType: "default",
-  trigger: "hover",
+  trigger: "click",
   position: "bl",
   disabled: false,
-  unmountOnExit: false,
   defaultPopupVisible: false,
-  list: [],
+  list: [
+    { key: "1", label: "smartx" },
+    { key: "2", label: "baidu" },
+    { key: "3", label: "tencent" },
+  ],
 };
 
 const options = {

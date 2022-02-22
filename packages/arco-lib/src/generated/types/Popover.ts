@@ -6,24 +6,27 @@ import { Category } from '../../constants/category'
 
 export const PopoverPropsSchema = {
     title: Type.String({
-        category: Category.General,
+        title:'Title',
+        category: Category.Basic,
+    }),
+    trigger: StringUnion(["click", "hover", "focus", "contextMenu"], {
+        title:'Trigger',
+        category: Category.Basic,
     }),
     disabled: Type.Boolean({
-        category: Category.General,
+        title:'Disabled',
+        category: Category.Basic,
     }),
     color: Type.String({
+        title:'Color',
         category: Category.Style
     }),
     position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br', 'left', 'lt', 'lb', 'right', 'rt', 'rb'], {
-        category: Category.Style
-    }),
-    unmountOnExit: Type.Boolean({
-        category: Category.General,
+        title:'Position',
+        category: Category.Layout
     }),
     controlled: Type.Boolean({
-        category: Category.General,
-    }),
-    trigger: StringUnion(["click", "hover", "focus", "contextMenu"], {
-        category: Category.General,
+        title:'Controlled',
+        category: Category.Basic,
     })
 }

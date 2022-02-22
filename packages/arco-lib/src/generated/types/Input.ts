@@ -5,26 +5,33 @@ import { Category } from '../../constants/category'
 
 export const InputPropsSchema = {
   defaultValue: Type.String({
-    category:Category.General,
+    title:'Default Value',
+    category:Category.Basic,
     weight: 0
   }),
   placeholder: Type.String({
-    category:Category.General,
+    title:'Placeholder',
+    category:Category.Basic,
     weight: 1
   }),
   allowClear: Type.Boolean({
-    category:Category.General,
+    title:'Allow Clear',
+    category:Category.Basic,
   }),
   disabled: Type.Boolean({
-    category:Category.General,
+    title:'Disabled',
+    category:Category.Basic,
   }),
   readOnly: Type.Boolean({
-    category:Category.General,
+    title:'Read Only',
+    category:Category.Basic,
   }),
   error: Type.Boolean({
-    category:Category.General,
+    title:'Error',
+    category:Category.Basic,
   }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {
+    title:'Size',
     category: Category.Style
   }),
 };
