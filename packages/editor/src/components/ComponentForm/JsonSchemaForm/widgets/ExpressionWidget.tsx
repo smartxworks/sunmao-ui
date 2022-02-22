@@ -93,7 +93,7 @@ const customTreeTypeDefCreator = (dataTree: Record<string, Record<string, unknow
   return { ...def };
 };
 
-const getDefaultCode = (value: unknown): { defaultCode: string; type: string } => {
+const getCode = (value: unknown): { code: string; type: string } => {
   const type = typeof value;
   if (type === 'object' || type === 'boolean') {
     value = JSON.stringify(value, null, 2);
@@ -101,7 +101,7 @@ const getDefaultCode = (value: unknown): { defaultCode: string; type: string } =
     value = String(value);
   }
   return {
-    defaultCode: value as string,
+    code: value as string,
     type,
   };
 };
@@ -130,14 +130,14 @@ export const ExpressionWidget: React.FC<Props> = props => {
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
   }, [stateManager]);
-  const { defaultCode, type } = useMemo(() => {
-    return getDefaultCode(formData);
+  const { code, type } = useMemo(() => {
+    return getCode(formData);
   }, [formData]);
 
   return (
     <ExpressionEditor
       compactOptions={compactOptions}
-      defaultCode={defaultCode}
+      code={code}
       onBlur={_v => {
         const v = getParsedValue(_v, type);
         onChange(v);
