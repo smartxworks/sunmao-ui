@@ -36,7 +36,7 @@ export const DataSourceItem: React.FC<Props> = props => {
   } = props;
 
   return (
-    <HStack padding="2" display="flex" className={cx(ItemStyle)}>
+    <HStack padding="2" display="flex" className={ItemStyle}>
       <HStack
         flex={1}
         onClick={() => onItemClick(dataSource)}

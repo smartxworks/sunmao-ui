@@ -13,7 +13,10 @@ import { FieldProps } from '../fields';
 import { ExpressionEditor } from '../../../CodeEditor';
 import { isExpression } from '../../../../validator/utils';
 
-type Props = FieldProps;
+type Props = Pick<
+  FieldProps,
+  'formData' | 'onChange' | 'stateManager'
+> & FieldProps['expressionOptions'];
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -122,7 +125,7 @@ const getParsedValue = (raw: string, type: string) => {
 };
 
 export const ExpressionWidget: React.FC<Props> = props => {
-  const { formData, onChange, stateManager } = props;
+  const { formData, compactOptions = {}, onChange, stateManager } = props;
   const [defs, setDefs] = useState<any>();
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -133,6 +136,7 @@ export const ExpressionWidget: React.FC<Props> = props => {
 
   return (
     <ExpressionEditor
+      compactOptions={compactOptions}
       defaultCode={defaultCode}
       onBlur={_v => {
         const v = getParsedValue(_v, type);

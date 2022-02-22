@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import {
   Box,
   FormControl,
@@ -32,7 +32,7 @@ type Props = {
 
 export const EventHandlerForm: React.FC<Props> = observer(props => {
   const { handler, eventTypes, onChange, onRemove, hideEventType, services } = props;
-  const { registry, editorStore, appModelManager } = services;
+  const { registry, editorStore, appModelManager, stateManager } = services;
   const { utilMethods } = registry;
   const { components } = editorStore;
   const [methods, setMethods] = useState<string[]>([]);
@@ -48,18 +48,16 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
     () => Object.keys(formik.values.method.parameters ?? {}).length,
     [formik.values.method.parameters]
   );
-  const params = useMemo(() => {
-    const params: Record<string, string> = {};
+  const paramsSchema = useMemo(() => {
     const { values } = formik;
     const methodName = values.method.name;
+    let schema = null;
 
-    if (values.method.name) {
-      let parameters = {};
-
+    if (methodName) {
       if (handler.componentId === GLOBAL_UTILS_ID) {
         const targetMethod = utilMethods.get(methodName);
 
-        parameters = targetMethod?.parameters?.properties ?? {};
+        schema = targetMethod?.parameters;
       } else {
         const targetComponent = appModelManager.appModel.getComponentById(
           handler.componentId as ComponentId
@@ -68,12 +66,20 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
           ({ name }) => name === formik.values.method.name
         );
 
-        parameters = targetMethod?.parameters?.properties ?? {};
+        schema = targetMethod?.parameters;
       }
+    }
 
-      for (const key in parameters) {
-        params[key] = values.method.parameters?.[key] ?? '';
-      }
+    return schema;
+  }, [formik.values.method]);
+  const params = useMemo(() => {
+    const params: Record<string, string> = {};
+    const { values } = formik;
+
+    for (const key in paramsSchema?.properties ?? {}) {
+      const defaultValue = paramsSchema.properties[key].defaultValue;
+
+      params[key] = values.method.parameters?.[key] ?? defaultValue ?? '';
     }
 
     return params;
@@ -179,6 +185,9 @@ export const EventHandlerForm: React.FC<Props> = observer(props => {
     <FormControl>
       <FormLabel>Parameters</FormLabel>
       <KeyValueEditor
+        schema={paramsSchema}
+        registry={registry}
+        stateManager={stateManager}
         value={formik.values.method.parameters}
         onChange={json => {
           formik.setFieldValue('method.parameters', json);
