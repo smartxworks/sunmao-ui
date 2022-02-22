@@ -13,7 +13,7 @@ import { FieldProps } from '../fields';
 import { ExpressionEditor } from '../../../CodeEditor';
 import { isExpression } from '../../../../validator/utils';
 
-type Props = Pick<
+export type ExpressionWidgetProps = Pick<
   FieldProps,
   'formData' | 'onChange' | 'stateManager'
 > & FieldProps['expressionOptions'];
@@ -124,7 +124,7 @@ const getParsedValue = (raw: string, type: string) => {
   return raw;
 };
 
-export const ExpressionWidget: React.FC<Props> = props => {
+export const ExpressionWidget: React.FC<ExpressionWidgetProps> = props => {
   const { formData, compactOptions = {}, onChange, stateManager } = props;
   const [defs, setDefs] = useState<any>();
   useEffect(() => {
