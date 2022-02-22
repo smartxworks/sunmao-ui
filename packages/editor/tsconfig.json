@@ -20,7 +20,9 @@
     "noUnusedParameters": true,
     "baseUrl": "./",
     "jsx": "react-jsx",
-    "rootDir": "src"
+    "rootDir": "src",
+    "declaration": true,
+    "declarationDir": "lib"
   },
   "include": ["./src"]
 }
