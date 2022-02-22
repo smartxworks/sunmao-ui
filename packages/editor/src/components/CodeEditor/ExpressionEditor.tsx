@@ -138,7 +138,7 @@ CodeMirror.defineMode('sunmao-ui', (config, parseConfig) => {
 });
 
 type CommonExpressionEditorProps = {
-  defaultCode: string;
+  code: string;
   onChange?: (v: string) => void;
   onBlur?: (v: string) => void;
   defs?: tern.Def[];
@@ -150,7 +150,7 @@ type BaseExpressionEditorProps = CommonExpressionEditorProps & {
 };
 
 export const BaseExpressionEditor: React.FC<BaseExpressionEditorProps> = ({
-  defaultCode,
+  code,
   onChange,
   onBlur,
   defs,
@@ -187,7 +187,7 @@ export const BaseExpressionEditor: React.FC<BaseExpressionEditorProps> = ({
     }
     if (!cm.current) {
       cm.current = CodeMirror(wrapperEl.current, {
-        value: defaultCode,
+        value: code,
         mode: {
           name: 'sunmao-ui',
         },
@@ -228,7 +228,14 @@ export const BaseExpressionEditor: React.FC<BaseExpressionEditorProps> = ({
       cm.current?.off('change', changeHandler);
       cm.current?.off('blur', blurHandler);
     };
-  }, [defaultCode, onChange, onBlur, compact]);
+  }, [code, onChange, onBlur, compact]);
+  useEffect(() => {
+    if (cm.current) {
+      if (code !== cm.current.getValue()) {
+        cm.current.setValue(code);
+      }
+    }
+  }, [code]);
   useEffect(() => {
     if (defs) {
       tServer.current?.deleteDefs('customDataTree');
