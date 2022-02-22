@@ -7,13 +7,14 @@ type Props = {
   componentId: string | undefined;
   parentId: string | undefined;
   parentSlot: string | undefined;
+  isExpanded: boolean;
   // only can be drop in and cannot drop before or after
   isDropInOnly?: boolean;
   services: EditorServices;
 };
 
 export const DropComponentWrapper: React.FC<Props> = props => {
-  const { componentId, parentId, parentSlot, services, isDropInOnly } = props;
+  const { componentId, parentId, parentSlot, services, isDropInOnly, isExpanded } = props;
   const { registry, eventBus } = services;
   const ref = useRef<HTMLDivElement>(null);
   const [dragDirection, setDragDirection] = useState<'prev' | 'next' | undefined>();
@@ -47,15 +48,26 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     e.preventDefault();
     const creatingComponent = e.dataTransfer?.getData('component') || '';
     const movingComponent = e.dataTransfer?.getData('moveComponent') || '';
+
+    let targetParentId = parentId;
+    let targetParentSlot = parentSlot;
+    let targetId = componentId;
+    if (dragDirection === 'next' && isExpanded) {
+      targetParentId = componentId;
+      targetParentSlot = 'content';
+      // should be the first of children
+      targetId = undefined;
+    }
+
     // move component before or after currentComponent
     if (movingComponent) {
       eventBus.send(
         'operation',
         genOperation(registry, 'moveComponent', {
           fromId: movingComponent,
-          toId: parentId,
-          slot: parentSlot,
-          targetId: componentId,
+          toId: targetParentId,
+          slot: targetParentSlot,
+          targetId: targetId,
           direction: dragDirection,
         })
       );
@@ -67,9 +79,9 @@ export const DropComponentWrapper: React.FC<Props> = props => {
         'operation',
         genOperation(registry, 'createComponent', {
           componentType: creatingComponent,
-          parentId: parentId,
-          slot: parentSlot,
-          targetId: componentId,
+          parentId: targetParentId,
+          slot: targetParentSlot,
+          targetId: targetId,
           direction: dragDirection,
         })
       );

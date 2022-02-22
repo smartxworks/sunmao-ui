@@ -3,7 +3,7 @@ import { ComponentId } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
 export type AdjustComponentOrderLeafOperationContext = {
   componentId: ComponentId;
-  targetId: ComponentId;
+  targetId?: ComponentId;
   direction: 'prev' | 'next';
 };
 
