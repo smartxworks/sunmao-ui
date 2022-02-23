@@ -90,7 +90,7 @@ export class ComponentModel implements IComponentModel {
     return this.properties.rawValue;
   }
 
-  get prevSilbling() {
+  get prevSibling() {
     let components: IComponentModel[];
     if (!this.parent) {
       components = this.appModel.topComponents;
@@ -102,7 +102,7 @@ export class ComponentModel implements IComponentModel {
     return components[index - 1];
   }
 
-  get nextSilbing() {
+  get nextSibling() {
     let components: IComponentModel[];
     if (!this.parent) {
       components = this.appModel.topComponents;

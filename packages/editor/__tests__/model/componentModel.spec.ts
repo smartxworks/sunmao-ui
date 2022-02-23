@@ -22,8 +22,8 @@ describe('ComponentModel test', () => {
     expect(button1.styleSlots).toEqual(['content']);
     expect(button1.parentId).toEqual('hstack2');
     expect(button1.parentSlot).toEqual('content');
-    expect(button1.prevSilbling).toBe(appModel.getComponentById('text2' as ComponentId));
-    expect(button1.nextSilbing).toBe(null);
+    expect(button1.prevSibling).toBe(appModel.getComponentById('text2' as ComponentId));
+    expect(button1.nextSibling).toBe(null);
     expect(button1.rawProperties.text).toEqual({ raw: 'text', format: 'plain' });
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
     expect([...Object.keys(apiFetch.stateExample)]).toEqual(['fetch']);
@@ -236,7 +236,7 @@ describe('move component', () => {
     const apiFetch = appModel.getComponentById('apiFetch' as ComponentId)!;
 
     it('can get the next sibling of the top-level component', () => {
-      expect(hstack1.nextSilbing).toBe(apiFetch);
+      expect(hstack1.nextSibling).toBe(apiFetch);
     });
 
     it('can move top level component', () => {

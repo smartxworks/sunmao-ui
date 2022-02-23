@@ -8,10 +8,9 @@ export const ignoreTraitsList = [
   'core/v1/fetch',
 ];
 
-export const hasSpecialFormTraitList = [
-  ...ignoreTraitsList,
-  'core/v1/fetch',
-];
+export const hasSpecialFormTraitList = [...ignoreTraitsList, 'core/v1/fetch'];
+
+export const RootId = '__root__';
 
 export const EmptyAppSchema: Application = {
   kind: 'Application',

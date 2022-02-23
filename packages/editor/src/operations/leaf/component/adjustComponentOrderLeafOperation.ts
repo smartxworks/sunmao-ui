@@ -11,7 +11,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
   private prevComponentId?: ComponentId;
   do(prev: AppModel): AppModel {
     const component = prev.getComponentById(this.context.componentId as ComponentId);
-    this.prevComponentId = component?.prevSilbling?.id;
+    this.prevComponentId = component?.prevSibling?.id;
     return this.move(prev, this.context.targetId, this.context.direction);
   }
 
@@ -37,7 +37,7 @@ export class AdjustComponentOrderLeafOperation extends BaseLeafOperation<AdjustC
 
     switch (direction) {
       case 'prev':
-        component.moveAfter(targetComponent?.prevSilbling || null);
+        component.moveAfter(targetComponent?.prevSibling || null);
         break;
       case 'next':
         component.moveAfter(targetComponent || null);
