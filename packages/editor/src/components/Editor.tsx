@@ -25,6 +25,7 @@ import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
 import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
+import { AppModel } from '../AppModel/AppModel';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -302,7 +303,7 @@ export const Editor: React.FC<Props> = observer(
                 eventBus.send(
                   'operation',
                   genOperation(registry, 'replaceApp', {
-                    app: JSON.parse(code).spec.components,
+                    app: new AppModel(JSON.parse(code).spec.components, registry),
                   })
                 );
               }
