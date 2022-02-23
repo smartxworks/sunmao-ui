@@ -15,6 +15,7 @@ type Props = {
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
   services: EditorServices;
+  isAncestorDragging: boolean
 };
 
 export const ComponentTree: React.FC<Props> = props => {
@@ -26,10 +27,12 @@ export const ComponentTree: React.FC<Props> = props => {
     selectedComponentId,
     onSelectComponent,
     services,
+    isAncestorDragging,
   } = props;
   const { registry, eventBus } = services;
   const slots = registry.getComponentByType(component.type).spec.slots;
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
 
   const slotsEle = useMemo(() => {
     if (slots.length === 0) {
@@ -51,6 +54,7 @@ export const ComponentTree: React.FC<Props> = props => {
               selectedComponentId={selectedComponentId}
               onSelectComponent={onSelectComponent}
               services={services}
+              isAncestorDragging={isAncestorDragging || isDragging}
             />
           );
         });
@@ -61,7 +65,9 @@ export const ComponentTree: React.FC<Props> = props => {
             parentId={component.id}
             parentSlot={_slot}
             services={services}
+            isExpanded={isExpanded}
             isDropInOnly
+            droppable={!isAncestorDragging && !isDragging}
           >
             <Text fontSize="sm" color="gray.500">
               Empty
@@ -87,7 +93,7 @@ export const ComponentTree: React.FC<Props> = props => {
         </Box>
       );
     });
-  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services]);
+  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services, isAncestorDragging, isDragging, isExpanded]);
 
   const onClickRemove = () => {
     eventBus.send(
@@ -105,13 +111,15 @@ export const ComponentTree: React.FC<Props> = props => {
       spacing="0"
       width="full"
       alignItems="start"
-      marginTop='0 !important'
+      marginTop="0 !important"
     >
       <DropComponentWrapper
         componentId={component.id}
         parentSlot={slot}
         parentId={parentId}
         services={props.services}
+        isExpanded={isExpanded}
+        droppable={!isAncestorDragging && !isDragging}
       >
         <ComponentItemView
           id={component.id}
@@ -124,6 +132,8 @@ export const ComponentTree: React.FC<Props> = props => {
           noChevron={slots.length === 0}
           isExpanded={isExpanded}
           onToggleExpanded={() => setIsExpanded(prev => !prev)}
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={() => setIsDragging(false)}
         />
       </DropComponentWrapper>
       {isExpanded ? slotsEle : undefined}

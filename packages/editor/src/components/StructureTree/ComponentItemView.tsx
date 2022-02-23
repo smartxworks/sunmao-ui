@@ -11,6 +11,8 @@ type Props = {
   noChevron: boolean;
   isExpanded?: boolean;
   onToggleExpanded?: () => void;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 };
 
 export const ComponentItemView: React.FC<Props> = props => {
@@ -23,6 +25,8 @@ export const ComponentItemView: React.FC<Props> = props => {
     onClick,
     onToggleExpanded,
     onClickRemove,
+    onDragStart,
+    onDragEnd,
   } = props;
 
   const expandIcon = (
@@ -40,12 +44,17 @@ export const ComponentItemView: React.FC<Props> = props => {
     />
   );
 
-  const onDragStart = (e: React.DragEvent) => {
+  const _onDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('moveComponent', id);
+    onDragStart && onDragStart();
+  };
+
+  const _onDragEnd = () => {
+    onDragEnd && onDragEnd();
   };
 
   return (
-    <Box width="full" padding="1" onDragStart={onDragStart} draggable>
+    <Box width="full" padding="1" onDragStart={_onDragStart} onDragEnd={_onDragEnd} draggable>
       {noChevron ? null : expandIcon}
       <HStack width="full" justify="space-between">
         <Text
