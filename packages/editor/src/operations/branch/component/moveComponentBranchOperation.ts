@@ -29,7 +29,7 @@ export class MoveComponentBranchOperation extends BaseBranchOperation<MoveCompon
       );
     }
 
-    if (this.context.targetId && this.context.direction) {
+    if (this.context.direction) {
       this.operationStack.insert(
         new AdjustComponentOrderLeafOperation(this.registry, {
           componentId: this.context.fromId as ComponentId,
