@@ -12,11 +12,13 @@ export const TreeSelectPropsSchema = {
             children: Type.Array(Type.Any())
         }), {
         title: 'Options',
-        category: Category.Data
+        category: Category.Data,
+        widget: 'expression'
     }),
     defaultValue: Type.Array(Type.String(), {
         title: 'Default Value',
-        category: Category.Data
+        category: Category.Data,
+        widget: 'expression'
     }),
     multiple: Type.Boolean({
         title: 'Multiple',
@@ -29,7 +31,7 @@ export const TreeSelectPropsSchema = {
     placeholder: Type.String({
         title: 'Placeholder',
         category: Category.Basic,
-        weight:10
+        weight: 10
     }),
     size: StringUnion(['mini', 'small', 'default', 'large'], {
         title: 'Size',
@@ -38,7 +40,7 @@ export const TreeSelectPropsSchema = {
     disabled: Type.Boolean({
         title: 'Disabled',
         category: Category.Basic,
-        weight:9
+        weight: 9
     }),
     showSearch: Type.Boolean({
         title: 'Show Search',
