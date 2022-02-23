@@ -7,12 +7,13 @@ export const MentionsPropsSchema = {
   options: Type.Array(Type.String(), {
     title:'Options',
     weight: 3,
-    category:Category.Data
+    category:Category.Data,
+    widget:'expression'
   }),
   defaultValue: Type.String({
     title:'Default Value',
     weight: 2,
-    category:Category.Data
+    category:Category.Data,
   }),
   prefix: Type.String({
     title:'Prefix',

@@ -42,7 +42,7 @@ export const ColumnSchema = Type.Object({
 export const TablePropsSchema = Type.Object({
   data: Type.Array(Type.Any(), {
     title: 'Data',
-    widget: 'CodeEditor',
+    widget: 'expression',
     category: 'Data',
     weight: 0
   }),

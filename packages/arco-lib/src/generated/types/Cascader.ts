@@ -5,7 +5,8 @@ import { Category } from '../../constants/category'
 
 export const CascaderValueSchema = Type.Array(Type.Union([Type.String(), Type.Array(Type.String())]), {
     title:'Default Value',
-    category: Category.Data
+    category: Category.Data,
+    widget:'expression'
 })
 
 export const CascaderPropsSchema = {
@@ -13,7 +14,8 @@ export const CascaderPropsSchema = {
         title:'Options',
         weight: 10,
         description: `An array of arrays`,
-        category: Category.Data
+        category: Category.Data,
+        widget:'expression'
     }),
     expandTrigger: StringUnion(['click', 'hover'],{
         title:'Expand Trigger',
