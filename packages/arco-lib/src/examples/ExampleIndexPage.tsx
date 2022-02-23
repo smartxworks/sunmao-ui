@@ -1,10 +1,12 @@
 import { Layout, Menu, Typography } from "@arco-design/web-react";
 import React, { useState } from "react";
-import { ButtonDemoPage } from "./pages/button";
+import { ButtonDemoPage } from "./pages/Button";
+import { TreeDemoPage } from "./pages/Tree";
 
 const { Sider, Content, Header } = Layout;
 const ContentMap: Record<string, React.FC> = {
   Button: ButtonDemoPage,
+  Tree: TreeDemoPage,
 };
 
 export const ExampleIndexPage: React.FC = () => {

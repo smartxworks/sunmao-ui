@@ -51,7 +51,7 @@ const options = {
   version: "arco/v1",
   metadata: {
     ...FALLBACK_METADATA,
-    name: "Switch",
+    name: "switch",
     displayName: "Switch",
     exampleProperties,
     annotations: {

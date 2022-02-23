@@ -20,6 +20,7 @@ import { Collapse, CollapseItem } from "./components/Collapse";
 import { Cascader } from "./components/Cascader";
 import { Skeleton } from "./components/Skeleton";
 import { Timeline } from "./components/Timeline";
+import { Tree } from "./components/Tree";
 import { TreeSelect } from "./components/TreeSelect";
 import { Checkbox } from './components/Checkbox';
 import { Modal } from "./components/Modal";
@@ -41,6 +42,7 @@ export const components: Component[] = [
   Table,
   Pagination,
   Steps,
+  Tree,
   TreeSelect,
   Modal,
   Button,
