@@ -11,6 +11,7 @@ import {
   Box,
   Accordion,
 } from '@chakra-ui/react';
+import { PRESET_PROPERTY_CATEGORY } from '../../../constants/category';
 
 type ExpandSpec = {
   category?: string;
@@ -18,9 +19,13 @@ type ExpandSpec = {
   name?: string;
 };
 
-const PRESET_PROPERTY_CATEGORY_WEIGHT = {
+const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
+  keyof typeof PRESET_PROPERTY_CATEGORY | 'Advance',
+  number
+> = {
   Data: 100,
-  Basic: 99,
+  Columns: 99,
+  Basic: 98,
   Behavior: 3,
   Layout: 2,
   Style: 1,
