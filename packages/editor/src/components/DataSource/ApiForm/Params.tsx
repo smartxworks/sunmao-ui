@@ -4,14 +4,17 @@ import { KeyValueEditor } from '../../KeyValueEditor';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { Static } from '@sinclair/typebox';
+import { EditorServices } from '../../../types';
 
 type Values = Static<typeof FetchTraitPropertiesSchema>;
 interface Props {
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
+  services: EditorServices;
 }
 
 export const Params: React.FC<Props> = props => {
-  const { formik } = props;
+  const { formik, services } = props;
+  const { registry, stateManager } = services;
   const url: string = formik.values.url ?? '';
   const index = url.indexOf('?');
   const params = useMemo(() => {
@@ -42,7 +45,14 @@ export const Params: React.FC<Props> = props => {
 
   return (
     <Box>
-      <KeyValueEditor value={params} onChange={onChange} minNum={1} isShowHeader />
+      <KeyValueEditor
+        registry={registry}
+        stateManager={stateManager}
+        value={params}
+        onChange={onChange}
+        minNum={1}
+        isShowHeader
+      />
     </Box>
   );
 };

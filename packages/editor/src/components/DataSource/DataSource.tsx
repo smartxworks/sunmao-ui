@@ -19,7 +19,7 @@ import { EditorServices } from '../../types';
 import { ToolMenuTabs } from '../../services/enum';
 
 export enum DataSourceType {
-  API = 'Api',
+  API = 'API',
   STATE = 'State',
 }
 
@@ -36,15 +36,18 @@ export const DataSource: React.FC<Props> = props => {
   const { apis, states } = editorStore.dataSources;
   const onMenuItemClick = (type: DataSourceType) => {
     editorStore.createDataSource(type);
+    editorStore.setSelectedComponentId('');
   };
   const onApiItemClick = (api: ComponentSchema) => {
     editorStore.setActiveDataSource(api);
     editorStore.setActiveDataSourceType(DataSourceType.API);
+    editorStore.setSelectedComponentId('');
   };
   const onStateItemClick = (state: ComponentSchema) => {
     editorStore.setActiveDataSource(state);
     editorStore.setActiveDataSourceType(DataSourceType.STATE);
     editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
+    editorStore.setSelectedComponentId('');
   };
   const onApiItemRemove = (api: ComponentSchema) => {
     editorStore.removeDataSource(api);

@@ -16,7 +16,7 @@ function swap<T>(arr: Array<T>, i1: number, i2: number): Array<T> {
 }
 
 const ArrayField: React.FC<Props> = props => {
-  const { schema, formData, onChange, registry, stateManager } = props;
+  const { schema, formData, expressionOptions, onChange, registry, stateManager } = props;
   const subSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items;
   if (typeof subSchema === 'boolean' || !subSchema) {
     return null;
@@ -33,7 +33,14 @@ const ArrayField: React.FC<Props> = props => {
     <>
       {formData.map((v, idx) => {
         return (
-          <Box key={idx} mb={2} border='1px solid black' borderColor='gray.200' borderRadius='4' padding='8px'>
+          <Box
+            key={idx}
+            mb={2}
+            border="1px solid black"
+            borderColor="gray.200"
+            borderRadius="4"
+            padding="8px"
+          >
             <ButtonGroup
               spacing={0}
               size="xs"
@@ -83,6 +90,7 @@ const ArrayField: React.FC<Props> = props => {
               }}
               registry={registry}
               stateManager={stateManager}
+              expressionOptions={expressionOptions}
             />
           </Box>
         );
