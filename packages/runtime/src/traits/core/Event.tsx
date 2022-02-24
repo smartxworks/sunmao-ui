@@ -30,7 +30,7 @@ const useEventTrait: TraitImpl<Static<typeof PropsSchema>> = ({
     if (!callbackQueueMap[handler.type]) {
       callbackQueueMap[handler.type] = [];
     }
-    if (!handler.wait) {
+    if (!handler.wait || !handler.wait.time) {
       callbackQueueMap[handler.type].push(cb);
     } else {
       callbackQueueMap[handler.type].push(
