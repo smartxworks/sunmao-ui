@@ -105,42 +105,56 @@ export class StateManager {
     });
   }
 
-  deepEval(obj: Record<string, unknown>, watcher?: (params: { result: any }) => void) {
+  deepEval(obj: Record<string, unknown>, evalListItem = false, scopeObject = {}) {
+    // just eval
+    const evaluated = this.mapValuesDeep(
+      obj,
+      ({ value }) => {
+        if (typeof value !== 'string') {
+          return value;
+        }
+        return this.maskedEval(value, evalListItem, scopeObject);
+      },
+      undefined
+    );
+
+    return evaluated;
+  }
+
+  deepEvalAndWatch(
+    obj: Record<string, unknown>,
+    watcher: (params: { result: any }) => void,
+    evalListItem = false,
+    scopeObject = {}
+  ) {
     const stops: ReturnType<typeof watch>[] = [];
 
     // just eval
-    const evaluated = this.mapValuesDeep(obj, ({ value }) => {
-      if (typeof value !== 'string') {
-        return value;
-      }
-      return this.maskedEval(value);
+    const evaluated = this.deepEval(obj, evalListItem, scopeObject);
+
+    // watch change
+    let resultCache: Record<string, any> = evaluated;
+    this.mapValuesDeep(obj, ({ value, path }) => {
+      const isDynamicExpression =
+        typeof value === 'string' &&
+        parseExpression(value).some(exp => typeof exp !== 'string');
+
+      if (!isDynamicExpression) return;
+
+      const stop = watch(
+        () => {
+          const result = this.maskedEval(value, evalListItem, scopeObject);
+          return result;
+        },
+        newV => {
+          resultCache = produce(resultCache, draft => {
+            set(draft, path, newV);
+          });
+          watcher({ result: resultCache });
+        }
+      );
+      stops.push(stop);
     });
-
-    if (watcher) {
-      // watch change
-      let resultCache: Record<string, any> = evaluated;
-      this.mapValuesDeep(obj, ({ value, path }) => {
-        const isDynamicExpression =
-          typeof value === 'string' &&
-          parseExpression(value).some(exp => typeof exp !== 'string');
-
-        if (!isDynamicExpression) return;
-
-        const stop = watch(
-          () => {
-            const result = this.maskedEval(value);
-            return result;
-          },
-          newV => {
-            resultCache = produce(resultCache, draft => {
-              set(draft, path, newV);
-            });
-            watcher({ result: resultCache });
-          }
-        );
-        stops.push(stop);
-      });
-    }
 
     return {
       result: evaluated,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isArray, sortBy } from 'lodash-es';
 import {
   Table as BaseTable,
@@ -23,6 +23,7 @@ type SortRule = {
 
 export const TableImpl = implementTable(
   ({
+    component,
     data,
     majorKey,
     rowsPerPage,
@@ -184,13 +185,14 @@ export const TableImpl = implementTable(
                   }}
                 >
                   {isMultiSelect ? checkbox : undefined}
-                  {columns.map(column => (
+                  {columns.map((column, j) => (
                     <TableTd
                       index={i}
                       key={column.key}
                       item={item}
-                      column={column}
                       onClickItem={() => selectItem(item)}
+                      rawColumn={(component.properties.columns as any)[j]}
+                      column={column}
                       services={services}
                       app={app}
                     />

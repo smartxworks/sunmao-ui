@@ -75,7 +75,7 @@
         },
         {
           "id": "submitButton",
-          "type": "plain/v1/button",
+          "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
               "raw": "提交",

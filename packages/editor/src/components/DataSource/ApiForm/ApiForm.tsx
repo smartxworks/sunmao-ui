@@ -54,7 +54,7 @@ export const ApiForm: React.FC<Props> = props => {
   const { registry, eventBus } = services;
   const result = useMemo(() => {
     return store[api.id]?.fetch ?? {};
-  }, [store[api.id], api.id]);
+  }, [api.id, store]);
   const traitIndex = useMemo(
     () => api.traits.findIndex(({ type }) => type === 'core/v1/fetch'),
     [api.traits]
