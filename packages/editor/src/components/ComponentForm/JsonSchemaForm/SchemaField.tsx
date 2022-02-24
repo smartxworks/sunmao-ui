@@ -118,12 +118,15 @@ const SchemaField: React.FC<Props> = props => {
     stateManager,
   } = props;
   const [isExpression, setIsExpression] = useState(() => _isExpression(formData));
+  const displayLabel = getDisplayLabel(schema, label);
+  const codeMode = getCodeMode(schema);
 
   if (isEmpty(schema)) {
     return null;
   }
 
   let Component = UnsupportedField;
+  let showAsideExpressionButton = !displayLabel && codeMode;
 
   // customize widgets
   if (isExpression) {
@@ -132,14 +135,17 @@ const SchemaField: React.FC<Props> = props => {
     Component = widgets[schema.widget];
   } else if (isTopLevel) {
     Component = TopLevelField;
+    showAsideExpressionButton = false;
   }
   // type fields
   else if (schema.type === 'object') {
     Component = ObjectField;
+    showAsideExpressionButton = false;
   } else if (schema.type === 'string') {
     Component = StringField;
   } else if (schema.type === 'array') {
     Component = ArrayField;
+    showAsideExpressionButton = false;
   } else if (schema.type === 'boolean') {
     Component = BooleanField;
   } else if (schema.type === 'integer' || schema.type === 'number') {
@@ -155,9 +161,6 @@ const SchemaField: React.FC<Props> = props => {
   } else {
     console.info('Found unsupported schema', schema);
   }
-
-  const displayLabel = getDisplayLabel(schema, label);
-  const codeMode = getCodeMode(schema);
 
   return (
     <DefaultTemplate
@@ -185,7 +188,7 @@ const SchemaField: React.FC<Props> = props => {
                 })}
           />
         </Box>
-        {!isTopLevel && !displayLabel && codeMode ? (
+        {showAsideExpressionButton ? (
           <ExpressionButton
             isExpression={isExpression}
             setIsExpression={setIsExpression}
