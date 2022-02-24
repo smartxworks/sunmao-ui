@@ -2,7 +2,7 @@ import { CloseIcon } from '@chakra-ui/icons';
 import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import SchemaField from './ComponentForm/JsonSchemaForm/SchemaField';
 import { ExpressionWidget } from './ComponentForm/JsonSchemaForm/widgets/ExpressionWidget';
 import { FieldProps } from './ComponentForm/JsonSchemaForm/fields';
@@ -18,6 +18,8 @@ type Props = {
   minNum?: number;
   onlySetValue?: boolean;
 };
+
+const IGNORE_SCHEMA_TYPES = ['array', 'object'];
 
 export const KeyValueEditor: React.FC<Props> = props => {
   const { schema, minNum = 0, registry, stateManager, onlySetValue } = props;
@@ -45,10 +47,6 @@ export const KeyValueEditor: React.FC<Props> = props => {
     []
   );
 
-  useEffect(() => {
-    setRows(generateRows(rows));
-  }, [props.value]);
-
   const emitDataChange = (newRows: Array<[string, string]>) => {
     const json = fromPairs(newRows.filter(([key]) => key));
     props.onChange(json);
@@ -64,6 +62,10 @@ export const KeyValueEditor: React.FC<Props> = props => {
     setRows(newRows);
     emitDataChange(newRows);
   };
+  
+  useEffect(() => {
+    setRows(generateRows(rows));
+  }, [props.value]);
 
   const rowItems = rows.map(([key, value], i) => {
     const onInputChange = (e: React.ChangeEvent) => {
@@ -99,9 +101,8 @@ export const KeyValueEditor: React.FC<Props> = props => {
         />
         <HStack flex={2} alignItems="center">
           {keySchemaType &&
-          keySchemaType !== true &&
-          keySchemaType.type !== 'array' &&
-          keySchemaType.type !== 'object' ? (
+          typeof keySchemaType !== 'boolean' &&
+          !IGNORE_SCHEMA_TYPES.includes(String(keySchemaType.type)) ? (
             <SchemaField
               label=""
               formData={value}

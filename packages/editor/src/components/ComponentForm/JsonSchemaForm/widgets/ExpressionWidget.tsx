@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import {
   toNumber,
   isString,
@@ -10,13 +10,14 @@ import {
   isNull,
 } from 'lodash-es';
 import { FieldProps } from '../fields';
-import { ExpressionEditor } from '../../../CodeEditor';
+import { ExpressionEditor, ExpressionEditorHandle } from '../../../CodeEditor';
 import { isExpression } from '../../../../validator/utils';
 
 export type ExpressionWidgetProps = Pick<
   FieldProps,
   'formData' | 'onChange' | 'stateManager'
-> & FieldProps['expressionOptions'];
+> &
+  FieldProps['expressionOptions'];
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -127,17 +128,23 @@ const getParsedValue = (raw: string, type: string) => {
 export const ExpressionWidget: React.FC<ExpressionWidgetProps> = props => {
   const { formData, compactOptions = {}, onChange, stateManager } = props;
   const [defs, setDefs] = useState<any>();
-  useEffect(() => {
-    setDefs([customTreeTypeDefCreator(stateManager.store)]);
-  }, [stateManager]);
+  const editorRef = useRef<ExpressionEditorHandle>(null);
   const { code, type } = useMemo(() => {
     return getCode(formData);
   }, [formData]);
 
+  useEffect(() => {
+    setDefs([customTreeTypeDefCreator(stateManager.store)]);
+  }, [stateManager]);
+  useEffect(() => {
+    editorRef.current?.setCode(code);
+  }, [code]);
+
   return (
     <ExpressionEditor
+      ref={editorRef}
       compactOptions={compactOptions}
-      code={code}
+      defaultCode={code}
       onBlur={_v => {
         const v = getParsedValue(_v, type);
         onChange(v);
