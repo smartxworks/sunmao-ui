@@ -59,6 +59,11 @@ export const TablePropsSchema = Type.Object({
     category: Category.Layout,
     weight: 1
   }),
+  border: Type.Boolean({
+    title: 'Border',
+    category: Category.Style,
+    weight: 2
+  }),
   borderCell: Type.Boolean({
     title: 'Border Cell',
     description: 'Whether to display the table cell border',
@@ -93,7 +98,10 @@ export const TablePropsSchema = Type.Object({
   }),
   rowSelectionType: StringUnion(["checkbox", "radio", "default"], {
     title: 'Row Selection Type',
-    weight: 3,
-    category: Category.Style
+    category: Category.Basic
+  }),
+  loading: Type.Boolean( {
+    title: 'Loading',
+    category: Category.Basic
   }),
 });
