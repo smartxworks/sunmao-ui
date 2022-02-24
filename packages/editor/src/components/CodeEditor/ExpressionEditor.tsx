@@ -210,7 +210,11 @@ export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle,
         },
         autoRefresh: { delay: 50 },
         ...(compact
-          ? {}
+          ? {
+              extraKeys: {
+                Tab: false
+              }
+            }
           : {
               lineNumbers: true,
               foldGutter: true,
