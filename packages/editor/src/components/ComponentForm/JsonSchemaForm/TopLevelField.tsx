@@ -11,12 +11,34 @@ import {
   Box,
   Accordion,
 } from '@chakra-ui/react';
+import { PRESET_PROPERTY_CATEGORY } from '../../../constants/category';
 
 type ExpandSpec = {
   category?: string;
   weight?: number;
   name?: string;
 };
+
+const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
+  keyof typeof PRESET_PROPERTY_CATEGORY | 'Advance',
+  number
+> = {
+  Data: 100,
+  Columns: 99,
+  Basic: 98,
+  Behavior: 3,
+  Layout: 2,
+  Style: 1,
+  Advance: -Infinity,
+};
+
+function getCategoryOrder(name: string): number {
+  return name in PRESET_PROPERTY_CATEGORY_WEIGHT
+    ? PRESET_PROPERTY_CATEGORY_WEIGHT[
+        name as keyof typeof PRESET_PROPERTY_CATEGORY_WEIGHT
+      ]
+    : 0;
+}
 
 type Property = Record<string, JSONSchema7 & ExpandSpec>;
 
@@ -36,21 +58,13 @@ const TopLevelField: React.FC<FieldProps> = props => {
     });
     const grouped = groupBy(properties, c => c.category || 'Advance');
 
-    const advance = grouped.Advance;
-    Reflect.deleteProperty(grouped, 'Advance');
-
-    const categories = Object.keys(grouped).map(name => ({
-      name,
-      schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
-    }));
-    if (advance) {
-      categories.push({
-        name: 'Advance',
-        schemas: sortBy(advance, c => -(c.weight ?? -Infinity)),
-      });
-    }
-
-    return categories;
+    return sortBy(
+      Object.keys(grouped).map(name => ({
+        name,
+        schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
+      })),
+      c => -getCategoryOrder(c.name)
+    );
   }, [schema.properties]);
 
   return (
