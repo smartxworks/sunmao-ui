@@ -132,6 +132,13 @@ export const ExpressionWidget: React.FC<ExpressionWidgetProps> = props => {
   const { code, type } = useMemo(() => {
     return getCode(formData);
   }, [formData]);
+  const mergedCompactOptions = useMemo(
+    () => ({
+      maxHeight: '125px',
+      ...compactOptions,
+    }),
+    [compactOptions]
+  );
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -143,7 +150,7 @@ export const ExpressionWidget: React.FC<ExpressionWidgetProps> = props => {
   return (
     <ExpressionEditor
       ref={editorRef}
-      compactOptions={compactOptions}
+      compactOptions={mergedCompactOptions}
       defaultCode={code}
       onBlur={_v => {
         const v = getParsedValue(_v, type);

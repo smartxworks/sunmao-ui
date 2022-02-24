@@ -143,9 +143,12 @@ type CommonExpressionEditorProps = {
   onBlur?: (v: string) => void;
   defs?: tern.Def[];
 };
-type BaseExpressionEditorProps = CommonExpressionEditorProps & {
+type ExpressionEditorStyleProps = {
   height?: string;
+  maxHeight?: string;
   paddingY?: string;
+}
+type BaseExpressionEditorProps = CommonExpressionEditorProps & ExpressionEditorStyleProps & {
   compact?: boolean;
 };
 type BaseExpressionEditorHandle = {
@@ -159,6 +162,7 @@ export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle,
   defs,
   compact,
   height = '100%',
+  maxHeight = '',
   paddingY = '2px',
 }, ref) => {
   const style = css`
@@ -178,6 +182,10 @@ export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle,
       .cm-sunmao-ui {
         background: var(--chakra-colors-green-100);
       }
+    }
+
+    .CodeMirror .CodeMirror-scroll {
+      max-height: ${maxHeight};
     }
   `;
 
@@ -202,7 +210,11 @@ export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle,
         },
         autoRefresh: { delay: 50 },
         ...(compact
-          ? {}
+          ? {
+              extraKeys: {
+                Tab: false
+              }
+            }
           : {
               lineNumbers: true,
               foldGutter: true,
@@ -259,10 +271,7 @@ export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle,
 });
 
 export type ExpressionEditorProps = BaseExpressionEditorProps & {
-  compactOptions?: {
-    height?: string;
-    paddingY?: string;
-  };
+  compactOptions?: ExpressionEditorStyleProps;
 };
 export type ExpressionEditorHandle = BaseExpressionEditorHandle;
 
