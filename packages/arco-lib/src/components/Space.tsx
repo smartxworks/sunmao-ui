@@ -18,7 +18,7 @@ const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSchema>> = (props) => {
   const cProps = getComponentProps(props);
 
   return (
-    <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps} size="large">
+    <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps}>
       {slotsElements.content}
     </BaseSpace>
   );
@@ -28,7 +28,7 @@ const exampleProperties: Static<typeof SpacePropsSchema> = {
   align: "center",
   direction: "vertical",
   wrap: false,
-  size: "mini",
+  size: "large",
 };
 export const Space = implementRuntimeComponent({
   version: "arco/v1",
