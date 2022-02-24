@@ -118,13 +118,6 @@ ${Object.keys(props)
     component: "Button",
   },
   {
-    component: "Layout",
-    propsNames: ["HeaderProps", "FooterProps", "ContentProps", "SiderProps"],
-    omit(name) {
-      return name.startsWith("aria-");
-    },
-  },
-  {
     component: "Image",
   },
   {
