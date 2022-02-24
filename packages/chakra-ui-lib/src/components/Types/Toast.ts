@@ -2,42 +2,55 @@ import { Type, Static, TProperties, TObject } from '@sinclair/typebox';
 import { createStandaloneToast } from '@chakra-ui/react';
 import { UtilMethod } from '@sunmao-ui/runtime';
 
-const ToastPosition = Type.Union([
-  Type.Literal('top'),
-  Type.Literal('top-right'),
-  Type.Literal('top-left'),
-  Type.Literal('bottom'),
-  Type.Literal('bottom-right'),
-  Type.Literal('bottom-left'),
-]);
+const ToastPosition = Type.KeyOf(
+  Type.Object({
+    top: Type.String(),
+    'top-right': Type.String(),
+    'top-left': Type.String(),
+    bottom: Type.String(),
+    'bottom-right': Type.String(),
+    'bottom-left': Type.String(),
+  }),
+  {
+    defaultValue: 'top',
+  }
+);
 export const ToastOpenParameterSchema = Type.Object({
-  position: Type.Optional(ToastPosition),
-  duration: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-  title: Type.Optional(Type.String()),
-  description: Type.Optional(Type.String()),
-  isClosable: Type.Optional(Type.Boolean()),
-  variant: Type.Optional(
-    Type.Union([
-      Type.Literal('subtle'),
-      Type.Literal('solid'),
-      Type.Literal('left-accent'),
-      Type.Literal('top-accent'),
-    ])
+  position: ToastPosition,
+  duration: Type.Number({ defaultValue: 1000 }),
+  title: Type.String(),
+  description: Type.String(),
+  isClosable: Type.Boolean(),
+  variant: Type.KeyOf(
+    Type.Object({
+      subtle: Type.String(),
+      solid: Type.String(),
+      'left-accent': Type.String(),
+      'top-accent': Type.String(),
+    }),
+    {
+      defaultValue: 'subtle',
+    }
   ),
-  status: Type.Optional(
-    Type.Union([
-      Type.Literal('error'),
-      Type.Literal('success'),
-      Type.Literal('warning'),
-      Type.Literal('info'),
-    ])
+  status: Type.KeyOf(
+    Type.Object({
+      error: Type.String(),
+      success: Type.String(),
+      warning: Type.String(),
+      info: Type.String(),
+    }),
+    {
+      defaultValue: 'info',
+    }
   ),
-  id: Type.Optional(Type.String()),
+  id: Type.String(),
 });
 
 export const ToastCloseParameterSchema = Type.Object({
-  id: Type.Optional(Type.Union([Type.Number(), Type.String()])),
-  positions: Type.Optional(Type.Array(ToastPosition)),
+  id: Type.String(),
+  positions: Type.Array(ToastPosition, {
+    defaultValue: []
+  }),
 });
 
 export type ToastOpenParameter = Static<typeof ToastOpenParameterSchema>;

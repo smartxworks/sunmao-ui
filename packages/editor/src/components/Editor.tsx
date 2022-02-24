@@ -274,6 +274,7 @@ export const Editor: React.FC<Props> = observer(
             </Box>
             {activeDataSource && activeDataSourceType === DataSourceType.API ? (
               <ApiForm
+                key={activeDataSource.id}
                 api={activeDataSource}
                 services={services}
                 store={store}

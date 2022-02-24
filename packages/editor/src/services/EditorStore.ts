@@ -44,6 +44,8 @@ export class EditorStore {
   schemaValidator: SchemaValidator;
 
   // data source
+  private APICount = -1;
+  private stateCount = -1;
   activeDataSource: ComponentSchema | null = null;
   activeDataSourceType: DataSourceType | null = null;
 
@@ -68,7 +70,6 @@ export class EditorStore {
     this.eventBus.on('componentsChange', components => {
       this.setComponents(components);
       this.setCurrentComponentsVersion(this.currentComponentsVersion + 1);
-
       this.saveCurrentComponents();
     });
 
@@ -82,6 +83,10 @@ export class EditorStore {
           this.clearSunmaoGlobalState();
           this.eventBus.send('componentsRefresh', this.originComponents);
           this.setComponents(this.originComponents);
+
+          if (this.APICount === -1 || this.stateCount === -1) {
+            this.initDataSourceCount();
+          }
         }
       }
     );
@@ -89,9 +94,11 @@ export class EditorStore {
     reaction(
       () => this.selectedComponentId,
       () => {
-        this.setToolMenuTab(ToolMenuTabs.INSPECT);
-        this.setActiveDataSource(null);
-        this.setActiveDataSourceType(null);
+        if (this.selectedComponentId) {
+          this.setToolMenuTab(ToolMenuTabs.INSPECT);
+          this.setActiveDataSource(null);
+          this.setActiveDataSourceType(null);
+        }
       }
     );
 
@@ -218,6 +225,13 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
+  initDataSourceCount = () => {
+    const { apis, states } = this.dataSources;
+
+    this.APICount = apis.length;
+    this.stateCount = states.length;
+  };
+
   setActiveDataSource = (dataSource: ComponentSchema | null) => {
     this.activeDataSource = dataSource;
   };
@@ -228,8 +242,22 @@ export class EditorStore {
 
   createDataSource = (type: DataSourceType) => {
     const { apis, states } = this.dataSources;
-    const id =
-      type === DataSourceType.API ? `api${apis.length}` : `state${states.length}`;
+    const isAPI = type === DataSourceType.API;
+    const ids = isAPI ? apis.map(({ id }) => id) : states.map(({ id }) => id);
+
+    while (
+      isAPI
+        ? ids.includes(`api${this.APICount}`)
+        : ids.includes(`state${this.stateCount}`)
+    ) {
+      if (isAPI) {
+        this.APICount++;
+      } else {
+        this.stateCount++;
+      }
+    }
+
+    const id = isAPI ? `api${this.APICount++}` : `state${this.stateCount++}`;
 
     this.eventBus.send(
       'operation',

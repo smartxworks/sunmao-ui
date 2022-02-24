@@ -47,6 +47,10 @@ export const StateForm: React.FC<Props> = props => {
       }
     }
   };
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    // prevent form keyboard events to accidentally trigger operation shortcut
+    e.stopPropagation();
+  };
 
   useEffect(() => {
     formik.setValues({
@@ -61,7 +65,7 @@ export const StateForm: React.FC<Props> = props => {
   }, [state.id]);
 
   return (
-    <VStack p="2" spacing="2" background="gray.50">
+    <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
       <FormControl>
         <FormLabel>Name</FormLabel>
         <Input

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { Static } from '@sinclair/typebox';
 import {
+  Box,
   VStack,
   HStack,
   IconButton,
@@ -26,6 +27,8 @@ import { Body } from './Body';
 import { Response as ResponseInfo } from './Respose';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
+import { ExpressionWidget } from '../../ComponentForm/JsonSchemaForm/widgets/ExpressionWidget';
+import { ExpressionEditorProps } from '../../CodeEditor/ExpressionEditor';
 
 enum TabIndex {
   Basic,
@@ -44,13 +47,26 @@ const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
-  const { editorStore } = services;
+  const { editorStore, stateManager } = services;
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
   const [tabIndex, setTabIndex] = useState(0);
   const { registry, eventBus } = services;
-  const traitIndex = api.traits.findIndex(({ type }) => type === 'core/v1/fetch');
-  const trait = api.traits[traitIndex];
+  const result = useMemo(() => {
+    return store[api.id]?.fetch ?? {};
+  }, [store[api.id], api.id]);
+  const traitIndex = useMemo(
+    () => api.traits.findIndex(({ type }) => type === 'core/v1/fetch'),
+    [api.traits]
+  );
+  const trait = useMemo(() => api.traits[traitIndex], [api.traits, traitIndex]);
+  const compactOptions = useMemo<ExpressionEditorProps['compactOptions']>(
+    () => ({
+      height: '40px',
+      paddingY: '6px',
+    }),
+    []
+  );
   const formik = useFormik({
     initialValues: {
       ...(trait?.properties as Static<typeof FetchTraitPropertiesSchema>),
@@ -67,34 +83,48 @@ export const ApiForm: React.FC<Props> = props => {
     },
   });
   const { values } = formik;
-  const result = useMemo(() => {
-    return store[api.id]?.fetch ?? {};
-  }, [store[api.id], api.id]);
 
-  const onFetch = async () => {
+  const onFetch = useCallback(async () => {
     services.apiService.send('uiMethod', {
       componentId: api.id,
       name: 'triggerFetch',
       parameters: {},
     });
-  };
-  const onNameInputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  }, [services.apiService, api]);
+  const onNameInputBlur = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
 
-    if (value) {
-      if (value !== api.id) {
-        editorStore.changeDataSourceName(api, value);
+      if (value) {
+        if (value !== api.id) {
+          editorStore.changeDataSourceName(api, value);
+        }
+        setIsEditing(false);
       }
-      setIsEditing(false);
-    }
-  };
-  const onMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    formik.handleChange(e);
-    formik.handleSubmit();
-    if (e.target.value === 'get' && tabIndex === TabIndex.Body) {
-      setTabIndex(0);
-    }
-  };
+    },
+    [api, editorStore]
+  );
+  const onMethodChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      formik.handleChange(e);
+      formik.handleSubmit();
+      if (e.target.value === 'get' && tabIndex === TabIndex.Body) {
+        setTabIndex(0);
+      }
+    },
+    [formik, tabIndex]
+  );
+  const onURLChange = useCallback(
+    (value: string) => {
+      formik.setFieldValue('url', value);
+      formik.handleSubmit();
+    },
+    [formik]
+  );
+  const onKeyDown = useCallback((e: React.KeyboardEvent) => {
+    // prevent form keyboard events to accidentally trigger operation shortcut
+    e.stopPropagation();
+  }, []);
 
   useEffect(() => {
     formik.setValues({
@@ -116,6 +146,7 @@ export const ApiForm: React.FC<Props> = props => {
       paddingBottom="0"
       align="stretch"
       spacing="4"
+      onKeyDown={onKeyDown}
     >
       <HStack
         alignItems="center"
@@ -159,7 +190,7 @@ export const ApiForm: React.FC<Props> = props => {
         />
       </HStack>
       <HStack display="flex" spacing={4}>
-        <HStack display="flex" spacing={1} flex={1}>
+        <HStack display="flex" spacing={1} flex={1} alignItems="stretch">
           <Select
             width={200}
             name="method"
@@ -173,13 +204,14 @@ export const ApiForm: React.FC<Props> = props => {
               </option>
             ))}
           </Select>
-          <Input
-            name="url"
-            value={values.url}
-            onChange={formik.handleChange}
-            size="md"
-            onBlur={() => formik.handleSubmit()}
-          />
+          <Box flex={1}>
+            <ExpressionWidget
+              stateManager={stateManager}
+              formData={values.url}
+              onChange={onURLChange}
+              compactOptions={compactOptions}
+            />
+          </Box>
         </HStack>
         <Button colorScheme="blue" isLoading={result.loading} onClick={onFetch}>
           Run
@@ -205,13 +237,13 @@ export const ApiForm: React.FC<Props> = props => {
               <Basic formik={formik} services={services} />
             </TabPanel>
             <TabPanel>
-              <HeadersForm formik={formik} />
+              <HeadersForm services={services} formik={formik} />
             </TabPanel>
             <TabPanel>
-              <Params formik={formik} />
+              <Params services={services} formik={formik} />
             </TabPanel>
             <TabPanel>
-              <Body formik={formik} />
+              <Body services={services} formik={formik} />
             </TabPanel>
           </TabPanels>
         </VStack>

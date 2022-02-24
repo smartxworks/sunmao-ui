@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
 import CodeMirror from 'codemirror';
 import {
   Box,
@@ -137,29 +137,36 @@ CodeMirror.defineMode('sunmao-ui', (config, parseConfig) => {
   );
 });
 
-type EditorProps = {
+type CommonExpressionEditorProps = {
   defaultCode: string;
   onChange?: (v: string) => void;
   onBlur?: (v: string) => void;
   defs?: tern.Def[];
+};
+type BaseExpressionEditorProps = CommonExpressionEditorProps & {
+  height?: string;
+  paddingY?: string;
   compact?: boolean;
 };
+type BaseExpressionEditorHandle = {
+  setCode: (code: string) => void;
+}
 
-export const BaseExpressionEditor: React.FC<EditorProps> = ({
+export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle, BaseExpressionEditorProps>(({
   defaultCode,
   onChange,
   onBlur,
   defs,
   compact,
-}) => {
+  height = '100%',
+  paddingY = '2px',
+}, ref) => {
   const style = css`
     .CodeMirror {
       width: 100%;
-      height: 100%;
-      padding: 2px ${compact ? '8px' : 0};
+      height: ${height};
+      padding: ${paddingY} ${compact ? '8px' : 0};
       border-radius: var(--chakra-radii-sm);
-      border: 2px solid;
-      border-color: var(--chakra-colors-transparent);
       background: var(--chakra-colors-gray-100);
       color: var(--chakra-colors-gray-800);
       transition-property: var(--chakra-transition-property-common);
@@ -211,7 +218,9 @@ export const BaseExpressionEditor: React.FC<EditorProps> = ({
       tServer.current = t.server;
     }
     const changeHandler = (instance: CodeMirror.Editor) => {
-      onChange?.(instance.getValue());
+      const value = instance.getValue();
+
+      onChange?.(value);
     };
     const blurHandler = (instance: CodeMirror.Editor) => {
       onBlur?.(instance.getValue());
@@ -230,6 +239,12 @@ export const BaseExpressionEditor: React.FC<EditorProps> = ({
     }
   }, [defs]);
 
+  useImperativeHandle(ref, () => ({
+    setCode: (code: string) => {
+      cm.current?.setValue(code);
+    }
+  }));
+
   return (
     <Box css={style} ref={wrapperEl} height="100%" width="100%" overflow="hidden">
       <Global
@@ -241,9 +256,19 @@ export const BaseExpressionEditor: React.FC<EditorProps> = ({
       />
     </Box>
   );
-};
+});
 
-export const ExpressionEditor: React.FC<EditorProps> = props => {
+export type ExpressionEditorProps = BaseExpressionEditorProps & {
+  compactOptions?: {
+    height?: string;
+    paddingY?: string;
+  };
+};
+export type ExpressionEditorHandle = BaseExpressionEditorHandle;
+
+
+export const ExpressionEditor = React.forwardRef<ExpressionEditorHandle, ExpressionEditorProps>((props: ExpressionEditorProps, ref) => {
+  const { compactOptions = {} } = props;
   const style = css`
     .expand-icon {
       display: none;
@@ -257,15 +282,25 @@ export const ExpressionEditor: React.FC<EditorProps> = props => {
   `;
   const [showModal, setShowModal] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
+  const compactEditorRef = useRef<BaseExpressionEditorHandle>(null);
+  const editorRef = useRef<BaseExpressionEditorHandle>(null);
+
   const onClose = () => {
     setShowModal(false);
     setRenderKey(renderKey + 1);
   };
 
+  useImperativeHandle(ref, () => ({
+    setCode: (code: string) => {
+      editorRef.current?.setCode(code);
+      compactEditorRef.current?.setCode(code);
+    }
+  }));
+
   return (
     <Box position="relative" css={style}>
       {/* Force re-render CodeMirror when editted in modal, since it's not reactive */}
-      <BaseExpressionEditor {...props} key={renderKey} compact />
+      <BaseExpressionEditor ref={compactEditorRef} {...props} key={renderKey} compact {...compactOptions} />
       <IconButton
         aria-label="expand editor"
         position="absolute"
@@ -293,7 +328,7 @@ export const ExpressionEditor: React.FC<EditorProps> = props => {
             <ModalHeader>Expression Editor</ModalHeader>
             <ModalBody>
               <Box height="500">
-                <BaseExpressionEditor {...props} compact={false} />
+                <BaseExpressionEditor ref={editorRef} {...props} compact={false} />
               </Box>
             </ModalBody>
             <ModalFooter>
@@ -306,4 +341,4 @@ export const ExpressionEditor: React.FC<EditorProps> = props => {
       )}
     </Box>
   );
-};
+});

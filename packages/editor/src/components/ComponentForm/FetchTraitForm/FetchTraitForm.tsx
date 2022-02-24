@@ -1,3 +1,4 @@
+import React from 'react';
 import { useFormik } from 'formik';
 import produce from 'immer';
 import {
@@ -35,7 +36,7 @@ const httpMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const FetchTraitForm: React.FC<Props> = props => {
   const { component, services } = props;
-  const { registry, eventBus } = services;
+  const { registry, eventBus, stateManager } = services;
 
   const fetchTrait = component.traits.find(t => t.type === 'core/v1/fetch')
     ?.properties as Static<typeof FetchTraitPropertiesSchema>;
@@ -93,6 +94,8 @@ export const FetchTraitForm: React.FC<Props> = props => {
     <FormControl>
       <FormLabel>Body</FormLabel>
       <KeyValueEditor
+        registry={registry}
+        stateManager={stateManager}
         value={formik.values.body}
         onChange={json => {
           formik.setFieldValue('body', json);
@@ -106,6 +109,8 @@ export const FetchTraitForm: React.FC<Props> = props => {
     <FormControl>
       <FormLabel>Headers</FormLabel>
       <KeyValueEditor
+        registry={registry}
+        stateManager={stateManager}
         value={formik.values.headers}
         onChange={json => {
           formik.setFieldValue('headers', json);

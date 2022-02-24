@@ -76,7 +76,7 @@ export const Api: React.FC<Props> = props => {
             setSearch(e.target.value);
           }}
         />
-        {list.length ? <ApiItems /> : <Text padding="2">No Apis.</Text>}
+        {list.length ? <ApiItems /> : <Text padding="2">No APIs.</Text>}
       </AccordionPanel>
     </AccordionItem>
   );
