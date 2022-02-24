@@ -21,4 +21,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           test-command: "yarn test:ci"
-          coverage-comment: ${{ github.event_name == 'pull_request'}}
+          # coverage-comment: ${{ github.event_name == 'pull_request'}}
