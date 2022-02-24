@@ -15,6 +15,8 @@ import { TablePagination } from './Pagination';
 
 import { TableTd } from './TableTd';
 import { implementTable } from './spec';
+import { ColumnsPropertySchema } from './TableTypes';
+import { Static } from '@sinclair/typebox';
 
 type SortRule = {
   key: string;
@@ -191,7 +193,7 @@ export const TableImpl = implementTable(
                       key={column.key}
                       item={item}
                       onClickItem={() => selectItem(item)}
-                      rawColumn={(component.properties.columns as any)[j]}
+                      rawColumn={(component.properties.columns as Static<typeof ColumnsPropertySchema>)[j]}
                       column={column}
                       services={services}
                       app={app}

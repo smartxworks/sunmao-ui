@@ -292,7 +292,7 @@
         },
         {
           "id": "typeRadioGroup",
-          "type": "chakra_ui/v1/radio_group",
+          "type": "chakra_ui/v1/radioGroup",
           "properties": {
             "defaultValue": "{{ table.selectedItem ? table.selectedItem.type : \"notSharing\" }}"
           },
@@ -375,7 +375,7 @@
         },
         {
           "id": "sizeInput",
-          "type": "chakra_ui/v1/number_input",
+          "type": "chakra_ui/v1/numberInput",
           "properties": {
             "defaultValue": "{{ table.selectedItem ? table.selectedItem.size : 0 }}",
             "min": 0,

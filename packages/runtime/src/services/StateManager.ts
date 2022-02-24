@@ -5,7 +5,7 @@ import 'dayjs/locale/zh-cn';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import { reactive } from '@vue/reactivity';
+import { isProxy, reactive, toRaw } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
 import { isNumeric } from '../utils/isNumeric';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
@@ -107,16 +107,12 @@ export class StateManager {
 
   deepEval(obj: Record<string, unknown>, evalListItem = false, scopeObject = {}) {
     // just eval
-    const evaluated = this.mapValuesDeep(
-      obj,
-      ({ value }) => {
-        if (typeof value !== 'string') {
-          return value;
-        }
-        return this.maskedEval(value, evalListItem, scopeObject);
-      },
-      undefined
-    );
+    const evaluated = this.mapValuesDeep(obj, ({ value }) => {
+      if (typeof value !== 'string') {
+        return value;
+      }
+      return this.maskedEval(value, evalListItem, scopeObject);
+    });
 
     return evaluated;
   }
@@ -147,6 +143,9 @@ export class StateManager {
           return result;
         },
         newV => {
+          if (isProxy(newV)) {
+            newV = toRaw(newV);
+          }
           resultCache = produce(resultCache, draft => {
             set(draft, path, newV);
           });
