@@ -1,7 +1,7 @@
 import "@arco-design/web-react/dist/css/arco.css";
 import { Registry, SunmaoLib } from "@sunmao-ui/runtime";
 import { Button } from "./components/Button";
-import { Header, Content, Footer, Sider, Layout } from "./components/Layout";
+import { Layout } from "./components/Layout";
 import { Image } from "./components/Image";
 import { Select } from "./components/Select";
 import { Menu } from "./components/Menu";
@@ -22,13 +22,13 @@ import { Skeleton } from "./components/Skeleton";
 import { Timeline } from "./components/Timeline";
 import { Tree } from "./components/Tree";
 import { TreeSelect } from "./components/TreeSelect";
-import { Checkbox } from './components/Checkbox';
+import { Checkbox } from "./components/Checkbox";
 import { Modal } from "./components/Modal";
-import { Radio } from './components/Radio';
+import { Radio } from "./components/Radio";
 import { Table } from "./components/Table";
 import { Pagination } from "./components/Pagination";
 import { Steps } from "./components/Steps";
-import { Alert } from './components/Alert';
+import { Alert } from "./components/Alert";
 import { Link } from "./components/Link";
 import { Switch } from "./components/Switch";
 import { PasswordInput } from "./components/PasswordInput";
@@ -46,10 +46,6 @@ export const components: Component[] = [
   TreeSelect,
   Modal,
   Button,
-  Header,
-  Content,
-  Footer,
-  Sider,
   Layout,
   Image,
   Select,
@@ -76,7 +72,7 @@ export const components: Component[] = [
   Link,
   Switch,
   PasswordInput,
-  TextArea
+  TextArea,
 ];
 export const traits: Trait[] = [];
 export const modules: Module[] = [];

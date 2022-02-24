@@ -33,7 +33,6 @@
     "@arco-design/web-react": "^2.29.0",
     "@emotion/css": "^11.5.0",
     "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/chakra-ui-lib": "^0.2.0",
     "@sunmao-ui/core": "^0.4.0",
     "@sunmao-ui/runtime": "^0.4.0",
     "eslint-plugin-react-hooks": "^4.3.0",
@@ -44,6 +43,7 @@
   },
   "devDependencies": {
     "@sunmao-ui/editor": "^0.4.0",
+    "@sunmao-ui/chakra-ui-lib": "^0.2.0",
     "@types/lodash": "^4.14.170",
     "@types/lodash-es": "^4.17.5",
     "@types/react": "^17.0.0",
