@@ -1,6 +1,6 @@
 import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
-import { ColumnSchema } from './TableTypes';
+import { ColumnSchema, ColumnsPropertySchema } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
 import {
   LIST_ITEM_EXP,
@@ -13,15 +13,23 @@ export const TableTd: React.FC<{
   index: number;
   item: any;
   column: Static<typeof ColumnSchema>;
+  rawColumn: Static<typeof ColumnsPropertySchema>[0]
   onClickItem: () => void;
   services: UIServices;
   app?: RuntimeApplication;
 }> = props => {
-  const { item, index, column, onClickItem, services, app } = props;
+  const { item, index, column, rawColumn, onClickItem, services, app } = props;
   let value = item[column.key];
+  let buttonConfig = column.buttonConfig;
 
   if (column.displayValue) {
     value = services.stateManager.maskedEval(column.displayValue, true, {
+      [LIST_ITEM_EXP]: item,
+    });
+  }
+
+  if (column.buttonConfig) {
+    buttonConfig = services.stateManager.deepEval(column.buttonConfig, true, {
       [LIST_ITEM_EXP]: item,
     });
   }
@@ -44,15 +52,18 @@ export const TableTd: React.FC<{
     case 'button':
       const onClick = () => {
         onClickItem();
-        column.buttonConfig.handlers.forEach(handler => {
+        rawColumn.buttonConfig.handlers.forEach(handler => {
+          const evaledHandler = services.stateManager.deepEval(handler, true, {
+            [LIST_ITEM_EXP]: item,
+          });
           services.apiService.send('uiMethod', {
-            componentId: handler.componentId,
-            name: handler.method.name,
-            parameters: handler.method.parameters,
+            componentId: evaledHandler.componentId,
+            name: evaledHandler.method.name,
+            parameters: evaledHandler.method.parameters,
           });
         });
       };
-      content = <Button onClick={onClick}>{column.buttonConfig.text}</Button>;
+      content = <Button onClick={onClick}>{buttonConfig.text}</Button>;
       break;
     case 'module':
       const evalScope = {

@@ -15,7 +15,7 @@
         },
         {
           "id": "btn",
-          "type": "plain/v1/button",
+          "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
               "raw": "**Open Dialog**",

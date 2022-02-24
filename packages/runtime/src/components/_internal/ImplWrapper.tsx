@@ -6,13 +6,7 @@ import { ImplWrapperProps, TraitResult } from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
-  const {
-    component: c,
-    app,
-    children,
-    services,
-    childrenMap,
-  } = props;
+  const { component: c, app, children, services, childrenMap } = props;
   const { registry, stateManager, globalHandlerMap, apiService, eleMap } = props.services;
   const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
@@ -77,6 +71,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
       ).impl;
       return tImpl({
         ...traitProperty,
+        trait,
         componentId: c.id,
         mergeState,
         subscribeMethods,
@@ -89,12 +84,12 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   // result returned from traits
   const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>([]);
 
-  // eval traits' properties then excecute traits
+  // eval traits' properties then execute traits
   useEffect(() => {
     const stops: ReturnType<typeof watch>[] = [];
     const properties: Array<RuntimeTraitSchema['properties']> = [];
     c.traits.forEach((t, i) => {
-      const { result, stop } = stateManager.deepEval(
+      const { result, stop } = stateManager.deepEvalAndWatch(
         t.properties,
         ({ result: property }: any) => {
           const traitResult = executeTrait(t, property);
@@ -137,12 +132,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 
   // component properties
   const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
-    return merge(stateManager.deepEval(c.properties).result, propsFromTraits);
+    return merge(stateManager.deepEval(c.properties), propsFromTraits);
   });
-
   // eval component properties
   useEffect(() => {
-    const { result, stop } = stateManager.deepEval(
+    const { result, stop } = stateManager.deepEvalAndWatch(
       c.properties,
       ({ result: newResult }: any) => {
         setEvaledComponentProperties({ ...newResult });
@@ -153,11 +147,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 
     return stop;
   }, [c.properties, stateManager]);
-  useEffect(()=> {
-    return ()=> {
+  useEffect(() => {
+    return () => {
       delete stateManager.store[c.id];
     };
-  }, []);
+  }, [c.id, stateManager.store]);
 
   const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
 
@@ -211,8 +205,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 
   if (parentComponent?.parsedType.name === 'grid_layout') {
     /* eslint-disable */
-    const { component, services, app, gridCallbacks, ...restProps } =
-      props;
+    const { component, services, app, gridCallbacks, ...restProps } = props;
     /* eslint-enable */
     result = (
       <div key={c.id} data-sunmao-ui-id={c.id} ref={ref} {...restProps}>

@@ -4,27 +4,32 @@ import { debounce, throttle, delay } from 'lodash-es';
 import { CallbackMap, TraitImpl } from '../../types';
 import { EventHandlerSchema } from '../../types/traitPropertiesSchema';
 
+const PropsSchema = Type.Object({
+  handlers: Type.Array(EventHandlerSchema),
+});
+
 const useEventTrait: TraitImpl<Static<typeof PropsSchema>> = ({
+  trait,
   handlers,
   services,
 }) => {
   const callbackQueueMap: Record<string, Array<() => void>> = {};
-
   // setup current handlers
-  for (const handler of handlers) {
+  for (const i in handlers) {
+    const handler = handlers[i];
     const cb = () => {
-      let disabled = false;
-      if (typeof handler.disabled === 'boolean') {
-        disabled = handler.disabled;
-      }
-      if (disabled) {
+      const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSchema>[];
+      // Eval before sending event to assure the handler object is evaled from the latest state.
+      const evaledHandler = services.stateManager.deepEval(rawHandlers[i]);
+
+      if (evaledHandler.disabled && typeof evaledHandler.disabled === 'boolean') {
         return;
       }
 
       services.apiService.send('uiMethod', {
-        componentId: handler.componentId,
-        name: handler.method.name,
-        parameters: handler.method.parameters,
+        componentId: evaledHandler.componentId,
+        name: evaledHandler.method.name,
+        parameters: evaledHandler.method.parameters,
       });
     };
     if (!callbackQueueMap[handler.type]) {
@@ -63,10 +68,6 @@ const useEventTrait: TraitImpl<Static<typeof PropsSchema>> = ({
     },
   };
 };
-
-const PropsSchema = Type.Object({
-  handlers: Type.Array(EventHandlerSchema),
-});
 
 export default {
   ...createTrait({

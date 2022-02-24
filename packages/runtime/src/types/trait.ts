@@ -1,4 +1,4 @@
-import { RuntimeTrait } from '@sunmao-ui/core';
+import { RuntimeTrait, RuntimeTraitSchema } from '@sunmao-ui/core';
 import { UIServices } from './application';
 import { RuntimeFunctions } from './component';
 
@@ -15,6 +15,7 @@ export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
 export type TraitImpl<T = any> = (
   props: T &
     RuntimeFunctions<unknown, unknown> & {
+      trait: RuntimeTraitSchema;
       componentId: string;
       services: UIServices;
     }
