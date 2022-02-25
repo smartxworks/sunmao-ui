@@ -19,6 +19,7 @@
           "properties": {
             "size": "lg",
             "rowsPerPage": 5,
+            "majorKey": "id",
             "data": [
               {
                 "id": 1,

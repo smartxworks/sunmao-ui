@@ -15,7 +15,7 @@
         },
         {
           "id": "number_input",
-          "type": "chakra_ui/v1/number_input",
+          "type": "chakra_ui/v1/numberInput",
           "properties": {
             "min": 10,
             "max": 100,

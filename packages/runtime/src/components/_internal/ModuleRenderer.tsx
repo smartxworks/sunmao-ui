@@ -67,8 +67,7 @@ const ModuleRendererContent = React.forwardRef<
 
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
-  const evaledHanlders = evalObject(handlers);
-  const parsedtemplete = useMemo(
+  const parsedTemplate = useMemo(
     () => moduleSpec.impl.map(parseTypeComponents),
     [moduleSpec]
   );
@@ -81,12 +80,12 @@ const ModuleRendererContent = React.forwardRef<
 
   const evaledModuleTemplate = useDeepCompareMemo(() => {
     // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
-    // so we can asumme that template will not change if evaledProperties is the same
-    return evalWithScope(parsedtemplete, {
+    // so we can assume that template will not change if evaledProperties is the same
+    return evalWithScope(parsedTemplate, {
       ...evaledProperties,
       $moduleId: moduleId,
     });
-  }, [parsedtemplete, evaledProperties, moduleId]);
+  }, [parsedTemplate, evaledProperties, moduleId]);
 
   // listen component state change
   useEffect(() => {
@@ -125,29 +124,30 @@ const ModuleRendererContent = React.forwardRef<
 
   // listen module event
   useEffect(() => {
-    if (!evaledHanlders) return;
-    const _handlers = evaledHanlders as Array<Static<typeof EventHandlerSchema>>;
-    const moduleEventHanlders: any[] = [];
-    _handlers.forEach(h => {
-      const moduleEventHanlder = ({ fromId, eventType }: Record<string, string>) => {
+    if (!handlers) return;
+    const _handlers = handlers as Array<Static<typeof EventHandlerSchema>>;
+    const moduleEventHandlers: any[] = [];
+    _handlers.forEach((h) => {
+      const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
+          const evaledHandler = services.stateManager.deepEval(h, true, evalScope);
           services.apiService.send('uiMethod', {
-            componentId: h.componentId,
-            name: h.method.name,
-            parameters: h.method.parameters,
+            componentId: evaledHandler.componentId,
+            name: evaledHandler.method.name,
+            parameters: evaledHandler.method.parameters,
           });
         }
       };
-      services.apiService.on('moduleEvent', moduleEventHanlder);
-      moduleEventHanlders.push(moduleEventHanlder);
+      services.apiService.on('moduleEvent', moduleEventHandler);
+      moduleEventHandlers.push(moduleEventHandler);
     });
 
     return () => {
-      moduleEventHanlders.forEach(h => {
+      moduleEventHandlers.forEach(h => {
         services.apiService.off('moduleEvent', h);
       });
     };
-  }, [evaledHanlders, moduleId, services.apiService]);
+  }, [evalScope, handlers, moduleId, services.apiService, services.stateManager]);
 
   const result = useMemo(() => {
     const { childrenMap, topLevelComponents } = resolveChildrenMap(evaledModuleTemplate);

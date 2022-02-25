@@ -6,6 +6,7 @@ import { FetchTraitPropertiesSchema } from '../../types/traitPropertiesSchema';
 const hasFetchedMap = new Map<string, boolean>();
 
 const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
+  trait,
   url,
   method,
   lazy: _lazy,
@@ -15,8 +16,6 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
   services,
   subscribeMethods,
   componentId,
-  onComplete,
-  onError,
 }) => {
   const hashId = `#${componentId}@${'fetch'}`;
   const hasFetched = hasFetchedMap.get(hashId);
@@ -58,11 +57,15 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
               error: undefined,
             },
           });
-          onComplete?.forEach(event => {
+          const rawOnComplete = trait.properties.onComplete as Static<
+            typeof FetchTraitPropertiesSchema
+          >['onComplete'];
+          rawOnComplete?.forEach(handler => {
+            const evaledHandler = services.stateManager.deepEval(handler, false);
             services.apiService.send('uiMethod', {
-              componentId: event.componentId,
-              name: event.method.name,
-              parameters: event.method.parameters,
+              componentId: evaledHandler.componentId,
+              name: evaledHandler.method.name,
+              parameters: evaledHandler.method.parameters,
             });
           });
         } else {
@@ -76,11 +79,15 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
               error,
             },
           });
-          onError?.forEach(event => {
+          const rawOnError = trait.properties.onError as Static<
+            typeof FetchTraitPropertiesSchema
+          >['onError'];
+          rawOnError?.forEach(handler => {
+            const evaledHandler = services.stateManager.deepEval(handler, false);
             services.apiService.send('uiMethod', {
-              componentId: event.componentId,
-              name: event.method.name,
-              parameters: event.method.parameters,
+              componentId: evaledHandler.componentId,
+              name: evaledHandler.method.name,
+              parameters: evaledHandler.method.parameters,
             });
           });
         }
@@ -94,11 +101,15 @@ const useFetchTrait: TraitImpl<Static<typeof FetchTraitPropertiesSchema>> = ({
             error: error instanceof Error ? error : new Error(error),
           },
         });
-        onError?.forEach(event => {
+        const rawOnError = trait.properties.onError as Static<
+          typeof FetchTraitPropertiesSchema
+        >['onError'];
+        rawOnError?.forEach(handler => {
+          const evaledHandler = services.stateManager.deepEval(handler, false);
           services.apiService.send('uiMethod', {
-            componentId: event.componentId,
-            name: event.method.name,
-            parameters: event.method.parameters,
+            componentId: evaledHandler.componentId,
+            name: evaledHandler.method.name,
+            parameters: evaledHandler.method.parameters,
           });
         });
       }

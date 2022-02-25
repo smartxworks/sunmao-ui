@@ -1,10 +1,11 @@
 import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
 import dayjs from 'dayjs';
+import produce from 'immer';
 import 'dayjs/locale/zh-cn';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import { reactive } from '@vue/reactivity';
+import { isProxy, reactive, toRaw } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
 import { isNumeric } from '../utils/isNumeric';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
@@ -43,6 +44,7 @@ export class StateManager {
     const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
     let evaled;
     try {
+      // eslint-disable-next-line no-new-func
       evaled = new Function(
         // trim leading space and newline
         `with(this) { return ${evalText.replace(/^\s+/g, '')} }`
@@ -103,32 +105,54 @@ export class StateManager {
     });
   }
 
-  deepEval(obj: Record<string, unknown>, watcher?: (params: { result: any }) => void) {
+  deepEval(obj: Record<string, unknown>, evalListItem = false, scopeObject = {}) {
+    // just eval
+    const evaluated = this.mapValuesDeep(obj, ({ value }) => {
+      if (typeof value !== 'string') {
+        return value;
+      }
+      return this.maskedEval(value, evalListItem, scopeObject);
+    });
+
+    return evaluated;
+  }
+
+  deepEvalAndWatch(
+    obj: Record<string, unknown>,
+    watcher: (params: { result: any }) => void,
+    evalListItem = false,
+    scopeObject = {}
+  ) {
     const stops: ReturnType<typeof watch>[] = [];
 
-    const evaluated = this.mapValuesDeep(obj, ({ value: v, path }) => {
-      if (typeof v === 'string') {
-        const isDynamicExpression = parseExpression(v).some(
-          exp => typeof exp !== 'string'
-        );
-        const result = this.maskedEval(v);
-        if (isDynamicExpression && watcher) {
-          const stop = watch(
-            () => {
-              const result = this.maskedEval(v);
-              return result;
-            },
-            newV => {
-              set(evaluated, path, newV);
-              watcher({ result: evaluated });
-            }
-          );
-          stops.push(stop);
-        }
+    // just eval
+    const evaluated = this.deepEval(obj, evalListItem, scopeObject);
 
-        return result;
-      }
-      return v;
+    // watch change
+    let resultCache: Record<string, any> = evaluated;
+    this.mapValuesDeep(obj, ({ value, path }) => {
+      const isDynamicExpression =
+        typeof value === 'string' &&
+        parseExpression(value).some(exp => typeof exp !== 'string');
+
+      if (!isDynamicExpression) return;
+
+      const stop = watch(
+        () => {
+          const result = this.maskedEval(value, evalListItem, scopeObject);
+          return result;
+        },
+        newV => {
+          if (isProxy(newV)) {
+            newV = toRaw(newV);
+          }
+          resultCache = produce(resultCache, draft => {
+            set(draft, path, newV);
+          });
+          watcher({ result: resultCache });
+        }
+      );
+      stops.push(stop);
     });
 
     return {

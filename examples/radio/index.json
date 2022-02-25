@@ -15,7 +15,7 @@
         },
         {
           "id": "radio_group",
-          "type": "chakra_ui/v1/radio_group",
+          "type": "chakra_ui/v1/radioGroup",
           "properties": {
             "defaultValue": 1,
             "isNumerical": true

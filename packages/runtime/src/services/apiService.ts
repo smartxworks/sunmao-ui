@@ -35,7 +35,7 @@ export function initApiService() {
 function mountSystemMethods(apiService: ApiService) {
   apiService.on('uiMethod', ({ componentId, name, parameters }) => {
     switch (componentId) {
-      // hanlder as module event
+      // handler as module event
       case GLOBAL_MODULE_ID:
         apiService.send('moduleEvent', {
           fromId: parameters.moduleId,
