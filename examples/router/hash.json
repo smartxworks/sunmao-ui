@@ -112,7 +112,7 @@
         },
         {
           "id": "switch_button",
-          "type": "plain/v1/button",
+          "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
               "raw": "switch",
@@ -154,7 +154,7 @@
         },
         {
           "id": "redirect_button",
-          "type": "plain/v1/button",
+          "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
               "raw": "redirect",
