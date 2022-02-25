@@ -82,17 +82,17 @@ export class StateManager {
     return result.join('');
   }
 
-  mapValuesDeep(
-    obj: any,
+  mapValuesDeep<T extends object>(
+    obj: T,
     fn: (params: {
-      value: any;
-      key: string;
-      obj: any;
+      value: T[keyof T];
+      key: string | number;
+      obj: T;
       path: Array<string | number>;
     }) => void,
     path: Array<string | number> = []
-  ): any {
-    return mapValues(obj, (val, key) => {
+  ): T {
+    return mapValues(obj, (val, key: string | number) => {
       return isArray(val)
         ? val.map((innerVal, idx) => {
             return isPlainObject(innerVal)
@@ -100,12 +100,16 @@ export class StateManager {
               : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
           })
         : isPlainObject(val)
-        ? this.mapValuesDeep(val, fn, path.concat(key))
+        ? this.mapValuesDeep(val as unknown as T, fn, path.concat(key))
         : fn({ value: val, key, obj, path: path.concat(key) });
-    });
+    }) as T;
   }
 
-  deepEval(obj: Record<string, unknown>, evalListItem = false, scopeObject = {}) {
+  deepEval<T extends Record<string, unknown>>(
+    obj: T,
+    evalListItem = false,
+    scopeObject = {}
+  ): T {
     // just eval
     const evaluated = this.mapValuesDeep(obj, ({ value }) => {
       if (typeof value !== 'string') {
@@ -117,9 +121,9 @@ export class StateManager {
     return evaluated;
   }
 
-  deepEvalAndWatch(
-    obj: Record<string, unknown>,
-    watcher: (params: { result: any }) => void,
+  deepEvalAndWatch<T extends Record<string, unknown>>(
+    obj: T,
+    watcher: (params: { result: T }) => void,
     evalListItem = false,
     scopeObject = {}
   ) {
@@ -129,7 +133,7 @@ export class StateManager {
     const evaluated = this.deepEval(obj, evalListItem, scopeObject);
 
     // watch change
-    let resultCache: Record<string, any> = evaluated;
+    let resultCache: T = evaluated;
     this.mapValuesDeep(obj, ({ value, path }) => {
       const isDynamicExpression =
         typeof value === 'string' &&
