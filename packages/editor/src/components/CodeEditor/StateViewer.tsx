@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Input } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { JSONTree } from 'react-json-tree';
 import { pickBy } from 'lodash-es';
+import { watch } from '@sunmao-ui/runtime';
 import ErrorBoundary from '../ErrorBoundary';
 
 const theme = {
@@ -35,11 +36,21 @@ const style = css`
 
 export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ store }) => {
   const [filterText, setFilterText] = useState('');
+  const [refreshFlag, setRefreshFlag] = useState(false);
   const data = useMemo(() => {
     return pickBy(store, (_v, key) => {
       return filterText ? key.includes(filterText) : true;
     });
-  }, [store, filterText]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store, filterText, refreshFlag]);
+
+  useEffect(() => {
+    const stop = watch(store, () => {
+      setRefreshFlag(v => !v);
+    });
+
+    return stop;
+  }, [store]);
 
   return (
     <ErrorBoundary>
