@@ -7,7 +7,7 @@ import CoreGridLayout from '../components/core/GridLayout';
 import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
-import CoreSpace from '../components/core/Space';
+import CoreStack from '../components/core/Stack';
 
 
 // traits
@@ -213,7 +213,7 @@ export function initRegistry(apiService: ApiService): Registry {
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
   registry.registerComponent(CoreModuleContainer);
-  registry.registerComponent(CoreSpace);
+  registry.registerComponent(CoreStack);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);
