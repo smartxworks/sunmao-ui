@@ -44,15 +44,12 @@ export class StateManager {
     const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
     let evaled;
     try {
-      // eslint-disable-next-line no-new-func
+      // eslint-disable-next-line no-useless-call, no-new-func
       evaled = new Function(
+        'store, dependencies, scopeObject',
         // trim leading space and newline
-        `with(this) { return ${evalText.replace(/^\s+/g, '')} }`
-      ).call({
-        ...this.store,
-        ...this.dependencies,
-        ...scopeObject,
-      });
+        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(/^\s+/g, '')} } } }`
+      ).call(null, this.store, this.dependencies, scopeObject);
     } catch (e: any) {
       return `{{ ${evalText} }}`;
     }
