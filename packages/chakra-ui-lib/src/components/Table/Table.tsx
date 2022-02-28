@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { isArray, sortBy } from 'lodash-es';
 import {
   Table as BaseTable,
@@ -43,28 +43,26 @@ export const TableImpl = implementTable(
     const [sortRule, setSortRule] = useState<SortRule | undefined>();
     const pageNumber = Math.ceil((data?.length || 0) / rowsPerPage);
 
-    const updateSelectedItems = useCallback(
-      (items: Array<Record<string, any>>) => {
-        setSelectedItems(items);
-        mergeState({ selectedItems: items });
-      },
-      [mergeState]
-    );
+    useEffect(() => {
+      mergeState({ selectedItems });
+    }, [mergeState, selectedItems]);
 
-    const updateSelectedItem = useCallback(
-      (item?: Record<string, any>) => {
-        setSelectedItem(item);
-        mergeState({ selectedItem: item });
-      },
-      [mergeState]
-    );
+    useEffect(() => {
+      mergeState({ selectedItem });
+    }, [mergeState, selectedItem]);
+
     useEffect(() => {
       // reset table state when data source changes
-      updateSelectedItems([]);
-      updateSelectedItem(undefined);
+      if (selectedItems.length > 0) {
+        setSelectedItems([]);
+      }
+
+      if (!selectedItem) {
+        setSelectedItem(undefined);
+      }
       setCurrentPage(0);
       setSortRule(undefined);
-    }, [data, updateSelectedItem, updateSelectedItems]);
+    }, [data, selectedItem, selectedItems.length, setSelectedItem, setSelectedItems]);
 
     const sortedData = useMemo(() => {
       if (!isArray(data)) return [];
@@ -95,9 +93,9 @@ export const TableImpl = implementTable(
         } else {
           newSelectedItems = selectedItems.concat(item);
         }
-        updateSelectedItems(newSelectedItems);
+        setSelectedItems(newSelectedItems);
       }
-      updateSelectedItem(item);
+      setSelectedItem(item);
     }
 
     const allCheckbox = useMemo(() => {
@@ -107,9 +105,9 @@ export const TableImpl = implementTable(
         selectedItems.length > 0 && selectedItems.length < data.length;
       const onChange = (e: any) => {
         if (e.target.checked) {
-          updateSelectedItems(data);
+          setSelectedItems(data);
         } else {
-          updateSelectedItems([]);
+          setSelectedItems([]);
         }
       };
       return (
@@ -122,7 +120,7 @@ export const TableImpl = implementTable(
           />
         </Th>
       );
-    }, [data, isMultiSelect, selectedItems.length, updateSelectedItems]);
+    }, [data, isMultiSelect, selectedItems.length, setSelectedItems]);
 
     const tableContent = (
       <>
