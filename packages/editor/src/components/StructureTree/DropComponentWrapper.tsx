@@ -94,7 +94,6 @@ export const DropComponentWrapper: React.FC<Props> = props => {
 
     // create component as children
     if (creatingComponent) {
-      console.log('dragDirection', dragDirection)
       eventBus.send(
         'operation',
         genOperation(registry, 'createComponent', {

@@ -96,16 +96,21 @@ export default implementRuntimeComponent({
       colorScheme: 'blue',
     },
     customStyle,
-    elementRef,
+    getElement,
   }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [title, setTitle] = useState(customerTitle || '');
     const cancelRef = useRef(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
       containerRef.current = document.getElementById(DIALOG_CONTAINER_ID);
     }, [containerRef]);
+
+    useEffect(() => {
+      getElement && contentRef.current && getElement(contentRef.current);
+    }, [getElement, isOpen]);
 
     useEffect(() => {
       subscribeMethods({
@@ -152,7 +157,7 @@ export default implementRuntimeComponent({
           <AlertDialogContent
             className={`${customStyle?.content}`}
             {...(containerRef.current ? dialogContentProps : {})}
-            ref={elementRef}
+            ref={contentRef}
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
             <AlertDialogBody>{slotsElements.content}</AlertDialogBody>

@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
 import { debounce } from 'lodash-es';
 import { Box, Text } from '@chakra-ui/react';
+import { DIALOG_CONTAINER_ID } from '@sunmao-ui/runtime';
 
 const outlineMaskTextStyle = css`
   position: absolute;
@@ -48,17 +49,40 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const maskContainerRect = useRef<DOMRect>();
   const [coordinates, setCoordinates] = useState<Record<string, DOMRect>>({});
   const [coordinatesOffset, setCoordinatedOffset] = useState<[number, number]>([0, 0]);
+
   // establish the coordinateSystem by getting all the rect of elements,
   // and recording the current scroll Offset
   // and the updating maskContainerRect, because maskContainer shares the same coordinates with app
   const updateCoordinateSystem = useCallback(
     (eleMap: Map<string, HTMLElement>) => {
+      function isChild(child: HTMLElement, parent: HTMLElement) {
+        let curr = child;
+        while (curr.parentElement && !curr.parentElement.isSameNode(wrapperRef.current)) {
+          if (curr.parentElement.isSameNode(parent)) {
+            return true;
+          }
+          curr = curr.parentElement;
+        }
+        return false;
+      }
+
       if (!wrapperRef.current) return;
       const _rects: Record<string, DOMRect> = {};
+      const modalContainerEle = document.getElementById(DIALOG_CONTAINER_ID)!;
+      const modalEleMap = new Map<string, HTMLElement>();
+      // detect if there are components in modal
       for (const id of eleMap.keys()) {
-        const ele = eleMap.get(id);
-        const rect = ele?.getBoundingClientRect();
-        if (!rect) continue;
+        const ele = eleMap.get(id)!;
+        if (isChild(ele, modalContainerEle)) {
+          modalEleMap.set(id, ele);
+        }
+      }
+
+      const foregroundEleMap = modalEleMap.size > 0 ? modalEleMap : eleMap;
+
+      for (const id of foregroundEleMap.keys()) {
+        const ele = eleMap.get(id)!;
+        const rect = ele.getBoundingClientRect();
         _rects[id] = rect;
       }
       maskContainerRect.current = maskContainerRef.current?.getBoundingClientRect();
@@ -187,6 +211,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
       right="0"
       bottom="0"
       pointerEvents="none"
+      zIndex="99999"
       ref={maskContainerRef}
     >
       {isDraggingNewComponent ? dragMask : hoverMask}
