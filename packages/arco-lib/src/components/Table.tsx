@@ -6,7 +6,7 @@ import {
   Table as BaseTable,
   PaginationProps,
 } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
+import { implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -23,7 +23,7 @@ import { TableInstance } from "@arco-design/web-react/es/Table/table";
 const TableStateSchema = Type.Object({
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
-  selectedRowKeys: Type.Array(Type.Number()),
+  selectedRowKeys: Type.Array(Type.String()),
 });
 
 type SortRule = {
@@ -45,8 +45,111 @@ type filterDropdownParam = {
   setFilterKeys?: (filterKeys: string[], callback?: Function) => void;
   confirm?: Function;
 };
-const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
-  const { getElement, app, mergeState, customStyle, services, data } = props;
+
+export const exampleProperties: Static<typeof TablePropsSchema> = {
+  columns: [
+    {
+      title: "Name",
+      dataIndex: "name",
+      sorter: true,
+      sortDirections: ["ascend", "descend"],
+      defaultSortOrder: "ascend",
+      type: "text",
+      filter: true,
+      displayValue: '',
+    },
+    {
+      title: "Salary",
+      dataIndex: "salary",
+      sorter: true,
+      filter: false,
+      type: "text",
+      displayValue: '',
+    },
+    {
+      title: "Time",
+      dataIndex: "time",
+      sorter: true,
+      filter: false,
+      type: "text",
+      displayValue: '',
+    },
+    {
+      title: "Link",
+      dataIndex: "link",
+      type: "link",
+      filter: true,
+      sorter: false,
+      displayValue: '',
+    },
+    {
+      title: "CustomComponent",
+      dataIndex: "customComponent",
+      type: "module",
+      filter: false,
+      sorter: false,
+      module: {
+        id: "clistItemName-{{$listItem.id}}",
+        handlers: [],
+        properties: [],
+        type: "core/v1/text",
+      },
+      displayValue: '',
+    },
+  ],
+  data: Array(13)
+    .fill("")
+    .map((_, index) => ({
+      key: `key ${index}`,
+      name: `${Math.random() > 0.5 ? "Kevin Sandra" : "xzdry"}${index}`,
+      link: `link${Math.random() > 0.5 ? "-A" : "-B"}`,
+      salary: Math.floor(Math.random() * 1000),
+      time: `2021-${Math.floor(Math.random() * 11)}-11T${Math.floor(
+        Math.random() * 23
+      )}:10:45.437Z`,
+    })),
+  pagination: {
+    pageSize: 6,
+  },
+  tableLayoutFixed: false,
+  borderCell: false,
+  stripe: false,
+  size: "default",
+  pagePosition: "bottomCenter",
+  rowSelectionType: "radio",
+  border: true,
+  loading: false,
+};
+
+export const Table = implementRuntimeComponent({
+  version: "arco/v1",
+  metadata: {
+    ...FALLBACK_METADATA,
+    exampleProperties,
+    annotations: {
+      category: "Display",
+    },
+    name: "table",
+    displayName: "Table",
+  },
+  spec: {
+    properties: TablePropsSchema,
+    state: TableStateSchema,
+    methods: {},
+    slots: [],
+    styleSlots: ["content"],
+    events: [],
+  },
+})((props) => {
+  const {
+    getElement,
+    app,
+    mergeState,
+    customStyle,
+    services,
+    data,
+    component,
+  } = props;
 
   const ref = useRef<TableInstance | null>(null);
   const { pagination, ...cProps } = getComponentProps(props);
@@ -63,7 +166,6 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
   const [filterRule, setFilterRule] = useState();
 
   const filteredData = useMemo(() => {
-
     let filteredData = Array.isArray(data) ? data : [];
     if (filterRule) {
       Object.keys(filterRule).forEach((colIdx) => {
@@ -99,7 +201,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
 
   const inputRef = useRef(null);
 
-  const columns = cProps.columns!.map((column) => {
+  const columns = cProps.columns!.map((column, i) => {
     const newColumn: ColumnProperty = { ...column };
     if (newColumn.filter) {
       newColumn.filterDropdown = ({
@@ -127,14 +229,29 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
     }
 
     newColumn.render = (ceilValue: any, record: any, index: number) => {
-      const value = record[newColumn.dataIndex];
+      const evaledColumn: ColumnProperty = services.stateManager.deepEval(
+        column,
+        true,
+        { [LIST_ITEM_EXP]: record }
+      );
+      const value = record[evaledColumn.dataIndex];
 
       let colItem;
 
-      switch (newColumn.type) {
+      switch (evaledColumn.type) {
         case "button":
           const handleClick = () => {
-            newColumn.btnCfg?.handlers.forEach((handler) => {
+            const rawColumn = (
+              component.properties.columns as ColumnProperty[]
+            )[i];
+            if (!rawColumn.btnCfg) return;
+            const evaledButtonConfig = services.stateManager.deepEval(
+              rawColumn.btnCfg,
+              true,
+              { [LIST_ITEM_EXP]: record }
+            );
+
+            evaledButtonConfig.handlers.forEach((handler) => {
               services.apiService.send("uiMethod", {
                 componentId: handler.componentId,
                 name: handler.method.name,
@@ -148,12 +265,14 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
                 handleClick();
               }}
             >
-              {newColumn.btnCfg?.text}
+              {evaledColumn.btnCfg?.text}
             </Button>
           );
           break;
         case "link":
-          colItem = <Link href={value}>{value}</Link>;
+          colItem = (
+            <Link href={value}>{evaledColumn.displayValue || value}</Link>
+          );
           break;
         case "module":
           const evalScope = {
@@ -164,16 +283,16 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
             <ModuleRenderer
               app={app}
               evalScope={evalScope}
-              handlers={newColumn.module?.handlers || []}
-              id={newColumn.module?.id || ""}
-              properties={newColumn.module?.properties || {}}
+              handlers={evaledColumn.module?.handlers || []}
+              id={evaledColumn.module?.id || ""}
+              properties={evaledColumn.module?.properties || {}}
               services={services}
-              type={newColumn.module?.type || ""}
+              type={evaledColumn.module?.type || ""}
             />
           );
           break;
         default:
-          colItem = <span>{value}</span>;
+          colItem = <span>{evaledColumn.displayValue || value}</span>;
           break;
       }
       return colItem;
@@ -215,7 +334,7 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
         total: sortedData!.length,
         current: currentPage,
         pageSize,
-        hideOnSinglePage:true
+        hideOnSinglePage: true,
       }}
       data={currentPageData}
       onChange={handleChange}
@@ -235,95 +354,4 @@ const TableImpl: ComponentImpl<Static<typeof TablePropsSchema>> = (props) => {
       }}
     />
   );
-};
-
-export const exampleProperties: Static<typeof TablePropsSchema> = {
-  columns: [
-    {
-      title: "Name",
-      dataIndex: "name",
-      sorter: true,
-      sortDirections:['ascend','descend'],
-      defaultSortOrder: "ascend",
-      type: "text",
-      filter: true,
-    },
-    {
-      title: "Salary",
-      dataIndex: "salary",
-      sorter: true,
-      filter: false,
-      type: "text",
-    },
-    {
-      title: "Time",
-      dataIndex: "time",
-      sorter: true,
-      filter: false,
-      type: "text",
-    },
-    {
-      title: "Link",
-      dataIndex: "link",
-      type: "link",
-      filter: true,
-      sorter: false,
-    },
-    {
-      title: "CustomComponent",
-      dataIndex: "customComponent",
-      type: "module",
-      filter: false,
-      sorter: false,
-      module: {
-        id: "clistItemName-{{$listItem.id}}",
-        handlers: [],
-        properties: [],
-        type: "core/v1/text",
-      },
-    },
-  ],
-  data: Array(13)
-    .fill("")
-    .map((_, index) => ({
-      key: `key ${index}`,
-      name: `${Math.random() > 0.5 ? "Kevin Sandra" : "xzdry"}${index}`,
-      link: `link${Math.random() > 0.5 ? "-A" : "-B"}`,
-      salary: Math.floor(Math.random() * 1000),
-      time: `2021-${Math.floor(Math.random() * 11)}-11T${Math.floor(
-        Math.random() * 23
-      )}:10:45.437Z`,
-    })),
-  pagination: {
-    pageSize: 6,
-  },
-  tableLayoutFixed: false,
-  borderCell: false,
-  stripe: false,
-  size: "default",
-  pagePosition: "bottomCenter",
-  rowSelectionType: "radio",
-  border:true,
-  loading:false
-};
-
-export const Table = implementRuntimeComponent({
-  version: "arco/v1",
-  metadata: {
-    ...FALLBACK_METADATA,
-    exampleProperties,
-    annotations: {
-      category: "Display",
-    },
-    name: "table",
-    displayName: "Table",
-  },
-  spec: {
-    properties: TablePropsSchema,
-    state: TableStateSchema,
-    methods: {},
-    slots: [],
-    styleSlots: ["content"],
-    events: [],
-  },
-})(TableImpl);
+});

@@ -16,7 +16,7 @@ const ModalStateSchema = Type.Object({});
 const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
   const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
   const { getElement, title, ...cProps } = getComponentProps(props);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const afterOpen = () => {
