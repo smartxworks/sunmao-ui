@@ -65,6 +65,7 @@ function Placeholder(props: { services: EditorServices }) {
           isDropInOnly
           isExpanded={false}
           droppable
+          hasSlot={true}
         >
           <Text padding="2" border="2px dashed" color="gray.400" borderColor="gray.400">
             There is no components now. You can drag component into here to create it.
