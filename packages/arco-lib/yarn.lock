@@ -1076,42 +1076,42 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.21.2.tgz#d23a42adafc482f4893994e22916b0b54e18c23d"
   integrity sha512-YeGOsWyjmGS26VxfvxbDgO7In4em8riCI5hEe/NnjM72ifoLQNUeHxwFNufXVIcaaPEK4fCV+fYoLKgmpPKjsA==
 
-"@sunmao-ui/chakra-ui-lib@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/chakra-ui-lib/-/chakra-ui-lib-0.2.0.tgz#37d09f1635c1dbe281892e1cfe92b793feb1c3ad"
-  integrity sha512-aNZyaFnIQU3r3MiPhQjRMigdPKL8EP5xkxzv8iUko5m5novCiFcHaVj6UpMQnKntU16ImrHnw8tfEHPR2XFTuw==
+"@sunmao-ui/chakra-ui-lib@^0.3.0-alpha.0":
+  version "0.3.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/chakra-ui-lib/-/chakra-ui-lib-0.3.0-alpha.0.tgz#f15b359672e2975b3c79deeda322aa66f95633ab"
+  integrity sha512-VrDx+QdZiA6t2yY+WqCL5aVQErjftepyQwnmCOZmg74skkpJXUDKJ58wc7qTqwPeMqN3Sv+T3+UKE2/VsFog+Q==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
     "@emotion/styled" "^11.6.0"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.4.0"
-    "@sunmao-ui/runtime" "^0.4.0"
+    "@sunmao-ui/core" "^0.5.0-alpha.0"
+    "@sunmao-ui/runtime" "^0.5.0-alpha.0"
     chakra-react-select "^1.3.2"
     framer-motion "^4"
     lodash-es "^4.17.21"
     react "^17.0.0"
     react-dom "^17.0.0"
 
-"@sunmao-ui/core@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/core/-/core-0.4.0.tgz#08dd9e44e1e4ec34f70679c203b235e0bd021f8b"
-  integrity sha512-lFoe+El/inu3PnofvqxvcbzgGn2Jho1l1Rs2dU2OAZnwAc2Ci5UQiPwo9Wcly9z+hsI2PPzJs/Izvbsw7wI3HA==
+"@sunmao-ui/core@^0.5.0-alpha.0":
+  version "0.5.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/core/-/core-0.5.0-alpha.0.tgz#d6a471d76f9c5a3dde386d22bd5d60f2b5dfa0ef"
+  integrity sha512-G+4UJFh6Bhy3CUcWogWFz9GxQQiTPZgpmLGJYpsBOgZt4O3xsCCufTt4M2/xjIz9zcctxId0S+dMVlyYnJsW5w==
   dependencies:
     "@types/json-schema" "^7.0.7"
     lodash-es "^4.17.21"
 
-"@sunmao-ui/editor@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/editor/-/editor-0.4.0.tgz#e09ea848ffaff74a466e55f85dab6d38ebb3105f"
-  integrity sha512-k5CBeKCgljo+aqIRoHbj0o0SV51/cRPrmxoo2Y3G7ZfXmHHqDwrB+4rywUK7VnoxkOrZlbsoyxF2ZwzVThBzNw==
+"@sunmao-ui/editor@^0.5.0-alpha.0":
+  version "0.5.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/editor/-/editor-0.5.0-alpha.0.tgz#bc5a3d3474e12b32e3575549b3e19d52878810cf"
+  integrity sha512-xDJHN7bkFj0FK7Z7I3+SNHUh9CZ8HX+tcFycDEw2tuPcFDKcrTrOPqSz7f0gHiXNRB64kKu38KL397BlaBlRAA==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
     "@emotion/css" "^11.7.1"
-    "@sunmao-ui/chakra-ui-lib" "^0.2.0"
-    "@sunmao-ui/core" "^0.4.0"
-    "@sunmao-ui/runtime" "^0.4.0"
+    "@sunmao-ui/chakra-ui-lib" "^0.3.0-alpha.0"
+    "@sunmao-ui/core" "^0.5.0-alpha.0"
+    "@sunmao-ui/runtime" "^0.5.0-alpha.0"
     acorn "^8.7.0"
     acorn-loose "^8.3.0"
     acorn-walk "^8.2.0"
@@ -1128,18 +1128,19 @@
     react-json-tree "^0.16.1"
     tern "^0.24.3"
 
-"@sunmao-ui/runtime@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.4.0.tgz#5f8df2f7e14cd57c08584a5b6dad2db4218e2e57"
-  integrity sha512-+hiDcJFirp2rc3poSRWe51fwM7jN98h837dz6wkJQsNjTSuboPCFGSzT1pU6nMBKj5qSMm5eqTdZeafpoZvlZA==
+"@sunmao-ui/runtime@^0.5.0-alpha.0":
+  version "0.5.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.5.0-alpha.0.tgz#61b3a610b3f49251d2e6e9eff7ccfca07aa84fd6"
+  integrity sha512-SuAmQSYZE55mJvI78imK4u9Hz6XKrqFj9Gbsxhzrv2gjsYYgQMf3wu5mmvYsPq7Y/quo01lRtUEXaMkQvtlIQw==
   dependencies:
     "@emotion/css" "^11.7.1"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.4.0"
+    "@sunmao-ui/core" "^0.5.0-alpha.0"
     "@vue/reactivity" "^3.1.5"
     "@vue/shared" "^3.2.20"
     copy-to-clipboard "^3.3.1"
     dayjs "^1.10.6"
+    immer "^9.0.12"
     lodash-es "^4.17.21"
     mitt "^3.0.0"
     nanoid "^3.1.23"
@@ -2723,7 +2724,7 @@ ignore@^5.1.8, ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
 
-immer@^9.0.6:
+immer@^9.0.12, immer@^9.0.6:
   version "9.0.12"
   resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.12.tgz#2d33ddf3ee1d247deab9d707ca472c8c942a0f20"
   integrity sha512-lk7UNmSbAukB5B6dh9fnh5D0bJTOFKxVg2cyJWTYrWRfhLrLMBquONcUs3aFq507hNoIZEDDh8lb8UtOizSMhA==

@@ -13,6 +13,11 @@ export const ColumnSchema = Type.Object({
     title: 'Data Index',
     description: 'The key corresponding to the column data in the data item is used to display the value'
   }),
+  displayValue: Type.String({
+    title: 'Display Value',
+    category: Category.Basic,
+    description: 'The text you want to display instead of raw text.'
+  }),
   sorter: Type.Boolean({
     title: 'Sortable'
   }),
