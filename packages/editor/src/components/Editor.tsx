@@ -4,7 +4,6 @@ import {
   GridCallbacks,
   DIALOG_CONTAINER_ID,
   initSunmaoUI,
-  watch,
   SunmaoLib,
 } from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
@@ -68,7 +67,6 @@ export const Editor: React.FC<Props> = observer(
     const [code, setCode] = useState('');
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
-    const [store, setStore] = useState(stateStore);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -138,13 +136,6 @@ export const Editor: React.FC<Props> = observer(
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [app, isError]); // it only should depend on the app schema and `isError` to update
-    useEffect(() => {
-      const stop = watch(stateStore, newValue => {
-        setStore({ ...newValue });
-      });
-
-      return stop;
-    }, [stateStore]);
 
     const renderMain = () => {
       const appBox = (
@@ -227,7 +218,7 @@ export const Editor: React.FC<Props> = observer(
                   <DataSource active={activeDataSource?.id ?? ''} services={services} />
                 </TabPanel>
                 <TabPanel p={0} height="100%">
-                  <StateViewer store={store} />
+                  <StateViewer store={stateStore} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -277,7 +268,7 @@ export const Editor: React.FC<Props> = observer(
                 key={activeDataSource.id}
                 api={activeDataSource}
                 services={services}
-                store={store}
+                store={stateStore}
                 className={ApiFormStyle}
               />
             ) : null}
