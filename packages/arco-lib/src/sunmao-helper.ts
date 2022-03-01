@@ -17,8 +17,7 @@ export function StringUnion<T extends string[]>(values: [...T], options?: any) {
       }, {} as Record<T[number], any>)
     ), {
     title: options?.title,
-    widget: 'mulitiSelectInput',
-    description: options?.descrition,
+    description: options?.description,
     category: options?.category,
     weight: options?.weight
   }
