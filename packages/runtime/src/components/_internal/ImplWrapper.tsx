@@ -6,7 +6,7 @@ import { ImplWrapperProps, TraitResult } from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
-  const { component: c, app, children, services, childrenMap } = props;
+  const { component: c, app, children, services, childrenMap, hooks } = props;
   const { registry, stateManager, globalHandlerMap, apiService, eleMap } = props.services;
   const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
@@ -20,6 +20,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   const eleRef = useRef<HTMLElement>();
   const onRef = (ele: HTMLElement) => {
     eleMap.set(c.id, ele);
+    hooks?.didHtmlUpdate && hooks?.didHtmlUpdate();
   };
 
   useEffect(() => {
