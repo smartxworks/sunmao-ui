@@ -1,18 +1,32 @@
 import { Modal as BaseModal, ConfigProvider } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
+import {
+  ComponentImpl,
+  DIALOG_CONTAINER_ID,
+  implementRuntimeComponent,
+} from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { ModalPropsSchema as BaseModalPropsSchema } from "../generated/types/Modal";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ModalPropsSchema = Type.Object(BaseModalPropsSchema);
 const ModalStateSchema = Type.Object({});
 
 const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
   const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
-  const { elementRef, title, ...cProps } = getComponentProps(props);
-  const [visible, setVisible] = useState(true);
+  const { getElement, title, ...cProps } = getComponentProps(props);
+  const [visible, setVisible] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  const afterOpen = () => {
+    getElement && contentRef.current && getElement(contentRef.current);
+    callbackMap?.afterOpen && callbackMap?.afterOpen();
+  };
+  const afterClose = () => {
+    getElement && contentRef.current && getElement(contentRef.current);
+    callbackMap?.afterClose && callbackMap?.afterClose();
+  };
 
   useEffect(() => {
     subscribeMethods({
@@ -28,6 +42,9 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
   return (
     <ConfigProvider focusLock={{ modal: false }}>
       <BaseModal
+        getPopupContainer={() =>
+          document.getElementById(DIALOG_CONTAINER_ID) || document.body
+        }
         visible={visible}
         title={title}
         onCancel={() => {
@@ -38,13 +55,15 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
           setVisible(false);
           callbackMap?.onOk?.();
         }}
-        afterClose={callbackMap?.afterClose}
-        afterOpen={callbackMap?.afterOpen}
+        afterClose={afterClose}
+        afterOpen={afterOpen}
         footer={slotsElements.footer}
         className={css(customStyle?.content)}
+        mountOnEnter={true}
+        unmountOnExit={true}
         {...cProps}
       >
-        <div ref={elementRef}>{slotsElements.content}</div>
+        <div ref={contentRef}>{slotsElements.content}</div>
       </BaseModal>
     </ConfigProvider>
   );
