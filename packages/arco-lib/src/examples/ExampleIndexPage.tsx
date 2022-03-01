@@ -1,7 +1,7 @@
 import { Layout, Menu, Typography } from "@arco-design/web-react";
 import React, { useState } from "react";
-import { ButtonDemoPage } from "./pages/Button";
-import { TreeDemoPage } from "./pages/Tree";
+import { ButtonDemoPage } from "./pages/button";
+import { TreeDemoPage } from "./pages/tree";
 import { TableDemoPage } from "./pages/table";
 
 
