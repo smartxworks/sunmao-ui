@@ -33,6 +33,7 @@ import { Link } from "./components/Link";
 import { Switch } from "./components/Switch";
 import { PasswordInput } from "./components/PasswordInput";
 import { TextArea } from "./components/TextArea";
+import { Tabs } from "./components/Tabs";
 
 type Component = Parameters<Registry["registerComponent"]>[0];
 type Trait = Parameters<Registry["registerTrait"]>[0];
@@ -73,6 +74,7 @@ export const components: Component[] = [
   Switch,
   PasswordInput,
   TextArea,
+  Tabs
 ];
 export const traits: Trait[] = [];
 export const modules: Module[] = [];

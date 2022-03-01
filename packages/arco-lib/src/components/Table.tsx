@@ -303,6 +303,8 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
   size: "default",
   pagePosition: "bottomCenter",
   rowSelectionType: "radio",
+  border:true,
+  loading:false
 };
 
 export const Table = implementRuntimeComponent({
