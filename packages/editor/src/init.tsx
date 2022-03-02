@@ -10,13 +10,15 @@ import {
 } from '@chakra-ui/react';
 import { initEventBus } from './services/eventBus';
 import { EditorStore } from './services/EditorStore';
-import { StorageHandler } from './types';
+import { StorageHandler, Widget } from './types';
 import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
+import { widgets as internalWidgets } from './components/widgets';
 import './styles.css';
 
 type SunmaoUIEditorProps = {
   libs?: SunmaoLib[];
+  widgets?: Widget<any>[];
   runtimeProps?: SunmaoUIRuntimeProps;
   storageHandler?: StorageHandler;
   defaultApplication?: Application;
@@ -55,6 +57,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
 
   const App = ui.App;
   const registry = ui.registry;
+
   props.libs?.forEach(lib => {
     registry.installLib(lib);
   });
@@ -96,6 +99,10 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
       </ChakraProvider>
     );
   };
+
+  internalWidgets.concat(props.widgets || []).forEach(widget => {
+    appModelManager.appModel.registerWidget(widget);
+  });
 
   return {
     Editor,
