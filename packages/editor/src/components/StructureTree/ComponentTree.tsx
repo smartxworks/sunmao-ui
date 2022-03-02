@@ -68,6 +68,7 @@ export const ComponentTree: React.FC<Props> = props => {
             isExpanded={isExpanded}
             isDropInOnly
             droppable={!isAncestorDragging && !isDragging}
+            hasSlot={true}
           >
             <Text fontSize="sm" color="gray.500">
               Empty
@@ -120,6 +121,7 @@ export const ComponentTree: React.FC<Props> = props => {
         services={props.services}
         isExpanded={isExpanded}
         droppable={!isAncestorDragging && !isDragging}
+        hasSlot={slots.length > 0}
       >
         <ComponentItemView
           id={component.id}
