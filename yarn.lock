@@ -3199,6 +3199,22 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@sunmao-ui/arco-lib@^0.0.7-alpha.1":
+  version "0.0.7-alpha.1"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/arco-lib/-/arco-lib-0.0.7-alpha.1.tgz#d5a82d3538f8c82e5c70515324ec660fa3be48a8"
+  integrity sha512-k/eRuyA7NBjv/wkRO52lc9wCZObqGQj427A6BxUvCJjM3k9wv0N/XJQqs3psjiOd1HSUkqJxhrOw2HK/ZPezXw==
+  dependencies:
+    "@arco-design/web-react" "^2.29.0"
+    "@emotion/css" "^11.5.0"
+    "@sinclair/typebox" "^0.21.2"
+    "@sunmao-ui/core" "^0.4.0"
+    "@sunmao-ui/runtime" "^0.4.0"
+    eslint-plugin-react-hooks "^4.3.0"
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+
 "@swc/core-android-arm64@^1.2.121":
   version "1.2.121"
   resolved "https://registry.yarnpkg.com/@swc/core-android-arm64/-/core-android-arm64-1.2.121.tgz#f3508a8e1022ea05c4658082c21000073a404889"

@@ -34,6 +34,7 @@
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.7.1",
     "@emotion/css": "^11.7.1",
+    "@sunmao-ui/arco-lib": "^0.0.7-alpha.1",
     "@sunmao-ui/chakra-ui-lib": "^0.2.0",
     "@sunmao-ui/core": "^0.4.0",
     "@sunmao-ui/runtime": "^0.4.0",
