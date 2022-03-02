@@ -1,0 +1,1 @@
+export { ArcoDesignLib } from "./lib";
