@@ -1,6 +1,6 @@
 import { Typography } from '@arco-design/web-react';
 
-const DragComponentTips: React.FC<{ componentName: string }> = ({ componentName }) => {
+const EmptyPlaceholder: React.FC<{ componentName: string }> = ({ componentName }) => {
   return (
     <Typography.Paragraph style={{ color: '#b2b2b2' }}>
       Please drag{' '}
@@ -12,4 +12,4 @@ const DragComponentTips: React.FC<{ componentName: string }> = ({ componentName 
   );
 };
 
-export { DragComponentTips };
+export { EmptyPlaceholder };

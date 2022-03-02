@@ -13,6 +13,10 @@ export const FormControlPropsSchema = {
         title: 'Hidden',
         category: PRESET_PROPERTY_CATEGORY.Basic
     }),
+    layout: StringUnion(['vertical', 'horizontal'], {
+        title: 'Layout',
+        category: PRESET_PROPERTY_CATEGORY.Layout,
+    }),
     extra: Type.String({
         title: 'Extra',
         category: PRESET_PROPERTY_CATEGORY.Basic
@@ -25,7 +29,7 @@ export const FormControlPropsSchema = {
         title: 'Help Message',
         category: PRESET_PROPERTY_CATEGORY.Basic
     }),
-    labelAlign: StringUnion(['left', 'right', 'unset'], {
+    labelAlign: StringUnion(['left', 'right'], {
         title: 'Label Align',
         category: PRESET_PROPERTY_CATEGORY.Layout
     }),
@@ -50,16 +54,8 @@ export const FormControlPropsSchema = {
 }
 
 export const FormPropsSchema = {
-    layout: StringUnion(['horizontal', 'vertical', 'inline'], {
-        title: 'Layout',
-        category: PRESET_PROPERTY_CATEGORY.Layout
-    }),
-    childrenLayout: StringUnion(['vertical', 'horizontal'], {
-        title: 'Children Layout',
-        category: PRESET_PROPERTY_CATEGORY.Layout,
-    }),
-    labelAlign: StringUnion(['left', 'right'], {
-        title: 'Label Align',
+    inline: Type.Boolean({
+        title: 'Inline',
         category: PRESET_PROPERTY_CATEGORY.Layout
     }),
     size: StringUnion(['mini', 'small', 'default', 'large'], {
