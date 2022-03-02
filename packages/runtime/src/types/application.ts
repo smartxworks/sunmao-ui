@@ -35,6 +35,6 @@ export type AppHooks = {
   didMount?: () => void;
   // app updates after schema changes
   didUpdate?: () => void;
-  // app updates after html elements change
-  didHtmlUpdate?: () => void;
+  // app updates after dom change(dose not include updates from schema change)
+  didDomUpdate?: () => void;
 };
