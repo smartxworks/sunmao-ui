@@ -4,7 +4,7 @@ import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../../sunmao-helper';
 import { FormControlPropsSchema as BaseFormControlPropsSchema } from '../../generated/types/Form';
-import { DragComponentTips } from './DragComponentTips';
+import { EmptyPlaceholder } from './EmptyPlaceholder';
 import { FormControlErrorMessage } from './FormControlErrorMessage';
 
 const FormControlPropsSchema = Type.Object(BaseFormControlPropsSchema);
@@ -14,18 +14,12 @@ const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = pr
   const { label, errorMsg, ...cProps } = getComponentProps(props);
   const { elementRef, slotsElements, customStyle } = props;
 
-  if (!cProps.colon) {
-    Reflect.deleteProperty(cProps, 'colon');
-  }
-  if (cProps.labelAlign === 'unset') {
-    Reflect.deleteProperty(cProps, 'labelAlign');
-  }
-
-  const formControlProps = {
-    className: cx(
-      'sunmao-form-control-layout',
-      css`
+  return (
+    <BaseFormControl
+      label={<Text cssStyle="display:inline-block" value={label} />}
+      className={css`
         ${customStyle?.content}
+        margin-right:10px;
         svg {
           display: inherit;
         }
@@ -35,22 +29,14 @@ const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = pr
         & label {
           white-space: inherit !important;
         }
-      `
-    ),
-  };
-
-  return (
-    <BaseFormControl
-      label={<Text cssStyle="display:inline-block" value={label} />}
+      `}
       ref={elementRef}
-      {...formControlProps}
       {...cProps}
-      labelAlign={cProps.labelAlign as any}
     >
       {slotsElements.content ? (
         slotsElements.content
       ) : (
-        <DragComponentTips componentName="Form Control" />
+        <EmptyPlaceholder componentName="Form Control" />
       )}
       <FormControlErrorMessage errorMsg={errorMsg} />
     </BaseFormControl>
@@ -62,11 +48,12 @@ const exampleProperties: Static<typeof FormControlPropsSchema> = {
     format: 'md',
     raw: '**label**',
   },
+  layout: 'horizontal',
   required: false,
   hidden: false,
   extra: '',
   errorMsg: '',
-  labelAlign: 'unset',
+  labelAlign: 'left',
   colon: false,
   labelCol: { span: 5, offset: 0 },
   wrapperCol: { span: 19, offset: 0 },
