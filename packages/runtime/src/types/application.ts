@@ -20,6 +20,7 @@ export type GridCallbacks = {
 
 export type ComponentParamsFromApp = {
   gridCallbacks?: GridCallbacks;
+  hooks?: AppHooks;
 };
 
 export type AppProps = {
@@ -27,10 +28,13 @@ export type AppProps = {
   services: UIServices;
   debugStore?: boolean;
   debugEvent?: boolean;
-  hooks?: AppHooks;
 } & ComponentParamsFromApp;
 
 export type AppHooks = {
+  // after app first render
   didMount?: () => void;
+  // app updates after schema changes
   didUpdate?: () => void;
+  // app updates after dom change(dose not include updates from schema change)
+  didDomUpdate?: () => void;
 };

@@ -50,6 +50,7 @@ export const App: React.FC<AppProps> = props => {
             childrenMap={childrenMap}
             app={app}
             gridCallbacks={gridCallbacks}
+            hooks={hooks}
           />
         );
       })}
