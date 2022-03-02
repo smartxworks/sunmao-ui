@@ -1,14 +1,14 @@
 import { StateManager } from './services/StateManager';
 import { genApp } from './App';
-import { initRegistry, UtilMethod } from './services/Registry';
+import { initRegistry } from './services/Registry';
 import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
-import { AppHooks } from './types/application';
+import { AppHooks, UtilMethod } from './types';
 import './style.css';
 
 export type SunmaoUIRuntimeProps = {
   dependencies?: Record<string, any>;
-  utilMethods?: UtilMethod[];
+  utilMethods?: UtilMethod<any>[];
   hooks?: AppHooks;
 };
 
@@ -16,8 +16,13 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   const stateManager = new StateManager(props.dependencies);
   const globalHandlerMap = initGlobalHandlerMap();
   const apiService = initApiService();
-  const registry = initRegistry(apiService);
   const eleMap = new Map<string, HTMLElement>();
+  const registry = initRegistry({
+    stateManager,
+    globalHandlerMap,
+    apiService,
+    eleMap,
+  });
   const hooks = props.hooks;
 
   return {
