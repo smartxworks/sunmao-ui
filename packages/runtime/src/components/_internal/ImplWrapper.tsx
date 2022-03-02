@@ -20,7 +20,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   const eleRef = useRef<HTMLElement>();
   const onRef = (ele: HTMLElement) => {
     eleMap.set(c.id, ele);
-    hooks?.didHtmlUpdate && hooks?.didHtmlUpdate();
+    hooks?.didDomUpdate && hooks?.didDomUpdate();
   };
 
   useEffect(() => {
