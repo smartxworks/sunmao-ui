@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import SchemaField from './SchemaField';
-import { JSONSchema7 } from 'json-schema';
-import { FieldProps } from './fields';
+import { SchemaField } from './SchemaField';
+import { WidgetProps } from '../../types';
+import { implementWidget } from '../../utils/widget';
 import { sortBy, groupBy } from 'lodash-es';
 import {
   AccordionPanel,
@@ -11,13 +11,7 @@ import {
   Box,
   Accordion,
 } from '@chakra-ui/react';
-import { PRESET_PROPERTY_CATEGORY } from '../../../constants/category';
-
-type ExpandSpec = {
-  category?: string;
-  weight?: number;
-  name?: string;
-};
+import { PRESET_PROPERTY_CATEGORY } from '../../constants/category';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
   keyof typeof PRESET_PROPERTY_CATEGORY | 'Advance',
@@ -40,15 +34,15 @@ function getCategoryOrder(name: string): number {
     : 0;
 }
 
-type Property = Record<string, JSONSchema7 & ExpandSpec>;
+type Property = Record<string, WidgetProps['schema']>;
 
 type Category = {
   name: string;
-  schemas: (JSONSchema7 & ExpandSpec)[];
+  schemas: WidgetProps['schema'][];
 };
 
-const TopLevelField: React.FC<FieldProps> = props => {
-  const { schema, formData, onChange, registry, stateManager } = props;
+export const CategoryWidget: React.FC<WidgetProps> = props => {
+  const { component, schema, value, level, services, onChange } = props;
 
   const categories = useMemo<Category[]>(() => {
     const properties = (schema.properties || {}) as Property;
@@ -83,23 +77,24 @@ const TopLevelField: React.FC<FieldProps> = props => {
             <AccordionPanel bg="white">
               {schemas.map(schema => {
                 const name = schema.name;
+
                 if (typeof schema === 'boolean') {
                   return null;
                 }
                 return (
                   <SchemaField
                     key={name}
+                    component={component}
                     schema={schema}
-                    label={schema.title || name!}
-                    formData={formData?.[name!]}
+                    value={value?.[name!]}
+                    level={level + 1}
+                    services={services}
                     onChange={value => {
                       onChange({
-                        ...formData,
+                        ...value,
                         [name!]: value,
                       });
                     }}
-                    registry={registry}
-                    stateManager={stateManager}
                   />
                 );
               })}
@@ -111,4 +106,9 @@ const TopLevelField: React.FC<FieldProps> = props => {
   );
 };
 
-export default TopLevelField;
+export default implementWidget({
+  version: 'core/v1',
+  metadata: {
+    name: 'CategoryWidget',
+  },
+})(CategoryWidget);

@@ -9,15 +9,11 @@ import {
   isUndefined,
   isNull,
 } from 'lodash-es';
-import { FieldProps } from '../fields';
-import { ExpressionEditor, ExpressionEditorHandle } from '../../../CodeEditor';
-import { isExpression } from '../../../../validator/utils';
-
-export type ExpressionWidgetProps = Pick<
-  FieldProps,
-  'formData' | 'onChange' | 'stateManager'
-> &
-  FieldProps['expressionOptions'];
+import { Type, Static } from '@sinclair/typebox';
+import { WidgetProps } from '../../types';
+import { implementWidget } from '../../utils/widget';
+import { ExpressionEditor, ExpressionEditorHandle } from '../CodeEditor';
+import { isExpression } from '../../validator/utils';
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -125,20 +121,26 @@ const getParsedValue = (raw: string, type: string) => {
   return raw;
 };
 
-export const ExpressionWidget: React.FC<ExpressionWidgetProps> = props => {
-  const { formData, compactOptions = {}, onChange, stateManager } = props;
+export const ExpressionWidgetOptionsSchema = Type.Object({
+  compactOptions: Type.Optional(
+    Type.Object({
+      height: Type.Optional(Type.String()),
+      paddingY: Type.Optional(Type.String()),
+    })
+  ),
+});
+
+export const ExpressionWidget: React.FC<
+  WidgetProps<Static<typeof ExpressionWidgetOptionsSchema>>
+> = props => {
+  const { value, services, schema, onChange } = props;
+  const { widgetOptions } = schema;
+  const { stateManager } = services;
   const [defs, setDefs] = useState<any>();
   const editorRef = useRef<ExpressionEditorHandle>(null);
   const { code, type } = useMemo(() => {
-    return getCode(formData);
-  }, [formData]);
-  const mergedCompactOptions = useMemo(
-    () => ({
-      maxHeight: '125px',
-      ...compactOptions,
-    }),
-    [compactOptions]
-  );
+    return getCode(value);
+  }, [value]);
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -149,14 +151,24 @@ export const ExpressionWidget: React.FC<ExpressionWidgetProps> = props => {
 
   return (
     <ExpressionEditor
+      {...(widgetOptions?.compactOptions || {})}
       ref={editorRef}
-      compactOptions={mergedCompactOptions}
       defaultCode={code}
+      defs={defs}
       onBlur={_v => {
         const v = getParsedValue(_v, type);
         onChange(v);
       }}
-      defs={defs}
     />
   );
 };
+
+export default implementWidget<Static<typeof ExpressionWidgetOptionsSchema>>({
+  version: 'core/v1',
+  metadata: {
+    name: 'Expression',
+  },
+  spec: {
+    options: ExpressionWidgetOptionsSchema,
+  },
+})(ExpressionWidget);

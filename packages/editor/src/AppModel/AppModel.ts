@@ -1,6 +1,7 @@
 import { ComponentSchema, parseType } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import { ComponentModel } from './ComponentModel';
+import { Widget } from '../types';
 import {
   ComponentId,
   ComponentType,
@@ -12,6 +13,7 @@ import {
 import { genComponent } from './utils';
 
 export class AppModel implements IAppModel {
+  widgets: Record<string, Widget> = {};
   topComponents: IComponentModel[] = [];
   // modules: IModuleModel[] = [];
   private schema: ComponentSchema[] = [];
@@ -143,5 +145,9 @@ export class AppModel implements IAppModel {
     this.topComponents.forEach(parent => {
       traverse(parent);
     });
+  }
+
+  registerWidget(widget: Widget) {
+    this.widgets[`${widget.version}/${widget.metadata.name}`] = widget;
   }
 }

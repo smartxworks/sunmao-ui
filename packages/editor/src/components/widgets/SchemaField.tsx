@@ -10,19 +10,21 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
-import { AnyKind, UnknownKind } from '@sinclair/typebox';
-import { isExpression as _isExpression } from '../../../validator/utils';
-import { FieldProps, getCodeMode, getDisplayLabel } from './fields';
-import { widgets } from './widgets/widgets';
-import StringField from './StringField';
-import ObjectField from './ObjectField';
-import ArrayField from './ArrayField';
-import BooleanField from './BooleanField';
-import NumberField from './NumberField';
-import NullField from './NullField';
-import MultiSchemaField from './MultiSchemaField';
-import TopLevelField from './TopLevelField';
-import UnsupportedField from './UnsupportedField';
+import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
+import { isExpression as _isExpression } from '../../validator/utils';
+import { WidgetProps } from '../../types';
+import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { shouldDisplayLabel, getCodeMode } from './utils';
+import { ExpressionWidget, ExpressionWidgetOptionsSchema } from './ExpressionWidget';
+import { StringField } from './StringField';
+import { ObjectField } from './ObjectField';
+import { ArrayField } from './ArrayField';
+import { BooleanField } from './BooleanField';
+import { NumberField } from './NumberField';
+import { NullField } from './NullField';
+import { MultiSchemaField } from './MultiSchemaField';
+import { CategoryWidget } from './CategoryWidget';
+import { UnsupportedField } from './UnsupportedField';
 
 type ExpressionButtonProps = {
   isExpression?: boolean;
@@ -102,39 +104,42 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
   );
 };
 
-type Props = FieldProps & {
-  label: string;
-};
+export const SchemaFieldWidgetOptions = Type.Object({
+  isDisplayLabel: Type.Optional(Type.Boolean()),
+  isShowAsideExpressionButton: Type.Optional(Type.Boolean()),
+  expressionOptions: Type.Optional(ExpressionWidgetOptionsSchema),
+});
 
-const SchemaField: React.FC<Props> = props => {
+type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
+
+export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = props => {
+  const { component, schema, level, value, services, onChange } = props;
+  const { title, widgetOptions } = schema;
+  const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
+  const label = title ?? '';
   const {
-    schema,
-    isTopLevel,
-    label,
-    formData,
-    expressionOptions = {},
-    onChange,
-    registry,
-    stateManager,
-  } = props;
-  const [isExpression, setIsExpression] = useState(() => _isExpression(formData));
-  const displayLabel = getDisplayLabel(schema, label);
+    appModelManager: { appModel },
+  } = services;
+  const [isExpression, setIsExpression] = useState(() => _isExpression(value));
+  const isDisplayLabel =
+    widgetOptions?.isDisplayLabel !== false && shouldDisplayLabel(schema, label);
   const codeMode = getCodeMode(schema);
 
   if (isEmpty(schema)) {
     return null;
   }
 
-  let Component = UnsupportedField;
-  let showAsideExpressionButton = !displayLabel && codeMode;
+  let Component: React.FC<WidgetProps<any>> = UnsupportedField;
+  let showAsideExpressionButton =
+    isShowAsideExpressionButton && !isDisplayLabel && codeMode;
 
   // customize widgets
   if (isExpression) {
-    Component = widgets.expression;
-  } else if (schema.widget && widgets[schema.widget]) {
-    Component = widgets[schema.widget];
-  } else if (isTopLevel) {
-    Component = TopLevelField;
+    Component = ExpressionWidget;
+  } else if (schema.widget && appModel.widgets[schema.widget]) {
+    Component = appModel.widgets[schema.widget].impl;
+  } else if (level === 0) {
+    Component = CategoryWidget;
     showAsideExpressionButton = false;
   }
   // type fields
@@ -157,7 +162,7 @@ const SchemaField: React.FC<Props> = props => {
   } else if (
     [AnyKind, UnknownKind].includes((schema as unknown as { kind: symbol }).kind)
   ) {
-    Component = widgets.expression;
+    Component = ExpressionWidget;
   } else {
     console.info('Found unsupported schema', schema);
   }
@@ -166,7 +171,7 @@ const SchemaField: React.FC<Props> = props => {
     <DefaultTemplate
       label={label}
       description={schema.description}
-      displayLabel={displayLabel}
+      displayLabel={isDisplayLabel}
       codeMode={codeMode}
       isExpression={isExpression}
       setIsExpression={setIsExpression}
@@ -174,18 +179,18 @@ const SchemaField: React.FC<Props> = props => {
       <HStack>
         <Box flex={schema.type === 'boolean' && isExpression === false ? '' : 1}>
           <Component
-            schema={schema}
-            formData={formData}
+            component={component}
+            schema={
+              isExpression
+                ? mergeWidgetOptionsIntoSchema(schema, {
+                    compactOptions: expressionOptions?.compactOptions,
+                  })
+                : schema
+            }
+            value={value}
+            level={level}
+            services={services}
             onChange={onChange}
-            registry={registry}
-            stateManager={stateManager}
-            {...(isExpression
-              ? {
-                  compactOptions: expressionOptions.compactOptions,
-                }
-              : {
-                  expressionOptions,
-                })}
           />
         </Box>
         {showAsideExpressionButton ? (
@@ -199,4 +204,12 @@ const SchemaField: React.FC<Props> = props => {
   );
 };
 
-export default SchemaField;
+export default implementWidget<SchemaFieldWidgetOptionsType>({
+  version: 'core/v1',
+  metadata: {
+    name: 'SchemaField',
+  },
+  spec: {
+    options: SchemaFieldWidgetOptions,
+  },
+})(SchemaField);

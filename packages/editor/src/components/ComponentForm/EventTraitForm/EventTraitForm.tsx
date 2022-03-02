@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
-import { EventHandlerForm } from './EventHandlerForm';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
+import { EventHandlerForm } from './EventHandlerForm';
 
 type EventHandler = Static<typeof EventHandlerSchema>;
 
@@ -36,13 +36,13 @@ export const EventTraitForm: React.FC<Props> = props => {
       componentId: '',
       method: {
         name: '',
-        parameters: {}
+        parameters: {},
       },
       disabled: false,
       wait: {
         type: 'delay',
-        time: 0
-      }
+        time: 0,
+      },
     };
 
     if (!handlers) {
@@ -51,7 +51,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         genOperation(registry, 'createTrait', {
           componentId: component.id,
           traitType: 'core/v1/event',
-          properties: { handlers: [newHandler] }
+          properties: { handlers: [newHandler] },
         })
       );
     } else {
@@ -62,7 +62,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         genOperation(registry, 'modifyTraitProperty', {
           componentId: component.id,
           traitIndex: index,
-          properties: { handlers: [...handlers, newHandler] }
+          properties: { handlers: [...handlers, newHandler] },
         })
       );
     }
@@ -81,8 +81,8 @@ export const EventTraitForm: React.FC<Props> = props => {
             componentId: component.id,
             traitIndex: index,
             properties: {
-              handlers: newHandlers
-            }
+              handlers: newHandlers,
+            },
           })
         );
       };
@@ -98,29 +98,26 @@ export const EventTraitForm: React.FC<Props> = props => {
             componentId: component.id,
             traitIndex: index,
             properties: {
-              handlers: newHandlers
-            }
+              handlers: newHandlers,
+            },
           })
         );
       };
       return (
         <EventHandlerForm
-          eventTypes={eventTypes}
-          handler={h}
           key={i}
+          component={component}
+          services={services}
+          handler={h}
           onChange={onChange}
           onRemove={onRemove}
-          services={services}
         />
       );
     });
 
   return (
     <VStack width="full">
-      <HStack
-        justify="space-between"
-        width="full"
-      >
+      <HStack justify="space-between" width="full">
         <strong>Events</strong>
         <IconButton
           aria-label="add event"

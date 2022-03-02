@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
-import { Static } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import {
   Box,
   VStack,
@@ -24,10 +24,10 @@ import { Basic } from './Basic';
 import { Headers as HeadersForm } from './Headers';
 import { Params } from './Params';
 import { Body } from './Body';
-import { Response as ResponseInfo } from './Respose';
-import { EditorServices } from '../../../types';
+import { Response as ResponseInfo } from './Response';
+import { EditorServices, WidgetProps } from '../../../types';
 import { genOperation } from '../../../operations';
-import { ExpressionWidget } from '../../ComponentForm/JsonSchemaForm/widgets/ExpressionWidget';
+import { ExpressionWidget } from '../../widgets/ExpressionWidget';
 import { ExpressionEditorProps } from '../../CodeEditor/ExpressionEditor';
 
 enum TabIndex {
@@ -47,7 +47,7 @@ const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
-  const { editorStore, stateManager } = services;
+  const { editorStore } = services;
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
   const [tabIndex, setTabIndex] = useState(0);
@@ -83,6 +83,7 @@ export const ApiForm: React.FC<Props> = props => {
     },
   });
   const { values } = formik;
+  const URLSchema = Type.String({ widgetOptions: { compactOptions } });
 
   const onFetch = useCallback(async () => {
     services.apiService.send('uiMethod', {
@@ -206,10 +207,12 @@ export const ApiForm: React.FC<Props> = props => {
           </Select>
           <Box flex={1}>
             <ExpressionWidget
-              stateManager={stateManager}
-              formData={values.url}
+              component={api}
+              schema={URLSchema}
+              value={values.url}
+              level={1}
+              services={services}
               onChange={onURLChange}
-              compactOptions={compactOptions}
             />
           </Box>
         </HStack>
@@ -234,16 +237,26 @@ export const ApiForm: React.FC<Props> = props => {
           </TabList>
           <TabPanels flex={1} overflow="auto">
             <TabPanel>
-              <Basic formik={formik} services={services} />
+              <Basic api={api} formik={formik} services={services} />
             </TabPanel>
             <TabPanel>
-              <HeadersForm services={services} formik={formik} />
+              <HeadersForm
+                api={api}
+                schema={FetchTraitPropertiesSchema.properties.headers as WidgetProps['schema']}
+                services={services}
+                formik={formik}
+              />
             </TabPanel>
             <TabPanel>
-              <Params services={services} formik={formik} />
+              <Params api={api} services={services} formik={formik} />
             </TabPanel>
             <TabPanel>
-              <Body services={services} formik={formik} />
+              <Body
+                api={api}
+                schema={FetchTraitPropertiesSchema.properties.body as WidgetProps['schema']}
+                services={services}
+                formik={formik}
+              />
             </TabPanel>
           </TabPanels>
         </VStack>

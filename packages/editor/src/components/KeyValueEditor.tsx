@@ -3,28 +3,26 @@ import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState, useMemo, useEffect } from 'react';
-import SchemaField from './ComponentForm/JsonSchemaForm/SchemaField';
-import { ExpressionWidget } from './ComponentForm/JsonSchemaForm/widgets/ExpressionWidget';
-import { FieldProps } from './ComponentForm/JsonSchemaForm/fields';
+import { Type } from '@sinclair/typebox';
+import { SchemaField } from './widgets/SchemaField';
+import { ExpressionWidget } from './widgets/ExpressionWidget';
+import { WidgetProps } from '../types';
+import { mergeWidgetOptionsIntoSchema } from '../utils/widget';
 import { ExpressionEditorProps } from './CodeEditor/ExpressionEditor';
-
-type Props = {
-  schema?: FieldProps['schema'];
-  registry: FieldProps['registry'];
-  stateManager: FieldProps['stateManager'];
-  onChange: (json: Record<string, string>) => void;
-  value?: Record<string, string>;
-  isShowHeader?: boolean;
-  minNum?: number;
-  onlySetValue?: boolean;
-};
 
 const IGNORE_SCHEMA_TYPES = ['array', 'object'];
 
-export const KeyValueEditor: React.FC<Props> = props => {
-  const { schema, minNum = 0, registry, stateManager, onlySetValue } = props;
-  const generateRows = (currentRows: Array<[string, string]> = []) => {
-    let newRows = toPairs(props.value);
+type KeyValueEditorProps = Omit<WidgetProps, 'component' | 'schema' | 'level'> & {
+  component?: WidgetProps['component'];
+  schema?: WidgetProps['schema'];
+  level?: number;
+};
+
+export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
+  const { component, value, schema, services, level = 1, onChange } = props;
+  const { minNum = 0, onlySetValue, isShowHeader } = schema?.widgetOptions || {};
+  const generateRows = (currentRows: Array<[string, any]> = []) => {
+    let newRows = toPairs(value);
 
     // keep the rows which has no key
     newRows = newRows.concat(currentRows.filter(([key]) => !key));
@@ -33,7 +31,7 @@ export const KeyValueEditor: React.FC<Props> = props => {
       ? newRows.concat(new Array(minNum - newRows.length).fill(['', '']))
       : newRows;
   };
-  const [rows, setRows] = useState<Array<[string, string]>>(() => {
+  const [rows, setRows] = useState<Array<[string, any]>>(() => {
     return generateRows();
   });
   const expressionOptions = useMemo<{
@@ -49,7 +47,7 @@ export const KeyValueEditor: React.FC<Props> = props => {
 
   const emitDataChange = (newRows: Array<[string, string]>) => {
     const json = fromPairs(newRows.filter(([key]) => key));
-    props.onChange(json);
+    onChange(json);
   };
 
   const onAddRow = () => {
@@ -62,10 +60,10 @@ export const KeyValueEditor: React.FC<Props> = props => {
     setRows(newRows);
     emitDataChange(newRows);
   };
-  
+
   useEffect(() => {
     setRows(generateRows(rows));
-  }, [props.value]);
+  }, [value]);
 
   const rowItems = rows.map(([key, value], i) => {
     const onInputChange = (e: React.ChangeEvent) => {
@@ -99,30 +97,48 @@ export const KeyValueEditor: React.FC<Props> = props => {
           onBlur={onBlur}
           isDisabled={onlySetValue}
         />
-        <HStack flex={2} alignItems="center">
-          {keySchemaType &&
-          typeof keySchemaType !== 'boolean' &&
-          !IGNORE_SCHEMA_TYPES.includes(String(keySchemaType.type)) ? (
-            <SchemaField
-              label=""
-              formData={value}
-              schema={keySchemaType}
-              registry={registry}
-              stateManager={stateManager}
-              expressionOptions={expressionOptions}
-              onChange={onValueChange}
-            />
-          ) : (
-            <Box flex={1}>
-              <ExpressionWidget
-                formData={value}
-                stateManager={stateManager}
-                compactOptions={expressionOptions.compactOptions}
+        {component ? (
+          <HStack flex={2} alignItems="center">
+            {keySchemaType &&
+            typeof keySchemaType !== 'boolean' &&
+            !IGNORE_SCHEMA_TYPES.includes(String(keySchemaType.type)) ? (
+              <SchemaField
+                component={component}
+                value={value}
+                level={level + 1}
+                schema={mergeWidgetOptionsIntoSchema(keySchemaType, {
+                  isShowAsideExpressionButton: true,
+                  expressionOptions,
+                })}
+                services={services}
                 onChange={onValueChange}
               />
-            </Box>
-          )}
-        </HStack>
+            ) : (
+              <Box flex={1}>
+                <ExpressionWidget
+                  component={component}
+                  schema={Type.String({
+                    widgetOptions: { compactOptions: expressionOptions.compactOptions },
+                  })}
+                  services={services}
+                  level={level + 1}
+                  value={value}
+                  onChange={onValueChange}
+                />
+              </Box>
+            )}
+          </HStack>
+        ) : (
+          <Input
+            flex={1}
+            name="value"
+            value={value}
+            title={value}
+            placeholder="value"
+            onChange={onInputChange}
+            onBlur={onBlur}
+          />
+        )}
         {onlySetValue ? null : (
           <IconButton
             aria-label="remove row"
@@ -139,7 +155,7 @@ export const KeyValueEditor: React.FC<Props> = props => {
 
   return (
     <VStack spacing="2" alignItems="stretch">
-      {props.isShowHeader ? (
+      {isShowHeader !== false ? (
         <HStack spacing="1" display="flex" marginRight="28px">
           <Text flex={1}>Key</Text>
           <Text flex={1}>Value</Text>
