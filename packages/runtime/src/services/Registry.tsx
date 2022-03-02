@@ -1,5 +1,4 @@
 import { parseType } from '@sunmao-ui/core';
-import { GLOBAL_UTILS_ID } from '../constants';
 // components
 /* --- core --- */
 import CoreText from '../components/core/Text';
@@ -8,7 +7,6 @@ import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
 import CoreStack from '../components/core/Stack';
-
 
 // traits
 import CoreArrayState from '../traits/core/ArrayState';
@@ -29,6 +27,7 @@ import {
   UIServices,
 } from '../types';
 import { UtilMethod } from '../types/utilMethod';
+import { UtilMethodManager } from './UtilMethodManager';
 
 export type UtilMethodFactory = () => UtilMethod<any>[];
 
@@ -52,7 +51,10 @@ export class Registry {
   utilMethods = new Map<string, UtilMethod<any>>();
   private services: UIServices;
 
-  constructor(services: Omit<UIServices, 'registry'>) {
+  constructor(
+    services: Omit<UIServices, 'registry'>,
+    private utilMethodManager: UtilMethodManager
+  ) {
     this.services = { ...services, registry: this };
   }
 
@@ -166,6 +168,7 @@ export class Registry {
       throw new Error(`Already has utilMethod ${m.name} in this registry.`);
     }
     this.utilMethods.set(m.name, m);
+    this.utilMethodManager.listenUtilMethod(m, this.services);
   }
 
   installLib(lib: SunmaoLib) {
@@ -177,34 +180,15 @@ export class Registry {
         const methods = factory();
         methods.forEach(m => this.registerUtilMethod(m));
       });
-      this.mountUtilMethods();
     }
-  }
-
-  private mountUtilMethods() {
-    this.services.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-      if (componentId === GLOBAL_UTILS_ID) {
-        const utilMethod = this.utilMethods.get(name)?.method;
-        if (utilMethod) {
-          const params: Record<string, unknown> = {};
-
-          for (const key in parameters) {
-            const value = parameters[key];
-
-            if (value !== undefined && value !== '') {
-              params[key] = value;
-            }
-          }
-
-          utilMethod(params, this.services);
-        }
-      }
-    });
   }
 }
 
-export function initRegistry(services: Omit<UIServices, 'registry'>): Registry {
-  const registry = new Registry(services);
+export function initRegistry(
+  services: Omit<UIServices, 'registry'>,
+  utilMethodManager: UtilMethodManager
+): Registry {
+  const registry = new Registry(services, utilMethodManager);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);
   registry.registerComponent(CoreRouter);

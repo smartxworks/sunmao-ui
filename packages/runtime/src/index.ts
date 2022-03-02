@@ -3,6 +3,7 @@ import { genApp } from './App';
 import { initRegistry } from './services/Registry';
 import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
+import { UtilMethodManager } from './services/UtilMethodManager';
 import { AppHooks, UtilMethod } from './types';
 import './style.css';
 
@@ -16,13 +17,17 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   const stateManager = new StateManager(props.dependencies);
   const globalHandlerMap = initGlobalHandlerMap();
   const apiService = initApiService();
+  const utilMethodManager = new UtilMethodManager(apiService);
   const eleMap = new Map<string, HTMLElement>();
-  const registry = initRegistry({
-    stateManager,
-    globalHandlerMap,
-    apiService,
-    eleMap,
-  });
+  const registry = initRegistry(
+    {
+      stateManager,
+      globalHandlerMap,
+      apiService,
+      eleMap,
+    },
+    utilMethodManager
+  );
   const hooks = props.hooks;
 
   return {
