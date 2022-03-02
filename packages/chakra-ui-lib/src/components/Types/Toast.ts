@@ -69,9 +69,10 @@ const pickProperty = <T, U extends Record<string, any>>(
 
 export default function ToastUtilMethodFactory() {
   let toast: ReturnType<typeof createStandaloneToast> | undefined;
-  const toastOpen: UtilMethod = {
+
+  const toastOpen: UtilMethod<typeof ToastOpenParameterSchema> = {
     name: 'toast.open',
-    method(parameters: Static<typeof ToastOpenParameterSchema>) {
+    method(parameters) {
       if (!toast) {
         toast = createStandaloneToast();
       }
@@ -82,9 +83,9 @@ export default function ToastUtilMethodFactory() {
     parameters: ToastOpenParameterSchema,
   };
 
-  const toastClose: UtilMethod = {
+  const toastClose: UtilMethod<typeof ToastCloseParameterSchema> = {
     name: 'toast.close',
-    method(parameters: Static<typeof ToastCloseParameterSchema>) {
+    method(parameters) {
       if (!toast) {
         return;
       }

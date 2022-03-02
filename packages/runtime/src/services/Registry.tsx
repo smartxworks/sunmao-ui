@@ -1,5 +1,4 @@
 import { parseType } from '@sunmao-ui/core';
-import { GLOBAL_UTILS_ID } from '../constants';
 // components
 /* --- core --- */
 import CoreText from '../components/core/Text';
@@ -8,7 +7,6 @@ import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
 import CoreStack from '../components/core/Stack';
-
 
 // traits
 import CoreArrayState from '../traits/core/ArrayState';
@@ -19,20 +17,19 @@ import CoreStyle from '../traits/core/Style';
 import CoreHidden from '../traits/core/Hidden';
 import CoreFetch from '../traits/core/Fetch';
 import CoreValidation from '../traits/core/Validation';
+// utilMethods
+import ScrollIntoComponentUtilMethod from '../utilMethods/ScrollIntoComponent';
+
 import {
   ImplementedRuntimeComponent,
   ImplementedRuntimeTrait,
   ImplementedRuntimeModule,
+  UIServices,
 } from '../types';
-import { ApiService } from './apiService';
+import { UtilMethod } from '../types/utilMethod';
+import { UtilMethodManager } from './UtilMethodManager';
 
-export type UtilMethod = {
-  name: string;
-  method: (parameters?: any) => void;
-  parameters?: any;
-};
-
-export type UtilMethodFactory = () => UtilMethod[];
+export type UtilMethodFactory = () => UtilMethod<any>[];
 
 export type SunmaoLib = {
   components?: ImplementedRuntimeComponent<string, string, string, string>[];
@@ -47,16 +44,18 @@ type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
   string,
   string
 >;
-
 export class Registry {
   components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
-  utilMethods = new Map<string, UtilMethod>();
-  private apiService: ApiService;
+  utilMethods = new Map<string, UtilMethod<any>>();
+  private services: UIServices;
 
-  constructor(apiService: ApiService) {
-    this.apiService = apiService;
+  constructor(
+    services: Omit<UIServices, 'registry'>,
+    private utilMethodManager: UtilMethodManager
+  ) {
+    this.services = { ...services, registry: this };
   }
 
   registerComponent(c: AnyImplementedRuntimeComponent) {
@@ -164,11 +163,12 @@ export class Registry {
     return this.getModule(version, name);
   }
 
-  registerUtilMethod(m: UtilMethod) {
+  registerUtilMethod<T>(m: UtilMethod<T>) {
     if (this.utilMethods.get(m.name)) {
       throw new Error(`Already has utilMethod ${m.name} in this registry.`);
     }
     this.utilMethods.set(m.name, m);
+    this.utilMethodManager.listenUtilMethod(m, this.services);
   }
 
   installLib(lib: SunmaoLib) {
@@ -180,34 +180,15 @@ export class Registry {
         const methods = factory();
         methods.forEach(m => this.registerUtilMethod(m));
       });
-      this.mountUtilMethods();
     }
-  }
-
-  private mountUtilMethods() {
-    this.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-      if (componentId === GLOBAL_UTILS_ID) {
-        const utilMethod = this.utilMethods.get(name)?.method;
-        if (utilMethod) {
-          const params: Record<string, unknown> = {};
-
-          for (const key in parameters) {
-            const value = parameters[key];
-
-            if (value !== undefined && value !== '') {
-              params[key] = value;
-            }
-          }
-
-          utilMethod(params);
-        }
-      }
-    });
   }
 }
 
-export function initRegistry(apiService: ApiService): Registry {
-  const registry = new Registry(apiService);
+export function initRegistry(
+  services: Omit<UIServices, 'registry'>,
+  utilMethodManager: UtilMethodManager
+): Registry {
+  const registry = new Registry(services, utilMethodManager);
   registry.registerComponent(CoreText);
   registry.registerComponent(CoreGridLayout);
   registry.registerComponent(CoreRouter);
@@ -223,6 +204,8 @@ export function initRegistry(apiService: ApiService): Registry {
   registry.registerTrait(CoreHidden);
   registry.registerTrait(CoreFetch);
   registry.registerTrait(CoreValidation);
+
+  registry.registerUtilMethod(ScrollIntoComponentUtilMethod);
 
   return registry;
 }
