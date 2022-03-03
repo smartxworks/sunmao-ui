@@ -1,4 +1,25 @@
-import { Schema } from '../../types';
+import { WidgetOptions, Widget, WidgetProps, Schema } from '../types/widget';
+
+export function implementWidget<T = Record<string, any>>(options: WidgetOptions) {
+  return (impl: Widget<T>['impl']) => ({
+    ...options,
+    kind: 'Widget',
+    impl,
+  });
+}
+
+export function mergeWidgetOptionsIntoSchema<T = Record<string, any>>(
+  schema: WidgetProps<T>['schema'],
+  options: Record<string, any>
+): WidgetProps['schema'] {
+  return {
+    ...schema,
+    widgetOptions: {
+      ...(schema.widgetOptions || {}),
+      ...(options || {}),
+    },
+  };
+}
 
 export function shouldDisplayLabel(schema: Schema, label: string): boolean {
   if (!label) {

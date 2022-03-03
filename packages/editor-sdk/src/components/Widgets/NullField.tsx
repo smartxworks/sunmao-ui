@@ -1,5 +1,5 @@
 import React from 'react';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 
 type Props = WidgetProps;

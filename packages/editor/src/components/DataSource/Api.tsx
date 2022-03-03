@@ -7,7 +7,7 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
-} from '@chakra-ui/react';
+} from '@sunmao-ui/editor-sdk';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { DataSourceItem } from './DataSourceItem';
 

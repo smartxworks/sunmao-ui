@@ -1,8 +1,8 @@
 import React from 'react';
 import { Type, Static } from '@sinclair/typebox';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
-import { KeyValueEditor } from '../KeyValueEditor';
+import { KeyValueEditor } from '../Form';
 
 const KeyValueWidgetOptions = Type.Object({
   minNum: Type.Optional(Type.Number()),

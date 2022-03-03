@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, HStack, IconButton, Text, Tooltip, VStack } from '@chakra-ui/react';
+import { Divider, HStack, IconButton, Text, Tooltip, VStack } from '@sunmao-ui/editor-sdk';
 import { observer } from 'mobx-react-lite';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { EditorServices } from '../../types';

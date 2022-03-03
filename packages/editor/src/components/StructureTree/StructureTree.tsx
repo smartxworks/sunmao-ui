@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Text, VStack } from '@sunmao-ui/editor-sdk';
 import { ComponentTree } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';

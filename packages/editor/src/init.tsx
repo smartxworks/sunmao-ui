@@ -7,13 +7,15 @@ import {
   extendTheme,
   withDefaultSize,
   withDefaultVariant,
-} from '@chakra-ui/react';
+  widgets as internalWidgets,
+  WidgetManager,
+  Widget,
+} from '@sunmao-ui/editor-sdk';
 import { initEventBus } from './services/eventBus';
 import { EditorStore } from './services/EditorStore';
-import { StorageHandler, Widget } from './types';
+import { StorageHandler } from './types';
 import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
-import { widgets as internalWidgets } from './components/widgets';
 import './styles.css';
 
 type SunmaoUIEditorProps = {
@@ -74,6 +76,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     registry,
     appStorage.app.spec.components
   );
+  const widgetManager = new WidgetManager();
   const editorStore = new EditorStore(eventBus, registry, stateManager, appStorage);
   const services = {
     App,
@@ -81,6 +84,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     apiService: ui.apiService,
     stateManager,
     appModelManager,
+    widgetManager,
     eventBus,
     editorStore,
   };
@@ -101,7 +105,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   };
 
   internalWidgets.concat(props.widgets || []).forEach(widget => {
-    appModelManager.appModel.registerWidget(widget);
+    widgetManager.registerWidget(widget);
   });
 
   return {
