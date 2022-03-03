@@ -1,27 +1,25 @@
-
-import { Type } from "@sinclair/typebox";
+import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
-import { PRESET_PROPERTY_CATEGORY } from '@sunmao-ui/editor'
+import { Category } from '../../constants/category';
 
 export const TabsPropsSchema = {
-  tabNames:Type.Array(
-  Type.String(),{
-    title:'Tab Names',
+  tabNames: Type.Array(Type.String(), {
+    title: 'Tab Names',
   }),
   defaultActiveTab: Type.String({
     title: 'Default Active Tab',
-    category:PRESET_PROPERTY_CATEGORY.Basic
+    category: Category.Basic,
   }),
-  tabPosition: StringUnion(['left', 'right', 'top', 'bottom'],{
-    title:'Tab Position',
-    category:PRESET_PROPERTY_CATEGORY.Layout
+  tabPosition: StringUnion(['left', 'right', 'top', 'bottom'], {
+    title: 'Tab Position',
+    category: Category.Layout,
   }),
-  size: StringUnion(['mini', 'small', 'default', 'large'],{
-    title:'Size',
-    category:PRESET_PROPERTY_CATEGORY.Style
+  size: StringUnion(['mini', 'small', 'default', 'large'], {
+    title: 'Size',
+    category: Category.Style,
   }),
-  type: StringUnion(['line', 'card', 'card-gutter', 'text', 'rounded', 'capsule'],{
-    title:'Type',
-    category:PRESET_PROPERTY_CATEGORY.Style
+  type: StringUnion(['line', 'card', 'card-gutter', 'text', 'rounded', 'capsule'], {
+    title: 'Type',
+    category: Category.Style,
   }),
 };
