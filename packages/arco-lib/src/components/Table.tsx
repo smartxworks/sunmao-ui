@@ -6,7 +6,6 @@ import {
   Table as BaseTable,
   PaginationProps,
 } from "@arco-design/web-react";
-import { implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
@@ -17,6 +16,7 @@ import {
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
+  implementRuntimeComponent
 } from "@sunmao-ui/runtime";
 import { TableInstance } from "@arco-design/web-react/es/Table/table";
 
@@ -53,7 +53,6 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
       dataIndex: "name",
       sorter: true,
       sortDirections: ["ascend", "descend"],
-      defaultSortOrder: "ascend",
       type: "text",
       filter: true,
       displayValue: '',
