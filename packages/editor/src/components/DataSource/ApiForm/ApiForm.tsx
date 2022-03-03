@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
+import { FetchTraitPropertiesSchema, watch } from '@sunmao-ui/runtime';
 import { Static } from '@sinclair/typebox';
 import {
   Box,
@@ -48,13 +48,14 @@ const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
   const { editorStore, stateManager } = services;
+  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({});
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
   const [tabIndex, setTabIndex] = useState(0);
   const { registry, eventBus } = services;
   const result = useMemo(() => {
-    return store[api.id]?.fetch ?? {};
-  }, [api.id, store]);
+    return reactiveStore[api.id]?.fetch ?? {};
+  }, [api.id, reactiveStore]);
   const traitIndex = useMemo(
     () => api.traits.findIndex(({ type }) => type === 'core/v1/fetch'),
     [api.traits]
@@ -137,6 +138,13 @@ export const ApiForm: React.FC<Props> = props => {
       setName(api.id);
     }
   }, [api.id]);
+  useEffect(() => {
+    const stop = watch(store, newValue => {
+      setReactiveStore({ ...newValue });
+    });
+
+    return stop;
+  }, [store]);
 
   return (
     <VStack
