@@ -1,19 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { Switch } from '../UI';
 
 export const BooleanField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;
-
-  useEffect(() => {
-    if (value !== undefined && typeof value !== 'boolean') {
-      onChange(false);
-    }
-  }, [value, onChange]);
+  const onValueChange = useCallback((event)=> {
+    onChange(event.currentTarget.checked);
+  }, []);
 
   return (
-    <Switch isChecked={value} onChange={evt => onChange(evt.currentTarget.checked)} />
+    <Switch isChecked={value} onChange={onValueChange} />
   );
 };
 

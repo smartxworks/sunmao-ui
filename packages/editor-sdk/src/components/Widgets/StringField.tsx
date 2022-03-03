@@ -13,14 +13,7 @@ type StringFieldWidgetOptionsType = Static<typeof StringFieldWidgetOptions>;
 
 const EnumField: React.FC<WidgetProps> = props => {
   const { schema, value, onChange } = props;
-
   const options = (schema.enum || []).map(item => item?.toString() || '');
-  useEffect(() => {
-    // reset to valid enum
-    if (value !== undefined && options.length && !options.includes(value)) {
-      onChange(options[0]);
-    }
-  }, [options, value, onChange]);
 
   return (
     <Select value={value} onChange={evt => onChange(evt.currentTarget.value)}>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import {
@@ -11,18 +11,18 @@ import {
 
 export const NumberField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;
-
-  useEffect(() => {
-    if (value !== undefined && typeof value !== 'number') {
-      onChange(1);
-    }
-  }, [value, onChange]);
+  const [stringValue, setStringValue] = React.useState(String(value));
 
   return (
     <NumberInput
-      value={value}
-      onChange={(_, van) => {
-        onChange(van);
+      value={stringValue}
+      onChange={(stringValue, numberValue) => {
+        setStringValue(stringValue);
+        if (value !== undefined && typeof value !== 'number') {
+          onChange(1);
+        } else {
+          onChange(numberValue);
+        }
       }}
     >
       <NumberInputField />
