@@ -29,8 +29,8 @@ const MenuStateSchema = Type.Object({
 });
 
 const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = props => {
-  const { elementRef, customStyle, callbackMap, mergeState, defaultActiveKey } = props;
-  const { items = [], ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, callbackMap, mergeState } = props;
+  const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
   const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
 
   useEffect(() => {

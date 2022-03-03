@@ -60,6 +60,7 @@ export const getComponentProps = <
     subscribeMethods,
     getElement,
     elementRef,
+    hooks,
     /* eslint-enable @typescript-eslint/no-unused-vars */
     ...rest
   } = props;
