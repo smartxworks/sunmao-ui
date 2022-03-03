@@ -5,20 +5,20 @@ import {
   Input,
   Table as BaseTable,
   PaginationProps,
-} from "@arco-design/web-react";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TablePropsSchema, ColumnSchema } from "../generated/types/Table";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { sortBy } from "lodash-es";
+} from '@arco-design/web-react';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { TablePropsSchema, ColumnSchema } from '../generated/types/Table';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
-  implementRuntimeComponent
-} from "@sunmao-ui/runtime";
-import { TableInstance } from "@arco-design/web-react/es/Table/table";
+  implementRuntimeComponent,
+} from '@sunmao-ui/runtime';
+import { TableInstance } from '@arco-design/web-react/es/Table/table';
 
 const TableStateSchema = Type.Object({
   selectedRows: Type.Array(Type.Any()),
@@ -28,7 +28,7 @@ const TableStateSchema = Type.Object({
 
 type SortRule = {
   field: string;
-  direction?: "ascend" | "descend";
+  direction?: 'ascend' | 'descend';
 };
 
 type ColumnProperty = Static<typeof ColumnSchema> & {
@@ -46,62 +46,68 @@ type filterDropdownParam = {
   confirm?: Function;
 };
 
+const rowSelectionTypeMap: Record<string, 'checkbox' | 'radio' | undefined> = {
+  multiple: 'checkbox',
+  single: 'radio',
+  disable: undefined,
+};
+
 export const exampleProperties: Static<typeof TablePropsSchema> = {
   columns: [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
       sorter: true,
-      sortDirections: ["ascend", "descend"],
-      type: "text",
+      sortDirections: ['ascend', 'descend'],
+      type: 'text',
       filter: true,
       displayValue: '',
     },
     {
-      title: "Salary",
-      dataIndex: "salary",
+      title: 'Salary',
+      dataIndex: 'salary',
       sorter: true,
       filter: false,
-      type: "text",
+      type: 'text',
       displayValue: '',
     },
     {
-      title: "Time",
-      dataIndex: "time",
+      title: 'Time',
+      dataIndex: 'time',
       sorter: true,
       filter: false,
-      type: "text",
+      type: 'text',
       displayValue: '',
     },
     {
-      title: "Link",
-      dataIndex: "link",
-      type: "link",
+      title: 'Link',
+      dataIndex: 'link',
+      type: 'link',
       filter: true,
       sorter: false,
       displayValue: '',
     },
     {
-      title: "CustomComponent",
-      dataIndex: "customComponent",
-      type: "module",
+      title: 'CustomComponent',
+      dataIndex: 'customComponent',
+      type: 'module',
       filter: false,
       sorter: false,
       module: {
-        id: "clistItemName-{{$listItem.id}}",
+        id: 'clistItemName-{{$listItem.id}}',
         handlers: [],
         properties: [],
-        type: "core/v1/text",
+        type: 'core/v1/text',
       },
       displayValue: '',
     },
   ],
   data: Array(13)
-    .fill("")
+    .fill('')
     .map((_, index) => ({
       key: `key ${index}`,
-      name: `${Math.random() > 0.5 ? "Kevin Sandra" : "xzdry"}${index}`,
-      link: `link${Math.random() > 0.5 ? "-A" : "-B"}`,
+      name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'xzdry'}${index}`,
+      link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
       time: `2021-${Math.floor(Math.random() * 11)}-11T${Math.floor(
         Math.random() * 23
@@ -113,53 +119,44 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
   tableLayoutFixed: false,
   borderCell: false,
   stripe: false,
-  size: "default",
-  pagePosition: "bottomCenter",
-  rowSelectionType: "radio",
+  size: 'default',
+  pagePosition: 'bottomCenter',
+  rowSelectionType: 'single',
   border: true,
   loading: false,
 };
 
 export const Table = implementRuntimeComponent({
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
     exampleProperties,
     annotations: {
-      category: "Display",
+      category: 'Display',
     },
-    name: "table",
-    displayName: "Table",
+    name: 'table',
+    displayName: 'Table',
   },
   spec: {
     properties: TablePropsSchema,
     state: TableStateSchema,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
+    styleSlots: ['content'],
     events: [],
   },
-})((props) => {
-  const {
-    getElement,
-    app,
-    mergeState,
-    customStyle,
-    services,
-    data,
-    component,
-  } = props;
+})(props => {
+  const { getElement, app, mergeState, customStyle, services, data, component } = props;
 
   const ref = useRef<TableInstance | null>(null);
   const { pagination, ...cProps } = getComponentProps(props);
 
-  const rowSelectionType: "checkbox" | "radio" | undefined =
-    cProps.rowSelectionType === "default" ? undefined : cProps.rowSelectionType;
+  const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortRule, setSortRule] = useState<SortRule>({
-    field: "name",
+    field: 'name',
     direction: undefined,
   });
   const [filterRule, setFilterRule] = useState();
@@ -167,9 +164,9 @@ export const Table = implementRuntimeComponent({
   const filteredData = useMemo(() => {
     let filteredData = Array.isArray(data) ? data : [];
     if (filterRule) {
-      Object.keys(filterRule).forEach((colIdx) => {
+      Object.keys(filterRule).forEach(colIdx => {
         const value = filterRule[colIdx][0];
-        filteredData = filteredData?.filter((row) =>
+        filteredData = filteredData?.filter(row =>
           value ? row[colIdx].indexOf(value) !== -1 : true
         );
       });
@@ -183,7 +180,7 @@ export const Table = implementRuntimeComponent({
     }
 
     const sorted = sortBy(filteredData, sortRule.field);
-    return sortRule.direction === "ascend" ? sorted : sorted.reverse();
+    return sortRule.direction === 'ascend' ? sorted : sorted.reverse();
   }, [filteredData, sortRule]);
 
   const { pageSize } = pagination;
@@ -214,8 +211,8 @@ export const Table = implementRuntimeComponent({
               ref={inputRef}
               searchButton
               placeholder="Please input and enter"
-              value={filterKeys?.[0] || ""}
-              onChange={(value) => {
+              value={filterKeys?.[0] || ''}
+              onChange={value => {
                 setFilterKeys && setFilterKeys(value ? [value] : []);
               }}
               onSearch={() => {
@@ -228,21 +225,17 @@ export const Table = implementRuntimeComponent({
     }
 
     newColumn.render = (ceilValue: any, record: any, index: number) => {
-      const evaledColumn: ColumnProperty = services.stateManager.deepEval(
-        column,
-        true,
-        { [LIST_ITEM_EXP]: record }
-      );
+      const evaledColumn: ColumnProperty = services.stateManager.deepEval(column, true, {
+        [LIST_ITEM_EXP]: record,
+      });
       const value = record[evaledColumn.dataIndex];
 
       let colItem;
 
       switch (evaledColumn.type) {
-        case "button":
+        case 'button':
           const handleClick = () => {
-            const rawColumn = (
-              component.properties.columns as ColumnProperty[]
-            )[i];
+            const rawColumn = (component.properties.columns as ColumnProperty[])[i];
             if (!rawColumn.btnCfg) return;
             const evaledButtonConfig = services.stateManager.deepEval(
               rawColumn.btnCfg,
@@ -250,8 +243,8 @@ export const Table = implementRuntimeComponent({
               { [LIST_ITEM_EXP]: record }
             );
 
-            evaledButtonConfig.handlers.forEach((handler) => {
-              services.apiService.send("uiMethod", {
+            evaledButtonConfig.handlers.forEach(handler => {
+              services.apiService.send('uiMethod', {
                 componentId: handler.componentId,
                 name: handler.method.name,
                 parameters: handler.method.parameters || {},
@@ -268,12 +261,10 @@ export const Table = implementRuntimeComponent({
             </Button>
           );
           break;
-        case "link":
-          colItem = (
-            <Link href={value}>{evaledColumn.displayValue || value}</Link>
-          );
+        case 'link':
+          colItem = <Link href={value}>{evaledColumn.displayValue || value}</Link>;
           break;
-        case "module":
+        case 'module':
           const evalScope = {
             [LIST_ITEM_EXP]: record,
             [LIST_ITEM_INDEX_EXP]: index,
@@ -283,10 +274,10 @@ export const Table = implementRuntimeComponent({
               app={app}
               evalScope={evalScope}
               handlers={evaledColumn.module?.handlers || []}
-              id={evaledColumn.module?.id || ""}
+              id={evaledColumn.module?.id || ''}
               properties={evaledColumn.module?.properties || {}}
               services={services}
-              type={evaledColumn.module?.type || ""}
+              type={evaledColumn.module?.type || ''}
             />
           );
           break;
@@ -301,7 +292,7 @@ export const Table = implementRuntimeComponent({
 
   const handleChange = (
     pagination: PaginationProps,
-    sorter: { field?: string; direction?: "descend" | "ascend" },
+    sorter: { field?: string; direction?: 'descend' | 'ascend' },
     filter: any
   ) => {
     const { current } = pagination;

@@ -23,11 +23,11 @@ export const basicUsage: Application = {
             },
             {
               title: 'Age',
-              dataIndex: 'age',
+              dataIndex: 'id',
               sorter: true,
               filter: false,
               type: 'text',
-              displayValue: '',
+              displayValue: '{{$listItem.age}}',
             },
             {
               title: 'BirthDay',
@@ -63,7 +63,7 @@ export const basicUsage: Application = {
           stripe: false,
           size: 'default',
           pagePosition: 'bottomCenter',
-          rowSelectionType: 'default',
+          rowSelectionType: 'disable',
           border: true,
           loading: '{{!api0.fetch.data}}',
         },
