@@ -58,6 +58,8 @@ export const getComponentProps = <
     effects,
     mergeState,
     subscribeMethods,
+    getElement,
+    elementRef,
     /* eslint-enable @typescript-eslint/no-unused-vars */
     ...rest
   } = props;
