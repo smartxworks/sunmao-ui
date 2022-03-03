@@ -40,7 +40,6 @@
   },
   "devDependencies": {
     "@sunmao-ui/chakra-ui-lib": "^0.2.1",
-    "@sunmao-ui/editor": "^0.4.1",
     "@types/lodash": "^4.14.170",
     "@types/lodash-es": "^4.17.5",
     "@types/react": "^17.0.0",
@@ -70,8 +69,7 @@
     ]
   },
   "peerDependencies": {
-    "@sunmao-ui/core": "^0.4.0",
-    "@sunmao-ui/runtime": "^0.4.0",
-    "@sunmao-ui/editor": "^0.4.0"
+    "@sunmao-ui/core": "^0.4.1",
+    "@sunmao-ui/runtime": "^0.4.1"
   }
 }
