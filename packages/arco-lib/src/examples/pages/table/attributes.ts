@@ -104,7 +104,7 @@ export const attributes: Application = {
             },
             {
                 "id": "border_switch",
-                "type": "arco/v1/Switch",
+                "type": "arco/v1/switch",
                 "properties": {
                     "defaultChecked": false,
                     "disabled": false,
@@ -168,7 +168,7 @@ export const attributes: Application = {
             },
             {
                 "id": "border_cell_switch",
-                "type": "arco/v1/Switch",
+                "type": "arco/v1/switch",
                 "properties": {
                     "defaultChecked": false,
                     "disabled": false,
@@ -232,7 +232,7 @@ export const attributes: Application = {
             },
             {
                 "id": "strip_switch",
-                "type": "arco/v1/Switch",
+                "type": "arco/v1/switch",
                 "properties": {
                     "defaultChecked": false,
                     "disabled": false,
@@ -296,7 +296,7 @@ export const attributes: Application = {
             },
             {
                 "id": "loading_switch",
-                "type": "arco/v1/Switch",
+                "type": "arco/v1/switch",
                 "properties": {
                     "defaultChecked": false,
                     "disabled": false,
@@ -360,7 +360,7 @@ export const attributes: Application = {
             },
             {
                 "id": "layout_fixed_switch",
-                "type": "arco/v1/Switch",
+                "type": "arco/v1/switch",
                 "properties": {
                     "defaultChecked": false,
                     "disabled": false,
@@ -761,7 +761,7 @@ export const attributes: Application = {
                     "stripe": "{{strip_switch.value}}",
                     "size": "{{radio10.checkedValue}}",
                     "pagePosition": "{{page_position.checkedValue}}",
-                    "rowSelectionType": "{{radio3.checkedValue}}",
+                    "rowSelectionType": "disable",
                     "border": "{{border_switch.value}}",
                     "loading": "{{loading_switch.value}}"
                 },

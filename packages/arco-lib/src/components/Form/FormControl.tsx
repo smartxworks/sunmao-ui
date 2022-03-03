@@ -10,6 +10,19 @@ import { FormControlErrorMessage } from './FormControlErrorMessage';
 const FormControlPropsSchema = Type.Object(BaseFormControlPropsSchema);
 const BaseFormControl = Form.Item;
 
+const FormControlStyle = css`
+  margin-right: 10px;
+  svg {
+    display: inherit;
+  }
+  & * {
+    word-wrap: normal;
+  }
+  & label {
+    white-space: inherit !important;
+  }
+`;
+
 const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = props => {
   const { label, errorMsg, ...cProps } = getComponentProps(props);
   const { elementRef, slotsElements, customStyle } = props;
@@ -17,19 +30,12 @@ const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = pr
   return (
     <BaseFormControl
       label={<Text cssStyle="display:inline-block" value={label} />}
-      className={css`
-        ${customStyle?.content}
-        margin-right:10px;
-        svg {
-          display: inherit;
-        }
-        & * {
-          word-wrap: normal;
-        }
-        & label {
-          white-space: inherit !important;
-        }
-      `}
+      className={cx(
+        FormControlStyle,
+        css`
+          ${customStyle?.content}
+        `
+      )}
       ref={elementRef}
       {...cProps}
     >
@@ -45,8 +51,8 @@ const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = pr
 
 const exampleProperties: Static<typeof FormControlPropsSchema> = {
   label: {
-    format: 'md',
-    raw: '**label**',
+    format: 'plain',
+    raw: 'label',
   },
   layout: 'horizontal',
   required: false,

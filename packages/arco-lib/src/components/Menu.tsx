@@ -1,14 +1,18 @@
-import { Menu as BaseMenu } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { MenuPropsSchema as BaseMenuPropsSchema } from "../generated/types/Menu";
-import { useEffect, useState } from "react";
-import { Category } from "../constants/category";
+import { Menu as BaseMenu } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { MenuPropsSchema as BaseMenuPropsSchema } from '../generated/types/Menu';
+import { useEffect, useState } from 'react';
+import { Category } from '../constants/category';
 
 const MenuPropsSchema = Type.Object({
   ...BaseMenuPropsSchema,
+  defaultActiveKey: Type.String({
+    title: 'Default Active Key',
+    category: Category.Basic,
+  }),
   items: Type.Array(
     Type.Object({
       key: Type.String(),
@@ -16,7 +20,7 @@ const MenuPropsSchema = Type.Object({
       disabled: Type.Optional(Type.Boolean()),
     }),
     {
-      category: Category.Data,
+      category: Category.Basic,
     }
   ),
 });
@@ -24,27 +28,29 @@ const MenuStateSchema = Type.Object({
   activeKey: Type.Optional(Type.String()),
 });
 
-const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
+const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = props => {
   const { elementRef, customStyle, callbackMap, mergeState } = props;
-  const { items = [], ...cProps } = getComponentProps(props);
-  const [activeKey, setActiveKey] = useState<string>();
+  const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
+  const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
+
   useEffect(() => {
     mergeState({
       activeKey,
     });
-  }, [activeKey]);
+  }, [activeKey, mergeState]);
 
   return (
     <BaseMenu
       ref={elementRef}
+      defaultSelectedKeys={[defaultActiveKey]}
       className={css(customStyle?.content)}
-      onClickMenuItem={(key) => {
+      onClickMenuItem={key => {
         setActiveKey(key);
         callbackMap?.onClick?.();
       }}
       {...cProps}
     >
-      {items.map((item) => (
+      {items.map(item => (
         <BaseMenu.Item key={item.key} disabled={item.disabled}>
           {item.text}
         </BaseMenu.Item>
@@ -54,24 +60,24 @@ const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof MenuPropsSchema> = {
-  theme: "dark",
-  mode: "vertical",
+  mode: 'vertical',
   autoOpen: false,
   collapse: false,
-  accordion: false,
-  selectable: true,
-  ellipsis: false,
   autoScrollIntoView: false,
   hasCollapseButton: false,
-  items: [{ key: "key1", text: "text1" }],
+  items: [
+    { key: 'key1', text: 'item1' },
+    { key: 'key2', text: 'item2' },
+  ],
+  defaultActiveKey: 'key1',
 };
 
 export const Menu = implementRuntimeComponent({
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "menu",
-    displayName: "Menu",
+    name: 'menu',
+    displayName: 'Menu',
     exampleProperties,
   },
   spec: {
@@ -79,7 +85,7 @@ export const Menu = implementRuntimeComponent({
     state: MenuStateSchema,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
-    events: ["onClick"],
+    styleSlots: ['content'],
+    events: ['onClick'],
   },
 })(MenuImpl);
