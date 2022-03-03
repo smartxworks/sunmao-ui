@@ -31,10 +31,12 @@
     "url": "https://github.com/webzard-io/sunmao-ui/issues"
   },
   "dependencies": {
+    "@emotion/react": "^11.1.1",
+    "@emotion/css": "^11.7.1",
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.7.1",
-    "@emotion/css": "^11.7.1",
     "@sunmao-ui/chakra-ui-lib": "^0.2.1",
+    "@sunmao-ui/arco-lib": "^0.0.7",
     "@sunmao-ui/core": "^0.4.1",
     "@sunmao-ui/runtime": "^0.4.1",
     "acorn": "^8.7.0",
@@ -83,5 +85,20 @@
       "eslint --fix",
       "git add"
     ]
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.1.1",
+    "@emotion/css": "^11.7.1",
+    "@sunmao-ui/core": "^0.4.0",
+    "@sunmao-ui/runtime": "^0.4.0",
+    "@sunmao-ui/chakra-ui-lib": "^0.2.0",
+    "@sunmao-ui/arco-lib": "^0.0.7",
+    "@chakra-ui/icons": "^1.0.15",
+    "@chakra-ui/react": "^1.7.1",
+    "immer": "^9.0.6",
+    "formik": "^2.2.9",
+    "lodash-es": "^4.17.21",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   }
 }
