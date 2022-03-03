@@ -1,5 +1,5 @@
 import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
-import { HStack, IconButton, VStack } from '@chakra-ui/react';
+import { HStack, IconButton, VStack } from '@sunmao-ui/editor-sdk';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';

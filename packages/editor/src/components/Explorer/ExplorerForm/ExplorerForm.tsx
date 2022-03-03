@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Text, VStack } from '@chakra-ui/react';
+import { Button, Text, VStack } from '@sunmao-ui/editor-sdk';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { AppMetaDataForm, AppMetaDataFormData } from './AppMetaDataForm';
 import { ModuleMetaDataForm, ModuleMetaDataFormData } from './ModuleMetaDataForm';

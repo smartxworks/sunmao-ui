@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
-import { Select } from '@chakra-ui/react';
+import { Select } from '../UI';
 import { Type, Static } from '@sinclair/typebox';
 import { ExpressionWidget, ExpressionWidgetOptionsSchema } from './ExpressionWidget';
 

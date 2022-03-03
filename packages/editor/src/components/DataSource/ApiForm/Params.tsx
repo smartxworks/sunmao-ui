@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
-import { KeyValueWidget } from '../../widgets/KeyValueWidget';
+import { Box, KeyValueWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
-import { Type , Static } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
-import { mergeWidgetOptionsIntoSchema } from '../../../utils/widget';
 
 type Values = Static<typeof FetchTraitPropertiesSchema>;
 interface Props {

@@ -1,8 +1,7 @@
 import React from 'react';
-import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, VStack , KeyValueEditor } from '@sunmao-ui/editor-sdk';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
-import { KeyValueEditor } from '../../KeyValueEditor';
 import { EditorServices } from '../../../types';
 
 export type ModuleMetaDataFormData = {

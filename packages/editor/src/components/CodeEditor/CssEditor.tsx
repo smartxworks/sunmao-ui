@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import CodeMirror from 'codemirror';
-import { Box } from '@chakra-ui/react';
+import { Box } from '@sunmao-ui/editor-sdk';
 import { css } from '@emotion/css';
 import 'codemirror/mode/css/css';
 import 'codemirror/addon/fold/brace-fold';

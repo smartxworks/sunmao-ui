@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { SchemaField } from './SchemaField';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { sortBy, groupBy } from 'lodash-es';
 import {
@@ -10,7 +10,7 @@ import {
   AccordionIcon,
   Box,
   Accordion,
-} from '@chakra-ui/react';
+} from '../UI';
 import { PRESET_PROPERTY_CATEGORY } from '../../constants/category';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<

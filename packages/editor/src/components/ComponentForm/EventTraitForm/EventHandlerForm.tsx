@@ -3,15 +3,15 @@ import {
   Box,
   IconButton,
   VStack,
-} from '@chakra-ui/react';
+  EventWidget,
+  mergeWidgetOptionsIntoSchema,
+} from '@sunmao-ui/editor-sdk';
 import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-import { EventWidget } from '../../widgets/EventWidget';
-import { mergeWidgetOptionsIntoSchema } from '../../../utils/widget';
 
 type Props = {
   component: ComponentSchema;

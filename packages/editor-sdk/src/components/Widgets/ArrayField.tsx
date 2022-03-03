@@ -1,8 +1,8 @@
 import React from 'react';
 import { SchemaField } from './SchemaField';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
-import { Box, ButtonGroup, IconButton, Flex } from '@chakra-ui/react';
+import { Box, ButtonGroup, IconButton, Flex } from '../UI';
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';

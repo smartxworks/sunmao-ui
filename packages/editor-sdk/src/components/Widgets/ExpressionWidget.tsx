@@ -10,10 +10,10 @@ import {
   isNull,
 } from 'lodash-es';
 import { Type, Static } from '@sinclair/typebox';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
-import { ExpressionEditor, ExpressionEditorHandle } from '../CodeEditor';
-import { isExpression } from '../../validator/utils';
+import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
+import { isExpression } from '../../utils/validator';
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {

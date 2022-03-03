@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Select, Switch } from '../UI';
 import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
 import { GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
-import { WidgetProps } from '../../types';
+import { ComponentSchema } from '@sunmao-ui/core';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
 import { KeyValueWidget } from './KeyValueWidget';
-import { ComponentModel } from '../../AppModel/ComponentModel';
-import { AppModel } from '../../AppModel/AppModel';
-import { ComponentId } from '../../AppModel/IAppModel';
 import { observer } from 'mobx-react-lite';
 
 const EventWidgetOptions = Type.Object({});
@@ -29,6 +27,21 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         onChange(values);
       },
     });
+    const findMethodsByComponent = (component: ComponentSchema)=> {
+      const componentMethods = Object.entries(
+        registry.getComponentByType(component.type).spec.methods
+      ).map(([name, parameters]) => ({
+        name,
+        parameters,
+      }));
+      const traitMethods = component.traits
+        .map(trait =>
+          registry.getTraitByType(trait.type).spec.methods
+        )
+        .flat();
+
+        return ([] as any[]).concat(componentMethods, traitMethods);
+    };
 
     const eventTypes = useMemo(() => {
       return registry.getComponentByType(component.type).spec.events;
@@ -49,9 +62,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
           schema = targetMethod?.parameters;
         } else {
           const targetComponent = appModelManager.appModel.getComponentById(
-            value.componentId as ComponentId
+            value.componentId
           );
-          const targetMethod = (targetComponent?.methods ?? []).find(
+          const targetMethod = (findMethodsByComponent(targetComponent) ?? []).find(
             ({ name }) => name === formik.values.method.name
           );
 
@@ -84,13 +97,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
           const component = components.find(c => c.id === componentId);
 
           if (component) {
-            const componentModel = new ComponentModel(
-              new AppModel([], registry),
-              component,
-              registry
-            );
+            const methodNames: string[] = findMethodsByComponent(component).map(({ name }) => name);
 
-            setMethods(componentModel.methods.map(m => m.name));
+            setMethods(methodNames);
           }
         }
       },

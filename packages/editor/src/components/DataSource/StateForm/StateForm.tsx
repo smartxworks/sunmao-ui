@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { VStack, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { VStack, FormControl, FormLabel, Input } from '@sunmao-ui/editor-sdk';
 import { useFormik } from 'formik';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';

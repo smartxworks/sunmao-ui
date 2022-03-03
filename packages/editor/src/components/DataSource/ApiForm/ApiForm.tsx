@@ -17,7 +17,9 @@ import {
   Input,
   Button,
   CloseButton,
-} from '@chakra-ui/react';
+  ExpressionWidget,
+  WidgetProps,
+} from '@sunmao-ui/editor-sdk';
 import { EditIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { Basic } from './Basic';
@@ -25,10 +27,8 @@ import { Headers as HeadersForm } from './Headers';
 import { Params } from './Params';
 import { Body } from './Body';
 import { Response as ResponseInfo } from './Response';
-import { EditorServices, WidgetProps } from '../../../types';
+import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
-import { ExpressionWidget } from '../../widgets/ExpressionWidget';
-import { ExpressionEditorProps } from '../../CodeEditor/ExpressionEditor';
 
 enum TabIndex {
   Basic,
@@ -60,7 +60,7 @@ export const ApiForm: React.FC<Props> = props => {
     [api.traits]
   );
   const trait = useMemo(() => api.traits[traitIndex], [api.traits, traitIndex]);
-  const compactOptions = useMemo<ExpressionEditorProps['compactOptions']>(
+  const compactOptions = useMemo(
     () => ({
       height: '40px',
       paddingY: '6px',
@@ -242,7 +242,9 @@ export const ApiForm: React.FC<Props> = props => {
             <TabPanel>
               <HeadersForm
                 api={api}
-                schema={FetchTraitPropertiesSchema.properties.headers as WidgetProps['schema']}
+                schema={
+                  FetchTraitPropertiesSchema.properties.headers as WidgetProps['schema']
+                }
                 services={services}
                 formik={formik}
               />
@@ -253,7 +255,9 @@ export const ApiForm: React.FC<Props> = props => {
             <TabPanel>
               <Body
                 api={api}
-                schema={FetchTraitPropertiesSchema.properties.body as WidgetProps['schema']}
+                schema={
+                  FetchTraitPropertiesSchema.properties.body as WidgetProps['schema']
+                }
                 services={services}
                 formik={formik}
               />

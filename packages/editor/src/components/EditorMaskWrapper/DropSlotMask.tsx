@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Box } from '@chakra-ui/react';
+import { Box } from '@sunmao-ui/editor-sdk';
 import { SlotDropArea } from './SlotDropArea';
 import { EditorServices } from '../../types';
 

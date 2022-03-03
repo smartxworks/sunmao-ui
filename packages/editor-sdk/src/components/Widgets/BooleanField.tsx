@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
-import { Switch } from '@chakra-ui/react';
+import { Switch } from '../UI';
 
 export const BooleanField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { flatten } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
-import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Textarea, VStack , SchemaField } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
-import { SchemaField } from '../widgets/SchemaField';
 import { genOperation } from '../../operations';
 import ErrorBoundary from '../ErrorBoundary';
 import { StyleTraitForm } from './StyleTraitForm';

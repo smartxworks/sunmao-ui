@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
-import { Box } from '@chakra-ui/react';
+import { Box } from '@sunmao-ui/editor-sdk';
 import { EditorMask } from './EditorMask';
 import { throttle } from 'lodash-es';
 import { ExplorerMenuTabs } from '../../services/enum';

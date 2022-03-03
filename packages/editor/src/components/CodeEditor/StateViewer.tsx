@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Input } from '@chakra-ui/react';
+import { Box, Input } from '@sunmao-ui/editor-sdk';
 import { css } from '@emotion/css';
 import { JSONTree } from 'react-json-tree';
 import { pickBy } from 'lodash-es';

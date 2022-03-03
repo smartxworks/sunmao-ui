@@ -1,14 +1,14 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, HStack, IconButton, Input, VStack } from '../UI';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState, useMemo, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
-import { SchemaField } from './widgets/SchemaField';
-import { ExpressionWidget } from './widgets/ExpressionWidget';
-import { WidgetProps } from '../types';
-import { mergeWidgetOptionsIntoSchema } from '../utils/widget';
-import { ExpressionEditorProps } from './CodeEditor/ExpressionEditor';
+import { SchemaField } from '../Widgets/SchemaField';
+import { ExpressionWidget } from '../Widgets/ExpressionWidget';
+import { WidgetProps } from '../../types/widget';
+import { mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { ExpressionEditorProps } from './ExpressionEditor';
 
 const IGNORE_SCHEMA_TYPES = ['array', 'object'];
 

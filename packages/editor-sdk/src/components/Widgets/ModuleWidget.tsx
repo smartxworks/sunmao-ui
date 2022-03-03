@@ -1,6 +1,6 @@
-import { Box, FormControl, FormLabel, Select } from '@chakra-ui/react';
+import { Box, FormControl, FormLabel, Select } from '../UI';
 import React, { useMemo } from 'react';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { SchemaField } from './SchemaField';
 

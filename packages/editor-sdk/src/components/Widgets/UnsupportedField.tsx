@@ -1,5 +1,5 @@
 import React from 'react';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 
 export const UnsupportedField: React.FC<WidgetProps> = props => {

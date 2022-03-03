@@ -1,4 +1,4 @@
-import { Flex, Box, ChakraProvider, Button } from '@chakra-ui/react';
+import { Flex, Box, ChakraProvider, Button } from '@sunmao-ui/editor-sdk';
 import { Application } from '@sunmao-ui/core';
 import { Registry } from '@sunmao-ui/runtime';
 import React, { StrictMode, useState } from 'react';

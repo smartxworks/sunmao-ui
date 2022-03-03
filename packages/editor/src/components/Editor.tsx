@@ -6,7 +6,7 @@ import {
   initSunmaoUI,
   SunmaoLib,
 } from '@sunmao-ui/runtime';
-import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
+import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@sunmao-ui/editor-sdk';
 import { observer } from 'mobx-react-lite';
 import { StructureTree } from './StructureTree';
 import { ComponentList } from './ComponentsList';

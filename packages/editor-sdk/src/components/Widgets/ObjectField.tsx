@@ -1,7 +1,7 @@
 import React from 'react';
 import { Type, Static } from '@sinclair/typebox';
 import { SchemaField } from './SchemaField';
-import { WidgetProps } from '../../types';
+import { WidgetProps } from '../../types/widget';
 import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
 

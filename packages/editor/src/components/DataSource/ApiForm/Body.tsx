@@ -1,12 +1,15 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
-import { KeyValueWidget } from '../../widgets/KeyValueWidget';
+import {
+  Box,
+  KeyValueWidget,
+  WidgetProps,
+  mergeWidgetOptionsIntoSchema,
+} from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
-import { EditorServices, WidgetProps } from '../../../types';
-import { mergeWidgetOptionsIntoSchema } from '../../../utils/widget';
+import { EditorServices } from '../../../types';
 
 type Values = Static<typeof FetchTraitPropertiesSchema>;
 interface Props {
@@ -31,7 +34,7 @@ export const Body: React.FC<Props> = props => {
         component={api}
         schema={mergeWidgetOptionsIntoSchema(schema, {
           minNum: 1,
-          isShowHeader: true
+          isShowHeader: true,
         })}
         level={1}
         value={values.body}

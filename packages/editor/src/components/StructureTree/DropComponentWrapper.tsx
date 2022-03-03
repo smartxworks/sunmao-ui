@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box } from '@sunmao-ui/editor-sdk';
 import React, { useMemo, useRef, useState } from 'react';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';

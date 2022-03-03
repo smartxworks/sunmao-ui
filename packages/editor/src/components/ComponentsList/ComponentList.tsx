@@ -9,7 +9,7 @@ import {
   AccordionIcon,
   Input,
   Tag,
-} from '@chakra-ui/react';
+} from '@sunmao-ui/editor-sdk';
 import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
 import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';

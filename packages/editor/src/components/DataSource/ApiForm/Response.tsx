@@ -8,7 +8,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   Spinner,
-} from '@chakra-ui/react';
+} from '@sunmao-ui/editor-sdk';
 import { Error as ErrorInfo } from './Error';
 import { Result } from './Result';
 

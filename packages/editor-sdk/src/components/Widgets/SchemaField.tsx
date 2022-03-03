@@ -8,13 +8,17 @@ import {
   FormErrorMessage,
   Button,
   Tooltip,
-} from '@chakra-ui/react';
+} from '../UI';
 import { isEmpty } from 'lodash-es';
 import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
-import { isExpression as _isExpression } from '../../validator/utils';
-import { WidgetProps } from '../../types';
-import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
-import { shouldDisplayLabel, getCodeMode } from './utils';
+import { isExpression as _isExpression } from '../../utils/validator';
+import { WidgetProps } from '../../types/widget';
+import {
+  implementWidget,
+  mergeWidgetOptionsIntoSchema,
+  shouldDisplayLabel,
+  getCodeMode,
+} from '../../utils/widget';
 import { ExpressionWidget, ExpressionWidgetOptionsSchema } from './ExpressionWidget';
 import { StringField } from './StringField';
 import { ObjectField } from './ObjectField';
@@ -118,7 +122,7 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
   const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
   const label = title ?? '';
   const {
-    appModelManager: { appModel },
+    widgetManager,
   } = services;
   const [isExpression, setIsExpression] = useState(() => _isExpression(value));
   const isDisplayLabel =
@@ -136,8 +140,12 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
   // customize widgets
   if (isExpression) {
     Component = ExpressionWidget;
-  } else if (schema.widget && appModel.widgets[schema.widget]) {
-    Component = appModel.widgets[schema.widget].impl;
+  } else if (schema.widget) {
+    const widget = widgetManager.getWidget(schema.widget);
+
+    if (widget) {
+      Component = widget.impl;
+    }
   } else if (level === 0) {
     Component = CategoryWidget;
     showAsideExpressionButton = false;

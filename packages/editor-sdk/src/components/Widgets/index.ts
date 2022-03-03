@@ -1,4 +1,4 @@
-import { Widget } from '../../types';
+import { Widget } from '../../types/widget';
 import schemaField from './SchemaField';
 import arrayField from './ArrayField';
 import booleanField from './BooleanField';
@@ -14,6 +14,20 @@ import moduleWidget from './ModuleWidget';
 import keyValueWidget from './KeyValueWidget';
 import eventWidget from './EventWidget';
 
+export * from './SchemaField';
+export * from './ArrayField';
+export * from './BooleanField';
+export * from './StringField';
+export * from './MultiSchemaField';
+export * from './NullField';
+export * from './NumberField';
+export * from './ObjectField';
+export * from './CategoryWidget';
+export * from './UnsupportedField';
+export * from './ExpressionWidget';
+export * from './ModuleWidget';
+export * from './KeyValueWidget';
+export * from './EventWidget';
 export const widgets: Widget<any>[] = [
   schemaField,
   arrayField,
