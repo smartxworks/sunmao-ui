@@ -162,7 +162,7 @@ export const sortAndFilter: Application = {
                     "stripe": false,
                     "size": "default",
                     "pagePosition": "bottomCenter",
-                    "rowSelectionType": "default",
+                    "rowSelectionType": "disable",
                     "border": false,
                     "loading": false
                 },

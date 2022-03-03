@@ -761,7 +761,7 @@ export const attributes: Application = {
                     "stripe": "{{strip_switch.value}}",
                     "size": "{{radio10.checkedValue}}",
                     "pagePosition": "{{page_position.checkedValue}}",
-                    "rowSelectionType": "{{radio3.checkedValue}}",
+                    "rowSelectionType": "disable",
                     "border": "{{border_switch.value}}",
                     "loading": "{{loading_switch.value}}"
                 },

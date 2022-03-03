@@ -113,7 +113,7 @@ export const TablePropsSchema = Type.Object({
     title: 'Show Loading',
     category: Category.Basic,
   }),
-  rowSelectionType: StringUnion(['checkbox', 'radio', 'default'], {
+  rowSelectionType: StringUnion(['multiple', 'single', 'disable'], {
     title: 'Row Selection Type',
     category: Category.Basic,
   }),

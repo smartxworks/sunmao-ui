@@ -26,18 +26,23 @@ export const selection: Application = {
         properties: {
           options: [
             {
-              label: 'checkbox',
-              value: 'checkbox',
+              label: 'multiple',
+              value: 'multiple',
               disabled: false,
             },
             {
-              label: 'radio',
-              value: 'radio',
+              label: 'single',
+              value: 'single',
+              disabled: false,
+            },
+            {
+              label: 'disable',
+              value: 'disable',
               disabled: false,
             },
           ],
           type: 'button',
-          defaultCheckedValue: 'checkbox',
+          defaultCheckedValue: 'single',
           direction: 'horizontal',
           size: 'default',
         },
