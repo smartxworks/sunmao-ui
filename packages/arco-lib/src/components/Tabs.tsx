@@ -1,17 +1,17 @@
-import { Tabs as BaseTabs } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TabsPropsSchema as BaseTabsPropsSchema } from "../generated/types/Tabs";
-import React, { useEffect, useRef, useState } from "react";
+import { Tabs as BaseTabs } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { TabsPropsSchema as BaseTabsPropsSchema } from '../generated/types/Tabs';
+import React, { useEffect, useRef, useState } from 'react';
 const TabsPropsSchema = Type.Object(BaseTabsPropsSchema);
 const TabsStateSchema = Type.Object({
   activeTab: Type.String(),
 });
 const TabPane = BaseTabs.TabPane;
 
-const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = (props) => {
+const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = props => {
   const { defaultActiveTab, tabNames, ...cProps } = getComponentProps(props);
   const { getElement, customStyle, mergeState, slotsElements } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
@@ -27,7 +27,7 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = (props) => {
   return (
     <BaseTabs
       className={css(customStyle?.content)}
-      onChange={(key) => {
+      onChange={key => {
         setActiveTab(key);
         mergeState({ activeTab: key });
       }}
@@ -37,7 +37,7 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = (props) => {
     >
       {tabNames.map((tabName, idx) => (
         <TabPane key={String(idx)} title={tabName}>
-          {([] as React.ReactElement[]).concat(slotsElements.content)[idx]}
+          {(slotsElements.content as React.ReactElement[])[idx]}
         </TabPane>
       ))}
     </BaseTabs>
@@ -45,30 +45,30 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = (props) => {
 };
 
 const exampleProperties: Static<typeof TabsPropsSchema> = {
-  type: "capsule",
-  defaultActiveTab: "1",
-  tabPosition: "bottom",
-  size: "default",
-  tabNames: ["Tab1", "Tab2", "Tab3"],
+  type: 'line',
+  defaultActiveTab: '0',
+  tabPosition: 'top',
+  size: 'default',
+  tabNames: ['Tab1', 'Tab2', 'Tab3'],
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "tabs",
-    displayName: "Tabs",
+    name: 'tabs',
+    displayName: 'Tabs',
     exampleProperties,
     annotations: {
-      category: "Display",
+      category: 'Display',
     },
   },
   spec: {
     properties: TabsPropsSchema,
     state: TabsStateSchema,
     methods: {},
-    slots: ["content"],
-    styleSlots: ["content"],
+    slots: ['content'],
+    styleSlots: ['content'],
     events: [],
   },
 };

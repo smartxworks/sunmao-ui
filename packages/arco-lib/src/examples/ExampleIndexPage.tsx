@@ -4,6 +4,7 @@ import { ButtonDemoPage } from "./pages/button";
 import { TreeDemoPage } from "./pages/tree";
 import { TableDemoPage } from "./pages/table";
 import { LayoutDemoPage } from "./pages/layout";
+import { TabDemoPage } from "./pages/tab";
 
 
 const { Sider, Content, Header } = Layout;
@@ -12,6 +13,7 @@ const ContentMap: Record<string, React.FC> = {
   Tree: TreeDemoPage,
   Table: TableDemoPage,
   Layout: LayoutDemoPage,
+  Tab: TabDemoPage,
 };
 
 export const ExampleIndexPage: React.FC = () => {
