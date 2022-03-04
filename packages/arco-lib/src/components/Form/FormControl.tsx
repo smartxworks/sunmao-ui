@@ -42,7 +42,7 @@ const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = pr
       {slotsElements.content ? (
         slotsElements.content
       ) : (
-        <EmptyPlaceholder componentName="Form Control" />
+        <EmptyPlaceholder componentName="Input" />
       )}
       <FormControlErrorMessage errorMsg={errorMsg} />
     </BaseFormControl>

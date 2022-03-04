@@ -1,13 +1,13 @@
-import { Checkbox as BaseCheckbox } from "@arco-design/web-react";
-import { Type, Static } from "@sinclair/typebox";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
+import { Checkbox as BaseCheckbox } from '@arco-design/web-react';
+import { Type, Static } from '@sinclair/typebox';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
   CheckboxPropsSchema as BaseCheckboxPropsSchema,
   CheckboxOptionSchema as BaseCheckboxOptionSchema,
-} from "../generated/types/Checkbox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { css } from "@emotion/css";
-import { useState, useEffect, useMemo, useCallback } from "react";
+} from '../generated/types/Checkbox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { css } from '@emotion/css';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 
 const CheckboxPropsSchema = Type.Object({
   ...BaseCheckboxPropsSchema,
@@ -17,9 +17,7 @@ const CheckboxStateSchema = Type.Object({
   isCheckAll: Type.Boolean(),
 });
 
-const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = (
-  props
-) => {
+const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = props => {
   const { elementRef, mergeState, subscribeMethods, callbackMap, customStyle } = props;
   const {
     options = [],
@@ -128,14 +126,7 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = (
       checkAll,
       uncheckAll,
     });
-  }, [
-    subscribeMethods,
-    mergeState,
-    checkedValues,
-    options,
-    checkAll,
-    uncheckAll,
-  ]);
+  }, [subscribeMethods, mergeState, checkedValues, options, checkAll, uncheckAll]);
 
   const CheckAll = showCheckAll ? (
     <BaseCheckbox
@@ -149,26 +140,14 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = (
   ) : null;
   const CheckboxList =
     options.length > 1 ? (
-      <div>
-        <BaseCheckbox.Group
-          {...checkboxProps}
-          className={css(customStyle?.content)}
-          defaultValue={defaultCheckedValues}
-          value={checkedValues}
-          onChange={onGroupChange}
-        >
-          {options.map((option) => (
-            <BaseCheckbox
-              key={option.value}
-              value={option.value}
-              disabled={option.disabled}
-              indeterminate={option.indeterminate}
-            >
-              {option.label}
-            </BaseCheckbox>
-          ))}
-        </BaseCheckbox.Group>
-      </div>
+      <BaseCheckbox.Group
+        {...checkboxProps}
+        className={css(customStyle?.content)}
+        defaultValue={defaultCheckedValues}
+        value={checkedValues}
+        onChange={onGroupChange}
+        options={options}
+      />
     ) : (
       <BaseCheckbox
         {...checkboxProps}
@@ -191,23 +170,36 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = (
 };
 
 const exampleProperties = {
-  options: [],
-  direction: "horizontal",
-  defaultCheckedValues: [],
+  options: [
+    {
+      label: 'checkbox1',
+      value: 'checkbox1',
+    },
+    {
+      label: 'checkbox2',
+      value: 'checkbox2',
+    },
+    {
+      label: 'checkbox3',
+      value: 'checkbox3',
+    },
+  ],
+  direction: 'horizontal',
+  defaultCheckedValues: ['checkbox1'],
   showCheckAll: false,
-  checkAllText: "Check all",
+  checkAllText: 'Check all',
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "checkbox",
-    displayName: "Checkbox",
+    name: 'checkbox',
+    displayName: 'Checkbox',
     exampleProperties,
     annotations: {
-      category: "Input",
-    }
+      category: 'Input',
+    },
   },
   spec: {
     properties: CheckboxPropsSchema,
@@ -222,9 +214,9 @@ const options = {
         values: BaseCheckboxOptionSchema,
       }),
     }),
-    styleSlots: ["content"],
+    styleSlots: ['content'],
     slots: [],
-    events: ["onChange"],
+    events: ['onChange'],
   },
 };
 
