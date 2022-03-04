@@ -18,13 +18,14 @@ export const CheckboxOptionSchema = Type.Array(
 
 export const CheckboxPropsSchema = {
   options: CheckboxOptionSchema,
-  direction: StringUnion(['horizontal', 'vertical'], {
-    title: 'Direction',
-    category: Category.Layout,
-  }),
   defaultCheckedValues: Type.Array(Type.String(), {
     title: 'Default Value',
     category: Category.Data,
+    widget: 'expression',
+  }),
+  direction: StringUnion(['horizontal', 'vertical'], {
+    title: 'Direction',
+    category: Category.Basic,
   }),
   showCheckAll: Type.Boolean({
     title: 'Show Check All',
@@ -32,6 +33,6 @@ export const CheckboxPropsSchema = {
   }),
   checkAllText: Type.String({
     title: 'Check All Text',
-    category: Category.Data,
+    category: Category.Basic,
   }),
 };

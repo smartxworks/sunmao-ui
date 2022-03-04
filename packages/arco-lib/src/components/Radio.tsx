@@ -1,10 +1,10 @@
-import { Radio as BaseRadio } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { RadioPropsSchema as BaseRadioPropsSchema } from "../generated/types/Radio";
-import { useEffect, useState } from "react";
+import { Radio as BaseRadio } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { RadioPropsSchema as BaseRadioPropsSchema } from '../generated/types/Radio';
+import { useEffect, useState } from 'react';
 
 const RadioPropsSchema = Type.Object({
   ...BaseRadioPropsSchema,
@@ -13,11 +13,10 @@ const RadioStateSchema = Type.Object({
   checkedValue: Type.String(),
 });
 
-const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
-  const { customStyle, callbackMap, mergeState, subscribeMethods } =
-    props;
+const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = props => {
+  const { customStyle, callbackMap, mergeState, subscribeMethods } = props;
   const { defaultCheckedValue, elementRef, ...cProps } = getComponentProps(props);
-  const [checkedValue, setCheckedValue] = useState<string>("");
+  const [checkedValue, setCheckedValue] = useState<string>('');
   const [isInit, setIsInit] = useState(false);
 
   const onChange = (value: string) => {
@@ -33,7 +32,7 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
     }
 
     setIsInit(true);
-  }, [defaultCheckedValue, isInit]);
+  }, [defaultCheckedValue, isInit, mergeState]);
   useEffect(() => {
     subscribeMethods({
       setCheckedValue: ({ value: newCheckedValue }) => {
@@ -59,25 +58,26 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = (props) => {
 
 const exampleProperties: Static<typeof RadioPropsSchema> = {
   options: [
-    { label: 'A', value: 'a',disabled: false },
-    { label: 'B', value: 'b',disabled: true },
+    { label: 'A', value: 'a' },
+    { label: 'B', value: 'b' },
+    { label: 'C', value: 'c' },
   ],
-  type: "radio",
-  defaultCheckedValue:'b',
-  direction: "horizontal",
-  size: "default",
+  type: 'radio',
+  defaultCheckedValue: 'a',
+  direction: 'horizontal',
+  size: 'default',
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "radio",
-    displayName: "Radio",
+    name: 'radio',
+    displayName: 'Radio',
     exampleProperties,
     annotations: {
-      category: "Input",
-    }
+      category: 'Input',
+    },
   },
   spec: {
     properties: RadioPropsSchema,
@@ -88,8 +88,8 @@ const options = {
       }),
     } as Record<string, any>,
     slots: [],
-    styleSlots: ["group"],
-    events: ["onChange"],
+    styleSlots: ['group'],
+    events: ['onChange'],
   },
 };
 
