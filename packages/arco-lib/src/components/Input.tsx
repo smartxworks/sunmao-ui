@@ -4,8 +4,7 @@ import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import { InputPropsSchema as BaseInputPropsSchema } from "../generated/types/Input";
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { RefInputType } from "@arco-design/web-react/es/Input/interface";
 
 const InputPropsSchema = Type.Object({
@@ -79,7 +78,7 @@ const options = {
     properties: InputPropsSchema,
     state: InputStateSchema,
     methods: {},
-    slots: ["addAfter", "addBefore", "prefix", "suffix"],
+    slots: ["addAfter", "prefix", "suffix", "addBefore"],
     styleSlots: ["input"],
     events: ["onChange", "onBlur", "onFocus"],
   },
