@@ -6,7 +6,7 @@ import {
   ModalContent,
   ModalCloseButton,
   ModalBody,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 
 export const GeneralModal: React.FC<{
   onClose: () => void;

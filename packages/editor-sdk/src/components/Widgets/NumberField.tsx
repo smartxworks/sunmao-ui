@@ -7,7 +7,7 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-} from '../UI';
+} from '@chakra-ui/react';
 
 export const NumberField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;

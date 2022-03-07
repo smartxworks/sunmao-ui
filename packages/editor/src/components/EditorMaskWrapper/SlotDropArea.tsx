@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text } from '@sunmao-ui/editor-sdk';
+import { Box, Text } from '@chakra-ui/react';
 
 export const SlotDropArea: React.FC<{
   componentId: string;

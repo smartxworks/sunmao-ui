@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@sunmao-ui/editor-sdk';
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 
 interface Props {
   error: Error;

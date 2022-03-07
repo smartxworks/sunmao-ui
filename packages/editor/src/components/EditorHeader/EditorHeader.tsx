@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Button, Box } from '@sunmao-ui/editor-sdk';
+import { Flex, Button, Box } from '@chakra-ui/react';
 
 export const EditorHeader: React.FC<{
   scale: number;

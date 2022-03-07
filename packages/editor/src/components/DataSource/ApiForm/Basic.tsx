@@ -12,7 +12,7 @@ import {
   AccordionIcon,
   AccordionPanel,
   IconButton,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandlerForm';

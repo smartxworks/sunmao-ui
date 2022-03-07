@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, HStack, IconButton, Text, Tooltip, VStack } from '@sunmao-ui/editor-sdk';
+import { Divider, HStack, IconButton, Text, Tooltip, VStack } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { EditorServices } from '../../types';
@@ -51,7 +51,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(
       />
     );
 
-    const moduleItems = modules.map((module) => {
+    const moduleItems = modules.map(module => {
       const moduleItemId = genItemId('module', module.version, module.metadata.name);
       const onClickModule = () => {
         setSelectedItem(moduleItemId);

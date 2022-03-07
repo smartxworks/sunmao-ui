@@ -6,7 +6,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime';
 import { useMemo } from 'react';
 import { ignoreTraitsList } from '../../../constants';

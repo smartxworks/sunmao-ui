@@ -12,7 +12,7 @@ import {
   Thead,
   Tr,
   VStack,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
 import { EditorServices } from '../types';

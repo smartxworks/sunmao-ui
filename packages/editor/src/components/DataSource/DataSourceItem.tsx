@@ -1,5 +1,5 @@
 import React from 'react';
-import { HStack, Tag, Text, CloseButton } from '@sunmao-ui/editor-sdk';
+import { HStack, Tag, Text, CloseButton } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { css, cx } from '@emotion/css';
 

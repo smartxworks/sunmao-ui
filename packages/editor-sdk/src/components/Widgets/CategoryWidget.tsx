@@ -10,7 +10,7 @@ import {
   AccordionIcon,
   Box,
   Accordion,
-} from '../UI';
+} from '@chakra-ui/react';
 import { PRESET_PROPERTY_CATEGORY } from '../../constants/category';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<

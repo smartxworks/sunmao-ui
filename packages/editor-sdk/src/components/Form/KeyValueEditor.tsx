@@ -1,5 +1,5 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Button, Text, HStack, IconButton, Input, VStack } from '../UI';
+import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState, useMemo, useEffect } from 'react';

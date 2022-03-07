@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { FormControl, FormLabel, Input, Select, Switch } from '../UI';
+import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
 import { GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';

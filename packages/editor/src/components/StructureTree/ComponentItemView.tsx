@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
-import { Box, HStack, IconButton, Text } from '@sunmao-ui/editor-sdk';
+import { Box, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 
 type Props = {
