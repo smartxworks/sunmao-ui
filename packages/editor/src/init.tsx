@@ -56,8 +56,11 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   const didUpdate = () => {
     eventBus.send('HTMLElementsUpdated');
   };
+  const didDomUpdate = () => {
+    eventBus.send('HTMLElementsUpdated');
+  };
 
-  const ui = initSunmaoUI({ ...props.runtimeProps, hooks: { didMount, didUpdate } });
+  const ui = initSunmaoUI({ ...props.runtimeProps, hooks: { didMount, didUpdate, didDomUpdate } });
 
   const App = ui.App;
   const registry = ui.registry;

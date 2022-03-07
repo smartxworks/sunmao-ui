@@ -12,6 +12,7 @@ type Props = {
   isDropInOnly?: boolean;
   droppable: boolean;
   services: EditorServices;
+  hasSlot: boolean;
 };
 
 export const DropComponentWrapper: React.FC<Props> = props => {
@@ -23,6 +24,7 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     isDropInOnly,
     isExpanded,
     droppable,
+    hasSlot,
   } = props;
   const { registry, eventBus } = services;
   const ref = useRef<HTMLDivElement>(null);
@@ -70,7 +72,7 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     let targetParentId = parentId;
     let targetParentSlot = parentSlot;
     let targetId = componentId;
-    if (dragDirection === 'next' && isExpanded) {
+    if (dragDirection === 'next' && isExpanded && hasSlot) {
       targetParentId = componentId;
       targetParentSlot = 'content';
       targetId = undefined;

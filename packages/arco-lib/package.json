@@ -1,0 +1,76 @@
+{
+  "name": "@sunmao-ui/arco-lib",
+  "version": "0.0.7",
+  "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webzard-io/sunmao-ui-arco-lib.git"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "typings": "tsc --emitDeclarationOnly",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
+    "serve": "vite preview",
+    "lint": "eslint ./src --ext .ts --ext .tsx",
+    "fix-lint": "eslint --fix ./src --ext .ts --ext .tsx",
+    "prepublish": "npm run build && npm run typings"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.7.1",
+    "@arco-design/web-react": "^2.29.0",
+    "@sinclair/typebox": "^0.21.2",
+    "@sunmao-ui/core": "^0.4.1",
+    "@sunmao-ui/runtime": "^0.4.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "lodash-es": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.170",
+    "@types/lodash-es": "^4.17.5",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@vitejs/plugin-react": "^1.0.0",
+    "postcss": "^8.4.5",
+    "postcss-import": "^14.0.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.25.1",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "tsup": "^5.11.11",
+    "typescript": "^4.3.2",
+    "vite": "^2.6.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,html}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "peerDependencies": {
+    "@sunmao-ui/core": "^0.4.1",
+    "@sunmao-ui/runtime": "^0.4.1"
+  }
+}
