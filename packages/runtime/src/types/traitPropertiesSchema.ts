@@ -1,10 +1,14 @@
 import { Type } from '@sinclair/typebox';
 
 const BaseEventSchema = {
-  componentId: Type.String(),
+  componentId: Type.String({
+    title: 'Component ID',
+  }),
   method: Type.Object({
-    name: Type.String(),
-    parameters: Type.Optional(Type.Record(Type.String(), Type.Any())),
+    name: Type.String({ title: 'Method Name' }),
+    parameters: Type.Optional(Type.Record(Type.String(), Type.Any(), { title: 'Method Parameters' })),
+  }, {
+    title: 'Method',
   }),
   wait: Type.Optional(
     Type.Object({
@@ -13,23 +17,28 @@ const BaseEventSchema = {
           debounce: Type.String(),
           throttle: Type.String(),
           delay: Type.String(),
-        })
+        }),
+        { title: 'Wait Type' },
       ),
-      time: Type.Number(),
+      time: Type.Number({ title: 'Time' }),
+    }, {
+      title: 'Wait',
     })
   ),
-  disabled: Type.Optional(Type.Boolean()),
+  disabled: Type.Optional(Type.Boolean({ title: 'Disabled' })),
 };
 
 export const EventHandlerSchema = Type.Object({
   type: Type.String(),
   ...BaseEventSchema,
+}, {
+  widget: 'core/v1/Event'
 });
 
 export const EventCallBackHandlerSchema = Type.Object(BaseEventSchema);
 
 export const FetchTraitPropertiesSchema = Type.Object({
-  url: Type.String(), // {format:uri}?;
+  url: Type.String({ title: 'URL' }), // {format:uri}?;
   method: Type.KeyOf(
     Type.Object({
       get: Type.String(),
@@ -37,11 +46,16 @@ export const FetchTraitPropertiesSchema = Type.Object({
       put: Type.String(),
       delete: Type.String(),
       patch: Type.String(),
-    })
+    }), 
+    { title: 'Method' },
   ), // {pattern: /^(get|post|put|delete)$/i}
-  lazy: Type.Boolean(),
-  headers: Type.Record(Type.String(), Type.String()),
-  body: Type.Record(Type.String(), Type.String()),
+  lazy: Type.Boolean({ title: 'Lazy' }),
+  headers: Type.Record(Type.String(), Type.String(), {
+    title: 'Headers',
+  }),
+  body: Type.Record(Type.String(), Type.String(), {
+    title: 'Body',
+  }),
   onComplete: Type.Array(EventCallBackHandlerSchema),
   onError: Type.Array(EventCallBackHandlerSchema),
 });

@@ -61,5 +61,5 @@ export const CssEditor: React.FC<{
     };
   }, [onBlur, onChange, defaultCode]);
 
-  return <Box className={style} ref={wrapperEl}></Box>;
+  return <Box className={style} ref={wrapperEl} />;
 };

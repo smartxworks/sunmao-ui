@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { FetchTraitPropertiesSchema, watch } from '@sunmao-ui/runtime';
-import { Static } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import {
   Box,
   VStack,
@@ -18,17 +18,16 @@ import {
   Button,
   CloseButton,
 } from '@chakra-ui/react';
+import { ExpressionWidget, WidgetProps } from '@sunmao-ui/editor-sdk';
 import { EditIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { Basic } from './Basic';
 import { Headers as HeadersForm } from './Headers';
 import { Params } from './Params';
 import { Body } from './Body';
-import { Response as ResponseInfo } from './Respose';
+import { Response as ResponseInfo } from './Response';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
-import { ExpressionWidget } from '../../ComponentForm/JsonSchemaForm/widgets/ExpressionWidget';
-import { ExpressionEditorProps } from '../../CodeEditor/ExpressionEditor';
 
 enum TabIndex {
   Basic,
@@ -47,7 +46,7 @@ const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
 
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
-  const { editorStore, stateManager } = services;
+  const { editorStore } = services;
   const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({});
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
@@ -61,7 +60,7 @@ export const ApiForm: React.FC<Props> = props => {
     [api.traits]
   );
   const trait = useMemo(() => api.traits[traitIndex], [api.traits, traitIndex]);
-  const compactOptions = useMemo<ExpressionEditorProps['compactOptions']>(
+  const compactOptions = useMemo(
     () => ({
       height: '40px',
       paddingY: '6px',
@@ -84,6 +83,7 @@ export const ApiForm: React.FC<Props> = props => {
     },
   });
   const { values } = formik;
+  const URLSchema = Type.String({ widgetOptions: { compactOptions } });
 
   const onFetch = useCallback(async () => {
     services.apiService.send('uiMethod', {
@@ -214,10 +214,12 @@ export const ApiForm: React.FC<Props> = props => {
           </Select>
           <Box flex={1}>
             <ExpressionWidget
-              stateManager={stateManager}
-              formData={values.url}
+              component={api}
+              schema={URLSchema}
+              value={values.url}
+              level={1}
+              services={services}
               onChange={onURLChange}
-              compactOptions={compactOptions}
             />
           </Box>
         </HStack>
@@ -242,16 +244,30 @@ export const ApiForm: React.FC<Props> = props => {
           </TabList>
           <TabPanels flex={1} overflow="auto">
             <TabPanel>
-              <Basic formik={formik} services={services} />
+              <Basic api={api} formik={formik} services={services} />
             </TabPanel>
             <TabPanel>
-              <HeadersForm services={services} formik={formik} />
+              <HeadersForm
+                api={api}
+                schema={
+                  FetchTraitPropertiesSchema.properties.headers as WidgetProps['schema']
+                }
+                services={services}
+                formik={formik}
+              />
             </TabPanel>
             <TabPanel>
-              <Params services={services} formik={formik} />
+              <Params api={api} services={services} formik={formik} />
             </TabPanel>
             <TabPanel>
-              <Body services={services} formik={formik} />
+              <Body
+                api={api}
+                schema={
+                  FetchTraitPropertiesSchema.properties.body as WidgetProps['schema']
+                }
+                services={services}
+                formik={formik}
+              />
             </TabPanel>
           </TabPanels>
         </VStack>
