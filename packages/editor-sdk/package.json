@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings"
   },

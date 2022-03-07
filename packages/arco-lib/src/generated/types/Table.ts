@@ -51,7 +51,7 @@ export const ColumnSchema = Type.Object({
 export const TablePropsSchema = Type.Object({
   data: Type.Array(Type.Any(), {
     title: 'Data',
-    widget: 'expression',
+    widget: 'core/v1/Expression',
     category: Category.Data,
     weight: 0,
   }),
@@ -82,7 +82,6 @@ export const TablePropsSchema = Type.Object({
   }),
   stripe: Type.Boolean({
     title: 'Show Stripe',
-    widget: 'boolean',
     description: 'Whether to show stripe style',
     category: Category.Style,
     weight: 2,
