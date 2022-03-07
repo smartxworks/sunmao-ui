@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "sunmao-ui editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
@@ -35,7 +35,7 @@
     "@chakra-ui/react": "^1.7.1",
     "@emotion/css": "^11.7.1",
     "@emotion/react": "^11.1.1",
-    "@sunmao-ui/arco-lib": "^0.0.8",
+    "@sunmao-ui/arco-lib": "^0.0.9",
     "@sunmao-ui/chakra-ui-lib": "^0.2.2",
     "@sunmao-ui/core": "^0.4.2",
     "@sunmao-ui/runtime": "^0.4.2",
