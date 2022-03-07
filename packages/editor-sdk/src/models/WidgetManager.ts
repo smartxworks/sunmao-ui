@@ -1,17 +1,17 @@
-import { Widget } from '../types/widget';
+import { ImplementedWidget } from '../types/widget';
 
 class WidgetManger {
-  private widgets: Record<string, Widget> = {};
+  private widgets: Record<string, ImplementedWidget> = {};
 
   constructor() {
     this.widgets = {};
   }
 
-  registerWidget(widget: Widget): void {
+  registerWidget(widget: ImplementedWidget): void {
     this.widgets[`${widget.version}/${widget.metadata.name}`] = widget;
   }
   
-  getWidget (type: string): Widget | null {
+  getWidget (type: string): ImplementedWidget | null {
     return this.widgets[type] || null;
   }
 }

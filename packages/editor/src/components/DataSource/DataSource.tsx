@@ -10,7 +10,7 @@ import {
   MenuList,
   IconButton,
   Accordion,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Api } from './Api';

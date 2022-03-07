@@ -3,14 +3,16 @@ import { initSunmaoUI, SunmaoLib, SunmaoUIRuntimeProps } from '@sunmao-ui/runtim
 import { AppModelManager } from './operations/AppModelManager';
 import React from 'react';
 import {
+  widgets as internalWidgets,
+  WidgetManager,
+  ImplementedWidget,
+} from '@sunmao-ui/editor-sdk';
+import {
   ChakraProvider,
   extendTheme,
   withDefaultSize,
   withDefaultVariant,
-  widgets as internalWidgets,
-  WidgetManager,
-  Widget,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 import { initEventBus } from './services/eventBus';
 import { EditorStore } from './services/EditorStore';
 import { StorageHandler } from './types';
@@ -20,7 +22,7 @@ import './styles.css';
 
 type SunmaoUIEditorProps = {
   libs?: SunmaoLib[];
-  widgets?: Widget<any>[];
+  widgets?: ImplementedWidget<any>[];
   runtimeProps?: SunmaoUIRuntimeProps;
   storageHandler?: StorageHandler;
   defaultApplication?: Application;

@@ -9,7 +9,7 @@ import {
   IconButton,
   Text,
   Select,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';

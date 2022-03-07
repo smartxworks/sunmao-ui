@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  IconButton,
-  VStack,
-  EventWidget,
-  mergeWidgetOptionsIntoSchema,
-} from '@sunmao-ui/editor-sdk';
+import { EventWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
+import { Box, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import { CloseIcon } from '@chakra-ui/icons';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';

@@ -17,9 +17,8 @@ import {
   Input,
   Button,
   CloseButton,
-  ExpressionWidget,
-  WidgetProps,
-} from '@sunmao-ui/editor-sdk';
+} from '@chakra-ui/react';
+import { ExpressionWidget, WidgetProps } from '@sunmao-ui/editor-sdk';
 import { EditIcon } from '@chakra-ui/icons';
 import { useFormik } from 'formik';
 import { Basic } from './Basic';

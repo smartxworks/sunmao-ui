@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { flatten } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
-import { FormControl, FormLabel, Input, Textarea, VStack , SchemaField } from '@sunmao-ui/editor-sdk';
+import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
+import { SchemaField } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/runtime';

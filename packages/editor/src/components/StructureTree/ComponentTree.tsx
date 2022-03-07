@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Box, Text, VStack } from '@sunmao-ui/editor-sdk';
+import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';

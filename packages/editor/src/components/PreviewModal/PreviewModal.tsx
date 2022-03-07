@@ -1,4 +1,4 @@
-import { Box } from '@sunmao-ui/editor-sdk';
+import { Box } from '@chakra-ui/react';
 import { Application, createModule, Module } from '@sunmao-ui/core';
 import { initSunmaoUI, SunmaoLib } from '@sunmao-ui/runtime';
 import React from 'react';

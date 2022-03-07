@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { HStack, IconButton, VStack } from '@sunmao-ui/editor-sdk';
+import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';

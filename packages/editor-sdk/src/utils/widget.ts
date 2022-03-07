@@ -1,7 +1,8 @@
-import { WidgetOptions, Widget, WidgetProps, Schema } from '../types/widget';
+import { JSONSchema7 } from 'json-schema';
+import { CreateWidgetOptions, ImplementedWidget, WidgetProps } from '../types/widget';
 
-export function implementWidget<T = Record<string, any>>(options: WidgetOptions) {
-  return (impl: Widget<T>['impl']) => ({
+export function implementWidget<T = Record<string, any>>(options: CreateWidgetOptions) {
+  return (impl: ImplementedWidget<T>['impl']) => ({
     ...options,
     kind: 'Widget',
     impl,
@@ -21,7 +22,7 @@ export function mergeWidgetOptionsIntoSchema<T = Record<string, any>>(
   };
 }
 
-export function shouldDisplayLabel(schema: Schema, label: string): boolean {
+export function shouldDisplayLabel(schema: JSONSchema7, label: string): boolean {
   if (!label) {
     return false;
   }
@@ -31,7 +32,7 @@ export function shouldDisplayLabel(schema: Schema, label: string): boolean {
   return true;
 }
 
-export function getCodeMode(schema: Schema): boolean {
+export function getCodeMode(schema: JSONSchema7): boolean {
   switch (schema.type) {
     case 'array':
     case 'object':

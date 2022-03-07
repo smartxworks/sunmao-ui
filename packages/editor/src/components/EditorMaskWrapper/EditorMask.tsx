@@ -4,7 +4,7 @@ import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
 import { debounce } from 'lodash-es';
-import { Box, Text } from '@sunmao-ui/editor-sdk';
+import { Box, Text } from '@chakra-ui/react';
 
 const outlineMaskTextStyle = css`
   position: absolute;

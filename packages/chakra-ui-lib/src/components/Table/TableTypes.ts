@@ -53,7 +53,7 @@ export const ColumnSchema = Type.Object({
     text: Type.String({
       title: 'Text',
     }),
-    handlers: Type.Array(EventHandlerSchema),
+    handlers: Type.Array(EventHandlerSchema, { title: 'Handlers' }),
   }, {
     title: 'Button Config',
   }),

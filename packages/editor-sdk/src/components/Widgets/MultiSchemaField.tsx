@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Type, Static } from '@sinclair/typebox';
-import { Box, RadioGroup, Radio, Stack } from '../UI';
+import { Box, RadioGroup, Radio, Stack } from '@chakra-ui/react';
 import { SchemaField } from './SchemaField';
 import { WidgetProps } from '../../types/widget';
 import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';

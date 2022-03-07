@@ -1,4 +1,4 @@
-import { Widget } from '../../types/widget';
+import { ImplementedWidget } from '../../types/widget';
 import schemaField from './SchemaField';
 import arrayField from './ArrayField';
 import booleanField from './BooleanField';
@@ -28,7 +28,7 @@ export * from './ExpressionWidget';
 export * from './ModuleWidget';
 export * from './KeyValueWidget';
 export * from './EventWidget';
-export const widgets: Widget<any>[] = [
+export const widgets: ImplementedWidget<any>[] = [
   schemaField,
   arrayField,
   booleanField,

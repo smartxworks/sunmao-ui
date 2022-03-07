@@ -10,7 +10,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from '../UI';
+} from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { css, Global } from '@emotion/react';
 import { parseExpression } from '@sunmao-ui/runtime';

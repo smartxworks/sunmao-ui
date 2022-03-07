@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Box } from '@sunmao-ui/editor-sdk';
+import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { genOperation } from '../operations';

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Box, KeyValueWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
+import { Box } from '@chakra-ui/react';
+import { KeyValueWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { Type, Static } from '@sinclair/typebox';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';

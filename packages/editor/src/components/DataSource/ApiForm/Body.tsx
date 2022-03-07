@@ -1,6 +1,6 @@
 import React from 'react';
+import { Box } from '@chakra-ui/react';
 import {
-  Box,
   KeyValueWidget,
   WidgetProps,
   mergeWidgetOptionsIntoSchema,

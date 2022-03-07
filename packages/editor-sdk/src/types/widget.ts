@@ -1,9 +1,8 @@
 import React from 'react';
 import { JSONSchema7 } from 'json-schema';
-import { Component, ComponentSchema } from '@sunmao-ui/core';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from './editor';
 
-export type Schema = Component<string, string, string, string>['spec']['properties'];
 export type EditorSchema<WidgetOptions = Record<string, any>> = {
   defaultValue?: any;
   // widget
@@ -17,14 +16,15 @@ export type EditorSchema<WidgetOptions = Record<string, any>> = {
 
 export type WidgetProps<WidgetOptions = Record<string, any>> = {
   component: ComponentSchema;
-  schema: Schema & EditorSchema<WidgetOptions>;
+  schema: JSONSchema7 & EditorSchema<WidgetOptions>;
   services: EditorServices;
   level: number;
   value: any;
   onChange: (v: any) => void;
 };
 
-export type WidgetOptions = {
+export type Widget = {
+  kind: 'Widget';
   version: string;
   metadata: {
     name: string;
@@ -32,8 +32,10 @@ export type WidgetOptions = {
   spec?: {
     options?: JSONSchema7;
   };
-};
+}
 
-export type Widget<T = Record<string, any>> = WidgetOptions & {
+export type CreateWidgetOptions = Omit<Widget, 'kind'>;
+
+export type ImplementedWidget<T = Record<string, any>> = CreateWidgetOptions & {
   impl: React.FC<WidgetProps<T>>;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, FormLabel, Input, VStack } from '@sunmao-ui/editor-sdk';
+import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';

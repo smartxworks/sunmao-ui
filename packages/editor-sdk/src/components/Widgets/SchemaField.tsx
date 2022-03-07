@@ -8,7 +8,7 @@ import {
   FormErrorMessage,
   Button,
   Tooltip,
-} from '../UI';
+} from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
 import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
 import { isExpression as _isExpression } from '../../utils/validator';
