@@ -12,9 +12,15 @@ const outlineMaskTextStyle = css`
   z-index: 1;
   right: 0px;
   padding: 0 4px;
-  font-size: 14px;
-  font-weight: black;
+  height: 20px;
+  right: 0;
+  max-width: 100%;
   color: white;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transform: translateY(-100%);
 `;
 
 const outlineMaskStyle = css`
