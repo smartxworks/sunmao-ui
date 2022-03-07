@@ -1,5 +1,12 @@
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { Box, IconButton, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
 import { Registry } from '@sunmao-ui/runtime';
 import { useMemo } from 'react';
 import { ignoreTraitsList } from '../../../constants';
@@ -13,10 +20,14 @@ type Props = {
 
 export const AddTraitButton: React.FC<Props> = props => {
   const { onAddTrait, registry, component } = props;
-  const componentTraitsMap = useMemo(() => component.traits.reduce((result, trait) => {
-    result[trait.type] = true;
-    return result;
-  }, ({} as Record<string, boolean>)), [component]);
+  const componentTraitsMap = useMemo(
+    () =>
+      component.traits.reduce((result, trait) => {
+        result[trait.type] = true;
+        return result;
+      }, {} as Record<string, boolean>),
+    [component]
+  );
   const traitTypes = useMemo(() => {
     return registry.getAllTraitTypes().filter(type => !ignoreTraitsList.includes(type));
   }, [registry]);

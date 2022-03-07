@@ -3,6 +3,11 @@ import { initSunmaoUI, SunmaoLib, SunmaoUIRuntimeProps } from '@sunmao-ui/runtim
 import { AppModelManager } from './operations/AppModelManager';
 import React from 'react';
 import {
+  widgets as internalWidgets,
+  WidgetManager,
+  ImplementedWidget,
+} from '@sunmao-ui/editor-sdk';
+import {
   ChakraProvider,
   extendTheme,
   withDefaultSize,
@@ -17,6 +22,7 @@ import './styles.css';
 
 type SunmaoUIEditorProps = {
   libs?: SunmaoLib[];
+  widgets?: ImplementedWidget<any>[];
   runtimeProps?: SunmaoUIRuntimeProps;
   storageHandler?: StorageHandler;
   defaultApplication?: Application;
@@ -58,6 +64,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
 
   const App = ui.App;
   const registry = ui.registry;
+
   props.libs?.forEach(lib => {
     registry.installLib(lib);
   });
@@ -74,6 +81,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     registry,
     appStorage.app.spec.components
   );
+  const widgetManager = new WidgetManager();
   const editorStore = new EditorStore(eventBus, registry, stateManager, appStorage);
   const services = {
     App,
@@ -81,6 +89,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     apiService: ui.apiService,
     stateManager,
     appModelManager,
+    widgetManager,
     eventBus,
     editorStore,
   };
@@ -99,6 +108,10 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
       </ChakraProvider>
     );
   };
+
+  internalWidgets.concat(props.widgets || []).forEach(widget => {
+    widgetManager.registerWidget(widget);
+  });
 
   return {
     Editor,

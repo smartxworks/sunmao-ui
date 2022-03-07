@@ -1,22 +1,24 @@
 import React, { useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { KeyValueEditor } from '../../KeyValueEditor';
+import { KeyValueWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
+import { Type, Static } from '@sinclair/typebox';
 import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
-import { Static } from '@sinclair/typebox';
+import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
 
 type Values = Static<typeof FetchTraitPropertiesSchema>;
 interface Props {
+  api: ComponentSchema;
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
   services: EditorServices;
 }
 
 export const Params: React.FC<Props> = props => {
-  const { formik, services } = props;
-  const { registry, stateManager } = services;
+  const { api, formik, services } = props;
   const url: string = formik.values.url ?? '';
   const index = url.indexOf('?');
+  const schema = Type.Record(Type.String(), Type.String());
   const params = useMemo(() => {
     if (index === -1) {
       return {};
@@ -45,13 +47,13 @@ export const Params: React.FC<Props> = props => {
 
   return (
     <Box>
-      <KeyValueEditor
-        registry={registry}
-        stateManager={stateManager}
+      <KeyValueWidget
+        component={api}
+        schema={mergeWidgetOptionsIntoSchema(schema, { minNum: 1, isShowHeader: true })}
+        level={1}
+        services={services}
         value={params}
         onChange={onChange}
-        minNum={1}
-        isShowHeader
       />
     </Box>
   );

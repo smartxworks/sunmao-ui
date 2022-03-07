@@ -22,17 +22,19 @@ import {
 } from '@sunmao-ui/runtime';
 import { Static } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
+import { ComponentSchema } from '@sunmao-ui/core';
 
 type Values = Static<typeof FetchTraitPropertiesSchema>;
 type EventHandler = Static<typeof EventCallBackHandlerSchema>;
 type HandlerType = 'onComplete' | 'onError';
 interface Props {
+  api: ComponentSchema;
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
   services: EditorServices;
 }
 
 export const Basic: React.FC<Props> = props => {
-  const { formik, services } = props;
+  const { api, formik, services } = props;
 
   const onAddHandler = (type: HandlerType) => {
     const newHandler: EventHandler = {
@@ -90,7 +92,7 @@ export const Basic: React.FC<Props> = props => {
               <AccordionPanel pb={4} pt={2} padding={0}>
                 <Box pt={2}>
                   <EventHandlerForm
-                    eventTypes={[]}
+                    component={api}
                     handler={{ type: '', ...handler }}
                     hideEventType={true}
                     onChange={onChange}

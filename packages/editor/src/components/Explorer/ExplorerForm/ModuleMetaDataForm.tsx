@@ -1,8 +1,8 @@
 import React from 'react';
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { KeyValueEditor } from '@sunmao-ui/editor-sdk';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
-import { KeyValueEditor } from '../../KeyValueEditor';
 import { EditorServices } from '../../../types';
 
 export type ModuleMetaDataFormData = {
@@ -19,7 +19,7 @@ type ModuleMetaDataFormProps = {
 
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
   ({ initData, services, onSubmit: onSubmitForm }) => {
-    const { editorStore, registry, stateManager } = services;
+    const { editorStore } = services;
     const onSubmit = (value: ModuleMetaDataFormData) => {
       editorStore.appStorage.saveModuleMetaData(
         { originName: initData.name, originVersion: initData.version },
@@ -54,8 +54,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
         <FormControl>
           <FormLabel>Module StateMap</FormLabel>
           <KeyValueEditor
-            registry={registry}
-            stateManager={stateManager}
+            services={services}
             value={formik.values.stateMap}
             onChange={json => {
               formik.setFieldValue('stateMap', json);

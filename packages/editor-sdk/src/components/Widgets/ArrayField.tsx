@@ -1,12 +1,12 @@
 import React from 'react';
-import SchemaField from './SchemaField';
-import { FieldProps } from './fields';
+import { SchemaField } from './SchemaField';
+import { WidgetProps } from '../../types/widget';
+import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
 import { Box, ButtonGroup, IconButton, Flex } from '@chakra-ui/react';
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox } from '@sunmao-ui/runtime';
-import { TSchema } from '@sinclair/typebox';
-
-type Props = FieldProps;
+import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';
+import { TSchema, Type, Static } from '@sinclair/typebox';
 
 function swap<T>(arr: Array<T>, i1: number, i2: number): Array<T> {
   const tmp = arr[i1];
@@ -15,23 +15,30 @@ function swap<T>(arr: Array<T>, i1: number, i2: number): Array<T> {
   return arr;
 }
 
-const ArrayField: React.FC<Props> = props => {
-  const { schema, formData, expressionOptions, onChange, registry, stateManager } = props;
+const ArrayFieldWidgetOptions = Type.Object({
+  expressionOptions: Type.Optional(ExpressionWidgetOptionsSchema),
+});
+
+type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
+
+export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = props => {
+  const { component, schema, value, services, level, onChange } = props;
+  const { expressionOptions } = schema.widgetOptions || {};
   const subSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items;
   if (typeof subSchema === 'boolean' || !subSchema) {
     return null;
   }
-  if (!Array.isArray(formData)) {
+  if (!Array.isArray(value)) {
     return (
       <div>
         Expected array but got
-        <pre>{JSON.stringify(formData, null, 2)}</pre>
+        <pre>{JSON.stringify(value, null, 2)}</pre>
       </div>
     );
   }
   return (
     <>
-      {formData.map((v, idx) => {
+      {value.map((v, idx) => {
         return (
           <Box
             key={idx}
@@ -53,7 +60,7 @@ const ArrayField: React.FC<Props> = props => {
                 icon={<ArrowUpIcon />}
                 disabled={idx === 0}
                 onClick={() => {
-                  const newFormData = [...formData];
+                  const newFormData = [...value];
                   swap(newFormData, idx, idx - 1);
                   onChange(newFormData);
                 }}
@@ -61,9 +68,9 @@ const ArrayField: React.FC<Props> = props => {
               <IconButton
                 aria-label={`down-${idx}`}
                 icon={<ArrowDownIcon />}
-                disabled={idx === formData.length - 1}
+                disabled={idx === value.length - 1}
                 onClick={() => {
-                  const newFormData = [...formData];
+                  const newFormData = [...value];
                   swap(newFormData, idx, idx + 1);
                   onChange(newFormData);
                 }}
@@ -73,24 +80,23 @@ const ArrayField: React.FC<Props> = props => {
                 icon={<DeleteIcon />}
                 colorScheme="red"
                 onClick={() => {
-                  const newFormData = [...formData];
+                  const newFormData = [...value];
                   newFormData.splice(idx, 1);
                   onChange(newFormData);
                 }}
               />
             </ButtonGroup>
             <SchemaField
-              schema={subSchema}
-              label={subSchema.title || ''}
-              formData={v}
-              onChange={value => {
-                const newFormData = [...formData];
-                newFormData[idx] = value;
+              component={component}
+              schema={mergeWidgetOptionsIntoSchema(subSchema, { expressionOptions })}
+              value={v}
+              level={level + 1}
+              services={services}
+              onChange={newValue => {
+                const newFormData = [...value];
+                newFormData[idx] = newValue;
                 onChange(newFormData);
               }}
-              registry={registry}
-              stateManager={stateManager}
-              expressionOptions={expressionOptions}
             />
           </Box>
         );
@@ -101,7 +107,7 @@ const ArrayField: React.FC<Props> = props => {
           icon={<AddIcon />}
           size="sm"
           onClick={() => {
-            onChange(formData.concat(parseTypeBox(subSchema as TSchema)));
+            onChange(value.concat(parseTypeBox(subSchema as TSchema)));
           }}
         />
       </Flex>
@@ -109,4 +115,9 @@ const ArrayField: React.FC<Props> = props => {
   );
 };
 
-export default ArrayField;
+export default implementWidget<ArrayFieldWidgetOptionsType>({
+  version: 'core/v1',
+  metadata: {
+    name: 'ArrayField',
+  },
+})(ArrayField);
