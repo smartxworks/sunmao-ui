@@ -76,9 +76,10 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
       flex="1"
       overflow="auto"
       position="relative"
+      // some components stop click event propagation, so here we should capture onClick
+      onClickCapture={onClick}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      onClick={onClick}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onScroll={onScroll}
