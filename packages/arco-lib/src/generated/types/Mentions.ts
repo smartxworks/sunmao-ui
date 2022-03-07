@@ -2,45 +2,44 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-
 export const MentionsPropsSchema = {
   options: Type.Array(Type.String(), {
-    title:'Options',
+    title: 'Options',
     weight: 3,
-    category:Category.Data,
-    widget:'expression'
+    category: Category.Data,
+    widget: 'core/v1/Expression',
   }),
   defaultValue: Type.String({
-    title:'Default Value',
+    title: 'Default Value',
     weight: 2,
-    category:Category.Data,
+    category: Category.Data,
   }),
   prefix: Type.String({
-    title:'Prefix',
-    category:Category.Basic,
+    title: 'Prefix',
+    category: Category.Basic,
   }),
   placeholder: Type.String({
-    title:'Placeholder',
-    category:Category.Basic,
+    title: 'Placeholder',
+    category: Category.Basic,
   }),
   disabled: Type.Boolean({
-    title:'Disabled',
-    category:Category.Basic,
+    title: 'Disabled',
+    category: Category.Basic,
   }),
   error: Type.Boolean({
-    title:'Error',
-    category:Category.Basic,
+    title: 'Error',
+    category: Category.Basic,
   }),
   allowClear: Type.Boolean({
-    title:'Allow Clear',
-    category:Category.Basic,
+    title: 'Allow Clear',
+    category: Category.Basic,
   }),
   split: Type.String({
-    title:'Split',
-    category:Category.Basic,
+    title: 'Split',
+    category: Category.Basic,
   }),
   position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br'], {
-    title:'Position',
-    category: Category.Layout
-  })
-}
+    title: 'Position',
+    category: Category.Layout,
+  }),
+};

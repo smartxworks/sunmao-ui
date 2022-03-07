@@ -81,7 +81,6 @@ export const TablePropsSchema = Type.Object({
   }),
   stripe: Type.Boolean({
     title: 'Show Stripe',
-    widget: 'boolean',
     description: 'Whether to show stripe style',
     category: Category.Style,
     weight: 2,
