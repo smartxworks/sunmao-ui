@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/arco-lib",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
   "license": "MIT",
   "publishConfig": {
@@ -28,11 +28,11 @@
     "prepublish": "npm run build && npm run typings"
   },
   "dependencies": {
-    "@emotion/css": "^11.7.1",
     "@arco-design/web-react": "^2.29.0",
+    "@emotion/css": "^11.7.1",
     "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/core": "^0.4.1",
-    "@sunmao-ui/runtime": "^0.4.1",
+    "@sunmao-ui/core": "^0.4.2",
+    "@sunmao-ui/runtime": "^0.4.2",
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash-es": "^4.17.21",
     "react": "^17.0.2",
@@ -46,13 +46,13 @@
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "@vitejs/plugin-react": "^1.0.0",
-    "postcss": "^8.4.5",
-    "postcss-import": "^14.0.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.25.1",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
+    "postcss": "^8.4.5",
+    "postcss-import": "^14.0.2",
     "tsup": "^5.11.11",
     "typescript": "^4.3.2",
     "vite": "^2.6.4"
