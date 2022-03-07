@@ -17,6 +17,7 @@ import CoreStyle from '../traits/core/Style';
 import CoreHidden from '../traits/core/Hidden';
 import CoreFetch from '../traits/core/Fetch';
 import CoreValidation from '../traits/core/Validation';
+import CoreLocalStorage from '../traits/core/LocalStorage';
 // utilMethods
 import ScrollIntoComponentUtilMethod from '../utilMethods/ScrollIntoComponent';
 
@@ -204,6 +205,7 @@ export function initRegistry(
   registry.registerTrait(CoreHidden);
   registry.registerTrait(CoreFetch);
   registry.registerTrait(CoreValidation);
+  registry.registerTrait(CoreLocalStorage);
 
   registry.registerUtilMethod(ScrollIntoComponentUtilMethod);
 
