@@ -151,7 +151,10 @@ export const ExpressionWidget: React.FC<
 
   return (
     <ExpressionEditor
-      {...(widgetOptions?.compactOptions || {})}
+      {...{
+        maxHeight: '125px',
+        ...(widgetOptions?.compactOptions || {}),
+      }}
       ref={editorRef}
       defaultCode={code}
       defs={defs}

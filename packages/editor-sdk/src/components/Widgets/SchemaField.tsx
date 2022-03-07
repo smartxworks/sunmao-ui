@@ -121,9 +121,7 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
   const { title, widgetOptions } = schema;
   const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
   const label = title ?? '';
-  const {
-    widgetManager,
-  } = services;
+  const { widgetManager } = services;
   const [isExpression, setIsExpression] = useState(() => _isExpression(value));
   const isDisplayLabel =
     widgetOptions?.isDisplayLabel !== false && shouldDisplayLabel(schema, label);
@@ -136,16 +134,13 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
   let Component: React.FC<WidgetProps<any>> = UnsupportedField;
   let showAsideExpressionButton =
     isShowAsideExpressionButton && !isDisplayLabel && codeMode;
+  const widget = widgetManager.getWidget(schema.widget || '');
 
   // customize widgets
   if (isExpression) {
     Component = ExpressionWidget;
-  } else if (schema.widget) {
-    const widget = widgetManager.getWidget(schema.widget);
-
-    if (widget) {
-      Component = widget.impl;
-    }
+  } else if (widget) {
+    Component = widget.impl;
   } else if (level === 0) {
     Component = CategoryWidget;
     showAsideExpressionButton = false;
