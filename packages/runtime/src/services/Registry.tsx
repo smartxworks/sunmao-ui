@@ -23,6 +23,7 @@ import ScrollIntoComponentUtilMethod from '../utilMethods/ScrollIntoComponent';
 
 import {
   ImplementedRuntimeComponent,
+  ImplementedRuntimeTraitFactory,
   ImplementedRuntimeTrait,
   ImplementedRuntimeModule,
   UIServices,
@@ -34,7 +35,7 @@ export type UtilMethodFactory = () => UtilMethod<any>[];
 
 export type SunmaoLib = {
   components?: ImplementedRuntimeComponent<string, string, string, string>[];
-  traits?: ImplementedRuntimeTrait[];
+  traits?: ImplementedRuntimeTraitFactory[];
   modules?: ImplementedRuntimeModule[];
   utilMethods?: UtilMethodFactory[];
 };
@@ -94,7 +95,7 @@ export class Registry {
     return res;
   }
 
-  registerTrait(t: ImplementedRuntimeTrait) {
+  registerTrait(t: ImplementedRuntimeTraitFactory) {
     if (this.traits.get(t.version)?.has(t.metadata.name)) {
       throw new Error(
         `Already has trait ${t.version}/${t.metadata.name} in this registry.`
@@ -103,7 +104,11 @@ export class Registry {
     if (!this.traits.has(t.version)) {
       this.traits.set(t.version, new Map());
     }
-    this.traits.get(t.version)?.set(t.metadata.name, t);
+    const trait = {
+      ...t,
+      impl: t.factory(),
+    };
+    this.traits.get(t.version)?.set(t.metadata.name, trait);
   }
 
   getTrait(version: string, name: string): ImplementedRuntimeTrait {

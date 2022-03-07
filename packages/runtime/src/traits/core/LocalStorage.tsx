@@ -1,7 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import { createTrait } from '@sunmao-ui/core';
 import { isEqual } from 'lodash';
-import { TraitImpl } from 'src/types';
+import { TraitImplFactory } from '../../types';
 
 function getLocalStorageValue(key: string) {
   try {
@@ -15,43 +15,40 @@ function getLocalStorageValue(key: string) {
   }
 }
 
-const HasInitializedMap = new Map<string, boolean>();
-const PrevValueCache: Record<string, unknown> = {};
-
 const PropsSchema = Type.Object({
   key: Type.String(),
   value: Type.Any(),
 });
 
-const LocalStorageTraitImpl: TraitImpl<Static<typeof PropsSchema>> = ({
-  key,
-  value,
-  componentId,
-  mergeState,
-}) => {
-  const hashId = `#${componentId}@${key}`;
-  const hasInitialized = HasInitializedMap.get(hashId);
+const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+  const HasInitializedMap = new Map<string, boolean>();
+  const PrevValueCache: Record<string, unknown> = {};
 
-  if (key) {
-    if (!hasInitialized) {
-      PrevValueCache[key] = getLocalStorageValue(hashId);
-      mergeState({
-        [key]: PrevValueCache[key],
-      });
-      HasInitializedMap.set(hashId, true);
-    } else {
-      if (!isEqual(PrevValueCache[key], value)) {
-        PrevValueCache[key] = value;
+  return ({ key, value, componentId, mergeState }) => {
+    const hashId = `#${componentId}@${key}`;
+    const hasInitialized = HasInitializedMap.get(hashId);
+
+    if (key) {
+      if (!hasInitialized) {
+        PrevValueCache[key] = getLocalStorageValue(hashId);
         mergeState({
-          [key]: value,
+          [key]: PrevValueCache[key],
         });
-        localStorage.setItem(hashId, JSON.stringify(value));
+        HasInitializedMap.set(hashId, true);
+      } else {
+        if (!isEqual(PrevValueCache[key], value)) {
+          PrevValueCache[key] = value;
+          mergeState({
+            [key]: value,
+          });
+          localStorage.setItem(hashId, JSON.stringify(value));
+        }
       }
     }
-  }
 
-  return {
-    props: null,
+    return {
+      props: null,
+    };
   };
 };
 
@@ -68,5 +65,5 @@ export default {
       methods: [],
     },
   }),
-  impl: LocalStorageTraitImpl,
+  factory: LocalStorageTraitFactory,
 };
