@@ -37,7 +37,7 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = props => {
     >
       {tabNames.map((tabName, idx) => (
         <TabPane key={String(idx)} title={tabName}>
-          {(slotsElements.content as React.ReactElement[])[idx]}
+          { slotsElements.content ? (slotsElements.content as React.ReactElement[])[idx] : undefined}
         </TabPane>
       ))}
     </BaseTabs>
