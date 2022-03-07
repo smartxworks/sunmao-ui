@@ -36,17 +36,17 @@ const style = css`
 
 export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ store }) => {
   const [filterText, setFilterText] = useState('');
-  const [refreshFlag, setRefreshFlag] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(0);
   const data = useMemo(() => {
     return pickBy(store, (_v, key) => {
       return filterText ? key.includes(filterText) : true;
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store, filterText, refreshFlag]);
 
   useEffect(() => {
     const stop = watch(store, () => {
-      setRefreshFlag(v => !v);
+      setRefreshFlag(v => v + 1);
     });
 
     return stop;
