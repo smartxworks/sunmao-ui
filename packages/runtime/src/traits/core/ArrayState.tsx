@@ -1,75 +1,70 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImpl } from '../../types';
-
-const HasInitializedMap = new Map<string, boolean>();
+import { TraitImplFactory } from '../../types';
 
 type KeyValue = { key: string; value: unknown };
 
-const ArrayStateTrait: TraitImpl<Static<typeof PropsSchema>> = ({
-  key,
-  initialValue,
-  componentId,
-  mergeState,
-  subscribeMethods,
-  services,
-}) => {
-  const hashId = `#${componentId}@${key}`;
-  const hasInitialized = HasInitializedMap.get(hashId);
+const ArrayStateTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+  const HasInitializedMap = new Map<string, boolean>();
 
-  if (!hasInitialized) {
-    mergeState({ [key]: initialValue || [] });
+  return ({ key, initialValue, componentId, mergeState, subscribeMethods, services }) => {
+    const hashId = `#${componentId}@${key}`;
+    const hasInitialized = HasInitializedMap.get(hashId);
 
-    const methods = {
-      setArray({ key, value }: KeyValue) {
-        mergeState({ [key]: value });
-      },
-      deleteItemByIndex({ key, index }: { key: string; index: number }) {
-        const _arr = [...services.stateManager.store[componentId][key]];
-        _arr.splice(index, 1);
-        mergeState({ [key]: _arr });
-      },
-      deleteItemById({
-        key,
-        itemIdKey,
-        itemId,
-      }: {
-        key: string;
-        itemIdKey: string;
-        itemId: string;
-      }) {
-        const _arr = [...services.stateManager.store[componentId][key]].filter(item => {
-          return item[itemIdKey] !== itemId;
-        });
-        mergeState({ [key]: _arr });
-      },
-      pushItem({ item, key }: { key: string; item: any }) {
-        const _arr = [...services.stateManager.store[componentId][key], item];
-        mergeState({ [key]: _arr });
-      },
-      modifyItemById({
-        key,
-        itemIdKey,
-        itemId,
-        newItem,
-      }: {
-        key: string;
-        itemIdKey: string;
-        itemId: string;
-        newItem: any;
-      }) {
-        const _arr = [...services.stateManager.store[componentId][key]];
-        const index = _arr.findIndex(v => v[itemIdKey] === itemId);
-        _arr.splice(index, 1, newItem);
-        mergeState({ [key]: _arr });
-      },
+    if (!hasInitialized) {
+      mergeState({ [key]: initialValue || [] });
+
+      const methods = {
+        setArray({ key, value }: KeyValue) {
+          mergeState({ [key]: value });
+        },
+        deleteItemByIndex({ key, index }: { key: string; index: number }) {
+          const _arr = [...services.stateManager.store[componentId][key]];
+          _arr.splice(index, 1);
+          mergeState({ [key]: _arr });
+        },
+        deleteItemById({
+          key,
+          itemIdKey,
+          itemId,
+        }: {
+          key: string;
+          itemIdKey: string;
+          itemId: string;
+        }) {
+          const _arr = [...services.stateManager.store[componentId][key]].filter(item => {
+            return item[itemIdKey] !== itemId;
+          });
+          mergeState({ [key]: _arr });
+        },
+        pushItem({ item, key }: { key: string; item: any }) {
+          const _arr = [...services.stateManager.store[componentId][key], item];
+          mergeState({ [key]: _arr });
+        },
+        modifyItemById({
+          key,
+          itemIdKey,
+          itemId,
+          newItem,
+        }: {
+          key: string;
+          itemIdKey: string;
+          itemId: string;
+          newItem: any;
+        }) {
+          const _arr = [...services.stateManager.store[componentId][key]];
+          const index = _arr.findIndex(v => v[itemIdKey] === itemId);
+          _arr.splice(index, 1, newItem);
+          mergeState({ [key]: _arr });
+        },
+      };
+      subscribeMethods(methods);
+      HasInitializedMap.set(hashId, true);
+    }
+
+    return {
+      props: null,
     };
-    subscribeMethods(methods);
-    HasInitializedMap.set(hashId, true);
-  }
-
-  return {
-    props: null,
   };
 };
 
@@ -133,5 +128,5 @@ export default {
       state: {},
     },
   }),
-  impl: ArrayStateTrait,
+  factory: ArrayStateTraitFactory,
 };
