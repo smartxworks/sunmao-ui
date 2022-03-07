@@ -32,7 +32,6 @@ const LocalStorageTraitImpl: TraitImpl<Static<typeof PropsSchema>> = ({
   const hashId = `#${componentId}@${key}`;
   const hasInitialized = HasInitializedMap.get(hashId);
 
-
   if (key) {
     if (!hasInitialized) {
       PrevValueCache[key] = getLocalStorageValue(hashId);
