@@ -1,24 +1,23 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImpl } from '../../types';
+import { TraitImplFactory } from '../../types';
 
-const useHiddenTrait: TraitImpl<Static<typeof PropsSchema>> = ({
-  hidden,
-  visually,
-}) => {
-  if (visually) {
-    return {
-      props: {
-        customStyle: {
-          content: hidden ? 'display: none' : '',
+const HiddenTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+  return ({ hidden, visually }) => {
+    if (visually) {
+      return {
+        props: {
+          customStyle: {
+            content: hidden ? 'display: none' : '',
+          },
         },
-      },
-    };
-  }
+      };
+    }
 
-  return {
-    props: {},
-    unmount: hidden,
+    return {
+      props: {},
+      unmount: hidden,
+    };
   };
 };
 
@@ -40,5 +39,5 @@ export default {
       methods: [],
     },
   }),
-  impl: useHiddenTrait,
+  factory: HiddenTraitFactory,
 };

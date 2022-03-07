@@ -23,7 +23,7 @@ export default {
       methods: [],
     },
   }),
-  impl: () => ({
+  factory: () => () => ({
     props: null,
   }),
 };

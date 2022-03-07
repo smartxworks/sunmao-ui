@@ -21,6 +21,12 @@ export type TraitImpl<T = any> = (
     }
 ) => TraitResult<string, string>;
 
+export type TraitImplFactory<T = any> = () => TraitImpl<T>;
+
+export type ImplementedRuntimeTraitFactory = RuntimeTrait & {
+  factory: TraitImplFactory;
+};
+
 export type ImplementedRuntimeTrait = RuntimeTrait & {
   impl: TraitImpl;
 };

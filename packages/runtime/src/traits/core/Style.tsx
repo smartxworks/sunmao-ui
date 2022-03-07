@@ -1,16 +1,18 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
-import { TraitImpl } from '../../types';
+import { TraitImplFactory } from '../../types';
 
-const StyleTrait: TraitImpl<Static<typeof PropsSchema>> = ({ styles }) => {
-  const customStyle: Record<string, string> = {};
-  styles.forEach(style => {
-    customStyle[style.styleSlot] = style.style;
-  });
-  return {
-    props: {
-      customStyle,
-    },
+const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+  return ({ styles }) => {
+    const customStyle: Record<string, string> = {};
+    styles.forEach(style => {
+      customStyle[style.styleSlot] = style.style;
+    });
+    return {
+      props: {
+        customStyle,
+      },
+    };
   };
 };
 
@@ -36,5 +38,5 @@ export default {
       state: {},
     },
   }),
-  impl: StyleTrait,
+  factory: StyleTraitFactory,
 };
