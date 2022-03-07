@@ -85,7 +85,10 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                   <SchemaField
                     key={name}
                     component={component}
-                    schema={schema}
+                    schema={{
+                      ...schema,
+                      title: schema.title || name,
+                    }}
                     value={value?.[name!]}
                     level={level + 1}
                     services={services}

@@ -27,10 +27,15 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
           <SchemaField
             component={component}
             key={name}
-            schema={mergeWidgetOptionsIntoSchema(subSchema, {
-              expressionOptions,
-              title: subSchema.title || name,
-            })}
+            schema={mergeWidgetOptionsIntoSchema(
+              {
+                ...subSchema,
+                title: subSchema.title || name,
+              },
+              {
+                expressionOptions,
+              }
+            )}
             level={level + 1}
             value={value?.[name]}
             services={services}

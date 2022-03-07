@@ -8,18 +8,19 @@ export const CheckboxOptionSchema = Type.Array(
     value: Type.String(),
     disabled: Type.Boolean(),
     indeterminate: Type.Boolean(),
-  }), {
-  title: 'Options',
-  category: Category.Data,
-  widget: 'expression'
-}
+  }),
+  {
+    title: 'Options',
+    category: Category.Data,
+    widget: 'core/v1/Expression',
+  }
 );
 
 export const CheckboxPropsSchema = {
   options: CheckboxOptionSchema,
   direction: StringUnion(['horizontal', 'vertical'], {
     title: 'Direction',
-    category: Category.Layout
+    category: Category.Layout,
   }),
   defaultCheckedValues: Type.Array(Type.String(), {
     title: 'Default Value',
@@ -27,10 +28,10 @@ export const CheckboxPropsSchema = {
   }),
   showCheckAll: Type.Boolean({
     title: 'Show Check All',
-    category: Category.Basic
+    category: Category.Basic,
   }),
   checkAllText: Type.String({
     title: 'Check All Text',
-    category: Category.Data
+    category: Category.Data,
   }),
 };
