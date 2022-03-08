@@ -6,7 +6,6 @@ import { FetchTraitPropertiesSchema } from '../../types/traitPropertiesSchema';
 const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSchema>> =
   () => {
     const hasFetchedMap = new Map<string, boolean>();
-
     return ({
       trait,
       url,
@@ -14,6 +13,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
       lazy: _lazy,
       headers: _headers,
       body,
+      bodyType,
       mergeState,
       services,
       subscribeMethods,
@@ -24,7 +24,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
       const lazy = _lazy === undefined ? true : _lazy;
 
       const fetchData = () => {
-        // TODO: clear when component destory
+        // TODO: clear when component destroy
         hasFetchedMap.set(hashId, true);
         // FIXME: listen to the header change
         const headers = new Headers();
@@ -42,16 +42,35 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
           },
         });
 
+        let reqBody: string | FormData = '';
+
+        switch (bodyType) {
+          case 'json':
+            reqBody = JSON.stringify(body);
+            break;
+          case 'formData':
+            reqBody = new FormData();
+            for (const key in body) {
+              reqBody.append(key, body[key]);
+            }
+            break;
+        }
+
         // fetch data
         fetch(url, {
           method,
           headers,
-          body: method === 'get' ? undefined : JSON.stringify(body),
+          body: reqBody,
         }).then(
           async response => {
             if (response.ok) {
               // handle 20x/30x
-              const data = await response.json();
+              let data: any;
+              if (response.headers.get('Content-Type') === 'application/json') {
+                data = await response.json();
+              } else {
+                data = await response.text();
+              }
               mergeState({
                 fetch: {
                   loading: false,
@@ -94,6 +113,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
               });
             }
           },
+
           async error => {
             console.warn(error);
             mergeState({
