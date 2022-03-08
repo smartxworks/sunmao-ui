@@ -27,6 +27,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
           component={component}
           schema={mergeWidgetOptionsIntoSchema(EventHandlerSchema, { hideEventType })}
           value={handler}
+          path={[]}
           level={1}
           services={services}
           onChange={onChange}

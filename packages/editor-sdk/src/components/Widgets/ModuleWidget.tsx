@@ -5,7 +5,7 @@ import { implementWidget } from '../../utils/widget';
 import { SchemaField } from './SchemaField';
 
 export const ModuleWidget: React.FC<WidgetProps> = props => {
-  const { component, value, schema, services, level, onChange } = props;
+  const { component, value, schema, services, path, level, onChange } = props;
   const { registry } = services;
   const moduleTypes = useMemo(() => {
     const res: string[] = [];
@@ -29,6 +29,7 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
         component={component}
         schema={schema.properties!.id! as WidgetProps['schema']}
         value={value?.id}
+        path={path.concat('id')}
         level={level + 1}
         services={services}
         onChange={v =>
@@ -62,6 +63,7 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
             ...module.spec.properties,
             title: 'Module Properties',
           }}
+          path={path}
           value={value?.properties}
           level={level + 1}
           services={services}
