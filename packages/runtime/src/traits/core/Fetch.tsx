@@ -42,24 +42,25 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
           },
         });
 
-        let realBody: string | FormData = '';
+        let reqBody: string | FormData = '';
 
         switch (bodyType) {
           case 'json':
-            realBody = JSON.stringify(body);
+            reqBody = JSON.stringify(body);
             break;
           case 'formData':
-            realBody = new FormData();
+            reqBody = new FormData();
             for (const key in body) {
-              realBody.append(key, body[key]);
+              reqBody.append(key, body[key]);
             }
+            break;
         }
 
         // fetch data
         fetch(url, {
           method,
           headers,
-          body: realBody,
+          body: reqBody,
         }).then(
           async response => {
             if (response.ok) {

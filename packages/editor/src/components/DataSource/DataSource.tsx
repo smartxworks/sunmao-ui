@@ -69,7 +69,7 @@ export const DataSource: React.FC<Props> = props => {
     <VStack spacing="2" alignItems="stretch">
       <Flex padding="4" paddingBottom="0">
         <Text fontSize="lg" fontWeight="bold">
-          Datasource
+          DataSource
         </Text>
         <Spacer />
         <Menu>

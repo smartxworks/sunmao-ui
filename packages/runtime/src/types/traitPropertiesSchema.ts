@@ -60,7 +60,6 @@ export const FetchTraitPropertiesSchema = Type.Object({
     Type.Object({
       json: Type.String(),
       formData: Type.String(),
-      raw: Type.String(),
     }),
     { title: 'Body Type' },
   ),
