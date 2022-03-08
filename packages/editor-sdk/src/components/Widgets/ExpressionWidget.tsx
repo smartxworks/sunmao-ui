@@ -94,6 +94,8 @@ const getCode = (value: unknown): { code: string; type: string } => {
   const type = typeof value;
   if (type === 'object' || type === 'boolean') {
     value = JSON.stringify(value, null, 2);
+  } else if (value === undefined) {
+    value = '';
   } else {
     value = String(value);
   }
