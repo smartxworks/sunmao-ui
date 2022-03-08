@@ -56,6 +56,13 @@ export const FetchTraitPropertiesSchema = Type.Object({
   body: Type.Record(Type.String(), Type.String(), {
     title: 'Body',
   }),
+  bodyType: Type.KeyOf(
+    Type.Object({
+      json: Type.String(),
+      formData: Type.String(),
+    }),
+    { title: 'Body Type' },
+  ),
   onComplete: Type.Array(EventCallBackHandlerSchema),
   onError: Type.Array(EventCallBackHandlerSchema),
 });
