@@ -41,12 +41,11 @@ export const Body: React.FC<Props> = props => {
       <Select value={values.bodyType} onChange={onBodyTypeChange}>
         <option value="json">JSON</option>
         <option value="formData">Form Data</option>
-        <option value="raw">raw</option>
       </Select>
       <Text fontSize="lg" fontWeight="bold">
         Body
       </Text>
-      <Box width='full'>
+      <Box width="full">
         <KeyValueWidget
           component={api}
           schema={mergeWidgetOptionsIntoSchema(schema, {

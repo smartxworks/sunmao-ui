@@ -1,13 +1,36 @@
 import { Type } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-const StateSchema = Type.Object({
-  files: Type.Any(),
+const PropsSchema = Type.Object({
+  multiple: Type.Boolean({
+    title: 'Select Multiple Files',
+    category: 'Basic',
+  }),
+  hideDefaultInput: Type.Boolean({
+    title: 'Hide Default Input',
+    category: 'Basic',
+  }),
+  fileTypes: Type.Array(Type.String(), {
+    title: 'File Types',
+    description: 'The accept value of Input. Example: ["jpg", "png", "svg", "gif"].',
+    category: 'Basic',
+  }),
 });
 
-const PropsSchema = Type.Object({});
+const StateSchema = Type.Object({
+  // actually, the type of files is 'File[]'
+  // but JSON schema dose not has this type, so I mock it.
+  files: Type.Array(
+    Type.Object({
+      lastModified: Type.Number(),
+      name: Type.String(),
+      size: Type.Number(),
+      type: Type.String(),
+    })
+  ),
+});
 
 export default implementRuntimeComponent({
   version: 'core/v1',
@@ -17,7 +40,11 @@ export default implementRuntimeComponent({
     description: 'Select file',
     isDraggable: true,
     isResizable: false,
-    exampleProperties: {},
+    exampleProperties: {
+      multiple: false,
+      hideDefaultInput: false,
+      fileTypes: [],
+    },
     exampleSize: [1, 1],
     annotations: {
       category: 'Input',
@@ -26,42 +53,59 @@ export default implementRuntimeComponent({
   spec: {
     properties: PropsSchema,
     state: StateSchema,
-    methods: {},
-    slots: [],
+    methods: {
+      selectFile: Type.Object({}),
+    },
+    slots: ['content'],
     styleSlots: ['content'],
     events: [],
   },
-})(({ mergeState, customStyle, elementRef }) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    mergeState({
-      files: e.target.files,
-    });
-    if (!e.target.files) return;
-    const formData = new FormData();
-    formData.append('myFile', e.target.files[0]);
-    console.log('formData', formData)
-    fetch('http://localhost:3000/', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(data => {
-        console.log(data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    console.log(e.target.files);
-  };
+})(
+  ({
+    hideDefaultInput,
+    multiple,
+    fileTypes,
+    mergeState,
+    subscribeMethods,
+    customStyle,
+    elementRef,
+    slotsElements,
+  }) => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
-  return (
-    <div
-      ref={elementRef}
-      className={css`
-        ${customStyle?.content}
-      `}
-    >
-      <input ref={inputRef} type="file" name="文件上传" onChange={onChange} />
-    </div>
-  );
-});
+    useEffect(() => {
+      mergeState({ files: [] });
+
+      subscribeMethods({
+        selectFile: () => {
+          inputRef.current?.click();
+        },
+      });
+    });
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      mergeState({
+        files: Array.prototype.slice.call(e.target.files) || [],
+      });
+    };
+
+    return (
+      <div
+        ref={elementRef}
+        className={css`
+          ${customStyle?.content}
+        `}
+      >
+        <input
+          style={{ display: hideDefaultInput ? 'none' : 'block' }}
+          ref={inputRef}
+          type="file"
+          multiple={multiple}
+          accept={fileTypes.join(',')}
+          onChange={onChange}
+        />
+        {slotsElements.content}
+      </div>
+    );
+  }
+);
