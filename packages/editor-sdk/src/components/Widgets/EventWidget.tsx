@@ -15,7 +15,7 @@ type EventWidgetOptionsType = Static<typeof EventWidgetOptions>;
 
 export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observer(
   props => {
-    const { value, level, component, schema, services, onChange } = props;
+    const { value, path, level, component, schema, services, onChange } = props;
     const { registry, editorStore, appModelManager } = services;
     const { utilMethods } = registry;
     const { components } = editorStore;
@@ -186,6 +186,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Parameters</FormLabel>
         <KeyValueWidget
           component={component}
+          path={path.concat('method', 'parameters')}
           level={level + 1}
           schema={mergeWidgetOptionsIntoSchema(paramsSchema, { onlySetValue: true })}
           services={services}

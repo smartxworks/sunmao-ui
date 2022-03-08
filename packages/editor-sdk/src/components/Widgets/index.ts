@@ -13,6 +13,7 @@ import expressionWidget from './ExpressionWidget';
 import moduleWidget from './ModuleWidget';
 import keyValueWidget from './KeyValueWidget';
 import eventWidget from './EventWidget';
+import popoverWidget from './PopoverWidget';
 
 export * from './SchemaField';
 export * from './ArrayField';
@@ -28,6 +29,7 @@ export * from './ExpressionWidget';
 export * from './ModuleWidget';
 export * from './KeyValueWidget';
 export * from './EventWidget';
+export * from './PopoverWidget';
 export const widgets: ImplementedWidget<any>[] = [
   schemaField,
   arrayField,
@@ -43,4 +45,5 @@ export const widgets: ImplementedWidget<any>[] = [
   expressionWidget,
   keyValueWidget,
   eventWidget,
+  popoverWidget
 ];

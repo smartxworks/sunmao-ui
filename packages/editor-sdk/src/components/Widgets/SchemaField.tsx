@@ -117,7 +117,7 @@ export const SchemaFieldWidgetOptions = Type.Object({
 type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
 
 export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = props => {
-  const { component, schema, level, value, services, onChange } = props;
+  const { component, schema, level, path, value, services, onChange } = props;
   const { title, widgetOptions } = schema;
   const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
   const label = title ?? '';
@@ -131,7 +131,7 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
     return null;
   }
 
-  let Component: React.FC<WidgetProps<any>> = UnsupportedField;
+  let Component: React.ComponentType<WidgetProps<any>> = UnsupportedField;
   let showAsideExpressionButton =
     isShowAsideExpressionButton && !isDisplayLabel && codeMode;
   const widget = widgetManager.getWidget(schema.widget || '');
@@ -191,6 +191,7 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
                 : schema
             }
             value={value}
+            path={path}
             level={level}
             services={services}
             onChange={onChange}

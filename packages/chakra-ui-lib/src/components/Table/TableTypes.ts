@@ -20,7 +20,8 @@ export const TableSizePropertySchema = Type.KeyOf(
     sm: Type.String(),
     md: Type.String(),
     lg: Type.String(),
-  }), {
+  }),
+  {
     title: 'Size',
     category: APPEARANCE,
   }
@@ -33,38 +34,50 @@ export const TdTypeSchema = Type.KeyOf(
     link: Type.String(),
     button: Type.String(),
     module: Type.String(),
-  }), {
+  }),
+  {
     title: 'TD Type',
     category: APPEARANCE,
   }
 );
-export const ColumnSchema = Type.Object({
-  key: Type.String({
-    title: 'Key',
-  }),
-  title: Type.String({
-    title: 'Title',
-  }),
-  displayValue: Type.String({
-    title: 'Display value',
-  }),
-  type: TdTypeSchema,
-  buttonConfig: Type.Object({
-    text: Type.String({
-      title: 'Text',
+export const ColumnSchema = Type.Object(
+  {
+    key: Type.String({
+      title: 'Key',
     }),
-    handlers: Type.Array(EventHandlerSchema, { title: 'Handlers' }),
-  }, {
-    title: 'Button Config',
-  }),
-  module: ModuleSchema,
-}, {
-  title: 'Column'
-});
+    title: Type.String({
+      title: 'Title',
+    }),
+    displayValue: Type.String({
+      title: 'Display value',
+    }),
+    type: TdTypeSchema,
+    buttonConfig: Type.Object(
+      {
+        text: Type.String({
+          title: 'Button Text',
+        }),
+        handlers: Type.Array(EventHandlerSchema, {
+          title: 'Button Handlers',
+        }),
+      },
+      {
+        title: 'Button Config',
+      }
+    ),
+    module: ModuleSchema,
+  },
+  {
+    title: 'Column',
+  }
+);
 
 export const ColumnsPropertySchema = Type.Array(ColumnSchema, {
   title: 'Columns',
   category: BASIC,
+  widgetOptions: {
+    displayedKeys: ['title'],
+  },
 });
 export const IsMultiSelectPropertySchema = Type.Boolean({
   title: 'Enable Multiple Select',

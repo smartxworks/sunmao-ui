@@ -36,6 +36,7 @@ export const Body: React.FC<Props> = props => {
           minNum: 1,
           isShowHeader: true,
         })}
+        path={[]}
         level={1}
         value={values.body}
         services={services}
