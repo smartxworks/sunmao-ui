@@ -132,7 +132,9 @@ export const ApiForm: React.FC<Props> = props => {
       ...(trait?.properties as Static<typeof FetchTraitPropertiesSchema>),
     });
     setTabIndex(0);
-  }, [trait.properties]);
+  // do not add formik into dependencies, otherwise it will cause infinite loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trait?.properties]);
   useEffect(() => {
     if (api.id) {
       setName(api.id);
