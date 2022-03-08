@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Select, Text, VStack } from '@chakra-ui/react';
 import {
   KeyValueWidget,
   WidgetProps,
@@ -28,20 +28,37 @@ export const Body: React.FC<Props> = props => {
     formik.submitForm();
   };
 
+  const onBodyTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    formik.setFieldValue('bodyType', e.target.value);
+    formik.submitForm();
+  };
+
   return (
-    <Box>
-      <KeyValueWidget
-        component={api}
-        schema={mergeWidgetOptionsIntoSchema(schema, {
-          minNum: 1,
-          isShowHeader: true,
-        })}
-        path={[]}
-        level={1}
-        value={values.body}
-        services={services}
-        onChange={onChange}
-      />
-    </Box>
+    <VStack alignItems="start">
+      <Text fontSize="lg" fontWeight="bold">
+        BodyType
+      </Text>
+      <Select value={values.bodyType} onChange={onBodyTypeChange}>
+        <option value="json">JSON</option>
+        <option value="formData">Form Data</option>
+      </Select>
+      <Text fontSize="lg" fontWeight="bold">
+        Body
+      </Text>
+      <Box width="full">
+        <KeyValueWidget
+          component={api}
+          schema={mergeWidgetOptionsIntoSchema(schema, {
+            minNum: 1,
+            isShowHeader: true,
+          })}
+          path={[]}
+          level={1}
+          value={values.body}
+          services={services}
+          onChange={onChange}
+        />
+      </Box>
+    </VStack>
   );
 };
