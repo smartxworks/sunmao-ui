@@ -5,6 +5,9 @@
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "types": "lib/index.d.ts",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -66,5 +69,6 @@
     "mobx-react-lite": "^3.2.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
-  }
+  },
+  "gitHead": "c2510d776760530c15386cd45f757d7569ef0bd4"
 }
