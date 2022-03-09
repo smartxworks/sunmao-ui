@@ -47,7 +47,7 @@ const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
   const { editorStore } = services;
-  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({});
+  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({...store});
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
   const [tabIndex, setTabIndex] = useState(0);
@@ -274,7 +274,7 @@ export const ApiForm: React.FC<Props> = props => {
           </TabPanels>
         </VStack>
       </Tabs>
-      <ResponseInfo data={result.data} error={result.error} loading={result.loading} />
+      <ResponseInfo {...result} />
     </VStack>
   );
 };
