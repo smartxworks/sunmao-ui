@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { flatten } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
-import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Textarea, Text, VStack } from '@chakra-ui/react';
 import { SchemaField } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
@@ -124,6 +124,12 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   return (
     <ErrorBoundary>
       <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
+        <FormControl>
+          <FormLabel>
+            <strong>Component Type</strong>
+          </FormLabel>
+          <Text paddingLeft='3'>{selectedComponent.type}</Text>
+        </FormControl>
         <FormControl>
           <FormLabel>
             <strong>Component ID</strong>
