@@ -24,6 +24,10 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = props => {
     }
   }, [getElement, ref]);
 
+  const slots = Array.isArray(slotsElements.content)
+    ? slotsElements.content
+    : [slotsElements.content];
+
   return (
     <BaseTabs
       className={css(customStyle?.content)}
@@ -37,7 +41,7 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = props => {
     >
       {tabNames.map((tabName, idx) => (
         <TabPane key={String(idx)} title={tabName}>
-          {(slotsElements.content as React.ReactElement[])[idx]}
+          {slots[idx]}
         </TabPane>
       ))}
     </BaseTabs>
