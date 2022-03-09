@@ -128,7 +128,13 @@ export const PopoverWidget = React.forwardRef<
             {isObjectChildren && 'body' in children ? (
               (children as Children).body
             ) : (
-              <SchemaField {...props} schema={{ ...schema, widget: '' }} />
+              <SchemaField
+                {...props}
+                schema={{
+                  ...schema,
+                  widget: schema.widget === 'core/v1/Popover' ? '' : schema.widget,
+                }}
+              />
             )}
           </PopoverBody>
         </PopoverContent>
