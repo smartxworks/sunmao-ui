@@ -185,7 +185,7 @@ export const Editor: React.FC<Props> = observer(
       if (codeMode) {
         return (
           <Flex width="100%" height="100%">
-            <Box flex="1">
+            <Box width="full" height="full">
               <SchemaEditor
                 defaultCode={JSON.stringify(app, null, 2)}
                 onChange={setCode}
