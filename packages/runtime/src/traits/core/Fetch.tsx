@@ -36,6 +36,8 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
 
         mergeState({
           fetch: {
+            code: undefined,
+            codeText: '',
             loading: true,
             data: undefined,
             error: undefined,
@@ -60,19 +62,23 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
         fetch(url, {
           method,
           headers,
-          body: reqBody,
+          body: method === 'get' ? undefined : reqBody,
         }).then(
           async response => {
+            const isResponseJSON = response.headers.get('Content-Type')?.includes('application/json');
+
             if (response.ok) {
               // handle 20x/30x
               let data: any;
-              if (response.headers.get('Content-Type') === 'application/json') {
+              if (isResponseJSON) {
                 data = await response.json();
               } else {
                 data = await response.text();
               }
               mergeState({
                 fetch: {
+                  code: response.status,
+                  codeText: response.statusText || 'ok',
                   loading: false,
                   data,
                   error: undefined,
@@ -91,10 +97,12 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
               });
             } else {
               // TODO: Add FetchError class and remove console info
-              const error = new Error(`HTTP${response.status}: ${response.statusText}`);
+              const error = await (isResponseJSON ? response.json() : response.text());
               console.warn(error);
               mergeState({
                 fetch: {
+                  code: response.status,
+                  codeText: response.statusText || 'error',
                   loading: false,
                   data: undefined,
                   error,
@@ -118,9 +126,11 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
             console.warn(error);
             mergeState({
               fetch: {
+                code: undefined,
+                codeText: 'Error',
                 loading: false,
                 data: undefined,
-                error: error instanceof Error ? error : new Error(error),
+                error: error.toString(),
               },
             });
             const rawOnError = trait.properties.onError as Static<
@@ -173,6 +183,8 @@ export default {
       state: Type.Object({
         fetch: Type.Object({
           loading: Type.Boolean(),
+          code: Type.Optional(Type.Number()),
+          codeText: Type.String(),
           data: Type.Any(),
           error: Type.Any(),
         }),

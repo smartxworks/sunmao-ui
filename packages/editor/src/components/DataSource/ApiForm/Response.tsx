@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import {
-  Box,
+  HStack,
   Flex,
   Accordion,
   AccordionItem,
@@ -8,43 +8,55 @@ import {
   AccordionPanel,
   AccordionIcon,
   Spinner,
+  Tag,
 } from '@chakra-ui/react';
-import { Error as ErrorInfo } from './Error';
 import { Result } from './Result';
 
 interface Props {
   data?: unknown;
-  error?: Error;
-  loading: boolean;
+  code?: number;
+  codeText?: string;
+  error?: string;
+  loading?: boolean;
 }
+
+const CODE_MAP: Record<string, string> = {
+  2: 'green',
+  3: 'orange',
+};
+const stringify = (value: any): string => {
+  if (!value) return '';
+
+  return value instanceof Object ? JSON.stringify(value, null, 2) : String(value);
+};
 
 export const Response: React.FC<Props> = props => {
   const data = useMemo(() => {
-    return props.data instanceof Object
-      ? JSON.stringify(props.data, null, 2)
-      : String(props.data);
+    return stringify(props.data);
   }, [props.data]);
+  const error = useMemo(() => {
+    return stringify(props.error);
+  }, [props.error]);
 
   return props.data || props.error || props.loading ? (
     <Accordion defaultIndex={0} allowToggle border="solid" borderColor="inherit">
       <AccordionItem>
         <h2>
           <AccordionButton>
-            <Box flex="1" textAlign="left">
-              Response
-            </Box>
+            <HStack flex="1" textAlign="left" spacing={2}>
+              <span>Response</span>
+              {props.data || props.error ? (
+                <Tag colorScheme={CODE_MAP[String(props.code)[0]] || 'red'}>
+                  {props.code} {(props.codeText || '').toLocaleUpperCase()}
+                </Tag>
+              ) : null}
+            </HStack>
             <AccordionIcon />
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4} padding={0} height="250px">
           <Flex alignItems="center" justifyContent="center" height="100%">
-            {props.loading ? (
-              <Spinner />
-            ) : props.error ? (
-              <ErrorInfo error={props.error} />
-            ) : (
-              <Result defaultCode={data} />
-            )}
+            {props.loading ? <Spinner /> : <Result defaultCode={error || data} />}
           </Flex>
         </AccordionPanel>
       </AccordionItem>
