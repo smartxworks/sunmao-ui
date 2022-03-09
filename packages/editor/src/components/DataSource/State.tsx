@@ -14,6 +14,10 @@ import { ComponentSchema } from '@sunmao-ui/core';
 interface Props {
   states: ComponentSchema[];
   active: string;
+  title: string;
+  traitType: string;
+  filterPlaceholder: string;
+  emptyPlaceholder: string;
   onItemClick: (state: ComponentSchema) => void;
   onItemRemove: (state: ComponentSchema) => void;
 }
@@ -28,7 +32,16 @@ const STATE_MAP: Record<string, string> = {
 
 export const State: React.FC<Props> = props => {
   const [search, setSearch] = useState('');
-  const { states, active, onItemClick, onItemRemove } = props;
+  const {
+    states,
+    active,
+    onItemClick,
+    onItemRemove,
+    filterPlaceholder,
+    emptyPlaceholder,
+    title,
+    traitType,
+  } = props;
   const list = useMemo(
     () => states.filter(({ id }) => id.includes(search)),
     [search, states]
@@ -37,7 +50,7 @@ export const State: React.FC<Props> = props => {
   const StateItems = () => (
     <>
       {list.map(state => {
-        const trait = state.traits.find(({ type }) => type === 'core/v1/state');
+        const trait = state.traits.find(({ type }) => type === traitType);
         const properties = trait!.properties;
 
         return (
@@ -64,20 +77,20 @@ export const State: React.FC<Props> = props => {
       <h2>
         <AccordionButton borderBottom="solid" borderColor="inherit">
           <Box flex="1" textAlign="left">
-            State
+            {title}
           </Box>
           <AccordionIcon />
         </AccordionButton>
       </h2>
       <AccordionPanel pb="4" padding="0">
         <Input
-          placeholder="filter the states"
+          placeholder={filterPlaceholder}
           value={search}
           onChange={e => {
             setSearch(e.target.value);
           }}
         />
-        {list.length ? <StateItems /> : <Text padding="2">No States.</Text>}
+        {list.length ? <StateItems /> : <Text padding="2">{emptyPlaceholder}</Text>}
       </AccordionPanel>
     </AccordionItem>
   );

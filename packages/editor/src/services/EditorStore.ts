@@ -18,8 +18,16 @@ type EditingTarget = {
 type DataSources = {
   apis: ComponentSchema[];
   states: ComponentSchema[];
+  localStorages: ComponentSchema[];
 };
 
+enum DataSourceName {
+  API = 'api',
+  STATE = 'state',
+  LOCALSTORAGE = 'localStorage',
+}
+
+type DataSourceId = `${DataSourceName}${number}`
 export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
@@ -46,6 +54,7 @@ export class EditorStore {
   // data source
   private APICount = -1;
   private stateCount = -1;
+  private localStorageCount = -1;
   activeDataSource: ComponentSchema | null = null;
   activeDataSourceType: DataSourceType | null = null;
 
@@ -84,7 +93,7 @@ export class EditorStore {
           this.eventBus.send('componentsRefresh', this.originComponents);
           this.setComponents(this.originComponents);
 
-          if (this.APICount === -1 || this.stateCount === -1) {
+          if (this.APICount === -1 || this.stateCount === -1 || this.localStorageCount === -1) {
             this.initDataSourceCount();
           }
         }
@@ -156,6 +165,7 @@ export class EditorStore {
   get dataSources(): DataSources {
     const apis: ComponentSchema[] = [];
     const states: ComponentSchema[] = [];
+    const localStorages: ComponentSchema[] = [];
 
     this.components.forEach(component => {
       if (component.type === 'core/v1/dummy') {
@@ -167,11 +177,14 @@ export class EditorStore {
           if (trait.type === 'core/v1/state') {
             states.push(component);
           }
+          if (trait.type === 'core/v1/localStorage') {
+            localStorages.push(component);
+          }
         });
       }
     });
 
-    return { apis, states };
+    return { apis, states, localStorages };
   }
 
   clearSunmaoGlobalState() {
@@ -226,10 +239,11 @@ export class EditorStore {
   };
 
   initDataSourceCount = () => {
-    const { apis, states } = this.dataSources;
+    const { apis, states, localStorages } = this.dataSources;
 
     this.APICount = apis.length;
     this.stateCount = states.length;
+    this.localStorageCount = localStorages.length;
   };
 
   setActiveDataSource = (dataSource: ComponentSchema | null) => {
@@ -241,23 +255,32 @@ export class EditorStore {
   };
 
   createDataSource = (type: DataSourceType) => {
-    const { apis, states } = this.dataSources;
-    const isAPI = type === DataSourceType.API;
-    const ids = isAPI ? apis.map(({ id }) => id) : states.map(({ id }) => id);
+    const { apis, states, localStorages } = this.dataSources;
+    let id: DataSourceId;
 
-    while (
-      isAPI
-        ? ids.includes(`api${this.APICount}`)
-        : ids.includes(`state${this.stateCount}`)
-    ) {
-      if (isAPI) {
-        this.APICount++;
-      } else {
-        this.stateCount++;
+    const getCount = (dataSource: ComponentSchema[], dataSourceName: DataSourceName, count: number): number => {
+      const ids = dataSource.map(({ id }) => id);
+      let id: DataSourceId = `${dataSourceName}${count}`;
+      while (ids.includes(id)) {
+        id = `${dataSourceName}${++count}`;
       }
-    }
+      return count;
+    };
 
-    const id = isAPI ? `api${this.APICount++}` : `state${this.stateCount++}`;
+    switch (type) {
+      case DataSourceType.API:
+        this.APICount = getCount(apis, DataSourceName.API, this.APICount);
+        id = `api${this.APICount}`;
+        break;
+      case DataSourceType.STATE:
+        this.stateCount = getCount(states, DataSourceName.STATE, this.stateCount);
+        id = `state${this.stateCount}`;
+        break;
+      case DataSourceType.LOCALSTORAGE:
+        this.localStorageCount = getCount(localStorages, DataSourceName.LOCALSTORAGE, this.localStorageCount);
+        id = `localStorage${this.localStorageCount}`;
+        break;
+    }
 
     this.eventBus.send(
       'operation',
@@ -272,7 +295,7 @@ export class EditorStore {
     this.setActiveDataSource(component!);
     this.setActiveDataSourceType(type);
 
-    if (type === DataSourceType.STATE) {
+    if (type === DataSourceType.STATE || type === DataSourceType.LOCALSTORAGE) {
       this.setToolMenuTab(ToolMenuTabs.INSPECT);
     }
   };

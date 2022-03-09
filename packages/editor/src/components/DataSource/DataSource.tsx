@@ -21,6 +21,7 @@ import { ToolMenuTabs } from '../../services/enum';
 export enum DataSourceType {
   API = 'API',
   STATE = 'State',
+  LOCALSTORAGE = 'LocalStorage',
 }
 
 interface Props {
@@ -28,12 +29,16 @@ interface Props {
   services: EditorServices;
 }
 
-const DATASOURCE_TYPES = [DataSourceType.API, DataSourceType.STATE];
+const DATASOURCE_TYPES = [
+  DataSourceType.API,
+  DataSourceType.STATE,
+  DataSourceType.LOCALSTORAGE,
+];
 
 export const DataSource: React.FC<Props> = props => {
   const { active, services } = props;
   const { editorStore } = services;
-  const { apis, states } = editorStore.dataSources;
+  const { apis, states, localStorages } = editorStore.dataSources;
   const onMenuItemClick = (type: DataSourceType) => {
     editorStore.createDataSource(type);
     editorStore.setSelectedComponentId('');
@@ -46,6 +51,12 @@ export const DataSource: React.FC<Props> = props => {
   const onStateItemClick = (state: ComponentSchema) => {
     editorStore.setActiveDataSource(state);
     editorStore.setActiveDataSourceType(DataSourceType.STATE);
+    editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
+    editorStore.setSelectedComponentId('');
+  };
+  const onLocalStorageItemClick = (state: ComponentSchema) => {
+    editorStore.setActiveDataSource(state);
+    editorStore.setActiveDataSourceType(DataSourceType.LOCALSTORAGE);
     editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
     editorStore.setSelectedComponentId('');
   };
@@ -87,7 +98,7 @@ export const DataSource: React.FC<Props> = props => {
           </MenuList>
         </Menu>
       </Flex>
-      <Accordion defaultIndex={[0, 1]} allowMultiple>
+      <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
         <Api
           apis={apis}
           active={active}
@@ -95,9 +106,23 @@ export const DataSource: React.FC<Props> = props => {
           onItemRemove={onApiItemRemove}
         />
         <State
+          title="State"
+          filterPlaceholder="filter the states"
+          emptyPlaceholder="No States."
           states={states}
           active={active}
+          traitType="core/v1/state"
           onItemClick={onStateItemClick}
+          onItemRemove={onStateItemRemove}
+        />
+        <State
+          title="LocalStorage"
+          traitType="core/v1/localStorage"
+          filterPlaceholder="filter the localStorages"
+          emptyPlaceholder="No LocalStorages."
+          states={localStorages}
+          active={active}
+          onItemClick={onLocalStorageItemClick}
           onItemRemove={onStateItemRemove}
         />
       </Accordion>
