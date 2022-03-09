@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor-sdk",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The SDK for SunMao Editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
@@ -22,11 +22,11 @@
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.7.1",
-    "@emotion/react": "^11.1.1",
     "@emotion/css": "^11.7.1",
+    "@emotion/react": "^11.1.1",
     "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/core": "^0.4.0",
-    "@sunmao-ui/runtime": "^0.4.0",
+    "@sunmao-ui/core": "^0.5.0",
+    "@sunmao-ui/runtime": "^0.5.0",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
@@ -55,8 +55,8 @@
   "peerDependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.7.1",
-    "@emotion/react": "^11.1.1",
     "@emotion/css": "^11.7.1",
+    "@emotion/react": "^11.1.1",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.4.1",
     "@sunmao-ui/runtime": "^0.4.1",
