@@ -50,10 +50,6 @@ const Stack = React.forwardRef<HTMLDivElement, StackProps & { children: ReactNod
       columnGap: spacing,
       rowGap: spacing,
       flexWrap: wrap ? 'wrap' : 'nowrap',
-      minWidth: '200px',
-      minHeight: '200px',
-      border: '1px solid #eee',
-      borderRadius: '4px',
     };
 
     return (
