@@ -14,7 +14,18 @@ export type CreateDataSourceBranchOperationContext = {
 export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateDataSourceBranchOperationContext> {
   do(prev: AppModel): AppModel {
     const { id, type } = this.context;
-    const traitType = type === DataSourceType.API ? 'core/v1/fetch' : 'core/v1/state';
+    let traitType;
+    switch (type) {
+      case DataSourceType.API:
+        traitType = 'core/v1/fetch';
+        break;
+      case DataSourceType.STATE:
+        traitType = 'core/v1/state';
+        break;
+      case DataSourceType.LOCALSTORAGE:
+        traitType = 'core/v1/localStorage';
+        break;
+    }
     const traitSpec = this.registry.getTraitByType(traitType).spec;
     const initProperties = parseTypeBox(traitSpec.properties as TSchema);
 
@@ -31,9 +42,9 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
         properties:
           type === DataSourceType.API
             ? {
-                ...initProperties,
-                method: 'get',
-              }
+              ...initProperties,
+              method: 'get',
+            }
             : initProperties,
       })
     );
