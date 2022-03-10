@@ -25,6 +25,7 @@ import { EditorServices } from '../types';
 import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 import { AppModel } from '../AppModel/AppModel';
+import { LocalStorageForm } from './DataSource/LocalStorageForm';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -125,6 +126,24 @@ export const Editor: React.FC<Props> = observer(
         </ErrorBoundary>
       );
     }, [App, app, gridCallbacks, recoverKey]);
+
+    const dataSourceForm = useMemo(() => {
+      let component: React.ReactNode = <ComponentForm services={services} />;
+      if (!activeDataSource) {
+        return component;
+      }
+      switch (activeDataSourceType) {
+        case DataSourceType.STATE:
+          component = <StateForm state={activeDataSource} services={services} />;
+          break;
+        case DataSourceType.LOCALSTORAGE:
+          component = <LocalStorageForm state={activeDataSource} services={services} />;
+          break;
+        default:
+          break;
+      }
+      return component;
+    }, [activeDataSource, services, activeDataSourceType]);
 
     useEffect(() => {
       // when errors happened, `ErrorBoundary` wouldn't update until rerender
@@ -252,13 +271,7 @@ export const Editor: React.FC<Props> = observer(
                   <Tab>Insert</Tab>
                 </TabList>
                 <TabPanels flex="1" overflow="auto" background="gray.50">
-                  <TabPanel p={0}>
-                    {activeDataSource && activeDataSourceType === DataSourceType.STATE ? (
-                      <StateForm state={activeDataSource} services={services} />
-                    ) : (
-                      <ComponentForm services={services} />
-                    )}
-                  </TabPanel>
+                  <TabPanel p={0}>{dataSourceForm}</TabPanel>
                   <TabPanel p={0}>
                     <ComponentList services={services} />
                   </TabPanel>
