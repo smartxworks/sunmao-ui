@@ -12,7 +12,7 @@ const ObjectFieldWidgetOptions = Type.Object({
 type ObjectFieldWidgetOptionsType = Static<typeof ObjectFieldWidgetOptions>;
 
 export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = props => {
-  const { component, schema, value, services, level, onChange } = props;
+  const { component, schema, value, services, path, level, onChange } = props;
   const { expressionOptions } = schema.widgetOptions || {};
 
   const properties = Object.keys(schema.properties || {});
@@ -36,6 +36,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
                 expressionOptions,
               }
             )}
+            path={path.concat(name)}
             level={level + 1}
             value={value?.[name]}
             services={services}

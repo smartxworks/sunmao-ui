@@ -32,6 +32,9 @@ const exampleProperties = {
       title: 'Name',
       type: 'text',
       displayValue: '',
+      buttonConfig: {
+        handlers: []
+      }
     },
   ],
   majorKey: 'id',

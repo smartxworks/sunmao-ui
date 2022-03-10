@@ -12,14 +12,15 @@ import { ExpressionEditorProps } from './ExpressionEditor';
 
 const IGNORE_SCHEMA_TYPES = ['array', 'object'];
 
-type KeyValueEditorProps = Omit<WidgetProps, 'component' | 'schema' | 'level'> & {
+type KeyValueEditorProps = Omit<WidgetProps, 'component' | 'schema' | 'level' | 'path'> & {
   component?: WidgetProps['component'];
   schema?: WidgetProps['schema'];
-  level?: number;
+  path?: WidgetProps['path'];
+  level?: WidgetProps['level'];
 };
 
 export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
-  const { component, value, schema, services, level = 1, onChange } = props;
+  const { component, value, schema, services, path = [], level = 1, onChange } = props;
   const { minNum = 0, onlySetValue, isShowHeader } = schema?.widgetOptions || {};
   const generateRows = (currentRows: Array<[string, any]> = []) => {
     let newRows = toPairs(value);
@@ -105,6 +106,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
               <SchemaField
                 component={component}
                 value={value}
+                path={path.concat(key)}
                 level={level + 1}
                 schema={mergeWidgetOptionsIntoSchema(keySchemaType, {
                   isShowAsideExpressionButton: true,
@@ -117,6 +119,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
               <Box flex={1}>
                 <ExpressionWidget
                   component={component}
+                  path={path.concat(key)}
                   schema={Type.String({
                     widgetOptions: { compactOptions: expressionOptions.compactOptions },
                   })}

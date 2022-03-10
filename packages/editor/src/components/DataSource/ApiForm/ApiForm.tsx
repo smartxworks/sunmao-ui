@@ -219,6 +219,7 @@ export const ApiForm: React.FC<Props> = props => {
               component={api}
               schema={URLSchema}
               value={values.url}
+              path={[]}
               level={1}
               services={services}
               onChange={onURLChange}
