@@ -93,10 +93,10 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                     path={path.concat(name!)}
                     level={level + 1}
                     services={services}
-                    onChange={value => {
+                    onChange={newValue => {
                       onChange({
                         ...value,
-                        [name!]: value,
+                        [name!]: newValue,
                       });
                     }}
                   />
