@@ -149,6 +149,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
               component={selectedComponent}
               schema={cImpl.spec.properties}
               value={properties}
+              path={[]}
               level={0}
               onChange={newFormData => {
                 eventBus.send(

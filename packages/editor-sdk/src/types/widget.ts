@@ -18,6 +18,7 @@ export type WidgetProps<WidgetOptions = Record<string, any>> = {
   component: ComponentSchema;
   schema: JSONSchema7 & EditorSchema<WidgetOptions>;
   services: EditorServices;
+  path: string[];
   level: number;
   value: any;
   onChange: (v: any) => void;
@@ -37,5 +38,5 @@ export type Widget = {
 export type CreateWidgetOptions = Omit<Widget, 'kind'>;
 
 export type ImplementedWidget<T = Record<string, any>> = CreateWidgetOptions & {
-  impl: React.FC<WidgetProps<T>>;
+  impl: React.ComponentType<WidgetProps<T>>;
 };

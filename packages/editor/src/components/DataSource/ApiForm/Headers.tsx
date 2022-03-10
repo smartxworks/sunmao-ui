@@ -36,6 +36,7 @@ export const Headers: React.FC<Props> = props => {
           minNum: 1,
           isShowHeader: true,
         })}
+        path={[]}
         level={1}
         services={services}
         value={values.headers}

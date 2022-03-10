@@ -2,32 +2,33 @@ import React from 'react';
 import { SchemaField } from './SchemaField';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
-import { Box, ButtonGroup, IconButton, Flex } from '@chakra-ui/react';
-import { ArrowDownIcon, ArrowUpIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
+import {
+  IconButton,
+  Flex
+} from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';
 import { TSchema, Type, Static } from '@sinclair/typebox';
-
-function swap<T>(arr: Array<T>, i1: number, i2: number): Array<T> {
-  const tmp = arr[i1];
-  arr[i1] = arr[i2];
-  arr[i2] = tmp;
-  return arr;
-}
+import { ArrayTable } from '../Form/ArrayTable';
+import { ArrayItemBox } from '../Form/ArrayItemBox';
 
 const ArrayFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSchema),
+  displayedKeys: Type.Optional(Type.Array(Type.String())),
 });
 
 type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
 
 export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = props => {
-  const { component, schema, value, services, level, onChange } = props;
+  const { schema, value, path, level, onChange } = props;
   const { expressionOptions } = schema.widgetOptions || {};
-  const subSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items;
-  if (typeof subSchema === 'boolean' || !subSchema) {
+  const itemSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items;
+
+  if (typeof itemSchema === 'boolean' || !itemSchema) {
     return null;
   }
+
   if (!Array.isArray(value)) {
     return (
       <div>
@@ -36,78 +37,44 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
       </div>
     );
   }
-  return (
+
+  const isNotBaseType = itemSchema.type === 'object' || itemSchema.type === 'array';
+
+  return isNotBaseType ? (
+    <ArrayTable {...props} itemSchema={itemSchema} />
+  ) : (
     <>
-      {value.map((v, idx) => {
-        return (
-          <Box
-            key={idx}
-            mb={2}
-            border="1px solid black"
-            borderColor="gray.200"
-            borderRadius="4"
-            padding="8px"
-          >
-            <ButtonGroup
-              spacing={0}
-              size="xs"
-              variant="ghost"
-              display="flex"
-              justifyContent="end"
-            >
-              <IconButton
-                aria-label={`up-${idx}`}
-                icon={<ArrowUpIcon />}
-                disabled={idx === 0}
-                onClick={() => {
-                  const newFormData = [...value];
-                  swap(newFormData, idx, idx - 1);
-                  onChange(newFormData);
-                }}
-              />
-              <IconButton
-                aria-label={`down-${idx}`}
-                icon={<ArrowDownIcon />}
-                disabled={idx === value.length - 1}
-                onClick={() => {
-                  const newFormData = [...value];
-                  swap(newFormData, idx, idx + 1);
-                  onChange(newFormData);
-                }}
-              />
-              <IconButton
-                aria-label={`delete-${idx}`}
-                icon={<DeleteIcon />}
-                colorScheme="red"
-                onClick={() => {
-                  const newFormData = [...value];
-                  newFormData.splice(idx, 1);
-                  onChange(newFormData);
-                }}
-              />
-            </ButtonGroup>
-            <SchemaField
-              component={component}
-              schema={mergeWidgetOptionsIntoSchema(subSchema, { expressionOptions })}
-              value={v}
-              level={level + 1}
-              services={services}
-              onChange={newValue => {
-                const newFormData = [...value];
-                newFormData[idx] = newValue;
-                onChange(newFormData);
-              }}
-            />
-          </Box>
-        );
-      })}
+      {value.map((itemValue, itemIndex) => (
+        <ArrayItemBox key={itemIndex} index={itemIndex} value={value} onChange={onChange}>
+          <SchemaField
+            {...props}
+            value={itemValue}
+            schema={mergeWidgetOptionsIntoSchema(
+              {
+                ...itemSchema,
+                title: isNotBaseType ? '' : itemSchema.title,
+              },
+              {
+                expressionOptions,
+              }
+            )}
+            path={path.concat(String(itemIndex))}
+            level={level + 1}
+            onChange={(newItemValue: any) => {
+              const newValue = [...value];
+              newValue[itemIndex] = newItemValue;
+              onChange(newValue);
+            }}
+          />
+        </ArrayItemBox>
+      ))}
       <Flex justify="end">
         <IconButton
           aria-label="add"
           icon={<AddIcon />}
           size="sm"
           onClick={() => {
-            onChange(value.concat(parseTypeBox(subSchema as TSchema)));
+            onChange(value.concat(parseTypeBox(itemSchema as TSchema)));
           }}
         />
       </Flex>

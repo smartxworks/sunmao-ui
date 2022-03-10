@@ -17,7 +17,7 @@ const _Field: React.FC<
     schemas: NonNullable<WidgetProps['schema']['anyOf']>;
   }
 > = props => {
-  const { component, schemas, value, level, services, onChange } = props;
+  const { component, schemas, value, level, path, services, onChange } = props;
   const [schemaIdx, setSchemaIdx] = useState(0);
   const subSchema: WidgetProps['schema'] | boolean = schemas[schemaIdx];
 
@@ -46,7 +46,8 @@ const _Field: React.FC<
       <SchemaField
         component={component}
         schema={mergeWidgetOptionsIntoSchema(subSchema, { expressionOptions })}
-        level={level + 1}
+        path={path}
+        level={level}
         value={value}
         onChange={newValue => onChange(newValue)}
         services={services}
@@ -57,13 +58,14 @@ const _Field: React.FC<
 
 export const MultiSchemaField: React.FC<WidgetProps<MultiSchemaFieldWidgetOptionsType>> =
   props => {
-    const { component, schema, value, services, level, onChange } = props;
+    const { component, schema, value, services, path, level, onChange } = props;
 
     if (schema.anyOf) {
       return (
         <_Field
           component={component}
           value={value}
+          path={path}
           level={level}
           schemas={schema.anyOf}
           services={services}
@@ -77,6 +79,7 @@ export const MultiSchemaField: React.FC<WidgetProps<MultiSchemaFieldWidgetOption
         <_Field
           component={component}
           value={value}
+          path={path}
           level={level}
           schemas={schema.oneOf}
           services={services}

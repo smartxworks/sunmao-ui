@@ -42,7 +42,7 @@ type Category = {
 };
 
 export const CategoryWidget: React.FC<WidgetProps> = props => {
-  const { component, schema, value, level, services, onChange } = props;
+  const { component, schema, value, path, level, services, onChange } = props;
 
   const categories = useMemo<Category[]>(() => {
     const properties = (schema.properties || {}) as Property;
@@ -90,6 +90,7 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                       title: schema.title || name,
                     }}
                     value={value?.[name!]}
+                    path={path.concat(name!)}
                     level={level + 1}
                     services={services}
                     onChange={value => {

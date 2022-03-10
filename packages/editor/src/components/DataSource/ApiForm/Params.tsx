@@ -50,6 +50,7 @@ export const Params: React.FC<Props> = props => {
       <KeyValueWidget
         component={api}
         schema={mergeWidgetOptionsIntoSchema(schema, { minNum: 1, isShowHeader: true })}
+        path={[]}
         level={1}
         services={services}
         value={params}
