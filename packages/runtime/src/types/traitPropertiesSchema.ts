@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-const BaseEventSchema = {
+export const BaseEventSchema = {
   componentId: Type.String({
     title: 'Component ID',
   }),
