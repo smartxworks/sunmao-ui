@@ -53,26 +53,32 @@ export const PopoverWidget = React.forwardRef<
     },
     [path]
   );
-  const handlerCloseByParent = (fromPath: string[]) => {
-    const fromPathString = fromPath.join('.');
-    const pathString = path.join('.');
-    const isParent =
-      pathString !== fromPathString && pathString.startsWith(fromPathString);
+  const handlerCloseByParent = useCallback(
+    (fromPath: string[]) => {
+      const fromPathString = fromPath.join('.');
+      const pathString = path.join('.');
+      const isParent =
+        pathString !== fromPathString && pathString.startsWith(fromPathString);
 
-    if (isParent) {
-      setIsOpen(false);
-    }
-  };
-  const handlerCloseByOther = (fromPath: string[]) => {
-    const fromPathString = fromPath.join('.');
-    const pathString = path.join('.');
-    const isRelated =
-      pathString.startsWith(fromPathString) || fromPathString.startsWith(pathString);
+      if (isParent) {
+        setIsOpen(false);
+      }
+    },
+    [path]
+  );
+  const handlerCloseByOther = useCallback(
+    (fromPath: string[]) => {
+      const fromPathString = fromPath.join('.');
+      const pathString = path.join('.');
+      const isRelated =
+        pathString.startsWith(fromPathString) || fromPathString.startsWith(pathString);
 
-    if (!isRelated) {
-      setIsOpen(false);
-    }
-  };
+      if (!isRelated) {
+        setIsOpen(false);
+      }
+    },
+    [path]
+  );
 
   useEffect(() => {
     emitter.on('sub-popover-close', handlerCloseByParent);
@@ -82,7 +88,7 @@ export const PopoverWidget = React.forwardRef<
       emitter.off('sub-popover-close', handlerCloseByParent);
       emitter.off('other-popover-close', handlerCloseByOther);
     };
-  }, [path]);
+  }, [handlerCloseByParent, handlerCloseByOther]);
   useEffect(() => {
     const handleClickOutside = () => {
       setIsOpen(false);
