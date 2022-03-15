@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-const BaseEventSchema = {
+export const BaseEventSchema = {
   componentId: Type.String({
     title: 'Component ID',
   }),
@@ -55,6 +55,7 @@ export const FetchTraitPropertiesSchema = Type.Object({
   }),
   body: Type.Record(Type.String(), Type.String(), {
     title: 'Body',
+    widget: "core/v1/KeyValue",
   }),
   bodyType: Type.KeyOf(
     Type.Object({

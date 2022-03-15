@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Select, Text, VStack } from '@chakra-ui/react';
 import {
-  KeyValueWidget,
+  SchemaField,
   WidgetProps,
   mergeWidgetOptionsIntoSchema,
 } from '@sunmao-ui/editor-sdk';
@@ -42,11 +42,9 @@ export const Body: React.FC<Props> = props => {
         <option value="json">JSON</option>
         <option value="formData">Form Data</option>
       </Select>
-      <Text fontSize="lg" fontWeight="bold">
-        Body
-      </Text>
+
       <Box width="full">
-        <KeyValueWidget
+        <SchemaField
           component={api}
           schema={mergeWidgetOptionsIntoSchema(schema, {
             minNum: 1,
@@ -57,7 +55,15 @@ export const Body: React.FC<Props> = props => {
           value={values.body}
           services={services}
           onChange={onChange}
-        />
+        >
+          {{
+            title: (
+              <Text fontSize="lg" fontWeight="bold" display="inline">
+                Body
+              </Text>
+            ),
+          }}
+        </SchemaField>
       </Box>
     </VStack>
   );

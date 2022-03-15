@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { FormControl, FormLabel, Input, Select, Switch } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
 import { GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
@@ -7,6 +7,7 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
 import { KeyValueWidget } from './KeyValueWidget';
+import { SchemaField } from './SchemaField';
 import { observer } from 'mobx-react-lite';
 
 const EventWidgetOptions = Type.Object({});
@@ -27,7 +28,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         onChange(values);
       },
     });
-    const findMethodsByComponent = (component: ComponentSchema)=> {
+    const findMethodsByComponent = (component?: ComponentSchema) => {
+      if (!component) {
+        return [];
+      }
+
       const componentMethods = Object.entries(
         registry.getComponentByType(component.type).spec.methods
       ).map(([name, parameters]) => ({
@@ -35,12 +40,10 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         parameters,
       }));
       const traitMethods = component.traits
-        .map(trait =>
-          registry.getTraitByType(trait.type).spec.methods
-        )
+        .map(trait => registry.getTraitByType(trait.type).spec.methods)
         .flat();
 
-        return ([] as any[]).concat(componentMethods, traitMethods);
+      return ([] as any[]).concat(componentMethods, traitMethods);
     };
 
     const eventTypes = useMemo(() => {
@@ -81,7 +84,8 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       const { values } = formik;
 
       for (const key in paramsSchema?.properties ?? {}) {
-        const defaultValue = (paramsSchema?.properties?.[key] as WidgetProps['schema']).defaultValue;
+        const defaultValue = (paramsSchema?.properties?.[key] as WidgetProps['schema'])
+          .defaultValue;
 
         params[key] = values.method.parameters?.[key] ?? defaultValue ?? '';
       }
@@ -97,7 +101,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
           const component = components.find(c => c.id === componentId);
 
           if (component) {
-            const methodNames: string[] = findMethodsByComponent(component).map(({ name }) => name);
+            const methodNames: string[] = findMethodsByComponent(component).map(
+              ({ name }) => name
+            );
 
             setMethods(methodNames);
           }
@@ -230,11 +236,16 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     const disabledField = (
       <FormControl>
         <FormLabel>Disabled</FormLabel>
-        <Switch
-          isChecked={formik.values.disabled}
-          name="disabled"
-          onBlur={() => formik.submitForm()}
-          onChange={formik.handleChange}
+        <SchemaField
+          {...props}
+          schema={Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } })}
+          level={level + 1}
+          path={['disabled']}
+          value={formik.values.disabled}
+          onChange={value => {
+            formik.setFieldValue('disabled', value);
+            formik.submitForm();
+          }}
         />
       </FormControl>
     );
