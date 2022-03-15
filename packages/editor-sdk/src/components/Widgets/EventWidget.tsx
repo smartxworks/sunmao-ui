@@ -28,7 +28,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         onChange(values);
       },
     });
-    const findMethodsByComponent = (component: ComponentSchema) => {
+    const findMethodsByComponent = (component?: ComponentSchema) => {
+      if (!component) {
+        return [];
+      }
+
       const componentMethods = Object.entries(
         registry.getComponentByType(component.type).spec.methods
       ).map(([name, parameters]) => ({
