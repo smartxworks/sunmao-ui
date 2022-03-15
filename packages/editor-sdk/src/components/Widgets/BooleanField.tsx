@@ -5,13 +5,14 @@ import { Switch } from '@chakra-ui/react';
 
 export const BooleanField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;
-  const onValueChange = useCallback((event)=> {
-    onChange(event.currentTarget.checked);
-  }, []);
-
-  return (
-    <Switch isChecked={value} onChange={onValueChange} />
+  const onValueChange = useCallback(
+    event => {
+      onChange(event.currentTarget.checked);
+    },
+    [onChange]
   );
+
+  return <Switch isChecked={value} onChange={onValueChange} />;
 };
 
 export default implementWidget({
