@@ -55,6 +55,7 @@ export const FetchTraitPropertiesSchema = Type.Object({
   }),
   body: Type.Record(Type.String(), Type.String(), {
     title: 'Body',
+    widget: "core/v1/KeyValue",
   }),
   bodyType: Type.KeyOf(
     Type.Object({
