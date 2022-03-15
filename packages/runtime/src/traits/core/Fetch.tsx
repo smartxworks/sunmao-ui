@@ -2,6 +2,7 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
 import { FetchTraitPropertiesSchema } from '../../types/traitPropertiesSchema';
+import { generateCallback } from './Event';
 
 const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSchema>> =
   () => {
@@ -65,7 +66,9 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
           body: method === 'get' ? undefined : reqBody,
         }).then(
           async response => {
-            const isResponseJSON = response.headers.get('Content-Type')?.includes('application/json');
+            const isResponseJSON = response.headers
+              .get('Content-Type')
+              ?.includes('application/json');
 
             if (response.ok) {
               // handle 20x/30x
@@ -88,12 +91,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
                 typeof FetchTraitPropertiesSchema
               >['onComplete'];
               rawOnComplete?.forEach(handler => {
-                const evaledHandler = services.stateManager.deepEval(handler, false);
-                services.apiService.send('uiMethod', {
-                  componentId: evaledHandler.componentId,
-                  name: evaledHandler.method.name,
-                  parameters: evaledHandler.method.parameters,
-                });
+                generateCallback(handler, services)();
               });
             } else {
               // TODO: Add FetchError class and remove console info
@@ -112,12 +110,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
                 typeof FetchTraitPropertiesSchema
               >['onError'];
               rawOnError?.forEach(handler => {
-                const evaledHandler = services.stateManager.deepEval(handler, false);
-                services.apiService.send('uiMethod', {
-                  componentId: evaledHandler.componentId,
-                  name: evaledHandler.method.name,
-                  parameters: evaledHandler.method.parameters,
-                });
+                generateCallback(handler, services)();
               });
             }
           },
