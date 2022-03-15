@@ -64,6 +64,10 @@ type TemplateProps = {
   displayLabel?: boolean;
   codeMode?: boolean;
   isExpression?: boolean;
+  children: {
+    title?: any;
+    content: any;
+  };
   setIsExpression?: (v: boolean) => void;
 };
 
@@ -83,15 +87,15 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     setIsExpression,
   } = props;
   if (hidden) {
-    return <div className="hidden">{children}</div>;
+    return <div className="hidden">{children.content}</div>;
   }
 
   return (
     <FormControl isRequired={required} id={id} mt={displayLabel ? 1 : 0}>
       {displayLabel && (
         <Tooltip label={description} placement="auto-start">
-          <FormLabel>
-            {label}
+          <FormLabel display="flex" alignItems="center">
+            {children.title || label}
             {codeMode && (
               <ExpressionButton
                 isExpression={isExpression}
@@ -101,7 +105,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
           </FormLabel>
         </Tooltip>
       )}
-      {children}
+      {children.content}
       {errors && <FormErrorMessage>{errors}</FormErrorMessage>}
       {help && <FormHelperText>{help}</FormHelperText>}
     </FormControl>
@@ -115,9 +119,14 @@ export const SchemaFieldWidgetOptions = Type.Object({
 });
 
 type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
+type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
+  children?: React.ReactNode & {
+    title?: any;
+  } | null;
+};
 
-export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = props => {
-  const { component, schema, level, path, value, services, onChange } = props;
+export const SchemaField: React.FC<Props> = props => {
+  const { component, schema, level, path, value, services, children, onChange } = props;
   const { title, widgetOptions } = schema;
   const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
   const label = title ?? '';
@@ -179,31 +188,36 @@ export const SchemaField: React.FC<WidgetProps<SchemaFieldWidgetOptionsType>> = 
       isExpression={isExpression}
       setIsExpression={setIsExpression}
     >
-      <HStack>
-        <Box flex={schema.type === 'boolean' && isExpression === false ? '' : 1}>
-          <Component
-            component={component}
-            schema={
-              isExpression
-                ? mergeWidgetOptionsIntoSchema(schema, {
-                    compactOptions: expressionOptions?.compactOptions,
-                  })
-                : schema
-            }
-            value={value}
-            path={path}
-            level={level}
-            services={services}
-            onChange={onChange}
-          />
-        </Box>
-        {showAsideExpressionButton ? (
-          <ExpressionButton
-            isExpression={isExpression}
-            setIsExpression={setIsExpression}
-          />
-        ) : null}
-      </HStack>
+      {{
+        title: children instanceof Object ? children.title : null,
+        content: (
+          <HStack>
+            <Box flex={schema.type === 'boolean' && isExpression === false ? '' : 1}>
+              <Component
+                component={component}
+                schema={
+                  isExpression
+                    ? mergeWidgetOptionsIntoSchema(schema, {
+                        compactOptions: expressionOptions?.compactOptions,
+                      })
+                    : schema
+                }
+                value={value}
+                path={path}
+                level={level}
+                services={services}
+                onChange={onChange}
+              />
+            </Box>
+            {showAsideExpressionButton ? (
+              <ExpressionButton
+                isExpression={isExpression}
+                setIsExpression={setIsExpression}
+              />
+            ) : null}
+          </HStack>
+        ),
+      }}
     </DefaultTemplate>
   );
 };
