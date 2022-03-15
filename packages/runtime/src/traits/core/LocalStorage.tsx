@@ -24,9 +24,17 @@ const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = (
   const HasInitializedMap = new Map<string, boolean>();
   const PrevValueCache: Record<string, unknown> = {};
 
-  return ({ key, value, componentId, mergeState }) => {
+  return ({ key, value, componentId, mergeState, subscribeMethods }) => {
     const hashId = `#${componentId}@${key}`;
     const hasInitialized = HasInitializedMap.get(hashId);
+
+    const setValue = (newValue: any) => {
+      PrevValueCache[key] = newValue;
+      mergeState({
+        [key]: newValue,
+      });
+      localStorage.setItem(hashId, JSON.stringify(newValue));
+    };
 
     if (key) {
       if (!hasInitialized) {
@@ -34,14 +42,15 @@ const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = (
         mergeState({
           [key]: PrevValueCache[key],
         });
+        subscribeMethods({
+          setValue: ({ value: newValue }: { value: any }) => {
+            setValue(newValue);
+          },
+        });
         HasInitializedMap.set(hashId, true);
       } else {
         if (!isEqual(PrevValueCache[key], value)) {
-          PrevValueCache[key] = value;
-          mergeState({
-            [key]: value,
-          });
-          localStorage.setItem(hashId, JSON.stringify(value));
+          setValue(value);
         }
       }
     }
@@ -62,7 +71,14 @@ export default {
     spec: {
       properties: PropsSchema,
       state: Type.Object({}),
-      methods: [],
+      methods: [
+        {
+          name: 'setValue',
+          parameters: Type.Object({
+            value: Type.Any(),
+          }),
+        },
+      ],
     },
   }),
   factory: LocalStorageTraitFactory,
