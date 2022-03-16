@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { Registry } from '@sunmao-ui/runtime';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
+import { widgets as chakraWidgets } from '@sunmao-ui/chakra-ui-lib/dist/esm/widgets/index';
 import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
 import { initSunmaoUIEditor } from './init';
 import { LocalStorageManager } from './LocalStorageManager';
@@ -16,6 +17,7 @@ type Options = Partial<{
 const lsManager = new LocalStorageManager();
 const { Editor, registry } = initSunmaoUIEditor({
   libs: [sunmaoChakraUILib, ArcoDesignLib],
+  widgets: [...chakraWidgets],
   storageHandler: {
     onSaveApp(app) {
       lsManager.saveAppInLS(app);
