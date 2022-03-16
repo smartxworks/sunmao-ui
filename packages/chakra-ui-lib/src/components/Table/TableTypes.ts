@@ -69,6 +69,7 @@ export const ColumnSchema = Type.Object(
   },
   {
     title: 'Column',
+    widget: 'chakra_ui/v1/TableColumn'
   }
 );
 
