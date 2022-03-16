@@ -107,6 +107,11 @@ export const TablePropsSchema = Type.Object({
     category: Category.Layout,
     weight: 10,
   }),
+  rowClick:Type.Boolean({
+    title: 'Row Click',
+    category: Category.Basic,
+    description:'If on, the table can be selected without setting the rowSelectionType'
+  }),
   loading: Type.Boolean({
     title: 'Show Loading',
     category: Category.Basic,
