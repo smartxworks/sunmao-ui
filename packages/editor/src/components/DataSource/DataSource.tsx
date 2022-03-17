@@ -111,6 +111,7 @@ export const DataSource: React.FC<Props> = props => {
           emptyPlaceholder="No States."
           states={states}
           active={active}
+          services={services}
           traitType="core/v1/state"
           onItemClick={onStateItemClick}
           onItemRemove={onStateItemRemove}
@@ -122,6 +123,7 @@ export const DataSource: React.FC<Props> = props => {
           emptyPlaceholder="No LocalStorages."
           states={localStorages}
           active={active}
+          services={services}
           onItemClick={onLocalStorageItemClick}
           onItemRemove={onStateItemRemove}
         />
