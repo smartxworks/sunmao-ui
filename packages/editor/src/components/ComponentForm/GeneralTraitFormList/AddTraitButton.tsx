@@ -55,7 +55,7 @@ export const AddTraitButton: React.FC<Props> = props => {
           icon={<AddIcon />}
           rightIcon={<ChevronDownIcon />}
         />
-        <MenuList>{menuItems}</MenuList>
+        <MenuList zIndex={2}>{menuItems}</MenuList>
       </Menu>
     </Box>
   );
