@@ -158,7 +158,7 @@ export const Editor: React.FC<Props> = observer(
 
     const renderMain = () => {
       const appBox = (
-        <Flex flexDirection="column" width="full" height="full">
+        <Flex flexDirection="column" width="full" height="full" overflow='hidden'>
           <Box
             id="editor-main"
             display="flex"
@@ -244,7 +244,7 @@ export const Editor: React.FC<Props> = observer(
               </TabPanels>
             </Tabs>
           </Box>
-          <Flex flex={1} position="relative">
+          <Flex flex={1} position="relative" overflow='hidden'>
             {appBox}
             <Box
               width="320px"
