@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { ModuleSchema, EventHandlerSchema } from '@sunmao-ui/runtime';
+import { ModuleSchema, BaseEventSchema } from '@sunmao-ui/runtime';
 import { BASIC, APPEARANCE, BEHAVIOR } from '../constants/category';
 
 export const MajorKeyPropertySchema = Type.String({
@@ -57,7 +57,7 @@ export const ColumnSchema = Type.Object(
         text: Type.String({
           title: 'Button Text',
         }),
-        handlers: Type.Array(EventHandlerSchema, {
+        handlers: Type.Array(Type.Object(BaseEventSchema, { widget: 'core/v1/Event' }), {
           title: 'Button Handlers',
         }),
       },
@@ -69,6 +69,7 @@ export const ColumnSchema = Type.Object(
   },
   {
     title: 'Column',
+    widget: 'chakra_ui/v1/TableColumn'
   }
 );
 

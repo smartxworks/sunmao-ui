@@ -10,7 +10,13 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TablePropsSchema, ColumnSchema } from '../generated/types/Table';
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
@@ -21,6 +27,7 @@ import {
 import { TableInstance } from '@arco-design/web-react/es/Table/table';
 
 const TableStateSchema = Type.Object({
+  clickedRow:Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
@@ -51,6 +58,16 @@ const rowSelectionTypeMap: Record<string, 'checkbox' | 'radio' | undefined> = {
   single: 'radio',
   disable: undefined,
 };
+
+const rowClickStyle = css`
+  cursor: pointer;
+  & tr.selected td {
+    background-color: rgb(235, 244, 251);
+  }
+  & tr.selected:hover > td {
+    background-color: rgb(228, 236, 243) !important;
+  }
+`;
 
 export const exampleProperties: Static<typeof TablePropsSchema> = {
   columns: [
@@ -116,6 +133,7 @@ export const exampleProperties: Static<typeof TablePropsSchema> = {
   pagination: {
     pageSize: 6,
   },
+  rowClick:false,
   tableLayoutFixed: false,
   borderCell: false,
   stripe: false,
@@ -149,7 +167,7 @@ export const Table = implementRuntimeComponent({
   const { getElement, app, mergeState, customStyle, services, data, component } = props;
 
   const ref = useRef<TableInstance | null>(null);
-  const { pagination, ...cProps } = getComponentProps(props);
+  const { pagination, rowClick, ...cProps } = getComponentProps(props);
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
 
@@ -317,7 +335,10 @@ export const Table = implementRuntimeComponent({
   return (
     <BaseTable
       ref={ref}
-      className={css(customStyle?.content)}
+      className={css`
+        ${customStyle?.content}
+        ${rowClick ? rowClickStyle : ''}
+      `}
       {...cProps}
       columns={columns}
       pagination={{
@@ -342,6 +363,24 @@ export const Table = implementRuntimeComponent({
           mergeState({ selectedRows });
         },
       }}
+      onRow={
+        rowClick
+          ? record => {
+              return {
+                onClick(event: React.ChangeEvent<HTMLButtonElement>) {
+                  const tr = event.target.closest('tr');
+                  const tbody = tr?.parentNode;
+                  if (tbody) {
+                    const prevSelectedEl = tbody.querySelector('.selected');
+                    prevSelectedEl?.classList.remove('selected');
+                  }
+                  tr?.classList.add('selected');
+                  mergeState({ clickedRow: record });
+                },
+              };
+            }
+          : undefined
+      }
     />
   );
 });

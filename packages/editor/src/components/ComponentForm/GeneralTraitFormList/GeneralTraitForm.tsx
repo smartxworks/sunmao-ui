@@ -1,11 +1,13 @@
+import React from 'react';
 import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { parseTypeBox } from '@sunmao-ui/runtime';
 import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
-import { renderField } from '../ComponentForm';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
+import { SchemaField } from '@sunmao-ui/editor-sdk';
+import { genOperation } from '../../../operations';
 
 type Props = {
   component: ComponentSchema;
@@ -17,7 +19,7 @@ type Props = {
 
 export const GeneralTraitForm: React.FC<Props> = props => {
   const { trait, traitIndex, component, onRemove, services } = props;
-  const { registry } = services;
+  const { registry, eventBus } = services;
 
   const tImpl = registry.getTraitByType(trait.type);
   const properties = Object.assign(
@@ -26,16 +28,36 @@ export const GeneralTraitForm: React.FC<Props> = props => {
   );
   const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
-    return renderField({
-      index: traitIndex,
-      key,
-      value,
-      fullKey: key,
-      type: trait.type,
-      selectedComponentId: component.id,
-      services,
-    });
+    const propertySchema = (tImpl.spec.properties as TSchema).properties?.[key];
+    const onChange = (newValue: any)=> {
+      const operation = genOperation(registry, 'modifyTraitProperty', {
+        componentId: component.id,
+        traitIndex: traitIndex,
+        properties: {
+          [key]: newValue,
+        },
+      });
+
+      eventBus.send('operation', operation);
+    };
+
+    return (
+      <SchemaField
+        key={key}
+        level={1}
+        path={[key]}
+        schema={{
+          ...propertySchema,
+          title: propertySchema.title || key
+        }}
+        value={value}
+        services={services}
+        component={component}
+        onChange={onChange}
+      />
+    );
   });
+
   return (
     <VStack key={trait.type} className={formWrapperCSS}>
       <HStack width="full" justifyContent="space-between">
