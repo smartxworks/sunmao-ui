@@ -4,6 +4,8 @@ import { useFormik } from 'formik';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
+import { SchemaField } from '@sunmao-ui/editor-sdk';
+import { Type } from '@sinclair/typebox';
 
 interface Values {
   key: string;
@@ -67,7 +69,7 @@ export const StateForm: React.FC<Props> = props => {
   return (
     <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
       <FormControl>
-        <FormLabel>Name</FormLabel>
+        <FormLabel>State Name</FormLabel>
         <Input
           value={name}
           onChange={e => {
@@ -78,12 +80,18 @@ export const StateForm: React.FC<Props> = props => {
       </FormControl>
       <FormControl>
         <FormLabel>Initial Value</FormLabel>
-        <Input
-          name="initialValue"
+        <SchemaField
+          schema={Type.Any()}
           value={values.initialValue}
-          onChange={formik.handleChange}
-          onBlur={() => formik.handleSubmit()}
-        />
+          component={state}
+          level={1}
+          path={['initialValue']}
+          services={services}
+          onChange={(value)=> {
+            formik.setFieldValue('initialValue', value);
+            formik.handleSubmit();
+          }}
+         />
       </FormControl>
     </VStack>
   );

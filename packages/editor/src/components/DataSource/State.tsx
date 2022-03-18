@@ -9,6 +9,7 @@ import {
   AccordionPanel,
 } from '@chakra-ui/react';
 import { DataSourceItem } from './DataSourceItem';
+import { EditorServices } from '../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
   traitType: string;
   filterPlaceholder: string;
   emptyPlaceholder: string;
+  services: EditorServices;
   onItemClick: (state: ComponentSchema) => void;
   onItemRemove: (state: ComponentSchema) => void;
 }
@@ -40,27 +42,26 @@ export const State: React.FC<Props> = props => {
     filterPlaceholder,
     emptyPlaceholder,
     title,
-    traitType,
+    services,
   } = props;
+  const { stateManager } = services;
+  const { store } = stateManager;
   const list = useMemo(
     () => states.filter(({ id }) => id.includes(search)),
     [search, states]
   );
-
+  
   const StateItems = () => (
     <>
       {list.map(state => {
-        const trait = state.traits.find(({ type }) => type === traitType);
-        const properties = trait!.properties;
-
         return (
           <DataSourceItem
             key={state.id}
             dataSource={state}
             tag={
-              Array.isArray(properties.initialValue)
+              Array.isArray(store[state.id]?.value)
                 ? 'Array'
-                : STATE_MAP[typeof properties.initialValue] ?? 'Any'
+                : STATE_MAP[typeof store[state.id]?.value] ?? 'Any'
             }
             name={state.id}
             active={active === state.id}
