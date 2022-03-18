@@ -252,7 +252,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     return (
       <>
-        {schema.properties?.type ? null : typeField}
+        {schema.properties?.type ? typeField : null}
         {targetField}
         {methodField}
         {hasParams ? parametersField : null}

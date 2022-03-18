@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { flatten } from 'lodash-es';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { FormControl, FormLabel, Input, Textarea, Text, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/react';
 import { SchemaField } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
@@ -16,75 +15,6 @@ import { EditorServices } from '../../types';
 
 type Props = {
   services: EditorServices;
-};
-
-export const renderField = (properties: {
-  key: string;
-  value: unknown;
-  type?: string;
-  fullKey: string;
-  selectedComponentId: string;
-  index: number;
-  services: EditorServices;
-}) => {
-  const { value, type, fullKey, selectedComponentId, index, services } = properties;
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [textareaValue, setTextareaValue] = useState(value as string);
-  const { eventBus, registry } = services;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    if (typeof value !== 'object') {
-      setTextareaValue(value as string);
-    }
-  }, [value]);
-
-  if (typeof value !== 'object') {
-    const ref = React.createRef<HTMLTextAreaElement>();
-    const onBlur = () => {
-      const operation = type
-        ? genOperation(registry, 'modifyTraitProperty', {
-            componentId: selectedComponentId,
-            traitIndex: index,
-            properties: {
-              [fullKey]: ref.current?.value,
-            },
-          })
-        : genOperation(registry, 'modifyComponentProperty', {
-            componentId: selectedComponentId,
-            properties: {
-              [fullKey]: ref.current?.value,
-            },
-          });
-      eventBus.send('operation', operation);
-    };
-    const onChange = (event: any) => {
-      setTextareaValue(event.target.value);
-    };
-
-    return (
-      <FormControl key={`${selectedComponentId}-${fullKey}`}>
-        <FormLabel>{fullKey}</FormLabel>
-        <Textarea ref={ref} onChange={onChange} onBlur={onBlur} value={textareaValue} />
-      </FormControl>
-    );
-  } else {
-    const fieldArray: React.ReactElement[] = flatten(
-      Object.keys(value || []).map((childKey, index) => {
-        const childValue = (value as any)[childKey];
-        return renderField({
-          index,
-          key: childKey,
-          value: childValue,
-          type: type,
-          fullKey: `${fullKey}.${childKey}`,
-          selectedComponentId,
-          services,
-        });
-      })
-    );
-    return fieldArray;
-  }
 };
 
 export const ComponentForm: React.FC<Props> = observer(props => {

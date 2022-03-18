@@ -120,9 +120,11 @@ export const SchemaFieldWidgetOptions = Type.Object({
 
 type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
 type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
-  children?: React.ReactNode & {
-    title?: any;
-  } | null;
+  children?:
+    | (React.ReactNode & {
+        title?: any;
+      })
+    | null;
 };
 
 export const SchemaField: React.FC<Props> = props => {
@@ -192,7 +194,10 @@ export const SchemaField: React.FC<Props> = props => {
         title: children instanceof Object ? children.title : null,
         content: (
           <HStack>
-            <Box flex={schema.type === 'boolean' && isExpression === false ? '' : 1}>
+            <Box
+              flex={schema.type === 'boolean' && isExpression === false ? '' : 1}
+              maxWidth="100%"
+            >
               <Component
                 component={component}
                 schema={
