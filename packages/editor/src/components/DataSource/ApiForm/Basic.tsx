@@ -19,8 +19,9 @@ import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandle
 import {
   FetchTraitPropertiesSchema,
   EventCallBackHandlerSchema,
+  BaseEventSchema
 } from '@sunmao-ui/runtime';
-import { Static } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
 
@@ -94,7 +95,7 @@ export const Basic: React.FC<Props> = props => {
                   <EventHandlerForm
                     component={api}
                     handler={{ type: '', ...handler }}
-                    hideEventType={true}
+                    schema={Type.Object(BaseEventSchema)}
                     onChange={onChange}
                     onRemove={onRemove}
                     services={services}
