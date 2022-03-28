@@ -1,7 +1,10 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
-import { FetchTraitPropertiesSchema } from '../../types/traitPropertiesSchema';
+import {
+  FetchTraitPropertiesSchema,
+  EventHandlerSchema,
+} from '../../types/traitPropertiesSchema';
 import { generateCallback } from './Event';
 
 const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSchema>> =
@@ -15,6 +18,8 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
       headers: _headers,
       body,
       bodyType,
+      onComplete,
+      onError,
       mergeState,
       services,
       subscribeMethods,
@@ -37,10 +42,10 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
 
         mergeState({
           fetch: {
+            ...(services.stateManager.store[componentId].fetch || {}),
             code: undefined,
             codeText: '',
             loading: true,
-            data: undefined,
             error: undefined,
           },
         });
@@ -90,8 +95,12 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
               const rawOnComplete = trait.properties.onComplete as Static<
                 typeof FetchTraitPropertiesSchema
               >['onComplete'];
-              rawOnComplete?.forEach(handler => {
-                generateCallback(handler, services)();
+              rawOnComplete?.forEach((rawHandler, index) => {
+                generateCallback(
+                  onComplete![index],
+                  rawHandler as Static<typeof EventHandlerSchema>,
+                  services
+                )();
               });
             } else {
               // TODO: Add FetchError class and remove console info
@@ -109,8 +118,12 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
               const rawOnError = trait.properties.onError as Static<
                 typeof FetchTraitPropertiesSchema
               >['onError'];
-              rawOnError?.forEach(handler => {
-                generateCallback(handler, services)();
+              rawOnError?.forEach((rawHandler, index) => {
+                generateCallback(
+                  onError![index],
+                  rawHandler as Static<typeof EventHandlerSchema>,
+                  services
+                )();
               });
             }
           },

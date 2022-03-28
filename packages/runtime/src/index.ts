@@ -5,7 +5,13 @@ import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
 import { UtilMethodManager } from './services/UtilMethodManager';
 import { AppHooks, UtilMethod } from './types';
+import { enableES5, setAutoFreeze } from 'immer';
 import './style.css';
+
+// immer would make some errors when read the states, so we do these to avoid it temporarily
+// ref: https://github.com/immerjs/immer/issues/916
+enableES5();
+setAutoFreeze(false);
 
 export type SunmaoUIRuntimeProps = {
   dependencies?: Record<string, any>;
