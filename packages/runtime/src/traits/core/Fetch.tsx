@@ -42,10 +42,10 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
 
         mergeState({
           fetch: {
+            ...(services.stateManager.store[componentId].fetch || {}),
             code: undefined,
             codeText: '',
             loading: true,
-            data: undefined,
             error: undefined,
           },
         });
