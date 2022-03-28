@@ -5,7 +5,11 @@ import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
 import { UtilMethodManager } from './services/UtilMethodManager';
 import { AppHooks, UtilMethod } from './types';
+import { enableES5, setAutoFreeze } from 'immer';
 import './style.css';
+
+enableES5();
+setAutoFreeze(false);
 
 export type SunmaoUIRuntimeProps = {
   dependencies?: Record<string, any>;
