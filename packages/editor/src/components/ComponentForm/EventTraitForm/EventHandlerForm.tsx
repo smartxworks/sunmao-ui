@@ -1,7 +1,8 @@
 import React from 'react';
-import { EventWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
+import { EventWidget } from '@sunmao-ui/editor-sdk';
 import { Box, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
+import { JSONSchema7 } from 'json-schema';
 import { CloseIcon } from '@chakra-ui/icons';
 import { EventHandlerSchema } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
@@ -13,19 +14,19 @@ type Props = {
   handler: Static<typeof EventHandlerSchema>;
   onChange: (handler: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
-  hideEventType?: boolean;
   services: EditorServices;
+  schema?: JSONSchema7;
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
-  const { handler, component, onChange, onRemove, hideEventType, services } = props;
+  const { schema = EventHandlerSchema, handler, component, onChange, onRemove, services } = props;
 
   return (
     <Box position="relative" width="100%">
       <VStack className={formWrapperCSS}>
         <EventWidget
           component={component}
-          schema={mergeWidgetOptionsIntoSchema(EventHandlerSchema, { hideEventType })}
+          schema={schema}
           value={handler}
           path={[]}
           level={1}

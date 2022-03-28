@@ -169,7 +169,8 @@ const EXPRESSION = {
   START: '{{',
   END: '}}',
 };
-export const parseExpression = (exp: string, parseListItem = false): ExpChunk[] => {
+export const parseExpression = (rawExp: string, parseListItem = false): ExpChunk[] => {
+  const exp = rawExp.trim();
   // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
   // unless explicitly pass parseListItem as true
   if (
