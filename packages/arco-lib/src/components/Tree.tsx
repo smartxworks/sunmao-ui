@@ -52,6 +52,7 @@ function formatNode(node: NodeInstance): Static<typeof TreeNodeSchema> {
     key: node.props._key!,
     selectable: node.props.selectable,
     checkable: node.props.checkable,
+    path:[...node.props.pathParentKeys!,node.props._key!],
     children:
       node.props.dataRef?.children || ([] as Static<typeof TreeNodeSchema>[]),
   };

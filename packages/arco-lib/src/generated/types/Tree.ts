@@ -8,6 +8,7 @@ export const TreeNodeSchema = Type.Object({
   children: Type.Optional(Type.Array(Type.Any())),
   selectable: Type.Optional(Type.Boolean()),
   checkable: Type.Optional(Type.Boolean()),
+  path:Type.Optional(Type.Array(Type.String()))
 });
 
 export const TreePropsSchema = Type.Object({
