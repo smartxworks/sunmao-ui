@@ -16,7 +16,7 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { Api } from './Api';
 import { State } from './State';
 import { EditorServices } from '../../types';
-import { ToolMenuTabs } from '../../services/enum';
+import { ToolMenuTabs } from '../../constants/enum';
 
 export enum DataSourceType {
   API = 'API',

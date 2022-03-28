@@ -8,7 +8,7 @@ import { SchemaValidator } from '../validator';
 import { removeModuleId } from '../utils/addModuleId';
 import { DataSourceType } from '../components/DataSource';
 import { genOperation } from '../operations';
-import { ExplorerMenuTabs, ToolMenuTabs } from './enum';
+import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
 type EditingTarget = {
   kind: 'app' | 'module';
