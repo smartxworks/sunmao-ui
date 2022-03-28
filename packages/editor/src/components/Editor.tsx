@@ -240,17 +240,14 @@ export const Editor: React.FC<Props> = observer(
             minConstraints={[200, Infinity]}
             maxConstraints={[480, Infinity]}
             axis="x"
-            onResize={(e, data) => {
+            onResize={(_e, data) => {
               setExploreMenuWidth(data.size.width);
             }}
-            handle={x => {
-              console.log(x);
-              return (
-                <div className="resize-bar">
-                  <i />
-                </div>
-              );
-            }}
+            handle={
+              <div className="resize-bar">
+                <i />
+              </div>
+            }
           >
             <Box
               width={exploreMenuWidth}
@@ -310,7 +307,7 @@ export const Editor: React.FC<Props> = observer(
               maxConstraints={[480, Infinity]}
               resizeHandles={['w']}
               axis="x"
-              onResize={(e, data) => {
+              onResize={(_e, data) => {
                 setToolMenuWidth(data.size.width);
               }}
               handle={
