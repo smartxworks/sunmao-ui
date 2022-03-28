@@ -10,11 +10,12 @@ const PropsSchema = Type.Object({
 
 export const generateCallback = (
   handler: Omit<Static<typeof EventHandlerSchema>, 'type'>,
+  rawHandler: Static<typeof EventHandlerSchema>,
   services: UIServices
 ) => {
   const send = () => {
     // Eval before sending event to assure the handler object is evaled from the latest state.
-    const evaledHandler = services.stateManager.deepEval(handler);
+    const evaledHandler = services.stateManager.deepEval(rawHandler);
 
     if (evaledHandler.disabled && typeof evaledHandler.disabled === 'boolean') {
       return;
@@ -42,15 +43,18 @@ export const generateCallback = (
 };
 
 const EventTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
-  return ({ handlers, services }) => {
+  return ({ trait, handlers, services }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
+    const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSchema>[];
     // setup current handlers
     for (const i in handlers) {
       const handler = handlers[i];
       if (!callbackQueueMap[handler.type]) {
         callbackQueueMap[handler.type] = [];
       }
-      callbackQueueMap[handler.type].push(generateCallback(handler, services));
+      callbackQueueMap[handler.type].push(
+        generateCallback(handler, rawHandlers[i], services)
+      );
     }
 
     const callbackMap: CallbackMap<string> = {};
