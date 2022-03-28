@@ -26,6 +26,8 @@ import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 import { AppModel } from '../AppModel/AppModel';
 import { LocalStorageForm } from './DataSource/LocalStorageForm';
+import { Resizable } from 'react-resizable';
+import { EXPLORE_MENU_MIN_WIDTH, TOOL_MENU_MIN_WIDTH } from '../constants/layout';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -36,6 +38,40 @@ type Props = {
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
   libs: SunmaoLib[];
+};
+
+const getResizeBarStyle = (type: 'exploreMenu' | 'toolMenu') => {
+  return css`
+    .resize-bar {
+      position: absolute;
+      ${type === 'exploreMenu' ? 'right: 0' : 'left:0'};
+      top: 0;
+      width: 8px;
+      height: 100%;
+      ${type === 'exploreMenu'
+        ? 'transform: translateX(50%)'
+        : 'transform: translateX(-50%)'};
+      cursor: col-resize;
+      display: flex;
+      place-items: center;
+      justify-content: center;
+
+      i {
+        width: 3px;
+        height: 100%;
+        transition: transform 0.1s ease-in, opacity 0.1s ease-in;
+        background-color: #eee;
+        opacity: 0;
+        transform: scaleX(0);
+        transform-origin: center;
+      }
+
+      &:hover i {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+    }
+  `;
 };
 
 const ApiFormStyle = css`
@@ -68,6 +104,8 @@ export const Editor: React.FC<Props> = observer(
     const [code, setCode] = useState('');
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
+    const [exploreMenuWidth, setExploreMenuWidth] = useState(EXPLORE_MENU_MIN_WIDTH);
+    const [toolMenuWidth, setToolMenuWidth] = useState(TOOL_MENU_MIN_WIDTH);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -158,7 +196,7 @@ export const Editor: React.FC<Props> = observer(
 
     const renderMain = () => {
       const appBox = (
-        <Flex flexDirection="column" width="full" height="full">
+        <Flex flexDirection="column" width="full" height="full" overflow="hidden">
           <Box
             id="editor-main"
             display="flex"
@@ -196,88 +234,121 @@ export const Editor: React.FC<Props> = observer(
       }
       return (
         <>
-          <Box
-            width="280px"
-            minWidth="280px"
-            borderRightWidth="1px"
-            borderColor="gray.200"
-            position="relative"
-            zIndex="2"
+          <Resizable
+            width={exploreMenuWidth}
+            height={Infinity}
+            minConstraints={[200, Infinity]}
+            maxConstraints={[480, Infinity]}
+            axis="x"
+            onResize={(_e, data) => {
+              setExploreMenuWidth(data.size.width);
+            }}
+            handle={
+              <div className="resize-bar">
+                <i />
+              </div>
+            }
           >
-            <Tabs
-              height="100%"
-              display="flex"
-              flexDirection="column"
-              textAlign="left"
-              isLazy
-              index={explorerMenuTab}
-              onChange={activatedTab => {
-                setExplorerMenuTab(activatedTab);
-              }}
-            >
-              <TabList background="gray.50" whiteSpace="nowrap" justifyContent="center">
-                {/* <Tab>Explorer</Tab> */}
-                <Tab>UI</Tab>
-                <Tab>Data</Tab>
-                <Tab>State</Tab>
-              </TabList>
-              <TabPanels flex="1" overflow="auto">
-                {/* <TabPanel>
-                  <Explorer services={services} />
-                </TabPanel> */}
-                <TabPanel p={0}>
-                  <StructureTree
-                    components={components}
-                    selectedComponentId={selectedComponentId}
-                    onSelectComponent={id => {
-                      editorStore.setSelectedComponentId(id);
-                    }}
-                    services={services}
-                  />
-                </TabPanel>
-                <TabPanel p={0}>
-                  <DataSource active={activeDataSource?.id ?? ''} services={services} />
-                </TabPanel>
-                <TabPanel p={0} height="100%">
-                  <StateViewer store={stateStore} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </Box>
-          <Flex flex={1} position="relative">
-            {appBox}
             <Box
-              width="320px"
-              minWidth="320px"
-              borderLeftWidth="1px"
+              width={exploreMenuWidth}
+              className={getResizeBarStyle('exploreMenu')}
+              borderRightWidth="1px"
               borderColor="gray.200"
-              overflow="auto"
               position="relative"
-              zIndex="0"
+              zIndex="2"
             >
               <Tabs
-                align="center"
-                textAlign="left"
                 height="100%"
                 display="flex"
                 flexDirection="column"
-                index={toolMenuTab}
+                textAlign="left"
+                isLazy
+                index={explorerMenuTab}
                 onChange={activatedTab => {
-                  setToolMenuTab(activatedTab);
+                  setExplorerMenuTab(activatedTab);
                 }}
               >
-                <TabList background="gray.50">
-                  <Tab>Inspect</Tab>
-                  <Tab>Insert</Tab>
+                <TabList background="gray.50" whiteSpace="nowrap" justifyContent="center">
+                  {/* <Tab>Explorer</Tab> */}
+                  <Tab>UI</Tab>
+                  <Tab>Data</Tab>
+                  <Tab>State</Tab>
                 </TabList>
-                <TabPanels flex="1" overflow="auto" background="gray.50">
-                  <TabPanel p={0}>{dataSourceForm}</TabPanel>
+                <TabPanels flex="1" overflow="auto">
+                  {/* <TabPanel>
+                  <Explorer services={services} />
+                </TabPanel> */}
                   <TabPanel p={0}>
-                    <ComponentList services={services} />
+                    <StructureTree
+                      components={components}
+                      selectedComponentId={selectedComponentId}
+                      onSelectComponent={id => {
+                        editorStore.setSelectedComponentId(id);
+                      }}
+                      services={services}
+                    />
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    <DataSource active={activeDataSource?.id ?? ''} services={services} />
+                  </TabPanel>
+                  <TabPanel p={0} height="100%">
+                    <StateViewer store={stateStore} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
             </Box>
+          </Resizable>
+          <Flex flex={1} position="relative" overflow="hidden">
+            {appBox}
+            <Resizable
+              width={toolMenuWidth}
+              height={Infinity}
+              minConstraints={[200, Infinity]}
+              maxConstraints={[480, Infinity]}
+              resizeHandles={['w']}
+              axis="x"
+              onResize={(_e, data) => {
+                setToolMenuWidth(data.size.width);
+              }}
+              handle={
+                <div className="resize-bar">
+                  <i />
+                </div>
+              }
+            >
+              <Box
+                minWidth={toolMenuWidth}
+                className={getResizeBarStyle('toolMenu')}
+                borderLeftWidth="1px"
+                borderColor="gray.200"
+                overflow="auto"
+                position="relative"
+                zIndex="0"
+              >
+                <Tabs
+                  align="center"
+                  textAlign="left"
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
+                  index={toolMenuTab}
+                  onChange={activatedTab => {
+                    setToolMenuTab(activatedTab);
+                  }}
+                >
+                  <TabList background="gray.50">
+                    <Tab>Inspect</Tab>
+                    <Tab>Insert</Tab>
+                  </TabList>
+                  <TabPanels flex="1" overflow="auto" background="gray.50">
+                    <TabPanel p={0}>{dataSourceForm}</TabPanel>
+                    <TabPanel p={0}>
+                      <ComponentList services={services} />
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </Box>
+            </Resizable>
             {activeDataSource && activeDataSourceType === DataSourceType.API ? (
               <ApiForm
                 key={activeDataSource.id}

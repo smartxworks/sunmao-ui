@@ -13,7 +13,7 @@ import {
 import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
 import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';
-import { ExplorerMenuTabs } from '../../services/enum';
+import { ExplorerMenuTabs } from '../../constants/enum';
 import { RuntimeComponent } from '@sunmao-ui/core';
 
 type Props = {

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@chakra-ui/react';
 import { EditorMask } from './EditorMask';
 import { throttle } from 'lodash-es';
-import { ExplorerMenuTabs } from '../../services/enum';
+import { ExplorerMenuTabs } from '../../constants/enum';
 import { genOperation } from '../../operations';
 
 type Props = {
