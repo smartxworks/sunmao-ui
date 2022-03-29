@@ -318,6 +318,7 @@ export const Editor: React.FC<Props> = observer(
             >
               <Box
                 minWidth={toolMenuWidth}
+                width={toolMenuWidth}
                 className={getResizeBarStyle('toolMenu')}
                 borderLeftWidth="1px"
                 borderColor="gray.200"
