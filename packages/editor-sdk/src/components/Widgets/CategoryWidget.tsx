@@ -12,6 +12,7 @@ import {
   Accordion,
 } from '@chakra-ui/react';
 import { PRESET_PROPERTY_CATEGORY } from '../../constants/category';
+import { shouldRender } from '../../utils/condition';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
   keyof typeof PRESET_PROPERTY_CATEGORY | 'Advance',
@@ -81,7 +82,7 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                 if (typeof schema === 'boolean') {
                   return null;
                 }
-                return (
+                return shouldRender(schema.conditions || [], value) ? (
                   <SchemaField
                     key={name}
                     component={component}
@@ -100,7 +101,7 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                       });
                     }}
                   />
-                );
+                ) : null;
               })}
             </AccordionPanel>
           </AccordionItem>
