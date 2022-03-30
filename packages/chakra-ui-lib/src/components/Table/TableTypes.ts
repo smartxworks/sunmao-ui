@@ -63,13 +63,18 @@ export const ColumnSchema = Type.Object(
       },
       {
         title: 'Button Config',
+        conditions: [
+          {
+            key: 'type',
+            value: 'button',
+          },
+        ],
       }
     ),
-    module: ModuleSchema,
+    module: { ...ModuleSchema, conditions: [{ key: 'type', value: 'module' }] },
   },
   {
     title: 'Column',
-    widget: 'chakra_ui/v1/TableColumn'
   }
 );
 

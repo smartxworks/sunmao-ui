@@ -4,6 +4,7 @@ import { SchemaField } from './SchemaField';
 import { WidgetProps } from '../../types/widget';
 import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';
 import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { shouldRender } from '../../utils/condition';
 
 const ObjectFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSchema),
@@ -19,11 +20,11 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
   return (
     <>
       {properties.map(name => {
-        const subSchema = (schema.properties || {})[name];
+        const subSchema = (schema.properties || {})[name] as WidgetProps['schema'];
         if (typeof subSchema === 'boolean') {
           return null;
         }
-        return (
+        return shouldRender(subSchema.conditions || [], value) ? (
           <SchemaField
             component={component}
             key={name}
@@ -47,7 +48,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
               })
             }
           />
-        );
+        ) : null;
       })}
     </>
   );
