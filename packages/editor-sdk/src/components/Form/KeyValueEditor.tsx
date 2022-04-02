@@ -12,7 +12,10 @@ import { ExpressionEditorProps } from './ExpressionEditor';
 
 const IGNORE_SCHEMA_TYPES = ['array', 'object'];
 
-type KeyValueEditorProps = Omit<WidgetProps, 'component' | 'schema' | 'level' | 'path'> & {
+type KeyValueEditorProps = Omit<
+  WidgetProps,
+  'component' | 'schema' | 'level' | 'path'
+> & {
   component?: WidgetProps['component'];
   schema?: WidgetProps['schema'];
   path?: WidgetProps['path'];
@@ -83,13 +86,13 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
       emitDataChange(newRows);
     };
     const onBlur = () => emitDataChange(rows);
-    const keySchemaType =
-      schema?.properties && key in schema.properties && schema.properties[key];
+    const valueSpec = schema?.properties?.[key];
 
     return (
       <HStack key={i} spacing="1" display="flex">
         <Input
-          flex={1}
+          minWidth={0}
+          flex="1 1 33.33%"
           name="key"
           value={key}
           title={key}
@@ -99,41 +102,51 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
           isDisabled={onlySetValue}
         />
         {component ? (
-          <HStack flex={2} alignItems="center">
-            {keySchemaType &&
-            typeof keySchemaType !== 'boolean' &&
-            !IGNORE_SCHEMA_TYPES.includes(String(keySchemaType.type)) ? (
+          <HStack minWidth={0} flex="2 2 66.66%" alignItems="center">
+            {valueSpec === undefined ||
+            typeof valueSpec === 'boolean' ||
+            IGNORE_SCHEMA_TYPES.includes(String(valueSpec.type)) ? (
+              <ExpressionWidget
+                component={component}
+                path={path.concat(key)}
+                schema={
+                  valueSpec && typeof valueSpec !== 'boolean'
+                    ? {
+                        ...valueSpec,
+                        widgetOptions: {
+                          compactOptions: expressionOptions.compactOptions,
+                        },
+                      }
+                    : Type.Any({
+                        widgetOptions: {
+                          compactOptions: expressionOptions.compactOptions,
+                        },
+                      })
+                }
+                services={services}
+                level={level + 1}
+                value={value}
+                onChange={onValueChange}
+              />
+            ) : (
               <SchemaField
                 component={component}
                 value={value}
                 path={path.concat(key)}
                 level={level + 1}
-                schema={mergeWidgetOptionsIntoSchema(keySchemaType, {
+                schema={mergeWidgetOptionsIntoSchema(valueSpec, {
                   isShowAsideExpressionButton: true,
                   expressionOptions,
                 })}
                 services={services}
                 onChange={onValueChange}
               />
-            ) : (
-              <Box flex={1}>
-                <ExpressionWidget
-                  component={component}
-                  path={path.concat(key)}
-                  schema={Type.String({
-                    widgetOptions: { compactOptions: expressionOptions.compactOptions },
-                  })}
-                  services={services}
-                  level={level + 1}
-                  value={value}
-                  onChange={onValueChange}
-                />
-              </Box>
             )}
           </HStack>
         ) : (
           <Input
-            flex={1}
+            flex={2}
+            minWidth={0}
             name="value"
             value={value}
             title={value}
@@ -159,9 +172,13 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
   return (
     <VStack spacing="2" alignItems="stretch">
       {isShowHeader !== false ? (
-        <HStack spacing="1" display="flex" marginRight="28px">
-          <Text flex={1}>Key</Text>
-          <Text flex={1}>Value</Text>
+        <HStack spacing="1" display="flex">
+          <Text flex={1}>
+            Key
+          </Text>
+          <Text flex={2}>
+            Value
+          </Text>
         </HStack>
       ) : null}
       {rowItems}
