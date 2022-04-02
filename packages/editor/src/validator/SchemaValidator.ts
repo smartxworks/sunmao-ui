@@ -1,5 +1,5 @@
 import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { Registry, StateManager } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
 import { PropertiesValidatorRule } from '.';
 import { AppModel } from '../AppModel/AppModel';
@@ -28,7 +28,7 @@ export class SchemaValidator implements ISchemaValidator {
   private ajv!: Ajv;
   private validatorMap!: ValidatorMap;
 
-  constructor(private registry: Registry) {
+  constructor(private registry: Registry, private stateManager: StateManager) {
     this.initAjv();
     this.addRules(rules);
   }
@@ -59,6 +59,7 @@ export class SchemaValidator implements ISchemaValidator {
     const baseContext = {
       components,
       validators: this.validatorMap,
+      stateManager: this.stateManager,
       registry: this.registry,
       appModel,
       componentIdSpecMap: this.componentIdSpecMap,

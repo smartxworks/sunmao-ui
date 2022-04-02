@@ -23,6 +23,13 @@ const DefaultDependencies = {
   _,
 };
 
+export class ExpressionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ExpressionError';
+  }
+}
+
 export class StateManager {
   store = reactive<Record<string, any>>({});
 
@@ -42,17 +49,17 @@ export class StateManager {
     }
 
     const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
-    let evaled;
-    try {
-      // eslint-disable-next-line no-useless-call, no-new-func
-      evaled = new Function(
-        'store, dependencies, scopeObject',
-        // trim leading space and newline
-        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(/^\s+/g, '')} } } }`
-      ).call(null, this.store, this.dependencies, scopeObject);
-    } catch (e: any) {
-      return `{{ ${evalText} }}`;
-    }
+
+    // eslint-disable-next-line no-useless-call, no-new-func
+    const evaled = new Function(
+      'store, dependencies, scopeObject',
+      // trim leading space and newline
+      `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+        /^\s+/g,
+        ''
+      )} } } }`
+    ).call(null, this.store, this.dependencies, scopeObject);
+
     return evaled;
   };
 
@@ -112,7 +119,15 @@ export class StateManager {
       if (typeof value !== 'string') {
         return value;
       }
-      return this.maskedEval(value, evalListItem, scopeObject);
+      try {
+        return this.maskedEval(value, evalListItem, scopeObject);
+      } catch (error) {
+        if (error instanceof Error) {
+          return new ExpressionError(error.message);
+        }
+
+        return undefined;
+      }
     });
 
     return evaluated;
@@ -140,8 +155,16 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(value, evalListItem, scopeObject);
-          return result;
+          try {
+            const result = this.maskedEval(value, evalListItem, scopeObject);
+            return result;
+          } catch (error) {
+            if (error instanceof Error) {
+              return new ExpressionError(error.message);
+            }
+
+            return undefined;
+          }
         },
         newV => {
           if (isProxy(newV)) {
