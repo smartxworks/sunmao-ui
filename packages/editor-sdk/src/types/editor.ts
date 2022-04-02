@@ -12,6 +12,7 @@ export interface EditorServices {
   };
   stateManager: {
     store: Record<string, any>;
+    maskedEval: Function;
   };
   widgetManager: WidgetManager;
 }

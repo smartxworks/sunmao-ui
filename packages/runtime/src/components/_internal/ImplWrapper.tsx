@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { merge } from 'lodash-es';
 import { RuntimeComponentSchema, RuntimeTraitSchema } from '@sunmao-ui/core';
+import { ExpressionError } from '../../services/StateManager';
 import { watch } from '../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
@@ -154,7 +155,17 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     };
   }, [c.id, stateManager.store]);
 
-  const mergedProps = { ...evaledComponentProperties, ...propsFromTraits };
+  const mergedProps = useMemo(() => {
+    const mergedProps: Record<string, any> = { ...evaledComponentProperties, ...propsFromTraits };
+
+    for (const key in mergedProps) {
+      if (mergedProps[key] instanceof ExpressionError) {
+        mergedProps[key] = undefined;
+      }
+    }
+
+    return mergedProps;
+  }, [evaledComponentProperties, propsFromTraits]);
 
   function genSlotsElements() {
     if (!childrenMap[c.id]) {

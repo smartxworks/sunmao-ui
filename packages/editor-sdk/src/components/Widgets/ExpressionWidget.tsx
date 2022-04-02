@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import {
   toNumber,
   isString,
@@ -8,12 +8,16 @@ import {
   isObject,
   isUndefined,
   isNull,
+  debounce,
 } from 'lodash-es';
 import { Type, Static } from '@sinclair/typebox';
+import { Box } from '@chakra-ui/react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
 import { isExpression } from '../../utils/validator';
+import { getTypeString } from '../../utils/type';
+import Ajv from 'ajv';
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -132,17 +136,55 @@ export const ExpressionWidgetOptionsSchema = Type.Object({
   ),
 });
 
+const ajv = new Ajv();
+
 export const ExpressionWidget: React.FC<
   WidgetProps<Static<typeof ExpressionWidgetOptionsSchema>>
 > = props => {
   const { value, services, schema, onChange } = props;
   const { widgetOptions } = schema;
   const { stateManager } = services;
-  const [defs, setDefs] = useState<any>();
-  const editorRef = useRef<ExpressionEditorHandle>(null);
   const { code, type } = useMemo(() => {
     return getCode(value);
   }, [value]);
+  const [defs, setDefs] = useState<any>();
+  const [evaledValue, setEvaledValue] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const editorRef = useRef<ExpressionEditorHandle>(null);
+  const validate = useMemo(() => ajv.compile(schema), [schema]);
+  const evalCode = useCallback(
+    (code: string) => {
+      try {
+        const result = services.stateManager.maskedEval(getParsedValue(code, type));
+
+        validate(result);
+        if (validate.errors?.length) {
+          const err = validate.errors[0];
+
+          if (err.message?.includes('should be')) {
+            const isEnum = schema.enum;
+            throw new TypeError(
+              `Invalid value, expected ${
+                isEnum ? `enum ${JSON.stringify(schema.enum)}` : schema.type
+              } but got ${isEnum ? `"${result}"` : getTypeString(result).toLowerCase()}`
+            );
+          } else {
+            throw new TypeError(err.message);
+          }
+        }
+
+        setEvaledValue(result);
+        setError(null);
+      } catch (err) {
+        setError(String(err));
+      }
+    },
+    [services, type, validate, schema]
+  );
+  const onCodeChange = debounce(evalCode, 300);
+  const onFocus = useCallback(() => {
+    evalCode(code);
+  }, [code, evalCode]);
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -152,19 +194,25 @@ export const ExpressionWidget: React.FC<
   }, [code]);
 
   return (
-    <ExpressionEditor
-      compactOptions={{
-        maxHeight: '125px',
-        ...(widgetOptions?.compactOptions || {}),
-      }}
-      ref={editorRef}
-      defaultCode={code}
-      defs={defs}
-      onBlur={_v => {
-        const v = getParsedValue(_v, type);
-        onChange(v);
-      }}
-    />
+    <Box>
+      <ExpressionEditor
+        compactOptions={{
+          maxHeight: '125px',
+          ...(widgetOptions?.compactOptions || {}),
+        }}
+        ref={editorRef}
+        defaultCode={code}
+        evaledValue={evaledValue}
+        error={error}
+        defs={defs}
+        onChange={onCodeChange}
+        onBlur={_v => {
+          const v = getParsedValue(_v, type);
+          onChange(v);
+        }}
+        onFocus={onFocus}
+      />
+    </Box>
   );
 };
 

@@ -1,4 +1,6 @@
-import { get, has } from 'lodash-es';
+import { has } from 'lodash-es';
+import { ExpressionError } from '@sunmao-ui/runtime';
+import { ValidateFunction } from 'ajv';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
@@ -14,21 +16,17 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     component,
     trait,
     validators,
+    stateManager
   }: PropertiesValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
-    let validate;
-
-    if (trait) {
-      validate = validators.traits[trait.type];
-    } else {
-      validate = validators.components[component.type];
-    }
+    const validate: ValidateFunction = trait ? validators.traits[trait.type] : validators.components[component.type];
 
     if (!validate) return results;
 
-    const valid = validate(properties.rawValue);
-    if (valid) return results;
-    validate.errors!.forEach(error => {
+    const evaledValue: Record<string, any> = stateManager.deepEval(properties.rawValue);
+
+    validate(evaledValue);
+    validate.errors?.forEach(error => {
       // todo: detect deep error
       const { instancePath, params } = error;
       let key = '';
@@ -37,10 +35,16 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
       } else {
         key = params.missingProperty;
       }
-      const fieldModel = properties.getProperty(key);
-      // if field is expression, ignore type error
-      // fieldModel could be undefiend. if is undefined, still throw error.
-      if (get(fieldModel, 'isDynamic') !== true) {
+      const isExpressionError = evaledValue[key] instanceof ExpressionError;
+
+      if (isExpressionError) {
+        results.push({
+          message: evaledValue[key].message || error.message || '',
+          componentId: component.id,
+          property: error.instancePath,
+          traitType: trait?.type,
+        });
+      } else {
         results.push({
           message: error.message || '',
           componentId: component.id,
