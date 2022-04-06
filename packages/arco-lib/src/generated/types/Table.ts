@@ -32,6 +32,13 @@ export const ColumnSchema = Type.Object({
     category: Category.Basic,
     description: 'The text you want to display instead of raw text.',
   }),
+  width: Type.Optional(Type.Number({
+    title: 'Width',
+  })),
+  ellipsis:Type.Optional(Type.Boolean({
+    title:'Ellipsis'
+  })),
+
   sorter: Type.Boolean({
     title: 'Enable Sort',
   }),
@@ -107,10 +114,10 @@ export const TablePropsSchema = Type.Object({
     category: Category.Layout,
     weight: 10,
   }),
-  rowClick:Type.Boolean({
+  rowClick: Type.Boolean({
     title: 'Row Click',
     category: Category.Basic,
-    description:'If on, the table can be selected without setting the rowSelectionType'
+    description: 'If on, the table can be selected without setting the rowSelectionType'
   }),
   loading: Type.Boolean({
     title: 'Show Loading',
