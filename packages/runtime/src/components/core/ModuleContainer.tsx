@@ -29,10 +29,10 @@ export default implementRuntimeComponent({
   },
 })(({ id, type, properties, handlers, services, app, elementRef }) => {
   if (!type) {
-    return <span>Please choose a module to render.</span>;
+    return <span ref={elementRef}>Please choose a module to render.</span>;
   }
   if (!id) {
-    return <span>Please set a id for module.</span>;
+    return <span ref={elementRef}>Please set a id for module.</span>;
   }
 
   return (
