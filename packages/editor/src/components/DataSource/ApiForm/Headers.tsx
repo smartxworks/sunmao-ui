@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import {
   KeyValueWidget,
@@ -19,24 +19,27 @@ interface Props {
   services: EditorServices;
 }
 
+const EMPTY_ARRAY: string[] = [];
+
 export const Headers: React.FC<Props> = props => {
   const { api, schema, formik, services } = props;
   const { values } = formik;
+  const schemaWithWidgetOptions = useMemo(()=> mergeWidgetOptionsIntoSchema(schema, {
+    minNum: 1,
+    isShowHeader: true,
+  }), [schema]);
 
-  const onChange = (value: Record<string, unknown>) => {
+  const onChange = useCallback((value: Record<string, unknown>) => {
     formik.setFieldValue('headers', value);
     formik.submitForm();
-  };
+  }, [formik]);
 
   return (
     <Box>
       <KeyValueWidget
         component={api}
-        schema={mergeWidgetOptionsIntoSchema(schema, {
-          minNum: 1,
-          isShowHeader: true,
-        })}
-        path={[]}
+        schema={schemaWithWidgetOptions}
+        path={EMPTY_ARRAY}
         level={1}
         services={services}
         value={values.headers}
