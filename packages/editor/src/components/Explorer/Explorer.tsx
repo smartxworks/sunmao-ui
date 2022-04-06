@@ -3,6 +3,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { ExplorerForm } from './ExplorerForm/ExplorerForm';
 import { ExplorerTree } from './ExplorerTree';
 import { EditorServices } from '../../types';
+import { Box } from '@chakra-ui/react';
 
 type Props = {
   services: EditorServices;
@@ -25,21 +26,25 @@ export const Explorer: React.FC<Props> = ({ services }) => {
   if (isEditingMode) {
     return (
       <ErrorBoundary>
-        <ExplorerForm
-          formType={formType}
-          version={currentVersion}
-          name={currentName}
-          setCurrentVersion={setCurrentVersion}
-          setCurrentName={setCurrentName}
-          onBack={onBack}
-          services={services}
-        />
+        <Box padding={4}>
+          <ExplorerForm
+            formType={formType}
+            version={currentVersion}
+            name={currentName}
+            setCurrentVersion={setCurrentVersion}
+            setCurrentName={setCurrentName}
+            onBack={onBack}
+            services={services}
+          />
+        </Box>
       </ErrorBoundary>
     );
   }
   return (
     <ErrorBoundary>
-      <ExplorerTree onEdit={onEdit} services={services} />
+      <Box padding={4}>
+        <ExplorerTree onEdit={onEdit} services={services} />
+      </Box>
     </ErrorBoundary>
   );
 };
