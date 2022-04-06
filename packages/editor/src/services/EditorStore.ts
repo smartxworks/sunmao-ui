@@ -64,7 +64,7 @@ export class EditorStore {
     private stateManager: StateManager,
     public appStorage: AppStorage
   ) {
-    this.schemaValidator = new SchemaValidator(this.registry, this.stateManager);
+    this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
       eleMap: false,
       components: observable.shallow,

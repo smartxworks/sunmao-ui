@@ -1,5 +1,5 @@
 import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
-import { Registry, StateManager } from '@sunmao-ui/runtime';
+import { Registry } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
 import { IAppModel, IComponentModel, IFieldModel, ITraitModel } from '../AppModel/IAppModel';
 
@@ -12,7 +12,6 @@ interface BaseValidateContext {
   components: ComponentSchema[];
   validators: ValidatorMap;
   registry: Registry;
-  stateManager: StateManager;
   appModel: IAppModel;
   ajv: Ajv;
   componentIdSpecMap: Record<
