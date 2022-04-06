@@ -26,7 +26,6 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   };
 
   useEffect(() => {
-    console.log(c.id, eleRef.current, isInModule);
     if (eleRef.current && !isInModule) {
       eleMap.set(c.id, eleRef.current);
     }
