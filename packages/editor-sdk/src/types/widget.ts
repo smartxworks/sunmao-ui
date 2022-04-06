@@ -2,6 +2,7 @@ import React from 'react';
 import { JSONSchema7 } from 'json-schema';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from './editor';
+import { Condition } from './condition';
 
 export type EditorSchema<WidgetOptions = Record<string, any>> = {
   defaultValue?: any;
@@ -12,6 +13,8 @@ export type EditorSchema<WidgetOptions = Record<string, any>> = {
   category?: string;
   weight?: number;
   name?: string;
+  // conditional render
+  conditions?: Condition[];
 };
 
 export type WidgetProps<WidgetOptions = Record<string, any>> = {
