@@ -160,7 +160,11 @@ export class StateManager {
             return result;
           } catch (error) {
             if (error instanceof Error) {
-              return new ExpressionError(error.message);
+              const expressionError = new ExpressionError(error.message);
+
+              console.error(expressionError);
+              
+              return expressionError;
             }
 
             return undefined;
