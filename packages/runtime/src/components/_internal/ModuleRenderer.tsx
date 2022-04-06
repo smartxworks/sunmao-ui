@@ -28,7 +28,7 @@ export const ModuleRenderer = React.forwardRef<HTMLDivElement, Props>((props, re
   const { type, services } = props;
   try {
     const moduleSpec = services.registry.getModuleByType(type);
-    return <ModuleRendererContent {...props} moduleSpec={moduleSpec} />;
+    return <ModuleRendererContent {...props} ref={ref} moduleSpec={moduleSpec} />;
   } catch {
     return <div ref={ref}>Cannot find Module {type}.</div>;
   }
@@ -127,7 +127,7 @@ const ModuleRendererContent = React.forwardRef<
     if (!handlers) return;
     const _handlers = handlers as Array<Static<typeof EventHandlerSchema>>;
     const moduleEventHandlers: any[] = [];
-    _handlers.forEach((h) => {
+    _handlers.forEach(h => {
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
           const evaledHandler = services.stateManager.deepEval(h, true, evalScope);
@@ -159,12 +159,17 @@ const ModuleRendererContent = React.forwardRef<
           services={services}
           app={app}
           childrenMap={childrenMap}
+          isInModule={true}
         />
       );
     });
   }, [evaledModuleTemplate, services, app]);
 
-  return <div ref={ref}>{result}</div>;
+  return (
+    <div className="module-container" ref={ref}>
+      {result}
+    </div>
+  );
 });
 
 function parseTypeComponents(
