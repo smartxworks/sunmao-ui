@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  useImperativeHandle,
+} from 'react';
 import CodeMirror from 'codemirror';
 import {
   Box,
@@ -178,31 +185,34 @@ export const BaseExpressionEditor = React.forwardRef<
     },
     ref
   ) => {
-    const style = css`
-      .CodeMirror {
-        width: 100%;
-        height: ${height};
-        padding: ${paddingY} ${compact ? '8px' : 0};
-        border-radius: var(--chakra-radii-sm);
-        background: var(--chakra-colors-gray-100);
-        color: var(--chakra-colors-gray-800);
-        transition-property: var(--chakra-transition-property-common);
-        transition-duration: var(--chakra-transition-duration-normal);
-        &:hover {
-          background: var(--chakra-colors-gray-200);
+    const style = useMemo(
+      () => css`
+        .CodeMirror {
+          width: 100%;
+          height: ${height};
+          padding: ${paddingY} ${compact ? '8px' : 0};
+          border-radius: var(--chakra-radii-sm);
+          background: var(--chakra-colors-gray-100);
+          color: var(--chakra-colors-gray-800);
+          transition-property: var(--chakra-transition-property-common);
+          transition-duration: var(--chakra-transition-duration-normal);
+          &:hover {
+            background: var(--chakra-colors-gray-200);
+          }
+
+          .cm-sunmao-ui {
+            background: ${isError
+              ? 'var(--chakra-colors-red-100)'
+              : 'var(--chakra-colors-green-100)'};
+          }
         }
 
-        .cm-sunmao-ui {
-          background: ${isError
-            ? 'var(--chakra-colors-red-100)'
-            : 'var(--chakra-colors-green-100)'};
+        .CodeMirror .CodeMirror-scroll {
+          max-height: ${maxHeight};
         }
-      }
-
-      .CodeMirror .CodeMirror-scroll {
-        max-height: ${maxHeight};
-      }
-    `;
+      `,
+      [height, maxHeight, paddingY, compact, isError]
+    );
 
     const wrapperEl = useRef<HTMLDivElement>(null);
     const cm = useRef<CodeMirror.Editor | null>(null);
@@ -302,36 +312,49 @@ export const ExpressionEditor = React.forwardRef<
   ExpressionEditorHandle,
   ExpressionEditorProps
 >((props: ExpressionEditorProps, ref) => {
-  const { compactOptions = {}, error, evaledValue } = props;
-  const style = css`
-    .expand-icon {
-      display: none;
-    }
-    &:hover,
-    &:focus-within {
+  const { compactOptions = {}, error, evaledValue, onFocus, onBlur } = props;
+  const style = useMemo(
+    () => css`
+      width: 100%;
       .expand-icon {
-        display: inherit;
+        display: none;
       }
-    }
-  `;
+      &:hover,
+      &:focus-within {
+        .expand-icon {
+          display: inherit;
+        }
+      }
+    `,
+    []
+  );
   const [showModal, setShowModal] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
   const [isFocus, setIsFocus] = useState(false);
   const compactEditorRef = useRef<BaseExpressionEditorHandle>(null);
   const editorRef = useRef<BaseExpressionEditorHandle>(null);
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     setShowModal(false);
     setRenderKey(renderKey + 1);
-  };
-  const onFocus = (value: string) => {
-    setIsFocus(true);
-    props.onFocus?.(value);
-  };
-  const onBlur = (value: string) => {
-    setIsFocus(false);
-    props.onBlur?.(value);
-  };
+  }, [renderKey]);
+  const onExpressionFocus = useCallback(
+    (value: string) => {
+      setIsFocus(true);
+      onFocus?.(value);
+    },
+    [onFocus]
+  );
+  const onExpressionBlur = useCallback(
+    (value: string) => {
+      setIsFocus(false);
+      onBlur?.(value);
+    },
+    [onBlur]
+  );
+  const onExpand = useCallback(() => {
+    setShowModal(true);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     setCode: (code: string) => {
@@ -351,8 +374,8 @@ export const ExpressionEditor = React.forwardRef<
           compact
           {...compactOptions}
           isError={!!error}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={onExpressionFocus}
+          onBlur={onExpressionBlur}
         />
         <IconButton
           aria-label="expand editor"
@@ -364,7 +387,7 @@ export const ExpressionEditor = React.forwardRef<
           colorScheme="blue"
           zIndex="9"
           className="expand-icon"
-          onClick={() => setShowModal(true)}
+          onClick={onExpand}
         >
           <ExternalLinkIcon />
         </IconButton>

@@ -11,7 +11,6 @@ import {
   debounce,
 } from 'lodash-es';
 import { Type, Static } from '@sinclair/typebox';
-import { Box } from '@chakra-ui/react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
@@ -181,10 +180,15 @@ export const ExpressionWidget: React.FC<
     },
     [services, type, validate, schema]
   );
-  const onCodeChange = debounce(evalCode, 300);
+  const onCodeChange = useMemo(() => debounce(evalCode, 300), [evalCode]);
   const onFocus = useCallback(() => {
     evalCode(code);
   }, [code, evalCode]);
+  const onBlur = useCallback((newCode)=> {
+    const newValue = getParsedValue(newCode, type);
+    
+    onChange(newValue);
+  }, [type, onChange]);
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -194,25 +198,20 @@ export const ExpressionWidget: React.FC<
   }, [code]);
 
   return (
-    <Box>
-      <ExpressionEditor
-        compactOptions={{
-          maxHeight: '125px',
-          ...(widgetOptions?.compactOptions || {}),
-        }}
-        ref={editorRef}
-        defaultCode={code}
-        evaledValue={evaledValue}
-        error={error}
-        defs={defs}
-        onChange={onCodeChange}
-        onBlur={_v => {
-          const v = getParsedValue(_v, type);
-          onChange(v);
-        }}
-        onFocus={onFocus}
-      />
-    </Box>
+    <ExpressionEditor
+      compactOptions={{
+        maxHeight: '125px',
+        ...(widgetOptions?.compactOptions || {}),
+      }}
+      ref={editorRef}
+      defaultCode={code}
+      evaledValue={evaledValue}
+      error={error}
+      defs={defs}
+      onChange={onCodeChange}
+      onBlur={onBlur}
+      onFocus={onFocus}
+    />
   );
 };
 

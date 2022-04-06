@@ -1,17 +1,19 @@
 import React from 'react';
 import { EventWidget } from '@sunmao-ui/editor-sdk';
 import { Box, IconButton, VStack } from '@chakra-ui/react';
-import { Static } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { JSONSchema7 } from 'json-schema';
 import { CloseIcon } from '@chakra-ui/icons';
-import { EventHandlerSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSchema, BaseEventSchema } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 
+const BaseEventObjectSchema = Type.Object(BaseEventSchema);
+
 type Props = {
   component: ComponentSchema;
-  handler: Static<typeof EventHandlerSchema>;
+  handler: Static<typeof EventHandlerSchema | typeof BaseEventObjectSchema>;
   onChange: (handler: Static<typeof EventHandlerSchema>) => void;
   onRemove: () => void;
   services: EditorServices;
