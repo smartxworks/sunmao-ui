@@ -15,6 +15,7 @@ import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { RuntimeComponent } from '@sunmao-ui/core';
+import { css } from '@emotion/css';
 
 type Props = {
   services: EditorServices;
@@ -47,6 +48,12 @@ function getTagColor(version: string): string {
     return 'blackAlpha';
   }
 }
+
+const tagStyle = css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 
 const IGNORE_COMPONENTS = ['dummy'];
 
@@ -138,7 +145,7 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
                     >
                       {c.metadata.displayName}
                       <Tag colorScheme={getTagColor(c.version)} size="sm">
-                        {c.version}
+                        <div className={tagStyle}>{c.version}</div>
                       </Tag>
                     </Flex>
                   );
