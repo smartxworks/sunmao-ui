@@ -13,13 +13,13 @@ export const TreeSelectPropsSpec = {
     {
       title: 'Options',
       category: Category.Data,
-      widget: 'core/v1/Expression',
+      widget: 'core/v1/expression',
     }
   ),
   defaultValue: Type.Array(Type.String(), {
     title: 'Default Value',
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }),
   multiple: Type.Boolean({
     title: 'Multiple',

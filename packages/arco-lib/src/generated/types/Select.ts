@@ -24,7 +24,7 @@ export const SelectPropsSpec = {
     {
       title: 'Options',
       category: Category.Data,
-      widget: 'expression',
+      widget: 'core/v1/expression',
     }
   ),
   multiple: Type.Boolean({

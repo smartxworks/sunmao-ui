@@ -7,7 +7,7 @@ export const MentionsPropsSpec = {
     title: 'Options',
     weight: 3,
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }),
   defaultValue: Type.String({
     title: 'Default Value',

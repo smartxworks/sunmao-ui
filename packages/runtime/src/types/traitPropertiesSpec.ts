@@ -32,7 +32,7 @@ export const EventHandlerSpec = Type.Object({
   type: Type.String(),
   ...BaseEventSpec,
 }, {
-  widget: 'core/v1/Event'
+  widget: 'core/v1/event'
 });
 
 export const EventCallBackHandlerSpec = Type.Object(BaseEventSpec);
@@ -55,7 +55,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
   }),
   body: Type.Record(Type.String(), Type.String(), {
     title: 'Body',
-    widget: "core/v1/KeyValue",
+    widget: "core/v1/record",
   }),
   bodyType: Type.KeyOf(
     Type.Object({
