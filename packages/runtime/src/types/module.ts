@@ -14,13 +14,14 @@ export const ModuleSchema = Type.Object({
   properties: Type.Record(Type.String(), Type.Any(), {
     title: 'Module Properties',
     category: 'Basic',
+    widget: 'core/v1/KeyValue',
   }),
   handlers: Type.Array(EventHandlerSchema, {
     title: 'Module Handlers',
     category: 'Basic',
   }),
 }, {
-  category: 'Appearance',
+  category: 'Basic',
 });
 
 export type ImplementedRuntimeModule = RuntimeModule;
