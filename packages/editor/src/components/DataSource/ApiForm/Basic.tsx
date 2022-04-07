@@ -2,15 +2,9 @@ import React from 'react';
 import {
   VStack,
   HStack,
-  Box,
   FormControl,
   FormLabel,
   Switch,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';

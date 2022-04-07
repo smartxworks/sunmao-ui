@@ -161,7 +161,7 @@ export const EventTraitForm: React.FC<Props> = props => {
   if (!eventTypes.length) return null;
 
   const handlerForms = () =>
-    (handlers || []).map((h, i) => (
+    (handlers || []).map((_, i) => (
       <Handler key={i} {...props} index={i} handlers={handlers} />
     ));
 
