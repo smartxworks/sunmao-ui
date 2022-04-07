@@ -158,7 +158,7 @@ export const EventTraitForm: React.FC<Props> = props => {
           variant="ghost"
         />
       </HStack>
-      <VStack width="full">{handlerForms()}</VStack>
+      <VStack width="full" spacing={0}>{handlerForms()}</VStack>
     </VStack>
   );
 };
