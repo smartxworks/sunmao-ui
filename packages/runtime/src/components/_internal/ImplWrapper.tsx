@@ -156,15 +156,15 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   }, [c.id, stateManager.store]);
 
   const mergedProps = useMemo(() => {
-    const mergedProps: Record<string, any> = { ...evaledComponentProperties, ...propsFromTraits };
+    const allProps: Record<string, any> = { ...evaledComponentProperties, ...propsFromTraits };
 
-    for (const key in mergedProps) {
-      if (mergedProps[key] instanceof ExpressionError) {
-        mergedProps[key] = undefined;
+    for (const key in allProps) {
+      if (allProps[key] instanceof ExpressionError) {
+        allProps[key] = undefined;
       }
     }
 
-    return mergedProps;
+    return allProps;
   }, [evaledComponentProperties, propsFromTraits]);
 
   function genSlotsElements() {
