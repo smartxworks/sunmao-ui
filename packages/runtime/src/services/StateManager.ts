@@ -123,7 +123,11 @@ export class StateManager {
         return this.maskedEval(value, evalListItem, scopeObject);
       } catch (error) {
         if (error instanceof Error) {
-          return new ExpressionError(error.message);
+          const expressionError = new ExpressionError(error.message);
+
+          console.error(expressionError);
+
+          return expressionError;
         }
 
         return undefined;
