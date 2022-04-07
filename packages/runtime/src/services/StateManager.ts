@@ -36,7 +36,7 @@ export class StateManager {
     this.store = reactive<Record<string, any>>({});
   };
 
-  evalExp = (expChunk: ExpChunk, scopeObject = {}): unknown => {
+  evalExp = (expChunk: ExpChunk, scopeObject = {}, overrideScope = false): unknown => {
     if (typeof expChunk === 'string') {
       return expChunk;
     }
@@ -48,15 +48,23 @@ export class StateManager {
       evaled = new Function(
         'store, dependencies, scopeObject',
         // trim leading space and newline
-        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(/^\s+/g, '')} } } }`
-      ).call(null, this.store, this.dependencies, scopeObject);
+        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+          /^\s+/g,
+          ''
+        )} } } }`
+      ).call(
+        null,
+        overrideScope ? {} : this.store,
+        overrideScope ? {} : this.dependencies,
+        scopeObject
+      );
     } catch (e: any) {
       return `{{ ${evalText} }}`;
     }
     return evaled;
   };
 
-  maskedEval(raw: string, evalListItem = false, scopeObject = {}) {
+  maskedEval(raw: string, evalListItem = false, scopeObject = {}, overrideScope = false) {
     if (isNumeric(raw)) {
       return toNumber(raw);
     }
@@ -72,7 +80,7 @@ export class StateManager {
       return expChunk;
     }
 
-    const result = expChunk.map(e => this.evalExp(e, scopeObject));
+    const result = expChunk.map(e => this.evalExp(e, scopeObject, overrideScope));
     if (result.length === 1) {
       return result[0];
     }
@@ -105,14 +113,15 @@ export class StateManager {
   deepEval<T extends Record<string, unknown>>(
     obj: T,
     evalListItem = false,
-    scopeObject = {}
+    scopeObject = {},
+    overrideScope = false
   ): T {
     // just eval
     const evaluated = this.mapValuesDeep(obj, ({ value }) => {
       if (typeof value !== 'string') {
         return value;
       }
-      return this.maskedEval(value, evalListItem, scopeObject);
+      return this.maskedEval(value, evalListItem, scopeObject, overrideScope);
     });
 
     return evaluated;
@@ -122,7 +131,8 @@ export class StateManager {
     obj: T,
     watcher: (params: { result: T }) => void,
     evalListItem = false,
-    scopeObject = {}
+    scopeObject = {},
+    overrideScope = false
   ) {
     const stops: ReturnType<typeof watch>[] = [];
 
@@ -140,7 +150,7 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(value, evalListItem, scopeObject);
+          const result = this.maskedEval(value, evalListItem, scopeObject, overrideScope);
           return result;
         },
         newV => {

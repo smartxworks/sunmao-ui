@@ -1,5 +1,5 @@
 import { Static } from '@sinclair/typebox';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
@@ -17,6 +17,7 @@ import {
   ModuleSchema,
 } from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
+import { initStateAndMethod } from '../../utils/initStateAndMethod';
 
 type Props = Static<typeof ModuleSchema> & {
   evalScope?: Record<string, any>;
@@ -50,21 +51,6 @@ const ModuleRendererContent = React.forwardRef<
     }).obj;
   }
 
-  const evalWithScope = useCallback(
-    <T extends Record<string, any>>(obj: T, scope: Record<string, any>): T => {
-      const hasScopeKey = (exp: string) => {
-        return Object.keys(scope).some(key => exp.includes('{{') && exp.includes(key));
-      };
-      return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
-        if (typeof value === 'string' && hasScopeKey(value)) {
-          return services.stateManager.maskedEval(value, true, scope);
-        }
-        return value;
-      }).obj;
-    },
-    [services.stateManager]
-  );
-
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
   const parsedTemplate = useMemo(
@@ -75,16 +61,26 @@ const ModuleRendererContent = React.forwardRef<
   // then eval the template and stateMap of module
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
-    return evalWithScope(moduleSpec.spec.stateMap, { $moduleId: moduleId });
-  }, [evalWithScope, moduleSpec.spec.stateMap, moduleId]);
+    return services.stateManager.deepEval(
+      moduleSpec.spec.stateMap,
+      false,
+      { $moduleId: moduleId },
+      true
+    );
+  }, [services.stateManager, moduleSpec.spec.stateMap, moduleId]);
 
   const evaledModuleTemplate = useDeepCompareMemo(() => {
     // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
     // so we can assume that template will not change if evaledProperties is the same
-    return evalWithScope(parsedTemplate, {
-      ...evaledProperties,
-      $moduleId: moduleId,
-    });
+    return services.stateManager.deepEval(
+      { template: parsedTemplate },
+      false,
+      {
+        ...evaledProperties,
+        $moduleId: moduleId,
+      },
+      true
+    ).template;
   }, [parsedTemplate, evaledProperties, moduleId]);
 
   // listen component state change
@@ -150,6 +146,7 @@ const ModuleRendererContent = React.forwardRef<
   }, [evalScope, handlers, moduleId, services.apiService, services.stateManager]);
 
   const result = useMemo(() => {
+    initStateAndMethod(services.registry, services.stateManager, evaledModuleTemplate);
     const { childrenMap, topLevelComponents } = resolveChildrenMap(evaledModuleTemplate);
     return topLevelComponents.map(c => {
       return (
