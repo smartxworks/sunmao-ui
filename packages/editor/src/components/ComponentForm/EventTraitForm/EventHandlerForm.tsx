@@ -9,11 +9,11 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 
-const BaseEventObjectSchema = Type.Object(BaseEventSpec);
+const BaseEventObjectSpec = Type.Object(BaseEventSpec);
 
 type Props = {
   component: ComponentSchema;
-  handler: Static<typeof EventHandlerSpec | typeof BaseEventObjectSchema>;
+  handler: Static<typeof EventHandlerSpec | typeof BaseEventObjectSpec>;
   onChange: (handler: Static<typeof EventHandlerSpec>) => void;
   onRemove: () => void;
   services: EditorServices;
