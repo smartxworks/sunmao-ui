@@ -125,8 +125,8 @@ export class EditorStore {
     return this.appStorage.modules;
   }
 
-  get modulesWithId() {
-    return this.appStorage.modulesWithId;
+  get rawModules() {
+    return this.appStorage.rawModules;
   }
 
   get selectedComponent() {
@@ -197,7 +197,7 @@ export class EditorStore {
 
     // Remove old modules and re-register all modules,
     this.registry.unregisterAllModules();
-    this.modulesWithId.forEach(m => {
+    this.rawModules.forEach(m => {
       const modules = createModule(m);
       this.registry.registerModule(modules, true);
     });

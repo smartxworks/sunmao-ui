@@ -8,7 +8,8 @@ import { StorageHandler } from '../types';
 export class AppStorage {
   app: Application;
   modules: Module[];
-  modulesWithId: Module[];
+  // modules that have {{$moduleId}}__
+  rawModules: Module[];
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
@@ -19,15 +20,15 @@ export class AppStorage {
   ) {
     this.app = defaultApplication || EmptyAppSchema;
     this.modules = defaultModules?.map(removeModuleId) || [];
-    this.modulesWithId = defaultModules || [];
+    this.rawModules = defaultModules || [];
 
     makeObservable(this, {
       app: observable.shallow,
       modules: observable.shallow,
-      modulesWithId: observable.shallow,
+      rawModules: observable.shallow,
       setApp: action,
       setModules: action,
-      setModulesWithId: action,
+      setRawModules: action,
     });
   }
 
@@ -88,8 +89,8 @@ export class AppStorage {
           draft[i].impl = components;
         });
         this.setModules(newModules);
-        const modulesWithId = newModules.map(addModuleId);
-        this.setModulesWithId(modulesWithId);
+        const rawModules = newModules.map(addModuleId);
+        this.setRawModules(rawModules);
         this.saveModules();
         break;
     }
@@ -126,8 +127,8 @@ export class AppStorage {
     });
 
     this.setModules(newModules);
-    const modulesWithId = newModules.map(addModuleId);
-    this.setModulesWithId(modulesWithId);
+    const rawModules = newModules.map(addModuleId);
+    this.setRawModules(rawModules);
     this.saveModules();
   }
 
@@ -136,8 +137,9 @@ export class AppStorage {
   }
 
   private saveModules() {
+    // save rawModules rather than modules because rawModules have {{$moduleId}}__
     this.storageHandler?.onSaveModules &&
-      this.storageHandler?.onSaveModules(this.modulesWithId);
+      this.storageHandler?.onSaveModules(this.rawModules);
   }
 
   setApp(app: Application) {
@@ -148,7 +150,7 @@ export class AppStorage {
     this.modules = modules;
   }
 
-  setModulesWithId(modules: Module[]) {
-    this.modulesWithId = modules;
+  setRawModules(modules: Module[]) {
+    this.rawModules = modules;
   }
 }
