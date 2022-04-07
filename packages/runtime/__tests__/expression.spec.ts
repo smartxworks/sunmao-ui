@@ -1,4 +1,4 @@
-import { StateManager, parseExpression } from '../src/services/StateManager';
+import { StateManager, parseExpression, ExpressionError } from '../src/services/StateManager';
 
 describe('parseExpression function', () => {
   it('can parse {{}} expression', () => {
@@ -90,11 +90,7 @@ describe('evalExpression function', () => {
 
     expect(stateStore.maskedEval('{{ {} }}', false, scope)).toEqual({});
     expect(stateStore.maskedEval('{{ {id: 123} }}', false, scope)).toEqual({ id: 123 });
-    try {
-      stateStore.maskedEval('{{nothing}}', false, scope)
-    } catch (error) {
-      expect(error instanceof Error).toEqual(true);
-    }
+    expect(stateStore.maskedEval('{{nothing}}', false, scope) instanceof ExpressionError).toEqual(true);
 
     expect(stateStore.maskedEval('{{input1.value}}', false, scope)).toEqual('world');
     expect(stateStore.maskedEval('{{checkbox.value}}', false, scope)).toEqual(true);

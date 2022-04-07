@@ -7,6 +7,7 @@ import {
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
   UIServices,
+  ExpressionError
 } from '@sunmao-ui/runtime';
 
 export const TableTd: React.FC<{
@@ -23,9 +24,11 @@ export const TableTd: React.FC<{
   let buttonConfig = column.buttonConfig;
 
   if (column.displayValue) {
-    value = services.stateManager.maskedEval(column.displayValue, true, {
+    const result = services.stateManager.maskedEval(column.displayValue, true, {
       [LIST_ITEM_EXP]: item,
     });
+
+    value = result instanceof ExpressionError ? '' : result;
   }
 
   if (column.buttonConfig) {
@@ -35,6 +38,7 @@ export const TableTd: React.FC<{
   }
 
   let content = value;
+
   switch (column.type) {
     case 'text':
       content = <Text whiteSpace="pre-wrap">{value}</Text>;
