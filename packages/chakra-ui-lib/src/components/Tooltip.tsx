@@ -1,11 +1,11 @@
 import { Type } from '@sinclair/typebox';
 import { Tooltip } from '@chakra-ui/react';
-import { implementRuntimeComponent, TextPropertySchema } from '@sunmao-ui/runtime';
-import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { implementRuntimeComponent, TextPropertySpec } from '@sunmao-ui/runtime';
+import { getColorSchemePropertySpec } from './Types/ColorScheme';
 import { BASIC, LAYOUT, BEHAVIOR, APPEARANCE } from './constants/category';
 
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
+const PropsSpec = Type.Object({
+  text: TextPropertySpec,
   defaultIsOpen: Type.Boolean({
     title: 'Default Is Open',
     category: BASIC,
@@ -49,7 +49,7 @@ const PropsSchema = Type.Object({
     title: 'Has Arrow',
     category: APPEARANCE,
   }),
-  colorScheme: getColorSchemePropertySchema({
+  colorScheme: getColorSchemePropertySpec({
     title: 'Color Scheme',
     category: APPEARANCE,
   }),
@@ -79,7 +79,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({}),
     methods: {},
     slots: ['content'],

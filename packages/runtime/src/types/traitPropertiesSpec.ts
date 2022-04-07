@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-export const BaseEventSchema = {
+export const BaseEventSpec = {
   componentId: Type.String({
     title: 'Component ID',
   }),
@@ -28,16 +28,16 @@ export const BaseEventSchema = {
   disabled: Type.Optional(Type.Boolean({ title: 'Disabled' })),
 };
 
-export const EventHandlerSchema = Type.Object({
+export const EventHandlerSpec = Type.Object({
   type: Type.String(),
-  ...BaseEventSchema,
+  ...BaseEventSpec,
 }, {
   widget: 'core/v1/Event'
 });
 
-export const EventCallBackHandlerSchema = Type.Object(BaseEventSchema);
+export const EventCallBackHandlerSpec = Type.Object(BaseEventSpec);
 
-export const FetchTraitPropertiesSchema = Type.Object({
+export const FetchTraitPropertiesSpec = Type.Object({
   url: Type.String({ title: 'URL' }), // {format:uri}?;
   method: Type.KeyOf(
     Type.Object({
@@ -64,6 +64,6 @@ export const FetchTraitPropertiesSchema = Type.Object({
     }),
     { title: 'Body Type' },
   ),
-  onComplete: Type.Array(EventCallBackHandlerSchema),
-  onError: Type.Array(EventCallBackHandlerSchema),
+  onComplete: Type.Array(EventCallBackHandlerSpec),
+  onError: Type.Array(EventCallBackHandlerSpec),
 });

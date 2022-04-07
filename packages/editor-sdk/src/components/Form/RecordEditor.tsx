@@ -4,24 +4,24 @@ import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState, useMemo, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
-import { SchemaField } from '../Widgets/SchemaField';
+import { SpecWidget } from '../Widgets/SpecWidget';
 import { ExpressionWidget } from '../Widgets/ExpressionWidget';
 import { WidgetProps } from '../../types/widget';
-import { mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { ExpressionEditorProps } from './ExpressionEditor';
 
-const IGNORE_SCHEMA_TYPES = ['array', 'object'];
+const IGNORE_SPEC_TYPES = ['array', 'object'];
 
-type KeyValueEditorProps = Omit<WidgetProps, 'component' | 'schema' | 'level' | 'path'> & {
+type RecordEditorProps = Omit<WidgetProps, 'component' | 'spec' | 'level' | 'path'> & {
   component?: WidgetProps['component'];
-  schema?: WidgetProps['schema'];
+  spec?: WidgetProps['spec'];
   path?: WidgetProps['path'];
   level?: WidgetProps['level'];
 };
 
-export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
-  const { component, value, schema, services, path = [], level = 1, onChange } = props;
-  const { minNum = 0, onlySetValue, isShowHeader } = schema?.widgetOptions || {};
+export const RecordEditor: React.FC<RecordEditorProps> = props => {
+  const { component, value, spec, services, path = [], level = 1, onChange } = props;
+  const { minNum = 0, onlySetValue, isShowHeader } = spec?.widgetOptions || {};
   const generateRows = (currentRows: Array<[string, any]> = []) => {
     let newRows = toPairs(value);
 
@@ -83,8 +83,8 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
       emitDataChange(newRows);
     };
     const onBlur = () => emitDataChange(rows);
-    const keySchemaType =
-      schema?.properties && key in schema.properties && schema.properties[key];
+    const valueSpec =
+      spec?.properties && key in spec.properties && spec.properties[key];
 
     return (
       <HStack key={i} spacing="1" display="flex">
@@ -100,15 +100,15 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
         />
         {component ? (
           <HStack flex={2} alignItems="center">
-            {keySchemaType &&
-            typeof keySchemaType !== 'boolean' &&
-            !IGNORE_SCHEMA_TYPES.includes(String(keySchemaType.type)) ? (
-              <SchemaField
+            {valueSpec &&
+            typeof valueSpec !== 'boolean' &&
+            !IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) ? (
+              <SpecWidget
                 component={component}
                 value={value}
                 path={path.concat(key)}
                 level={level + 1}
-                schema={mergeWidgetOptionsIntoSchema(keySchemaType, {
+                spec={mergeWidgetOptionsIntoSpec(valueSpec, {
                   isShowAsideExpressionButton: true,
                   expressionOptions,
                 })}
@@ -120,7 +120,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
                 <ExpressionWidget
                   component={component}
                   path={path.concat(key)}
-                  schema={Type.String({
+                  spec={Type.String({
                     widgetOptions: { compactOptions: expressionOptions.compactOptions },
                   })}
                   services={services}
