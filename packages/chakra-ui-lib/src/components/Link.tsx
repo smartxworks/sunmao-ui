@@ -1,11 +1,11 @@
 import { Link } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Text, TextPropertySpec } from '@sunmao-ui/runtime';
 import { BASIC, BEHAVIOR } from './constants/category';
 
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
+const PropsSpec = Type.Object({
+  text: TextPropertySpec,
   href: Type.String({
     title: 'Href',
     description: 'The URL to link to.',
@@ -40,7 +40,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({}),
     methods: {},
     slots: [],

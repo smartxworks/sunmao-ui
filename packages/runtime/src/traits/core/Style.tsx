@@ -2,7 +2,7 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
 
-const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   return ({ styles }) => {
     const customStyle: Record<string, string> = {};
     styles.forEach(style => {
@@ -16,7 +16,7 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
   };
 };
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   styles: Type.Array(
     Type.Object({
       styleSlot: Type.String(),
@@ -33,7 +33,7 @@ export default {
       description: 'add style to component',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       methods: [],
       state: {},
     },

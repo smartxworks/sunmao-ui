@@ -2,10 +2,10 @@ import { Box, FormControl, FormLabel, Select } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
-import { SchemaField } from './SchemaField';
+import { SpecWidget } from './SpecWidget';
 
 export const ModuleWidget: React.FC<WidgetProps> = props => {
-  const { component, value, schema, services, path, level, onChange } = props;
+  const { component, value, spec, services, path, level, onChange } = props;
   const { registry } = services;
   const moduleTypes = useMemo(() => {
     const res: string[] = [];
@@ -25,9 +25,9 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
 
   return (
     <Box p="2" border="1px solid" borderColor="gray.200" borderRadius="4">
-      <SchemaField
+      <SpecWidget
         component={component}
-        schema={schema.properties!.id! as WidgetProps['schema']}
+        spec={spec.properties!.id! as WidgetProps['spec']}
         value={value?.id}
         path={path.concat('id')}
         level={level + 1}
@@ -57,9 +57,9 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
         </Select>
       </FormControl>
       {module !== null && (
-        <SchemaField
+        <SpecWidget
           component={component}
-          schema={{
+          spec={{
             ...module.spec.properties,
             title: 'Module Properties',
           }}
@@ -82,6 +82,6 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: 'core/v1',
   metadata: {
-    name: 'Module',
+    name: 'module',
   },
 })(ModuleWidget);

@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
-import { EventHandlerSchema, ModuleSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, ModuleSpec } from '@sunmao-ui/runtime';
 import { Category } from '../../constants/category';
 
 export const ColumnSchema = Type.Object({
@@ -42,10 +42,10 @@ export const ColumnSchema = Type.Object({
   btnCfg: Type.Optional(
     Type.Object({
       text: Type.String(),
-      handlers: Type.Array(EventHandlerSchema),
+      handlers: Type.Array(EventHandlerSpec),
     })
   ),
-  module: Type.Optional(ModuleSchema),
+  module: Type.Optional(ModuleSpec),
 });
 
 export const TablePropsSchema = Type.Object({

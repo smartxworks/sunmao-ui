@@ -15,7 +15,7 @@ const ToastPosition = Type.KeyOf(
     defaultValue: 'top',
   }
 );
-export const ToastOpenParameterSchema = Type.Object({
+export const ToastOpenParameterSpec = Type.Object({
   position: ToastPosition,
   duration: Type.Number({ defaultValue: 1000 }),
   title: Type.String(),
@@ -46,15 +46,15 @@ export const ToastOpenParameterSchema = Type.Object({
   id: Type.String(),
 });
 
-export const ToastCloseParameterSchema = Type.Object({
+export const ToastCloseParameterSpec = Type.Object({
   id: Type.String(),
   positions: Type.Array(ToastPosition, {
     defaultValue: []
   }),
 });
 
-export type ToastOpenParameter = Static<typeof ToastOpenParameterSchema>;
-export type ToastCloseParameter = Static<typeof ToastCloseParameterSchema>;
+export type ToastOpenParameter = Static<typeof ToastOpenParameterSpec>;
+export type ToastCloseParameter = Static<typeof ToastCloseParameterSpec>;
 
 const pickProperty = <T, U extends Record<string, any>>(
   schema: TObject<T>,
@@ -70,20 +70,20 @@ const pickProperty = <T, U extends Record<string, any>>(
 export default function ToastUtilMethodFactory() {
   let toast: ReturnType<typeof createStandaloneToast> | undefined;
 
-  const toastOpen: UtilMethod<typeof ToastOpenParameterSchema> = {
+  const toastOpen: UtilMethod<typeof ToastOpenParameterSpec> = {
     name: 'toast.open',
     method(parameters) {
       if (!toast) {
         toast = createStandaloneToast();
       }
       if (parameters) {
-        toast(pickProperty(ToastOpenParameterSchema, parameters));
+        toast(pickProperty(ToastOpenParameterSpec, parameters));
       }
     },
-    parameters: ToastOpenParameterSchema,
+    parameters: ToastOpenParameterSpec,
   };
 
-  const toastClose: UtilMethod<typeof ToastCloseParameterSchema> = {
+  const toastClose: UtilMethod<typeof ToastCloseParameterSpec> = {
     name: 'toast.close',
     method(parameters) {
       if (!toast) {
@@ -92,7 +92,7 @@ export default function ToastUtilMethodFactory() {
       if (!parameters) {
         toast.closeAll();
       } else {
-        const closeParameters = pickProperty(ToastCloseParameterSchema, parameters);
+        const closeParameters = pickProperty(ToastCloseParameterSpec, parameters);
         if (closeParameters.id !== undefined) {
           toast.close(closeParameters.id);
         } else {
@@ -100,7 +100,7 @@ export default function ToastUtilMethodFactory() {
         }
       }
     },
-    parameters: ToastCloseParameterSchema,
+    parameters: ToastCloseParameterSpec,
   };
   return [toastOpen, toastClose];
 }

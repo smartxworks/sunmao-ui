@@ -1,10 +1,10 @@
 import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
-import { TextPropertySchema } from "@sunmao-ui/runtime";
+import { TextPropertySpec } from "@sunmao-ui/runtime";
 
 export const FormControlPropsSchema = {
-    label: TextPropertySchema,
+    label: TextPropertySpec,
     required: Type.Boolean({
         title: 'Required',
         category: Category.Basic
