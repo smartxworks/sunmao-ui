@@ -103,12 +103,42 @@ export const EventTraitForm: React.FC<Props> = props => {
           })
         );
       };
+
+      const onSort = (isUp: boolean) => {
+        const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+        const newHandlers = [...handlers];
+        const switchedIndex = isUp ? i - 1 : i + 1;
+
+        if (newHandlers[switchedIndex]) {
+          const temp = newHandlers[switchedIndex];
+          newHandlers[switchedIndex] = newHandlers[i];
+          newHandlers[i] = temp;
+
+          eventBus.send(
+            'operation',
+            genOperation(registry, 'modifyTraitProperty', {
+              componentId: component.id,
+              traitIndex: index,
+              properties: {
+                handlers: newHandlers,
+              },
+            })
+          );
+        }
+      };
+      const onUp = ()=> onSort(true);
+      const onDown = ()=> onSort(false);
+
       return (
         <EventHandlerForm
           key={i}
+          index={i}
+          size={handlers.length}
           component={component}
           services={services}
           handler={h}
+          onUp={onUp}
+          onDown={onDown}
           onChange={onChange}
           onRemove={onRemove}
         />
