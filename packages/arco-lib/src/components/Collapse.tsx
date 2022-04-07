@@ -4,17 +4,17 @@ import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import {
-  CollapsePropsSchema as BaseCollapsePropsSchema,
-  CollapseItemPropsSchema as BaseCollapseItemPropsSchema,
+  CollapsePropsSpec as BaseCollapsePropsSpec,
+  CollapseItemPropsSpec as BaseCollapseItemPropsSpec,
 } from "../generated/types/Collapse";
 import { useEffect, useState } from "react";
 
-const CollapsePropsSchema = Type.Object(BaseCollapsePropsSchema);
-const CollapseStateSchema = Type.Object({
+const CollapsePropsSpec = Type.Object(BaseCollapsePropsSpec);
+const CollapseStateSpec = Type.Object({
   activeKey: Type.Array(Type.String()),
 });
 
-const CollapseImpl: ComponentImpl<Static<typeof CollapsePropsSchema>> = (
+const CollapseImpl: ComponentImpl<Static<typeof CollapsePropsSpec>> = (
   props
 ) => {
   const { defaultActiveKey, ...cProps } = getComponentProps(props);
@@ -46,7 +46,7 @@ const CollapseImpl: ComponentImpl<Static<typeof CollapsePropsSchema>> = (
     </BaseCollapse>
   );
 };
-const exampleProperties: Static<typeof CollapsePropsSchema> = {
+const exampleProperties: Static<typeof CollapsePropsSpec> = {
   defaultActiveKey: ["1"],
   accordion: false,
   expandIconPosition: "left",
@@ -62,8 +62,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: CollapsePropsSchema,
-    state: CollapseStateSchema,
+    properties: CollapsePropsSpec,
+    state: CollapseStateSpec,
     methods: {
       setActiveKey: Type.String(),
     },
@@ -77,10 +77,10 @@ export const Collapse = implementRuntimeComponent(options)(
   CollapseImpl as typeof CollapseImpl & undefined
 );
 
-const CollapseItemPropsSchema = Type.Object(BaseCollapseItemPropsSchema);
-const CollapseItemStateSchema = Type.Object({});
+const CollapseItemPropsSpec = Type.Object(BaseCollapseItemPropsSpec);
+const CollapseItemStateSpec = Type.Object({});
 
-const CollapseItemImpl: ComponentImpl<Static<typeof CollapseItemPropsSchema>> =
+const CollapseItemImpl: ComponentImpl<Static<typeof CollapseItemPropsSpec>> =
   (props) => {
     const { elementRef, name, ...cProps } = getComponentProps(props);
     const { slotsElements, customStyle } = props;
@@ -112,8 +112,8 @@ export const CollapseItem = implementRuntimeComponent({
     },
   },
   spec: {
-    properties: CollapseItemPropsSchema,
-    state: CollapseItemStateSchema,
+    properties: CollapseItemPropsSpec,
+    state: CollapseItemStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

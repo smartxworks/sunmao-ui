@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const MentionsPropsSchema = {
+export const MentionsPropsSpec = {
   options: Type.Array(Type.String(), {
     title: 'Options',
     weight: 3,

@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
-export const SelectPropsSchema = {
+export const SelectPropsSpec = {
   defaultValue: Type.String({
     title: 'Default Value',
     category: Category.Data,
