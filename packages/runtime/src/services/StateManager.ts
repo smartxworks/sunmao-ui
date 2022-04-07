@@ -63,27 +63,39 @@ export class StateManager {
     return evaled;
   };
 
-  maskedEval(raw: string, evalListItem = false, scopeObject = {}) {
-    if (isNumeric(raw)) {
-      return toNumber(raw);
-    }
-    if (raw === 'true') {
-      return true;
-    }
-    if (raw === 'false') {
-      return false;
-    }
-    const expChunk = parseExpression(raw, evalListItem);
+  maskedEval(raw: string, evalListItem = false, scopeObject = {}): unknown | ExpressionError {
+    try {
+      if (isNumeric(raw)) {
+        return toNumber(raw);
+      }
+      if (raw === 'true') {
+        return true;
+      }
+      if (raw === 'false') {
+        return false;
+      }
+      const expChunk = parseExpression(raw, evalListItem);
+  
+      if (typeof expChunk === 'string') {
+        return expChunk;
+      }
+  
+      const result = expChunk.map(e => this.evalExp(e, scopeObject));
+      if (result.length === 1) {
+        return result[0];
+      }
+      return result.join('');
+    } catch (error) {
+      if (error instanceof Error) {
+        const expressionError = new ExpressionError(error.message);
 
-    if (typeof expChunk === 'string') {
-      return expChunk;
-    }
+        console.error(expressionError);
 
-    const result = expChunk.map(e => this.evalExp(e, scopeObject));
-    if (result.length === 1) {
-      return result[0];
+        return expressionError;
+      }
+
+      return undefined;
     }
-    return result.join('');
   }
 
   mapValuesDeep<T extends object>(
@@ -119,19 +131,7 @@ export class StateManager {
       if (typeof value !== 'string') {
         return value;
       }
-      try {
-        return this.maskedEval(value, evalListItem, scopeObject);
-      } catch (error) {
-        if (error instanceof Error) {
-          const expressionError = new ExpressionError(error.message);
-
-          console.error(expressionError);
-
-          return expressionError;
-        }
-
-        return undefined;
-      }
+      return this.maskedEval(value, evalListItem, scopeObject);
     });
 
     return evaluated;
@@ -159,20 +159,9 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          try {
-            const result = this.maskedEval(value, evalListItem, scopeObject);
-            return result;
-          } catch (error) {
-            if (error instanceof Error) {
-              const expressionError = new ExpressionError(error.message);
+          const result = this.maskedEval(value, evalListItem, scopeObject);
 
-              console.error(expressionError);
-              
-              return expressionError;
-            }
-
-            return undefined;
-          }
+          return result;
         },
         newV => {
           if (isProxy(newV)) {

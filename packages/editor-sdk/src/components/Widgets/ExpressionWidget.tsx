@@ -16,7 +16,8 @@ import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
 import { isExpression } from '../../utils/validator';
 import { getTypeString } from '../../utils/type';
-import Ajv from 'ajv';
+import Ajv, { EnumParams } from 'ajv';
+import { ExpressionError } from '@sunmao-ui/runtime';
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -156,17 +157,23 @@ export const ExpressionWidget: React.FC<
       try {
         const result = services.stateManager.maskedEval(getParsedValue(code, type));
 
+        if (result instanceof ExpressionError) {
+          throw result;
+        }
+
         validate(result);
+
         if (validate.errors?.length) {
           const err = validate.errors[0];
 
-          if (err.message?.includes('should be')) {
-            const isEnum = schema.enum;
+          if (err.keyword === 'type') {
             throw new TypeError(
-              `Invalid value, expected ${
-                isEnum ? `enum ${JSON.stringify(schema.enum)}` : schema.type
-              } but got ${isEnum ? `"${result}"` : getTypeString(result).toLowerCase()}`
+              `Invalid value, expected ${schema.type} but got ${getTypeString(
+                result
+              ).toLowerCase()}`
             );
+          } else if (err.keyword === 'enum') {
+            throw new TypeError(`${err.message}: ${JSON.stringify((err.params as EnumParams).allowedValues)}`);
           } else {
             throw new TypeError(err.message);
           }
@@ -184,11 +191,14 @@ export const ExpressionWidget: React.FC<
   const onFocus = useCallback(() => {
     evalCode(code);
   }, [code, evalCode]);
-  const onBlur = useCallback((newCode)=> {
-    const newValue = getParsedValue(newCode, type);
-    
-    onChange(newValue);
-  }, [type, onChange]);
+  const onBlur = useCallback(
+    newCode => {
+      const newValue = getParsedValue(newCode, type);
+
+      onChange(newValue);
+    },
+    [type, onChange]
+  );
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);

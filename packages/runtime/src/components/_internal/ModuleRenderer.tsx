@@ -17,6 +17,7 @@ import {
   ModuleSchema,
 } from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
+import { ExpressionError } from '../../services/StateManager';
 
 type Props = Static<typeof ModuleSchema> & {
   evalScope?: Record<string, any>;
@@ -39,7 +40,7 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
-  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string;
+  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string | ExpressionError;
 
   function evalObject<T extends Record<string, any>>(obj: T): T {
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
@@ -89,7 +90,7 @@ const ModuleRendererContent = React.forwardRef<
 
   // listen component state change
   useEffect(() => {
-    if (!evaledStateMap) return;
+    if (!evaledStateMap || moduleId instanceof ExpressionError) return;
 
     const stops: ReturnType<typeof watch>[] = [];
 
