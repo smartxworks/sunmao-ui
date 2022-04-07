@@ -1,25 +1,25 @@
 import { ImplementedWidget } from '../../types/widget';
-import schemaField from './SchemaField';
-import arrayField from './ArrayField';
-import booleanField from './BooleanField';
-import stringField from './StringField';
-import multiField from './MultiSchemaField';
-import nullField from './NullField';
-import numberField from './NumberField';
-import objectField from './ObjectField';
-import categoryWidget from './CategoryWidget';
-import unsupportedField from './UnsupportedField';
-import expressionWidget from './ExpressionWidget';
-import moduleWidget from './ModuleWidget';
-import keyValueWidget from './KeyValueWidget';
-import eventWidget from './EventWidget';
-import popoverWidget from './PopoverWidget';
+import specWidgetSpec from './SpecWidget';
+import arrayFieldSpec from './ArrayField';
+import booleanFieldSpec from './BooleanField';
+import stringFieldSpec from './StringField';
+import multiFieldSpec from './MultiSpecField';
+import nullFieldSpec from './NullField';
+import numberFieldSpec from './NumberField';
+import objectFieldSpec from './ObjectField';
+import categoryWidgetSpec from './CategoryWidget';
+import unsupportedFieldSpec from './UnsupportedField';
+import expressionWidgetSpec from './ExpressionWidget';
+import moduleWidgetSpec from './ModuleWidget';
+import recordWidgetSpec from './RecordField';
+import eventWidgetSpec from './EventWidget';
+import popoverWidgetSpec from './PopoverWidget';
 
-export * from './SchemaField';
+export * from './SpecWidget';
 export * from './ArrayField';
 export * from './BooleanField';
 export * from './StringField';
-export * from './MultiSchemaField';
+export * from './MultiSpecField';
 export * from './NullField';
 export * from './NumberField';
 export * from './ObjectField';
@@ -27,23 +27,23 @@ export * from './CategoryWidget';
 export * from './UnsupportedField';
 export * from './ExpressionWidget';
 export * from './ModuleWidget';
-export * from './KeyValueWidget';
+export * from './RecordField';
 export * from './EventWidget';
 export * from './PopoverWidget';
 export const widgets: ImplementedWidget<any>[] = [
-  schemaField,
-  arrayField,
-  booleanField,
-  stringField,
-  multiField,
-  nullField,
-  numberField,
-  objectField,
-  categoryWidget,
-  unsupportedField,
-  moduleWidget,
-  expressionWidget,
-  keyValueWidget,
-  eventWidget,
-  popoverWidget
+  specWidgetSpec,
+  arrayFieldSpec,
+  booleanFieldSpec,
+  stringFieldSpec,
+  multiFieldSpec,
+  nullFieldSpec,
+  numberFieldSpec,
+  objectFieldSpec,
+  categoryWidgetSpec,
+  unsupportedFieldSpec,
+  moduleWidgetSpec,
+  expressionWidgetSpec,
+  recordWidgetSpec,
+  eventWidgetSpec,
+  popoverWidgetSpec
 ];

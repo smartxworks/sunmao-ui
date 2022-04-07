@@ -2,15 +2,15 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash-es';
 import { CallbackMap, TraitImplFactory, UIServices } from '../../types';
-import { EventHandlerSchema } from '../../types/traitPropertiesSchema';
+import { EventHandlerSpec } from '../../types/traitPropertiesSpec';
 
-const PropsSchema = Type.Object({
-  handlers: Type.Array(EventHandlerSchema),
+const PropsSpec = Type.Object({
+  handlers: Type.Array(EventHandlerSpec),
 });
 
 export const generateCallback = (
-  handler: Omit<Static<typeof EventHandlerSchema>, 'type'>,
-  rawHandler: Static<typeof EventHandlerSchema>,
+  handler: Omit<Static<typeof EventHandlerSpec>, 'type'>,
+  rawHandler: Static<typeof EventHandlerSpec>,
   services: UIServices
 ) => {
   const send = () => {
@@ -42,10 +42,10 @@ export const generateCallback = (
     : send;
 };
 
-const EventTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+const EventTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   return ({ trait, handlers, services }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
-    const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSchema>[];
+    const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSpec>[];
     // setup current handlers
     for (const i in handlers) {
       const handler = handlers[i];
@@ -85,7 +85,7 @@ export default {
       description: 'export component events with advance features',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       methods: [],
       state: {},
     },

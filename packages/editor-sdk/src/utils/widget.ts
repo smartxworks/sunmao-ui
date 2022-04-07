@@ -9,31 +9,31 @@ export function implementWidget<T = Record<string, any>>(options: CreateWidgetOp
   });
 }
 
-export function mergeWidgetOptionsIntoSchema<T = Record<string, any>>(
-  schema: WidgetProps<T>['schema'],
+export function mergeWidgetOptionsIntoSpec<T = Record<string, any>>(
+  spec: WidgetProps<T>['spec'],
   options: Record<string, any>
-): WidgetProps['schema'] {
+): WidgetProps['spec'] {
   return {
-    ...schema,
+    ...spec,
     widgetOptions: {
-      ...(schema.widgetOptions || {}),
+      ...(spec.widgetOptions || {}),
       ...(options || {}),
     },
   };
 }
 
-export function shouldDisplayLabel(schema: JSONSchema7, label: string): boolean {
+export function shouldDisplayLabel(spec: JSONSchema7, label: string): boolean {
   if (!label) {
     return false;
   }
-  if (schema.type === 'object' && !schema.title) {
+  if (spec.type === 'object' && !spec.title) {
     return false;
   }
   return true;
 }
 
-export function getCodeMode(schema: JSONSchema7): boolean {
-  switch (schema.type) {
+export function getCodeMode(spec: JSONSchema7): boolean {
+  switch (spec.type) {
     case 'array':
     case 'object':
     case 'boolean':
@@ -41,12 +41,12 @@ export function getCodeMode(schema: JSONSchema7): boolean {
       return true;
     default:
   }
-  // multi schema
-  if ('anyOf' in schema || 'oneOf' in schema) {
+  // multi spec
+  if ('anyOf' in spec || 'oneOf' in spec) {
     return true;
   }
   // enum
-  if (schema.type === 'string' && Array.isArray(schema.enum)) {
+  if (spec.type === 'string' && Array.isArray(spec.enum)) {
     return true;
   }
   return false;

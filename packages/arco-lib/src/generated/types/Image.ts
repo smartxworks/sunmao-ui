@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { Category } from "../../constants/category";
 import { StringUnion } from '../../sunmao-helper';
 
-export const ImagePropsSchema = {
+export const ImagePropsSpec = {
   src: Type.String({
     title:'Src',
     category: Category.Basic

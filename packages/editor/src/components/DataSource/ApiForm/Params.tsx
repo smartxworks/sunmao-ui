@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { KeyValueWidget, mergeWidgetOptionsIntoSchema } from '@sunmao-ui/editor-sdk';
+import { RecordWidget, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { Type, Static } from '@sinclair/typebox';
-import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
+import { FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
 
-type Values = Static<typeof FetchTraitPropertiesSchema>;
+type Values = Static<typeof FetchTraitPropertiesSpec>;
 interface Props {
   api: ComponentSchema;
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
@@ -20,8 +20,8 @@ export const Params: React.FC<Props> = props => {
   const { api, formik, services } = props;
   const url: string = useMemo(()=> formik.values.url ?? '', [formik.values.url]) ;
   const index = useMemo(()=> url.indexOf('?'), [url]);
-  const schemaWithWidgetOptions = useMemo(
-    ()=> mergeWidgetOptionsIntoSchema(Type.Record(Type.String(), Type.String()), { minNum: 1, isShowHeader: true }),
+  const specWithWidgetOptions = useMemo(
+    ()=> mergeWidgetOptionsIntoSpec(Type.Record(Type.String(), Type.String()), { minNum: 1, isShowHeader: true }),
     []
   );
   const params = useMemo(() => {
@@ -55,9 +55,9 @@ export const Params: React.FC<Props> = props => {
 
   return (
     <Box>
-      <KeyValueWidget
+      <RecordWidget
         component={api}
-        schema={schemaWithWidgetOptions}
+        spec={specWithWidgetOptions}
         path={EMPTY_ARRAY}
         level={1}
         services={services}

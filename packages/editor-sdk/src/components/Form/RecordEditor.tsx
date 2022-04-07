@@ -4,24 +4,24 @@ import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Type } from '@sinclair/typebox';
-import { SchemaField } from '../Widgets/SchemaField';
+import { SpecWidget } from '../Widgets/SpecWidget';
 import { ExpressionWidget } from '../Widgets/ExpressionWidget';
 import { WidgetProps } from '../../types/widget';
-import { mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { ExpressionEditorProps } from './ExpressionEditor';
 
-const IGNORE_SCHEMA_TYPES = ['array', 'object'];
+const IGNORE_SPEC_TYPES = ['array', 'object'];
 
-type KeyValueEditorProps = Omit<
+type RecordEditorProps = Omit<
   WidgetProps,
-  'component' | 'schema' | 'level' | 'path'
+  'component' | 'spec' | 'level' | 'path'
 > & {
   component?: WidgetProps['component'];
-  schema?: WidgetProps['schema'];
+  spec?: WidgetProps['spec'];
   path?: WidgetProps['path'];
   level?: WidgetProps['level'];
 };
-type RowItemProps = KeyValueEditorProps & {
+type RowItemProps = RecordEditorProps & {
   index: number;
   rowKey: string;
   rows: Array<[string, any]>;
@@ -34,7 +34,7 @@ const RowItem = (props: RowItemProps) => {
   const {
     rows,
     index: i,
-    schema,
+    spec,
     rowKey,
     component,
     value,
@@ -46,8 +46,8 @@ const RowItem = (props: RowItemProps) => {
     emitDataChange,
   } = props;
   const { minNum = 0, onlySetValue } = useMemo(
-    () => schema?.widgetOptions || {},
-    [schema]
+    () => spec?.widgetOptions || {},
+    [spec]
   );
   const expressionOptions = useMemo<{
     compactOptions: ExpressionEditorProps['compactOptions'];
@@ -59,7 +59,7 @@ const RowItem = (props: RowItemProps) => {
     }),
     []
   );
-  const valueSpec = useMemo(() => schema?.properties?.[rowKey], [schema, rowKey]);
+  const valueSpec = useMemo(() => spec?.properties?.[rowKey], [spec, rowKey]);
   const valueSpecWithExpressionOptions = useMemo(
     () =>
       valueSpec && typeof valueSpec !== 'boolean'
@@ -79,7 +79,7 @@ const RowItem = (props: RowItemProps) => {
   const valueSpecWithOptions = useMemo(
     () =>
       valueSpec && typeof valueSpec !== 'boolean'
-        ? mergeWidgetOptionsIntoSchema(valueSpec, {
+        ? mergeWidgetOptionsIntoSpec(valueSpec, {
             isShowAsideExpressionButton: true,
             expressionOptions,
           })
@@ -129,23 +129,23 @@ const RowItem = (props: RowItemProps) => {
         <HStack minWidth={0} flex="2 2 66.66%" alignItems="center">
           {valueSpec === undefined ||
           typeof valueSpec === 'boolean' ||
-          IGNORE_SCHEMA_TYPES.includes(String(valueSpec.type)) ? (
+          IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) ? (
             <ExpressionWidget
               component={component}
               path={nextPath}
-              schema={valueSpecWithExpressionOptions}
+              spec={valueSpecWithExpressionOptions}
               services={services}
               level={level + 1}
               value={value}
               onChange={onValueChange}
             />
           ) : (
-            <SchemaField
+            <SpecWidget
               component={component}
               value={value}
               path={nextPath}
               level={level + 1}
-              schema={valueSpecWithOptions}
+              spec={valueSpecWithOptions}
               services={services}
               onChange={onValueChange}
             />
@@ -177,9 +177,9 @@ const RowItem = (props: RowItemProps) => {
   );
 };
 
-export const KeyValueEditor: React.FC<KeyValueEditorProps> = props => {
-  const { value, schema, onChange } = props;
-  const { minNum = 0, onlySetValue, isShowHeader } = schema?.widgetOptions || {};
+export const RecordEditor: React.FC<RecordEditorProps> = props => {
+  const { value, spec, onChange } = props;
+  const { minNum = 0, onlySetValue, isShowHeader } = spec?.widgetOptions || {};
   const generateRows = (currentRows: Array<[string, any]> = []) => {
     let newRows = toPairs(value);
 

@@ -3,7 +3,7 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
 
-export const TimelineItemPropsSchema = {
+export const TimelineItemPropsSpec = {
     label: Type.String(),
     content: Type.String(),
     dotColor: Type.String(),
@@ -12,9 +12,9 @@ export const TimelineItemPropsSchema = {
     dotType: StringUnion(['hollow', 'solid'])
 }
 
-export const TimelinePropsSchema = {
+export const TimelinePropsSpec = {
     items: Type.Array(Type.Object(
-        TimelineItemPropsSchema
+        TimelineItemPropsSpec
     ),{
         category:Category.Data
     }),

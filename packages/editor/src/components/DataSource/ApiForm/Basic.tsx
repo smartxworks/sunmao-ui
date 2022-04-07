@@ -17,16 +17,16 @@ import { AddIcon } from '@chakra-ui/icons';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandlerForm';
 import {
-  FetchTraitPropertiesSchema,
-  EventCallBackHandlerSchema,
-  BaseEventSchema,
+  FetchTraitPropertiesSpec,
+  EventCallBackHandlerSpec,
+  BaseEventSpec,
 } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
 
-type Values = Static<typeof FetchTraitPropertiesSchema>;
-type EventHandler = Static<typeof EventCallBackHandlerSchema>;
+type Values = Static<typeof FetchTraitPropertiesSpec>;
+type EventHandler = Static<typeof EventCallBackHandlerSpec>;
 type HandlerType = 'onComplete' | 'onError';
 interface Props {
   api: ComponentSchema;
@@ -40,7 +40,7 @@ type HandlerProps = Props & {
   type: HandlerType;
 };
 
-const eventSpec = Type.Object(BaseEventSchema);
+const eventSpec = Type.Object(BaseEventSpec);
 
 const Handler = (props: HandlerProps) => {
   const { index: i, handler, type, api, formik, services } = props;
@@ -75,7 +75,7 @@ const Handler = (props: HandlerProps) => {
           <EventHandlerForm
             component={api}
             handler={handler}
-            schema={eventSpec}
+            spec={eventSpec}
             onChange={onChange}
             onRemove={onRemove}
             services={services}

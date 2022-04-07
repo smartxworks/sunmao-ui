@@ -4,7 +4,7 @@ import {
   TraitValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-import { EventHandlerSchema, GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
 
@@ -22,7 +22,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
     if (trait.type !== 'core/v1/event') {
       return results;
     }
-    const handlers = trait.rawProperties.handlers as Static<typeof EventHandlerSchema>[];
+    const handlers = trait.rawProperties.handlers as Static<typeof EventHandlerSpec>[];
     handlers.forEach((handler, i) => {
       const {
         type: eventName,

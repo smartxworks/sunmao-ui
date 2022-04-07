@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
-export const InputPropsSchema = {
+export const InputPropsSpec = {
   defaultValue: Type.String({
     title:'Default Value',
     category:Category.Basic,

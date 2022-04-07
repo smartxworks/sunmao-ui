@@ -4,31 +4,31 @@ import { Box, IconButton, VStack } from '@chakra-ui/react';
 import { Static, Type } from '@sinclair/typebox';
 import { JSONSchema7 } from 'json-schema';
 import { CloseIcon } from '@chakra-ui/icons';
-import { EventHandlerSchema, BaseEventSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, BaseEventSpec } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 
-const BaseEventObjectSchema = Type.Object(BaseEventSchema);
+const BaseEventObjectSchema = Type.Object(BaseEventSpec);
 
 type Props = {
   component: ComponentSchema;
-  handler: Static<typeof EventHandlerSchema | typeof BaseEventObjectSchema>;
-  onChange: (handler: Static<typeof EventHandlerSchema>) => void;
+  handler: Static<typeof EventHandlerSpec | typeof BaseEventObjectSchema>;
+  onChange: (handler: Static<typeof EventHandlerSpec>) => void;
   onRemove: () => void;
   services: EditorServices;
-  schema?: JSONSchema7;
+  spec?: JSONSchema7;
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
-  const { schema = EventHandlerSchema, handler, component, onChange, onRemove, services } = props;
+  const { spec = EventHandlerSpec, handler, component, onChange, onRemove, services } = props;
 
   return (
     <Box position="relative" width="100%">
       <VStack className={formWrapperCSS}>
         <EventWidget
           component={component}
-          schema={schema}
+          spec={spec}
           value={handler}
           path={[]}
           level={1}
