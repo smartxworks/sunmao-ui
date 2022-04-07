@@ -11,6 +11,6 @@ export const NullField: React.FC<Props> = () => {
 export default implementWidget({
   version: 'core/v1',
   metadata: {
-    name: 'NullField',
+    name: 'null',
   },
 })(NullField);

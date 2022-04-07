@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
-import { SchemaField } from '@sunmao-ui/editor-sdk';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { Type } from '@sinclair/typebox';
 
 interface Values {
@@ -80,8 +80,8 @@ export const StateForm: React.FC<Props> = props => {
       </FormControl>
       <FormControl>
         <FormLabel>Initial Value</FormLabel>
-        <SchemaField
-          schema={Type.Any()}
+        <SpecWidget
+          spec={Type.Any()}
           value={values.initialValue}
           component={state}
           level={1}

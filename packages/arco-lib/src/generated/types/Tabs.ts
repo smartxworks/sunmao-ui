@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
-export const TabsPropsSchema = {
+export const TabsPropsSpec = {
   defaultActiveTab: Type.String({
     title: 'Default Active Tab Index',
     category: Category.Basic,

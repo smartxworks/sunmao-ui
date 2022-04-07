@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 
-const LayoutStateSchema = Type.Object({});
+const LayoutStateSpec = Type.Object({});
 
 export const Layout = implementRuntimeComponent({
   version: 'arco/v1',
@@ -46,7 +46,7 @@ export const Layout = implementRuntimeComponent({
         category: 'Basic',
       }),
     }),
-    state: LayoutStateSchema,
+    state: LayoutStateSpec,
     methods: {},
     slots: ['header', 'content', 'sidebar', 'footer'],
     styleSlots: ['layout', 'header', 'content', 'sidebar', 'footer'],

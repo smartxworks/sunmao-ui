@@ -1,2 +1,2 @@
 export * from './ExpressionEditor';
-export * from './KeyValueEditor';
+export * from './RecordEditor';

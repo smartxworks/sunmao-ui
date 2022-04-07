@@ -7,12 +7,12 @@ export enum RouteType {
   ROUTE = 'ROUTE',
 }
 
-export type SwitchPolicy = Static<typeof SwitchPolicyPropertySchema>;
+export type SwitchPolicy = Static<typeof SwitchPolicyPropertySpec>;
 
-const SwitchPolicyPropertySchema = Type.Array(
+const SwitchPolicyPropertySpec = Type.Array(
   Type.Object({
     type: Type.Enum(RouteType), // redirect, route
-    default: Type.Boolean(), //only the first one with default will be treated as default component;
+    default: Type.Boolean(), // only the first one with default will be treated as default component;
     path: Type.String(),
     slotId: Type.String(),
     href: Type.Optional(Type.String()), // work for redirect
@@ -22,11 +22,11 @@ const SwitchPolicyPropertySchema = Type.Array(
   })
 );
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   switchPolicy: Type.Array(
     Type.Object({
       type: Type.Enum(RouteType), // redirect, route
-      default: Type.Boolean(), //only the first one with default will be treated as default component;
+      default: Type.Boolean(), // only the first one with default will be treated as default component;
       path: Type.String(),
       slotId: Type.String(),
       href: Type.Optional(Type.String()), // work for redirect
@@ -51,7 +51,7 @@ export default implementRuntimeComponent({
     exampleSize: [6, 6],
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({}),
     methods: {},
     // route slots are dynamic
@@ -63,6 +63,6 @@ export default implementRuntimeComponent({
   return (
     <Switch
       {...props}
-    ></Switch>
+     />
   );
 });

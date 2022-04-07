@@ -1,21 +1,21 @@
 import { Type } from '@sinclair/typebox';
-import { ModuleSchema, BaseEventSchema } from '@sunmao-ui/runtime';
+import { ModuleSpec, BaseEventSpec } from '@sunmao-ui/runtime';
 import { BASIC, APPEARANCE, BEHAVIOR } from '../constants/category';
 
-export const MajorKeyPropertySchema = Type.String({
+export const MajorKeyPropertySpec = Type.String({
   title: 'Major key',
   description: 'The key of the data item object to use as the major key',
   category: BASIC,
 });
-export const RowsPerPagePropertySchema = Type.Number({
+export const RowsPerPagePropertySpec = Type.Number({
   title: 'Per Page Number',
   category: BEHAVIOR,
 });
-export const DataPropertySchema = Type.Array(Type.Any(), {
+export const DataPropertySpec = Type.Array(Type.Any(), {
   title: 'Data',
   category: BASIC,
 });
-export const TableSizePropertySchema = Type.KeyOf(
+export const TableSizePropertySpec = Type.KeyOf(
   Type.Object({
     sm: Type.String(),
     md: Type.String(),
@@ -27,7 +27,7 @@ export const TableSizePropertySchema = Type.KeyOf(
   }
 );
 
-export const TdTypeSchema = Type.KeyOf(
+export const TdTypeSpec = Type.KeyOf(
   Type.Object({
     text: Type.String(),
     image: Type.String(),
@@ -40,7 +40,7 @@ export const TdTypeSchema = Type.KeyOf(
     category: APPEARANCE,
   }
 );
-export const ColumnSchema = Type.Object(
+export const ColumnSpec = Type.Object(
   {
     key: Type.String({
       title: 'Key',
@@ -51,13 +51,13 @@ export const ColumnSchema = Type.Object(
     displayValue: Type.String({
       title: 'Display value',
     }),
-    type: TdTypeSchema,
+    type: TdTypeSpec,
     buttonConfig: Type.Object(
       {
         text: Type.String({
           title: 'Button Text',
         }),
-        handlers: Type.Array(Type.Object(BaseEventSchema, { widget: 'core/v1/Event' }), {
+        handlers: Type.Array(Type.Object(BaseEventSpec, { widget: 'core/v1/event' }), {
           title: 'Button Handlers',
         }),
       },
@@ -71,26 +71,26 @@ export const ColumnSchema = Type.Object(
         ],
       }
     ),
-    module: { ...ModuleSchema, conditions: [{ key: 'type', value: 'module' }] },
+    module: { ...ModuleSpec, conditions: [{ key: 'type', value: 'module' }] },
   },
   {
     title: 'Column',
   }
 );
 
-export const ColumnsPropertySchema = Type.Array(ColumnSchema, {
+export const ColumnsPropertySpec = Type.Array(ColumnSpec, {
   title: 'Columns',
   category: BASIC,
   widgetOptions: {
     displayedKeys: ['title'],
   },
 });
-export const IsMultiSelectPropertySchema = Type.Boolean({
+export const IsMultiSelectPropertySpec = Type.Boolean({
   title: 'Enable Multiple Select',
   category: BEHAVIOR,
 });
 
-export const TableStateSchema = Type.Object({
+export const TableStateSpec = Type.Object({
   selectedItem: Type.Optional(Type.Object({})),
   selectedItems: Type.Array(Type.Object({})),
 });

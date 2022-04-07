@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { AlertPropsSchema as BaseAlertPropsSchema } from "../generated/types/Alert";
+import { AlertPropsSpec as BaseAlertPropsSpec } from "../generated/types/Alert";
 
-const AlertPropsSchema = Type.Object(BaseAlertPropsSchema);
-const AlertStateSchema = Type.Object({});
+const AlertPropsSpec = Type.Object(BaseAlertPropsSpec);
+const AlertStateSpec = Type.Object({});
 
-const AlertImpl: ComponentImpl<Static<typeof AlertPropsSchema>> = (props) => {
+const AlertImpl: ComponentImpl<Static<typeof AlertPropsSpec>> = (props) => {
   const { visible, content, title, elementRef, ...cProps } =
     getComponentProps(props);
   const { customStyle, slotsElements } = props;
@@ -36,7 +36,7 @@ const AlertImpl: ComponentImpl<Static<typeof AlertPropsSchema>> = (props) => {
   ) : null;
 };
 
-const exampleProperties: Static<typeof AlertPropsSchema> = {
+const exampleProperties: Static<typeof AlertPropsSpec> = {
   disabled: false,
   closable: true,
   title: "info",
@@ -59,8 +59,8 @@ const options = {
     },
   },
   spec: {
-    properties: AlertPropsSchema,
-    state: AlertStateSchema,
+    properties: AlertPropsSpec,
+    state: AlertStateSpec,
     methods: {},
     slots: ["content", "action", "icon", "title"],
     styleSlots: ["content"],
