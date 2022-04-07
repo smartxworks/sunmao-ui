@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { Category } from "../../constants/category";
 import { StringUnion } from '../../sunmao-helper';
 
-export const DropdownPropsSchema = {
+export const DropdownPropsSpec = {
   dropdownType: StringUnion(['default', 'button'], {
     title:'Type',
     category: Category.Basic

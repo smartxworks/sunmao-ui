@@ -6,14 +6,14 @@ import {
   FALLBACK_METADATA,
   getComponentProps,
 } from "../sunmao-helper";
-import { SpacePropsSchema as BaseSpacePropsSchema } from "../generated/types/Space";
+import { SpacePropsSpec as BaseSpacePropsSpec } from "../generated/types/Space";
 
-const SpacePropsSchema = Type.Object({
-  ...BaseSpacePropsSchema,
+const SpacePropsSpec = Type.Object({
+  ...BaseSpacePropsSpec,
 });
-const SpaceStateSchema = Type.Object({});
+const SpaceStateSpec = Type.Object({});
 
-const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSchema>> = (props) => {
+const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSpec>> = (props) => {
   const { elementRef, slotsElements, customStyle } = props;
   const cProps = getComponentProps(props);
 
@@ -24,7 +24,7 @@ const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof SpacePropsSchema> = {
+const exampleProperties: Static<typeof SpacePropsSpec> = {
   align: "center",
   direction: "vertical",
   wrap: false,
@@ -42,8 +42,8 @@ export const Space = implementRuntimeComponent({
     displayName: "Space",
   },
   spec: {
-    properties: SpacePropsSchema,
-    state: SpaceStateSchema,
+    properties: SpacePropsSpec,
+    state: SpaceStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

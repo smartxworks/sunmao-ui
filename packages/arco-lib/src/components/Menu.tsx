@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { MenuPropsSchema as BaseMenuPropsSchema } from '../generated/types/Menu';
+import { MenuPropsSpec as BaseMenuPropsSpec } from '../generated/types/Menu';
 import { useEffect, useState } from 'react';
 import { Category } from '../constants/category';
 
-const MenuPropsSchema = Type.Object({
-  ...BaseMenuPropsSchema,
+const MenuPropsSpec = Type.Object({
+  ...BaseMenuPropsSpec,
   defaultActiveKey: Type.String({
     title: 'Default Active Key',
     category: Category.Basic,
@@ -24,11 +24,11 @@ const MenuPropsSchema = Type.Object({
     }
   ),
 });
-const MenuStateSchema = Type.Object({
+const MenuStateSpec = Type.Object({
   activeKey: Type.Optional(Type.String()),
 });
 
-const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = props => {
+const MenuImpl: ComponentImpl<Static<typeof MenuPropsSpec>> = props => {
   const { elementRef, customStyle, callbackMap, mergeState } = props;
   const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
   const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
@@ -59,7 +59,7 @@ const MenuImpl: ComponentImpl<Static<typeof MenuPropsSchema>> = props => {
   );
 };
 
-const exampleProperties: Static<typeof MenuPropsSchema> = {
+const exampleProperties: Static<typeof MenuPropsSpec> = {
   mode: 'vertical',
   autoOpen: false,
   collapse: false,
@@ -81,8 +81,8 @@ export const Menu = implementRuntimeComponent({
     exampleProperties,
   },
   spec: {
-    properties: MenuPropsSchema,
-    state: MenuStateSchema,
+    properties: MenuPropsSpec,
+    state: MenuStateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

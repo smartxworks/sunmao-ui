@@ -3,7 +3,7 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 import { TextPropertySpec } from "@sunmao-ui/runtime";
 
-export const FormControlPropsSchema = {
+export const FormControlPropsSpec = {
     label: TextPropertySpec,
     required: Type.Boolean({
         title: 'Required',
@@ -53,7 +53,7 @@ export const FormControlPropsSchema = {
     })
 }
 
-export const FormPropsSchema = {
+export const FormPropsSpec = {
     inline: Type.Boolean({
         title: 'Inline',
         category: Category.Layout

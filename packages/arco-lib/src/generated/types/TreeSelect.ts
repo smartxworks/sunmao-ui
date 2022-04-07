@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const TreeSelectPropsSchema = {
+export const TreeSelectPropsSpec = {
   treeData: Type.Array(
     Type.Object({
       key: Type.String(),

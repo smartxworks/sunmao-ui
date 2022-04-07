@@ -3,17 +3,17 @@ import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { RadioPropsSchema as BaseRadioPropsSchema } from '../generated/types/Radio';
+import { RadioPropsSpec as BaseRadioPropsSpec } from '../generated/types/Radio';
 import { useEffect, useState } from 'react';
 
-const RadioPropsSchema = Type.Object({
-  ...BaseRadioPropsSchema,
+const RadioPropsSpec = Type.Object({
+  ...BaseRadioPropsSpec,
 });
-const RadioStateSchema = Type.Object({
+const RadioStateSpec = Type.Object({
   checkedValue: Type.String(),
 });
 
-const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = props => {
+const RadioImpl: ComponentImpl<Static<typeof RadioPropsSpec>> = props => {
   const { customStyle, callbackMap, mergeState, subscribeMethods } = props;
   const { defaultCheckedValue, elementRef, ...cProps } = getComponentProps(props);
   const [checkedValue, setCheckedValue] = useState<string>('');
@@ -56,7 +56,7 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSchema>> = props => {
   );
 };
 
-const exampleProperties: Static<typeof RadioPropsSchema> = {
+const exampleProperties: Static<typeof RadioPropsSpec> = {
   options: [
     { label: 'A', value: 'a' },
     { label: 'B', value: 'b' },
@@ -80,8 +80,8 @@ const options = {
     },
   },
   spec: {
-    properties: RadioPropsSchema,
-    state: RadioStateSchema,
+    properties: RadioPropsSpec,
+    state: RadioStateSpec,
     methods: {
       setCheckedValue: Type.Object({
         value: Type.String(),

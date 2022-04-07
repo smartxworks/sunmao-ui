@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
-export const CascaderValueSchema = Type.Array(
+export const CascaderValueSpec = Type.Array(
   Type.Union([Type.String(), Type.Array(Type.String())]),
   {
     title: 'Default Value',
@@ -11,7 +11,7 @@ export const CascaderValueSchema = Type.Array(
   }
 );
 
-export const CascaderPropsSchema = {
+export const CascaderPropsSpec = {
   options: Type.Array(Type.Array(Type.String()), {
     title: 'Options',
     weight: 10,
@@ -64,5 +64,5 @@ export const CascaderPropsSchema = {
     title: 'Max Tag Count',
     category: Category.Basic,
   }),
-  defaultValue: CascaderValueSchema,
+  defaultValue: CascaderValueSpec,
 };

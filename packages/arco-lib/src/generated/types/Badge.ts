@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const BadgePropsSchema = {
+export const BadgePropsSpec = {
     text: Type.String({
         title:'Text',
         category: Category.Basic,

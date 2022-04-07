@@ -2,17 +2,17 @@ import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
-const RadioItemSchema = Type.Object({
+const RadioItemSpec = Type.Object({
   value: Type.String(),
   label: Type.String(),
   disabled: Type.Optional(Type.Boolean()),
 });
 
-export const RadioPropsSchema = {
+export const RadioPropsSpec = {
   defaultCheckedValue: Type.String({
     category: Category.Data,
   }),
-  options: Type.Array(RadioItemSchema, {
+  options: Type.Array(RadioItemSpec, {
     category: Category.Data,
   }),
   type: StringUnion(['radio', 'button'], {
