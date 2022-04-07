@@ -67,8 +67,7 @@ export const Basic: React.FC<Props> = props => {
           onClick={() => onAddHandler(type)}
         />
       </HStack>
-      <Accordion allowMultiple>
-        {(formik.values[type] ?? []).map((handler, i) => {
+      {(formik.values[type] ?? []).map((handler, i) => {
           const onChange = (bewHandler: EventHandler) => {
             const newHandlers = formik.values[type].map((handler, index) =>
               index === i ? bewHandler : handler
@@ -102,35 +101,21 @@ export const Basic: React.FC<Props> = props => {
           };
 
           return (
-            <AccordionItem key={i}>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Handler {i + 1}
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4} pt={2} padding={0}>
-                <Box pt={2}>
-                  <EventHandlerForm
-                    index={i}
-                    size={(formik.values[type] ?? []).length}
-                    component={api}
-                    handler={{ type: '', ...handler }}
-                    schema={Type.Object(BaseEventSchema)}
-                    onChange={onChange}
-                    onRemove={onRemove}
-                    onUp={onUp}
-                    onDown={onDown}
-                    services={services}
+            <EventHandlerForm
+              key={i}
+              index={i}
+              size={(formik.values[type] ?? []).length}
+              component={api}
+              handler={{ type: '', ...handler }}
+              schema={Type.Object(BaseEventSchema)}
+              onChange={onChange}
+              onRemove={onRemove}
+              onUp={onUp}
+              onDown={onDown}
+              services={services}
                   />
-                </Box>
-              </AccordionPanel>
-            </AccordionItem>
           );
         })}
-      </Accordion>
     </FormControl>
   );
 
