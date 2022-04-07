@@ -12,7 +12,7 @@ export const CheckboxOptionSpec = Type.Array(
   {
     title: 'Options',
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }
 );
 
@@ -21,7 +21,7 @@ export const CheckboxPropsSpec = {
   defaultCheckedValues: Type.Array(Type.String(), {
     title: 'Default Value',
     category: Category.Data,
-    widget: 'expression',
+    widget: 'core/v1/expression',
   }),
   direction: StringUnion(['horizontal', 'vertical'], {
     title: 'Direction',

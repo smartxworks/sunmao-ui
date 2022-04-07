@@ -57,7 +57,7 @@ export const ColumnSpec = Type.Object(
         text: Type.String({
           title: 'Button Text',
         }),
-        handlers: Type.Array(Type.Object(BaseEventSpec, { widget: 'core/v1/Event' }), {
+        handlers: Type.Array(Type.Object(BaseEventSpec, { widget: 'core/v1/event' }), {
           title: 'Button Handlers',
         }),
       },

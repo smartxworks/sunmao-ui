@@ -7,7 +7,7 @@ export const CascaderValueSpec = Type.Array(
   {
     title: 'Default Value',
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }
 );
 
@@ -17,7 +17,7 @@ export const CascaderPropsSpec = {
     weight: 10,
     description: `An array of arrays`,
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }),
   expandTrigger: StringUnion(['click', 'hover'], {
     title: 'Expand Trigger',
