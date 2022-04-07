@@ -3,5 +3,5 @@ export * from './component';
 export * from './trait';
 export * from './module';
 export * from './utilMethod';
-export * from './traitPropertiesSchema';
-export * from './validResultSchema';
+export * from './traitPropertiesSpec';
+export * from './validResultSpec';

@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { BadgePropsSchema as BaseBadgePropsSchema } from "../generated/types/Badge";
+import { BadgePropsSpec as BaseBadgePropsSpec } from "../generated/types/Badge";
 
-const BadgePropsSchema = Type.Object(BaseBadgePropsSchema);
-const BadgeStateSchema = Type.Object({});
+const BadgePropsSpec = Type.Object(BaseBadgePropsSpec);
+const BadgeStateSpec = Type.Object({});
 
-const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSchema>> = (props) => {
+const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSpec>> = (props) => {
   const { ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 
@@ -27,7 +27,7 @@ const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSchema>> = (props) => {
     </BaseBadge>
   );
 };
-const exampleProperties: Static<typeof BadgePropsSchema> = {
+const exampleProperties: Static<typeof BadgePropsSpec> = {
   // TODO handle dotStyle and color
   text: "",
   dot: true,
@@ -49,8 +49,8 @@ const options = {
     }
   },
   spec: {
-    properties: BadgePropsSchema,
-    state: BadgeStateSchema,
+    properties: BadgePropsSpec,
+    state: BadgeStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

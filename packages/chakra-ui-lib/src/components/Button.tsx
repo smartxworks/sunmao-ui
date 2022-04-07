@@ -2,22 +2,22 @@ import { useEffect, useRef } from 'react';
 import { css } from '@emotion/css';
 import { Type } from '@sinclair/typebox';
 import { Button as BaseButton } from '@chakra-ui/react';
-import { Text, TextPropertySchema, implementRuntimeComponent } from '@sunmao-ui/runtime';
-import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { Text, TextPropertySpec, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { getColorSchemePropertySpec } from './Types/ColorScheme';
 import { BEHAVIOR, APPEARANCE } from './constants/category';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.String(),
 });
 
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
+const PropsSpec = Type.Object({
+  text: TextPropertySpec,
   isLoading: Type.Boolean({
     title: 'Loading',
     description: 'Whether the button is in a loading state',
     category: BEHAVIOR,
   }),
-  colorScheme: getColorSchemePropertySchema({
+  colorScheme: getColorSchemePropertySpec({
     title: 'Color Scheme',
     category: APPEARANCE,
   }),
@@ -45,8 +45,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {
       click: undefined,
     },

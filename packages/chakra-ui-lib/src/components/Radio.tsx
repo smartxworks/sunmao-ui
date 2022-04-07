@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { Radio as BaseRadio } from '@chakra-ui/react';
-import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
-import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { implementRuntimeComponent, Text, TextPropertySpec } from '@sunmao-ui/runtime';
+import { getColorSchemePropertySpec } from './Types/ColorScheme';
 import { css } from '@emotion/css';
 import { BASIC, BEHAVIOR, APPEARANCE, LAYOUT } from './constants/category';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.Union([Type.String(), Type.Number()]),
 });
 
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
+const PropsSpec = Type.Object({
+  text: TextPropertySpec,
   value: Type.Union([Type.String(), Type.Number()], {
     title: 'Value',
     category: BASIC,
@@ -44,7 +44,7 @@ const PropsSchema = Type.Object({
     title: 'Spacing',
     category: LAYOUT,
   }),
-  colorScheme: getColorSchemePropertySchema({
+  colorScheme: getColorSchemePropertySpec({
     title: 'Color Scheme',
     category: APPEARANCE,
   }),
@@ -84,8 +84,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

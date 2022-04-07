@@ -15,12 +15,12 @@ function getLocalStorageValue(key: string) {
   }
 }
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   key: Type.String(),
   value: Type.Any(),
 });
 
-const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   const HasInitializedMap = new Map<string, boolean>();
   const PrevValueCache: Record<string, unknown> = {};
 
@@ -69,7 +69,7 @@ export default {
       description: 'localStorage trait',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       state: Type.Object({}),
       methods: [
         {

@@ -127,7 +127,7 @@ const getParsedValue = (raw: string, type: string) => {
   return raw;
 };
 
-export const ExpressionWidgetOptionsSchema = Type.Object({
+export const ExpressionWidgetOptionsSpec = Type.Object({
   compactOptions: Type.Optional(
     Type.Object({
       height: Type.Optional(Type.String()),
@@ -139,10 +139,10 @@ export const ExpressionWidgetOptionsSchema = Type.Object({
 const ajv = new Ajv();
 
 export const ExpressionWidget: React.FC<
-  WidgetProps<Static<typeof ExpressionWidgetOptionsSchema>>
+  WidgetProps<Static<typeof ExpressionWidgetOptionsSpec>>
 > = props => {
-  const { value, services, schema, onChange } = props;
-  const { widgetOptions } = schema;
+  const { value, services, spec, onChange } = props;
+  const { widgetOptions } = spec;
   const { stateManager } = services;
   const { code, type } = useMemo(() => {
     return getCode(value);
@@ -151,7 +151,7 @@ export const ExpressionWidget: React.FC<
   const [evaledValue, setEvaledValue] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
-  const validate = useMemo(() => ajv.compile(schema), [schema]);
+  const validate = useMemo(() => ajv.compile(spec), [spec]);
   const evalCode = useCallback(
     (code: string) => {
       try {
@@ -168,7 +168,7 @@ export const ExpressionWidget: React.FC<
 
           if (err.keyword === 'type') {
             throw new TypeError(
-              `Invalid value, expected ${schema.type} but got ${getTypeString(
+              `Invalid value, expected ${spec.type} but got ${getTypeString(
                 result
               ).toLowerCase()}`
             );
@@ -185,7 +185,7 @@ export const ExpressionWidget: React.FC<
         setError(String(err));
       }
     },
-    [services, type, validate, schema]
+    [services, type, validate, spec]
   );
   const onCodeChange = useMemo(() => debounce(evalCode, 300), [evalCode]);
   const onFocus = useCallback(() => {
@@ -225,12 +225,12 @@ export const ExpressionWidget: React.FC<
   );
 };
 
-export default implementWidget<Static<typeof ExpressionWidgetOptionsSchema>>({
+export default implementWidget<Static<typeof ExpressionWidgetOptionsSpec>>({
   version: 'core/v1',
   metadata: {
-    name: 'Expression',
+    name: 'expression',
   },
   spec: {
-    options: ExpressionWidgetOptionsSchema,
+    options: ExpressionWidgetOptionsSpec,
   },
 })(ExpressionWidget);

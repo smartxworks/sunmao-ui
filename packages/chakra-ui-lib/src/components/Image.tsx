@@ -4,7 +4,7 @@ import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { BASIC, LAYOUT, BEHAVIOR, APPEARANCE } from './constants/category';
 
-const BoxSizePropertySchema = Type.Union(
+const BoxSizePropertySpec = Type.Union(
   [
     Type.KeyOf(
       Type.Object({
@@ -22,7 +22,7 @@ const BoxSizePropertySchema = Type.Union(
   }
 );
 
-const GlobalCssSchema = Type.KeyOf(
+const GlobalCssSpec = Type.KeyOf(
   Type.Object({
     '-moz-initial': Type.String(),
     inherit: Type.String(),
@@ -32,9 +32,9 @@ const GlobalCssSchema = Type.KeyOf(
   })
 );
 
-const ObjectFitSchema = Type.Union(
+const ObjectFitSpec = Type.Union(
   [
-    GlobalCssSchema,
+    GlobalCssSpec,
     Type.KeyOf(
       Type.Object({
         contain: Type.String(),
@@ -52,9 +52,9 @@ const ObjectFitSchema = Type.Union(
   }
 );
 
-const BorderRadiusSchema = Type.Union(
+const BorderRadiusSpec = Type.Union(
   [
-    GlobalCssSchema,
+    GlobalCssSpec,
     Type.Number(),
     Type.String(),
     Type.KeyOf(
@@ -77,11 +77,11 @@ const BorderRadiusSchema = Type.Union(
   }
 );
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.String(),
 });
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   // basic
   src: Type.String({
     title: 'Src',
@@ -104,7 +104,7 @@ const PropsSchema = Type.Object({
     description: 'Whether to ignore the fallback image when the src fails to load',
     category: BEHAVIOR,
   }),
-  objectFit: ObjectFitSchema,
+  objectFit: ObjectFitSpec,
   crossOrigin: Type.KeyOf(
     Type.Object({
       anonymous: Type.String(),
@@ -126,8 +126,8 @@ const PropsSchema = Type.Object({
     category: LAYOUT,
   }),
   // style
-  boxSize: BoxSizePropertySchema,
-  borderRadius: BorderRadiusSchema,
+  boxSize: BoxSizePropertySpec,
+  borderRadius: BorderRadiusSpec,
 });
 
 export default implementRuntimeComponent({
@@ -156,8 +156,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

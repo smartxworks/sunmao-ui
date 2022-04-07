@@ -3,17 +3,16 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TreeSelectPropsSchema as BaseTreeSelectPropsSchema } from "../generated/types/TreeSelect";
-import { useState, useEffect } from "react";
-import { useRef } from "react";
+import { TreeSelectPropsSpec as BaseTreeSelectPropsSpec } from "../generated/types/TreeSelect";
+import { useState, useEffect , useRef } from "react";
 import { RefTreeSelectType } from "@arco-design/web-react/es/TreeSelect";
 
-const TreeSelectPropsSchema = Type.Object(BaseTreeSelectPropsSchema);
-const TreeSelectStateSchema = Type.Object({
+const TreeSelectPropsSpec = Type.Object(BaseTreeSelectPropsSpec);
+const TreeSelectStateSpec = Type.Object({
   selectedOptions: Type.String(),
 });
 
-const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
+const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSpec>> = (
   props
 ) => {
   const { defaultValue, ...cProps } = getComponentProps(props);
@@ -60,7 +59,7 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSchema>> = (
   );
 };
 
-const exampleProperties: Static<typeof TreeSelectPropsSchema> = {
+const exampleProperties: Static<typeof TreeSelectPropsSpec> = {
   multiple: false,
   defaultValue: ["node1"],
   treeData: [
@@ -111,8 +110,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: TreeSelectPropsSchema,
-    state: TreeSelectStateSchema,
+    properties: TreeSelectPropsSpec,
+    state: TreeSelectStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

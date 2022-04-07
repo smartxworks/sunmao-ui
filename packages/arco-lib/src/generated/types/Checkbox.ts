@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const CheckboxOptionSchema = Type.Array(
+export const CheckboxOptionSpec = Type.Array(
   Type.Object({
     label: Type.String(),
     value: Type.String(),
@@ -12,16 +12,16 @@ export const CheckboxOptionSchema = Type.Array(
   {
     title: 'Options',
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }
 );
 
-export const CheckboxPropsSchema = {
-  options: CheckboxOptionSchema,
+export const CheckboxPropsSpec = {
+  options: CheckboxOptionSpec,
   defaultCheckedValues: Type.Array(Type.String(), {
     title: 'Default Value',
     category: Category.Data,
-    widget: 'expression',
+    widget: 'core/v1/expression',
   }),
   direction: StringUnion(['horizontal', 'vertical'], {
     title: 'Direction',

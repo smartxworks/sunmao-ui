@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
-export const PasswordInputPropsSchema = {
+export const PasswordInputPropsSpec = {
   placeholder: Type.String({
     title: 'Placeholder',
     category: Category.Basic,

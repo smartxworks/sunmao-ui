@@ -12,14 +12,14 @@ import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import {
   ImplementedRuntimeModule,
-  EventHandlerSchema,
+  EventHandlerSpec,
   UIServices,
-  ModuleSchema,
+  ModuleSpec,
 } from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 import { ExpressionError } from '../../services/StateManager';
 
-type Props = Static<typeof ModuleSchema> & {
+type Props = Static<typeof ModuleSpec> & {
   evalScope?: Record<string, any>;
   services: UIServices;
   app?: RuntimeApplication;
@@ -126,7 +126,7 @@ const ModuleRendererContent = React.forwardRef<
   // listen module event
   useEffect(() => {
     if (!handlers) return;
-    const _handlers = handlers as Array<Static<typeof EventHandlerSchema>>;
+    const _handlers = handlers as Array<Static<typeof EventHandlerSpec>>;
     const moduleEventHandlers: any[] = [];
     _handlers.forEach((h) => {
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { SchemaField } from './SchemaField';
+import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { sortBy, groupBy } from 'lodash-es';
@@ -12,6 +12,7 @@ import {
   Accordion,
 } from '@chakra-ui/react';
 import { PRESET_PROPERTY_CATEGORY } from '../../constants/category';
+import { shouldRender } from '../../utils/condition';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
   keyof typeof PRESET_PROPERTY_CATEGORY | 'Advance',
@@ -34,37 +35,37 @@ function getCategoryOrder(name: string): number {
     : 0;
 }
 
-type Property = Record<string, WidgetProps['schema']>;
+type Property = Record<string, WidgetProps['spec']>;
 
 type Category = {
   name: string;
-  schemas: WidgetProps['schema'][];
+  specs: WidgetProps['spec'][];
 };
 
 export const CategoryWidget: React.FC<WidgetProps> = props => {
-  const { component, schema, value, path, level, services, onChange } = props;
+  const { component, spec, value, path, level, services, onChange } = props;
 
   const categories = useMemo<Category[]>(() => {
-    const properties = (schema.properties || {}) as Property;
+    const properties = (spec.properties || {}) as Property;
     Object.keys(properties).forEach(name => {
-      const schema = properties[name];
-      schema.name = name;
+      const propertySpec = properties[name];
+      propertySpec.name = name;
     });
     const grouped = groupBy(properties, c => c.category || 'Advance');
 
     return sortBy(
       Object.keys(grouped).map(name => ({
         name,
-        schemas: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
+        specs: sortBy(grouped[name], c => -(c.weight ?? -Infinity)),
       })),
       c => -getCategoryOrder(c.name)
     );
-  }, [schema.properties]);
+  }, [spec.properties]);
 
   return (
     <Accordion width="full" defaultIndex={[0]} allowMultiple>
       {categories.map(category => {
-        const schemas = category.schemas;
+        const specs = category.specs;
 
         return (
           <AccordionItem width="full" key={category.name} background="#F7FAFC">
@@ -75,19 +76,19 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel bg="white">
-              {schemas.map(schema => {
-                const name = schema.name;
+              {specs.map(propertySpec => {
+                const name = propertySpec.name;
 
-                if (typeof schema === 'boolean') {
+                if (typeof propertySpec === 'boolean') {
                   return null;
                 }
-                return (
-                  <SchemaField
+                return shouldRender(spec.conditions || [], value) ? (
+                  <SpecWidget
                     key={name}
                     component={component}
-                    schema={{
-                      ...schema,
-                      title: schema.title || name,
+                    spec={{
+                      ...spec,
+                      title: spec.title || name,
                     }}
                     value={value?.[name!]}
                     path={path.concat(name!)}
@@ -100,7 +101,7 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                       });
                     }}
                   />
-                );
+                ) : null;
               })}
             </AccordionPanel>
           </AccordionItem>
@@ -113,6 +114,6 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: 'core/v1',
   metadata: {
-    name: 'CategoryWidget',
+    name: 'category',
   },
 })(CategoryWidget);
