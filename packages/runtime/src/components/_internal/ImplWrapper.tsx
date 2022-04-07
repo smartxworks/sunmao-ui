@@ -19,6 +19,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   const handlerMap = useRef(globalHandlerMap.get(c.id)!);
   const eleRef = useRef<HTMLElement>();
   const onRef = (ele: HTMLElement) => {
+    // If a component is in module, it should not have mask, so we needn't set it
     if (!isInModule) {
       eleMap.set(c.id, ele);
     }
@@ -26,6 +27,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   };
 
   useEffect(() => {
+    // If a component is in module, it should not have mask, so we needn't set it
     if (eleRef.current && !isInModule) {
       eleMap.set(c.id, eleRef.current);
     }

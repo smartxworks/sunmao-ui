@@ -146,6 +146,7 @@ const ModuleRendererContent = React.forwardRef<
   }, [evalScope, handlers, moduleId, services.apiService, services.stateManager]);
 
   const result = useMemo(() => {
+    // Must init components' state, otherwise store cannot listen these components' state changing
     initStateAndMethod(services.registry, services.stateManager, evaledModuleTemplate);
     const { childrenMap, topLevelComponents } = resolveChildrenMap(evaledModuleTemplate);
     return topLevelComponents.map(c => {
