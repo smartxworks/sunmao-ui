@@ -9,7 +9,7 @@ import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
 import { WidgetProps } from '../../types';
 import { isJSONSchema } from '../../utils/schema';
-import { mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 
 const TableWrapperStyle = css`
   border: 1px solid var(--chakra-colors-gray-200);
@@ -29,12 +29,12 @@ const TableRowStyle = css`
 `;
 
 type Props = WidgetProps & {
-  itemSchema: JSONSchema7;
+  itemSpec: JSONSchema7;
 };
 
 export const ArrayTable: React.FC<Props> = props => {
-  const { value, itemSchema, schema, level, path, children, onChange } = props;
-  const { expressionOptions, displayedKeys = [] } = schema.widgetOptions || {};
+  const { value, itemSpec, spec, level, path, children, onChange } = props;
+  const { expressionOptions, displayedKeys = [] } = spec.widgetOptions || {};
   const keys = displayedKeys.length ? displayedKeys : ['index'];
 
   return (
@@ -44,8 +44,8 @@ export const ArrayTable: React.FC<Props> = props => {
           <Tr className={TableRowStyle}>
             <Th width="24px" />
             {keys.map((key: string) => {
-              const propertySchema = itemSchema.properties?.[key];
-              const title = isJSONSchema(propertySchema) ? propertySchema.title : key;
+              const propertySpec = itemSpec.properties?.[key];
+              const title = isJSONSchema(propertySpec) ? propertySpec.title : key;
 
               return <Th key={key}>{title}</Th>;
             })}
@@ -56,7 +56,7 @@ export const ArrayTable: React.FC<Props> = props => {
                 size="xs"
                 variant="ghost"
                 onClick={() => {
-                  onChange(value.concat(parseTypeBox(itemSchema as TSchema)));
+                  onChange(value.concat(parseTypeBox(itemSpec as TSchema)));
                 }}
               />
             </Th>
@@ -69,9 +69,9 @@ export const ArrayTable: React.FC<Props> = props => {
                 <PopoverWidget
                   {...props}
                   value={itemValue}
-                  schema={mergeWidgetOptionsIntoSchema(
+                  spec={mergeWidgetOptionsIntoSpec(
                     {
-                      ...itemSchema,
+                      ...itemSpec,
                       title: '',
                     },
                     {

@@ -5,11 +5,11 @@ import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { BASIC, BEHAVIOR, APPEARANCE } from './constants/category';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.String(),
 });
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   options: Type.Array(
     Type.Object({
       label: Type.String({
@@ -124,8 +124,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

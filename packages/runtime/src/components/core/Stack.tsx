@@ -4,7 +4,7 @@ import { css, CSSObject } from '@emotion/css';
 import { Static, Type } from '@sinclair/typebox';
 import { StringUnion } from '../../utils/stringUnion';
 
-export const StackPropertySchema = Type.Object({
+export const StackPropertySpec = Type.Object({
   align: StringUnion(['start', 'end', 'center', 'baseline'], {
     title: 'Align Items',
     category: 'Layout',
@@ -31,9 +31,9 @@ export const StackPropertySchema = Type.Object({
   }),
 });
 
-const StateSchema = Type.Object({});
+const StateSpec = Type.Object({});
 
-export type StackProps = Static<typeof StackPropertySchema> & {
+export type StackProps = Static<typeof StackPropertySpec> & {
   cssStyle?: string;
 };
 
@@ -87,8 +87,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: StackPropertySchema,
-    state: StateSchema,
+    properties: StackPropertySpec,
+    state: StateSpec,
     methods: {},
     slots: ['content'],
     styleSlots: ['content'],

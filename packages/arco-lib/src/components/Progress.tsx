@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { ProgressPropsSchema as BaseProgressPropsSchema } from "../generated/types/Progress";
+import { ProgressPropsSpec as BaseProgressPropsSpec } from "../generated/types/Progress";
 
-const ProgressPropsSchema = Type.Object(BaseProgressPropsSchema);
-const ProgressStateSchema = Type.Object({});
+const ProgressPropsSpec = Type.Object(BaseProgressPropsSpec);
+const ProgressStateSpec = Type.Object({});
 
-const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSchema>> = (
+const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSpec>> = (
   props
 ) => {
   const { elementRef, ...cProps } = getComponentProps(props);
@@ -22,7 +22,7 @@ const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSchema>> = (
     />
   );
 };
-const exampleProperties: Static<typeof ProgressPropsSchema> = {
+const exampleProperties: Static<typeof ProgressPropsSpec> = {
   type: "line",
   status: "normal",
   color: "#3c92dc",
@@ -45,8 +45,8 @@ const options = {
     }
   },
   spec: {
-    properties: ProgressPropsSchema,
-    state: ProgressStateSchema,
+    properties: ProgressPropsSpec,
+    state: ProgressStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

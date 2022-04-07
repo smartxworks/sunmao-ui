@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { SkeletonPropsSchema as BaseSkeletonPropsSchema } from "../generated/types/Skeleton";
+import { SkeletonPropsSpec as BaseSkeletonPropsSpec } from "../generated/types/Skeleton";
 
-const SkeletonPropsSchema = Type.Object(BaseSkeletonPropsSchema);
-const SkeletonStateSchema = Type.Object({});
+const SkeletonPropsSpec = Type.Object(BaseSkeletonPropsSpec);
+const SkeletonStateSpec = Type.Object({});
 
-const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSchema>> = (
+const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSpec>> = (
   props
 ) => {
   const { elementRef, ...cProps } = getComponentProps(props);
@@ -25,7 +25,7 @@ const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSchema>> = (
   );
 };
 
-const exampleProperties: Static<typeof SkeletonPropsSchema> = {
+const exampleProperties: Static<typeof SkeletonPropsSpec> = {
   animation: true,
   loading: true,
   image: false,
@@ -44,8 +44,8 @@ const options = {
     }
   },
   spec: {
-    properties: SkeletonPropsSchema,
-    state: SkeletonStateSchema,
+    properties: SkeletonPropsSpec,
+    state: SkeletonStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

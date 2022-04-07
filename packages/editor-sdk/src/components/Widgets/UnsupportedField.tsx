@@ -3,15 +3,15 @@ import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 
 export const UnsupportedField: React.FC<WidgetProps> = props => {
-  const { schema, value } = props;
+  const { spec, value } = props;
 
   return (
     <div>
-      Unsupported field schema
+      Unsupported field spec
       <p>
-        <b>schema:</b>
+        <b>spec:</b>
       </p>
-      <pre>{JSON.stringify(schema, null, 2)}</pre>
+      <pre>{JSON.stringify(spec, null, 2)}</pre>
       <p>
         <b>value:</b>
       </p>
@@ -23,6 +23,6 @@ export const UnsupportedField: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: 'core/v1',
   metadata: {
-    name: 'UnsupportedField',
+    name: 'unsupported',
   },
 })(UnsupportedField);

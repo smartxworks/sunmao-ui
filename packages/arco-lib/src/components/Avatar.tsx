@@ -3,14 +3,14 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { AvatarPropsSchema as BaseAvatarPropsSchema } from "../generated/types/Avatar";
+import { AvatarPropsSpec as BaseAvatarPropsSpec } from "../generated/types/Avatar";
 
-const AvatarPropsSchema = Type.Object({
-  ...BaseAvatarPropsSchema,
+const AvatarPropsSpec = Type.Object({
+  ...BaseAvatarPropsSpec,
 });
-const AvatarStateSchema = Type.Object({});
+const AvatarStateSpec = Type.Object({});
 
-const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
+const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSpec>> = (props) => {
   const { elementRef, slotsElements, customStyle } = props;
   const { ...cProps } = getComponentProps(props);
 
@@ -21,7 +21,7 @@ const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof AvatarPropsSchema> = {
+const exampleProperties: Static<typeof AvatarPropsSpec> = {
   shape: "circle",
   triggerType: "button",
   size:50
@@ -39,8 +39,8 @@ const options = {
     }
   },
   spec: {
-    properties: AvatarPropsSchema,
-    state: AvatarStateSchema,
+    properties: AvatarPropsSpec,
+    state: AvatarStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

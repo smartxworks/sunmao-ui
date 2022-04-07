@@ -3,16 +3,16 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA } from "../sunmao-helper";
-import { TreePropsSchema, TreeNodeSchema } from "../generated/types/Tree";
+import { TreePropsSpec, TreeNodeSpec } from "../generated/types/Tree";
 import { useEffect, useState } from "react";
 import { NodeInstance } from "@arco-design/web-react/es/Tree/interface";
 
-const TreeStateSchema = Type.Object({
-  selectedNode: TreeNodeSchema,
-  selectedNodes: Type.Array(TreeNodeSchema),
+const TreeStateSpec = Type.Object({
+  selectedNode: TreeNodeSpec,
+  selectedNodes: Type.Array(TreeNodeSpec),
 });
 
-const TreeImpl: ComponentImpl<Static<typeof TreePropsSchema>> = (props) => {
+const TreeImpl: ComponentImpl<Static<typeof TreePropsSpec>> = (props) => {
   const {
     elementRef,
     data,
@@ -22,7 +22,7 @@ const TreeImpl: ComponentImpl<Static<typeof TreePropsSchema>> = (props) => {
     mergeState,
   } = props;
   const [selectedNodes, setSelectedNodes] = useState<
-    Static<typeof TreeNodeSchema>[]
+    Static<typeof TreeNodeSpec>[]
   >([]);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const TreeImpl: ComponentImpl<Static<typeof TreePropsSchema>> = (props) => {
   );
 };
 
-function formatNode(node: NodeInstance): Static<typeof TreeNodeSchema> {
+function formatNode(node: NodeInstance): Static<typeof TreeNodeSpec> {
   return {
     title: node.props.title as string,
     key: node.props._key!,
@@ -54,11 +54,11 @@ function formatNode(node: NodeInstance): Static<typeof TreeNodeSchema> {
     checkable: node.props.checkable,
     path:[...node.props.pathParentKeys!,node.props._key!],
     children:
-      node.props.dataRef?.children || ([] as Static<typeof TreeNodeSchema>[]),
+      node.props.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
   };
 }
 
-const exampleProperties: Static<typeof TreePropsSchema> = {
+const exampleProperties: Static<typeof TreePropsSpec> = {
   multiple: false,
   size: "medium",
   autoExpandParent: true,
@@ -119,8 +119,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: TreePropsSchema,
-    state: TreeStateSchema,
+    properties: TreePropsSpec,
+    state: TreeStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

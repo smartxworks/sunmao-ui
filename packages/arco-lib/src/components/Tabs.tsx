@@ -3,15 +3,15 @@ import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { TabsPropsSchema as BaseTabsPropsSchema } from '../generated/types/Tabs';
+import { TabsPropsSpec as BaseTabsPropsSpec } from '../generated/types/Tabs';
 import React, { useEffect, useRef, useState } from 'react';
-const TabsPropsSchema = Type.Object(BaseTabsPropsSchema);
-const TabsStateSchema = Type.Object({
+const TabsPropsSpec = Type.Object(BaseTabsPropsSpec);
+const TabsStateSpec = Type.Object({
   activeTab: Type.String(),
 });
 const TabPane = BaseTabs.TabPane;
 
-const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = props => {
+const TabsImpl: ComponentImpl<Static<typeof TabsPropsSpec>> = props => {
   const { defaultActiveTab, tabNames, ...cProps } = getComponentProps(props);
   const { getElement, customStyle, mergeState, slotsElements } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
@@ -48,7 +48,7 @@ const TabsImpl: ComponentImpl<Static<typeof TabsPropsSchema>> = props => {
   );
 };
 
-const exampleProperties: Static<typeof TabsPropsSchema> = {
+const exampleProperties: Static<typeof TabsPropsSpec> = {
   type: 'line',
   defaultActiveTab: '0',
   tabPosition: 'top',
@@ -68,8 +68,8 @@ const options = {
     },
   },
   spec: {
-    properties: TabsPropsSchema,
-    state: TabsStateSchema,
+    properties: TabsPropsSpec,
+    state: TabsStateSpec,
     methods: {},
     slots: ['content'],
     styleSlots: ['content'],

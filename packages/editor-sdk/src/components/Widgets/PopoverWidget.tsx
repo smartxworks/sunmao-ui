@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { SettingsIcon } from '@chakra-ui/icons';
 import mitt from 'mitt';
-import { SchemaField } from './SchemaField';
+import { SpecWidget } from './SpecWidget';
 import { implementWidget } from '../../utils/widget';
 import { WidgetProps } from '../../types/widget';
 
@@ -35,7 +35,7 @@ export const PopoverWidget = React.forwardRef<
   PopoverWidgetHandler,
   React.ComponentPropsWithoutRef<React.ComponentType> & WidgetProps
 >((props, ref) => {
-  const { schema, path, children } = props;
+  const { spec, path, children } = props;
   const isObjectChildren = children && typeof children === 'object';
   const [isOpen, setIsOpen] = useState(false);
 
@@ -134,11 +134,11 @@ export const PopoverWidget = React.forwardRef<
             {isObjectChildren && 'body' in children ? (
               (children as Children).body
             ) : (
-              <SchemaField
+              <SpecWidget
                 {...props}
-                schema={{
-                  ...schema,
-                  widget: schema.widget === 'core/v1/Popover' ? '' : schema.widget,
+                spec={{
+                  ...spec,
+                  widget: spec.widget === 'core/v1/Popover' ? '' : spec.widget,
                 }}
               />
             )}
@@ -152,6 +152,6 @@ export const PopoverWidget = React.forwardRef<
 export default implementWidget({
   version: 'core/v1',
   metadata: {
-    name: 'Popover',
+    name: 'popover',
   },
 })(PopoverWidget);

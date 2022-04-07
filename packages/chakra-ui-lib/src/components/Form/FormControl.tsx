@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { implementRuntimeComponent, watch } from '@sunmao-ui/runtime';
-import { CheckboxStateSchema } from '../Checkbox';
+import { CheckboxStateSpec } from '../Checkbox';
 import { BASIC, BEHAVIOR } from '../constants/category';
 
 const FormItemCSS = {
@@ -19,7 +19,7 @@ const FormItemCSS = {
   width: '66%',
 };
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   label: Type.String({
     title: 'Label',
     category: BASIC,
@@ -58,7 +58,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({
       inputId: Type.String(),
       fieldName: Type.String(),
@@ -105,7 +105,7 @@ export default implementRuntimeComponent({
           if (!inputState) return '';
           if (inputState.checked !== undefined) {
             // special treatment for checkbox
-            return (inputState as Static<typeof CheckboxStateSchema>).checked;
+            return (inputState as Static<typeof CheckboxStateSpec>).checked;
           } else {
             return inputState.value;
           }

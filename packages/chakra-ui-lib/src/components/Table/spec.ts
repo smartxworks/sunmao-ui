@@ -1,22 +1,22 @@
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
-  ColumnsPropertySchema,
-  DataPropertySchema,
-  MajorKeyPropertySchema,
-  RowsPerPagePropertySchema,
-  TableStateSchema,
-  TableSizePropertySchema,
-  IsMultiSelectPropertySchema,
+  ColumnsPropertySpec,
+  DataPropertySpec,
+  MajorKeyPropertySpec,
+  RowsPerPagePropertySpec,
+  TableStateSpec,
+  TableSizePropertySpec,
+  IsMultiSelectPropertySpec,
 } from './TableTypes';
 
-const PropsSchema = Type.Object({
-  data: DataPropertySchema,
-  majorKey: MajorKeyPropertySchema,
-  columns: ColumnsPropertySchema,
-  isMultiSelect: IsMultiSelectPropertySchema,
-  rowsPerPage: RowsPerPagePropertySchema,
-  size: TableSizePropertySchema,
+const PropsSpec = Type.Object({
+  data: DataPropertySpec,
+  majorKey: MajorKeyPropertySpec,
+  columns: ColumnsPropertySpec,
+  isMultiSelect: IsMultiSelectPropertySpec,
+  rowsPerPage: RowsPerPagePropertySpec,
+  size: TableSizePropertySpec,
 });
 
 const exampleProperties = {
@@ -59,8 +59,8 @@ export const implementTable = implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: TableStateSchema,
+    properties: PropsSpec,
+    state: TableStateSpec,
     methods: {},
     slots: [],
     styleSlots: [],

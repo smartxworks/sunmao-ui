@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
-export const TextAreaPropsSchema = {
+export const TextAreaPropsSpec = {
     defaultValue: Type.String({
         title: 'Default Value',
         category: Category.Basic,

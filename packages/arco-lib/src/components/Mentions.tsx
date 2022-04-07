@@ -3,15 +3,15 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { MentionsPropsSchema as BaseMentionsPropsSchema } from "../generated/types/Mentions";
+import { MentionsPropsSpec as BaseMentionsPropsSpec } from "../generated/types/Mentions";
 import { useState, useEffect } from "react";
 
-const MentionsPropsSchema = Type.Object(BaseMentionsPropsSchema);
-const MentionsStateSchema = Type.Object({
+const MentionsPropsSpec = Type.Object(BaseMentionsPropsSpec);
+const MentionsStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSchema>> = (
+const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSpec>> = (
   props
 ) => {
   const { elementRef, defaultValue, ...cProps } = getComponentProps(props);
@@ -49,7 +49,7 @@ const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSchema>> = (
     />
   );
 };
-const exampleProperties: Static<typeof MentionsPropsSchema> = {
+const exampleProperties: Static<typeof MentionsPropsSpec> = {
   defaultValue: "smartx",
   options: ["smartx", "byte and dance", "baidu"],
   prefix: "@",
@@ -70,8 +70,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: MentionsPropsSchema,
-    state: MentionsStateSchema,
+    properties: MentionsPropsSpec,
+    state: MentionsStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

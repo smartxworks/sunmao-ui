@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Static, Type } from '@sinclair/typebox';
 import { Checkbox as BaseCheckbox, useCheckboxGroupContext } from '@chakra-ui/react';
-import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
-import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { implementRuntimeComponent, Text, TextPropertySpec } from '@sunmao-ui/runtime';
+import { getColorSchemePropertySpec } from './Types/ColorScheme';
 import { css } from '@emotion/css';
 import { BASIC, BEHAVIOR, LAYOUT, APPEARANCE } from './constants/category';
 
-export const IsDisabledSchema = Type.Boolean({
+export const IsDisabledSpec = Type.Boolean({
   title: 'Disabled',
   category: BEHAVIOR,
 });
-export const SizePropertySchema = Type.KeyOf(
+export const SizePropertySpec = Type.KeyOf(
   Type.Object({
     sm: Type.String(),
     md: Type.String(),
@@ -22,14 +22,14 @@ export const SizePropertySchema = Type.KeyOf(
   }
 );
 
-export const CheckboxStateSchema = Type.Object({
+export const CheckboxStateSpec = Type.Object({
   value: Type.Union([Type.String(), Type.Number()]),
   text: Type.String(),
   checked: Type.Boolean(),
 });
 
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
+const PropsSpec = Type.Object({
+  text: TextPropertySpec,
   value: Type.Union([Type.String(), Type.Number()], {
     title: 'Value',
     description: 'The value of the checkbox which is used by check group.',
@@ -39,7 +39,7 @@ const PropsSchema = Type.Object({
     title: 'Default Checked',
     category: BASIC,
   }),
-  isDisabled: IsDisabledSchema,
+  isDisabled: IsDisabledSpec,
   isFocusable: Type.Boolean({
     title: 'Focusable',
     category: BEHAVIOR,
@@ -60,8 +60,8 @@ const PropsSchema = Type.Object({
     title: 'Spacing',
     category: LAYOUT,
   }),
-  size: SizePropertySchema,
-  colorScheme: getColorSchemePropertySchema({
+  size: SizePropertySpec,
+  colorScheme: getColorSchemePropertySpec({
     title: 'Color Scheme',
     category: APPEARANCE,
   }),
@@ -97,8 +97,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: CheckboxStateSchema,
+    properties: PropsSpec,
+    state: CheckboxStateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],
@@ -147,8 +147,8 @@ export default implementRuntimeComponent({
     }, [setChecked, defaultIsChecked]);
 
     const args: {
-      colorScheme?: Static<ReturnType<typeof getColorSchemePropertySchema>>;
-      size?: Static<typeof SizePropertySchema>;
+      colorScheme?: Static<ReturnType<typeof getColorSchemePropertySpec>>;
+      size?: Static<typeof SizePropertySpec>;
     } = {};
 
     if (colorScheme) args.colorScheme = colorScheme;
