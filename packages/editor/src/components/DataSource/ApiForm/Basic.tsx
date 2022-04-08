@@ -2,15 +2,9 @@ import React, { useCallback } from 'react';
 import {
   VStack,
   HStack,
-  Box,
   FormControl,
   FormLabel,
   Switch,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
@@ -59,30 +53,43 @@ const Handler = (props: HandlerProps) => {
     formik.setFieldValue(type, newOnComplete);
     formik.submitForm();
   }, [i, type, formik]);
+  const onSort = useCallback(
+    (isUp: boolean) => {
+      const newHandlers = [...formik.values[type]];
+      const switchedIndex = isUp ? i - 1 : i + 1;
+
+      if (newHandlers[switchedIndex]) {
+        const temp = newHandlers[switchedIndex];
+        newHandlers[switchedIndex] = newHandlers[i];
+        newHandlers[i] = temp;
+
+        formik.setFieldValue(type, newHandlers);
+        formik.submitForm();
+      }
+    },
+    [i, type, formik]
+  );
+  const onUp = useCallback(() => {
+    onSort(true);
+  }, [onSort]);
+  const onDown = useCallback(() => {
+    onSort(false);
+  }, [onSort]);
 
   return (
-    <AccordionItem key={i}>
-      <h2>
-        <AccordionButton>
-          <Box flex="1" textAlign="left">
-            Handler {i + 1}
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-      </h2>
-      <AccordionPanel pb={4} pt={2} padding={0}>
-        <Box pt={2}>
-          <EventHandlerForm
-            component={api}
-            handler={handler}
-            spec={eventSpec}
-            onChange={onChange}
-            onRemove={onRemove}
-            services={services}
-          />
-        </Box>
-      </AccordionPanel>
-    </AccordionItem>
+    <EventHandlerForm
+      key={i}
+      index={i}
+      size={(formik.values[type] ?? []).length}
+      component={api}
+      handler={handler}
+      spec={eventSpec}
+      onChange={onChange}
+      onRemove={onRemove}
+      onUp={onUp}
+      onDown={onDown}
+      services={services}
+    />
   );
 };
 
@@ -119,11 +126,9 @@ export const Basic: React.FC<Props> = props => {
           onClick={() => onAddHandler(type)}
         />
       </HStack>
-      <Accordion allowMultiple>
-        {(formik.values[type] ?? []).map((handler, i) => {
-          return <Handler key={i} {...props} index={i} handler={handler} type={type} />;
-        })}
-      </Accordion>
+      {(formik.values[type] ?? []).map((handler, i) => {
+        return <Handler key={i} {...props} index={i} handler={handler} type={type} />;
+      })}
     </FormControl>
   );
 
