@@ -43,37 +43,53 @@ export class StateManager {
     this.store = reactive<Record<string, any>>({});
   };
 
-  evalExp = (expChunk: ExpChunk, scopeObject = {}, overrideScope = false): unknown => {
+  evalExp = (
+    expChunk: ExpChunk,
+    scopeObject = {},
+    overrideScope = false,
+    ignoreError = false
+  ): unknown => {
     if (typeof expChunk === 'string') {
       return expChunk;
     }
 
     const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
 
-    // eslint-disable-next-line no-useless-call, no-new-func
-    const evaled = new Function(
-      'store, dependencies, scopeObject',
-      // trim leading space and newline
-      `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
-        /^\s+/g,
-        ''
-      )} } } }`
-    ).call(
-      null,
-      overrideScope ? {} : this.store,
-      overrideScope ? {} : this.dependencies,
-      scopeObject
-    );
+    try {
+      // eslint-disable-next-line no-useless-call, no-new-func
+      const evaled = new Function(
+        'store, dependencies, scopeObject',
+        // trim leading space and newline
+        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+          /^\s+/g,
+          ''
+        )} } } }`
+      ).call(
+        null,
+        overrideScope ? {} : this.store,
+        overrideScope ? {} : this.dependencies,
+        scopeObject
+      );
 
-    return evaled;
+      return evaled;
+    } catch (e) {
+      // if ignoreError, return expression itself. This feature is used in ModuleRenderer
+      // because module renderer need eval expression partially
+      if (ignoreError) {
+        return `{{ ${evalText} }}`;
+      }
+      throw e;
+    }
   };
 
   maskedEval(
     raw: string,
     evalListItem = false,
     scopeObject = {},
-    overrideScope = false
+    overrideScope = false,
+    ignoreError = false
   ): unknown | ExpressionError {
+    let result: unknown[] = [];
     try {
       if (isNumeric(raw)) {
         return toNumber(raw);
@@ -90,7 +106,9 @@ export class StateManager {
         return expChunk;
       }
 
-      const result = expChunk.map(e => this.evalExp(e, scopeObject, overrideScope));
+      result = expChunk.map(e =>
+        this.evalExp(e, scopeObject, overrideScope, ignoreError)
+      );
       if (result.length === 1) {
         return result[0];
       }
@@ -132,14 +150,21 @@ export class StateManager {
     obj: T,
     evalListItem = false,
     scopeObject = {},
-    overrideScope = false
+    overrideScope = false,
+    ignoreError = false
   ): T {
     // just eval
     const evaluated = this.mapValuesDeep(obj, ({ value }) => {
       if (typeof value !== 'string') {
         return value;
       }
-      return this.maskedEval(value, evalListItem, scopeObject, overrideScope);
+      return this.maskedEval(
+        value,
+        evalListItem,
+        scopeObject,
+        overrideScope,
+        ignoreError
+      );
     });
 
     return evaluated;
@@ -150,12 +175,19 @@ export class StateManager {
     watcher: (params: { result: T }) => void,
     evalListItem = false,
     scopeObject = {},
-    overrideScope = false
+    overrideScope = false,
+    ignoreError = false
   ) {
     const stops: ReturnType<typeof watch>[] = [];
 
     // just eval
-    const evaluated = this.deepEval(obj, evalListItem, scopeObject);
+    const evaluated = this.deepEval(
+      obj,
+      evalListItem,
+      scopeObject,
+      overrideScope,
+      ignoreError
+    );
 
     // watch change
     let resultCache: T = evaluated;
@@ -168,7 +200,13 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(value, evalListItem, scopeObject, overrideScope);
+          const result = this.maskedEval(
+            value,
+            evalListItem,
+            scopeObject,
+            overrideScope,
+            ignoreError
+          );
           return result;
         },
         newV => {
