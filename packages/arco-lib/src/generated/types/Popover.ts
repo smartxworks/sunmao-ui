@@ -4,7 +4,7 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
 
-export const PopoverPropsSchema = {
+export const PopoverPropsSpec = {
     title: Type.String({
         title:'Title',
         category: Category.Basic,

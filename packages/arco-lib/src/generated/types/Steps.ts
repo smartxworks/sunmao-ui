@@ -3,12 +3,12 @@ import { Type } from "@sinclair/typebox";
 import { Category } from "../../constants/category";
 import { StringUnion } from '../../sunmao-helper';
 
-export const StepItemSchema = Type.Object({
+export const StepItemSpec = Type.Object({
   title: Type.String(),
   description: Type.String()
 })
 
-export const StepsPropsSchema = {
+export const StepsPropsSpec = {
   type: StringUnion(['default', 'arrow', 'dot', 'navigation'], {
     title: 'Type',
     category: Category.Basic
@@ -33,7 +33,7 @@ export const StepsPropsSchema = {
     title: 'Lineless',
     category: Category.Style
   }),
-  items: Type.Array(StepItemSchema, {
+  items: Type.Array(StepItemSpec, {
     title: 'Items',
     category: Category.Basic,
     weight: 10

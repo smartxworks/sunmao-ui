@@ -11,16 +11,16 @@ import { AddIcon } from '@chakra-ui/icons';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandlerForm';
 import {
-  FetchTraitPropertiesSchema,
-  EventCallBackHandlerSchema,
-  BaseEventSchema,
+  FetchTraitPropertiesSpec,
+  EventCallBackHandlerSpec,
+  BaseEventSpec,
 } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
 
-type Values = Static<typeof FetchTraitPropertiesSchema>;
-type EventHandler = Static<typeof EventCallBackHandlerSchema>;
+type Values = Static<typeof FetchTraitPropertiesSpec>;
+type EventHandler = Static<typeof EventCallBackHandlerSpec>;
 type HandlerType = 'onComplete' | 'onError';
 interface Props {
   api: ComponentSchema;
@@ -62,54 +62,54 @@ export const Basic: React.FC<Props> = props => {
         />
       </HStack>
       {(formik.values[type] ?? []).map((handler, i) => {
-          const onChange = (bewHandler: EventHandler) => {
-            const newHandlers = formik.values[type].map((handler, index) =>
-              index === i ? bewHandler : handler
-            );
-            formik.setFieldValue(type, newHandlers);
-            formik.submitForm();
-          };
-          const onRemove = () => {
-            const newHandlers = formik.values[type].filter((_, index) => i !== index);
-            formik.setFieldValue(type, newHandlers);
-            formik.submitForm();
-          };
-          const onSort = (isUp: boolean) => {
-            const newHandlers = [...formik.values[type]];
-            const switchedIndex = isUp ? i - 1 : i + 1;
-
-            if (newHandlers[switchedIndex]) {
-              const temp = newHandlers[switchedIndex];
-              newHandlers[switchedIndex] = newHandlers[i];
-              newHandlers[i] = temp;
-
-              formik.setFieldValue(type, newHandlers);
-              formik.submitForm();
-            }
-          };
-          const onUp = () => {
-            onSort(true);
-          };
-          const onDown = () => {
-            onSort(false);
-          };
-
-          return (
-            <EventHandlerForm
-              key={i}
-              index={i}
-              size={(formik.values[type] ?? []).length}
-              component={api}
-              handler={{ type: '', ...handler }}
-              schema={Type.Object(BaseEventSchema)}
-              onChange={onChange}
-              onRemove={onRemove}
-              onUp={onUp}
-              onDown={onDown}
-              services={services}
-                  />
+        const onChange = (bewHandler: EventHandler) => {
+          const newHandlers = formik.values[type].map((handler, index) =>
+            index === i ? bewHandler : handler
           );
-        })}
+          formik.setFieldValue(type, newHandlers);
+          formik.submitForm();
+        };
+        const onRemove = () => {
+          const newHandlers = formik.values[type].filter((_, index) => i !== index);
+          formik.setFieldValue(type, newHandlers);
+          formik.submitForm();
+        };
+        const onSort = (isUp: boolean) => {
+          const newHandlers = [...formik.values[type]];
+          const switchedIndex = isUp ? i - 1 : i + 1;
+
+          if (newHandlers[switchedIndex]) {
+            const temp = newHandlers[switchedIndex];
+            newHandlers[switchedIndex] = newHandlers[i];
+            newHandlers[i] = temp;
+
+            formik.setFieldValue(type, newHandlers);
+            formik.submitForm();
+          }
+        };
+        const onUp = () => {
+          onSort(true);
+        };
+        const onDown = () => {
+          onSort(false);
+        };
+
+        return (
+          <EventHandlerForm
+            key={i}
+            index={i}
+            size={(formik.values[type] ?? []).length}
+            component={api}
+            handler={{ type: '', ...handler }}
+            spec={Type.Object(BaseEventSpec)}
+            onChange={onChange}
+            onRemove={onRemove}
+            onUp={onUp}
+            onDown={onDown}
+            services={services}
+          />
+        );
+      })}
     </FormControl>
   );
 

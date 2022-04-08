@@ -3,13 +3,13 @@ import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../../sunmao-helper';
-import { FormPropsSchema as BaseFormPropsSchema } from '../../generated/types/Form';
+import { FormPropsSpec as BaseFormPropsSpec } from '../../generated/types/Form';
 import { EmptyPlaceholder } from './EmptyPlaceholder';
 
-const FormPropsSchema = Type.Object(BaseFormPropsSchema);
-const FormStateSchema = Type.Object({});
+const FormPropsSpec = Type.Object(BaseFormPropsSpec);
+const FormStateSpec = Type.Object({});
 
-const FormImpl: ComponentImpl<Static<typeof FormPropsSchema>> = props => {
+const FormImpl: ComponentImpl<Static<typeof FormPropsSpec>> = props => {
   const { inline, bordered, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 
@@ -37,7 +37,7 @@ const FormImpl: ComponentImpl<Static<typeof FormPropsSchema>> = props => {
   );
 };
 
-const exampleProperties: Static<typeof FormPropsSchema> = {
+const exampleProperties: Static<typeof FormPropsSpec> = {
   inline: false,
   size: 'default',
   bordered: true,
@@ -55,8 +55,8 @@ const options = {
     },
   },
   spec: {
-    properties: FormPropsSchema,
-    state: FormStateSchema,
+    properties: FormPropsSpec,
+    state: FormStateSpec,
     methods: {},
     slots: ['content'],
     styleSlots: ['content'],

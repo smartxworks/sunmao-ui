@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-export const getColorSchemePropertySchema = (options?: Record<string, any>) =>
+export const getColorSchemePropertySpec = (options?: Record<string, any>) =>
   Type.KeyOf(
     Type.Object({
       whiteAlpha: Type.String(),

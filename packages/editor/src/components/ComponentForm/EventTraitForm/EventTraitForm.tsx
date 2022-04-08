@@ -4,12 +4,12 @@ import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { EventHandlerSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 import { EventHandlerForm } from './EventHandlerForm';
 
-type EventHandler = Static<typeof EventHandlerSchema>;
+type EventHandler = Static<typeof EventHandlerSpec>;
 
 type Props = {
   component: ComponentSchema;
@@ -113,7 +113,7 @@ export const EventTraitForm: React.FC<Props> = props => {
 
   const handlers: EventHandler[] = useMemo(() => {
     return component.traits.find(t => t.type === 'core/v1/event')?.properties
-      .handlers as Array<Static<typeof EventHandlerSchema>>;
+      .handlers as Array<Static<typeof EventHandlerSpec>>;
   }, [component]);
 
   const eventTypes = useMemo(() => {

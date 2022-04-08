@@ -3,7 +3,7 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
 
-export const LinkPropsSchema = {
+export const LinkPropsSpec = {
     href: Type.String({
         title:'Href',
         category: Category.Basic,

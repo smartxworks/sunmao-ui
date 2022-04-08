@@ -3,7 +3,7 @@ import { StringUnion } from "../../sunmao-helper";
 import { Category } from '../../constants/category'
 
 
-export const SkeletonTextPropsSchema = {
+export const SkeletonTextPropsSpec = {
   rows: Type.Number(),
   width: Type.Optional(
     Type.Union([
@@ -16,13 +16,13 @@ export const SkeletonTextPropsSchema = {
   ),
 };
 
-export const SkeletonImagePropsSchema = {
+export const SkeletonImagePropsSpec = {
   shape: StringUnion(["circle", "square"]),
   size: StringUnion(["small", "default", "large"]),
   position: StringUnion(["left", "right"]),
 };
 
-export const SkeletonPropsSchema = {
+export const SkeletonPropsSpec = {
   animation: Type.Boolean({
     title:'Animation',
     category:Category.Basic
@@ -32,12 +32,12 @@ export const SkeletonPropsSchema = {
     category:Category.Basic
   }),
   // TODO remove union type
-  image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSchema)],{
+  image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSpec)],{
     title:'Image Placeholder',
     description:'Whether to show the picture placeholder',
     category:Category.Basic
   }),
-  text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSchema)],{
+  text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSpec)],{
     title:'Text Placeholder',
     description:'Whether to show text placeholder',
     category:Category.Basic
