@@ -82,13 +82,13 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
                 if (typeof propertySpec === 'boolean') {
                   return null;
                 }
-                return shouldRender(spec.conditions || [], value) ? (
+                return shouldRender(propertySpec.conditions || [], value) ? (
                   <SpecWidget
                     key={name}
                     component={component}
                     spec={{
-                      ...spec,
-                      title: spec.title || name,
+                      ...propertySpec,
+                      title: propertySpec.title || name,
                     }}
                     value={value?.[name!]}
                     path={path.concat(name!)}
