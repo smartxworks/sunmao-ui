@@ -12,11 +12,11 @@ import { Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { BASIC } from './constants/category';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   selectedTabIndex: Type.Number(),
 });
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   tabNames: Type.Array(Type.String(), {
     title: 'Tab Names',
     category: BASIC,
@@ -45,8 +45,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     // tab slot is dynamic
     slots: ['content'],

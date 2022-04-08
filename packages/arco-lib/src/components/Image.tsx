@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { ImagePropsSchema as BaseImagePropsSchema } from "../generated/types/Image";
+import { ImagePropsSpec as BaseImagePropsSpec } from "../generated/types/Image";
 
-const ImagePropsSchema = Type.Object(BaseImagePropsSchema);
-const ImageStateSchema = Type.Object({});
+const ImagePropsSpec = Type.Object(BaseImagePropsSpec);
+const ImageStateSpec = Type.Object({});
 
-const ImageImpl: ComponentImpl<Static<typeof ImagePropsSchema>> = (props) => {
+const ImageImpl: ComponentImpl<Static<typeof ImagePropsSpec>> = (props) => {
   const { elementRef, customStyle, callbackMap } = props;
   const cProps = getComponentProps(props);
 
@@ -21,7 +21,7 @@ const ImageImpl: ComponentImpl<Static<typeof ImagePropsSchema>> = (props) => {
     />
   );
 };
-const exampleProperties: Static<typeof ImagePropsSchema> = {
+const exampleProperties: Static<typeof ImagePropsSpec> = {
   src :'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp',
   title:"A user’s avatar",
   description:"Present by Arco Design",
@@ -42,8 +42,8 @@ const options = {
     }
   },
   spec: {
-    properties: ImagePropsSchema,
-    state: ImageStateSchema,
+    properties: ImagePropsSpec,
+    state: ImageStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

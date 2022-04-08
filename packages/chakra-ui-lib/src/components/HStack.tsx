@@ -3,19 +3,19 @@ import { Type } from '@sinclair/typebox';
 import { HStack as BaseHStack } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
-  DirectionSchema,
-  FlexWrapSchema,
-  AlignItemsSchema,
-  JustifyContentSchema,
-  SpacingSchema,
+  DirectionSpec,
+  FlexWrapSpec,
+  AlignItemsSpec,
+  JustifyContentSpec,
+  SpacingSpec,
 } from './Stack';
 
-const PropsSchema = Type.Object({
-  direction: DirectionSchema,
-  wrap: FlexWrapSchema,
-  align: AlignItemsSchema,
-  justify: JustifyContentSchema,
-  spacing: SpacingSchema,
+const PropsSpec = Type.Object({
+  direction: DirectionSpec,
+  wrap: FlexWrapSpec,
+  align: AlignItemsSpec,
+  justify: JustifyContentSpec,
+  spacing: SpacingSpec,
 });
 
 export default implementRuntimeComponent({
@@ -39,7 +39,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({}),
     slots: ['content'],
     styleSlots: ['content'],

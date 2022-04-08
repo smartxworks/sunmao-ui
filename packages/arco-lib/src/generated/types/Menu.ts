@@ -3,7 +3,7 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
 // TODO properties can be further optimise and supplemented
-export const MenuPropsSchema = {
+export const MenuPropsSpec = {
   // theme: StringUnion(['dark', 'light'], {
   //   title: 'theme',
   //   category: Category.Style,

@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const TooltipPropsSchema = {
+export const TooltipPropsSpec = {
     color: Type.String({
         title:'Color',
         category: Category.Style

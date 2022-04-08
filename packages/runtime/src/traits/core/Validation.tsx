@@ -2,12 +2,12 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash-es';
 import { TraitImplFactory } from '../../types';
-import { ValidResultSchema } from '../../types/validResultSchema';
+import { ValidResultSpec } from '../../types/validResultSpec';
 
-type ValidationResult = Static<typeof ValidResultSchema>;
+type ValidationResult = Static<typeof ValidResultSpec>;
 type ValidationRule = (text: string) => ValidationResult;
 
-const ValidationTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+const ValidationTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   const rules = new Map<string, ValidationRule>();
 
   function addValidationRule(name: string, rule: ValidationRule) {
@@ -85,7 +85,7 @@ const ValidationTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () 
   };
 };
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   value: Type.String(),
   rule: Type.Optional(Type.String()),
   maxLength: Type.Optional(Type.Integer()),
@@ -100,9 +100,9 @@ export default {
       description: 'validation trait',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       state: Type.Object({
-        validResult: ValidResultSchema,
+        validResult: ValidResultSpec,
       }),
       methods: [],
     },

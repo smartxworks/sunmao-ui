@@ -6,7 +6,7 @@ import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-import { SchemaField } from '@sunmao-ui/editor-sdk';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { genOperation } from '../../../operations';
 
 type Props = {
@@ -28,7 +28,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
   );
   const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
-    const propertySchema = (tImpl.spec.properties as TSchema).properties?.[key];
+    const propertySpec = (tImpl.spec.properties as TSchema).properties?.[key];
     const onChange = (newValue: any)=> {
       const operation = genOperation(registry, 'modifyTraitProperty', {
         componentId: component.id,
@@ -42,13 +42,13 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     };
 
     return (
-      <SchemaField
+      <SpecWidget
         key={key}
         level={1}
         path={[key]}
-        schema={{
-          ...propertySchema,
-          title: propertySchema.title || key
+        spec={{
+          ...propertySpec,
+          title: propertySpec.title || key
         }}
         value={value}
         services={services}

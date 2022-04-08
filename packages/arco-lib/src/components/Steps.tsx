@@ -4,16 +4,16 @@ import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import {
-  StepsPropsSchema as BaseStepsPropsSchema,
-  StepItemSchema,
+  StepsPropsSpec as BaseStepsPropsSpec,
+  StepItemSpec,
 } from "../generated/types/Steps";
 
-const StepsPropsSchema = Type.Object(BaseStepsPropsSchema);
-const StepsStateSchema = Type.Object({});
+const StepsPropsSpec = Type.Object(BaseStepsPropsSpec);
+const StepsStateSpec = Type.Object({});
 
-type StepItem = Static<typeof StepItemSchema>;
+type StepItem = Static<typeof StepItemSpec>;
 
-const StepsImpl: ComponentImpl<Static<typeof StepsPropsSchema>> = (props) => {
+const StepsImpl: ComponentImpl<Static<typeof StepsPropsSpec>> = (props) => {
   const { items, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 
@@ -42,7 +42,7 @@ const StepsImpl: ComponentImpl<Static<typeof StepsPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof StepsPropsSchema> = {
+const exampleProperties: Static<typeof StepsPropsSpec> = {
   type: "default",
   size: "default",
   direction: "horizontal",
@@ -68,8 +68,8 @@ const options = {
     },
   },
   spec: {
-    properties: StepsPropsSchema,
-    state: StepsStateSchema,
+    properties: StepsPropsSpec,
+    state: StepsStateSpec,
     methods: {},
     slots: ["icons"],
     styleSlots: ["content"],

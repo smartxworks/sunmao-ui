@@ -9,7 +9,7 @@ import {
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { TablePropsSchema, ColumnSchema } from '../generated/types/Table';
+import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
 import React, {
   ReactNode,
   useEffect,
@@ -26,7 +26,7 @@ import {
 } from '@sunmao-ui/runtime';
 import { TableInstance } from '@arco-design/web-react/es/Table/table';
 
-const TableStateSchema = Type.Object({
+const TableStateSpec = Type.Object({
   clickedRow:Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
@@ -38,7 +38,7 @@ type SortRule = {
   direction?: 'ascend' | 'descend';
 };
 
-type ColumnProperty = Static<typeof ColumnSchema> & {
+type ColumnProperty = Static<typeof ColumnSpec> & {
   filterDropdown?: ({
     filterKeys,
     setFilterKeys,
@@ -69,7 +69,7 @@ const rowClickStyle = css`
   }
 `;
 
-export const exampleProperties: Static<typeof TablePropsSchema> = {
+export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
     {
       title: 'Name',
@@ -156,8 +156,8 @@ export const Table = implementRuntimeComponent({
     displayName: 'Table',
   },
   spec: {
-    properties: TablePropsSchema,
-    state: TableStateSchema,
+    properties: TablePropsSpec,
+    state: TableStateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

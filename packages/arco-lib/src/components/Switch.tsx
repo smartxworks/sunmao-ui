@@ -3,17 +3,17 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { SwitchPropsSchema as BaseSwitchPropsSchema } from "../generated/types/Switch";
+import { SwitchPropsSpec as BaseSwitchPropsSpec } from "../generated/types/Switch";
 import { useEffect, useState } from "react";
 
-const SwitchPropsSchema = Type.Object({
-  ...BaseSwitchPropsSchema,
+const SwitchPropsSpec = Type.Object({
+  ...BaseSwitchPropsSpec,
 });
-const SwitchStateSchema = Type.Object({
+const SwitchStateSpec = Type.Object({
   value: Type.Boolean(),
 });
 
-const SwitchImpl: ComponentImpl<Static<typeof SwitchPropsSchema>> = (props) => {
+const SwitchImpl: ComponentImpl<Static<typeof SwitchPropsSpec>> = (props) => {
   const {elementRef, customStyle, mergeState } = props;
   const { defaultChecked, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<boolean>(defaultChecked);
@@ -39,7 +39,7 @@ const SwitchImpl: ComponentImpl<Static<typeof SwitchPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof SwitchPropsSchema> = {
+const exampleProperties: Static<typeof SwitchPropsSpec> = {
   defaultChecked: false,
   disabled: false,
   loading: false,
@@ -59,8 +59,8 @@ const options = {
     },
   },
   spec: {
-    properties: SwitchPropsSchema,
-    state: SwitchStateSchema,
+    properties: SwitchPropsSpec,
+    state: SwitchStateSpec,
     methods: {},
     slots: [],
     styleSlots: [],

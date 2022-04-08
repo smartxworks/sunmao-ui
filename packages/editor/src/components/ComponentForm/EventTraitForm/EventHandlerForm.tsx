@@ -13,7 +13,7 @@ import {
 import { Static } from '@sinclair/typebox';
 import { JSONSchema7 } from 'json-schema';
 import { CloseIcon, ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons';
-import { EventHandlerSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
@@ -22,20 +22,20 @@ type Props = {
   index: number;
   size: number;
   component: ComponentSchema;
-  handler: Static<typeof EventHandlerSchema>;
-  onChange: (handler: Static<typeof EventHandlerSchema>) => void;
+  handler: Static<typeof EventHandlerSpec>;
+  onChange: (handler: Static<typeof EventHandlerSpec>) => void;
   onRemove: () => void;
   onUp: () => void;
   onDown: () => void;
   services: EditorServices;
-  schema?: JSONSchema7;
+  spec?: JSONSchema7;
 };
 
 export const EventHandlerForm: React.FC<Props> = props => {
   const {
     index,
     size,
-    schema = EventHandlerSchema,
+    spec = EventHandlerSpec,
     handler,
     component,
     services,
@@ -61,7 +61,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
             <VStack className={formWrapperCSS}>
               <EventWidget
                 component={component}
-                schema={schema}
+                spec={spec}
                 value={handler}
                 path={[]}
                 level={1}

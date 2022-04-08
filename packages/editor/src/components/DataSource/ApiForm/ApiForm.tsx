@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { FetchTraitPropertiesSchema, watch } from '@sunmao-ui/runtime';
+import { FetchTraitPropertiesSpec, watch } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
 import {
   Box,
@@ -69,7 +69,7 @@ export const ApiForm: React.FC<Props> = props => {
   );
   const formik = useFormik({
     initialValues: {
-      ...(trait?.properties as Static<typeof FetchTraitPropertiesSchema>),
+      ...(trait?.properties as Static<typeof FetchTraitPropertiesSpec>),
     },
     onSubmit: values => {
       eventBus.send(
@@ -83,7 +83,7 @@ export const ApiForm: React.FC<Props> = props => {
     },
   });
   const { values } = formik;
-  const URLSchema = Type.String({ widgetOptions: { compactOptions } });
+  const URLSpec = Type.String({ widgetOptions: { compactOptions } });
 
   const onFetch = useCallback(async () => {
     services.apiService.send('uiMethod', {
@@ -129,7 +129,7 @@ export const ApiForm: React.FC<Props> = props => {
 
   useEffect(() => {
     formik.setValues({
-      ...(trait?.properties as Static<typeof FetchTraitPropertiesSchema>),
+      ...(trait?.properties as Static<typeof FetchTraitPropertiesSpec>),
     });
     setTabIndex(0);
   // do not add formik into dependencies, otherwise it will cause infinite loop
@@ -217,7 +217,7 @@ export const ApiForm: React.FC<Props> = props => {
           <Box flex={1}>
             <ExpressionWidget
               component={api}
-              schema={URLSchema}
+              spec={URLSpec}
               value={values.url}
               path={[]}
               level={1}
@@ -252,8 +252,8 @@ export const ApiForm: React.FC<Props> = props => {
             <TabPanel>
               <HeadersForm
                 api={api}
-                schema={
-                  FetchTraitPropertiesSchema.properties.headers as WidgetProps['schema']
+                spec={
+                  FetchTraitPropertiesSpec.properties.headers as WidgetProps['spec']
                 }
                 services={services}
                 formik={formik}
@@ -265,8 +265,8 @@ export const ApiForm: React.FC<Props> = props => {
             <TabPanel>
               <Body
                 api={api}
-                schema={
-                  FetchTraitPropertiesSchema.properties.body as WidgetProps['schema']
+                spec={
+                  FetchTraitPropertiesSpec.properties.body as WidgetProps['spec']
                 }
                 services={services}
                 formik={formik}
