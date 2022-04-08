@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
-export const SiderPropsSchema = {
+export const SiderPropsSpec = {
   theme: StringUnion(['dark', 'light'],{
     category:Category.Style
   }),

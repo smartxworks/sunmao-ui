@@ -3,18 +3,18 @@ import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { SelectPropsSchema as BaseSelectPropsSchema } from '../generated/types/Select';
+import { SelectPropsSpec as BaseSelectPropsSpec } from '../generated/types/Select';
 import { useEffect, useState, useRef } from 'react';
 import { SelectHandle } from '@arco-design/web-react/es/Select/interface';
 
-const SelectPropsSchema = Type.Object({
-  ...BaseSelectPropsSchema,
+const SelectPropsSpec = Type.Object({
+  ...BaseSelectPropsSpec,
 });
-const SelectStateSchema = Type.Object({
+const SelectStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const SelectImpl: ComponentImpl<Static<typeof SelectPropsSchema>> = props => {
+const SelectImpl: ComponentImpl<Static<typeof SelectPropsSpec>> = props => {
   const { getElement, customStyle, callbackMap, mergeState, defaultValue = '' } = props;
   const { options = [], ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<string>(defaultValue);
@@ -52,7 +52,7 @@ const SelectImpl: ComponentImpl<Static<typeof SelectPropsSchema>> = props => {
   );
 };
 
-const exampleProperties: Static<typeof SelectPropsSchema> = {
+const exampleProperties: Static<typeof SelectPropsSpec> = {
   allowClear: false,
   multiple: false,
   allowCreate: false,
@@ -82,8 +82,8 @@ export const Select = implementRuntimeComponent({
     },
   },
   spec: {
-    properties: SelectPropsSchema,
-    state: SelectStateSchema,
+    properties: SelectPropsSpec,
+    state: SelectStateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

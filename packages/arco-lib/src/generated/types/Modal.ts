@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category'
 
 
-export const ModalPropsSchema = {
+export const ModalPropsSpec = {
     title: Type.String({
         title:'Title',
         category:Category.Basic,

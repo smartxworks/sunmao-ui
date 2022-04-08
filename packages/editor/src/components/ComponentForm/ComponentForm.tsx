@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/react';
-import { SchemaField } from '@sunmao-ui/editor-sdk';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/runtime';
@@ -74,10 +74,10 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         <VStack width="full" alignItems="start">
           <strong>Properties</strong>
           <VStack width="full" background="white">
-            <SchemaField
+            <SpecWidget
               key={selectedComponent.id}
               component={selectedComponent}
-              schema={cImpl.spec.properties}
+              spec={cImpl.spec.properties}
               value={properties}
               path={[]}
               level={0}

@@ -6,7 +6,7 @@ import { css } from '@emotion/css';
 
 const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   layout: Type.Array(
     Type.Object({
       x: Type.Number({
@@ -50,7 +50,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: {},
     methods: {},
     slots: ['content'],

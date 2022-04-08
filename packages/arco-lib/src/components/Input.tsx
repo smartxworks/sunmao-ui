@@ -3,18 +3,18 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { InputPropsSchema as BaseInputPropsSchema } from "../generated/types/Input";
+import { InputPropsSpec as BaseInputPropsSpec } from "../generated/types/Input";
 import { useEffect, useState, useRef } from "react";
 import { RefInputType } from "@arco-design/web-react/es/Input/interface";
 
-const InputPropsSchema = Type.Object({
-  ...BaseInputPropsSchema,
+const InputPropsSpec = Type.Object({
+  ...BaseInputPropsSpec,
 });
-const InputStateSchema = Type.Object({
+const InputStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
+const InputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = (props) => {
   const { getElement, slotsElements, customStyle, callbackMap, mergeState } =
     props;
   const { defaultValue, ...cProps } = getComponentProps(props);
@@ -53,7 +53,7 @@ const InputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof InputPropsSchema> = {
+const exampleProperties: Static<typeof InputPropsSpec> = {
   allowClear: false,
   disabled: false,
   readOnly: false,
@@ -75,8 +75,8 @@ const options = {
     },
   },
   spec: {
-    properties: InputPropsSchema,
-    state: InputStateSchema,
+    properties: InputPropsSpec,
+    state: InputStateSpec,
     methods: {},
     slots: ["addAfter", "prefix", "suffix", "addBefore"],
     styleSlots: ["input"],

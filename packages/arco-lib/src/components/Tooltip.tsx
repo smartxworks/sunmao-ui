@@ -3,14 +3,14 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TooltipPropsSchema as BaseTooltipPropsSchema } from "../generated/types/Tooltip";
+import { TooltipPropsSpec as BaseTooltipPropsSpec } from "../generated/types/Tooltip";
 import { isArray } from "lodash-es";
 import { useState, useEffect } from "react";
 
-const TooltipPropsSchema = Type.Object(BaseTooltipPropsSchema);
-const TooltipStateSchema = Type.Object({});
+const TooltipPropsSpec = Type.Object(BaseTooltipPropsSpec);
+const TooltipStateSpec = Type.Object({});
 
-const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
+const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSpec>> = (
   props
 ) => {
   const { controlled, ...cProps } = getComponentProps(props);
@@ -51,7 +51,7 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSchema>> = (
     </BaseTooltip>
   );
 };
-const exampleProperties: Static<typeof TooltipPropsSchema> = {
+const exampleProperties: Static<typeof TooltipPropsSpec> = {
   color: "#bbb",
   position: "bottom",
   mini: false,
@@ -71,8 +71,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: TooltipPropsSchema,
-    state: TooltipStateSchema,
+    properties: TooltipPropsSpec,
+    state: TooltipStateSpec,
     methods: {
       openTooltip: Type.String(),
       closeTooltip: Type.String(),

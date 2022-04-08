@@ -2,7 +2,7 @@ import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static, TSchema } from '@sinclair/typebox';
 import { Registry } from '../services/Registry';
 import { StateManager } from '../services/StateManager';
-import { ModuleSchema } from '../types';
+import { ModuleSpec } from '../types';
 import { parseTypeBox } from './parseTypeBox';
 
 export function initStateAndMethod(
@@ -25,7 +25,7 @@ export function initStateAndMethod(
     stateManager.store[c.id] = state;
 
     if (c.type === 'core/v1/moduleContainer') {
-      const moduleSchema = c.properties as Static<typeof ModuleSchema>;
+      const moduleSchema = c.properties as Static<typeof ModuleSpec>;
       try {
         const mSpec = registry.getModuleByType(moduleSchema.type).spec;
         const moduleInitState: Record<string, unknown> = {};
@@ -34,7 +34,7 @@ export function initStateAndMethod(
         }
         stateManager.store[moduleSchema.id] = moduleInitState;
       } catch {
-        return;
+        
       }
     }
   });

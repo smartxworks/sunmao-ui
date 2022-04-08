@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
-export const PaginationPropsSchema = {
+export const PaginationPropsSpec = {
   pageSize: Type.Number({
     title:'Page Size',
     category:Category.Basic,

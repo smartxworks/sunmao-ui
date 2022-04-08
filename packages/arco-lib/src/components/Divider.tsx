@@ -3,14 +3,14 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { DividerPropsSchema as BaseDividerPropsSchema } from "../generated/types/Divider";
+import { DividerPropsSpec as BaseDividerPropsSpec } from "../generated/types/Divider";
 
-const DividerPropsSchema = Type.Object({
-  ...BaseDividerPropsSchema,
+const DividerPropsSpec = Type.Object({
+  ...BaseDividerPropsSpec,
 });
-const DividerStateSchema = Type.Object({});
+const DividerStateSpec = Type.Object({});
 
-const DividerImpl: ComponentImpl<Static<typeof DividerPropsSchema>> = (
+const DividerImpl: ComponentImpl<Static<typeof DividerPropsSpec>> = (
   props
 ) => {
   const { elementRef, customStyle } = props;
@@ -21,11 +21,11 @@ const DividerImpl: ComponentImpl<Static<typeof DividerPropsSchema>> = (
       ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
-    ></BaseDivider>
+     />
   );
 };
 
-const exampleProperties: Static<typeof DividerPropsSchema> = {
+const exampleProperties: Static<typeof DividerPropsSpec> = {
   type: "horizontal",
   orientation: "center",
 };
@@ -42,8 +42,8 @@ const options = {
     }
   },
   spec: {
-    properties: DividerPropsSchema,
-    state: DividerStateSchema,
+    properties: DividerPropsSpec,
+    state: DividerStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

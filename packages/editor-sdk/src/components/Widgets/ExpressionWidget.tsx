@@ -123,7 +123,7 @@ const getParsedValue = (raw: string, type: string) => {
   return raw;
 };
 
-export const ExpressionWidgetOptionsSchema = Type.Object({
+export const ExpressionWidgetOptionsSpec = Type.Object({
   compactOptions: Type.Optional(
     Type.Object({
       height: Type.Optional(Type.String()),
@@ -133,10 +133,10 @@ export const ExpressionWidgetOptionsSchema = Type.Object({
 });
 
 export const ExpressionWidget: React.FC<
-  WidgetProps<Static<typeof ExpressionWidgetOptionsSchema>>
+  WidgetProps<Static<typeof ExpressionWidgetOptionsSpec>>
 > = props => {
-  const { value, services, schema, onChange } = props;
-  const { widgetOptions } = schema;
+  const { value, services, spec, onChange } = props;
+  const { widgetOptions } = spec;
   const { stateManager } = services;
   const [defs, setDefs] = useState<any>();
   const editorRef = useRef<ExpressionEditorHandle>(null);
@@ -168,12 +168,12 @@ export const ExpressionWidget: React.FC<
   );
 };
 
-export default implementWidget<Static<typeof ExpressionWidgetOptionsSchema>>({
+export default implementWidget<Static<typeof ExpressionWidgetOptionsSpec>>({
   version: 'core/v1',
   metadata: {
-    name: 'Expression',
+    name: 'expression',
   },
   spec: {
-    options: ExpressionWidgetOptionsSchema,
+    options: ExpressionWidgetOptionsSpec,
   },
 })(ExpressionWidget);

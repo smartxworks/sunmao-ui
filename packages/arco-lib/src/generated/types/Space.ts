@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { Category } from "../../constants/category";
 import { StringUnion } from '../../sunmao-helper';
 
-export const SpacePropsSchema = {
+export const SpacePropsSpec = {
   align: StringUnion(['start', 'end', 'center', 'baseline'], {
     category: Category.Layout
   }),

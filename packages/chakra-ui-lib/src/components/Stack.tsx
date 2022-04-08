@@ -3,7 +3,7 @@ import { Stack as BaseStack } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { LAYOUT } from './constants/category';
 
-export const DirectionSchema = Type.Union(
+export const DirectionSpec = Type.Union(
   [
     Type.KeyOf(
       Type.Object({
@@ -29,7 +29,7 @@ export const DirectionSchema = Type.Union(
     category: LAYOUT,
   }
 );
-export const FlexWrapSchema = Type.KeyOf(
+export const FlexWrapSpec = Type.KeyOf(
   Type.Object({
     nowrap: Type.String(),
     wrap: Type.String(),
@@ -40,25 +40,25 @@ export const FlexWrapSchema = Type.KeyOf(
     category: LAYOUT,
   }
 );
-export const AlignItemsSchema = Type.String({
+export const AlignItemsSpec = Type.String({
   title: 'Align Items',
   category: LAYOUT,
 });
-export const JustifyContentSchema = Type.String({
+export const JustifyContentSpec = Type.String({
   title: 'Justify Content',
   category: LAYOUT,
 });
-export const SpacingSchema = Type.Union([Type.String(), Type.Number()], {
+export const SpacingSpec = Type.Union([Type.String(), Type.Number()], {
   title: 'Spacing',
   category: LAYOUT,
 });
 
-const PropsSchema = Type.Object({
-  direction: DirectionSchema,
-  wrap: FlexWrapSchema,
-  align: AlignItemsSchema,
-  justify: JustifyContentSchema,
-  spacing: SpacingSchema,
+const PropsSpec = Type.Object({
+  direction: DirectionSpec,
+  wrap: FlexWrapSpec,
+  align: AlignItemsSpec,
+  justify: JustifyContentSpec,
+  spacing: SpacingSpec,
 });
 
 export default implementRuntimeComponent({
@@ -79,7 +79,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({}),
     methods: {},
     slots: ['content'],

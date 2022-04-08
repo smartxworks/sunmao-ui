@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const CollapsePropsSchema = {
+export const CollapsePropsSpec = {
     defaultActiveKey: Type.Array(Type.String(), {
         title:'Default Active Key',
         category: Category.Basic
@@ -22,7 +22,7 @@ export const CollapsePropsSchema = {
     })
 }
 
-export const CollapseItemPropsSchema = {
+export const CollapseItemPropsSpec = {
     name: Type.String({
         title:'Name',
         category: Category.Basic,

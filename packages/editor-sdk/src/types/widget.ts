@@ -4,7 +4,7 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from './editor';
 import { Condition } from './condition';
 
-export type EditorSchema<WidgetOptions = Record<string, any>> = {
+export type SpecOptions<WidgetOptions = Record<string, any>> = {
   defaultValue?: any;
   // widget
   widget?: string;
@@ -19,7 +19,7 @@ export type EditorSchema<WidgetOptions = Record<string, any>> = {
 
 export type WidgetProps<WidgetOptions = Record<string, any>> = {
   component: ComponentSchema;
-  schema: JSONSchema7 & EditorSchema<WidgetOptions>;
+  spec: JSONSchema7 & SpecOptions<WidgetOptions>;
   services: EditorServices;
   path: string[];
   level: number;

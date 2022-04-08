@@ -3,14 +3,14 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { PopoverPropsSchema as BasePopoverPropsSchema } from "../generated/types/Popover";
+import { PopoverPropsSpec as BasePopoverPropsSpec } from "../generated/types/Popover";
 import { useEffect, useState } from "react";
 import { isArray } from "lodash-es";
 
-const PopoverPropsSchema = Type.Object(BasePopoverPropsSchema);
-const PopoverStateSchema = Type.Object({});
+const PopoverPropsSpec = Type.Object(BasePopoverPropsSpec);
+const PopoverStateSpec = Type.Object({});
 
-const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
+const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSpec>> = (
   props
 ) => {
   const { elementRef, controlled, ...cProps } = getComponentProps(props);
@@ -56,7 +56,7 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSchema>> = (
     </BasePopover>
   );
 };
-const exampleProperties: Static<typeof PopoverPropsSchema> = {
+const exampleProperties: Static<typeof PopoverPropsSpec> = {
   color: "#eee",
   position: "bottom",
   disabled: false,
@@ -78,8 +78,8 @@ const options = {
     },
   },
   spec: {
-    properties: PopoverPropsSchema,
-    state: PopoverStateSchema,
+    properties: PopoverPropsSpec,
+    state: PopoverStateSpec,
     methods: {
       openPopover: Type.String(),
       closePopover: Type.String(),

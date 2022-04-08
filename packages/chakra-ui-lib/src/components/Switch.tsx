@@ -5,7 +5,7 @@ import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { useEffect, useState } from 'react';
 import { BASIC } from './constants/category';
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   size: Type.KeyOf(
     Type.Object({
       sm: Type.String(),
@@ -24,7 +24,7 @@ const PropsSchema = Type.Object({
   }),
 });
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.Boolean(),
 });
 
@@ -45,8 +45,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],
