@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
 import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
+import { css } from '@emotion/css';
 import { isExpression as _isExpression } from '../../utils/validator';
 import { WidgetProps } from '../../types/widget';
 import {
@@ -86,12 +87,19 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     isExpression,
     setIsExpression,
   } = props;
+
   if (hidden) {
     return <div className="hidden">{children.content}</div>;
   }
 
+  const FormControlStyle = css`
+    &:not(:last-of-type) {
+      margin-bottom: var(--chakra-space-2);
+    }
+  `;
+
   return (
-    <FormControl isRequired={required} id={id} mt={displayLabel ? 1 : 0}>
+    <FormControl className={FormControlStyle} isRequired={required} id={id}>
       {displayLabel && (
         <Tooltip label={description} placement="auto-start">
           <FormLabel display="flex" alignItems="center">

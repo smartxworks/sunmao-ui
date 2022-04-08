@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   VStack,
   HStack,
@@ -28,8 +28,73 @@ interface Props {
   services: EditorServices;
 }
 
+type HandlerProps = Props & {
+  index: number;
+  handler: EventHandler;
+  type: HandlerType;
+};
+
+const eventSpec = Type.Object(BaseEventSpec);
+
+const Handler = (props: HandlerProps) => {
+  const { index: i, handler, type, api, formik, services } = props;
+  const onChange = useCallback(
+    (handler: EventHandler) => {
+      const newOnComplete = formik.values[type].map((onComplete, index) =>
+        index === i ? handler : onComplete
+      );
+      formik.setFieldValue(type, newOnComplete);
+      formik.submitForm();
+    },
+    [i, type, formik]
+  );
+  const onRemove = useCallback(() => {
+    const newOnComplete = formik.values[type].filter((_, index) => i !== index);
+    formik.setFieldValue(type, newOnComplete);
+    formik.submitForm();
+  }, [i, type, formik]);
+  const onSort = useCallback(
+    (isUp: boolean) => {
+      const newHandlers = [...formik.values[type]];
+      const switchedIndex = isUp ? i - 1 : i + 1;
+
+      if (newHandlers[switchedIndex]) {
+        const temp = newHandlers[switchedIndex];
+        newHandlers[switchedIndex] = newHandlers[i];
+        newHandlers[i] = temp;
+
+        formik.setFieldValue(type, newHandlers);
+        formik.submitForm();
+      }
+    },
+    [i, type, formik]
+  );
+  const onUp = useCallback(() => {
+    onSort(true);
+  }, [onSort]);
+  const onDown = useCallback(() => {
+    onSort(false);
+  }, [onSort]);
+
+  return (
+    <EventHandlerForm
+      key={i}
+      index={i}
+      size={(formik.values[type] ?? []).length}
+      component={api}
+      handler={handler}
+      spec={eventSpec}
+      onChange={onChange}
+      onRemove={onRemove}
+      onUp={onUp}
+      onDown={onDown}
+      services={services}
+    />
+  );
+};
+
 export const Basic: React.FC<Props> = props => {
-  const { api, formik, services } = props;
+  const { formik } = props;
 
   const onAddHandler = (type: HandlerType) => {
     const newHandler: EventHandler = {
@@ -62,53 +127,7 @@ export const Basic: React.FC<Props> = props => {
         />
       </HStack>
       {(formik.values[type] ?? []).map((handler, i) => {
-        const onChange = (bewHandler: EventHandler) => {
-          const newHandlers = formik.values[type].map((handler, index) =>
-            index === i ? bewHandler : handler
-          );
-          formik.setFieldValue(type, newHandlers);
-          formik.submitForm();
-        };
-        const onRemove = () => {
-          const newHandlers = formik.values[type].filter((_, index) => i !== index);
-          formik.setFieldValue(type, newHandlers);
-          formik.submitForm();
-        };
-        const onSort = (isUp: boolean) => {
-          const newHandlers = [...formik.values[type]];
-          const switchedIndex = isUp ? i - 1 : i + 1;
-
-          if (newHandlers[switchedIndex]) {
-            const temp = newHandlers[switchedIndex];
-            newHandlers[switchedIndex] = newHandlers[i];
-            newHandlers[i] = temp;
-
-            formik.setFieldValue(type, newHandlers);
-            formik.submitForm();
-          }
-        };
-        const onUp = () => {
-          onSort(true);
-        };
-        const onDown = () => {
-          onSort(false);
-        };
-
-        return (
-          <EventHandlerForm
-            key={i}
-            index={i}
-            size={(formik.values[type] ?? []).length}
-            component={api}
-            handler={{ type: '', ...handler }}
-            spec={Type.Object(BaseEventSpec)}
-            onChange={onChange}
-            onRemove={onRemove}
-            onUp={onUp}
-            onDown={onDown}
-            services={services}
-          />
-        );
+        return <Handler key={i} {...props} index={i} handler={handler} type={type} />;
       })}
     </FormControl>
   );

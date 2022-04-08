@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import { RecordWidget, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
@@ -14,11 +14,16 @@ interface Props {
   services: EditorServices;
 }
 
+const EMPTY_ARRAY: string[] = [];
+
 export const Params: React.FC<Props> = props => {
   const { api, formik, services } = props;
-  const url: string = formik.values.url ?? '';
-  const index = url.indexOf('?');
-  const spec = Type.Record(Type.String(), Type.String());
+  const url: string = useMemo(()=> formik.values.url ?? '', [formik.values.url]) ;
+  const index = useMemo(()=> url.indexOf('?'), [url]);
+  const specWithWidgetOptions = useMemo(
+    ()=> mergeWidgetOptionsIntoSpec(Type.Record(Type.String(), Type.String()), { minNum: 1, isShowHeader: true }),
+    []
+  );
   const params = useMemo(() => {
     if (index === -1) {
       return {};
@@ -31,26 +36,29 @@ export const Params: React.FC<Props> = props => {
         return result;
       }, {} as Record<string, string>);
     }
-  }, [formik.values.url]);
+  }, [url, index]);
 
-  const onChange = (values: Record<string, string>) => {
-    const parameters = new URLSearchParams(values);
-    const paramsString = parameters.toString().replace(/%7B%7B(.+?)%7D%7D/g, '{{$1}}');
-    const newUrl =
-      index === -1
-        ? `${url}?${paramsString}`
-        : formik.values.url.replace(/\?[\S]+/, `?${paramsString}`);
+  const onChange = useCallback(
+    (values: Record<string, string>) => {
+      const parameters = new URLSearchParams(values);
+      const paramsString = parameters.toString().replace(/%7B%7B(.+?)%7D%7D/g, '{{$1}}');
+      const newUrl =
+        index === -1
+          ? `${url}?${paramsString}`
+          : formik.values.url.replace(/\?[\S]+/, `?${paramsString}`);
 
-    formik.setFieldValue('url', newUrl);
-    formik.submitForm();
-  };
+      formik.setFieldValue('url', newUrl);
+      formik.submitForm();
+    },
+    [formik, url, index]
+  );
 
   return (
     <Box>
       <RecordWidget
         component={api}
-        spec={mergeWidgetOptionsIntoSpec(spec, { minNum: 1, isShowHeader: true })}
-        path={[]}
+        spec={specWithWidgetOptions}
+        path={EMPTY_ARRAY}
         level={1}
         services={services}
         value={params}
