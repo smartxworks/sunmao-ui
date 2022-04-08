@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   VStack,
   HStack,
@@ -19,7 +19,7 @@ import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandle
 import {
   FetchTraitPropertiesSpec,
   EventCallBackHandlerSpec,
-  BaseEventSpec
+  BaseEventSpec,
 } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
@@ -34,8 +34,60 @@ interface Props {
   services: EditorServices;
 }
 
+type HandlerProps = Props & {
+  index: number;
+  handler: EventHandler;
+  type: HandlerType;
+};
+
+const eventSpec = Type.Object(BaseEventSpec);
+
+const Handler = (props: HandlerProps) => {
+  const { index: i, handler, type, api, formik, services } = props;
+  const onChange = useCallback(
+    (handler: EventHandler) => {
+      const newOnComplete = formik.values[type].map((onComplete, index) =>
+        index === i ? handler : onComplete
+      );
+      formik.setFieldValue(type, newOnComplete);
+      formik.submitForm();
+    },
+    [i, type, formik]
+  );
+  const onRemove = useCallback(() => {
+    const newOnComplete = formik.values[type].filter((_, index) => i !== index);
+    formik.setFieldValue(type, newOnComplete);
+    formik.submitForm();
+  }, [i, type, formik]);
+
+  return (
+    <AccordionItem key={i}>
+      <h2>
+        <AccordionButton>
+          <Box flex="1" textAlign="left">
+            Handler {i + 1}
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+      </h2>
+      <AccordionPanel pb={4} pt={2} padding={0}>
+        <Box pt={2}>
+          <EventHandlerForm
+            component={api}
+            handler={handler}
+            spec={eventSpec}
+            onChange={onChange}
+            onRemove={onRemove}
+            services={services}
+          />
+        </Box>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+};
+
 export const Basic: React.FC<Props> = props => {
-  const { api, formik, services } = props;
+  const { formik } = props;
 
   const onAddHandler = (type: HandlerType) => {
     const newHandler: EventHandler = {
@@ -69,41 +121,7 @@ export const Basic: React.FC<Props> = props => {
       </HStack>
       <Accordion allowMultiple>
         {(formik.values[type] ?? []).map((handler, i) => {
-          const onChange = (handler: EventHandler) => {
-            const newOnComplete = formik.values[type].map((onComplete, index)=> index === i ? handler : onComplete);
-            formik.setFieldValue(type, newOnComplete);
-            formik.submitForm();
-          };
-          const onRemove = () => {
-            const newOnComplete = formik.values[type].filter((_, index)=> i !== index);
-            formik.setFieldValue(type, newOnComplete);
-            formik.submitForm();
-          };
-
-          return (
-            <AccordionItem key={i}>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Handler {i + 1}
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4} pt={2} padding={0}>
-                <Box pt={2}>
-                  <EventHandlerForm
-                    component={api}
-                    handler={{ type: '', ...handler }}
-                    spec={Type.Object(BaseEventSpec)}
-                    onChange={onChange}
-                    onRemove={onRemove}
-                    services={services}
-                  />
-                </Box>
-              </AccordionPanel>
-            </AccordionItem>
-          );
+          return <Handler key={i} {...props} index={i} handler={handler} type={type} />;
         })}
       </Accordion>
     </FormControl>

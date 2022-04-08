@@ -1,8 +1,8 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import { Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Type } from '@sinclair/typebox';
 import { SpecWidget } from '../Widgets/SpecWidget';
 import { ExpressionWidget } from '../Widgets/ExpressionWidget';
@@ -12,15 +12,173 @@ import { ExpressionEditorProps } from './ExpressionEditor';
 
 const IGNORE_SPEC_TYPES = ['array', 'object'];
 
-type RecordEditorProps = Omit<WidgetProps, 'component' | 'spec' | 'level' | 'path'> & {
+type RecordEditorProps = Omit<
+  WidgetProps,
+  'component' | 'spec' | 'level' | 'path'
+> & {
   component?: WidgetProps['component'];
   spec?: WidgetProps['spec'];
   path?: WidgetProps['path'];
   level?: WidgetProps['level'];
 };
+type RowItemProps = RecordEditorProps & {
+  index: number;
+  rowKey: string;
+  rows: Array<[string, any]>;
+  setRows: (rows: Array<[string, any]>) => void;
+  onRemoveRow: (index: number) => void;
+  emitDataChange: (rows: Array<[string, any]>) => void;
+};
+
+const RowItem = (props: RowItemProps) => {
+  const {
+    rows,
+    index: i,
+    spec,
+    rowKey,
+    component,
+    value,
+    path = [],
+    level = 1,
+    services,
+    setRows,
+    onRemoveRow,
+    emitDataChange,
+  } = props;
+  const { minNum = 0, onlySetValue } = useMemo(
+    () => spec?.widgetOptions || {},
+    [spec]
+  );
+  const expressionOptions = useMemo<{
+    compactOptions: ExpressionEditorProps['compactOptions'];
+  }>(
+    () => ({
+      compactOptions: {
+        height: '32px',
+      },
+    }),
+    []
+  );
+  const valueSpec = useMemo(() => spec?.properties?.[rowKey], [spec, rowKey]);
+  const valueSpecWithExpressionOptions = useMemo(
+    () =>
+      valueSpec && typeof valueSpec !== 'boolean'
+        ? {
+            ...valueSpec,
+            widgetOptions: {
+              compactOptions: expressionOptions.compactOptions,
+            },
+          }
+        : Type.Any({
+            widgetOptions: {
+              compactOptions: expressionOptions.compactOptions,
+            },
+          }),
+    [valueSpec, expressionOptions]
+  );
+  const valueSpecWithOptions = useMemo(
+    () =>
+      valueSpec && typeof valueSpec !== 'boolean'
+        ? mergeWidgetOptionsIntoSpec(valueSpec, {
+            isShowAsideExpressionButton: true,
+            expressionOptions,
+          })
+        : Type.Any(),
+    [valueSpec, expressionOptions]
+  );
+  const nextPath = useMemo(() => path.concat(rowKey), [path, rowKey]);
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent) => {
+      const target = e.target as HTMLInputElement;
+      const index = target.name === 'key' ? 0 : 1;
+      const newRows = produce(rows, draft => {
+        draft[i][index] = target.value;
+      });
+      setRows(newRows);
+    },
+    [rows, setRows, i]
+  );
+  const onValueChange = useCallback(
+    (newValue: any) => {
+      const newRows = produce(rows, draft => {
+        draft[i][1] = newValue;
+      });
+      setRows(newRows);
+      emitDataChange(newRows);
+    },
+    [rows, i, setRows, emitDataChange]
+  );
+  const onBlur = useCallback(() => emitDataChange(rows), [rows, emitDataChange]);
+  const onRemove = useCallback(() => onRemoveRow(i), [i, onRemoveRow]);
+
+  return (
+    <HStack spacing="1" display="flex">
+      <Input
+        minWidth={0}
+        flex="1 1 33.33%"
+        name="key"
+        value={rowKey}
+        title={rowKey}
+        placeholder="key"
+        onChange={onInputChange}
+        onBlur={onBlur}
+        isDisabled={onlySetValue}
+      />
+      {component ? (
+        <HStack minWidth={0} flex="2 2 66.66%" alignItems="center">
+          {valueSpec === undefined ||
+          typeof valueSpec === 'boolean' ||
+          IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) ? (
+            <ExpressionWidget
+              component={component}
+              path={nextPath}
+              spec={valueSpecWithExpressionOptions}
+              services={services}
+              level={level + 1}
+              value={value}
+              onChange={onValueChange}
+            />
+          ) : (
+            <SpecWidget
+              component={component}
+              value={value}
+              path={nextPath}
+              level={level + 1}
+              spec={valueSpecWithOptions}
+              services={services}
+              onChange={onValueChange}
+            />
+          )}
+        </HStack>
+      ) : (
+        <Input
+          flex={2}
+          minWidth={0}
+          name="value"
+          value={value}
+          title={value}
+          placeholder="value"
+          onChange={onInputChange}
+          onBlur={onBlur}
+        />
+      )}
+      {onlySetValue ? null : (
+        <IconButton
+          aria-label="remove row"
+          icon={<CloseIcon />}
+          size="xs"
+          onClick={onRemove}
+          variant="ghost"
+          isDisabled={minNum >= rows.length}
+        />
+      )}
+    </HStack>
+  );
+};
 
 export const RecordEditor: React.FC<RecordEditorProps> = props => {
-  const { component, value, spec, services, path = [], level = 1, onChange } = props;
+  const { value, spec, onChange } = props;
   const { minNum = 0, onlySetValue, isShowHeader } = spec?.widgetOptions || {};
   const generateRows = (currentRows: Array<[string, any]> = []) => {
     let newRows = toPairs(value);
@@ -35,133 +193,54 @@ export const RecordEditor: React.FC<RecordEditorProps> = props => {
   const [rows, setRows] = useState<Array<[string, any]>>(() => {
     return generateRows();
   });
-  const expressionOptions = useMemo<{
-    compactOptions: ExpressionEditorProps['compactOptions'];
-  }>(
-    () => ({
-      compactOptions: {
-        height: '32px',
-      },
-    }),
-    []
+
+  const emitDataChange = useCallback(
+    (newRows: Array<[string, string]>) => {
+      const json = fromPairs(newRows.filter(([key]) => key));
+
+      onChange(json);
+    },
+    [onChange]
   );
 
-  const emitDataChange = (newRows: Array<[string, string]>) => {
-    const json = fromPairs(newRows.filter(([key]) => key));
-    onChange(json);
-  };
-
-  const onAddRow = () => {
+  const onAddRow = useCallback(() => {
     setRows(prev => [...prev, ['', '']]);
-  };
-  const onRemoveRow = (i: number) => {
-    const newRows = produce(rows, draft => {
-      draft.splice(i, 1);
-    });
-    setRows(newRows);
-    emitDataChange(newRows);
-  };
+  }, []);
+  const onRemoveRow = useCallback(
+    (i: number) => {
+      const newRows = produce(rows, draft => {
+        draft.splice(i, 1);
+      });
+      setRows(newRows);
+      emitDataChange(newRows);
+    },
+    [rows, setRows, emitDataChange]
+  );
 
   useEffect(() => {
     setRows(generateRows(rows));
   }, [value]);
 
-  const rowItems = rows.map(([key, value], i) => {
-    const onInputChange = (e: React.ChangeEvent) => {
-      const target = e.target as HTMLInputElement;
-      const index = target.name === 'key' ? 0 : 1;
-      const newRows = produce(rows, draft => {
-        draft[i][index] = target.value;
-      });
-      setRows(newRows);
-    };
-    const onValueChange = (newValue: any) => {
-      const newRows = produce(rows, draft => {
-        draft[i][1] = newValue;
-      });
-      setRows(newRows);
-      emitDataChange(newRows);
-    };
-    const onBlur = () => emitDataChange(rows);
-    const valueSpec =
-      spec?.properties && key in spec.properties && spec.properties[key];
-
-    return (
-      <HStack key={i} spacing="1" display="flex">
-        <Input
-          flex={1}
-          name="key"
-          value={key}
-          title={key}
-          placeholder="key"
-          onChange={onInputChange}
-          onBlur={onBlur}
-          isDisabled={onlySetValue}
-        />
-        {component ? (
-          <HStack flex={2} alignItems="center">
-            {valueSpec &&
-            typeof valueSpec !== 'boolean' &&
-            !IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) ? (
-              <SpecWidget
-                component={component}
-                value={value}
-                path={path.concat(key)}
-                level={level + 1}
-                spec={mergeWidgetOptionsIntoSpec(valueSpec, {
-                  isShowAsideExpressionButton: true,
-                  expressionOptions,
-                })}
-                services={services}
-                onChange={onValueChange}
-              />
-            ) : (
-              <Box flex={1}>
-                <ExpressionWidget
-                  component={component}
-                  path={path.concat(key)}
-                  spec={Type.String({
-                    widgetOptions: { compactOptions: expressionOptions.compactOptions },
-                  })}
-                  services={services}
-                  level={level + 1}
-                  value={value}
-                  onChange={onValueChange}
-                />
-              </Box>
-            )}
-          </HStack>
-        ) : (
-          <Input
-            flex={1}
-            name="value"
-            value={value}
-            title={value}
-            placeholder="value"
-            onChange={onInputChange}
-            onBlur={onBlur}
-          />
-        )}
-        {onlySetValue ? null : (
-          <IconButton
-            aria-label="remove row"
-            icon={<CloseIcon />}
-            size="xs"
-            onClick={() => onRemoveRow(i)}
-            variant="ghost"
-            isDisabled={minNum >= rows.length}
-          />
-        )}
-      </HStack>
-    );
-  });
+  const rowItems = rows.map(([key, value], i) => (
+    <RowItem
+      key={i}
+      {...props}
+      rows={rows}
+      rowKey={key}
+      value={value}
+      index={i}
+      setRows={setRows}
+      onRemoveRow={onRemoveRow}
+      emitDataChange={emitDataChange}
+    />
+  ));
 
   return (
     <VStack spacing="2" alignItems="stretch">
       {isShowHeader !== false ? (
-        <HStack spacing="1" display="flex" marginRight="28px">
+        <HStack spacing="1" display="flex">
           <Text flex={1}>Key</Text>
-          <Text flex={1}>Value</Text>
+          <Text flex={2}>Value</Text>
         </HStack>
       ) : null}
       {rowItems}
