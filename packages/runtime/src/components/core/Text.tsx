@@ -1,13 +1,13 @@
 import { Type } from '@sinclair/typebox';
-import _Text, { TextPropertySchema } from '../_internal/Text';
+import _Text, { TextPropertySpec } from '../_internal/Text';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.String(),
 });
 
-const PropsSchema = Type.Object({
-  value: TextPropertySchema,
+const PropsSpec = Type.Object({
+  value: TextPropertySpec,
 });
 
 export default implementRuntimeComponent({
@@ -30,8 +30,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

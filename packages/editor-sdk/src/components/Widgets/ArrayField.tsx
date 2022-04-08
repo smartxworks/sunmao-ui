@@ -1,31 +1,31 @@
 import React from 'react';
-import { SchemaField } from './SchemaField';
+import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
-import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
+import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import {
   IconButton,
   Flex
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox } from '@sunmao-ui/runtime';
-import { ExpressionWidgetOptionsSchema } from './ExpressionWidget';
+import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { TSchema, Type, Static } from '@sinclair/typebox';
 import { ArrayTable } from '../Form/ArrayTable';
 import { ArrayItemBox } from '../Form/ArrayItemBox';
 
 const ArrayFieldWidgetOptions = Type.Object({
-  expressionOptions: Type.Optional(ExpressionWidgetOptionsSchema),
+  expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
   displayedKeys: Type.Optional(Type.Array(Type.String())),
 });
 
 type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
 
 export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = props => {
-  const { schema, value, path, level, onChange } = props;
-  const { expressionOptions } = schema.widgetOptions || {};
-  const itemSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items;
+  const { spec, value, path, level, onChange } = props;
+  const { expressionOptions } = spec.widgetOptions || {};
+  const itemSpec = Array.isArray(spec.items) ? spec.items[0] : spec.items;
 
-  if (typeof itemSchema === 'boolean' || !itemSchema) {
+  if (typeof itemSpec === 'boolean' || !itemSpec) {
     return null;
   }
 
@@ -38,21 +38,21 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
     );
   }
 
-  const isNotBaseType = itemSchema.type === 'object' || itemSchema.type === 'array';
+  const isNotBaseType = itemSpec.type === 'object' || itemSpec.type === 'array';
 
   return isNotBaseType ? (
-    <ArrayTable {...props} itemSchema={itemSchema} />
+    <ArrayTable {...props} itemSpec={itemSpec} />
   ) : (
     <>
       {value.map((itemValue, itemIndex) => (
         <ArrayItemBox key={itemIndex} index={itemIndex} value={value} onChange={onChange}>
-          <SchemaField
+          <SpecWidget
             {...props}
             value={itemValue}
-            schema={mergeWidgetOptionsIntoSchema(
+            spec={mergeWidgetOptionsIntoSpec(
               {
-                ...itemSchema,
-                title: isNotBaseType ? '' : itemSchema.title,
+                ...itemSpec,
+                title: isNotBaseType ? '' : itemSpec.title,
               },
               {
                 expressionOptions,
@@ -74,7 +74,7 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
           icon={<AddIcon />}
           size="sm"
           onClick={() => {
-            onChange(value.concat(parseTypeBox(itemSchema as TSchema)));
+            onChange(value.concat(parseTypeBox(itemSpec as TSchema)));
           }}
         />
       </Flex>
@@ -85,6 +85,6 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
 export default implementWidget<ArrayFieldWidgetOptionsType>({
   version: 'core/v1',
   metadata: {
-    name: 'ArrayField',
+    name: 'array',
   },
 })(ArrayField);

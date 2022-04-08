@@ -11,22 +11,23 @@ import {
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash-es';
 import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
+import { css } from '@emotion/css';
 import { isExpression as _isExpression } from '../../utils/validator';
 import { WidgetProps } from '../../types/widget';
 import {
   implementWidget,
-  mergeWidgetOptionsIntoSchema,
+  mergeWidgetOptionsIntoSpec,
   shouldDisplayLabel,
   getCodeMode,
 } from '../../utils/widget';
-import { ExpressionWidget, ExpressionWidgetOptionsSchema } from './ExpressionWidget';
+import { ExpressionWidget, ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { StringField } from './StringField';
 import { ObjectField } from './ObjectField';
 import { ArrayField } from './ArrayField';
 import { BooleanField } from './BooleanField';
 import { NumberField } from './NumberField';
 import { NullField } from './NullField';
-import { MultiSchemaField } from './MultiSchemaField';
+import { MultiSpecField } from './MultiSpecField';
 import { CategoryWidget } from './CategoryWidget';
 import { UnsupportedField } from './UnsupportedField';
 
@@ -86,12 +87,19 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     isExpression,
     setIsExpression,
   } = props;
+
   if (hidden) {
     return <div className="hidden">{children.content}</div>;
   }
 
+  const FormControlStyle = css`
+    &:not(:last-of-type) {
+      margin-bottom: var(--chakra-space-2);
+    }
+  `;
+
   return (
-    <FormControl isRequired={required} id={id} mt={displayLabel ? 1 : 0}>
+    <FormControl className={FormControlStyle} isRequired={required} id={id}>
       {displayLabel && (
         <Tooltip label={description} placement="auto-start">
           <FormLabel display="flex" alignItems="center">
@@ -115,7 +123,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
 export const SchemaFieldWidgetOptions = Type.Object({
   isDisplayLabel: Type.Optional(Type.Boolean()),
   isShowAsideExpressionButton: Type.Optional(Type.Boolean()),
-  expressionOptions: Type.Optional(ExpressionWidgetOptionsSchema),
+  expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
 });
 
 type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
@@ -127,25 +135,25 @@ type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
     | null;
 };
 
-export const SchemaField: React.FC<Props> = props => {
-  const { component, schema, level, path, value, services, children, onChange } = props;
-  const { title, widgetOptions } = schema;
+export const SpecWidget: React.FC<Props> = props => {
+  const { component, spec, level, path, value, services, children, onChange } = props;
+  const { title, widgetOptions } = spec;
   const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
   const label = title ?? '';
   const { widgetManager } = services;
   const [isExpression, setIsExpression] = useState(() => _isExpression(value));
   const isDisplayLabel =
-    widgetOptions?.isDisplayLabel !== false && shouldDisplayLabel(schema, label);
-  const codeMode = getCodeMode(schema);
+    widgetOptions?.isDisplayLabel !== false && shouldDisplayLabel(spec, label);
+  const codeMode = getCodeMode(spec);
 
-  if (isEmpty(schema)) {
+  if (isEmpty(spec)) {
     return null;
   }
 
   let Component: React.ComponentType<WidgetProps<any>> = UnsupportedField;
   let showAsideExpressionButton =
     isShowAsideExpressionButton && !isDisplayLabel && codeMode;
-  const widget = widgetManager.getWidget(schema.widget || '');
+  const widget = widgetManager.getWidget(spec.widget || '');
 
   // customize widgets
   if (isExpression) {
@@ -157,34 +165,34 @@ export const SchemaField: React.FC<Props> = props => {
     showAsideExpressionButton = false;
   }
   // type fields
-  else if (schema.type === 'object') {
+  else if (spec.type === 'object') {
     Component = ObjectField;
     showAsideExpressionButton = false;
-  } else if (schema.type === 'string') {
+  } else if (spec.type === 'string') {
     Component = StringField;
-  } else if (schema.type === 'array') {
+  } else if (spec.type === 'array') {
     Component = ArrayField;
     showAsideExpressionButton = false;
-  } else if (schema.type === 'boolean') {
+  } else if (spec.type === 'boolean') {
     Component = BooleanField;
-  } else if (schema.type === 'integer' || schema.type === 'number') {
+  } else if (spec.type === 'integer' || spec.type === 'number') {
     Component = NumberField;
-  } else if (schema.type === 'null') {
+  } else if (spec.type === 'null') {
     Component = NullField;
-  } else if ('anyOf' in schema || 'oneOf' in schema) {
-    Component = MultiSchemaField;
+  } else if ('anyOf' in spec || 'oneOf' in spec) {
+    Component = MultiSpecField;
   } else if (
-    [AnyKind, UnknownKind].includes((schema as unknown as { kind: symbol }).kind)
+    [AnyKind, UnknownKind].includes((spec as unknown as { kind: symbol }).kind)
   ) {
     Component = ExpressionWidget;
   } else {
-    console.info('Found unsupported schema', schema);
+    console.info('Found unsupported spec', spec);
   }
 
   return (
     <DefaultTemplate
       label={label}
-      description={schema.description}
+      description={spec.description}
       displayLabel={isDisplayLabel}
       codeMode={codeMode}
       isExpression={isExpression}
@@ -195,17 +203,17 @@ export const SchemaField: React.FC<Props> = props => {
         content: (
           <HStack>
             <Box
-              flex={schema.type === 'boolean' && isExpression === false ? '' : 1}
+              flex={spec.type === 'boolean' && isExpression === false ? '' : 1}
               maxWidth="100%"
             >
               <Component
                 component={component}
-                schema={
+                spec={
                   isExpression
-                    ? mergeWidgetOptionsIntoSchema(schema, {
+                    ? mergeWidgetOptionsIntoSpec(spec, {
                         compactOptions: expressionOptions?.compactOptions,
                       })
-                    : schema
+                    : spec
                 }
                 value={value}
                 path={path}
@@ -230,9 +238,9 @@ export const SchemaField: React.FC<Props> = props => {
 export default implementWidget<SchemaFieldWidgetOptionsType>({
   version: 'core/v1',
   metadata: {
-    name: 'SchemaField',
+    name: 'spec',
   },
   spec: {
     options: SchemaFieldWidgetOptions,
   },
-})(SchemaField);
+})(SpecWidget);

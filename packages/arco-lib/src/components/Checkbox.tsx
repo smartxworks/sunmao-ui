@@ -2,22 +2,22 @@ import { Checkbox as BaseCheckbox } from '@arco-design/web-react';
 import { Type, Static } from '@sinclair/typebox';
 import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
-  CheckboxPropsSchema as BaseCheckboxPropsSchema,
-  CheckboxOptionSchema as BaseCheckboxOptionSchema,
+  CheckboxPropsSpec as BaseCheckboxPropsSpec,
+  CheckboxOptionSpec as BaseCheckboxOptionSpec,
 } from '../generated/types/Checkbox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { css } from '@emotion/css';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
-const CheckboxPropsSchema = Type.Object({
-  ...BaseCheckboxPropsSchema,
+const CheckboxPropsSpec = Type.Object({
+  ...BaseCheckboxPropsSpec,
 });
-const CheckboxStateSchema = Type.Object({
+const CheckboxStateSpec = Type.Object({
   checkedValues: Type.Array(Type.String()),
   isCheckAll: Type.Boolean(),
 });
 
-const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = props => {
+const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
   const { elementRef, mergeState, subscribeMethods, callbackMap, customStyle } = props;
   const {
     options = [],
@@ -104,7 +104,7 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSchema>> = props =>
       toggleValues: ({
         values = [],
       }: {
-        values: Static<typeof BaseCheckboxOptionSchema>;
+        values: Static<typeof BaseCheckboxOptionSpec>;
       }) => {
         const currentCheckedValues = [...checkedValues];
 
@@ -202,8 +202,8 @@ const options = {
     },
   },
   spec: {
-    properties: CheckboxPropsSchema,
-    state: CheckboxStateSchema,
+    properties: CheckboxPropsSpec,
+    state: CheckboxStateSpec,
     methods: Type.Object({
       setCheckedValues: Type.Object({
         values: Type.Array(Type.String()),
@@ -211,7 +211,7 @@ const options = {
       checkAll: Type.Object({}),
       uncheckAll: Type.Object({}),
       toggleValues: Type.Object({
-        values: BaseCheckboxOptionSchema,
+        values: BaseCheckboxOptionSpec,
       }),
     }),
     styleSlots: ['content'],

@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-export const ValidResultSchema = Type.Object({
+export const ValidResultSpec = Type.Object({
   isInvalid: Type.Boolean(),
   errorMsg: Type.String(),
 });

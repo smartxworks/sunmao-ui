@@ -4,17 +4,16 @@ import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
 import {
-  CascaderPropsSchema as BaseCascaderPropsSchema,
-  CascaderValueSchema,
+  CascaderPropsSpec as BaseCascaderPropsSpec,
+  CascaderValueSpec,
 } from "../generated/types/Cascader";
-import { useState, useEffect } from "react";
+import { useState, useEffect , useRef } from "react";
 import { isArray } from "lodash-es";
 import { SelectViewHandle } from "@arco-design/web-react/es/_class/select-view";
-import { useRef } from "react";
 
-const CascaderPropsSchema = Type.Object(BaseCascaderPropsSchema);
-const CascaderStateSchema = Type.Object({
-  value: CascaderValueSchema,
+const CascaderPropsSpec = Type.Object(BaseCascaderPropsSpec);
+const CascaderStateSpec = Type.Object({
+  value: CascaderValueSpec,
 });
 
 type MapItem = {
@@ -64,7 +63,7 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
   return getTree(map);
 };
 
-const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSchema>> = (
+const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = (
   props
 ) => {
   const { getElement, callbackMap, multiple, placeholder, ...cProps } =
@@ -134,7 +133,7 @@ const CascaderExampleOptions = [
   ["jiangsu", "nanjing", "qinhuai", "yuhuatai", "andemen"],
   ["jiangsu", "nanjing", "qinhuai", "yuhuatai", "tiexinqiao"],
 ];
-const exampleProperties: Static<typeof CascaderPropsSchema> = {
+const exampleProperties: Static<typeof CascaderPropsSpec> = {
   defaultValue: ["beijing", "haidian", "smartx"],
   expandTrigger: "click",
   multiple: false,
@@ -159,8 +158,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: CascaderPropsSchema,
-    state: CascaderStateSchema,
+    properties: CascaderPropsSpec,
+    state: CascaderStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

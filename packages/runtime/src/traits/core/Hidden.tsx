@@ -2,7 +2,7 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
 
-const HiddenTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+const HiddenTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   return ({ hidden, visually }) => {
     if (visually) {
       return {
@@ -21,7 +21,7 @@ const HiddenTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
   };
 };
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   hidden: Type.Boolean(),
   visually: Type.Optional(Type.Boolean()),
 });
@@ -34,7 +34,7 @@ export default {
       description: 'render component with condition',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       state: {},
       methods: [],
     },

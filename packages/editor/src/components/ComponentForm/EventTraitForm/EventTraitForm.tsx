@@ -1,19 +1,110 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { EventHandlerSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 import { EventHandlerForm } from './EventHandlerForm';
 
-type EventHandler = Static<typeof EventHandlerSchema>;
+type EventHandler = Static<typeof EventHandlerSpec>;
 
 type Props = {
   component: ComponentSchema;
   services: EditorServices;
+};
+type HandlerProps = Props & {
+  index: number;
+  handlers: EventHandler[];
+};
+
+const Handler = (props: HandlerProps) => {
+  const { handlers, index: i, component, services } = props;
+  const { eventBus, registry } = services;
+
+  const handler = useMemo(() => handlers[i], [handlers, i]);
+
+  const onChange = useCallback(
+    (handler: EventHandler) => {
+      const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+      const newHandlers = produce(handlers!, draft => {
+        draft[i] = handler;
+      });
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'modifyTraitProperty', {
+          componentId: component.id,
+          traitIndex: index,
+          properties: {
+            handlers: newHandlers,
+          },
+        })
+      );
+    },
+    [component, handlers, i, registry, eventBus]
+  );
+
+  const onRemove = useCallback(() => {
+    const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+    const newHandlers = produce(handlers!, draft => {
+      draft.splice(i, 1);
+    });
+    eventBus.send(
+      'operation',
+      genOperation(registry, 'modifyTraitProperty', {
+        componentId: component.id,
+        traitIndex: index,
+        properties: {
+          handlers: newHandlers,
+        },
+      })
+    );
+  }, [component, handlers, i, registry, eventBus]);
+
+  const onSort = useCallback(
+    (isUp: boolean) => {
+      const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+      const newHandlers = [...handlers];
+      const switchedIndex = isUp ? i - 1 : i + 1;
+
+      if (newHandlers[switchedIndex]) {
+        const temp = newHandlers[switchedIndex];
+        newHandlers[switchedIndex] = newHandlers[i];
+        newHandlers[i] = temp;
+
+        eventBus.send(
+          'operation',
+          genOperation(registry, 'modifyTraitProperty', {
+            componentId: component.id,
+            traitIndex: index,
+            properties: {
+              handlers: newHandlers,
+            },
+          })
+        );
+      }
+    },
+    [component, handlers, i, registry, eventBus]
+  );
+  const onUp = useCallback(() => onSort(true), [onSort]);
+  const onDown = useCallback(() => onSort(false), [onSort]);
+
+  return (
+    <EventHandlerForm
+      key={i}
+      index={i}
+      size={handlers.length}
+      component={component}
+      services={services}
+      handler={handler}
+      onUp={onUp}
+      onDown={onDown}
+      onChange={onChange}
+      onRemove={onRemove}
+    />
+  );
 };
 
 export const EventTraitForm: React.FC<Props> = props => {
@@ -22,15 +113,14 @@ export const EventTraitForm: React.FC<Props> = props => {
 
   const handlers: EventHandler[] = useMemo(() => {
     return component.traits.find(t => t.type === 'core/v1/event')?.properties
-      .handlers as Array<Static<typeof EventHandlerSchema>>;
+      .handlers as Array<Static<typeof EventHandlerSpec>>;
   }, [component]);
 
   const eventTypes = useMemo(() => {
     return registry.getComponentByType(component.type).spec.events;
   }, [component.type, registry]);
 
-  if (!eventTypes.length) return null;
-  const onClickAddHandler = () => {
+  const onClickAddHandler = useCallback(() => {
     const newHandler: EventHandler = {
       type: eventTypes[0],
       componentId: '',
@@ -66,54 +156,14 @@ export const EventTraitForm: React.FC<Props> = props => {
         })
       );
     }
-  };
+  }, [component, eventBus, handlers, registry, eventTypes]);
+
+  if (!eventTypes.length) return null;
 
   const handlerForms = () =>
-    (handlers || []).map((h, i) => {
-      const onChange = (handler: EventHandler) => {
-        const index = component.traits.findIndex(t => t.type === 'core/v1/event');
-        const newHandlers = produce(handlers!, draft => {
-          draft[i] = handler;
-        });
-        eventBus.send(
-          'operation',
-          genOperation(registry, 'modifyTraitProperty', {
-            componentId: component.id,
-            traitIndex: index,
-            properties: {
-              handlers: newHandlers,
-            },
-          })
-        );
-      };
-
-      const onRemove = () => {
-        const index = component.traits.findIndex(t => t.type === 'core/v1/event');
-        const newHandlers = produce(handlers!, draft => {
-          draft.splice(i, 1);
-        });
-        eventBus.send(
-          'operation',
-          genOperation(registry, 'modifyTraitProperty', {
-            componentId: component.id,
-            traitIndex: index,
-            properties: {
-              handlers: newHandlers,
-            },
-          })
-        );
-      };
-      return (
-        <EventHandlerForm
-          key={i}
-          component={component}
-          services={services}
-          handler={h}
-          onChange={onChange}
-          onRemove={onRemove}
-        />
-      );
-    });
+    (handlers || []).map((_, i) => (
+      <Handler key={i} {...props} index={i} handlers={handlers} />
+    ));
 
   return (
     <VStack width="full">
@@ -128,7 +178,9 @@ export const EventTraitForm: React.FC<Props> = props => {
           variant="ghost"
         />
       </HStack>
-      <VStack width="full">{handlerForms()}</VStack>
+      <VStack width="full" spacing={0}>
+        {handlerForms()}
+      </VStack>
     </VStack>
   );
 };

@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  useImperativeHandle,
+} from 'react';
 import CodeMirror from 'codemirror';
 import {
   Box,
@@ -27,6 +34,7 @@ import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
 import ecma from '../../constants/ecmascript';
 import tern, { Def } from 'tern';
+import { getTypeString } from '../../utils/type';
 
 // TODO: tern uses global variable, maybe there is some workaround
 (window as unknown as { tern: typeof tern }).tern = tern;
@@ -140,6 +148,7 @@ CodeMirror.defineMode('sunmao-ui', (config, parseConfig) => {
 type CommonExpressionEditorProps = {
   defaultCode: string;
   onChange?: (v: string) => void;
+  onFocus?: (v: string) => void;
   onBlur?: (v: string) => void;
   defs?: tern.Def[];
 };
@@ -147,183 +156,265 @@ type ExpressionEditorStyleProps = {
   height?: string;
   maxHeight?: string;
   paddingY?: string;
-}
-type BaseExpressionEditorProps = CommonExpressionEditorProps & ExpressionEditorStyleProps & {
-  compact?: boolean;
 };
+type BaseExpressionEditorProps = CommonExpressionEditorProps &
+  ExpressionEditorStyleProps & {
+    compact?: boolean;
+    isError?: boolean;
+  };
 type BaseExpressionEditorHandle = {
   setCode: (code: string) => void;
-}
+};
 
-export const BaseExpressionEditor = React.forwardRef<BaseExpressionEditorHandle, BaseExpressionEditorProps>(({
-  defaultCode,
-  onChange,
-  onBlur,
-  defs,
-  compact,
-  height = '100%',
-  maxHeight = '',
-  paddingY = '2px',
-}, ref) => {
-  const style = css`
-    .CodeMirror {
-      width: 100%;
-      height: ${height};
-      padding: ${paddingY} ${compact ? '8px' : 0};
-      border-radius: var(--chakra-radii-sm);
-      background: var(--chakra-colors-gray-100);
-      color: var(--chakra-colors-gray-800);
-      transition-property: var(--chakra-transition-property-common);
-      transition-duration: var(--chakra-transition-duration-normal);
-      &:hover {
-        background: var(--chakra-colors-gray-200);
+export const BaseExpressionEditor = React.forwardRef<
+  BaseExpressionEditorHandle,
+  BaseExpressionEditorProps
+>(
+  (
+    {
+      defaultCode,
+      isError,
+      onChange,
+      onFocus,
+      onBlur,
+      defs,
+      compact,
+      height = '100%',
+      maxHeight = '',
+      paddingY = '2px',
+    },
+    ref
+  ) => {
+    const style = useMemo(
+      () => css`
+        .CodeMirror {
+          width: 100%;
+          height: ${height};
+          padding: ${paddingY} ${compact ? '8px' : 0};
+          border-radius: var(--chakra-radii-sm);
+          background: var(--chakra-colors-gray-100);
+          color: var(--chakra-colors-gray-800);
+          transition-property: var(--chakra-transition-property-common);
+          transition-duration: var(--chakra-transition-duration-normal);
+          &:hover {
+            background: var(--chakra-colors-gray-200);
+          }
+
+          .cm-sunmao-ui {
+            background: ${isError
+              ? 'var(--chakra-colors-red-100)'
+              : 'var(--chakra-colors-green-100)'};
+          }
+        }
+
+        .CodeMirror .CodeMirror-scroll {
+          max-height: ${maxHeight};
+        }
+      `,
+      [height, maxHeight, paddingY, compact, isError]
+    );
+
+    const wrapperEl = useRef<HTMLDivElement>(null);
+    const cm = useRef<CodeMirror.Editor | null>(null);
+    const tServer = useRef<tern.Server | null>(null);
+    useEffect(() => {
+      if (!wrapperEl.current) {
+        return;
       }
-
-      .cm-sunmao-ui {
-        background: var(--chakra-colors-green-100);
-      }
-    }
-
-    .CodeMirror .CodeMirror-scroll {
-      max-height: ${maxHeight};
-    }
-  `;
-
-  const wrapperEl = useRef<HTMLDivElement>(null);
-  const cm = useRef<CodeMirror.Editor | null>(null);
-  const tServer = useRef<tern.Server | null>(null);
-  useEffect(() => {
-    if (!wrapperEl.current) {
-      return;
-    }
-    if (!cm.current) {
-      cm.current = CodeMirror(wrapperEl.current, {
-        value: defaultCode,
-        mode: {
-          name: 'sunmao-ui',
-        },
-        lineWrapping: true,
-        theme: 'neat',
-        viewportMargin: Infinity,
-        hintOptions: {
-          completeSingle: false,
-        },
-        autoRefresh: { delay: 50 },
-        ...(compact
-          ? {
-              extraKeys: {
-                Tab: false
-              }
-            }
-          : {
-              lineNumbers: true,
-              foldGutter: true,
-              gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-              foldOptions: {
-                widget: () => {
-                  return '\u002E\u002E\u002E';
-                },
-              },
-            }),
-      });
-      const t = installTern(cm.current);
-      tServer.current = t.server;
-    }
-    const changeHandler = (instance: CodeMirror.Editor) => {
-      const value = instance.getValue();
-
-      onChange?.(value);
-    };
-    const blurHandler = (instance: CodeMirror.Editor) => {
-      onBlur?.(instance.getValue());
-    };
-    cm.current.on('change', changeHandler);
-    cm.current.on('blur', blurHandler);
-    return () => {
-      cm.current?.off('change', changeHandler);
-      cm.current?.off('blur', blurHandler);
-    };
-  }, [defaultCode, onChange, onBlur, compact]);
-  useEffect(() => {
-    if (defs) {
-      tServer.current?.deleteDefs('customDataTree');
-      tServer.current?.addDefs(defs[0] as any, true);
-    }
-  }, [defs]);
-
-  useImperativeHandle(ref, () => ({
-    setCode: (code: string) => {
-      cm.current?.setValue(code);
-    }
-  }));
-
-  return (
-    <Box css={style} ref={wrapperEl} height="100%" width="100%" overflow="hidden">
-      <Global
-        styles={{
-          '.CodeMirror-hints': {
-            zIndex: 1800,
+      if (!cm.current) {
+        cm.current = CodeMirror(wrapperEl.current, {
+          value: defaultCode,
+          mode: {
+            name: 'sunmao-ui',
           },
-        }}
-      />
-    </Box>
-  );
-});
+          lineWrapping: true,
+          theme: 'neat',
+          viewportMargin: Infinity,
+          hintOptions: {
+            completeSingle: false,
+          },
+          autoRefresh: { delay: 50 },
+          ...(compact
+            ? {
+                extraKeys: {
+                  Tab: false,
+                },
+              }
+            : {
+                lineNumbers: true,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                foldOptions: {
+                  widget: () => {
+                    return '\u002E\u002E\u002E';
+                  },
+                },
+              }),
+        });
+        const t = installTern(cm.current);
+        tServer.current = t.server;
+      }
+      const changeHandler = (instance: CodeMirror.Editor) => {
+        const value = instance.getValue();
+
+        onChange?.(value);
+      };
+      const focusHandler = (instance: CodeMirror.Editor) => {
+        onFocus?.(instance.getValue());
+      };
+      const blurHandler = (instance: CodeMirror.Editor) => {
+        onBlur?.(instance.getValue());
+      };
+      cm.current.on('change', changeHandler);
+      cm.current.on('focus', focusHandler);
+      cm.current.on('blur', blurHandler);
+      return () => {
+        cm.current?.off('change', changeHandler);
+        cm.current?.off('focus', focusHandler);
+        cm.current?.off('blur', blurHandler);
+      };
+    }, [defaultCode, onChange, onFocus, onBlur, compact]);
+    useEffect(() => {
+      if (defs) {
+        tServer.current?.deleteDefs('customDataTree');
+        tServer.current?.addDefs(defs[0] as any, true);
+      }
+    }, [defs]);
+
+    useImperativeHandle(ref, () => ({
+      setCode: (code: string) => {
+        cm.current?.setValue(code);
+      },
+    }));
+
+    return (
+      <Box css={style} ref={wrapperEl} height="100%" width="100%" overflow="hidden">
+        <Global
+          styles={{
+            '.CodeMirror-hints': {
+              zIndex: 1800,
+            },
+          }}
+        />
+      </Box>
+    );
+  }
+);
 
 export type ExpressionEditorProps = BaseExpressionEditorProps & {
   compactOptions?: ExpressionEditorStyleProps;
+  evaledValue?: any;
+  error?: string | null;
 };
 export type ExpressionEditorHandle = BaseExpressionEditorHandle;
 
-
-export const ExpressionEditor = React.forwardRef<ExpressionEditorHandle, ExpressionEditorProps>((props: ExpressionEditorProps, ref) => {
-  const { compactOptions = {} } = props;
-  const style = css`
-    .expand-icon {
-      display: none;
-    }
-    &:hover,
-    &:focus-within {
+export const ExpressionEditor = React.forwardRef<
+  ExpressionEditorHandle,
+  ExpressionEditorProps
+>((props: ExpressionEditorProps, ref) => {
+  const { compactOptions = {}, error, evaledValue, onFocus, onBlur } = props;
+  const style = useMemo(
+    () => css`
+      width: 100%;
       .expand-icon {
-        display: inherit;
+        display: none;
       }
-    }
-  `;
+      &:hover,
+      &:focus-within {
+        .expand-icon {
+          display: inherit;
+        }
+      }
+    `,
+    []
+  );
   const [showModal, setShowModal] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
+  const [isFocus, setIsFocus] = useState(false);
   const compactEditorRef = useRef<BaseExpressionEditorHandle>(null);
   const editorRef = useRef<BaseExpressionEditorHandle>(null);
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     setShowModal(false);
     setRenderKey(renderKey + 1);
-  };
+  }, [renderKey]);
+  const onExpressionFocus = useCallback(
+    (value: string) => {
+      setIsFocus(true);
+      onFocus?.(value);
+    },
+    [onFocus]
+  );
+  const onExpressionBlur = useCallback(
+    (value: string) => {
+      setIsFocus(false);
+      onBlur?.(value);
+    },
+    [onBlur]
+  );
+  const onExpand = useCallback(() => {
+    setShowModal(true);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     setCode: (code: string) => {
       editorRef.current?.setCode(code);
       compactEditorRef.current?.setCode(code);
-    }
+    },
   }));
 
   return (
     <Box position="relative" css={style}>
       {/* Force re-render CodeMirror when editted in modal, since it's not reactive */}
-      <BaseExpressionEditor ref={compactEditorRef} {...props} key={renderKey} compact {...compactOptions} />
-      <IconButton
-        aria-label="expand editor"
-        position="absolute"
-        right="0"
-        bottom="0"
-        size="xs"
-        variant="ghost"
-        colorScheme="blue"
-        zIndex="9"
-        className="expand-icon"
-        onClick={() => setShowModal(true)}
-      >
-        <ExternalLinkIcon />
-      </IconButton>
+      <Box border={error ? '1px solid #c04035' : '1px solid transparent'}>
+        <BaseExpressionEditor
+          ref={compactEditorRef}
+          {...props}
+          key={renderKey}
+          compact
+          {...compactOptions}
+          isError={!!error}
+          onFocus={onExpressionFocus}
+          onBlur={onExpressionBlur}
+        />
+        <IconButton
+          aria-label="expand editor"
+          position="absolute"
+          right="0"
+          bottom="0"
+          size="xs"
+          variant="ghost"
+          colorScheme="blue"
+          zIndex="9"
+          className="expand-icon"
+          onClick={onExpand}
+        >
+          <ExternalLinkIcon />
+        </IconButton>
+      </Box>
+      {isFocus ? (
+        <Box
+          width="100%"
+          padding="8px"
+          maxHeight="128px"
+          overflow="auto"
+          position="absolute"
+          bottom="0"
+          zIndex={3}
+          transform="translateY(100%)"
+          background={error ? '#fef1f0' : '#d4eadd'}
+          color={error ? '#c04035' : '#3b734f'}
+          borderColor={error ? '#f7d6d4' : '#72b98e'}
+          borderStyle="solid"
+          borderWidth="1px"
+          borderRadius="0 0 4px 4px"
+        >
+          <Box fontWeight="bold" marginBottom="4px">
+            {error ? 'Error' : getTypeString(evaledValue)}
+          </Box>
+          {error || JSON.stringify(evaledValue)}
+        </Box>
+      ) : null}
       {showModal && (
         <Modal
           size="xl"
@@ -337,7 +428,12 @@ export const ExpressionEditor = React.forwardRef<ExpressionEditorHandle, Express
             <ModalHeader>Expression Editor</ModalHeader>
             <ModalBody>
               <Box height="500">
-                <BaseExpressionEditor ref={editorRef} {...props} compact={false} />
+                <BaseExpressionEditor
+                  ref={editorRef}
+                  {...props}
+                  compact={false}
+                  isError={!!error}
+                />
               </Box>
             </ModalBody>
             <ModalFooter>

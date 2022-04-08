@@ -1,10 +1,10 @@
 import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
-import { TextPropertySchema } from "@sunmao-ui/runtime";
+import { TextPropertySpec } from "@sunmao-ui/runtime";
 
-export const FormControlPropsSchema = {
-    label: TextPropertySchema,
+export const FormControlPropsSpec = {
+    label: TextPropertySpec,
     required: Type.Boolean({
         title: 'Required',
         category: Category.Basic
@@ -53,7 +53,7 @@ export const FormControlPropsSchema = {
     })
 }
 
-export const FormPropsSchema = {
+export const FormPropsSpec = {
     inline: Type.Boolean({
         title: 'Inline',
         category: Category.Layout

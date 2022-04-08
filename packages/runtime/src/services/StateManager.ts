@@ -23,6 +23,13 @@ const DefaultDependencies = {
   _,
 };
 
+export class ExpressionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ExpressionError';
+  }
+}
+
 export class StateManager {
   store = reactive<Record<string, any>>({});
 
@@ -42,49 +49,60 @@ export class StateManager {
     }
 
     const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
-    let evaled;
-    try {
-      // eslint-disable-next-line no-useless-call, no-new-func
-      evaled = new Function(
-        'store, dependencies, scopeObject',
-        // trim leading space and newline
-        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
-          /^\s+/g,
-          ''
-        )} } } }`
-      ).call(
-        null,
-        overrideScope ? {} : this.store,
-        overrideScope ? {} : this.dependencies,
-        scopeObject
-      );
-    } catch (e: any) {
-      return `{{ ${evalText} }}`;
-    }
+
+    // eslint-disable-next-line no-useless-call, no-new-func
+    const evaled = new Function(
+      'store, dependencies, scopeObject',
+      // trim leading space and newline
+      `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+        /^\s+/g,
+        ''
+      )} } } }`
+    ).call(
+      null,
+      overrideScope ? {} : this.store,
+      overrideScope ? {} : this.dependencies,
+      scopeObject
+    );
+
     return evaled;
   };
 
-  maskedEval(raw: string, evalListItem = false, scopeObject = {}, overrideScope = false) {
-    if (isNumeric(raw)) {
-      return toNumber(raw);
-    }
-    if (raw === 'true') {
-      return true;
-    }
-    if (raw === 'false') {
-      return false;
-    }
-    const expChunk = parseExpression(raw, evalListItem);
+  maskedEval(
+    raw: string,
+    evalListItem = false,
+    scopeObject = {},
+    overrideScope = false
+  ): unknown | ExpressionError {
+    try {
+      if (isNumeric(raw)) {
+        return toNumber(raw);
+      }
+      if (raw === 'true') {
+        return true;
+      }
+      if (raw === 'false') {
+        return false;
+      }
+      const expChunk = parseExpression(raw, evalListItem);
 
-    if (typeof expChunk === 'string') {
-      return expChunk;
-    }
+      if (typeof expChunk === 'string') {
+        return expChunk;
+      }
 
-    const result = expChunk.map(e => this.evalExp(e, scopeObject, overrideScope));
-    if (result.length === 1) {
-      return result[0];
+      const result = expChunk.map(e => this.evalExp(e, scopeObject, overrideScope));
+      if (result.length === 1) {
+        return result[0];
+      }
+      return result.join('');
+    } catch (error) {
+      if (error instanceof Error) {
+        const expressionError = new ExpressionError(error.message);
+        console.error(expressionError);
+        return expressionError;
+      }
+      return undefined;
     }
-    return result.join('');
   }
 
   mapValuesDeep<T extends object>(
