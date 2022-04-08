@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box, Select, Text, VStack } from '@chakra-ui/react';
 import {
   SpecWidget,
@@ -19,19 +19,25 @@ interface Props {
   services: EditorServices;
 }
 
+const EMPTY_ARRAY: string[] = [];
+
 export const Body: React.FC<Props> = props => {
   const { api, spec, formik, services } = props;
   const { values } = formik;
+  const specWithWidgetOptions = useMemo(()=> mergeWidgetOptionsIntoSpec(spec, {
+    minNum: 1,
+    isShowHeader: true,
+  }), [spec]);
 
-  const onChange = (value: Record<string, unknown>) => {
+  const onChange = useCallback((value: Record<string, unknown>) => {
     formik.setFieldValue('body', value);
     formik.submitForm();
-  };
+  }, [formik]);
 
-  const onBodyTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onBodyTypeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     formik.setFieldValue('bodyType', e.target.value);
     formik.submitForm();
-  };
+  }, [formik]);
 
   return (
     <VStack alignItems="start">
@@ -46,11 +52,8 @@ export const Body: React.FC<Props> = props => {
       <Box width="full">
         <SpecWidget
           component={api}
-          spec={mergeWidgetOptionsIntoSpec(spec, {
-            minNum: 1,
-            isShowHeader: true,
-          })}
-          path={[]}
+          spec={specWithWidgetOptions}
+          path={EMPTY_ARRAY}
           level={1}
           value={values.body}
           services={services}

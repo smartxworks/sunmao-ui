@@ -115,6 +115,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
     return results;
   }
 }
+
 export const PropertiesRules = [
   new PropertySchemaValidatorRule(),
   new ExpressionValidatorRule(),
