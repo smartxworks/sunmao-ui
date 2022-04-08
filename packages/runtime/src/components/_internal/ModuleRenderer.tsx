@@ -80,6 +80,7 @@ const ModuleRendererContent = React.forwardRef<
         ...evaledProperties,
         $moduleId: moduleId,
       },
+      true,
       true
     ).template;
   }, [parsedTemplate, evaledProperties, moduleId]);
