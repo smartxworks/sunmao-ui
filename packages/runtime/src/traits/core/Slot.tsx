@@ -1,13 +1,13 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Type } from '@sinclair/typebox';
 
-export const ContainerPropertySchema = Type.Object({
+export const ContainerPropertySpec = Type.Object({
   id: Type.String(),
   slot: Type.String(),
 });
 
-const PropsSchema = Type.Object({
-  container: ContainerPropertySchema,
+const PropsSpec = Type.Object({
+  container: ContainerPropertySpec,
 });
 
 export default {
@@ -18,7 +18,7 @@ export default {
       description: 'nested components by slots',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       state: {},
       methods: [],
     },

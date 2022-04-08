@@ -3,11 +3,11 @@ import { ComponentImpl, implementRuntimeComponent, Text } from '@sunmao-ui/runti
 import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../../sunmao-helper';
-import { FormControlPropsSchema as BaseFormControlPropsSchema } from '../../generated/types/Form';
+import { FormControlPropsSpec as BaseFormControlPropsSpec } from '../../generated/types/Form';
 import { EmptyPlaceholder } from './EmptyPlaceholder';
 import { FormControlErrorMessage } from './FormControlErrorMessage';
 
-const FormControlPropsSchema = Type.Object(BaseFormControlPropsSchema);
+const FormControlPropsSpec = Type.Object(BaseFormControlPropsSpec);
 const BaseFormControl = Form.Item;
 
 const FormControlStyle = css`
@@ -23,7 +23,7 @@ const FormControlStyle = css`
   }
 `;
 
-const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = props => {
+const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSpec>> = props => {
   const { label, errorMsg, ...cProps } = getComponentProps(props);
   const { elementRef, slotsElements, customStyle } = props;
 
@@ -49,7 +49,7 @@ const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSchema>> = pr
   );
 };
 
-const exampleProperties: Static<typeof FormControlPropsSchema> = {
+const exampleProperties: Static<typeof FormControlPropsSpec> = {
   label: {
     format: 'plain',
     raw: 'label',
@@ -78,7 +78,7 @@ export const FormControl = implementRuntimeComponent({
     },
   },
   spec: {
-    properties: FormControlPropsSchema,
+    properties: FormControlPropsSpec,
     state: Type.Object({}),
     methods: {},
     slots: ['content'],

@@ -1,8 +1,8 @@
-import { EventHandlerSchema } from './traitPropertiesSchema';
+import { EventHandlerSpec } from './traitPropertiesSpec';
 import { Type } from '@sinclair/typebox';
 import { RuntimeModule } from '@sunmao-ui/core';
 
-export const ModuleSchema = Type.Object({
+export const ModuleSpec = Type.Object({
   id: Type.String({
     title: 'Module ID',
     category: 'Basic',
@@ -16,7 +16,7 @@ export const ModuleSchema = Type.Object({
     category: 'Basic',
     widget: 'core/v1/KeyValue',
   }),
-  handlers: Type.Array(EventHandlerSchema, {
+  handlers: Type.Array(EventHandlerSpec, {
     title: 'Module Handlers',
     category: 'Basic',
   }),

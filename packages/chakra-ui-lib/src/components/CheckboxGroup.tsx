@@ -2,23 +2,23 @@ import { useState, useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { Box, CheckboxGroup as BaseCheckboxGroup } from '@chakra-ui/react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
-import { SizePropertySchema, IsDisabledSchema } from './Checkbox';
+import { SizePropertySpec, IsDisabledSpec } from './Checkbox';
 import { BASIC } from './constants/category';
 
-const DefaultValueSchema = Type.Array(Type.Union([Type.String(), Type.Number()]), {
+const DefaultValueSpec = Type.Array(Type.Union([Type.String(), Type.Number()]), {
   title: 'Default Value',
   description: 'The default value of the checkbox group to be checked',
   category: BASIC,
 });
 
-const StateSchema = Type.Object({
-  value: DefaultValueSchema,
+const StateSpec = Type.Object({
+  value: DefaultValueSpec,
 });
 
-const PropsSchema = Type.Object({
-  defaultValue: DefaultValueSchema,
-  isDisabled: IsDisabledSchema,
-  size: SizePropertySchema,
+const PropsSpec = Type.Object({
+  defaultValue: DefaultValueSpec,
+  isDisabled: IsDisabledSpec,
+  size: SizePropertySpec,
 });
 
 export default implementRuntimeComponent({
@@ -40,8 +40,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: ['content'],
     styleSlots: [],

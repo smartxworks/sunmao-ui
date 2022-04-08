@@ -4,19 +4,19 @@ import {
   implementRuntimeComponent,
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
-  ModuleSchema,
+  ModuleSpec,
   ModuleRenderer,
 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { BASIC } from './constants/category';
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {
     title: 'Data',
     category: BASIC,
     widget: 'core/v1/Expression'
   }),
-  template: ModuleSchema,
+  template: ModuleSpec,
 });
 
 const exampleProperties = {
@@ -46,7 +46,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     methods: {},
     state: Type.Object({}),
     slots: [],

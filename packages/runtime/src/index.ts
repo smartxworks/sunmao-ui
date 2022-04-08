@@ -59,12 +59,12 @@ export * from './utils/parseTypeBox';
 export * from './utils/buildKit';
 export * from './utils/encodeDragDataTransfer';
 export * from './types';
-export * from './types/traitPropertiesSchema';
+export * from './types/traitPropertiesSpec';
 export * from './constants';
 export * from './services/Registry';
 export * from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
-export { default as Text, TextPropertySchema } from './components/_internal/Text';
+export { default as Text, TextPropertySpec } from './components/_internal/Text';
 
 // TODO: check this export
 export { watch } from './utils/watchReactivity';

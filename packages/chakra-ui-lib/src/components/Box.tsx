@@ -5,7 +5,7 @@ import { pick } from 'lodash-es';
 import { css } from '@emotion/css';
 import { LAYOUT, BACKGROUND, BORDER } from './constants/category';
 
-const StyleSchema = Type.Partial(
+const StyleSpec = Type.Partial(
   Type.Object({
     // Layout
     w: Type.Union([Type.String(), Type.Number()], {
@@ -101,7 +101,7 @@ const StyleSchema = Type.Partial(
     }),
   })
 );
-const StyleProps = Object.keys(StyleSchema.properties);
+const StyleProps = Object.keys(StyleSpec.properties);
 
 export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
@@ -141,7 +141,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: StyleSchema,
+    properties: StyleSpec,
     state: Type.Object({}),
     methods: {},
     slots: ['content'],

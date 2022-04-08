@@ -1,19 +1,20 @@
 import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
-import { ColumnSchema, ColumnsPropertySchema } from './TableTypes';
+import { ColumnSpec, ColumnsPropertySpec } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
 import {
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
   UIServices,
+  ExpressionError
 } from '@sunmao-ui/runtime';
 
 export const TableTd: React.FC<{
   index: number;
   item: any;
-  column: Static<typeof ColumnSchema>;
-  rawColumn: Static<typeof ColumnsPropertySchema>[0]
+  column: Static<typeof ColumnSpec>;
+  rawColumn: Static<typeof ColumnsPropertySpec>[0]
   onClickItem: () => void;
   services: UIServices;
   app?: RuntimeApplication;
@@ -23,9 +24,11 @@ export const TableTd: React.FC<{
   let buttonConfig = column.buttonConfig;
 
   if (column.displayValue) {
-    value = services.stateManager.maskedEval(column.displayValue, true, {
+    const result = services.stateManager.maskedEval(column.displayValue, true, {
       [LIST_ITEM_EXP]: item,
     });
+
+    value = result instanceof ExpressionError ? '' : result;
   }
 
   if (column.buttonConfig) {
@@ -35,6 +38,7 @@ export const TableTd: React.FC<{
   }
 
   let content = value;
+
   switch (column.type) {
     case 'text':
       content = <Text whiteSpace="pre-wrap">{value}</Text>;

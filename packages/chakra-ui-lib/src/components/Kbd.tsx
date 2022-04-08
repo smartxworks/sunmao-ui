@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { Kbd as BaseKbd } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent, Text, TextPropertySchema } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Text, TextPropertySpec } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.String(),
 });
 
-const PropsSchema = Type.Object({
-  text: TextPropertySchema,
+const PropsSpec = Type.Object({
+  text: TextPropertySpec,
 });
 
 export default implementRuntimeComponent({
@@ -32,8 +32,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],
