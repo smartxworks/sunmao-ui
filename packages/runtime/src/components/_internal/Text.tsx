@@ -3,7 +3,7 @@ import { css } from '@emotion/css';
 import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 
-export const TextPropertySchema = Type.Object(
+export const TextPropertySpec = Type.Object(
   {
     raw: Type.String({
       title: 'Raw',
@@ -25,7 +25,7 @@ export const TextPropertySchema = Type.Object(
 );
 
 export type TextProps = {
-  value: Static<typeof TextPropertySchema>;
+  value: Static<typeof TextPropertySpec>;
   cssStyle?: string;
 };
 

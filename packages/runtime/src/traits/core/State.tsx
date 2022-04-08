@@ -4,7 +4,7 @@ import { TraitImplFactory } from '../../types';
 
 type KeyValue = { key: string; value: unknown };
 
-const StateTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
+const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   const HasInitializedMap = new Map<string, boolean>();
 
   return ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
@@ -32,7 +32,7 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSchema>> = () => {
   };
 };
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   key: Type.String(),
   initialValue: Type.Any(),
 });
@@ -45,7 +45,7 @@ export default {
       description: 'add state to component',
     },
     spec: {
-      properties: PropsSchema,
+      properties: PropsSpec,
       state: Type.Any(),
       methods: [
         {

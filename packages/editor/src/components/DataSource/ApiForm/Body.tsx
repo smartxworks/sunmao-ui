@@ -1,26 +1,26 @@
 import React from 'react';
 import { Box, Select, Text, VStack } from '@chakra-ui/react';
 import {
-  SchemaField,
+  SpecWidget,
   WidgetProps,
-  mergeWidgetOptionsIntoSchema,
+  mergeWidgetOptionsIntoSpec,
 } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
-import { FetchTraitPropertiesSchema } from '@sunmao-ui/runtime';
+import { FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 
-type Values = Static<typeof FetchTraitPropertiesSchema>;
+type Values = Static<typeof FetchTraitPropertiesSpec>;
 interface Props {
   api: ComponentSchema;
-  schema: WidgetProps['schema'];
+  spec: WidgetProps['spec'];
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
   services: EditorServices;
 }
 
 export const Body: React.FC<Props> = props => {
-  const { api, schema, formik, services } = props;
+  const { api, spec, formik, services } = props;
   const { values } = formik;
 
   const onChange = (value: Record<string, unknown>) => {
@@ -44,9 +44,9 @@ export const Body: React.FC<Props> = props => {
       </Select>
 
       <Box width="full">
-        <SchemaField
+        <SpecWidget
           component={api}
-          schema={mergeWidgetOptionsIntoSchema(schema, {
+          spec={mergeWidgetOptionsIntoSpec(spec, {
             minNum: 1,
             isShowHeader: true,
           })}
@@ -63,7 +63,7 @@ export const Body: React.FC<Props> = props => {
               </Text>
             ),
           }}
-        </SchemaField>
+        </SpecWidget>
       </Box>
     </VStack>
   );

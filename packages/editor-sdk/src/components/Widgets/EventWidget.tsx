@@ -5,9 +5,9 @@ import { useFormik } from 'formik';
 import { GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { WidgetProps } from '../../types/widget';
-import { implementWidget, mergeWidgetOptionsIntoSchema } from '../../utils/widget';
-import { KeyValueWidget } from './KeyValueWidget';
-import { SchemaField } from './SchemaField';
+import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
+import { RecordWidget } from './RecordField';
+import { SpecWidget } from './SpecWidget';
 import { observer } from 'mobx-react-lite';
 
 const EventWidgetOptions = Type.Object({});
@@ -16,7 +16,7 @@ type EventWidgetOptionsType = Static<typeof EventWidgetOptions>;
 
 export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observer(
   props => {
-    const { value, path, level, component, schema, services, onChange } = props;
+    const { value, path, level, component, spec, services, onChange } = props;
     const { registry, editorStore, appModelManager } = services;
     const { utilMethods } = registry;
     const { components } = editorStore;
@@ -53,16 +53,16 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       () => Object.keys(formik.values.method.parameters ?? {}).length,
       [formik.values.method.parameters]
     );
-    const paramsSchema = useMemo(() => {
+    const paramsSpec = useMemo(() => {
       const { values } = formik;
       const methodName = values.method.name;
-      let schema: WidgetProps['schema'] = Type.Record(Type.String(), Type.String());
+      let spec: WidgetProps['spec'] = Type.Record(Type.String(), Type.String());
 
       if (methodName) {
         if (value.componentId === GLOBAL_UTILS_ID) {
           const targetMethod = utilMethods.get(methodName);
 
-          schema = targetMethod?.parameters;
+          spec = targetMethod?.parameters;
         } else {
           const targetComponent = appModelManager.appModel.getComponentById(
             value.componentId
@@ -72,19 +72,19 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
           );
 
           if (targetMethod?.parameters) {
-            schema = targetMethod.parameters;
+            spec = targetMethod.parameters;
           }
         }
       }
 
-      return schema;
+      return spec;
     }, [formik.values.method]);
     const params = useMemo(() => {
       const params: Record<string, string> = {};
       const { values } = formik;
 
-      for (const key in paramsSchema?.properties ?? {}) {
-        const defaultValue = (paramsSchema?.properties?.[key] as WidgetProps['schema'])
+      for (const key in paramsSpec?.properties ?? {}) {
+        const defaultValue = (paramsSpec?.properties?.[key] as WidgetProps['spec'])
           .defaultValue;
 
         params[key] = values.method.parameters?.[key] ?? defaultValue ?? '';
@@ -190,11 +190,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     const parametersField = (
       <FormControl>
         <FormLabel>Parameters</FormLabel>
-        <KeyValueWidget
+        <RecordWidget
           component={component}
           path={path.concat('method', 'parameters')}
           level={level + 1}
-          schema={mergeWidgetOptionsIntoSchema(paramsSchema, { onlySetValue: true })}
+          spec={mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true })}
           services={services}
           value={formik.values.method.parameters}
           onChange={json => {
@@ -236,9 +236,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     const disabledField = (
       <FormControl>
         <FormLabel>Disabled</FormLabel>
-        <SchemaField
+        <SpecWidget
           {...props}
-          schema={Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } })}
+          spec={Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } })}
           level={level + 1}
           path={['disabled']}
           value={formik.values.disabled}
@@ -252,7 +252,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     return (
       <>
-        {schema.properties?.type ? typeField : null}
+        {spec.properties?.type ? typeField : null}
         {targetField}
         {methodField}
         {hasParams ? parametersField : null}
@@ -267,6 +267,6 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 export default implementWidget<EventWidgetOptionsType>({
   version: 'core/v1',
   metadata: {
-    name: 'Event',
+    name: 'event',
   },
 })(EventWidget);

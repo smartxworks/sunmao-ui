@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const SwitchPropsSchema = {
+export const SwitchPropsSpec = {
     defaultChecked:Type.Boolean({
         title:'Default Checked',
         category:Category.Basic,

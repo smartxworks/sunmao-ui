@@ -7,13 +7,13 @@ import {
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { ModalPropsSchema as BaseModalPropsSchema } from "../generated/types/Modal";
+import { ModalPropsSpec as BaseModalPropsSpec } from "../generated/types/Modal";
 import { useEffect, useRef, useState } from "react";
 
-const ModalPropsSchema = Type.Object(BaseModalPropsSchema);
-const ModalStateSchema = Type.Object({});
+const ModalPropsSpec = Type.Object(BaseModalPropsSpec);
+const ModalStateSpec = Type.Object({});
 
-const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
+const ModalImpl: ComponentImpl<Static<typeof ModalPropsSpec>> = (props) => {
   const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
   const { getElement, title, ...cProps } = getComponentProps(props);
   const [visible, setVisible] = useState(true);
@@ -69,7 +69,7 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof ModalPropsSchema> = {
+const exampleProperties: Static<typeof ModalPropsSpec> = {
   title: "Modal title",
   mask: true,
   simple: false,
@@ -91,8 +91,8 @@ export const Modal = implementRuntimeComponent({
     },
   },
   spec: {
-    properties: ModalPropsSchema,
-    state: ModalStateSchema,
+    properties: ModalPropsSpec,
+    state: ModalStateSpec,
     methods: {
       openModal: Type.String(),
       closeModal: Type.String(),

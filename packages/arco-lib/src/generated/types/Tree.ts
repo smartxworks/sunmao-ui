@@ -2,7 +2,7 @@ import { Type } from "@sinclair/typebox";
 import { Category } from "../../constants/category";
 import { StringUnion } from "../../sunmao-helper";
 
-export const TreeNodeSchema = Type.Object({
+export const TreeNodeSpec = Type.Object({
   title: Type.String(),
   key: Type.String(),
   children: Type.Optional(Type.Array(Type.Any())),
@@ -11,8 +11,8 @@ export const TreeNodeSchema = Type.Object({
   path:Type.Optional(Type.Array(Type.String()))
 });
 
-export const TreePropsSchema = Type.Object({
-  data: Type.Array(TreeNodeSchema, {
+export const TreePropsSpec = Type.Object({
+  data: Type.Array(TreeNodeSpec, {
     category: Category.Data,
     title: "Tree Data",
   }),

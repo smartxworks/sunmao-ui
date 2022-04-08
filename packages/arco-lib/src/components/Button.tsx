@@ -3,14 +3,14 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { ButtonPropsSchema as BaseButtonPropsSchema } from "../generated/types/Button";
+import { ButtonPropsSpec as BaseButtonPropsSpec } from "../generated/types/Button";
 
-const ButtonPropsSchema = Type.Object({
-  ...BaseButtonPropsSchema,
+const ButtonPropsSpec = Type.Object({
+  ...BaseButtonPropsSpec,
 });
-const ButtonStateSchema = Type.Object({});
+const ButtonStateSpec = Type.Object({});
 
-const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
+const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSpec>> = (props) => {
   const { elementRef, slotsElements, customStyle, text, callbackMap } = props;
   const { ...cProps } = getComponentProps(props);
 
@@ -27,7 +27,7 @@ const ButtonImpl: ComponentImpl<Static<typeof ButtonPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof ButtonPropsSchema> = {
+const exampleProperties: Static<typeof ButtonPropsSpec> = {
   type: "default",
   status: "default",
   long: false,
@@ -50,8 +50,8 @@ const options = {
     }
   },
   spec: {
-    properties: ButtonPropsSchema,
-    state: ButtonStateSchema,
+    properties: ButtonPropsSpec,
+    state: ButtonStateSpec,
     methods: {},
     slots: ["content"],
     styleSlots: ["content"],

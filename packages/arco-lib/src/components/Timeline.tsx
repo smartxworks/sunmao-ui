@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TimelinePropsSchema as BaseTimelinePropsSchema } from "../generated/types/Timeline";
+import { TimelinePropsSpec as BaseTimelinePropsSpec } from "../generated/types/Timeline";
 
-const TimelinePropsSchema = Type.Object(BaseTimelinePropsSchema);
-const TimelineStateSchema = Type.Object({});
+const TimelinePropsSpec = Type.Object(BaseTimelinePropsSpec);
+const TimelineStateSpec = Type.Object({});
 
-const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSchema>> = (
+const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSpec>> = (
   props
 ) => {
   const { items, ...cProps } = getComponentProps(props);
@@ -31,7 +31,7 @@ const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSchema>> = (
     </BaseTimeline>
   );
 };
-const exampleProperties: Static<typeof TimelinePropsSchema> = {
+const exampleProperties: Static<typeof TimelinePropsSpec> = {
   reverse: false,
   direction: "vertical",
   mode: "alternate",
@@ -81,8 +81,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: TimelinePropsSchema,
-    state: TimelineStateSchema,
+    properties: TimelinePropsSpec,
+    state: TimelineStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],
