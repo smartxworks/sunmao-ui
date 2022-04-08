@@ -43,6 +43,7 @@ interface Props {
 }
 
 const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
+const EMPTY_ARRAY: string[] = [];
 
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
@@ -219,7 +220,7 @@ export const ApiForm: React.FC<Props> = props => {
               component={api}
               spec={URLSpec}
               value={values.url}
-              path={[]}
+              path={EMPTY_ARRAY}
               level={1}
               services={services}
               onChange={onURLChange}
