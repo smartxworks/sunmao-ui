@@ -40,12 +40,15 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
-  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string | ExpressionError;
+  const evalOptions = { evalListItem: true, scopeObject: evalScope };
+  const moduleId = services.stateManager.maskedEval(props.id, evalOptions) as
+    | string
+    | ExpressionError;
 
   function evalObject<T extends Record<string, any>>(obj: T): T {
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {
-        return services.stateManager.maskedEval(value, true, evalScope);
+        return services.stateManager.maskedEval(value, evalOptions);
       }
       return value;
     }).obj;
@@ -58,7 +61,7 @@ const ModuleRendererContent = React.forwardRef<
       };
       return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
         if (typeof value === 'string' && hasScopeKey(value)) {
-          return services.stateManager.maskedEval(value, true, scope);
+          return services.stateManager.maskedEval(value, evalOptions);
         }
         return value;
       }).obj;
@@ -128,10 +131,10 @@ const ModuleRendererContent = React.forwardRef<
     if (!handlers) return;
     const _handlers = handlers as Array<Static<typeof EventHandlerSpec>>;
     const moduleEventHandlers: any[] = [];
-    _handlers.forEach((h) => {
+    _handlers.forEach(h => {
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
-          const evaledHandler = services.stateManager.deepEval(h, true, evalScope);
+          const evaledHandler = services.stateManager.deepEval(h, evalOptions);
           services.apiService.send('uiMethod', {
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
