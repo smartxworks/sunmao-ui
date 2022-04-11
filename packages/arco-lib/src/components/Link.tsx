@@ -3,12 +3,12 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { LinkPropsSchema as BaseLinkPropsSchema } from "../generated/types/Link";
+import { LinkPropsSpec as BaseLinkPropsSpec } from "../generated/types/Link";
 
-const LinkPropsSchema = Type.Object(BaseLinkPropsSchema);
-const LinkStateSchema = Type.Object({});
+const LinkPropsSpec = Type.Object(BaseLinkPropsSpec);
+const LinkStateSpec = Type.Object({});
 
-const LinkImpl: ComponentImpl<Static<typeof LinkPropsSchema>> = (props) => {
+const LinkImpl: ComponentImpl<Static<typeof LinkPropsSpec>> = (props) => {
   const { elementRef, content, status, ...cProps } = getComponentProps(props);
   const { customStyle } = props;
 
@@ -24,7 +24,7 @@ const LinkImpl: ComponentImpl<Static<typeof LinkPropsSchema>> = (props) => {
   );
 };
 
-const exampleProperties: Static<typeof LinkPropsSchema> = {
+const exampleProperties: Static<typeof LinkPropsSpec> = {
   disabled: false,
   hoverable: true,
   status: "warning",
@@ -44,8 +44,8 @@ const options = {
     exampleProperties,
   },
   spec: {
-    properties: LinkPropsSchema,
-    state: LinkStateSchema,
+    properties: LinkPropsSpec,
+    state: LinkStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

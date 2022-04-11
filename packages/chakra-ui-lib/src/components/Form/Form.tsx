@@ -5,7 +5,7 @@ import { Button, VStack } from '@chakra-ui/react';
 import { implementRuntimeComponent, watch } from '@sunmao-ui/runtime';
 import { BEHAVIOR } from '../constants/category';
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   hideSubmit: Type.Boolean({
     title: 'Hide Submit',
     category: BEHAVIOR,
@@ -29,7 +29,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({
       data: Type.Any(),
       disableSubmit: Type.Boolean(),

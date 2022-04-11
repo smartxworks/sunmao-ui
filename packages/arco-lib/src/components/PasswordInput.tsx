@@ -3,20 +3,20 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { PasswordInputPropsSchema as BasePasswordInputPropsSchema } from "../generated/types/PasswordInput";
+import { PasswordInputPropsSpec as BasePasswordInputPropsSpec } from "../generated/types/PasswordInput";
 import { useEffect, useState, useRef } from "react";
 import { RefInputType } from "@arco-design/web-react/es/Input/interface";
 
-const InputPropsSchema = Type.Object({
-  ...BasePasswordInputPropsSchema,
+const InputPropsSpec = Type.Object({
+  ...BasePasswordInputPropsSpec,
 });
-const InputStateSchema = Type.Object({
+const InputStateSpec = Type.Object({
   value: Type.String(),
 });
 
 const BasePasswordInput = Input.Password;
 
-const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (
+const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = (
   props
 ) => {
   const { getElement,customStyle, callbackMap, mergeState } = props;
@@ -51,7 +51,7 @@ const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSchema>> = (
   );
 };
 
-const exampleProperties: Static<typeof InputPropsSchema> = {
+const exampleProperties: Static<typeof InputPropsSpec> = {
   disabled: false,
   placeholder: "please input",
   error: false,
@@ -71,8 +71,8 @@ const options = {
     },
   },
   spec: {
-    properties: InputPropsSchema,
-    state: InputStateSchema,
+    properties: InputPropsSpec,
+    state: InputStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["input"],

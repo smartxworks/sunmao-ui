@@ -6,11 +6,11 @@ import { Box } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { BASIC, BEHAVIOR, APPEARANCE } from './constants/category';
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.Array(Type.String()),
 });
 
-const OptionsSchema = Type.Array(
+const OptionsSpec = Type.Array(
   Type.Object({
     label: Type.String({
       title: 'Label',
@@ -25,8 +25,8 @@ const OptionsSchema = Type.Array(
   }
 );
 
-const PropsSchema = Type.Object({
-  options: OptionsSchema,
+const PropsSpec = Type.Object({
+  options: OptionsSpec,
   placeholder: Type.String({
     title: 'Placeholder',
     category: BASIC,
@@ -112,8 +112,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],
@@ -137,7 +137,7 @@ export default implementRuntimeComponent({
       mergeState({ value: newValue });
     }, [defaultValue, mergeState]);
 
-    const onChange = (options: Static<typeof OptionsSchema>) => {
+    const onChange = (options: Static<typeof OptionsSpec>) => {
       const newValue = options.map(o => o.value);
       mergeState({ value: newValue });
     };

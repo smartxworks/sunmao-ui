@@ -12,32 +12,32 @@ import {
   ModalOverlayProps,
 } from '@chakra-ui/react';
 import { Type } from '@sinclair/typebox';
-import { getColorSchemePropertySchema } from './Types/ColorScheme';
+import { getColorSchemePropertySpec } from './Types/ColorScheme';
 import { BASIC, BEHAVIOR } from './constants/category';
 
-const getHandleButtonPropertySchema = (options?: Record<string, any>) =>
+const getHandleButtonPropertySpec = (options?: Record<string, any>) =>
   Type.Object(
     {
       text: Type.String({
         title: 'Text',
       }),
-      colorScheme: getColorSchemePropertySchema({
+      colorScheme: getColorSchemePropertySpec({
         title: 'Color Scheme',
       }),
     },
     options
   );
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   title: Type.String({
     title: 'Title',
     category: BASIC,
   }),
-  confirmButton: getHandleButtonPropertySchema({
+  confirmButton: getHandleButtonPropertySpec({
     title: 'Confirm Button',
     category: BASIC,
   }),
-  cancelButton: getHandleButtonPropertySchema({
+  cancelButton: getHandleButtonPropertySpec({
     title: 'Cancel Button',
     category: BASIC,
   }),
@@ -67,7 +67,7 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
+    properties: PropsSpec,
     state: Type.Object({}),
     methods: {
       openDialog: Type.Object({

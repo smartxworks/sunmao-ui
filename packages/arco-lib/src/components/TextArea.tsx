@@ -3,20 +3,20 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TextAreaPropsSchema as BaseTextAreaPropsSchema } from "../generated/types/TextArea";
+import { TextAreaPropsSpec as BaseTextAreaPropsSpec } from "../generated/types/TextArea";
 import { useEffect, useState, useRef } from "react";
 import { RefInputType } from "@arco-design/web-react/es/Input/interface";
 
-const TextAreaPropsSchema = Type.Object({
-  ...BaseTextAreaPropsSchema,
+const TextAreaPropsSpec = Type.Object({
+  ...BaseTextAreaPropsSpec,
 });
-const TextAreaStateSchema = Type.Object({
+const TextAreaStateSpec = Type.Object({
   value: Type.String(),
 });
 
 const BaseTextArea = Input.TextArea;
 
-const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSchema>> = (
+const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSpec>> = (
   props
 ) => {
   const { getElement, customStyle, callbackMap, mergeState } = props;
@@ -51,7 +51,7 @@ const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSchema>> = (
   );
 };
 
-const exampleProperties: Static<typeof TextAreaPropsSchema> = {
+const exampleProperties: Static<typeof TextAreaPropsSpec> = {
   allowClear: false,
   disabled: false,
   defaultValue: "",
@@ -73,8 +73,8 @@ const options = {
     },
   },
   spec: {
-    properties: TextAreaPropsSchema,
-    state: TextAreaStateSchema,
+    properties: TextAreaPropsSpec,
+    state: TextAreaStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["TextArea"],

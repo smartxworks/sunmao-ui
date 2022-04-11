@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const AlertPropsSchema = {
+export const AlertPropsSpec = {
     disabled: Type.Boolean({
         title:'Disabled',
         category:Category.Basic

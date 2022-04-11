@@ -12,13 +12,14 @@ import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import {
   ImplementedRuntimeModule,
-  EventHandlerSchema,
+  EventHandlerSpec,
   UIServices,
-  ModuleSchema,
+  ModuleSpec,
 } from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
+import { ExpressionError } from '../../services/StateManager';
 
-type Props = Static<typeof ModuleSchema> & {
+type Props = Static<typeof ModuleSpec> & {
   evalScope?: Record<string, any>;
   services: UIServices;
   app?: RuntimeApplication;
@@ -39,7 +40,7 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
-  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string;
+  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string | ExpressionError;
 
   function evalObject<T extends Record<string, any>>(obj: T): T {
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
@@ -89,7 +90,7 @@ const ModuleRendererContent = React.forwardRef<
 
   // listen component state change
   useEffect(() => {
-    if (!evaledStateMap) return;
+    if (!evaledStateMap || moduleId instanceof ExpressionError) return;
 
     const stops: ReturnType<typeof watch>[] = [];
 
@@ -125,7 +126,7 @@ const ModuleRendererContent = React.forwardRef<
   // listen module event
   useEffect(() => {
     if (!handlers) return;
-    const _handlers = handlers as Array<Static<typeof EventHandlerSchema>>;
+    const _handlers = handlers as Array<Static<typeof EventHandlerSpec>>;
     const moduleEventHandlers: any[] = [];
     _handlers.forEach((h) => {
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
