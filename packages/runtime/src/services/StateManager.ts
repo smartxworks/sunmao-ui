@@ -16,6 +16,11 @@ dayjs.extend(LocalizedFormat);
 dayjs.locale('zh-cn');
 
 type ExpChunk = string | ExpChunk[];
+type EvalOptions = {
+  evalListItem?: boolean;
+  scopeObject?: Record<string, any>;
+  fallbackWhenError?: () => any;
+};
 
 // TODO: use web worker
 const DefaultDependencies = {
@@ -43,12 +48,16 @@ export class StateManager {
     this.store = reactive<Record<string, any>>({});
   };
 
-  evalExp = (expChunk: ExpChunk, scopeObject = {}): unknown => {
+  evalExp = (
+    expChunk: ExpChunk,
+    options: Pick<EvalOptions, 'scopeObject'> = {}
+  ): unknown => {
     if (typeof expChunk === 'string') {
       return expChunk;
     }
 
-    const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
+    const { scopeObject = {} } = options;
+    const evalText = expChunk.map(ex => this.evalExp(ex, { scopeObject })).join('');
 
     // eslint-disable-next-line no-useless-call, no-new-func
     const evaled = new Function(
@@ -63,7 +72,9 @@ export class StateManager {
     return evaled;
   };
 
-  maskedEval(raw: string, evalListItem = false, scopeObject = {}): unknown | ExpressionError {
+  maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
+    const { evalListItem = false, scopeObject = {}, fallbackWhenError } = options;
+
     try {
       if (isNumeric(raw)) {
         return toNumber(raw);
@@ -75,12 +86,12 @@ export class StateManager {
         return false;
       }
       const expChunk = parseExpression(raw, evalListItem);
-  
+
       if (typeof expChunk === 'string') {
         return expChunk;
       }
-  
-      const result = expChunk.map(e => this.evalExp(e, scopeObject));
+
+      const result = expChunk.map(e => this.evalExp(e, { scopeObject }));
       if (result.length === 1) {
         return result[0];
       }
@@ -91,7 +102,7 @@ export class StateManager {
 
         console.error(expressionError);
 
-        return expressionError;
+        return fallbackWhenError ? fallbackWhenError() : expressionError;
       }
 
       return undefined;
@@ -121,17 +132,13 @@ export class StateManager {
     }) as T;
   }
 
-  deepEval<T extends Record<string, unknown>>(
-    obj: T,
-    evalListItem = false,
-    scopeObject = {}
-  ): T {
+  deepEval<T extends Record<string, unknown>>(obj: T, options: EvalOptions = {}): T {
     // just eval
     const evaluated = this.mapValuesDeep(obj, ({ value }) => {
       if (typeof value !== 'string') {
         return value;
       }
-      return this.maskedEval(value, evalListItem, scopeObject);
+      return this.maskedEval(value, options);
     });
 
     return evaluated;
@@ -140,13 +147,12 @@ export class StateManager {
   deepEvalAndWatch<T extends Record<string, unknown>>(
     obj: T,
     watcher: (params: { result: T }) => void,
-    evalListItem = false,
-    scopeObject = {}
+    options: EvalOptions = {}
   ) {
     const stops: ReturnType<typeof watch>[] = [];
 
     // just eval
-    const evaluated = this.deepEval(obj, evalListItem, scopeObject);
+    const evaluated = this.deepEval(obj, options);
 
     // watch change
     let resultCache: T = evaluated;
@@ -159,7 +165,7 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(value, evalListItem, scopeObject);
+          const result = this.maskedEval(value, options);
 
           return result;
         },

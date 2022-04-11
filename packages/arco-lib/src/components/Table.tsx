@@ -10,13 +10,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
-import React, {
-  ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
@@ -27,7 +21,7 @@ import {
 import { TableInstance } from '@arco-design/web-react/es/Table/table';
 
 const TableStateSpec = Type.Object({
-  clickedRow:Type.Optional(Type.Any()),
+  clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
@@ -133,7 +127,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
   pagination: {
     pageSize: 6,
   },
-  rowClick:false,
+  rowClick: false,
   tableLayoutFixed: false,
   borderCell: false,
   stripe: false,
@@ -243,9 +237,16 @@ export const Table = implementRuntimeComponent({
     }
 
     newColumn.render = (ceilValue: any, record: any, index: number) => {
-      const evaledColumn: ColumnProperty = services.stateManager.deepEval(column, true, {
-        [LIST_ITEM_EXP]: record,
-      });
+      const evalOptions = {
+        evalListItem: true,
+        scopeObject: {
+          [LIST_ITEM_EXP]: record,
+        },
+      };
+      const evaledColumn: ColumnProperty = services.stateManager.deepEval(
+        column,
+        evalOptions
+      );
       const value = record[evaledColumn.dataIndex];
 
       let colItem;
@@ -257,8 +258,7 @@ export const Table = implementRuntimeComponent({
             if (!rawColumn.btnCfg) return;
             const evaledButtonConfig = services.stateManager.deepEval(
               rawColumn.btnCfg,
-              true,
-              { [LIST_ITEM_EXP]: record }
+              evalOptions
             );
 
             evaledButtonConfig.handlers.forEach(handler => {
