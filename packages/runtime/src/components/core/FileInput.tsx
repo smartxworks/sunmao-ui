@@ -3,7 +3,7 @@ import { css } from '@emotion/css';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import React, { useEffect, useRef } from 'react';
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   multiple: Type.Boolean({
     title: 'Select Multiple Files',
     category: 'Basic',
@@ -19,7 +19,7 @@ const PropsSchema = Type.Object({
   }),
 });
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   // actually, the type of files is 'File[]'
   // but JSON schema dose not has this type, so I mock it.
   files: Type.Array(
@@ -51,8 +51,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {
       selectFile: Type.Object({}),
     },

@@ -4,7 +4,7 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
 
-export const ProgressPropsSchema = {
+export const ProgressPropsSpec = {
     percent: Type.Number({
         title:'Percent',
         category:Category.Basic

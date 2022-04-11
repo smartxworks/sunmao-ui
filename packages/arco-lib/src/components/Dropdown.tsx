@@ -6,16 +6,16 @@ import {
 import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { DropdownPropsSchema as BaseDropdownPropsSchema } from "../generated/types/Dropdown";
+import { DropdownPropsSpec as BaseDropdownPropsSpec } from "../generated/types/Dropdown";
 
-const DropdownPropsSchema = Type.Object(BaseDropdownPropsSchema);
-const DropdownStateSchema = Type.Object({
+const DropdownPropsSpec = Type.Object(BaseDropdownPropsSpec);
+const DropdownStateSpec = Type.Object({
   selectedItemKey: Type.String(),
   keyPath: Type.Optional(Type.Array(Type.String())),
   visible: Type.Boolean(),
 });
 
-const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSchema>> = (
+const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = (
   props
 ) => {
   const { elementRef, slotsElements, callbackMap, mergeState } = props;
@@ -62,7 +62,7 @@ const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSchema>> = (
   );
 };
 
-const exampleProperties: Static<typeof DropdownPropsSchema> = {
+const exampleProperties: Static<typeof DropdownPropsSpec> = {
   dropdownType: "default",
   trigger: "click",
   position: "bl",
@@ -87,8 +87,8 @@ const options = {
     },
   },
   spec: {
-    properties: DropdownPropsSchema,
-    state: DropdownStateSchema,
+    properties: DropdownPropsSpec,
+    state: DropdownStateSpec,
     methods: {},
     slots: ["trigger"],
     styleSlots: [],

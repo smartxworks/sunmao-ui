@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-export const TreeSelectPropsSchema = {
+export const TreeSelectPropsSpec = {
   treeData: Type.Array(
     Type.Object({
       key: Type.String(),
@@ -13,13 +13,13 @@ export const TreeSelectPropsSchema = {
     {
       title: 'Options',
       category: Category.Data,
-      widget: 'core/v1/Expression',
+      widget: 'core/v1/expression',
     }
   ),
   defaultValue: Type.Array(Type.String(), {
     title: 'Default Value',
     category: Category.Data,
-    widget: 'core/v1/Expression',
+    widget: 'core/v1/expression',
   }),
   multiple: Type.Boolean({
     title: 'Multiple',

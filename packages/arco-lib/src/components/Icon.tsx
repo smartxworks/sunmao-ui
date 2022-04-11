@@ -4,12 +4,12 @@ import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA } from "../sunmao-helper";
 
-const IconPropsSchema = Type.Object({
+const IconPropsSpec = Type.Object({
   name: Type.KeyOf(Type.Object(Icons as Record<keyof typeof Icons, any>)),
   spin: Type.Boolean(),
 });
 
-const impl: ComponentImpl<Static<typeof IconPropsSchema>> = (props) => {
+const impl: ComponentImpl<Static<typeof IconPropsSpec>> = (props) => {
   const { elementRef, name, spin, customStyle } = props;
   const _Icon = Icons[name];
 
@@ -37,7 +37,7 @@ export const Icon = implementRuntimeComponent({
     }
   },
   spec: {
-    properties: IconPropsSchema,
+    properties: IconPropsSpec,
     state: Type.Object({}),
     methods: {},
     slots: ["slot"],

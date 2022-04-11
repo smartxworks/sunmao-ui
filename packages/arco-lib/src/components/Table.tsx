@@ -9,8 +9,14 @@ import {
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { TablePropsSchema, ColumnSchema } from '../generated/types/Table';
-import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
+import React, {
+  CSSProperties,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
@@ -22,8 +28,8 @@ import { TableInstance } from '@arco-design/web-react/es/Table/table';
 import { ColumnProps } from '@arco-design/web-react/es/Table';
 import { Resizable, ResizeCallbackData } from 'react-resizable';
 
-const TableStateSchema = Type.Object({
-  clickedRow: Type.Optional(Type.Any()),
+const TableStateSpec = Type.Object({
+  clickedRow:Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
@@ -34,7 +40,7 @@ type SortRule = {
   direction?: 'ascend' | 'descend';
 };
 
-type ColumnProperty = Static<typeof ColumnSchema> & ColumnProps;
+type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps
 
 type filterDropdownParam = {
   filterKeys?: string[];
@@ -108,7 +114,7 @@ const ResizableTitle = (props: ResizableTitleProps) => {
   );
 };
 
-export const exampleProperties: Static<typeof TablePropsSchema> = {
+export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
     {
       title: 'Name',
@@ -195,8 +201,8 @@ export const Table = implementRuntimeComponent({
     displayName: 'Table',
   },
   spec: {
-    properties: TablePropsSchema,
-    state: TableStateSchema,
+    properties: TablePropsSpec,
+    state: TableStateSpec,
     methods: {},
     slots: [],
     styleSlots: ['content'],

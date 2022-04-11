@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category'
 
-export const ButtonPropsSchema = {
+export const ButtonPropsSpec = {
   text: Type.String({
     title:'Text',
     category:Category.Basic,

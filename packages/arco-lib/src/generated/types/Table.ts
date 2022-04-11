@@ -1,9 +1,9 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
-import { EventHandlerSchema, ModuleSchema } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, ModuleSpec } from '@sunmao-ui/runtime';
 import { Category } from '../../constants/category';
 
-export const ColumnSchema = Type.Object({
+export const ColumnSpec = Type.Object({
   title: Type.String({
     title: 'Title',
     category: Category.Basic,
@@ -36,9 +36,9 @@ export const ColumnSchema = Type.Object({
     title: 'Width',
   })),
   ellipsis:Type.Optional(Type.Boolean({
-    title:'Ellipsis'
+    title:'Ellipsis',
+    description:'If the cell content exceeds the length, whether it is automatically omitted and displays ...,After setting this property, the table-layout of the table will automatically become fixed.'
   })),
-
   sorter: Type.Boolean({
     title: 'Enable Sort',
   }),
@@ -49,19 +49,19 @@ export const ColumnSchema = Type.Object({
   btnCfg: Type.Optional(
     Type.Object({
       text: Type.String(),
-      handlers: Type.Array(EventHandlerSchema),
+      handlers: Type.Array(EventHandlerSpec),
     })
   ),
-  module: Type.Optional(ModuleSchema),
+  module: Type.Optional(ModuleSpec),
 });
 
-export const TablePropsSchema = Type.Object({
+export const TablePropsSpec = Type.Object({
   data: Type.Array(Type.Any(), {
     title: 'Data',
     category: Category.Data,
     weight: 0,
   }),
-  columns: Type.Array(ColumnSchema, {
+  columns: Type.Array(ColumnSpec, {
     title: 'Columns',
     widget: 'ColumnsForm',
     description: '',

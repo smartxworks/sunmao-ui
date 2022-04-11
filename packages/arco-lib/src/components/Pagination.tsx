@@ -3,15 +3,15 @@ import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
 import { css, cx } from "@emotion/css";
 import { Type, Static } from "@sinclair/typebox";
 import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { PaginationPropsSchema as BasePaginationPropsSchema } from "../generated/types/Pagination";
+import { PaginationPropsSpec as BasePaginationPropsSpec } from "../generated/types/Pagination";
 import { useState } from "react";
 
-const PaginationPropsSchema = Type.Object(BasePaginationPropsSchema);
-const PaginationStateSchema = Type.Object({
+const PaginationPropsSpec = Type.Object(BasePaginationPropsSpec);
+const PaginationStateSpec = Type.Object({
   currentPage: Type.Number(),
 });
 
-const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
+const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSpec>> = (
   props
 ) => {
   const { elementRef, defaultCurrent, ...cProps } = getComponentProps(props);
@@ -40,7 +40,7 @@ const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSchema>> = (
   );
 };
 
-const exampleProperties: Static<typeof PaginationPropsSchema> = {
+const exampleProperties: Static<typeof PaginationPropsSpec> = {
   pageSize: 10,
   total: 300,
   defaultCurrent: 3,
@@ -64,8 +64,8 @@ const options = {
     }
   },
   spec: {
-    properties: PaginationPropsSchema,
-    state: PaginationStateSchema,
+    properties: PaginationPropsSpec,
+    state: PaginationStateSpec,
     methods: {},
     slots: [],
     styleSlots: ["content"],

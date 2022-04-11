@@ -12,7 +12,7 @@ import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { BASIC, APPEARANCE, BEHAVIOR } from './constants/category';
 
-const getAppendElementPropertySchema = (options?: Record<string, any>) =>
+const getAppendElementPropertySpec = (options?: Record<string, any>) =>
   Type.Optional(
     Type.Union(
       [
@@ -43,11 +43,11 @@ const getAppendElementPropertySchema = (options?: Record<string, any>) =>
     )
   );
 
-const StateSchema = Type.Object({
+const StateSpec = Type.Object({
   value: Type.String(),
 });
 
-const PropsSchema = Type.Object({
+const PropsSpec = Type.Object({
   defaultValue: Type.String({
     title: 'Default Value',
     category: BASIC,
@@ -88,11 +88,11 @@ const PropsSchema = Type.Object({
       category: APPEARANCE,
     }
   ),
-  left: getAppendElementPropertySchema({
+  left: getAppendElementPropertySpec({
     title: 'Left Append',
     category: APPEARANCE,
   }),
-  right: getAppendElementPropertySchema({
+  right: getAppendElementPropertySpec({
     title: 'Right Append',
     category: APPEARANCE,
   }),
@@ -125,8 +125,8 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: PropsSchema,
-    state: StateSchema,
+    properties: PropsSpec,
+    state: StateSpec,
     methods: {
       setInputValue: Type.Object({
         value: Type.String(),

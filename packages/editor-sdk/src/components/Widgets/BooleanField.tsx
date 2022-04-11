@@ -18,6 +18,6 @@ export const BooleanField: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: 'core/v1',
   metadata: {
-    name: 'BooleanField',
+    name: 'boolean',
   },
 })(BooleanField);

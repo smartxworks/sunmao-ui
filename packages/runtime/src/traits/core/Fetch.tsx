@@ -2,12 +2,12 @@ import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
 import {
-  FetchTraitPropertiesSchema,
-  EventHandlerSchema,
-} from '../../types/traitPropertiesSchema';
+  FetchTraitPropertiesSpec,
+  EventHandlerSpec,
+} from '../../types/traitPropertiesSpec';
 import { generateCallback } from './Event';
 
-const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSchema>> =
+const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec>> =
   () => {
     const hasFetchedMap = new Map<string, boolean>();
     return ({
@@ -93,12 +93,12 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
                 },
               });
               const rawOnComplete = trait.properties.onComplete as Static<
-                typeof FetchTraitPropertiesSchema
+                typeof FetchTraitPropertiesSpec
               >['onComplete'];
               rawOnComplete?.forEach((rawHandler, index) => {
                 generateCallback(
                   onComplete![index],
-                  rawHandler as Static<typeof EventHandlerSchema>,
+                  rawHandler as Static<typeof EventHandlerSpec>,
                   services
                 )();
               });
@@ -116,12 +116,12 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
                 },
               });
               const rawOnError = trait.properties.onError as Static<
-                typeof FetchTraitPropertiesSchema
+                typeof FetchTraitPropertiesSpec
               >['onError'];
               rawOnError?.forEach((rawHandler, index) => {
                 generateCallback(
                   onError![index],
-                  rawHandler as Static<typeof EventHandlerSchema>,
+                  rawHandler as Static<typeof EventHandlerSpec>,
                   services
                 )();
               });
@@ -140,7 +140,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSche
               },
             });
             const rawOnError = trait.properties.onError as Static<
-              typeof FetchTraitPropertiesSchema
+              typeof FetchTraitPropertiesSpec
             >['onError'];
             rawOnError?.forEach(handler => {
               const evaledHandler = services.stateManager.deepEval(handler, false);
@@ -185,7 +185,7 @@ export default {
       description: 'fetch data to store',
     },
     spec: {
-      properties: FetchTraitPropertiesSchema,
+      properties: FetchTraitPropertiesSpec,
       state: Type.Object({
         fetch: Type.Object({
           loading: Type.Boolean(),
