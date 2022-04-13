@@ -3,17 +3,13 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
 export const AlertPropsSpec = {
-    disabled: Type.Boolean({
-        title:'Disabled',
-        category:Category.Basic
-    }),
     type: StringUnion(['info', 'success', 'warning', 'error'], {
         title:'Type',
-        category: Category.Style
+        category: Category.Basic
     }),
     showIcon: Type.Boolean({
         title:'Show Icon',
-        category: Category.Style
+        category: Category.Basic
     }),
     banner: Type.Boolean({
         title:'Banner',
@@ -29,10 +25,6 @@ export const AlertPropsSpec = {
         title:'Title',
         weight: 2,
         category:Category.Basic
-    }),
-    visible: Type.Boolean({
-        title:'Visible',
-        category: Category.Basic
     }),
     closable: Type.Boolean({
         title:'Closable',
