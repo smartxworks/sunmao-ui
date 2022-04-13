@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Application } from '@sunmao-ui/core';
 import {
   GridCallbacks,
@@ -38,6 +38,7 @@ type Props = {
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
   libs: SunmaoLib[];
+  onRefresh: () => void;
 };
 
 const getResizeBarStyle = (type: 'exploreMenu' | 'toolMenu') => {
@@ -84,7 +85,7 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, services, libs }) => {
+  ({ App, registry, stateStore, services, libs, onRefresh: onRefreshApp }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
@@ -102,14 +103,9 @@ export const Editor: React.FC<Props> = observer(
     const [preview, setPreview] = useState(false);
     const [codeMode, setCodeMode] = useState(false);
     const [code, setCode] = useState('');
-    const [recoverKey, setRecoverKey] = useState(0);
-    const [isError, setIsError] = useState<boolean>(false);
+    const [isDisplayApp, setIsDisplayApp] = useState(true);
     const [exploreMenuWidth, setExploreMenuWidth] = useState(EXPLORE_MENU_MIN_WIDTH);
     const [toolMenuWidth, setToolMenuWidth] = useState(TOOL_MENU_MIN_WIDTH);
-
-    const onError = (err: Error | null) => {
-      setIsError(err !== null);
-    };
 
     const gridCallbacks: GridCallbacks = useMemo(() => {
       return {
@@ -153,8 +149,8 @@ export const Editor: React.FC<Props> = observer(
     }, [components]);
 
     const appComponent = useMemo(() => {
-      return (
-        <ErrorBoundary key={recoverKey} onError={onError}>
+      return isDisplayApp ? (
+        <ErrorBoundary>
           <App
             options={app}
             debugEvent={false}
@@ -162,8 +158,8 @@ export const Editor: React.FC<Props> = observer(
             gridCallbacks={gridCallbacks}
           />
         </ErrorBoundary>
-      );
-    }, [App, app, gridCallbacks, recoverKey]);
+      ) : null;
+    }, [App, app, gridCallbacks, isDisplayApp]);
 
     const dataSourceForm = useMemo(() => {
       let component: React.ReactNode = <ComponentForm services={services} />;
@@ -183,16 +179,29 @@ export const Editor: React.FC<Props> = observer(
       return component;
     }, [activeDataSource, services, activeDataSourceType]);
 
-    useEffect(() => {
-      // when errors happened, `ErrorBoundary` wouldn't update until rerender
-      // so after the errors are fixed, would trigger this effect before `setError(false)`
-      // the process to handle the error is:
-      // app change -> error happen -> setError(true) -> setRecoverKey(recoverKey + 1) -> app change -> setRecoverKey(recoverKey + 1) -> setError(false)
-      if (isError) {
-        setRecoverKey(recoverKey + 1);
+    const onRefresh = useCallback(()=> {
+      services.stateManager.clear();
+      setIsDisplayApp(false);
+      onRefreshApp();
+    }, [services.stateManager, onRefreshApp]);
+    useEffect(()=> {
+      // Wait until the app is completely unmounted before remounting it
+      if (isDisplayApp === false) {
+        setIsDisplayApp(true);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [app, isError]); // it only should depend on the app schema and `isError` to update
+    }, [isDisplayApp]);
+    const onCodeMode = useCallback(v => {
+      setCodeMode(v);
+      if (!v && code) {
+        eventBus.send(
+          'operation',
+          genOperation(registry, 'replaceApp', {
+            app: new AppModel(JSON.parse(code).spec.components, registry),
+          })
+        );
+      }
+    }, [code, eventBus, registry]);
+    const onPreview = useCallback(() => setPreview(true), []);
 
     const renderMain = () => {
       const appBox = (
@@ -374,19 +383,10 @@ export const Editor: React.FC<Props> = observer(
           <EditorHeader
             scale={scale}
             setScale={setScale}
-            onPreview={() => setPreview(true)}
+            onPreview={onPreview}
             codeMode={codeMode}
-            onCodeMode={v => {
-              setCodeMode(v);
-              if (!v && code) {
-                eventBus.send(
-                  'operation',
-                  genOperation(registry, 'replaceApp', {
-                    app: new AppModel(JSON.parse(code).spec.components, registry),
-                  })
-                );
-              }
-            }}
+            onRefresh={onRefresh}
+            onCodeMode={onCodeMode}
           />
           <Box display="flex" flex="1" overflow="auto">
             {renderMain()}
