@@ -10,7 +10,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
@@ -19,6 +19,8 @@ import {
   implementRuntimeComponent,
 } from '@sunmao-ui/runtime';
 import { TableInstance } from '@arco-design/web-react/es/Table/table';
+import { ColumnProps } from '@arco-design/web-react/es/Table';
+import { Resizable, ResizeCallbackData } from 'react-resizable';
 
 const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
@@ -32,14 +34,7 @@ type SortRule = {
   direction?: 'ascend' | 'descend';
 };
 
-type ColumnProperty = Static<typeof ColumnSpec> & {
-  filterDropdown?: ({
-    filterKeys,
-    setFilterKeys,
-    confirm,
-  }: filterDropdownParam) => ReactNode;
-  render?: (ceilValue: any, record: any, index: number) => ReactNode;
-};
+type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps;
 
 type filterDropdownParam = {
   filterKeys?: string[];
@@ -62,6 +57,56 @@ const rowClickStyle = css`
     background-color: rgb(228, 236, 243) !important;
   }
 `;
+
+const resizableStyle = css`
+  position: relative;
+  background-clip: padding-box;
+`;
+const resizableHandleStyle = css`
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  bottom: 0;
+  right: -5px;
+  cursor: col-resize;
+  z-index: 1;
+`;
+
+type ResizableTitleProps = {
+  onResize: (e: React.SyntheticEvent, data: ResizeCallbackData) => void;
+  width: number;
+  style: CSSProperties;
+};
+
+const ResizableTitle = (props: ResizableTitleProps) => {
+  const { onResize, width, ...restProps } = props;
+
+  if (!width) {
+    return <th {...restProps} />;
+  }
+
+  return (
+    <Resizable
+      width={width}
+      height={0}
+      handle={
+        <span
+          className={css`
+            ${resizableStyle}
+            ${resizableHandleStyle}
+          `}
+          onClick={e => {
+            e.stopPropagation();
+          }}
+        />
+      }
+      onResize={onResize}
+      draggableOpts={{ enableUserSelectHack: false }}
+    >
+      <th {...restProps} />
+    </Resizable>
+  );
+};
 
 export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
@@ -172,6 +217,24 @@ export const Table = implementRuntimeComponent({
     direction: undefined,
   });
   const [filterRule, setFilterRule] = useState();
+  const [columns, setColumns] = useState<ColumnProperty[]>([]);
+
+  const handleResize = (
+    columnIdx: number
+  ): ((e: React.SyntheticEvent, data: ResizeCallbackData) => void) => {
+    return (_e, data) => {
+      const { size } = data;
+      setColumns(prevColumns => {
+        const nextColumns = [...prevColumns];
+        nextColumns[columnIdx] = {
+          ...nextColumns[columnIdx],
+          width: size.width,
+        };
+
+        return nextColumns;
+      });
+    };
+  };
 
   const filteredData = useMemo(() => {
     let filteredData = Array.isArray(data) ? data : [];
@@ -207,106 +270,115 @@ export const Table = implementRuntimeComponent({
     });
   }, [selectedRowKeys, mergeState]);
 
-  const inputRef = useRef(null);
-
-  const columns = cProps.columns!.map((column, i) => {
-    const newColumn: ColumnProperty = { ...column };
-    if (newColumn.filter) {
-      newColumn.filterDropdown = ({
-        filterKeys,
-        setFilterKeys,
-        confirm,
-      }: filterDropdownParam) => {
-        return (
-          <div className="arco-table-custom-filter">
-            <Input.Search
-              ref={inputRef}
-              searchButton
-              placeholder="Please input and enter"
-              value={filterKeys?.[0] || ''}
-              onChange={value => {
-                setFilterKeys && setFilterKeys(value ? [value] : []);
-              }}
-              onSearch={() => {
-                confirm && confirm();
-              }}
-            />
-          </div>
-        );
-      };
-    }
-
-    newColumn.render = (ceilValue: any, record: any, index: number) => {
-      const evalOptions = {
-        evalListItem: true,
-        scopeObject: {
-          [LIST_ITEM_EXP]: record,
-        },
-      };
-      const evaledColumn: ColumnProperty = services.stateManager.deepEval(
-        column,
-        evalOptions
-      );
-      const value = record[evaledColumn.dataIndex];
-
-      let colItem;
-
-      switch (evaledColumn.type) {
-        case 'button':
-          const handleClick = () => {
-            const rawColumn = (component.properties.columns as ColumnProperty[])[i];
-            if (!rawColumn.btnCfg) return;
-            const evaledButtonConfig = services.stateManager.deepEval(
-              rawColumn.btnCfg,
-              evalOptions
+  useEffect(() => {
+    setColumns(
+      cProps.columns!.map((column, i) => {
+        const newColumn: ColumnProperty = { ...column };
+        if (newColumn.filter) {
+          newColumn.filterDropdown = ({
+            filterKeys,
+            setFilterKeys,
+            confirm,
+          }: filterDropdownParam) => {
+            return (
+              <div className="arco-table-custom-filter">
+                <Input.Search
+                  searchButton
+                  placeholder="Please input and enter"
+                  value={filterKeys?.[0] || ''}
+                  onChange={value => {
+                    setFilterKeys && setFilterKeys(value ? [value] : []);
+                  }}
+                  onSearch={() => {
+                    confirm && confirm();
+                  }}
+                />
+              </div>
             );
+          };
+        }
 
-            evaledButtonConfig.handlers.forEach(handler => {
-              services.apiService.send('uiMethod', {
-                componentId: handler.componentId,
-                name: handler.method.name,
-                parameters: handler.method.parameters || {},
-              });
-            });
+        if (newColumn.width) {
+          newColumn.onHeaderCell = col => ({
+            width: col.width,
+            onResize: handleResize(i),
+          });
+        }
+
+        newColumn.render = (ceilValue: any, record: any, index: number) => {
+          const evalOptions = {
+            evalListItem: true,
+            scopeObject: {
+              [LIST_ITEM_EXP]: record,
+            },
           };
-          colItem = (
-            <Button
-              onClick={() => {
-                handleClick();
-              }}
-            >
-              {evaledColumn.btnCfg?.text}
-            </Button>
+          const evaledColumn: ColumnProperty = services.stateManager.deepEval(
+            column,
+            evalOptions
           );
-          break;
-        case 'link':
-          colItem = <Link href={value}>{evaledColumn.displayValue || value}</Link>;
-          break;
-        case 'module':
-          const evalScope = {
-            [LIST_ITEM_EXP]: record,
-            [LIST_ITEM_INDEX_EXP]: index,
-          };
-          colItem = (
-            <ModuleRenderer
-              app={app}
-              evalScope={evalScope}
-              handlers={evaledColumn.module?.handlers || []}
-              id={evaledColumn.module?.id || ''}
-              properties={evaledColumn.module?.properties || {}}
-              services={services}
-              type={evaledColumn.module?.type || ''}
-            />
-          );
-          break;
-        default:
-          colItem = <span>{evaledColumn.displayValue || value}</span>;
-          break;
-      }
-      return colItem;
-    };
-    return newColumn;
-  });
+          const value = record[evaledColumn.dataIndex];
+
+          let colItem;
+
+          switch (evaledColumn.type) {
+            case 'button':
+              const handleClick = () => {
+                const rawColumn = (component.properties.columns as ColumnProperty[])[i];
+                if (!rawColumn.btnCfg) return;
+                const evaledButtonConfig = services.stateManager.deepEval(
+                  rawColumn.btnCfg,
+                  evalOptions
+                );
+
+                evaledButtonConfig.handlers.forEach(handler => {
+                  services.apiService.send('uiMethod', {
+                    componentId: handler.componentId,
+                    name: handler.method.name,
+                    parameters: handler.method.parameters || {},
+                  });
+                });
+              };
+              colItem = (
+                <Button
+                  onClick={() => {
+                    handleClick();
+                  }}
+                >
+                  {evaledColumn.btnCfg?.text}
+                </Button>
+              );
+              break;
+            case 'link':
+              colItem = <Link href={value}>{evaledColumn.displayValue || value}</Link>;
+              break;
+            case 'module':
+              const evalScope = {
+                [LIST_ITEM_EXP]: record,
+                [LIST_ITEM_INDEX_EXP]: index,
+              };
+              colItem = (
+                <ModuleRenderer
+                  app={app}
+                  evalScope={evalScope}
+                  handlers={evaledColumn.module?.handlers || []}
+                  id={evaledColumn.module?.id || ''}
+                  properties={evaledColumn.module?.properties || {}}
+                  services={services}
+                  type={evaledColumn.module?.type || ''}
+                />
+              );
+              break;
+            default:
+              const text = evaledColumn.displayValue || value;
+              colItem = <span title={column.ellipsis ? text : ''}>{text}</span>;
+              break;
+          }
+          return colItem;
+        };
+        return newColumn;
+      })
+    );
+  }, [cProps.columns]);
 
   const handleChange = (
     pagination: PaginationProps,
@@ -340,6 +412,11 @@ export const Table = implementRuntimeComponent({
         ${rowClick ? rowClickStyle : ''}
       `}
       {...cProps}
+      components={{
+        header: {
+          th: ResizableTitle,
+        },
+      }}
       columns={columns}
       pagination={{
         total: sortedData!.length,
