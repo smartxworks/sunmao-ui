@@ -26,9 +26,8 @@ import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 import { AppModel } from '../AppModel/AppModel';
 import { LocalStorageForm } from './DataSource/LocalStorageForm';
-import { Resizable } from 'react-resizable';
-import { EXPLORE_MENU_MIN_WIDTH, TOOL_MENU_MIN_WIDTH } from '../constants/layout';
 import { Explorer } from './Explorer';
+import { Resizable } from 're-resizable';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -39,40 +38,6 @@ type Props = {
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
   libs: SunmaoLib[];
-};
-
-const getResizeBarStyle = (type: 'exploreMenu' | 'toolMenu') => {
-  return css`
-    .resize-bar {
-      position: absolute;
-      ${type === 'exploreMenu' ? 'right: 0' : 'left:0'};
-      top: 0;
-      width: 8px;
-      height: 100%;
-      ${type === 'exploreMenu'
-        ? 'transform: translateX(50%)'
-        : 'transform: translateX(-50%)'};
-      cursor: col-resize;
-      display: flex;
-      place-items: center;
-      justify-content: center;
-
-      i {
-        width: 3px;
-        height: 100%;
-        transition: transform 0.1s ease-in, opacity 0.1s ease-in;
-        background-color: #eee;
-        opacity: 0;
-        transform: scaleX(0);
-        transform-origin: center;
-      }
-
-      &:hover i {
-        transform: scaleX(1);
-        opacity: 1;
-      }
-    }
-  `;
 };
 
 const ApiFormStyle = css`
@@ -105,8 +70,6 @@ export const Editor: React.FC<Props> = observer(
     const [code, setCode] = useState('');
     const [recoverKey, setRecoverKey] = useState(0);
     const [isError, setIsError] = useState<boolean>(false);
-    const [exploreMenuWidth, setExploreMenuWidth] = useState(EXPLORE_MENU_MIN_WIDTH);
-    const [toolMenuWidth, setToolMenuWidth] = useState(TOOL_MENU_MIN_WIDTH);
 
     const onError = (err: Error | null) => {
       setIsError(err !== null);
@@ -223,7 +186,7 @@ export const Editor: React.FC<Props> = observer(
       if (codeMode) {
         return (
           <Flex width="100%" height="100%">
-            <Box flex="1">
+            <Box width="full" height="full">
               <SchemaEditor
                 defaultCode={JSON.stringify(app, null, 2)}
                 onChange={setCode}
@@ -236,27 +199,21 @@ export const Editor: React.FC<Props> = observer(
       return (
         <>
           <Resizable
-            width={exploreMenuWidth}
-            height={Infinity}
-            minConstraints={[200, Infinity]}
-            maxConstraints={[480, Infinity]}
-            axis="x"
-            onResize={(_e, data) => {
-              setExploreMenuWidth(data.size.width);
+            defaultSize={{
+              width: 280,
+              height: '100%',
             }}
-            handle={
-              <div className="resize-bar">
-                <i />
-              </div>
-            }
+            enable={{ right: true }}
+            style={{ zIndex: 2 }}
+            maxWidth={480}
+            minWidth={200}
           >
             <Box
-              width={exploreMenuWidth}
-              className={getResizeBarStyle('exploreMenu')}
               borderRightWidth="1px"
               borderColor="gray.200"
               position="relative"
               zIndex="2"
+              height="full"
             >
               <Tabs
                 height="100%"
@@ -302,28 +259,18 @@ export const Editor: React.FC<Props> = observer(
           <Flex flex={1} position="relative" overflow="hidden">
             {appBox}
             <Resizable
-              width={toolMenuWidth}
-              height={Infinity}
-              minConstraints={[200, Infinity]}
-              maxConstraints={[480, Infinity]}
-              resizeHandles={['w']}
-              axis="x"
-              onResize={(_e, data) => {
-                setToolMenuWidth(data.size.width);
+              defaultSize={{
+                width: 320,
+                height: '100%',
               }}
-              handle={
-                <div className="resize-bar">
-                  <i />
-                </div>
-              }
+              enable={{ left: true }}
+              maxWidth={480}
+              minWidth={250}
             >
               <Box
-                minWidth={toolMenuWidth}
-                width={toolMenuWidth}
-                className={getResizeBarStyle('toolMenu')}
+                height="full"
                 borderLeftWidth="1px"
                 borderColor="gray.200"
-                overflow="auto"
                 position="relative"
                 zIndex="0"
               >
