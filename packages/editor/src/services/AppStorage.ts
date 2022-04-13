@@ -55,6 +55,7 @@ export class AppStorage {
     };
 
     this.setModules([...this.modules, newModule]);
+    this.setRawModules(this.modules.map(addModuleId));
     this.saveModules();
   }
 
@@ -64,6 +65,7 @@ export class AppStorage {
         ({ version, metadata: { name } }) => version !== v || name !== n
       )
     );
+    this.setRawModules(this.modules.map(addModuleId));
     this.saveModules();
   }
 
