@@ -150,13 +150,19 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     return stop;
   }, [c.properties, stateManager]);
   useEffect(() => {
+    if (unmount) {
+      delete stateManager.store[c.id];
+    }
     return () => {
       delete stateManager.store[c.id];
     };
-  }, [c.id, stateManager.store]);
+  }, [c.id, stateManager.store, unmount]);
 
   const mergedProps = useMemo(() => {
-    const allProps: Record<string, any> = { ...evaledComponentProperties, ...propsFromTraits };
+    const allProps: Record<string, any> = {
+      ...evaledComponentProperties,
+      ...propsFromTraits,
+    };
 
     for (const key in allProps) {
       if (allProps[key] instanceof ExpressionError) {

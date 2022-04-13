@@ -6,6 +6,7 @@ import {
   FormLabel,
   Switch,
   IconButton,
+  Text,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
@@ -18,6 +19,7 @@ import {
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
 
 type Values = Static<typeof FetchTraitPropertiesSpec>;
 type EventHandler = Static<typeof EventCallBackHandlerSpec>;
@@ -94,7 +96,7 @@ const Handler = (props: HandlerProps) => {
 };
 
 export const Basic: React.FC<Props> = props => {
-  const { formik } = props;
+  const { formik, api, services } = props;
 
   const onAddHandler = (type: HandlerType) => {
     const newHandler: EventHandler = {
@@ -144,6 +146,32 @@ export const Basic: React.FC<Props> = props => {
           onChange={formik.handleChange}
           onBlur={() => formik.handleSubmit()}
         />
+      </FormControl>
+
+      <FormControl display="flex" alignItems="center">
+        <FormLabel margin="0" marginRight="2">
+          Disabled
+        </FormLabel>
+        <SpecWidget
+          component={api}
+          spec={Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } })}
+          value={formik.values.disabled}
+          path={[]}
+          level={1}
+          services={services}
+          onChange={val => {
+            formik.setFieldValue('disabled', val);
+            formik.handleSubmit();
+          }}
+        >
+          {{
+            title: (
+              <Text fontSize="lg" fontWeight="bold" display="inline">
+                Body
+              </Text>
+            ),
+          }}
+        </SpecWidget>
       </FormControl>
       {generateHandlers('onComplete')}
       {generateHandlers('onError')}
