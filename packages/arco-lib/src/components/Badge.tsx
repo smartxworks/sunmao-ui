@@ -28,11 +28,9 @@ const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSpec>> = (props) => {
   );
 };
 const exampleProperties: Static<typeof BadgePropsSpec> = {
-  // TODO handle dotStyle and color
   text: "",
   dot: true,
   count: 1,
-  dotColor: "red",
   maxCount: 99,
   offset: [6, -2],
 };
