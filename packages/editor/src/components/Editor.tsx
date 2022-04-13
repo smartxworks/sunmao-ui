@@ -219,6 +219,7 @@ export const Editor: React.FC<Props> = observer(
                 display="flex"
                 flexDirection="column"
                 textAlign="left"
+                lazyBehavior='keepMounted'
                 isLazy
                 index={explorerMenuTab}
                 onChange={activatedTab => {
