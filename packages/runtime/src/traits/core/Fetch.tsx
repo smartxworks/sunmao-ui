@@ -9,7 +9,6 @@ import { generateCallback } from './Event';
 
 const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec>> =
   () => {
-    const hasFetchedMap = new Map<string, boolean>();
     return ({
       trait,
       url,
@@ -24,14 +23,14 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
       services,
       subscribeMethods,
       componentId,
+      disabled,
     }) => {
-      const hashId = `#${componentId}@${'fetch'}`;
-      const hasFetched = hasFetchedMap.get(hashId);
       const lazy = _lazy === undefined ? true : _lazy;
 
       const fetchData = () => {
+        console.log('disabled', disabled);
+        if (disabled) return;
         // TODO: clear when component destroy
-        hasFetchedMap.set(hashId, true);
         // FIXME: listen to the header change
         const headers = new Headers();
         if (_headers) {
@@ -155,7 +154,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
       };
 
       // non lazy query, listen to the change and query;
-      if (!lazy && url && !hasFetched) {
+      if (!lazy && url) {
         fetchData();
       }
 
@@ -166,13 +165,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
       });
 
       return {
-        props: {
-          effects: [
-            () => {
-              hasFetchedMap.set(hashId, false);
-            },
-          ],
-        },
+        props: null,
       };
     };
   };
