@@ -6,7 +6,6 @@ import {
   FormLabel,
   Switch,
   IconButton,
-  Text,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
@@ -95,6 +94,12 @@ const Handler = (props: HandlerProps) => {
   );
 };
 
+const DisabledSpec = Type.Boolean({
+  widgetOptions: { isShowAsideExpressionButton: true },
+});
+
+const EmptyArray: string[] = [];
+
 export const Basic: React.FC<Props> = props => {
   const { formik, api, services } = props;
 
@@ -114,6 +119,14 @@ export const Basic: React.FC<Props> = props => {
 
     formik.setFieldValue(type, [...(formik.values[type] || []), newHandler]);
   };
+
+  const onDisabledChange = useCallback(
+    val => {
+      formik.setFieldValue('disabled', val);
+      formik.handleSubmit();
+    },
+    [formik]
+  );
 
   const generateHandlers = (type: HandlerType) => (
     <FormControl>
@@ -154,24 +167,13 @@ export const Basic: React.FC<Props> = props => {
         </FormLabel>
         <SpecWidget
           component={api}
-          spec={Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } })}
+          spec={DisabledSpec}
           value={formik.values.disabled}
-          path={[]}
+          path={EmptyArray}
           level={1}
           services={services}
-          onChange={val => {
-            formik.setFieldValue('disabled', val);
-            formik.handleSubmit();
-          }}
-        >
-          {{
-            title: (
-              <Text fontSize="lg" fontWeight="bold" display="inline">
-                Body
-              </Text>
-            ),
-          }}
-        </SpecWidget>
+          onChange={onDisabledChange}
+        />
       </FormControl>
       {generateHandlers('onComplete')}
       {generateHandlers('onError')}

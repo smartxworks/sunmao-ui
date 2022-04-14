@@ -10,13 +10,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
-import React, {
-  CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
@@ -29,7 +23,7 @@ import { ColumnProps } from '@arco-design/web-react/es/Table';
 import { Resizable, ResizeCallbackData } from 'react-resizable';
 
 const TableStateSpec = Type.Object({
-  clickedRow:Type.Optional(Type.Any()),
+  clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
@@ -40,7 +34,7 @@ type SortRule = {
   direction?: 'ascend' | 'descend';
 };
 
-type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps
+type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps;
 
 type filterDropdownParam = {
   filterKeys?: string[];
@@ -312,12 +306,15 @@ export const Table = implementRuntimeComponent({
         }
 
         newColumn.render = (ceilValue: any, record: any, index: number) => {
+          const evalOptions = {
+            evalListItem: true,
+            scopeObject: {
+              [LIST_ITEM_EXP]: record,
+            },
+          };
           const evaledColumn: ColumnProperty = services.stateManager.deepEval(
             column,
-            true,
-            {
-              [LIST_ITEM_EXP]: record,
-            }
+            evalOptions
           );
           const value = record[evaledColumn.dataIndex];
 
@@ -330,8 +327,7 @@ export const Table = implementRuntimeComponent({
                 if (!rawColumn.btnCfg) return;
                 const evaledButtonConfig = services.stateManager.deepEval(
                   rawColumn.btnCfg,
-                  true,
-                  { [LIST_ITEM_EXP]: record }
+                  evalOptions
                 );
 
                 evaledButtonConfig.handlers.forEach(handler => {

@@ -28,7 +28,6 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
       const lazy = _lazy === undefined ? true : _lazy;
 
       const fetchData = () => {
-        console.log('disabled', disabled);
         if (disabled) return;
         // TODO: clear when component destroy
         // FIXME: listen to the header change
@@ -142,7 +141,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
               typeof FetchTraitPropertiesSpec
             >['onError'];
             rawOnError?.forEach(handler => {
-              const evaledHandler = services.stateManager.deepEval(handler, false);
+              const evaledHandler = services.stateManager.deepEval(handler, { evalListItem: false });
               services.apiService.send('uiMethod', {
                 componentId: evaledHandler.componentId,
                 name: evaledHandler.method.name,
