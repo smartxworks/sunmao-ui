@@ -1,8 +1,8 @@
 // move to @sunmao-ui/runtime in the future?
 
-import { ComponentMetadata } from "@sunmao-ui/core/lib/metadata";
-import { ComponentImplProps } from "@sunmao-ui/runtime";
-import { TLiteral, Type } from "@sinclair/typebox";
+import { ComponentMetadata } from '@sunmao-ui/core/lib/metadata';
+import { ComponentImplProps } from '@sunmao-ui/runtime';
+import { TLiteral, Type } from '@sinclair/typebox';
 
 export type IntoStringUnion<T> = {
   [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
@@ -15,14 +15,15 @@ export function StringUnion<T extends string[]>(values: [...T], options?: any) {
         prev[cur] = Type.Boolean();
         return prev;
       }, {} as Record<T[number], any>)
-    ), options
+    ),
+    options
   );
 }
 
 export const FALLBACK_METADATA: ComponentMetadata = {
-  name: "",
-  description: "",
-  displayName: "",
+  name: '',
+  description: '',
+  displayName: '',
   isDraggable: true,
   isResizable: true,
   exampleProperties: {},

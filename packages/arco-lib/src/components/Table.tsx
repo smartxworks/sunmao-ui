@@ -10,13 +10,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
-import React, {
-  CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
@@ -29,7 +23,7 @@ import { ColumnProps } from '@arco-design/web-react/es/Table';
 import { Resizable, ResizeCallbackData } from 'react-resizable';
 
 const TableStateSpec = Type.Object({
-  clickedRow:Type.Optional(Type.Any()),
+  clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
@@ -40,7 +34,7 @@ type SortRule = {
   direction?: 'ascend' | 'descend';
 };
 
-type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps
+type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps;
 
 type filterDropdownParam = {
   filterKeys?: string[];

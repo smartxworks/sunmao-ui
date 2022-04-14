@@ -1,19 +1,17 @@
-import { Mentions as BaseMentions } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { MentionsPropsSpec as BaseMentionsPropsSpec } from "../generated/types/Mentions";
-import { useState, useEffect } from "react";
+import { Mentions as BaseMentions } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { MentionsPropsSpec as BaseMentionsPropsSpec } from '../generated/types/Mentions';
+import { useState, useEffect } from 'react';
 
 const MentionsPropsSpec = Type.Object(BaseMentionsPropsSpec);
 const MentionsStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSpec>> = (
-  props
-) => {
+const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSpec>> = props => {
   const { elementRef, defaultValue, ...cProps } = getComponentProps(props);
   const { mergeState, customStyle, callbackMap } = props;
 
@@ -39,7 +37,7 @@ const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSpec>> = (
 
   return (
     <BaseMentions
-    ref={elementRef}
+      ref={elementRef}
       onPressEnter={onPressEnter}
       onClear={onClear}
       className={css(customStyle?.content)}
@@ -50,11 +48,11 @@ const MentionsImpl: ComponentImpl<Static<typeof MentionsPropsSpec>> = (
   );
 };
 const exampleProperties: Static<typeof MentionsPropsSpec> = {
-  defaultValue: "smartx",
-  options: ["smartx", "byte and dance", "baidu"],
-  prefix: "@",
-  position: "bl",
-  split: " ",
+  defaultValue: 'smartx',
+  options: ['smartx', 'byte and dance', 'baidu'],
+  prefix: '@',
+  position: 'bl',
+  split: ' ',
   error: false,
   allowClear: true,
   disabled: false,
@@ -62,11 +60,11 @@ const exampleProperties: Static<typeof MentionsPropsSpec> = {
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "mentions",
-    displayName: "Mentions",
+    name: 'mentions',
+    displayName: 'Mentions',
     exampleProperties,
   },
   spec: {
@@ -74,8 +72,8 @@ const options = {
     state: MentionsStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
-    events: ["onChange", "onClear", "onPressEnter"],
+    styleSlots: ['content'],
+    events: ['onChange', 'onClear', 'onPressEnter'],
   },
 };
 

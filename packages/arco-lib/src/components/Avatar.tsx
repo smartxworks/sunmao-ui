@@ -11,7 +11,7 @@ const AvatarPropsSpec = Type.Object({
 const AvatarStateSpec = Type.Object({});
 
 const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSpec>> = props => {
-  const { slotsElements, elementRef,callbackMap, customStyle } = props;
+  const { slotsElements, elementRef, callbackMap, customStyle } = props;
   const { type, src, text, ...cProps } = getComponentProps(props);
 
   return (
