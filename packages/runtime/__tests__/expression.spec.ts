@@ -1,4 +1,8 @@
-import { StateManager, parseExpression, ExpressionError } from '../src/services/StateManager';
+import {
+  StateManager,
+  parseExpression,
+  ExpressionError,
+} from '../src/services/StateManager';
 
 describe('parseExpression function', () => {
   it('can parse {{}} expression', () => {
@@ -81,41 +85,52 @@ describe('evalExpression function', () => {
   };
   const stateStore = new StateManager();
   it('can eval {{}} expression', () => {
-    expect(stateStore.maskedEval('value', false, scope)).toEqual('value');
-    expect(stateStore.maskedEval('{{true}}', false, scope)).toEqual(true);
-    expect(stateStore.maskedEval('{{ false }}', false, scope)).toEqual(false);
-    expect(stateStore.maskedEval('{{[]}}', false, scope)).toEqual([]);
-    expect(stateStore.maskedEval('{{ [] }}', false, scope)).toEqual([]);
-    expect(stateStore.maskedEval('{{ [1,2,3] }}', false, scope)).toEqual([1, 2, 3]);
+    const evalOptions = { evalListItem: false, scopeObject: scope };
 
-    expect(stateStore.maskedEval('{{ {} }}', false, scope)).toEqual({});
-    expect(stateStore.maskedEval('{{ {id: 123} }}', false, scope)).toEqual({ id: 123 });
-    expect(stateStore.maskedEval('{{nothing}}', false, scope) instanceof ExpressionError).toEqual(true);
+    expect(stateStore.maskedEval('value', evalOptions)).toEqual('value');
+    expect(stateStore.maskedEval('{{true}}', evalOptions)).toEqual(true);
+    expect(stateStore.maskedEval('{{ false }}', evalOptions)).toEqual(false);
+    expect(stateStore.maskedEval('{{[]}}', evalOptions)).toEqual([]);
+    expect(stateStore.maskedEval('{{ [] }}', evalOptions)).toEqual([]);
+    expect(stateStore.maskedEval('{{ [1,2,3] }}', evalOptions)).toEqual([1, 2, 3]);
 
-    expect(stateStore.maskedEval('{{input1.value}}', false, scope)).toEqual('world');
-    expect(stateStore.maskedEval('{{checkbox.value}}', false, scope)).toEqual(true);
-    expect(stateStore.maskedEval('{{fetch.data}}', false, scope)).toMatchObject([
+    expect(stateStore.maskedEval('{{ {} }}', evalOptions)).toEqual({});
+    expect(stateStore.maskedEval('{{ {id: 123} }}', evalOptions)).toEqual({ id: 123 });
+    expect(
+      stateStore.maskedEval('{{nothing}}', evalOptions) instanceof ExpressionError
+    ).toEqual(true);
+
+    expect(stateStore.maskedEval('{{input1.value}}', evalOptions)).toEqual('world');
+    expect(stateStore.maskedEval('{{checkbox.value}}', evalOptions)).toEqual(true);
+    expect(stateStore.maskedEval('{{fetch.data}}', evalOptions)).toMatchObject([
       { id: 1 },
       { id: 2 },
     ]);
 
-    expect(stateStore.maskedEval('{{{{}}}}', false, scope)).toEqual(undefined);
+    expect(stateStore.maskedEval('{{{{}}}}', evalOptions)).toEqual(undefined);
 
     expect(
-      stateStore.maskedEval('{{ value }}, {{ input1.value }}!', false, scope)
+      stateStore.maskedEval('{{ value }}, {{ input1.value }}!', evalOptions)
     ).toEqual('Hello, world!');
   });
 
   it('can eval $listItem expression', () => {
-    expect(stateStore.maskedEval('{{ $listItem.value }}', false, scope)).toEqual(
-      '{{ $listItem.value }}'
-    );
-    expect(stateStore.maskedEval('{{ $listItem.value }}', true, scope)).toEqual('foo');
+    expect(
+      stateStore.maskedEval('{{ $listItem.value }}', {
+        evalListItem: false,
+        scopeObject: scope,
+      })
+    ).toEqual('{{ $listItem.value }}');
+    expect(
+      stateStore.maskedEval('{{ $listItem.value }}', {
+        evalListItem: true,
+        scopeObject: scope,
+      })
+    ).toEqual('foo');
     expect(
       stateStore.maskedEval(
         '{{ {{$listItem.value}}Input.value + {{$moduleId}}Fetch.value }}!',
-        true,
-        scope
+        { evalListItem: true, scopeObject: scope }
       )
     ).toEqual('Yes, ok!');
   });

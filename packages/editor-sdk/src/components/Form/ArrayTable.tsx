@@ -45,7 +45,7 @@ export const ArrayTable: React.FC<Props> = props => {
             <Th width="24px" />
             {keys.map((key: string) => {
               const propertySpec = itemSpec.properties?.[key];
-              const title = isJSONSchema(propertySpec) ? propertySpec.title : key;
+              const title = isJSONSchema(propertySpec) ? (propertySpec.title || key) : key;
 
               return <Th key={key}>{title}</Th>;
             })}

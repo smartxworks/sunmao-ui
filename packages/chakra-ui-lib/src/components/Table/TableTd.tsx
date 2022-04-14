@@ -7,34 +7,36 @@ import {
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
   UIServices,
-  ExpressionError
+  ExpressionError,
 } from '@sunmao-ui/runtime';
 
 export const TableTd: React.FC<{
   index: number;
   item: any;
   column: Static<typeof ColumnSpec>;
-  rawColumn: Static<typeof ColumnsPropertySpec>[0]
+  rawColumn: Static<typeof ColumnsPropertySpec>[0];
   onClickItem: () => void;
   services: UIServices;
   app?: RuntimeApplication;
 }> = props => {
   const { item, index, column, rawColumn, onClickItem, services, app } = props;
+  const evalOptions = {
+    evalListItem: true,
+    scopeObject: {
+      [LIST_ITEM_EXP]: item,
+    },
+  };
   let value = item[column.key];
   let buttonConfig = column.buttonConfig;
 
   if (column.displayValue) {
-    const result = services.stateManager.maskedEval(column.displayValue, true, {
-      [LIST_ITEM_EXP]: item,
-    });
+    const result = services.stateManager.maskedEval(column.displayValue, evalOptions);
 
     value = result instanceof ExpressionError ? '' : result;
   }
 
   if (column.buttonConfig) {
-    buttonConfig = services.stateManager.deepEval(column.buttonConfig, true, {
-      [LIST_ITEM_EXP]: item,
-    });
+    buttonConfig = services.stateManager.deepEval(column.buttonConfig, evalOptions);
   }
 
   let content = value;
@@ -57,9 +59,7 @@ export const TableTd: React.FC<{
       const onClick = () => {
         onClickItem();
         rawColumn.buttonConfig.handlers.forEach(handler => {
-          const evaledHandler = services.stateManager.deepEval(handler, true, {
-            [LIST_ITEM_EXP]: item,
-          });
+          const evaledHandler = services.stateManager.deepEval(handler, evalOptions);
           services.apiService.send('uiMethod', {
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
