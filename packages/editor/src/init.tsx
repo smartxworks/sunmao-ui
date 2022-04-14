@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { initEventBus } from './services/eventBus';
 import { EditorStore } from './services/EditorStore';
-import { StorageHandler } from './types';
+import { StorageHandler, UIPros } from './types';
 import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
 import './styles.css';
@@ -27,6 +27,7 @@ type SunmaoUIEditorProps = {
   storageHandler?: StorageHandler;
   defaultApplication?: Application;
   defaultModules?: Module[];
+  uiProps?: UIPros;
 };
 
 export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
@@ -104,6 +105,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
           stateStore={stateManager.store}
           services={services}
           libs={props.libs || []}
+          uiProps={props.uiProps||{}}
         />
       </ChakraProvider>
     );
