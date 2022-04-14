@@ -20,7 +20,7 @@ const AlertImpl: ComponentImpl<Static<typeof AlertPropsSpec>> = props => {
       onClose={_e => {
         callbackMap?.onClose?.();
       }}
-      afterClose={()=>{
+      afterClose={() => {
         callbackMap?.afterClose?.();
       }}
       className={css(customStyle?.content)}

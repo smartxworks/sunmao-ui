@@ -1,28 +1,28 @@
-import { Application } from "@sunmao-ui/core";
+import { Application } from '@sunmao-ui/core';
 
 const longButton: Application = {
-  kind: "Application",
-  version: "example/v1",
+  kind: 'Application',
+  version: 'example/v1',
   metadata: {
-    name: "longButton",
-    description: "longButton",
+    name: 'longButton',
+    description: 'longButton',
   },
   spec: {
     components: [
       {
-        id: "space",
-        type: "arco/v1/space",
+        id: 'space',
+        type: 'arco/v1/space',
         properties: {
-          direction: "vertical",
+          direction: 'vertical',
         },
         traits: [
           {
-            type: "core/v1/style",
+            type: 'core/v1/style',
             properties: {
               styles: [
                 {
-                  styleSlot: "content",
-                  style: "width: 360px; border: 1px solid #ddd; padding: 32px",
+                  styleSlot: 'content',
+                  style: 'width: 360px; border: 1px solid #ddd; padding: 32px',
                 },
               ],
             },
@@ -30,40 +30,40 @@ const longButton: Application = {
         ],
       },
       {
-        id: "button1",
-        type: "arco/v1/button",
+        id: 'button1',
+        type: 'arco/v1/button',
         properties: {
-          text: "primary",
-          type: "primary",
+          text: 'primary',
+          type: 'primary',
           long: true,
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
               container: {
-                id: "space",
-                slot: "content",
+                id: 'space',
+                slot: 'content',
               },
             },
           },
         ],
       },
       {
-        id: "button2",
-        type: "arco/v1/button",
+        id: 'button2',
+        type: 'arco/v1/button',
         properties: {
-          text: "primary",
-          type: "primary",
+          text: 'primary',
+          type: 'primary',
           long: true,
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
               container: {
-                id: "space",
-                slot: "content",
+                id: 'space',
+                slot: 'content',
               },
             },
           },

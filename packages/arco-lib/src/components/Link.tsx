@@ -1,14 +1,14 @@
-import { Link as BaseLink } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { LinkPropsSpec as BaseLinkPropsSpec } from "../generated/types/Link";
+import { Link as BaseLink } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { LinkPropsSpec as BaseLinkPropsSpec } from '../generated/types/Link';
 
 const LinkPropsSpec = Type.Object(BaseLinkPropsSpec);
 const LinkStateSpec = Type.Object({});
 
-const LinkImpl: ComponentImpl<Static<typeof LinkPropsSpec>> = (props) => {
+const LinkImpl: ComponentImpl<Static<typeof LinkPropsSpec>> = props => {
   const { elementRef, content, status, ...cProps } = getComponentProps(props);
   const { customStyle } = props;
 
@@ -27,19 +27,19 @@ const LinkImpl: ComponentImpl<Static<typeof LinkPropsSpec>> = (props) => {
 const exampleProperties: Static<typeof LinkPropsSpec> = {
   disabled: false,
   hoverable: true,
-  status: "warning",
-  href: "https://www.smartx.com/",
-  content: "Link",
+  status: 'warning',
+  href: 'https://www.smartx.com/',
+  content: 'Link',
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "link",
-    displayName: "Link",
+    name: 'link',
+    displayName: 'Link',
     annotations: {
-      category: "Input",
+      category: 'Input',
     },
     exampleProperties,
   },
@@ -48,7 +48,7 @@ const options = {
     state: LinkStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
+    styleSlots: ['content'],
     events: [],
   },
 };

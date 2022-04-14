@@ -1,11 +1,11 @@
-import { Input } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { PasswordInputPropsSpec as BasePasswordInputPropsSpec } from "../generated/types/PasswordInput";
-import { useEffect, useState, useRef } from "react";
-import { RefInputType } from "@arco-design/web-react/es/Input/interface";
+import { Input } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { PasswordInputPropsSpec as BasePasswordInputPropsSpec } from '../generated/types/PasswordInput';
+import { useEffect, useState, useRef } from 'react';
+import { RefInputType } from '@arco-design/web-react/es/Input/interface';
 
 const InputPropsSpec = Type.Object({
   ...BasePasswordInputPropsSpec,
@@ -16,12 +16,10 @@ const InputStateSpec = Type.Object({
 
 const BasePasswordInput = Input.Password;
 
-const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = (
-  props
-) => {
-  const { getElement,customStyle, callbackMap, mergeState } = props;
+const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = props => {
+  const { getElement, customStyle, callbackMap, mergeState } = props;
   const { ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const ref = useRef<RefInputType | null>(null);
 
   useEffect(() => {
@@ -42,7 +40,7 @@ const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = (
       ref={ref}
       className={css(customStyle?.input)}
       value={value}
-      onChange={(value) => {
+      onChange={value => {
         setValue(value);
         callbackMap?.onChange?.();
       }}
@@ -53,21 +51,21 @@ const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = (
 
 const exampleProperties: Static<typeof InputPropsSpec> = {
   disabled: false,
-  placeholder: "please input",
+  placeholder: 'please input',
   error: false,
-  size: "default",
+  size: 'default',
   visibilityToggle: true,
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "passwordInput",
-    displayName: "Password Input",
+    name: 'passwordInput',
+    displayName: 'Password Input',
     exampleProperties,
     annotations: {
-      category: "Input",
+      category: 'Input',
     },
   },
   spec: {
@@ -75,10 +73,9 @@ const options = {
     state: InputStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["input"],
-    events: ["onChange"],
+    styleSlots: ['input'],
+    events: ['onChange'],
   },
 };
 
-export const PasswordInput =
-  implementRuntimeComponent(options)(PasswordInputImpl);
+export const PasswordInput = implementRuntimeComponent(options)(PasswordInputImpl);
