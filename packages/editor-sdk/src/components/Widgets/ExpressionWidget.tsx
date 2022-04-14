@@ -155,7 +155,8 @@ export const ExpressionWidget: React.FC<
   const evalCode = useCallback(
     (code: string) => {
       try {
-        const result = services.stateManager.maskedEval(getParsedValue(code, type));
+        const value = getParsedValue(code, type);
+        const result = isExpression(code) ? services.stateManager.maskedEval(value) : value;
 
         if (result instanceof ExpressionError) {
           throw result;
