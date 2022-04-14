@@ -41,12 +41,15 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
-  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string | ExpressionError;
+  const evalOptions = { evalListItem: true, scopeObject: evalScope };
+  const moduleId = services.stateManager.maskedEval(props.id, evalOptions) as
+    | string
+    | ExpressionError;
 
   function evalObject<T extends Record<string, any>>(obj: T): T {
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {
-        return services.stateManager.maskedEval(value, true, evalScope);
+        return services.stateManager.maskedEval(value, evalOptions);
       }
       return value;
     }).obj;
@@ -62,12 +65,11 @@ const ModuleRendererContent = React.forwardRef<
   // then eval the template and stateMap of module
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
-    return services.stateManager.deepEval(
-      moduleSpec.spec.stateMap,
-      false,
-      { $moduleId: moduleId },
-      true
-    );
+    return services.stateManager.deepEval(moduleSpec.spec.stateMap, {
+      evalListItem: false,
+      scopeObject: { $moduleId: moduleId },
+      overrideScope: true,
+    });
   }, [services.stateManager, moduleSpec.spec.stateMap, moduleId]);
 
   const evaledModuleTemplate = useDeepCompareMemo(() => {
@@ -75,13 +77,15 @@ const ModuleRendererContent = React.forwardRef<
     // so we can assume that template will not change if evaledProperties is the same
     return services.stateManager.deepEval(
       { template: parsedTemplate },
-      false,
       {
-        ...evaledProperties,
-        $moduleId: moduleId,
-      },
-      true,
-      true
+        evalListItem: false,
+        scopeObject: {
+          ...evaledProperties,
+          $moduleId: moduleId,
+        },
+        overrideScope: true,
+        fallbackWhenError: exp => exp,
+      }
     ).template;
   }, [parsedTemplate, evaledProperties, moduleId]);
 
@@ -128,7 +132,7 @@ const ModuleRendererContent = React.forwardRef<
     _handlers.forEach(h => {
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
-          const evaledHandler = services.stateManager.deepEval(h, true, evalScope);
+          const evaledHandler = services.stateManager.deepEval(h, evalOptions);
           services.apiService.send('uiMethod', {
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
