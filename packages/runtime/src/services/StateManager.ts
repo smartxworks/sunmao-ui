@@ -16,6 +16,12 @@ dayjs.extend(LocalizedFormat);
 dayjs.locale('zh-cn');
 
 type ExpChunk = string | ExpChunk[];
+type EvalOptions = {
+  evalListItem?: boolean;
+  scopeObject?: Record<string, any>;
+  overrideScope?: boolean;
+  fallbackWhenError?: (exp: string) => any;
+};
 
 // TODO: use web worker
 const DefaultDependencies = {
@@ -43,53 +49,36 @@ export class StateManager {
     this.store = reactive<Record<string, any>>({});
   };
 
-  evalExp = (
-    expChunk: ExpChunk,
-    scopeObject = {},
-    overrideScope = false,
-    ignoreError = false
-  ): unknown => {
+  evalExp = (expChunk: ExpChunk, options: EvalOptions): unknown => {
     if (typeof expChunk === 'string') {
       return expChunk;
     }
 
-    const evalText = expChunk.map(ex => this.evalExp(ex, scopeObject)).join('');
+    const { scopeObject = {}, overrideScope = false } = options;
+    const evalText = expChunk.map(ex => this.evalExp(ex, { scopeObject })).join('');
 
-    try {
-      // eslint-disable-next-line no-useless-call, no-new-func
-      const evaled = new Function(
-        'store, dependencies, scopeObject',
-        // trim leading space and newline
-        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
-          /^\s+/g,
-          ''
-        )} } } }`
-      ).call(
-        null,
-        overrideScope ? {} : this.store,
-        overrideScope ? {} : this.dependencies,
-        scopeObject
-      );
+    // eslint-disable-next-line no-useless-call, no-new-func
+    const evaled = new Function(
+      'store, dependencies, scopeObject',
+      // trim leading space and newline
+      `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+        /^\s+/g,
+        ''
+      )} } } }`
+    ).call(
+      null,
+      overrideScope ? {} : this.store,
+      overrideScope ? {} : this.dependencies,
+      scopeObject
+    );
 
-      return evaled;
-    } catch (e) {
-      // if ignoreError, return expression itself. This feature is used in ModuleRenderer
-      // because module renderer need eval expression partially
-      if (ignoreError) {
-        return `{{ ${evalText} }}`;
-      }
-      throw e;
-    }
+    return evaled;
   };
 
-  maskedEval(
-    raw: string,
-    evalListItem = false,
-    scopeObject = {},
-    overrideScope = false,
-    ignoreError = false
-  ): unknown | ExpressionError {
+  maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
+    const { evalListItem = false, fallbackWhenError } = options;
     let result: unknown[] = [];
+
     try {
       if (isNumeric(raw)) {
         return toNumber(raw);
@@ -106,9 +95,8 @@ export class StateManager {
         return expChunk;
       }
 
-      result = expChunk.map(e =>
-        this.evalExp(e, scopeObject, overrideScope, ignoreError)
-      );
+      result = expChunk.map(e => this.evalExp(e, options));
+
       if (result.length === 1) {
         return result[0];
       }
@@ -117,7 +105,8 @@ export class StateManager {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
         console.error(expressionError);
-        return expressionError;
+
+        return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
       }
       return undefined;
     }
@@ -146,25 +135,13 @@ export class StateManager {
     }) as T;
   }
 
-  deepEval<T extends Record<string, unknown>>(
-    obj: T,
-    evalListItem = false,
-    scopeObject = {},
-    overrideScope = false,
-    ignoreError = false
-  ): T {
+  deepEval<T extends Record<string, unknown>>(obj: T, options: EvalOptions = {}): T {
     // just eval
     const evaluated = this.mapValuesDeep(obj, ({ value }) => {
       if (typeof value !== 'string') {
         return value;
       }
-      return this.maskedEval(
-        value,
-        evalListItem,
-        scopeObject,
-        overrideScope,
-        ignoreError
-      );
+      return this.maskedEval(value, options);
     });
 
     return evaluated;
@@ -173,21 +150,12 @@ export class StateManager {
   deepEvalAndWatch<T extends Record<string, unknown>>(
     obj: T,
     watcher: (params: { result: T }) => void,
-    evalListItem = false,
-    scopeObject = {},
-    overrideScope = false,
-    ignoreError = false
+    options: EvalOptions = {}
   ) {
     const stops: ReturnType<typeof watch>[] = [];
 
     // just eval
-    const evaluated = this.deepEval(
-      obj,
-      evalListItem,
-      scopeObject,
-      overrideScope,
-      ignoreError
-    );
+    const evaluated = this.deepEval(obj, options);
 
     // watch change
     let resultCache: T = evaluated;
@@ -200,13 +168,8 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(
-            value,
-            evalListItem,
-            scopeObject,
-            overrideScope,
-            ignoreError
-          );
+          const result = this.maskedEval(value, options);
+
           return result;
         },
         newV => {
