@@ -12,8 +12,6 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
     const hasInitialized = HasInitializedMap.get(hashId);
 
     if (!hasInitialized) {
-      mergeState({ [key]: initialValue });
-
       const methods = {
         setValue({ key, value }: KeyValue) {
           mergeState({ [key]: value });
@@ -27,7 +25,14 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
     }
 
     return {
-      props: null,
+      props: {
+        data: {
+          didMount: () => {
+            console.log('merge state')
+            mergeState({ [key]: initialValue });
+          },
+        },
+      },
     };
   };
 };
