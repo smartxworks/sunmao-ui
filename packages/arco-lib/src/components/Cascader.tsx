@@ -1,15 +1,15 @@
-import { Cascader as BaseCascader } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
+import { Cascader as BaseCascader } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import {
   CascaderPropsSpec as BaseCascaderPropsSpec,
   CascaderValueSpec,
-} from "../generated/types/Cascader";
-import { useState, useEffect , useRef } from "react";
-import { isArray } from "lodash-es";
-import { SelectViewHandle } from "@arco-design/web-react/es/_class/select-view";
+} from '../generated/types/Cascader';
+import { useState, useEffect, useRef } from 'react';
+import { isArray } from 'lodash-es';
+import { SelectViewHandle } from '@arco-design/web-react/es/_class/select-view';
 
 const CascaderPropsSpec = Type.Object(BaseCascaderPropsSpec);
 const CascaderStateSpec = Type.Object({
@@ -52,8 +52,8 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
   }
 
   // convert object to tree
-  const getTree: (map: MapItem) => CascaderOptions[] = (map) => {
-    return Object.keys(map).map((key) => ({
+  const getTree: (map: MapItem) => CascaderOptions[] = map => {
+    return Object.keys(map).map(key => ({
       label: key,
       value: key,
       children: getTree(map[key]),
@@ -63,9 +63,7 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
   return getTree(map);
 };
 
-const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = (
-  props
-) => {
+const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = props => {
   const { getElement, callbackMap, multiple, placeholder, ...cProps } =
     getComponentProps(props);
   const { mergeState, slotsElements, customStyle, options } = props;
@@ -75,10 +73,10 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = (
     ? slotsElements.content[0]
     : slotsElements.content;
 
-  const mode: "multiple" | undefined = multiple ? "multiple" : undefined;
+  const mode = multiple ? 'multiple' : undefined;
 
   let defaultValue = cProps.defaultValue;
-  if (mode === "multiple" && !Array.isArray(cProps.defaultValue[0])) {
+  if (mode === 'multiple' && !Array.isArray(cProps.defaultValue[0])) {
     defaultValue = [cProps.defaultValue as string[]];
   }
 
@@ -86,7 +84,7 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = (
 
   // optimize the display when switching from single selection to multiple selection
   useEffect(() => {
-    if (mode === "multiple" && !Array.isArray(value[0])) {
+    if (mode === 'multiple' && !Array.isArray(value[0])) {
       _setValue([value as string[]]);
     }
   }, [mode]);
@@ -124,22 +122,22 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = (
 };
 
 const CascaderExampleOptions = [
-  ["beijing", "chaoyang", "datunli"],
-  ["beijing", "haidian", "smartx"],
-  ["beijing", "changping"],
-  ["beijing", "wangjing", "soho"],
-  ["shanghai", "huangpu"],
-  ["shanghai", "pukou", "chuansha", "disney"],
-  ["jiangsu", "nanjing", "qinhuai", "yuhuatai", "andemen"],
-  ["jiangsu", "nanjing", "qinhuai", "yuhuatai", "tiexinqiao"],
+  ['beijing', 'chaoyang', 'datunli'],
+  ['beijing', 'haidian', 'smartx'],
+  ['beijing', 'changping'],
+  ['beijing', 'wangjing', 'soho'],
+  ['shanghai', 'huangpu'],
+  ['shanghai', 'pukou', 'chuansha', 'disney'],
+  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'andemen'],
+  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'tiexinqiao'],
 ];
 const exampleProperties: Static<typeof CascaderPropsSpec> = {
-  defaultValue: ["beijing", "haidian", "smartx"],
-  expandTrigger: "click",
+  defaultValue: ['beijing', 'haidian', 'smartx'],
+  expandTrigger: 'click',
   multiple: false,
-  placeholder: "Please select ...",
+  placeholder: 'Please select ...',
   bordered: true,
-  size: "default",
+  size: 'default',
   showSearch: true,
   disabled: false,
   loading: false,
@@ -150,20 +148,20 @@ const exampleProperties: Static<typeof CascaderPropsSpec> = {
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "cascader",
-    displayName: "Cascader",
+    name: 'cascader',
+    displayName: 'Cascader',
     exampleProperties,
   },
   spec: {
     properties: CascaderPropsSpec,
     state: CascaderStateSpec,
     methods: {},
-    slots: ["content"],
-    styleSlots: ["content"],
-    events: ["onChange"],
+    slots: ['content'],
+    styleSlots: ['content'],
+    events: ['onChange'],
   },
 };
 

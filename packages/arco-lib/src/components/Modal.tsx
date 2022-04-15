@@ -1,19 +1,19 @@
-import { Modal as BaseModal, ConfigProvider } from "@arco-design/web-react";
+import { Modal as BaseModal, ConfigProvider } from '@arco-design/web-react';
 import {
   ComponentImpl,
   DIALOG_CONTAINER_ID,
   implementRuntimeComponent,
-} from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { ModalPropsSpec as BaseModalPropsSpec } from "../generated/types/Modal";
-import { useEffect, useRef, useState } from "react";
+} from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { ModalPropsSpec as BaseModalPropsSpec } from '../generated/types/Modal';
+import { useEffect, useRef, useState } from 'react';
 
 const ModalPropsSpec = Type.Object(BaseModalPropsSpec);
 const ModalStateSpec = Type.Object({});
 
-const ModalImpl: ComponentImpl<Static<typeof ModalPropsSpec>> = (props) => {
+const ModalImpl: ComponentImpl<Static<typeof ModalPropsSpec>> = props => {
   const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
   const { getElement, title, ...cProps } = getComponentProps(props);
   const [visible, setVisible] = useState(true);
@@ -70,24 +70,24 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSpec>> = (props) => {
 };
 
 const exampleProperties: Static<typeof ModalPropsSpec> = {
-  title: "Modal title",
+  title: 'Modal title',
   mask: true,
   simple: false,
-  okText: "confirm",
-  cancelText: "cancel",
+  okText: 'confirm',
+  cancelText: 'cancel',
   closable: true,
   maskClosable: true,
   confirmLoading: false,
 };
 export const Modal = implementRuntimeComponent({
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
     exampleProperties,
-    name: "modal",
-    displayName: "Modal",
+    name: 'modal',
+    displayName: 'Modal',
     annotations: {
-      category: "Display",
+      category: 'Display',
     },
   },
   spec: {
@@ -97,8 +97,8 @@ export const Modal = implementRuntimeComponent({
       openModal: Type.String(),
       closeModal: Type.String(),
     } as Record<string, any>,
-    slots: ["content", "footer"],
-    styleSlots: ["content"],
-    events: ["afterOpen", "afterClose", "onCancel", "onOk"],
+    slots: ['content', 'footer'],
+    styleSlots: ['content'],
+    events: ['afterOpen', 'afterClose', 'onCancel', 'onOk'],
   },
 })(ModalImpl);

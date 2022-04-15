@@ -1,11 +1,11 @@
-import { Input } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TextAreaPropsSpec as BaseTextAreaPropsSpec } from "../generated/types/TextArea";
-import { useEffect, useState, useRef } from "react";
-import { RefInputType } from "@arco-design/web-react/es/Input/interface";
+import { Input } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { TextAreaPropsSpec as BaseTextAreaPropsSpec } from '../generated/types/TextArea';
+import { useEffect, useState, useRef } from 'react';
+import { RefInputType } from '@arco-design/web-react/es/Input/interface';
 
 const TextAreaPropsSpec = Type.Object({
   ...BaseTextAreaPropsSpec,
@@ -16,9 +16,7 @@ const TextAreaStateSpec = Type.Object({
 
 const BaseTextArea = Input.TextArea;
 
-const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSpec>> = (
-  props
-) => {
+const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSpec>> = props => {
   const { getElement, customStyle, callbackMap, mergeState } = props;
   const { defaultValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState(defaultValue);
@@ -42,7 +40,7 @@ const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSpec>> = (
       ref={ref}
       className={css(customStyle?.TextArea)}
       value={value}
-      onChange={(value) => {
+      onChange={value => {
         setValue(value);
         callbackMap?.onChange?.();
       }}
@@ -54,22 +52,22 @@ const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSpec>> = (
 const exampleProperties: Static<typeof TextAreaPropsSpec> = {
   allowClear: false,
   disabled: false,
-  defaultValue: "",
-  placeholder: "please input",
+  defaultValue: '',
+  placeholder: 'please input',
   error: false,
-  size: "default",
+  size: 'default',
   autoSize: true,
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "textArea",
-    displayName: "TextArea",
+    name: 'textArea',
+    displayName: 'TextArea',
     exampleProperties,
     annotations: {
-      category: "TextArea",
+      category: 'TextArea',
     },
   },
   spec: {
@@ -77,8 +75,8 @@ const options = {
     state: TextAreaStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["TextArea"],
-    events: ["onChange"],
+    styleSlots: ['TextArea'],
+    events: ['onChange'],
   },
 };
 

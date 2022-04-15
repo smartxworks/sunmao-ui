@@ -11,7 +11,7 @@ const AvatarPropsSpec = Type.Object({
 const AvatarStateSpec = Type.Object({});
 
 const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSpec>> = props => {
-  const { slotsElements, elementRef, customStyle } = props;
+  const { slotsElements, elementRef, callbackMap, customStyle } = props;
   const { type, src, text, ...cProps } = getComponentProps(props);
 
   return (
@@ -20,6 +20,9 @@ const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSpec>> = props => {
       className={css(customStyle?.content)}
       {...cProps}
       triggerIcon={slotsElements.triggerIcon}
+      onClick={_e => {
+        callbackMap?.onClick?.();
+      }}
     >
       {type === 'img' ? <img src={src} /> : text}
     </BaseAvatar>
@@ -50,7 +53,7 @@ const options = {
     methods: {},
     slots: ['triggerIcon'],
     styleSlots: ['content'],
-    events: [],
+    events: ['onClick'],
   },
 };
 

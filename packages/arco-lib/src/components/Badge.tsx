@@ -1,14 +1,14 @@
-import { Badge as BaseBadge } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { BadgePropsSpec as BaseBadgePropsSpec } from "../generated/types/Badge";
+import { Badge as BaseBadge } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { BadgePropsSpec as BaseBadgePropsSpec } from '../generated/types/Badge';
 
 const BadgePropsSpec = Type.Object(BaseBadgePropsSpec);
 const BadgeStateSpec = Type.Object({});
 
-const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSpec>> = (props) => {
+const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSpec>> = props => {
   const { ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 
@@ -17,43 +17,46 @@ const BadgeImpl: ComponentImpl<Static<typeof BadgePropsSpec>> = (props) => {
   // which will cause some confusion and bug
   // If `dot` is not set, delete status and color from props
   if (!cProps.dot) {
-    Reflect.deleteProperty(cProps, "status");
-    Reflect.deleteProperty(cProps, "dotColor");
+    Reflect.deleteProperty(cProps, 'status');
+    Reflect.deleteProperty(cProps, 'dotColor');
   }
 
   return (
-    <BaseBadge ref={elementRef} className={css(customStyle?.content)} {...cProps} color={cProps.dotColor}>
+    <BaseBadge
+      ref={elementRef}
+      className={css(customStyle?.content)}
+      {...cProps}
+      color={cProps.dotColor}
+    >
       {slotsElements.content}
     </BaseBadge>
   );
 };
 const exampleProperties: Static<typeof BadgePropsSpec> = {
-  // TODO handle dotStyle and color
-  text: "",
+  text: '',
   dot: true,
   count: 1,
-  dotColor: "red",
   maxCount: 99,
   offset: [6, -2],
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "badge",
-    displayName: "Badge",
+    name: 'badge',
+    displayName: 'Badge',
     exampleProperties,
     annotations: {
-      category: "Display",
-    }
+      category: 'Display',
+    },
   },
   spec: {
     properties: BadgePropsSpec,
     state: BadgeStateSpec,
     methods: {},
-    slots: ["content"],
-    styleSlots: ["content"],
+    slots: ['content'],
+    styleSlots: ['content'],
     events: [],
   },
 };
