@@ -1,5 +1,5 @@
 import { Menu as BaseMenu } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -27,37 +27,6 @@ const MenuPropsSpec = Type.Object({
 const MenuStateSpec = Type.Object({
   activeKey: Type.Optional(Type.String()),
 });
-
-const MenuImpl: ComponentImpl<Static<typeof MenuPropsSpec>> = props => {
-  const { elementRef, customStyle, callbackMap, mergeState } = props;
-  const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
-  const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
-
-  useEffect(() => {
-    mergeState({
-      activeKey,
-    });
-  }, [activeKey, mergeState]);
-
-  return (
-    <BaseMenu
-      ref={elementRef}
-      defaultSelectedKeys={[defaultActiveKey]}
-      className={css(customStyle?.content)}
-      onClickMenuItem={key => {
-        setActiveKey(key);
-        callbackMap?.onClick?.();
-      }}
-      {...cProps}
-    >
-      {items.map(item => (
-        <BaseMenu.Item key={item.key} disabled={item.disabled}>
-          {item.text}
-        </BaseMenu.Item>
-      ))}
-    </BaseMenu>
-  );
-};
 
 const exampleProperties: Static<typeof MenuPropsSpec> = {
   mode: 'vertical',
@@ -88,4 +57,33 @@ export const Menu = implementRuntimeComponent({
     styleSlots: ['content'],
     events: ['onClick'],
   },
-})(MenuImpl);
+})(props => {
+  const { elementRef, customStyle, callbackMap, mergeState } = props;
+  const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
+  const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
+
+  useEffect(() => {
+    mergeState({
+      activeKey,
+    });
+  }, [activeKey, mergeState]);
+
+  return (
+    <BaseMenu
+      ref={elementRef}
+      defaultSelectedKeys={[defaultActiveKey]}
+      className={css(customStyle?.content)}
+      onClickMenuItem={key => {
+        setActiveKey(key);
+        callbackMap?.onClick?.();
+      }}
+      {...cProps}
+    >
+      {items.map(item => (
+        <BaseMenu.Item key={item.key} disabled={item.disabled}>
+          {item.text}
+        </BaseMenu.Item>
+      ))}
+    </BaseMenu>
+  );
+});

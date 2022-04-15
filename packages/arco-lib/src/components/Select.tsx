@@ -1,5 +1,5 @@
 import { Select as BaseSelect } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -13,44 +13,6 @@ const SelectPropsSpec = Type.Object({
 const SelectStateSpec = Type.Object({
   value: Type.String(),
 });
-
-const SelectImpl: ComponentImpl<Static<typeof SelectPropsSpec>> = props => {
-  const { getElement, customStyle, callbackMap, mergeState, defaultValue = '' } = props;
-  const { options = [], ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState<string>(defaultValue);
-  const ref = useRef<SelectHandle | null>(null);
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [mergeState, value]);
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
-
-  return (
-    <BaseSelect
-      ref={ref}
-      className={css(customStyle?.content)}
-      onChange={v => {
-        setValue(v);
-        callbackMap?.onChange?.();
-      }}
-      value={value}
-      {...cProps}
-      mode={cProps.multiple ? 'multiple' : undefined}
-    >
-      {options.map(o => (
-        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
-          {o.text}
-        </BaseSelect.Option>
-      ))}
-    </BaseSelect>
-  );
-};
 
 const exampleProperties: Static<typeof SelectPropsSpec> = {
   allowClear: false,
@@ -89,4 +51,40 @@ export const Select = implementRuntimeComponent({
     styleSlots: ['content'],
     events: ['onChange'],
   },
-})(SelectImpl);
+})(props => {
+  const { getElement, customStyle, callbackMap, mergeState, defaultValue = '' } = props;
+  const { options = [], ...cProps } = getComponentProps(props);
+  const [value, setValue] = useState<string>(defaultValue);
+  const ref = useRef<SelectHandle | null>(null);
+  useEffect(() => {
+    mergeState({
+      value,
+    });
+  }, [mergeState, value]);
+  useEffect(() => {
+    const ele = ref.current?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
+  return (
+    <BaseSelect
+      ref={ref}
+      className={css(customStyle?.content)}
+      onChange={v => {
+        setValue(v);
+        callbackMap?.onChange?.();
+      }}
+      value={value}
+      {...cProps}
+      mode={cProps.multiple ? 'multiple' : undefined}
+    >
+      {options.map(o => (
+        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
+          {o.text}
+        </BaseSelect.Option>
+      ))}
+    </BaseSelect>
+  );
+});

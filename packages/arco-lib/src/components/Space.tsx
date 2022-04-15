@@ -1,5 +1,5 @@
 import { Space as BaseSpace } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -9,17 +9,6 @@ const SpacePropsSpec = Type.Object({
   ...BaseSpacePropsSpec,
 });
 const SpaceStateSpec = Type.Object({});
-
-const SpaceImpl: ComponentImpl<Static<typeof SpacePropsSpec>> = props => {
-  const { elementRef, slotsElements, customStyle } = props;
-  const cProps = getComponentProps(props);
-
-  return (
-    <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content}
-    </BaseSpace>
-  );
-};
 
 const exampleProperties: Static<typeof SpacePropsSpec> = {
   align: 'center',
@@ -46,4 +35,13 @@ export const Space = implementRuntimeComponent({
     styleSlots: ['content'],
     events: ['onClick'],
   },
-})(SpaceImpl);
+})(props => {
+  const { elementRef, slotsElements, customStyle } = props;
+  const cProps = getComponentProps(props);
+
+  return (
+    <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps}>
+      {slotsElements.content}
+    </BaseSpace>
+  );
+});

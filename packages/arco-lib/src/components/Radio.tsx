@@ -1,5 +1,5 @@
 import { Radio as BaseRadio } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -13,7 +13,44 @@ const RadioStateSpec = Type.Object({
   checkedValue: Type.String(),
 });
 
-const RadioImpl: ComponentImpl<Static<typeof RadioPropsSpec>> = props => {
+const exampleProperties: Static<typeof RadioPropsSpec> = {
+  options: [
+    { label: 'A', value: 'a' },
+    { label: 'B', value: 'b' },
+    { label: 'C', value: 'c' },
+  ],
+  type: 'radio',
+  defaultCheckedValue: 'a',
+  direction: 'horizontal',
+  size: 'default',
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'radio',
+    displayName: 'Radio',
+    exampleProperties,
+    annotations: {
+      category: 'Input',
+    },
+  },
+  spec: {
+    properties: RadioPropsSpec,
+    state: RadioStateSpec,
+    methods: {
+      setCheckedValue: Type.Object({
+        value: Type.String(),
+      }),
+    } as Record<string, any>,
+    slots: [],
+    styleSlots: ['group'],
+    events: ['onChange'],
+  },
+};
+
+export const Radio = implementRuntimeComponent(options)(props => {
   const { customStyle, callbackMap, mergeState, subscribeMethods } = props;
   const { defaultCheckedValue, elementRef, ...cProps } = getComponentProps(props);
   const [checkedValue, setCheckedValue] = useState<string>('');
@@ -54,43 +91,4 @@ const RadioImpl: ComponentImpl<Static<typeof RadioPropsSpec>> = props => {
       />
     </div>
   );
-};
-
-const exampleProperties: Static<typeof RadioPropsSpec> = {
-  options: [
-    { label: 'A', value: 'a' },
-    { label: 'B', value: 'b' },
-    { label: 'C', value: 'c' },
-  ],
-  type: 'radio',
-  defaultCheckedValue: 'a',
-  direction: 'horizontal',
-  size: 'default',
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'radio',
-    displayName: 'Radio',
-    exampleProperties,
-    annotations: {
-      category: 'Input',
-    },
-  },
-  spec: {
-    properties: RadioPropsSpec,
-    state: RadioStateSpec,
-    methods: {
-      setCheckedValue: Type.Object({
-        value: Type.String(),
-      }),
-    } as Record<string, any>,
-    slots: [],
-    styleSlots: ['group'],
-    events: ['onChange'],
-  },
-};
-
-export const Radio = implementRuntimeComponent(options)(RadioImpl);
+});

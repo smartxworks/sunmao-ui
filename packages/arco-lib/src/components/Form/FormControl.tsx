@@ -1,10 +1,10 @@
 import { Form } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent, Text } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent, Text } from '@sunmao-ui/runtime';
 import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../../sunmao-helper';
 import { FormControlPropsSpec as BaseFormControlPropsSpec } from '../../generated/types/Form';
-import { EmptyPlaceholder } from './EmptyPlaceholder';
+import { EmptyPlaceholder } from '../_internal/EmptyPlaceholder';
 import { FormControlErrorMessage } from './FormControlErrorMessage';
 
 const FormControlPropsSpec = Type.Object(BaseFormControlPropsSpec);
@@ -22,32 +22,6 @@ const FormControlStyle = css`
     white-space: inherit !important;
   }
 `;
-
-const FormControlImpl: ComponentImpl<Static<typeof FormControlPropsSpec>> = props => {
-  const { label, errorMsg, ...cProps } = getComponentProps(props);
-  const { elementRef, slotsElements, customStyle } = props;
-
-  return (
-    <BaseFormControl
-      label={<Text cssStyle="display:inline-block" value={label} />}
-      className={cx(
-        FormControlStyle,
-        css`
-          ${customStyle?.content}
-        `
-      )}
-      ref={elementRef}
-      {...cProps}
-    >
-      {slotsElements.content ? (
-        slotsElements.content
-      ) : (
-        <EmptyPlaceholder componentName="Input" />
-      )}
-      <FormControlErrorMessage errorMsg={errorMsg} />
-    </BaseFormControl>
-  );
-};
 
 const exampleProperties: Static<typeof FormControlPropsSpec> = {
   label: {
@@ -85,4 +59,28 @@ export const FormControl = implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(FormControlImpl);
+})(props => {
+  const { label, errorMsg, ...cProps } = getComponentProps(props);
+  const { elementRef, slotsElements, customStyle } = props;
+
+  return (
+    <BaseFormControl
+      label={<Text cssStyle="display:inline-block" value={label} />}
+      className={cx(
+        FormControlStyle,
+        css`
+          ${customStyle?.content}
+        `
+      )}
+      ref={elementRef}
+      {...cProps}
+    >
+      {slotsElements.content ? (
+        slotsElements.content
+      ) : (
+        <EmptyPlaceholder componentName="Input" />
+      )}
+      <FormControlErrorMessage errorMsg={errorMsg} />
+    </BaseFormControl>
+  );
+});

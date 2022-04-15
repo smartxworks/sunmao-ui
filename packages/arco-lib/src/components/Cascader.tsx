@@ -1,5 +1,5 @@
 import { Cascader as BaseCascader } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -63,7 +63,51 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
   return getTree(map);
 };
 
-const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = props => {
+const CascaderExampleOptions = [
+  ['beijing', 'chaoyang', 'datunli'],
+  ['beijing', 'haidian', 'smartx'],
+  ['beijing', 'changping'],
+  ['beijing', 'wangjing', 'soho'],
+  ['shanghai', 'huangpu'],
+  ['shanghai', 'pukou', 'chuansha', 'disney'],
+  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'andemen'],
+  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'tiexinqiao'],
+];
+const exampleProperties: Static<typeof CascaderPropsSpec> = {
+  defaultValue: ['beijing', 'haidian', 'smartx'],
+  expandTrigger: 'click',
+  multiple: false,
+  placeholder: 'Please select ...',
+  bordered: true,
+  size: 'default',
+  showSearch: true,
+  disabled: false,
+  loading: false,
+  allowClear: true,
+  allowCreate: true,
+  maxTagCount: 99,
+  options: CascaderExampleOptions,
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'cascader',
+    displayName: 'Cascader',
+    exampleProperties,
+  },
+  spec: {
+    properties: CascaderPropsSpec,
+    state: CascaderStateSpec,
+    methods: {},
+    slots: ['content'],
+    styleSlots: ['content'],
+    events: ['onChange'],
+  },
+};
+
+export const Cascader = implementRuntimeComponent(options)(props => {
   const { getElement, callbackMap, multiple, placeholder, ...cProps } =
     getComponentProps(props);
   const { mergeState, slotsElements, customStyle, options } = props;
@@ -119,50 +163,4 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = props => {
       {content}
     </BaseCascader>
   );
-};
-
-const CascaderExampleOptions = [
-  ['beijing', 'chaoyang', 'datunli'],
-  ['beijing', 'haidian', 'smartx'],
-  ['beijing', 'changping'],
-  ['beijing', 'wangjing', 'soho'],
-  ['shanghai', 'huangpu'],
-  ['shanghai', 'pukou', 'chuansha', 'disney'],
-  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'andemen'],
-  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'tiexinqiao'],
-];
-const exampleProperties: Static<typeof CascaderPropsSpec> = {
-  defaultValue: ['beijing', 'haidian', 'smartx'],
-  expandTrigger: 'click',
-  multiple: false,
-  placeholder: 'Please select ...',
-  bordered: true,
-  size: 'default',
-  showSearch: true,
-  disabled: false,
-  loading: false,
-  allowClear: true,
-  allowCreate: true,
-  maxTagCount: 99,
-  options: CascaderExampleOptions,
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'cascader',
-    displayName: 'Cascader',
-    exampleProperties,
-  },
-  spec: {
-    properties: CascaderPropsSpec,
-    state: CascaderStateSpec,
-    methods: {},
-    slots: ['content'],
-    styleSlots: ['content'],
-    events: ['onChange'],
-  },
-};
-
-export const Cascader = implementRuntimeComponent(options)(CascaderImpl);
+});

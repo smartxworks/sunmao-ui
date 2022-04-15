@@ -1,5 +1,5 @@
 import { Input } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -15,39 +15,6 @@ const InputStateSpec = Type.Object({
 });
 
 const BasePasswordInput = Input.Password;
-
-const PasswordInputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = props => {
-  const { getElement, customStyle, callbackMap, mergeState } = props;
-  const { ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState('');
-  const ref = useRef<RefInputType | null>(null);
-
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [value]);
-
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
-
-  return (
-    <BasePasswordInput
-      ref={ref}
-      className={css(customStyle?.input)}
-      value={value}
-      onChange={value => {
-        setValue(value);
-        callbackMap?.onChange?.();
-      }}
-      {...cProps}
-    />
-  );
-};
 
 const exampleProperties: Static<typeof InputPropsSpec> = {
   disabled: false,
@@ -78,4 +45,35 @@ const options = {
   },
 };
 
-export const PasswordInput = implementRuntimeComponent(options)(PasswordInputImpl);
+export const PasswordInput = implementRuntimeComponent(options)(props => {
+  const { getElement, customStyle, callbackMap, mergeState } = props;
+  const { ...cProps } = getComponentProps(props);
+  const [value, setValue] = useState('');
+  const ref = useRef<RefInputType | null>(null);
+
+  useEffect(() => {
+    mergeState({
+      value,
+    });
+  }, [value]);
+
+  useEffect(() => {
+    const ele = ref.current?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
+  return (
+    <BasePasswordInput
+      ref={ref}
+      className={css(customStyle?.input)}
+      value={value}
+      onChange={value => {
+        setValue(value);
+        callbackMap?.onChange?.();
+      }}
+      {...cProps}
+    />
+  );
+});

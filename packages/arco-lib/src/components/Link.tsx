@@ -1,5 +1,5 @@
 import { Link as BaseLink } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -7,22 +7,6 @@ import { LinkPropsSpec as BaseLinkPropsSpec } from '../generated/types/Link';
 
 const LinkPropsSpec = Type.Object(BaseLinkPropsSpec);
 const LinkStateSpec = Type.Object({});
-
-const LinkImpl: ComponentImpl<Static<typeof LinkPropsSpec>> = props => {
-  const { elementRef, content, status, ...cProps } = getComponentProps(props);
-  const { customStyle } = props;
-
-  return (
-    <BaseLink
-      ref={elementRef}
-      status={status}
-      className={css(customStyle?.content)}
-      {...cProps}
-    >
-      {content}
-    </BaseLink>
-  );
-};
 
 const exampleProperties: Static<typeof LinkPropsSpec> = {
   disabled: false,
@@ -53,4 +37,18 @@ const options = {
   },
 };
 
-export const Link = implementRuntimeComponent(options)(LinkImpl);
+export const Link = implementRuntimeComponent(options)(props => {
+  const { elementRef, content, status, ...cProps } = getComponentProps(props);
+  const { customStyle } = props;
+
+  return (
+    <BaseLink
+      ref={elementRef}
+      status={status}
+      className={css(customStyle?.content)}
+      {...cProps}
+    >
+      {content}
+    </BaseLink>
+  );
+});

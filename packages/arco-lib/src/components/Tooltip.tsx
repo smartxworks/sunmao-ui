@@ -1,5 +1,5 @@
 import { Tooltip as BaseTooltip, Button } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -10,7 +10,39 @@ import { useState, useEffect } from 'react';
 const TooltipPropsSpec = Type.Object(BaseTooltipPropsSpec);
 const TooltipStateSpec = Type.Object({});
 
-const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSpec>> = props => {
+const exampleProperties: Static<typeof TooltipPropsSpec> = {
+  color: '#bbb',
+  position: 'bottom',
+  mini: false,
+  disabled: false,
+  content: 'This is tooltip',
+  // TODO There are some problems with hover mode that need to be verified later
+  trigger: 'click',
+  controlled: false,
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'tooltip',
+    displayName: 'Tooltip',
+    exampleProperties,
+  },
+  spec: {
+    properties: TooltipPropsSpec,
+    state: TooltipStateSpec,
+    methods: {
+      openTooltip: Type.String(),
+      closeTooltip: Type.String(),
+    },
+    slots: ['content'],
+    styleSlots: ['content'],
+    events: [],
+  },
+};
+
+export const Tooltip = implementRuntimeComponent(options)(props => {
   const { controlled, ...cProps } = getComponentProps(props);
   const { elementRef, subscribeMethods, slotsElements, customStyle } = props;
 
@@ -48,37 +80,4 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSpec>> = props => {
       {content || <Button>Click</Button>}
     </BaseTooltip>
   );
-};
-const exampleProperties: Static<typeof TooltipPropsSpec> = {
-  color: '#bbb',
-  position: 'bottom',
-  mini: false,
-  disabled: false,
-  content: 'This is tooltip',
-  // TODO There are some problems with hover mode that need to be verified later
-  trigger: 'click',
-  controlled: false,
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'tooltip',
-    displayName: 'Tooltip',
-    exampleProperties,
-  },
-  spec: {
-    properties: TooltipPropsSpec,
-    state: TooltipStateSpec,
-    methods: {
-      openTooltip: Type.String(),
-      closeTooltip: Type.String(),
-    } as Record<string, any>,
-    slots: ['content'],
-    styleSlots: ['content'],
-    events: [],
-  },
-};
-
-export const Tooltip = implementRuntimeComponent(options)(TooltipImpl);
+});
