@@ -93,11 +93,13 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
       });
     }
   }, [defaultCheckedValues, mergeState, isInit]);
+
   useEffect(() => {
     subscribeMethods({
       setCheckedValues: ({ checkedValues: newCheckedValues }) => {
+        setCheckedValues(newCheckedValues);
         mergeState({
-          newCheckedValues,
+          checkedValues:newCheckedValues,
           isCheckAll: checkedValues.length === options.length,
         });
       },
@@ -118,6 +120,7 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
           }
         });
 
+        setCheckedValues(currentCheckedValues);
         mergeState({
           checkedValues: currentCheckedValues,
           isCheckAll: currentCheckedValues.length === options.length,
@@ -204,16 +207,16 @@ const options = {
   spec: {
     properties: CheckboxPropsSpec,
     state: CheckboxStateSpec,
-    methods: Type.Object({
+    methods: {
       setCheckedValues: Type.Object({
-        values: Type.Array(Type.String()),
+        checkedValues: Type.Array(Type.String()),
       }),
       checkAll: Type.Object({}),
       uncheckAll: Type.Object({}),
       toggleValues: Type.Object({
         values: BaseCheckboxOptionSpec,
       }),
-    }),
+    },
     styleSlots: ['content'],
     slots: [],
     events: ['onChange'],
