@@ -15,7 +15,7 @@ import { Progress } from './components/Progress';
 import { Badge } from './components/Badge';
 import { Tooltip } from './components/Tooltip';
 import { Popover } from './components/Popover';
-import { Collapse, CollapseItem } from './components/Collapse';
+import { Collapse } from './components/Collapse';
 import { Cascader } from './components/Cascader';
 import { Skeleton } from './components/Skeleton';
 import { Timeline } from './components/Timeline';
@@ -62,7 +62,6 @@ export const components: SunmaoLib['components'] = [
   Tooltip,
   Popover,
   Collapse,
-  CollapseItem,
   Cascader,
   Skeleton,
   Timeline,
