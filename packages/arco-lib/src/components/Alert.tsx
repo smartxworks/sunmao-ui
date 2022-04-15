@@ -1,5 +1,5 @@
 import { Alert as BaseAlert } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -7,27 +7,6 @@ import { AlertPropsSpec as BaseAlertPropsSpec } from '../generated/types/Alert';
 
 const AlertPropsSpec = Type.Object(BaseAlertPropsSpec);
 const AlertStateSpec = Type.Object({});
-
-const AlertImpl: ComponentImpl<Static<typeof AlertPropsSpec>> = props => {
-  const { elementRef, ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements, callbackMap } = props;
-
-  return (
-    <BaseAlert
-      ref={elementRef}
-      action={slotsElements.action}
-      icon={slotsElements.icon}
-      onClose={_e => {
-        callbackMap?.onClose?.();
-      }}
-      afterClose={() => {
-        callbackMap?.afterClose?.();
-      }}
-      className={css(customStyle?.content)}
-      {...cProps}
-    />
-  );
-};
 
 const exampleProperties: Static<typeof AlertPropsSpec> = {
   closable: true,
@@ -59,4 +38,23 @@ const options = {
   },
 };
 
-export const Alert = implementRuntimeComponent(options)(AlertImpl);
+export const Alert = implementRuntimeComponent(options)(props => {
+  const { elementRef, ...cProps } = getComponentProps(props);
+  const { customStyle, slotsElements, callbackMap } = props;
+
+  return (
+    <BaseAlert
+      ref={elementRef}
+      action={slotsElements.action}
+      icon={slotsElements.icon}
+      onClose={_e => {
+        callbackMap?.onClose?.();
+      }}
+      afterClose={() => {
+        callbackMap?.afterClose?.();
+      }}
+      className={css(customStyle?.content)}
+      {...cProps}
+    />
+  );
+});

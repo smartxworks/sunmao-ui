@@ -5,7 +5,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { CollapsePropsSpec as BaseCollapsePropsSpec } from '../generated/types/Collapse';
 import { useEffect, useState } from 'react';
-import { EmptyPlaceholder } from './Form/EmptyPlaceholder';
+import { EmptyPlaceholder } from './_internal/EmptyPlaceholder';
 
 const CollapsePropsSpec = Type.Object(BaseCollapsePropsSpec);
 const CollapseStateSpec = Type.Object({

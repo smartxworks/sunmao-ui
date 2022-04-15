@@ -1,5 +1,5 @@
 import { Tree as BaseTree } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
@@ -11,31 +11,6 @@ const TreeStateSpec = Type.Object({
   selectedNode: TreeNodeSpec,
   selectedNodes: Type.Array(TreeNodeSpec),
 });
-
-const TreeImpl: ComponentImpl<Static<typeof TreePropsSpec>> = props => {
-  const { elementRef, data, multiple, autoExpandParent, customStyle, mergeState } = props;
-  const [selectedNodes, setSelectedNodes] = useState<Static<typeof TreeNodeSpec>[]>([]);
-
-  useEffect(() => {
-    mergeState({
-      selectedNode: selectedNodes[0],
-      selectedNodes: selectedNodes,
-    });
-  }, [mergeState, selectedNodes]);
-
-  return (
-    <div ref={elementRef} className={css(customStyle?.content)}>
-      <BaseTree
-        treeData={data}
-        multiple={multiple}
-        autoExpandParent={autoExpandParent}
-        onSelect={(value, extra) => {
-          setSelectedNodes(extra.selectedNodes.map(formatNode));
-        }}
-      />
-    </div>
-  );
-};
 
 function formatNode(node: NodeInstance): Static<typeof TreeNodeSpec> {
   return {
@@ -118,4 +93,27 @@ const options = {
   },
 };
 
-export const Tree = implementRuntimeComponent(options)(TreeImpl);
+export const Tree = implementRuntimeComponent(options)(props => {
+  const { elementRef, data, multiple, autoExpandParent, customStyle, mergeState } = props;
+  const [selectedNodes, setSelectedNodes] = useState<Static<typeof TreeNodeSpec>[]>([]);
+
+  useEffect(() => {
+    mergeState({
+      selectedNode: selectedNodes[0],
+      selectedNodes: selectedNodes,
+    });
+  }, [mergeState, selectedNodes]);
+
+  return (
+    <div ref={elementRef} className={css(customStyle?.content)}>
+      <BaseTree
+        treeData={data}
+        multiple={multiple}
+        autoExpandParent={autoExpandParent}
+        onSelect={(value, extra) => {
+          setSelectedNodes(extra.selectedNodes.map(formatNode));
+        }}
+      />
+    </div>
+  );
+});

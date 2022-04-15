@@ -1,5 +1,5 @@
 import { Input as BaseInput } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -14,7 +14,38 @@ const InputStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const InputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = props => {
+const exampleProperties: Static<typeof InputPropsSpec> = {
+  allowClear: false,
+  disabled: false,
+  readOnly: false,
+  defaultValue: '',
+  placeholder: 'please input',
+  error: false,
+  size: 'default',
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'input',
+    displayName: 'Input',
+    exampleProperties,
+    annotations: {
+      category: 'Input',
+    },
+  },
+  spec: {
+    properties: InputPropsSpec,
+    state: InputStateSpec,
+    methods: {},
+    slots: ['addAfter', 'prefix', 'suffix', 'addBefore'],
+    styleSlots: ['input'],
+    events: ['onChange', 'onBlur', 'onFocus'],
+  },
+};
+
+export const Input = implementRuntimeComponent(options)(props => {
   const { getElement, slotsElements, customStyle, callbackMap, mergeState } = props;
   const { defaultValue, ...cProps } = getComponentProps(props);
   const ref = useRef<RefInputType | null>(null);
@@ -50,37 +81,4 @@ const InputImpl: ComponentImpl<Static<typeof InputPropsSpec>> = props => {
       {...cProps}
     />
   );
-};
-
-const exampleProperties: Static<typeof InputPropsSpec> = {
-  allowClear: false,
-  disabled: false,
-  readOnly: false,
-  defaultValue: '',
-  placeholder: 'please input',
-  error: false,
-  size: 'default',
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'input',
-    displayName: 'Input',
-    exampleProperties,
-    annotations: {
-      category: 'Input',
-    },
-  },
-  spec: {
-    properties: InputPropsSpec,
-    state: InputStateSpec,
-    methods: {},
-    slots: ['addAfter', 'prefix', 'suffix', 'addBefore'],
-    styleSlots: ['input'],
-    events: ['onChange', 'onBlur', 'onFocus'],
-  },
-};
-
-export const Input = implementRuntimeComponent(options)(InputImpl);
+});

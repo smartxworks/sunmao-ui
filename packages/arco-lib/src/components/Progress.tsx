@@ -1,5 +1,5 @@
 import { Progress as BaseProgress } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -8,14 +8,6 @@ import { ProgressPropsSpec as BaseProgressPropsSpec } from '../generated/types/P
 const ProgressPropsSpec = Type.Object(BaseProgressPropsSpec);
 const ProgressStateSpec = Type.Object({});
 
-const ProgressImpl: ComponentImpl<Static<typeof ProgressPropsSpec>> = props => {
-  const { elementRef, ...cProps } = getComponentProps(props);
-  const { customStyle } = props;
-
-  return (
-    <BaseProgress ref={elementRef} className={css(customStyle?.content)} {...cProps} />
-  );
-};
 const exampleProperties: Static<typeof ProgressPropsSpec> = {
   type: 'line',
   status: 'normal',
@@ -48,4 +40,11 @@ const options = {
   },
 };
 
-export const Progress = implementRuntimeComponent(options)(ProgressImpl);
+export const Progress = implementRuntimeComponent(options)(props => {
+  const { elementRef, ...cProps } = getComponentProps(props);
+  const { customStyle } = props;
+
+  return (
+    <BaseProgress ref={elementRef} className={css(customStyle?.content)} {...cProps} />
+  );
+});

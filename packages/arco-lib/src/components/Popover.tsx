@@ -1,5 +1,5 @@
 import { Popover as BasePopover, Button } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -10,7 +10,41 @@ import { isArray } from 'lodash-es';
 const PopoverPropsSpec = Type.Object(BasePopoverPropsSpec);
 const PopoverStateSpec = Type.Object({});
 
-const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSpec>> = props => {
+const exampleProperties: Static<typeof PopoverPropsSpec> = {
+  color: '#eee',
+  position: 'bottom',
+  disabled: false,
+  controlled: false,
+  // TODO There are some problems with hover mode that need to be verified later
+  trigger: 'click',
+  title: 'Title',
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'popover',
+    displayName: 'Popover',
+    exampleProperties,
+    annotations: {
+      category: 'Display',
+    },
+  },
+  spec: {
+    properties: PopoverPropsSpec,
+    state: PopoverStateSpec,
+    methods: {
+      openPopover: Type.String(),
+      closePopover: Type.String(),
+    } as Record<string, any>,
+    slots: ['popupContent', 'content'],
+    styleSlots: ['content'],
+    events: [],
+  },
+};
+
+export const Popover = implementRuntimeComponent(options)(props => {
   const { elementRef, controlled, ...cProps } = getComponentProps(props);
   const { subscribeMethods, slotsElements, customStyle } = props;
 
@@ -53,39 +87,4 @@ const PopoverImpl: ComponentImpl<Static<typeof PopoverPropsSpec>> = props => {
       {content || <Button ref={elementRef}>Click</Button>}
     </BasePopover>
   );
-};
-const exampleProperties: Static<typeof PopoverPropsSpec> = {
-  color: '#eee',
-  position: 'bottom',
-  disabled: false,
-  controlled: false,
-  // TODO There are some problems with hover mode that need to be verified later
-  trigger: 'click',
-  title: 'Title',
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'popover',
-    displayName: 'Popover',
-    exampleProperties,
-    annotations: {
-      category: 'Display',
-    },
-  },
-  spec: {
-    properties: PopoverPropsSpec,
-    state: PopoverStateSpec,
-    methods: {
-      openPopover: Type.String(),
-      closePopover: Type.String(),
-    } as Record<string, any>,
-    slots: ['popupContent', 'content'],
-    styleSlots: ['content'],
-    events: [],
-  },
-};
-
-export const Popover = implementRuntimeComponent(options)(PopoverImpl);
+});

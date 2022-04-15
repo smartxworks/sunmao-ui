@@ -3,7 +3,7 @@ import {
   Menu as BaseMenu,
   Button,
 } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { DropdownPropsSpec as BaseDropdownPropsSpec } from '../generated/types/Dropdown';
@@ -15,7 +15,41 @@ const DropdownStateSpec = Type.Object({
   visible: Type.Boolean(),
 });
 
-const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = props => {
+const exampleProperties: Static<typeof DropdownPropsSpec> = {
+  dropdownType: 'default',
+  trigger: 'click',
+  position: 'bl',
+  disabled: false,
+  defaultPopupVisible: false,
+  list: [
+    { key: '1', label: 'smartx' },
+    { key: '2', label: 'baidu' },
+    { key: '3', label: 'tencent' },
+  ],
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'dropdown',
+    displayName: 'Dropdown',
+    exampleProperties,
+    annotations: {
+      category: 'Input',
+    },
+  },
+  spec: {
+    properties: DropdownPropsSpec,
+    state: DropdownStateSpec,
+    methods: {},
+    slots: ['trigger'],
+    styleSlots: [],
+    events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
+  },
+};
+
+export const Dropdown = implementRuntimeComponent(options)(props => {
   const { elementRef, slotsElements, callbackMap, mergeState } = props;
   const cProps = getComponentProps(props);
   const { list, dropdownType, ...restProps } = cProps;
@@ -58,40 +92,4 @@ const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = props => {
       <div ref={elementRef}>{slotsElements.trigger || <Button>Click</Button>}</div>
     </Dropdown>
   );
-};
-
-const exampleProperties: Static<typeof DropdownPropsSpec> = {
-  dropdownType: 'default',
-  trigger: 'click',
-  position: 'bl',
-  disabled: false,
-  defaultPopupVisible: false,
-  list: [
-    { key: '1', label: 'smartx' },
-    { key: '2', label: 'baidu' },
-    { key: '3', label: 'tencent' },
-  ],
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'dropdown',
-    displayName: 'Dropdown',
-    exampleProperties,
-    annotations: {
-      category: 'Input',
-    },
-  },
-  spec: {
-    properties: DropdownPropsSpec,
-    state: DropdownStateSpec,
-    methods: {},
-    slots: ['trigger'],
-    styleSlots: [],
-    events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
-  },
-};
-
-export const Dropdown = implementRuntimeComponent(options)(DropdownImpl);
+});
