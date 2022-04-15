@@ -1,6 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import _Text, { TextPropertySpec } from '../_internal/Text';
 import { implementRuntimeComponent } from '../../utils/buildKit';
+import { useEffect } from 'react';
 
 const StateSpec = Type.Object({
   value: Type.String(),
@@ -37,6 +38,20 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ value, customStyle, elementRef }) => {
+})(({ value, customStyle, elementRef, component, effects }) => {
+  console.info('####Component Render', component.id);
+  useEffect(() => {
+    console.info('####Component DidMount', component.id);
+  }, [component.id]);
+  useEffect(() => {
+    console.info('####Component Update By Effects', component.id, effects);
+    return () => {
+      console.info('Component DidUnmount', component.id, effects);
+      effects?.forEach(e => e());
+    };
+  }, [component.id, effects]);
   return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
 });
+
+// 不知道为什么，计时器还在继续，貌似是因为style执行了两次，两个interval，但是clear只执行了一次
+// 另一个问题是，为什么style会执行两次呢？

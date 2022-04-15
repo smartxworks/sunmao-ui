@@ -24,12 +24,19 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ effects }) => {
+})(({ effects, component, data }) => {
+  console.info('####Component Render', component.id);
   useEffect(() => {
+    console.info('####Component DidMount', component.id);
+    (data as any).didMount();
+  }, [component.id, data]);
+  useEffect(() => {
+    console.info('####Component Update By Effects', component.id, effects);
     return () => {
+      console.info('####Component DidUnmount', component.id, effects);
       effects?.forEach(e => e());
     };
-  }, [effects]);
+  }, [component.id, effects]);
 
   return null;
 });
