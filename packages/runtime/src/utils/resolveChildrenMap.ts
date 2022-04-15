@@ -1,6 +1,5 @@
 import { RuntimeComponentSchema } from '@sunmao-ui/core';
 import { ChildrenMap } from '../types';
-import { isFetchTraitComponent } from '../utils/trait';
 
 export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
   childrenMap: ChildrenMap<string>;
@@ -8,16 +7,11 @@ export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
 } {
   const childrenMap: ChildrenMap<string> = {};
   const topLevelComponents: RuntimeComponentSchema[] = [];
-  const fetchTraitComponents: RuntimeComponentSchema[] = [];
 
   for (const c of components) {
     const slotTrait = c.traits.find(t => t.parsedType.name === 'slot');
     if (!slotTrait) {
-      if (isFetchTraitComponent(c)) {
-        fetchTraitComponents.push(c);
-      } else {
-        topLevelComponents.push(c);
-      }
+      topLevelComponents.push(c);
       continue;
     }
     const { id, slot } = slotTrait.properties.container as any;
@@ -64,6 +58,6 @@ export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
 
   return {
     childrenMap,
-    topLevelComponents: [...topLevelComponents, ...fetchTraitComponents],
+    topLevelComponents,
   };
 }
