@@ -28,6 +28,9 @@ const { Editor, registry } = initSunmaoUIEditor({
   },
   defaultApplication: lsManager.getAppFromLS(),
   defaultModules: lsManager.getModulesFromLS(),
+  uiProps: {
+    explorerMenuLazyBehavior: 'keepMounted',
+  },
 });
 
 export default function renderApp(options: Options = {}) {

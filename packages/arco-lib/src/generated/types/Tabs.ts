@@ -6,7 +6,7 @@ export const TabsPropsSpec = {
   defaultActiveTab: Type.String({
     title: 'Default Active Tab Index',
     category: Category.Basic,
-    description: 'The index of default active Tab. Start with 0.'
+    description: 'The index of default active Tab. Start with 0.',
   }),
   tabNames: Type.Array(Type.String(), {
     title: 'Tab Names',
