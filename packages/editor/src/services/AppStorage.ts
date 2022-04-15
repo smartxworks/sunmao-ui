@@ -2,12 +2,14 @@ import { observable, makeObservable, action, toJS } from 'mobx';
 import { Application, ComponentSchema, Module, RuntimeModule } from '@sunmao-ui/core';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from '../constants';
-import { addModuleId } from '../utils/addModuleId';
+import { addModuleId, removeModuleId } from '../utils/addModuleId';
 import { StorageHandler } from '../types';
 
 export class AppStorage {
   app: Application;
   modules: Module[];
+  // modules that have {{$moduleId}}__
+  rawModules: Module[];
   static AppLSKey = 'schema';
   static ModulesLSKey = 'modules';
 
@@ -17,20 +19,23 @@ export class AppStorage {
     private storageHandler?: StorageHandler
   ) {
     this.app = defaultApplication || EmptyAppSchema;
-    this.modules = defaultModules || [];
+    this.modules = defaultModules?.map(removeModuleId) || [];
+    this.rawModules = defaultModules || [];
 
     makeObservable(this, {
       app: observable.shallow,
       modules: observable.shallow,
+      rawModules: observable.shallow,
       setApp: action,
       setModules: action,
+      setRawModules: action,
     });
   }
 
   createModule() {
     let index = this.modules.length;
 
-    this.modules.forEach((module) => {
+    this.modules.forEach(module => {
       if (module.metadata.name === `myModule${index}`) {
         index++;
       }
@@ -46,10 +51,11 @@ export class AppStorage {
       metadata: {
         ...DefaultNewModule.metadata,
         name,
-      }
+      },
     };
 
     this.setModules([...this.modules, newModule]);
+    this.setRawModules(this.modules.map(addModuleId));
     this.saveModules();
   }
 
@@ -59,6 +65,7 @@ export class AppStorage {
         ({ version, metadata: { name } }) => version !== v || name !== n
       )
     );
+    this.setRawModules(this.modules.map(addModuleId));
     this.saveModules();
   }
 
@@ -84,6 +91,8 @@ export class AppStorage {
           draft[i].impl = components;
         });
         this.setModules(newModules);
+        const rawModules = newModules.map(addModuleId);
+        this.setRawModules(rawModules);
         this.saveModules();
         break;
     }
@@ -118,7 +127,10 @@ export class AppStorage {
       draft[i].spec.stateMap = stateMap;
       draft[i].version = version;
     });
+
     this.setModules(newModules);
+    const rawModules = newModules.map(addModuleId);
+    this.setRawModules(rawModules);
     this.saveModules();
   }
 
@@ -127,8 +139,9 @@ export class AppStorage {
   }
 
   private saveModules() {
-    const modules = this.modules.map(addModuleId);
-    this.storageHandler?.onSaveModules && this.storageHandler?.onSaveModules(modules);
+    // save rawModules rather than modules because rawModules have {{$moduleId}}__
+    this.storageHandler?.onSaveModules &&
+      this.storageHandler?.onSaveModules(this.rawModules);
   }
 
   setApp(app: Application) {
@@ -137,5 +150,9 @@ export class AppStorage {
 
   setModules(modules: Module[]) {
     this.modules = modules;
+  }
+
+  setRawModules(modules: Module[]) {
+    this.rawModules = modules;
   }
 }

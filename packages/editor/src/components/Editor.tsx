@@ -26,6 +26,7 @@ import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 import { AppModel } from '../AppModel/AppModel';
 import { LocalStorageForm } from './DataSource/LocalStorageForm';
+import { Explorer } from './Explorer';
 import { Resizable } from 're-resizable';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
@@ -228,15 +229,15 @@ export const Editor: React.FC<Props> = observer(
                 }}
               >
                 <TabList background="gray.50" whiteSpace="nowrap" justifyContent="center">
-                  {/* <Tab>Explorer</Tab> */}
+                  <Tab>Explorer</Tab>
                   <Tab>UI</Tab>
                   <Tab>Data</Tab>
                   <Tab>State</Tab>
                 </TabList>
                 <TabPanels flex="1" overflow="auto">
-                  {/* <TabPanel>
-                  <Explorer services={services} />
-                </TabPanel> */}
+                  <TabPanel p={0}>
+                    <Explorer services={services} />
+                  </TabPanel>
                   <TabPanel p={0}>
                     <StructureTree
                       components={components}

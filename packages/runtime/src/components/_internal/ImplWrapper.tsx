@@ -6,7 +6,7 @@ import { ImplWrapperProps, TraitResult } from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
-  const { component: c, app, children, services, childrenMap, hooks } = props;
+  const { component: c, app, children, services, childrenMap, hooks, isInModule } = props;
   const { registry, stateManager, globalHandlerMap, apiService, eleMap } = props.services;
   const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
@@ -19,18 +19,24 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   const handlerMap = useRef(globalHandlerMap.get(c.id)!);
   const eleRef = useRef<HTMLElement>();
   const onRef = (ele: HTMLElement) => {
-    eleMap.set(c.id, ele);
+    // If a component is in module, it should not have mask, so we needn't set it
+    if (!isInModule) {
+      eleMap.set(c.id, ele);
+    }
     hooks?.didDomUpdate && hooks?.didDomUpdate();
   };
 
   useEffect(() => {
-    if (eleRef.current) {
+    // If a component is in module, it should not have mask, so we needn't set it
+    if (eleRef.current && !isInModule) {
       eleMap.set(c.id, eleRef.current);
     }
     return () => {
-      eleMap.delete(c.id);
+      if (!isInModule) {
+        eleMap.delete(c.id);
+      }
     };
-  }, [c.id, eleMap]);
+  }, [c.id, eleMap, isInModule]);
 
   useEffect(() => {
     const handler = (s: { componentId: string; name: string; parameters?: any }) => {
