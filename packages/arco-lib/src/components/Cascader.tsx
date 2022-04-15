@@ -80,12 +80,12 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = props => {
     defaultValue = [cProps.defaultValue as string[]];
   }
 
-  const [value, _setValue] = useState(defaultValue);
+  const [value, setValue] = useState(defaultValue);
 
   // optimize the display when switching from single selection to multiple selection
   useEffect(() => {
     if (mode === 'multiple' && !Array.isArray(value[0])) {
-      _setValue([value as string[]]);
+      setValue([value as string[]]);
     }
   }, [mode]);
 
@@ -101,7 +101,7 @@ const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = props => {
   }, [getElement, ref]);
 
   const onChange = (value: (string | string[])[]) => {
-    _setValue(value);
+    setValue(value);
     callbackMap?.onChange?.();
   };
 
