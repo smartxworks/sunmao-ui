@@ -144,12 +144,16 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             return prevProps;
           }
 
-          let effects = prevProps?.effects || [];
-          if (result.props?.effects) {
-            effects = effects?.concat(result.props?.effects);
+          let unmountHooks = prevProps?.unmountHooks || [];
+          if (result.props?.unmountHooks) {
+            unmountHooks = unmountHooks?.concat(result.props?.unmountHooks);
+          }
+          let didMountHooks = prevProps?.didMountHooks || [];
+          if (result.props?.didMountHooks) {
+            didMountHooks = didMountHooks?.concat(result.props?.didMountHooks);
           }
 
-          return merge(prevProps, result.props, { effects });
+          return merge(prevProps, result.props, { unmountHooks, didMountHooks });
         },
         {} as TraitResult<string, string>['props']
       );

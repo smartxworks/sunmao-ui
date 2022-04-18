@@ -1,5 +1,4 @@
 import React from 'react';
-import { render } from 'react-dom';
 import { ImplWrapperProps, TraitResult } from '../../../types';
 import { useRuntimeFunctions } from './useRuntimeFunctions';
 
@@ -15,7 +14,7 @@ export const HiddenImplWrapper: React.FC<ImplWrapperProps> = props => {
       return executeTrait(t, properties);
     });
     if (results.some(result => result.unmount)) {
-      // Every component's state is initailize in initStateAnd Method.
+      // Every component's state is initialize in initStateAnd Method.
       // So if if it should not render, we should remove it from store.
       delete stateManager.store[c.id];
       return null;

@@ -24,19 +24,22 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ effects, component, data }) => {
+})(({ unmountHooks, component, didMountHooks, didUpdateHooks }) => {
   console.info('####Component Render', component.id);
   useEffect(() => {
     console.info('####Component DidMount', component.id);
-    (data as any).didMount();
-  }, [component.id, data]);
+    didMountHooks?.forEach(e => e());
+  }, [component.id, didMountHooks]);
   useEffect(() => {
-    console.info('####Component Update By Effects', component.id, effects);
+    console.info('####Component Update', component.id);
+    didUpdateHooks?.forEach(e => e());
+  }, [component.id, didMountHooks, didUpdateHooks]);
+  useEffect(() => {
     return () => {
-      console.info('####Component DidUnmount', component.id, effects);
-      effects?.forEach(e => e());
+      console.info('Component DidUnmount', component.id, unmountHooks);
+      unmountHooks?.forEach(e => e());
     };
-  }, [component.id, effects]);
+  }, [component.id, unmountHooks]);
 
   return null;
 });
