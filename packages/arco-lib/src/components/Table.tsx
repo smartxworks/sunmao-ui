@@ -203,10 +203,10 @@ export const Table = implementRuntimeComponent({
     events: [],
   },
 })(props => {
-  const { getElement, app, mergeState, customStyle, services, data, component } = props;
+  const { getElement, app, mergeState, customStyle, services, component } = props;
 
   const ref = useRef<TableInstance | null>(null);
-  const { pagination, rowClick, ...cProps } = getComponentProps(props);
+  const { pagination, rowClick, data, ...cProps } = getComponentProps(props);
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
 

@@ -31,6 +31,8 @@ const exampleProperties: Static<typeof CollapsePropsSpec> = {
   accordion: false,
   expandIconPosition: 'left',
   bordered: false,
+  destroyOnHide: false,
+  lazyLoad: true,
 };
 
 const options = {
@@ -95,4 +97,3 @@ export const Collapse = implementRuntimeComponent(options)(props => {
     </BaseCollapse>
   );
 });
-
