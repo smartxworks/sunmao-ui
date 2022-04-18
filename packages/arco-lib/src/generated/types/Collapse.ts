@@ -22,6 +22,9 @@ export const CollapseItemPropsSpec = {
     title: 'Show Expand Icon',
     category: Category.Basic,
   }),
+  destroyOnHide:Type.Optional(Type.Boolean({
+    title:'Destroy On Hide'
+  }))
 };
 
 export const CollapsePropsSpec = {
@@ -47,6 +50,13 @@ export const CollapsePropsSpec = {
     widgetOptions: {
       displayedKeys: ['header'],
     }
+  }),
+  lazyLoad:Type.Boolean({
+    title:'Lazy Load',
+    description:'If true, invisible panels will not be rendered on mount'
+  }),
+  destroyOnHide:Type.Boolean({
+    title:'Destroy On Hide'
   })
 };
 

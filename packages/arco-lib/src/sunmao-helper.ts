@@ -48,7 +48,6 @@ export const getComponentProps = <
     services,
     app,
     gridCallbacks,
-    data,
     customStyle,
     callbackMap,
     effects,
