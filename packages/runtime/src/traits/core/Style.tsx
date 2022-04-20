@@ -18,9 +18,9 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
               clearInterval(interval);
             }
             interval = setInterval(() => {
-              console.log(2333);
+              console.log(2333, customStyle.content);
             }, 1000);
-            console.log('开始计时', interval, customStyle.content);
+            console.log('开始计时', interval);
           },
         ],
         didUpdateHooks: [],

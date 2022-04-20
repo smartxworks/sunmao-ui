@@ -182,11 +182,14 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       }
       return () => {
         console.info('####ImplWrapper DidUnmount', c.id);
+        delete stateManager.store[c.id];
         if (!isInModule) {
           eleMap.delete(c.id);
         }
       };
-    }, []);
+      // These dependencies should not change in the whole life cycle of ImplWrapper.
+      // Otherwise, the clear function will run unexpectedly
+    }, [c.id, eleMap, isInModule, stateManager.store]);
 
     useEffect(() => {
       console.info('####Component DidMount', c.id);
@@ -202,9 +205,10 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       return () => {
         console.info('####Component DidUnmount', c.id, propsFromTraits?.unmountHooks);
         propsFromTraits?.unmountHooks?.forEach(e => e());
-        delete stateManager.store[c.id];
       };
-    }, [c.id, propsFromTraits?.unmountHooks, stateManager.store]);
+      // TODO: We don't add unmountHooks in dependencies, because it will be trigger multiple times
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [c.id, stateManager.store]);
 
     const mergedProps = useMemo(
       () => ({ ...evaledComponentProperties, ...propsFromTraits }),
@@ -229,7 +233,9 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       }
       return res;
     }
-    const C = (
+
+    const unmount = traitResults.some(result => result.unmount);
+    const C = unmount ? null : (
       <Impl
         key={c.id}
         {...props}
