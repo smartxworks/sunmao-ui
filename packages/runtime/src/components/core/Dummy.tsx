@@ -1,5 +1,5 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 
 export default implementRuntimeComponent({
@@ -24,22 +24,22 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ unmountHooks, component, didMountHooks, didUpdateHooks }) => {
-  console.info('####Component Render', component.id);
-  useEffect(() => {
-    console.info('####Component DidMount', component.id);
-    didMountHooks?.forEach(e => e());
-  }, [component.id, didMountHooks]);
-  useEffect(() => {
-    console.info('####Component Update', component.id);
-    didUpdateHooks?.forEach(e => e());
-  }, [component.id, didMountHooks, didUpdateHooks]);
-  useEffect(() => {
-    return () => {
-      console.info('Component DidUnmount', component.id, unmountHooks);
-      unmountHooks?.forEach(e => e());
-    };
-  }, [component.id, unmountHooks]);
+})(() => {
+  // console.info('####Component Render', component.id);
+  // useEffect(() => {
+  //   console.info('####Component DidMount', component.id);
+  //   didMountHooks?.forEach(e => e());
+  // }, [component.id, didMountHooks]);
+  // useEffect(() => {
+  //   console.info('####Component Update', component.id);
+  //   didUpdateHooks?.forEach(e => e());
+  // }, [component.id, didMountHooks, didUpdateHooks]);
+  // useEffect(() => {
+  //   return () => {
+  //     console.info('Component DidUnmount', component.id, unmountHooks);
+  //     unmountHooks?.forEach(e => e());
+  //   };
+  // }, [component.id, unmountHooks]);
 
   return null;
 });

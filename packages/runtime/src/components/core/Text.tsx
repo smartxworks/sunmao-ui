@@ -1,7 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import _Text, { TextPropertySpec } from '../_internal/Text';
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { useEffect } from 'react';
 
 const StateSpec = Type.Object({
   value: Type.String(),
@@ -43,26 +42,26 @@ export default implementRuntimeComponent({
     value,
     customStyle,
     elementRef,
-    component,
-    didMountHooks,
-    unmountHooks,
-    didUpdateHooks,
+    // component,
+    // didMountHooks,
+    // unmountHooks,
+    // didUpdateHooks,
   }) => {
-    console.info('####Component Render', component.id);
-    useEffect(() => {
-      console.info('####Component DidMount', component.id);
-      didMountHooks?.forEach(e => e());
-    }, [component.id, didMountHooks]);
-    useEffect(() => {
-      console.info('####Component Update', component.id);
-      didUpdateHooks?.forEach(e => e());
-    }, [component.id, didMountHooks, didUpdateHooks]);
-    useEffect(() => {
-      return () => {
-        console.info('Component DidUnmount', component.id, unmountHooks);
-        unmountHooks?.forEach(e => e());
-      };
-    }, [component.id, unmountHooks]);
+    // console.info('####Component Render', component.id);
+    // useEffect(() => {
+    //   console.info('####Component DidMount', component.id);
+    //   didMountHooks?.forEach(e => e());
+    // }, [component.id, didMountHooks]);
+    // useEffect(() => {
+    //   console.info('####Component Update', component.id);
+    //   didUpdateHooks?.forEach(e => e());
+    // }, [component.id, didMountHooks, didUpdateHooks]);
+    // useEffect(() => {
+    //   return () => {
+    //     console.info('Component DidUnmount', component.id, unmountHooks);
+    //     unmountHooks?.forEach(e => e());
+    //   };
+    // }, [component.id, unmountHooks]);
     return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
   }
 );

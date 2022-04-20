@@ -34,20 +34,6 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       useRuntimeFunctions(props);
 
     useEffect(() => {
-      console.info('####ImplWrapper DidMount', c.id);
-      // If a component is in module, it should not have mask, so we needn't set it
-      if (eleRef.current && !isInModule) {
-        eleMap.set(c.id, eleRef.current);
-      }
-      return () => {
-        console.info('####ImplWrapper DidUnmount', c.id);
-        if (!isInModule) {
-          eleMap.delete(c.id);
-        }
-      };
-    }, [c.id, eleMap, isInModule]);
-
-    useEffect(() => {
       const handler = (s: { componentId: string; name: string; parameters?: any }) => {
         if (s.componentId !== c.id) {
           return;
@@ -107,7 +93,6 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
         traitStops.current?.forEach((stop: any) => stop());
       };
     });
-
     // eval traits' properties then execute traits
     useEffect(() => {
       console.log('开始监听 trait 表达式变化', c.id);
@@ -152,13 +137,20 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
           if (result.props?.didMountHooks) {
             didMountHooks = didMountHooks?.concat(result.props?.didMountHooks);
           }
+          let didUpdateHooks = prevProps?.didUpdateHooks || [];
+          if (result.props?.didUpdateHooks) {
+            didUpdateHooks = didUpdateHooks?.concat(result.props?.didUpdateHooks);
+          }
 
-          return merge(prevProps, result.props, { unmountHooks, didMountHooks });
+          return merge(prevProps, result.props, {
+            unmountHooks,
+            didMountHooks,
+            didUpdateHooks,
+          });
         },
         {} as TraitResult<string, string>['props']
       );
     }, [traitResults]);
-    const unmount = traitResults.some(r => r.unmount);
 
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
@@ -181,11 +173,38 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
       return stop;
     }, [c.properties, stateManager]);
+
+    useEffect(() => {
+      console.info('####ImplWrapper DidMount', c.id);
+      // If a component is in module, it should not have mask, so we needn't set it
+      if (eleRef.current && !isInModule) {
+        eleMap.set(c.id, eleRef.current);
+      }
+      return () => {
+        console.info('####ImplWrapper DidUnmount', c.id);
+        if (!isInModule) {
+          eleMap.delete(c.id);
+        }
+      };
+    }, []);
+
+    useEffect(() => {
+      console.info('####Component DidMount', c.id);
+      propsFromTraits?.didMountHooks?.forEach(e => e());
+    }, []);
+
+    useEffect(() => {
+      console.info('####Component Update', c.id);
+      propsFromTraits?.didUpdateHooks?.forEach(e => e());
+    }, [c.id, propsFromTraits?.didUpdateHooks]);
+
     useEffect(() => {
       return () => {
+        console.info('####Component DidUnmount', c.id, propsFromTraits?.unmountHooks);
+        propsFromTraits?.unmountHooks?.forEach(e => e());
         delete stateManager.store[c.id];
       };
-    }, [c.id, stateManager.store]);
+    }, [c.id, propsFromTraits?.unmountHooks, stateManager.store]);
 
     const mergedProps = useMemo(
       () => ({ ...evaledComponentProperties, ...propsFromTraits }),
@@ -210,7 +229,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       }
       return res;
     }
-    const C = unmount ? null : (
+    const C = (
       <Impl
         key={c.id}
         {...props}
