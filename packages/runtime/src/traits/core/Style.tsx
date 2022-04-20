@@ -12,18 +12,18 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
     return {
       props: {
         customStyle,
-        didMountHooks: [],
-        didUpdateHooks: [
+        didMountHooks: [
           () => {
             if (interval) {
               clearInterval(interval);
             }
             interval = setInterval(() => {
               console.log(2333);
-            }, 2000);
-            console.log('开始计时', interval);
+            }, 1000);
+            console.log('开始计时', interval, customStyle.content);
           },
         ],
+        didUpdateHooks: [],
         unmountHooks: [
           () => {
             console.log('停止计时', interval);
