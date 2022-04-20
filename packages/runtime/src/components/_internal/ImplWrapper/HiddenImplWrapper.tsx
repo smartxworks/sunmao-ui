@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ImplWrapperProps, TraitResult } from '../../../types';
 import { ImplWrapperMain } from './ImplWrapperMain';
-import { useRuntimeFunctions } from './useRuntimeFunctions';
+import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 
 export const HiddenImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {

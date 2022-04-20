@@ -57,9 +57,9 @@ export const getComponentProps = <
     elementRef,
     hooks,
     isInModule,
-    didMountHooks,
+    componentDidMount,
     unmountHooks,
-    didUpdateHooks,
+    componentDidUpdate,
     /* eslint-enable @typescript-eslint/no-unused-vars */
     ...rest
   } = props;

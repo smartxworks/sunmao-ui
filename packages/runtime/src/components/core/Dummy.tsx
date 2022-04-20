@@ -28,12 +28,12 @@ export default implementRuntimeComponent({
   // console.info('####Component Render', component.id);
   // useEffect(() => {
   //   console.info('####Component DidMount', component.id);
-  //   didMountHooks?.forEach(e => e());
-  // }, [component.id, didMountHooks]);
+  //   componentDidMount?.forEach(e => e());
+  // }, [component.id, componentDidMount]);
   // useEffect(() => {
   //   console.info('####Component Update', component.id);
-  //   didUpdateHooks?.forEach(e => e());
-  // }, [component.id, didMountHooks, didUpdateHooks]);
+  //   componentDidUpdate?.forEach(e => e());
+  // }, [component.id, componentDidMount, componentDidUpdate]);
   // useEffect(() => {
   //   return () => {
   //     console.info('Component DidUnmount', component.id, unmountHooks);

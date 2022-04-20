@@ -2,17 +2,17 @@ import React from 'react';
 import { ImplWrapperProps } from '../../../types';
 import { shallowCompareArray } from '../../../utils/shallowCompareArray';
 import { ImplWrapperMain } from './ImplWrapperMain';
-import { HiddenImplWrapper } from './HiddenImplWrapper';
+// import { HiddenImplWrapper } from './HiddenImplWrapper';
 
-export const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
-  (props, ref) => {
-    return (
-      <HiddenImplWrapper {...props}>
-        <ImplWrapperMain {...props} ref={ref} />
-      </HiddenImplWrapper>
-    );
-  }
-);
+// export const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
+//   (props, ref) => {
+//     return (
+//       <HiddenImplWrapper {...props}>
+//         <ImplWrapperMain {...props} ref={ref} />
+//       </HiddenImplWrapper>
+//     );
+//   }
+// );
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
   ImplWrapperMain,
