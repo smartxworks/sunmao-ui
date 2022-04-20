@@ -15,7 +15,7 @@ export const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
 );
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
-  _ImplWrapper,
+  ImplWrapperMain,
   (prevProps, nextProps) => {
     const prevChildren = prevProps.childrenMap[prevProps.component.id]?._grandChildren;
     const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;
