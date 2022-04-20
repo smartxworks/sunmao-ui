@@ -1,86 +1,27 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { merge } from 'lodash-es';
-import { RuntimeComponentSchema, RuntimeTraitSchema } from '@sunmao-ui/core';
+import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
-import { useRuntimeFunctions } from './useRuntimeFunctions';
-import { ImplWrapper } from './ImplWrapper';
+import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
+import { useSlotElements } from './hooks/useSlotChildren';
+import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
+import { useEleRef } from './hooks/useEleMap';
+import { useGridLayout } from './hooks/useGridLayout';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {
-    const { component: c, app, children, childrenMap, hooks, isInModule } = props;
+    const { component: c, children } = props;
     console.info('####ImplWrapper Render', c.id);
-    const { registry, stateManager, globalHandlerMap, apiService, eleMap } =
-      props.services;
-    const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
-    const traitStops = useRef<any[]>();
+    const { registry, stateManager } = props.services;
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
-    if (!globalHandlerMap.has(c.id)) {
-      globalHandlerMap.set(c.id, {});
-    }
+    useGlobalHandlerMap(props);
 
-    const eleRef = useRef<HTMLElement>();
-    const onRef = (ele: HTMLElement) => {
-      // If a component is in module, it should not have mask, so we needn't set it
-      if (!isInModule) {
-        eleMap.set(c.id, ele);
-      }
-      hooks?.didDomUpdate && hooks?.didDomUpdate();
-    };
+    const { eleRef, onRef } = useEleRef(props);
 
-    const { mergeState, subscribeMethods, executeTrait, handlerMapRef } =
-      useRuntimeFunctions(props);
-
-    useEffect(() => {
-      const handler = (s: { componentId: string; name: string; parameters?: any }) => {
-        if (s.componentId !== c.id) {
-          return;
-        }
-        if (!handlerMapRef.current[s.name]) {
-          // maybe log?
-          return;
-        }
-        handlerMapRef.current[s.name](s.parameters);
-      };
-      apiService.on('uiMethod', handler);
-      return () => {
-        apiService.off('uiMethod', handler);
-        globalHandlerMap.delete(c.id);
-      };
-    }, [apiService, c.id, globalHandlerMap, handlerMapRef]);
-
-    // // result returned from traits
-    // const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
-    //   () => {
-    //     const stops: ReturnType<typeof watch>[] = [];
-    //     const properties: Array<RuntimeTraitSchema['properties']> = [];
-    //     c.traits.forEach((t, i) => {
-    //       const { result, stop } = stateManager.deepEvalAndWatch(
-    //         t.properties,
-    //         ({ result: property }: any) => {
-    //           console.log('trait变了', t.type, property);
-    //           const traitResult = executeTrait(t, property);
-    //           setTraitResults(oldResults => {
-    //             // assume traits number and order will not change
-    //             const newResults = [...oldResults];
-    //             newResults[i] = traitResult;
-    //             return newResults;
-    //           });
-    //           stops.push(stop);
-    //         },
-    //         { fallbackWhenError: () => undefined }
-    //       );
-    //       properties.push(result);
-    //     });
-    //     // although traitResults has initialized in useState, it must be set here again
-    //     // because mergeState will be called during the first render of component, and state will change
-    //     traitStops.current = stops;
-    //     console.log('set了一遍 traitresult', c.id);
-    //     return c.traits.map((trait, i) => executeTrait(trait, properties[i]));
-    //   }
-    // );
+    const { mergeState, subscribeMethods, executeTrait } = useRuntimeFunctions(props);
 
     const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
       () => {
@@ -90,9 +31,10 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     useEffect(() => {
       return () => {
-        traitStops.current?.forEach((stop: any) => stop());
+        delete stateManager.store[c.id];
       };
-    });
+    }, [c.id, stateManager.store]);
+
     // eval traits' properties then execute traits
     useEffect(() => {
       console.log('开始监听 trait 表达式变化', c.id);
@@ -133,19 +75,19 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
           if (result.props?.unmountHooks) {
             unmountHooks = unmountHooks?.concat(result.props?.unmountHooks);
           }
-          let didMountHooks = prevProps?.didMountHooks || [];
-          if (result.props?.didMountHooks) {
-            didMountHooks = didMountHooks?.concat(result.props?.didMountHooks);
+          let componentDidMount = prevProps?.componentDidMount || [];
+          if (result.props?.componentDidMount) {
+            componentDidMount = componentDidMount?.concat(result.props?.componentDidMount);
           }
-          let didUpdateHooks = prevProps?.didUpdateHooks || [];
-          if (result.props?.didUpdateHooks) {
-            didUpdateHooks = didUpdateHooks?.concat(result.props?.didUpdateHooks);
+          let componentDidUpdate = prevProps?.componentDidUpdate || [];
+          if (result.props?.componentDidUpdate) {
+            componentDidUpdate = componentDidUpdate?.concat(result.props?.componentDidUpdate);
           }
 
           return merge(prevProps, result.props, {
             unmountHooks,
-            didMountHooks,
-            didUpdateHooks,
+            componentDidMount,
+            componentDidUpdate,
           });
         },
         {} as TraitResult<string, string>['props']
@@ -175,31 +117,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     }, [c.properties, stateManager]);
 
     useEffect(() => {
-      console.info('####ImplWrapper DidMount', c.id);
-      // If a component is in module, it should not have mask, so we needn't set it
-      if (eleRef.current && !isInModule) {
-        eleMap.set(c.id, eleRef.current);
-      }
-      return () => {
-        console.info('####ImplWrapper DidUnmount', c.id);
-        delete stateManager.store[c.id];
-        if (!isInModule) {
-          eleMap.delete(c.id);
-        }
-      };
-      // These dependencies should not change in the whole life cycle of ImplWrapper.
-      // Otherwise, the clear function will run unexpectedly
-    }, [c.id, eleMap, isInModule, stateManager.store]);
-
-    useEffect(() => {
       console.info('####Component DidMount', c.id);
-      propsFromTraits?.didMountHooks?.forEach(e => e());
+      propsFromTraits?.componentDidMount?.forEach(e => e());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
       console.info('####Component Update', c.id);
-      propsFromTraits?.didUpdateHooks?.forEach(e => e());
-    }, [c.id, propsFromTraits?.didUpdateHooks]);
+      propsFromTraits?.componentDidUpdate?.forEach(e => e());
+    }, [c.id, propsFromTraits?.componentDidUpdate]);
 
     useEffect(() => {
       return () => {
@@ -215,32 +141,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       [evaledComponentProperties, propsFromTraits]
     );
 
-    function genSlotsElements() {
-      if (!childrenMap[c.id]) {
-        return {};
-      }
-      const res: Record<string, React.ReactElement[] | React.ReactElement> = {};
-      for (const slot in childrenMap[c.id]) {
-        const slotChildren = childrenMap[c.id][slot].map(child => {
-          if (!childrenCache.get(child)) {
-            const ele = <ImplWrapper key={child.id} {...props} component={child} />;
-            childrenCache.set(child, ele);
-          }
-          return childrenCache.get(child)!;
-        });
-
-        res[slot] = slotChildren.length === 1 ? slotChildren[0] : slotChildren;
-      }
-      return res;
-    }
-
     const unmount = traitResults.some(result => result.unmount);
+    const slotElements = useSlotElements(props);
+
     const C = unmount ? null : (
       <Impl
         key={c.id}
         {...props}
         {...mergedProps}
-        slotsElements={genSlotsElements()}
+        slotsElements={slotElements}
         mergeState={mergeState}
         subscribeMethods={subscribeMethods}
         elementRef={eleRef}
@@ -248,34 +157,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       />
     );
 
-    let result = (
+    const result = (
       <React.Fragment key={c.id}>
         {C}
         {children}
       </React.Fragment>
     );
 
-    let parentComponent;
+    const element = useGridLayout(props, result, ref);
 
-    const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
-
-    if (slotTrait && app) {
-      parentComponent = app.spec.components.find(
-        c => c.id === (slotTrait.properties.container as any).id
-      );
-    }
-
-    if (parentComponent?.parsedType.name === 'grid_layout') {
-      /* eslint-disable */
-      const { component, services, app, gridCallbacks, ...restProps } = props;
-      /* eslint-enable */
-      result = (
-        <div key={c.id} data-sunmao-ui-id={c.id} ref={ref} {...restProps}>
-          {result}
-        </div>
-      );
-    }
-
-    return result;
+    return element;
   }
 );

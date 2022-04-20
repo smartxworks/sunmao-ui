@@ -26,7 +26,7 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
 
     return {
       props: {
-        didMountHooks: [
+        componentDidMount: [
           () => {
             console.log('merge state');
             mergeState({ [key]: initialValue });

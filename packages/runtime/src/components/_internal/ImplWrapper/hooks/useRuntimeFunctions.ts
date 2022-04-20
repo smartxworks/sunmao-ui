@@ -1,11 +1,12 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
-import { ImplWrapperProps } from '../../../types';
+import { ImplWrapperProps } from '../../../../types';
+import { merge } from 'lodash';
+import { HandlerMap } from '../../../../services/handler';
 
 export function useRuntimeFunctions(props: ImplWrapperProps) {
   const { component: c, services } = props;
   const { stateManager, registry, globalHandlerMap } = services;
-  const handlerMapRef = useRef(globalHandlerMap.get(c.id)!);
 
   const mergeState = useCallback(
     (partial: any) => {
@@ -14,11 +15,11 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
     [c.id, stateManager.store]
   );
   const subscribeMethods = useCallback(
-    (map: any) => {
-      handlerMapRef.current = { ...handlerMapRef.current, ...map };
-      globalHandlerMap.set(c.id, handlerMapRef.current);
+    (map: HandlerMap) => {
+      const oldMap = globalHandlerMap.get(c.id);
+      globalHandlerMap.set(c.id, merge(oldMap, map));
     },
-    [c.id, globalHandlerMap, handlerMapRef]
+    [c.id, globalHandlerMap]
   );
 
   const executeTrait = useCallback(
@@ -43,6 +44,5 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
     mergeState,
     subscribeMethods,
     executeTrait,
-    handlerMapRef
   };
 }
