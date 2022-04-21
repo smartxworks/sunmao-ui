@@ -1,18 +1,16 @@
-import { Tooltip as BaseTooltip, Button } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TooltipPropsSpec as BaseTooltipPropsSpec } from "../generated/types/Tooltip";
-import { isArray } from "lodash-es";
-import { useState, useEffect } from "react";
+import { Tooltip as BaseTooltip, Button } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { TooltipPropsSpec as BaseTooltipPropsSpec } from '../generated/types/Tooltip';
+import { isArray } from 'lodash-es';
+import { useState, useEffect } from 'react';
 
 const TooltipPropsSpec = Type.Object(BaseTooltipPropsSpec);
 const TooltipStateSpec = Type.Object({});
 
-const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSpec>> = (
-  props
-) => {
+const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSpec>> = props => {
   const { controlled, ...cProps } = getComponentProps(props);
   const { elementRef, subscribeMethods, slotsElements, customStyle } = props;
 
@@ -52,22 +50,22 @@ const TooltipImpl: ComponentImpl<Static<typeof TooltipPropsSpec>> = (
   );
 };
 const exampleProperties: Static<typeof TooltipPropsSpec> = {
-  color: "#bbb",
-  position: "bottom",
+  color: '#bbb',
+  position: 'bottom',
   mini: false,
   disabled: false,
-  content: "This is tooltip",
+  content: 'This is tooltip',
   // TODO There are some problems with hover mode that need to be verified later
-  trigger: "click",
+  trigger: 'click',
   controlled: false,
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "tooltip",
-    displayName: "Tooltip",
+    name: 'tooltip',
+    displayName: 'Tooltip',
     exampleProperties,
   },
   spec: {
@@ -77,8 +75,8 @@ const options = {
       openTooltip: Type.String(),
       closeTooltip: Type.String(),
     } as Record<string, any>,
-    slots: ["content"],
-    styleSlots: ["content"],
+    slots: ['content'],
+    styleSlots: ['content'],
     events: [],
   },
 };

@@ -1,7 +1,6 @@
 import { JSONSchema7Object } from 'json-schema';
-import { parseVersion } from './version';
+import { parseVersion, Version } from './version';
 import { Metadata } from './metadata';
-import { Version } from './version';
 import { ComponentSchema } from './application';
 
 // spec

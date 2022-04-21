@@ -1,46 +1,46 @@
-import { Application } from "@sunmao-ui/core";
+import { Application } from '@sunmao-ui/core';
 
 const buttonEvent: Application = {
-  kind: "Application",
-  version: "example/v1",
+  kind: 'Application',
+  version: 'example/v1',
   metadata: {
-    name: "buttonEvent",
-    description: "buttonEvent",
+    name: 'buttonEvent',
+    description: 'buttonEvent',
   },
   spec: {
     components: [
       {
-        id: "space",
-        type: "arco/v1/space",
+        id: 'space',
+        type: 'arco/v1/space',
         properties: {},
         traits: [],
       },
       {
-        id: "button1",
-        type: "arco/v1/button",
+        id: 'button1',
+        type: 'arco/v1/button',
         properties: {
-          text: "Click",
-          type: "primary",
+          text: 'Click',
+          type: 'primary',
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
-              container: { id: "space", slot: "content" },
+              container: { id: 'space', slot: 'content' },
             },
           },
           {
-            type: "core/v1/event",
+            type: 'core/v1/event',
             properties: {
               handlers: [
                 {
-                  type: "onClick",
-                  componentId: "count",
+                  type: 'onClick',
+                  componentId: 'count',
                   method: {
-                    name: "setValue",
+                    name: 'setValue',
                     parameters: {
-                      key: "value",
-                      value: "{{count.value + 1}}",
+                      key: 'value',
+                      value: '{{count.value + 1}}',
                     },
                   },
                 },
@@ -50,28 +50,28 @@ const buttonEvent: Application = {
         ],
       },
       {
-        id: "text1",
-        type: "core/v1/text",
+        id: 'text1',
+        type: 'core/v1/text',
         properties: {
-          value: { raw: "click count: {{count.value}}", format: "plain" },
+          value: { raw: 'click count: {{count.value}}', format: 'plain' },
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
-              container: { id: "space", slot: "content" },
+              container: { id: 'space', slot: 'content' },
             },
           },
         ],
       },
       {
-        id: "count",
-        type: "core/v1/dummy",
+        id: 'count',
+        type: 'core/v1/dummy',
         properties: {},
         traits: [
           {
-            type: "core/v1/state",
-            properties: { key: "value", initialValue: 0 },
+            type: 'core/v1/state',
+            properties: { key: 'value', initialValue: 0 },
           },
         ],
       },

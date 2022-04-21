@@ -1,6 +1,6 @@
-import { Divider, Typography } from "@arco-design/web-react";
-import { DemoWrapper } from "../../DemoWrapper";
-import basicUsage from "./basicUsage";
+import { Divider, Typography } from '@arco-design/web-react';
+import { DemoWrapper } from '../../DemoWrapper';
+import basicUsage from './basicUsage';
 
 export const TreeDemoPage: React.FC = () => {
   return (

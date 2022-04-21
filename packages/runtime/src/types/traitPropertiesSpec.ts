@@ -50,6 +50,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
     { title: 'Method' },
   ), // {pattern: /^(get|post|put|delete)$/i}
   lazy: Type.Boolean({ title: 'Lazy' }),
+  disabled: Type.Boolean({ title: 'Disabled' }),
   headers: Type.Record(Type.String(), Type.String(), {
     title: 'Headers',
   }),

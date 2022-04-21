@@ -1,29 +1,20 @@
-import { Tree as BaseTree } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA } from "../sunmao-helper";
-import { TreePropsSpec, TreeNodeSpec } from "../generated/types/Tree";
-import { useEffect, useState } from "react";
-import { NodeInstance } from "@arco-design/web-react/es/Tree/interface";
+import { Tree as BaseTree } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA } from '../sunmao-helper';
+import { TreePropsSpec, TreeNodeSpec } from '../generated/types/Tree';
+import { useEffect, useState } from 'react';
+import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
   selectedNode: TreeNodeSpec,
   selectedNodes: Type.Array(TreeNodeSpec),
 });
 
-const TreeImpl: ComponentImpl<Static<typeof TreePropsSpec>> = (props) => {
-  const {
-    elementRef,
-    data,
-    multiple,
-    autoExpandParent,
-    customStyle,
-    mergeState,
-  } = props;
-  const [selectedNodes, setSelectedNodes] = useState<
-    Static<typeof TreeNodeSpec>[]
-  >([]);
+const TreeImpl: ComponentImpl<Static<typeof TreePropsSpec>> = props => {
+  const { elementRef, data, multiple, autoExpandParent, customStyle, mergeState } = props;
+  const [selectedNodes, setSelectedNodes] = useState<Static<typeof TreeNodeSpec>[]>([]);
 
   useEffect(() => {
     mergeState({
@@ -52,37 +43,36 @@ function formatNode(node: NodeInstance): Static<typeof TreeNodeSpec> {
     key: node.props._key!,
     selectable: node.props.selectable,
     checkable: node.props.checkable,
-    path:[...node.props.pathParentKeys!,node.props._key!],
-    children:
-      node.props.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
+    path: [...node.props.pathParentKeys!, node.props._key!],
+    children: node.props.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
   };
 }
 
 const exampleProperties: Static<typeof TreePropsSpec> = {
   multiple: false,
-  size: "medium",
+  size: 'medium',
   autoExpandParent: true,
   data: [
     {
-      title: "Asia",
-      key: "asia",
+      title: 'Asia',
+      key: 'asia',
       children: [
         {
-          title: "China",
-          key: "China",
+          title: 'China',
+          key: 'China',
           selectable: false,
           children: [
             {
-              title: "Guangdong",
-              key: "Guangdong",
+              title: 'Guangdong',
+              key: 'Guangdong',
               children: [
                 {
-                  title: "Guangzhou",
-                  key: "Guangzhou",
+                  title: 'Guangzhou',
+                  key: 'Guangzhou',
                 },
                 {
-                  title: "Shenzhen",
-                  key: "Shenzhen",
+                  title: 'Shenzhen',
+                  key: 'Shenzhen',
                 },
               ],
             },
@@ -91,16 +81,16 @@ const exampleProperties: Static<typeof TreePropsSpec> = {
       ],
     },
     {
-      title: "Europe",
-      key: "Europe",
+      title: 'Europe',
+      key: 'Europe',
       children: [
         {
-          title: "France",
-          key: "France",
+          title: 'France',
+          key: 'France',
         },
         {
-          title: "Germany",
-          key: "Germany",
+          title: 'Germany',
+          key: 'Germany',
         },
       ],
     },
@@ -108,13 +98,13 @@ const exampleProperties: Static<typeof TreePropsSpec> = {
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "tree",
-    displayName: "Tree",
+    name: 'tree',
+    displayName: 'Tree',
     annotations: {
-      category: "Display",
+      category: 'Display',
     },
     exampleProperties,
   },
@@ -123,7 +113,7 @@ const options = {
     state: TreeStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
+    styleSlots: ['content'],
     events: [],
   },
 };

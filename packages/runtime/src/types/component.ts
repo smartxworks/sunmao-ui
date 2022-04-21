@@ -12,6 +12,7 @@ export type ImplWrapperProps<KSlot extends string = string> = {
   component: RuntimeComponentSchema;
   childrenMap: ChildrenMap<KSlot>;
   services: UIServices;
+  isInModule: boolean;
   app?: RuntimeApplication;
 } & ComponentParamsFromApp;
 

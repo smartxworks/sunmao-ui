@@ -51,6 +51,7 @@ export const App: React.FC<AppProps> = props => {
             app={app}
             gridCallbacks={gridCallbacks}
             hooks={hooks}
+            isInModule={false}
           />
         );
       })}

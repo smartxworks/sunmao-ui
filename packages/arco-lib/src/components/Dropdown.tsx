@@ -2,11 +2,11 @@ import {
   Dropdown as BaseDropdown,
   Menu as BaseMenu,
   Button,
-} from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { DropdownPropsSpec as BaseDropdownPropsSpec } from "../generated/types/Dropdown";
+} from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { DropdownPropsSpec as BaseDropdownPropsSpec } from '../generated/types/Dropdown';
 
 const DropdownPropsSpec = Type.Object(BaseDropdownPropsSpec);
 const DropdownStateSpec = Type.Object({
@@ -15,9 +15,7 @@ const DropdownStateSpec = Type.Object({
   visible: Type.Boolean(),
 });
 
-const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = (
-  props
-) => {
+const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = props => {
   const { elementRef, slotsElements, callbackMap, mergeState } = props;
   const cProps = getComponentProps(props);
   const { list, dropdownType, ...restProps } = cProps;
@@ -43,7 +41,7 @@ const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = (
   const Dropdown = typeMap[dropdownType];
   const droplist = (
     <BaseMenu onClickMenuItem={onClickMenuItem}>
-      {(list || []).map((item) => (
+      {(list || []).map(item => (
         <BaseMenu.Item key={item.key}>{item.label}</BaseMenu.Item>
       ))}
     </BaseMenu>
@@ -57,42 +55,42 @@ const DropdownImpl: ComponentImpl<Static<typeof DropdownPropsSpec>> = (
       onClick={callbackMap?.onButtonClick}
       unmountOnExit={false}
     >
-      <div ref={elementRef}>{slotsElements.trigger||<Button>Click</Button>}</div>
+      <div ref={elementRef}>{slotsElements.trigger || <Button>Click</Button>}</div>
     </Dropdown>
   );
 };
 
 const exampleProperties: Static<typeof DropdownPropsSpec> = {
-  dropdownType: "default",
-  trigger: "click",
-  position: "bl",
+  dropdownType: 'default',
+  trigger: 'click',
+  position: 'bl',
   disabled: false,
   defaultPopupVisible: false,
   list: [
-    { key: "1", label: "smartx" },
-    { key: "2", label: "baidu" },
-    { key: "3", label: "tencent" },
+    { key: '1', label: 'smartx' },
+    { key: '2', label: 'baidu' },
+    { key: '3', label: 'tencent' },
   ],
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "dropdown",
-    displayName: "Dropdown",
+    name: 'dropdown',
+    displayName: 'Dropdown',
     exampleProperties,
     annotations: {
-      category: "Input",
+      category: 'Input',
     },
   },
   spec: {
     properties: DropdownPropsSpec,
     state: DropdownStateSpec,
     methods: {},
-    slots: ["trigger"],
+    slots: ['trigger'],
     styleSlots: [],
-    events: ["onClickMenuItem", "onVisibleChange", "onButtonClick"],
+    events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
   },
 };
 

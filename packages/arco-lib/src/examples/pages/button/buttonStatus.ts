@@ -1,72 +1,72 @@
-import { Application } from "@sunmao-ui/core";
+import { Application } from '@sunmao-ui/core';
 
 const buttonStatus: Application = {
-  kind: "Application",
-  version: "example/v1",
+  kind: 'Application',
+  version: 'example/v1',
   metadata: {
-    name: "buttonStatus",
-    description: "buttonStatus",
+    name: 'buttonStatus',
+    description: 'buttonStatus',
   },
   spec: {
     components: [
       {
-        id: "space",
-        type: "arco/v1/space",
+        id: 'space',
+        type: 'arco/v1/space',
         properties: {},
         traits: [],
       },
       {
-        id: "button1",
-        type: "arco/v1/button",
+        id: 'button1',
+        type: 'arco/v1/button',
         properties: {
-          text: "warning",
-          status: "warning",
+          text: 'warning',
+          status: 'warning',
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
               container: {
-                id: "space",
-                slot: "content",
+                id: 'space',
+                slot: 'content',
               },
             },
           },
         ],
       },
       {
-        id: "button2",
-        type: "arco/v1/button",
+        id: 'button2',
+        type: 'arco/v1/button',
         properties: {
-          text: "danger",
-          status: "danger",
+          text: 'danger',
+          status: 'danger',
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
               container: {
-                id: "space",
-                slot: "content",
+                id: 'space',
+                slot: 'content',
               },
             },
           },
         ],
       },
       {
-        id: "button3",
-        type: "arco/v1/button",
+        id: 'button3',
+        type: 'arco/v1/button',
         properties: {
-          text: "success",
-          status: "success",
+          text: 'success',
+          status: 'success',
         },
         traits: [
           {
-            type: "core/v1/slot",
+            type: 'core/v1/slot',
             properties: {
               container: {
-                id: "space",
-                slot: "content",
+                id: 'space',
+                slot: 'content',
               },
             },
           },
