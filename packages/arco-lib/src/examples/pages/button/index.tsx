@@ -1,12 +1,12 @@
-import { Divider, Typography } from "@arco-design/web-react";
-import { DemoWrapper } from "../../DemoWrapper";
-import basicUsage from "./basicUsage";
-import buttonEvent from "./buttonEvent";
-import buttonWithIcon from "./buttonWithIcon";
-import buttonSize from "./buttonSize";
-import buttonShape from "./buttonShape";
-import buttonStatus from "./buttonStatus";
-import longButton from "./longButton";
+import { Divider, Typography } from '@arco-design/web-react';
+import { DemoWrapper } from '../../DemoWrapper';
+import basicUsage from './basicUsage';
+import buttonEvent from './buttonEvent';
+import buttonWithIcon from './buttonWithIcon';
+import buttonSize from './buttonSize';
+import buttonShape from './buttonShape';
+import buttonStatus from './buttonStatus';
+import longButton from './longButton';
 
 export const ButtonDemoPage: React.FC = () => {
   return (

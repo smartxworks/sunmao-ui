@@ -1,27 +1,23 @@
-import { TreeSelect as BaseTreeSelect } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TreeSelectPropsSpec as BaseTreeSelectPropsSpec } from "../generated/types/TreeSelect";
-import { useState, useEffect , useRef } from "react";
-import { RefTreeSelectType } from "@arco-design/web-react/es/TreeSelect";
+import { TreeSelect as BaseTreeSelect } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { TreeSelectPropsSpec as BaseTreeSelectPropsSpec } from '../generated/types/TreeSelect';
+import { useState, useEffect, useRef } from 'react';
+import { RefTreeSelectType } from '@arco-design/web-react/es/TreeSelect';
 
 const TreeSelectPropsSpec = Type.Object(BaseTreeSelectPropsSpec);
 const TreeSelectStateSpec = Type.Object({
   selectedOptions: Type.String(),
 });
 
-const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSpec>> = (
-  props
-) => {
+const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSpec>> = props => {
   const { defaultValue, ...cProps } = getComponentProps(props);
   const { getElement, customStyle, mergeState, callbackMap } = props;
   const ref = useRef<RefTreeSelectType | null>(null);
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    defaultValue!
-  );
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultValue!);
 
   useEffect(() => {
     // arco definition doesn't declare dom, but it actually has.
@@ -41,9 +37,7 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSpec>> = (
   };
 
   const filterTreeNode = (inputText: string, treeNode: any) => {
-    return (
-      treeNode.props.title.toLowerCase().indexOf(inputText.toLowerCase()) > -1
-    );
+    return treeNode.props.title.toLowerCase().indexOf(inputText.toLowerCase()) > -1;
   };
 
   return (
@@ -61,39 +55,39 @@ const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSpec>> = (
 
 const exampleProperties: Static<typeof TreeSelectPropsSpec> = {
   multiple: false,
-  defaultValue: ["node1"],
+  defaultValue: ['node1'],
   treeData: [
     {
-      key: "node1",
-      title: "Trunk",
+      key: 'node1',
+      title: 'Trunk',
       disabled: true,
       children: [
         {
-          key: "node2",
-          title: "Leaf1",
+          key: 'node2',
+          title: 'Leaf1',
         },
       ],
     },
     {
-      key: "node3",
-      title: "Trunk2",
+      key: 'node3',
+      title: 'Trunk2',
       disabled: false,
       children: [
         {
-          key: "node4",
-          title: "Leaf2",
+          key: 'node4',
+          title: 'Leaf2',
         },
         {
-          key: "node5",
-          title: "Leaf3",
+          key: 'node5',
+          title: 'Leaf3',
         },
       ],
     },
   ],
   bordered: true,
-  placeholder: "Select option(s)",
+  placeholder: 'Select option(s)',
   labelInValue: true,
-  size: "default",
+  size: 'default',
   disabled: false,
   error: false,
   showSearch: true,
@@ -102,11 +96,11 @@ const exampleProperties: Static<typeof TreeSelectPropsSpec> = {
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "treeSelect",
-    displayName: "TreeSelect",
+    name: 'treeSelect',
+    displayName: 'TreeSelect',
     exampleProperties,
   },
   spec: {
@@ -114,8 +108,8 @@ const options = {
     state: TreeSelectStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
-    events: ["onChange"],
+    styleSlots: ['content'],
+    events: ['onChange'],
   },
 };
 

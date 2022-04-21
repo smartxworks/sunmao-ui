@@ -1,1 +1,1 @@
-export { ArcoDesignLib } from "./lib";
+export { ArcoDesignLib } from './lib';

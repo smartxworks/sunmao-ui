@@ -1,5 +1,5 @@
 import { Static } from '@sinclair/typebox';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { get } from 'lodash-es';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
@@ -17,6 +17,7 @@ import {
   ModuleSpec,
 } from '../../types';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
+import { initStateAndMethod } from '../../utils/initStateAndMethod';
 import { ExpressionError } from '../../services/StateManager';
 
 type Props = Static<typeof ModuleSpec> & {
@@ -29,7 +30,7 @@ export const ModuleRenderer = React.forwardRef<HTMLDivElement, Props>((props, re
   const { type, services } = props;
   try {
     const moduleSpec = services.registry.getModuleByType(type);
-    return <ModuleRendererContent {...props} moduleSpec={moduleSpec} />;
+    return <ModuleRendererContent {...props} ref={ref} moduleSpec={moduleSpec} />;
   } catch {
     return <div ref={ref}>Cannot find Module {type}.</div>;
   }
@@ -40,31 +41,19 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
-  const moduleId = services.stateManager.maskedEval(props.id, true, evalScope) as string | ExpressionError;
+  const evalOptions = { evalListItem: true, scopeObject: evalScope };
+  const moduleId = services.stateManager.maskedEval(props.id, evalOptions) as
+    | string
+    | ExpressionError;
 
   function evalObject<T extends Record<string, any>>(obj: T): T {
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {
-        return services.stateManager.maskedEval(value, true, evalScope);
+        return services.stateManager.maskedEval(value, evalOptions);
       }
       return value;
     }).obj;
   }
-
-  const evalWithScope = useCallback(
-    <T extends Record<string, any>>(obj: T, scope: Record<string, any>): T => {
-      const hasScopeKey = (exp: string) => {
-        return Object.keys(scope).some(key => exp.includes('{{') && exp.includes(key));
-      };
-      return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
-        if (typeof value === 'string' && hasScopeKey(value)) {
-          return services.stateManager.maskedEval(value, true, scope);
-        }
-        return value;
-      }).obj;
-    },
-    [services.stateManager]
-  );
 
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
@@ -76,16 +65,28 @@ const ModuleRendererContent = React.forwardRef<
   // then eval the template and stateMap of module
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
-    return evalWithScope(moduleSpec.spec.stateMap, { $moduleId: moduleId });
-  }, [evalWithScope, moduleSpec.spec.stateMap, moduleId]);
+    return services.stateManager.deepEval(moduleSpec.spec.stateMap, {
+      evalListItem: false,
+      scopeObject: { $moduleId: moduleId },
+      overrideScope: true,
+    });
+  }, [services.stateManager, moduleSpec.spec.stateMap, moduleId]);
 
   const evaledModuleTemplate = useDeepCompareMemo(() => {
     // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
     // so we can assume that template will not change if evaledProperties is the same
-    return evalWithScope(parsedTemplate, {
-      ...evaledProperties,
-      $moduleId: moduleId,
-    });
+    return services.stateManager.deepEval(
+      { template: parsedTemplate },
+      {
+        evalListItem: false,
+        scopeObject: {
+          ...evaledProperties,
+          $moduleId: moduleId,
+        },
+        overrideScope: true,
+        fallbackWhenError: exp => exp,
+      }
+    ).template;
   }, [parsedTemplate, evaledProperties, moduleId]);
 
   // listen component state change
@@ -128,10 +129,10 @@ const ModuleRendererContent = React.forwardRef<
     if (!handlers) return;
     const _handlers = handlers as Array<Static<typeof EventHandlerSpec>>;
     const moduleEventHandlers: any[] = [];
-    _handlers.forEach((h) => {
+    _handlers.forEach(h => {
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
-          const evaledHandler = services.stateManager.deepEval(h, true, evalScope);
+          const evaledHandler = services.stateManager.deepEval(h, evalOptions);
           services.apiService.send('uiMethod', {
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
@@ -151,6 +152,8 @@ const ModuleRendererContent = React.forwardRef<
   }, [evalScope, handlers, moduleId, services.apiService, services.stateManager]);
 
   const result = useMemo(() => {
+    // Must init components' state, otherwise store cannot listen these components' state changing
+    initStateAndMethod(services.registry, services.stateManager, evaledModuleTemplate);
     const { childrenMap, topLevelComponents } = resolveChildrenMap(evaledModuleTemplate);
     return topLevelComponents.map(c => {
       return (
@@ -160,12 +163,17 @@ const ModuleRendererContent = React.forwardRef<
           services={services}
           app={app}
           childrenMap={childrenMap}
+          isInModule={true}
         />
       );
     });
   }, [evaledModuleTemplate, services, app]);
 
-  return <div ref={ref}>{result}</div>;
+  return (
+    <div className="module-container" ref={ref}>
+      {result}
+    </div>
+  );
 });
 
 function parseTypeComponents(

@@ -1,37 +1,36 @@
-
-import { Type } from "@sinclair/typebox";
+import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
-import { Category } from '../../constants/category'
+import { Category } from '../../constants/category';
 
 export const InputPropsSpec = {
   defaultValue: Type.String({
-    title:'Default Value',
-    category:Category.Basic,
-    weight: 0
+    title: 'Default Value',
+    category: Category.Basic,
+    weight: 0,
   }),
   placeholder: Type.String({
-    title:'Placeholder',
-    category:Category.Basic,
-    weight: 1
+    title: 'Placeholder',
+    category: Category.Basic,
+    weight: 1,
   }),
   allowClear: Type.Boolean({
-    title:'Allow Clear',
-    category:Category.Basic,
+    title: 'Allow Clear',
+    category: Category.Basic,
   }),
   disabled: Type.Boolean({
-    title:'Disabled',
-    category:Category.Basic,
+    title: 'Disabled',
+    category: Category.Basic,
   }),
   readOnly: Type.Boolean({
-    title:'Read Only',
-    category:Category.Basic,
+    title: 'Read Only',
+    category: Category.Basic,
   }),
   error: Type.Boolean({
-    title:'Error',
-    category:Category.Basic,
+    title: 'Error',
+    category: Category.Basic,
   }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {
-    title:'Size',
-    category: Category.Style
+    title: 'Size',
+    category: Category.Style,
   }),
 };

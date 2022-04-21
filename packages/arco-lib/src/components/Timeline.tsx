@@ -1,16 +1,14 @@
-import { Timeline as BaseTimeline } from "@arco-design/web-react";
-import { ComponentImpl, implementRuntimeComponent } from "@sunmao-ui/runtime";
-import { css } from "@emotion/css";
-import { Type, Static } from "@sinclair/typebox";
-import { FALLBACK_METADATA, getComponentProps } from "../sunmao-helper";
-import { TimelinePropsSpec as BaseTimelinePropsSpec } from "../generated/types/Timeline";
+import { Timeline as BaseTimeline } from '@arco-design/web-react';
+import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
+import { TimelinePropsSpec as BaseTimelinePropsSpec } from '../generated/types/Timeline';
 
 const TimelinePropsSpec = Type.Object(BaseTimelinePropsSpec);
 const TimelineStateSpec = Type.Object({});
 
-const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSpec>> = (
-  props
-) => {
+const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSpec>> = props => {
   const { items, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle } = props;
 
@@ -33,51 +31,51 @@ const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSpec>> = (
 };
 const exampleProperties: Static<typeof TimelinePropsSpec> = {
   reverse: false,
-  direction: "vertical",
-  mode: "alternate",
-  labelPosition: "same",
+  direction: 'vertical',
+  mode: 'alternate',
+  labelPosition: 'same',
   items: [
     {
-      label: "2017-03-10",
-      content: "The first milestone",
-      dotColor: "#00B42A",
-      lineType: "dashed",
-      lineColor: "#00B42A",
-      dotType: "hollow",
+      label: '2017-03-10',
+      content: 'The first milestone',
+      dotColor: '#00B42A',
+      lineType: 'dashed',
+      lineColor: '#00B42A',
+      dotType: 'hollow',
     },
     {
-      label: "2018-05-12",
-      content: "The second milestone",
-      dotColor: "",
-      lineType: "solid",
-      lineColor: "",
-      dotType: "hollow",
+      label: '2018-05-12',
+      content: 'The second milestone',
+      dotColor: '',
+      lineType: 'solid',
+      lineColor: '',
+      dotType: 'hollow',
     },
     {
-      label: "2020-06-22",
-      content: "The third milestone",
-      dotColor: "#F53F3F",
-      lineType: "dotted",
-      dotType: "solid",
-      lineColor: "",
+      label: '2020-06-22',
+      content: 'The third milestone',
+      dotColor: '#F53F3F',
+      lineType: 'dotted',
+      dotType: 'solid',
+      lineColor: '',
     },
     {
-      label: "2020-09-30",
-      content: "The fourth milestone",
-      dotColor: "#C9CDD4",
-      lineType: "dotted",
-      dotType: "solid",
-      lineColor: "",
+      label: '2020-09-30',
+      content: 'The fourth milestone',
+      dotColor: '#C9CDD4',
+      lineType: 'dotted',
+      dotType: 'solid',
+      lineColor: '',
     },
   ],
 };
 
 const options = {
-  version: "arco/v1",
+  version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: "timeline",
-    displayName: "Timeline",
+    name: 'timeline',
+    displayName: 'Timeline',
     exampleProperties,
   },
   spec: {
@@ -85,7 +83,7 @@ const options = {
     state: TimelineStateSpec,
     methods: {},
     slots: [],
-    styleSlots: ["content"],
+    styleSlots: ['content'],
     events: [],
   },
 };

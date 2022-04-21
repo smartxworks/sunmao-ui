@@ -14,27 +14,20 @@ const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {
     title: 'Data',
     category: BASIC,
+    widget: 'core/v1/Expression'
   }),
   template: ModuleSpec,
 });
 
 const exampleProperties = {
-  listData: [
-    {
-      id: '1',
-      name: 'Bowen Tan',
-    },
-  ],
+  listData: [{ id: '1' }, { id: '2' }, { id: '3' }],
   template: {
     id: 'listItemName-{{$listItem.id}}',
-    type: 'core/v1/text',
+    type: 'custom/v1/myModule0',
     properties: {
-      value: {
-        raw: 'Name：{{$listItem.name}}',
-        format: 'plain',
-      },
+      value: '{{$listItem.id}}',
     },
-    traits: [],
+    handlers: [],
   },
 };
 
