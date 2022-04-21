@@ -89,7 +89,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   );
 
   // result returned from traits
-  const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>([]);
+  const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(() => {
+    return c.traits.map(trait =>
+      executeTrait(trait, stateManager.deepEval(trait.properties))
+    );
+  });
 
   // eval traits' properties then execute traits
   useEffect(() => {
@@ -127,11 +131,15 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
         }
 
         let effects = prevProps?.effects || [];
+        let unmountEffects = prevProps?.unmountEffects || [];
         if (result.props?.effects) {
           effects = effects?.concat(result.props?.effects);
         }
+        if (result.props?.unmountEffects) {
+          unmountEffects = unmountEffects?.concat(result.props?.unmountEffects);
+        }
 
-        return merge(prevProps, result.props, { effects });
+        return merge(prevProps, result.props, { effects, unmountEffects });
       },
       {} as TraitResult<string, string>['props']
     );
