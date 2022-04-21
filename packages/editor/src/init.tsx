@@ -1,7 +1,7 @@
 import { Editor as _Editor } from './components/Editor';
 import { initSunmaoUI, SunmaoLib, SunmaoUIRuntimeProps } from '@sunmao-ui/runtime';
 import { AppModelManager } from './operations/AppModelManager';
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   widgets as internalWidgets,
   WidgetManager,
@@ -96,15 +96,21 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   };
 
   const Editor: React.FC = () => {
+    const [store, setStore] = useState(stateManager.store);
+    const onRefresh = useCallback(()=> {
+      setStore(stateManager.store);
+    }, []);
+
     return (
       <ChakraProvider theme={editorTheme}>
         <_Editor
           App={App}
           eleMap={ui.eleMap}
           registry={registry}
-          stateStore={stateManager.store}
+          stateStore={store}
           services={services}
           libs={props.libs || []}
+          onRefresh={onRefresh}
           uiProps={props.uiProps||{}}
         />
       </ChakraProvider>

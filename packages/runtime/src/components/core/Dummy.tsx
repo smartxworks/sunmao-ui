@@ -24,12 +24,17 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ effects }) => {
+})(({ effects, unmountEffects }) => {
   useEffect(() => {
     return () => {
       effects?.forEach(e => e());
     };
   }, [effects]);
+  useEffect(() => {
+    return () => {
+      unmountEffects?.forEach(e => e());
+    };
+  }, []);
 
   return null;
 });
