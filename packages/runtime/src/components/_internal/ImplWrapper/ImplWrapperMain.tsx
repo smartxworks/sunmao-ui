@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { merge, mergeWith, isArray } from 'lodash-es';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
@@ -71,21 +71,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             return prevProps;
           }
 
-          return mergeWith(
-            prevProps,
-            result.props,
-            (obj, src) => {
-              if (isArray(obj)) {
-                return obj.concat(src);
-              }
+          return mergeWith(prevProps, result.props, (obj, src) => {
+            if (isArray(obj)) {
+              return obj.concat(src);
             }
-          );
+          });
         },
         {} as TraitResult<string, string>['props']
       );
     }, [traitResults]);
-
-    console.log('propsFromTraits', propsFromTraits)
 
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
@@ -115,23 +109,19 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
+    useDidUpdate(() => {
       console.info('####Component Update', c.id);
       propsFromTraits?.componentDidUpdate?.forEach(e => e());
-    }, [c.id, propsFromTraits?.componentDidUpdate]);
+    });
 
-    useEffect(() => {
-      return () => {
-        console.info(
-          '####Component DidUnmount',
-          c.id,
-          propsFromTraits?.componentDidUnmount
-        );
-        propsFromTraits?.componentDidUnmount?.forEach(e => e());
-      };
-      // TODO: We don't add componentDidUnmount in dependencies, because it will be trigger multiple times
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [c.id, stateManager.store]);
+    useDidUnmount(() => {
+      console.info(
+        '####Component DidUnmount',
+        c.id,
+        propsFromTraits?.componentDidUnmount
+      );
+      propsFromTraits?.componentDidUnmount?.forEach(e => e());
+    });
 
     const mergedProps = useMemo(
       () => ({ ...evaledComponentProperties, ...propsFromTraits }),
@@ -166,3 +156,26 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     return element;
   }
 );
+
+// This hook will only run unmount function when unmount, not every time when unmount function changes.
+const useDidUnmount = (fn: Function) => {
+  const fnRef = useRef(fn);
+  fnRef.current = fn;
+
+  useEffect(() => () => fnRef.current(), []);
+};
+
+// This hook will run every times when component update, except when first render.
+const useDidUpdate = (fn: Function) => {
+  const fnRef = useRef(fn);
+  const hasMounted = useRef(false);
+  fnRef.current = fn;
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      fnRef.current();
+    } else {
+      hasMounted.current = true;
+    }
+  });
+};

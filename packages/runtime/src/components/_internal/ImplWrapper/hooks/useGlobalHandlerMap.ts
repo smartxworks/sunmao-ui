@@ -30,6 +30,5 @@ export function useGlobalHandlerMap(props: ImplWrapperProps) {
       apiService.off('uiMethod', handler);
       handlerMap.delete(c.id);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiService, c.id]);
+  }, [apiService, c.id, globalHandlerMap]);
 }
