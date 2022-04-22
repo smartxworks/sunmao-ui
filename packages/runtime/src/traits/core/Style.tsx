@@ -24,7 +24,7 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
           },
         ],
         componentDidUpdate: [],
-        unmountHooks: [
+        componentDidUnmount: [
           () => {
             console.log('停止计时', interval);
             if (interval) {

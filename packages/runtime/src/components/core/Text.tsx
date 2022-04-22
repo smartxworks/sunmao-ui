@@ -44,7 +44,7 @@ export default implementRuntimeComponent({
     elementRef,
     // component,
     // componentDidMount,
-    // unmountHooks,
+    // componentDidUnmount,
     // componentDidUpdate,
   }) => {
     // console.info('####Component Render', component.id);
@@ -58,10 +58,10 @@ export default implementRuntimeComponent({
     // }, [component.id, componentDidMount, componentDidUpdate]);
     // useEffect(() => {
     //   return () => {
-    //     console.info('Component DidUnmount', component.id, unmountHooks);
-    //     unmountHooks?.forEach(e => e());
+    //     console.info('Component DidUnmount', component.id, componentDidUnmount);
+    //     componentDidUnmount?.forEach(e => e());
     //   };
-    // }, [component.id, unmountHooks]);
+    // }, [component.id, componentDidUnmount]);
     return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
   }
 );

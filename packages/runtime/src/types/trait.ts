@@ -7,7 +7,7 @@ export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
     data?: unknown;
     customStyle?: Record<KStyleSlot, string>;
     callbackMap?: CallbackMap<KEvent>;
-    unmountHooks?: Array<() => void>;
+    componentDidUnmount?: Array<() => void>;
     componentDidMount?: Array<() => void>
     componentDidUpdate?: Array<() => void>
   } | null;

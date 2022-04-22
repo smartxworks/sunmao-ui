@@ -5,12 +5,12 @@ export function useGlobalHandlerMap(props: ImplWrapperProps) {
   const { component: c, services } = props;
   const { apiService, globalHandlerMap } = services;
 
-  if (!globalHandlerMap.has(c.id)) {
-    globalHandlerMap.set(c.id, {});
-  }
-  const handlerMap = globalHandlerMap.get(c.id);
-
+  
   useEffect(() => {
+    if (!globalHandlerMap.has(c.id)) {
+      globalHandlerMap.set(c.id, {});
+    }
+    const handlerMap = globalHandlerMap.get(c.id);
     if (!handlerMap) return;
 
     const handler = (s: { componentId: string; name: string; parameters?: any }) => {
@@ -30,5 +30,6 @@ export function useGlobalHandlerMap(props: ImplWrapperProps) {
       apiService.off('uiMethod', handler);
       handlerMap.delete(c.id);
     };
-  }, [apiService, c.id, handlerMap]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiService, c.id]);
 }

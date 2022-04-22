@@ -32,7 +32,7 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
             mergeState({ [key]: initialValue });
           },
         ],
-        unmountHooks: [
+        componentDidUnmount: [
           () => {
             HasInitializedMap.delete(hashId);
           },

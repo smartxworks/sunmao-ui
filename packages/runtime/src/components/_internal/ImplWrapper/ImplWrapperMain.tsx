@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { merge } from 'lodash-es';
+import { merge, mergeWith, isArray } from 'lodash-es';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
@@ -71,28 +71,21 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             return prevProps;
           }
 
-          let unmountHooks = prevProps?.unmountHooks || [];
-          if (result.props?.unmountHooks) {
-            unmountHooks = unmountHooks?.concat(result.props?.unmountHooks);
-          }
-          let componentDidMount = prevProps?.componentDidMount || [];
-          if (result.props?.componentDidMount) {
-            componentDidMount = componentDidMount?.concat(result.props?.componentDidMount);
-          }
-          let componentDidUpdate = prevProps?.componentDidUpdate || [];
-          if (result.props?.componentDidUpdate) {
-            componentDidUpdate = componentDidUpdate?.concat(result.props?.componentDidUpdate);
-          }
-
-          return merge(prevProps, result.props, {
-            unmountHooks,
-            componentDidMount,
-            componentDidUpdate,
-          });
+          return mergeWith(
+            prevProps,
+            result.props,
+            (obj, src) => {
+              if (isArray(obj)) {
+                return obj.concat(src);
+              }
+            }
+          );
         },
         {} as TraitResult<string, string>['props']
       );
     }, [traitResults]);
+
+    console.log('propsFromTraits', propsFromTraits)
 
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
@@ -119,7 +112,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     useEffect(() => {
       console.info('####Component DidMount', c.id);
       propsFromTraits?.componentDidMount?.forEach(e => e());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -129,10 +122,14 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     useEffect(() => {
       return () => {
-        console.info('####Component DidUnmount', c.id, propsFromTraits?.unmountHooks);
-        propsFromTraits?.unmountHooks?.forEach(e => e());
+        console.info(
+          '####Component DidUnmount',
+          c.id,
+          propsFromTraits?.componentDidUnmount
+        );
+        propsFromTraits?.componentDidUnmount?.forEach(e => e());
       };
-      // TODO: We don't add unmountHooks in dependencies, because it will be trigger multiple times
+      // TODO: We don't add componentDidUnmount in dependencies, because it will be trigger multiple times
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [c.id, stateManager.store]);
 
