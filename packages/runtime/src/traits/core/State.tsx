@@ -28,7 +28,6 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
       props: {
         componentDidMount: [
           () => {
-            console.log('merge state');
             mergeState({ [key]: initialValue });
           },
         ],
