@@ -2,18 +2,15 @@ import React from 'react';
 
 type Props = {
   onError?: (error: Error | null) => void;
-}
+};
 
-class ErrorBoundary extends React.Component<
-  Props,
-  { error: unknown }
-> {
+class ErrorBoundary extends React.Component<Props, { error: Error | null }> {
   constructor(props: Props) {
     super(props);
     this.state = { error: null };
   }
 
-  static getDerivedStateFromError(error: unknown) {
+  static getDerivedStateFromError(error: Error) {
     return { error };
   }
 
@@ -27,7 +24,7 @@ class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.error) {
-      return String(this.state.error);
+      return <div style={{ whiteSpace: 'pre-line' }}>{this.state.error.stack}</div>;
     }
 
     return this.props.children;
