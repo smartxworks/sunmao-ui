@@ -9,7 +9,7 @@ import { RefTreeSelectType } from '@arco-design/web-react/es/TreeSelect';
 
 const TreeSelectPropsSpec = Type.Object(BaseTreeSelectPropsSpec);
 const TreeSelectStateSpec = Type.Object({
-  selectedOptions: Type.String(),
+  selectedOptions: Type.Array(Type.String()),
 });
 
 const exampleProperties: Static<typeof TreeSelectPropsSpec> = {
