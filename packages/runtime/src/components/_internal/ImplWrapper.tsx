@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { merge } from 'lodash-es';
 import { RuntimeComponentSchema, RuntimeTraitSchema } from '@sunmao-ui/core';
-import { ExpressionError } from '../../services/StateManager';
 import { watch } from '../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../types';
 import { shallowCompareArray } from '../../utils/shallowCompareArray';
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
-  const { component: c, app, children, services, childrenMap, hooks } = props;
+  const { component: c, app, children, services, childrenMap, hooks, isInModule } = props;
   const { registry, stateManager, globalHandlerMap, apiService, eleMap } = props.services;
   const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
@@ -20,18 +19,24 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   const handlerMap = useRef(globalHandlerMap.get(c.id)!);
   const eleRef = useRef<HTMLElement>();
   const onRef = (ele: HTMLElement) => {
-    eleMap.set(c.id, ele);
+    // If a component is in module, it should not have mask, so we needn't set it
+    if (!isInModule) {
+      eleMap.set(c.id, ele);
+    }
     hooks?.didDomUpdate && hooks?.didDomUpdate();
   };
 
   useEffect(() => {
-    if (eleRef.current) {
+    // If a component is in module, it should not have mask, so we needn't set it
+    if (eleRef.current && !isInModule) {
       eleMap.set(c.id, eleRef.current);
     }
     return () => {
-      eleMap.delete(c.id);
+      if (!isInModule) {
+        eleMap.delete(c.id);
+      }
     };
-  }, [c.id, eleMap]);
+  }, [c.id, eleMap, isInModule]);
 
   useEffect(() => {
     const handler = (s: { componentId: string; name: string; parameters?: any }) => {
@@ -84,7 +89,11 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
   );
 
   // result returned from traits
-  const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>([]);
+  const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(() => {
+    return c.traits.map(trait =>
+      executeTrait(trait, stateManager.deepEval(trait.properties))
+    );
+  });
 
   // eval traits' properties then execute traits
   useEffect(() => {
@@ -102,7 +111,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
             return newResults;
           });
           stops.push(stop);
-        }
+        },
+        { fallbackWhenError: () => undefined }
       );
       properties.push(result);
     });
@@ -121,11 +131,15 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
         }
 
         let effects = prevProps?.effects || [];
+        let unmountEffects = prevProps?.unmountEffects || [];
         if (result.props?.effects) {
           effects = effects?.concat(result.props?.effects);
         }
+        if (result.props?.unmountEffects) {
+          unmountEffects = unmountEffects?.concat(result.props?.unmountEffects);
+        }
 
-        return merge(prevProps, result.props, { effects });
+        return merge(prevProps, result.props, { effects, unmountEffects });
       },
       {} as TraitResult<string, string>['props']
     );
@@ -134,7 +148,10 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 
   // component properties
   const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
-    return merge(stateManager.deepEval(c.properties), propsFromTraits);
+    return merge(
+      stateManager.deepEval(c.properties, { fallbackWhenError: () => undefined }),
+      propsFromTraits
+    );
   });
   // eval component properties
   useEffect(() => {
@@ -142,7 +159,8 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
       c.properties,
       ({ result: newResult }: any) => {
         setEvaledComponentProperties({ ...newResult });
-      }
+      },
+      { fallbackWhenError: () => undefined }
     );
     // must keep this line, reason is the same as above
     setEvaledComponentProperties({ ...result });
@@ -150,22 +168,18 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
     return stop;
   }, [c.properties, stateManager]);
   useEffect(() => {
+    if (unmount) {
+      delete stateManager.store[c.id];
+    }
     return () => {
       delete stateManager.store[c.id];
     };
-  }, [c.id, stateManager.store]);
-
-  const mergedProps = useMemo(() => {
-    const allProps: Record<string, any> = { ...evaledComponentProperties, ...propsFromTraits };
-
-    for (const key in allProps) {
-      if (allProps[key] instanceof ExpressionError) {
-        allProps[key] = undefined;
-      }
-    }
-
-    return allProps;
-  }, [evaledComponentProperties, propsFromTraits]);
+  }, [c.id, stateManager.store, unmount]);
+  
+  const mergedProps = useMemo(
+    () => ({ ...evaledComponentProperties, ...propsFromTraits }),
+    [evaledComponentProperties, propsFromTraits]
+  );
 
   function genSlotsElements() {
     if (!childrenMap[c.id]) {

@@ -18,6 +18,7 @@ import {
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
 
 type Values = Static<typeof FetchTraitPropertiesSpec>;
 type EventHandler = Static<typeof EventCallBackHandlerSpec>;
@@ -93,8 +94,14 @@ const Handler = (props: HandlerProps) => {
   );
 };
 
+const DisabledSpec = Type.Boolean({
+  widgetOptions: { isShowAsideExpressionButton: true },
+});
+
+const EmptyArray: string[] = [];
+
 export const Basic: React.FC<Props> = props => {
-  const { formik } = props;
+  const { formik, api, services } = props;
 
   const onAddHandler = (type: HandlerType) => {
     const newHandler: EventHandler = {
@@ -112,6 +119,14 @@ export const Basic: React.FC<Props> = props => {
 
     formik.setFieldValue(type, [...(formik.values[type] || []), newHandler]);
   };
+
+  const onDisabledChange = useCallback(
+    val => {
+      formik.setFieldValue('disabled', val);
+      formik.handleSubmit();
+    },
+    [formik]
+  );
 
   const generateHandlers = (type: HandlerType) => (
     <FormControl>
@@ -143,6 +158,21 @@ export const Basic: React.FC<Props> = props => {
           isChecked={formik.values.lazy}
           onChange={formik.handleChange}
           onBlur={() => formik.handleSubmit()}
+        />
+      </FormControl>
+
+      <FormControl display="flex" alignItems="center">
+        <FormLabel margin="0" marginRight="2">
+          Disabled
+        </FormLabel>
+        <SpecWidget
+          component={api}
+          spec={DisabledSpec}
+          value={formik.values.disabled}
+          path={EmptyArray}
+          level={1}
+          services={services}
+          onChange={onDisabledChange}
         />
       </FormControl>
       {generateHandlers('onComplete')}

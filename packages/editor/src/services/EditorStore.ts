@@ -5,7 +5,6 @@ import { Registry, StateManager } from '@sunmao-ui/runtime';
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import { SchemaValidator } from '../validator';
-import { removeModuleId } from '../utils/addModuleId';
 import { DataSourceType } from '../components/DataSource';
 import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
@@ -27,7 +26,7 @@ enum DataSourceName {
   LOCALSTORAGE = 'localStorage',
 }
 
-type DataSourceId = `${DataSourceName}${number}`
+type DataSourceId = `${DataSourceName}${number}`;
 export class EditorStore {
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
@@ -93,7 +92,11 @@ export class EditorStore {
           this.eventBus.send('componentsRefresh', this.originComponents);
           this.setComponents(this.originComponents);
 
-          if (this.APICount === -1 || this.stateCount === -1 || this.localStorageCount === -1) {
+          if (
+            this.APICount === -1 ||
+            this.stateCount === -1 ||
+            this.localStorageCount === -1
+          ) {
             this.initDataSourceCount();
           }
         }
@@ -120,6 +123,10 @@ export class EditorStore {
 
   get modules() {
     return this.appStorage.modules;
+  }
+
+  get rawModules() {
+    return this.appStorage.rawModules;
   }
 
   get selectedComponent() {
@@ -153,10 +160,7 @@ export class EditorStore {
             m.version === this.currentEditingTarget.version &&
             m.metadata.name === this.currentEditingTarget.name
         );
-        if (module) {
-          return removeModuleId(module).impl;
-        }
-        return [];
+        return module?.impl || [];
       case 'app':
         return this.app.spec.components;
     }
@@ -189,8 +193,11 @@ export class EditorStore {
 
   clearSunmaoGlobalState() {
     this.stateManager.clear();
-    // reregister all modules
-    this.modules.forEach(m => {
+    this.setSelectedComponentId('');
+
+    // Remove old modules and re-register all modules,
+    this.registry.unregisterAllModules();
+    this.rawModules.forEach(m => {
       const modules = createModule(m);
       this.registry.registerModule(modules, true);
     });
@@ -258,7 +265,11 @@ export class EditorStore {
     const { apis, states, localStorages } = this.dataSources;
     let id: DataSourceId;
 
-    const getCount = (dataSource: ComponentSchema[], dataSourceName: DataSourceName, count: number): number => {
+    const getCount = (
+      dataSource: ComponentSchema[],
+      dataSourceName: DataSourceName,
+      count: number
+    ): number => {
       const ids = dataSource.map(({ id }) => id);
       let id: DataSourceId = `${dataSourceName}${count}`;
       while (ids.includes(id)) {
@@ -277,7 +288,11 @@ export class EditorStore {
         id = `state${this.stateCount}`;
         break;
       case DataSourceType.LOCALSTORAGE:
-        this.localStorageCount = getCount(localStorages, DataSourceName.LOCALSTORAGE, this.localStorageCount);
+        this.localStorageCount = getCount(
+          localStorages,
+          DataSourceName.LOCALSTORAGE,
+          this.localStorageCount
+        );
         id = `localStorage${this.localStorageCount}`;
         break;
     }

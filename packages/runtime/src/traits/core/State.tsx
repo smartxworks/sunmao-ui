@@ -27,7 +27,11 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
     }
 
     return {
-      props: null,
+      props: {
+        unmountEffects: [() => {
+          HasInitializedMap.delete(hashId);
+        }]
+      },
     };
   };
 };
