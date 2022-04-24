@@ -11,7 +11,6 @@ import { DropdownPropsSpec as BaseDropdownPropsSpec } from '../generated/types/D
 const DropdownPropsSpec = Type.Object(BaseDropdownPropsSpec);
 const DropdownStateSpec = Type.Object({
   selectedItemKey: Type.String(),
-  keyPath: Type.Optional(Type.Array(Type.String())),
   visible: Type.Boolean(),
 });
 
@@ -27,6 +26,7 @@ const exampleProperties: Static<typeof DropdownPropsSpec> = {
     { key: '3', label: 'tencent' },
   ],
   autoAlignPopupWidth: true,
+  unmountOnExit: false,
 };
 
 const options = {
@@ -59,10 +59,9 @@ export const Dropdown = implementRuntimeComponent(options)(props => {
     button: BaseDropdown.Button,
   };
 
-  const onClickMenuItem = (key: string, event: any, keyPath: string[]) => {
+  const onClickMenuItem = (key: string) => {
     mergeState({
       selectedItemKey: key,
-      keyPath: keyPath || [],
     });
     callbackMap?.onClickMenuItem?.();
   };
@@ -89,7 +88,6 @@ export const Dropdown = implementRuntimeComponent(options)(props => {
       onVisibleChange={onVisibleChange}
       onClick={callbackMap?.onButtonClick}
       triggerProps={{ autoAlignPopupMinWidth: autoAlignPopupWidth }}
-      unmountOnExit={false}
     >
       <div ref={elementRef}>{slotsElements.trigger || <Button>Click</Button>}</div>
     </Dropdown>

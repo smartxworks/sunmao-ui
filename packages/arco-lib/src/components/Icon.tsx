@@ -5,8 +5,12 @@ import { Type } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 
 const IconPropsSpec = Type.Object({
-  name: Type.KeyOf(Type.Object(Icons as Record<keyof typeof Icons, any>)),
-  spin: Type.Boolean(),
+  name: Type.KeyOf(Type.Object(Icons as Record<keyof typeof Icons, any>), {
+    title: 'Name',
+  }),
+  spin: Type.Boolean({
+    title: 'Spin',
+  }),
 });
 
 export const Icon = implementRuntimeComponent({

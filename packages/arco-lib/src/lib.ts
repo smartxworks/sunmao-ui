@@ -1,7 +1,7 @@
 import { SunmaoLib } from '@sunmao-ui/runtime';
 import { Button } from './components/Button';
 import { Layout } from './components/Layout';
-import { Image } from './components/Image';
+import { Image, ImageGroup } from './components/Image';
 import { Select } from './components/Select';
 import { Menu } from './components/Menu';
 import { Dropdown } from './components/Dropdown';
@@ -49,6 +49,7 @@ export const components: SunmaoLib['components'] = [
   Button,
   Layout,
   Image,
+  ImageGroup,
   Select,
   Menu,
   Dropdown,
