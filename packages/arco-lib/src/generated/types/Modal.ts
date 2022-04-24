@@ -7,6 +7,10 @@ export const ModalPropsSpec = {
     category: Category.Basic,
     weight: 10,
   }),
+  defaultOpen:Type.Boolean({
+    title:'Default Open',
+    category: Category.Behavior,
+  }),
   mask: Type.Boolean({
     title: 'Mask',
     category: Category.Style,
