@@ -8,8 +8,8 @@ export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
     customStyle?: Record<KStyleSlot, string>;
     callbackMap?: CallbackMap<KEvent>;
     componentDidUnmount?: Array<() => void>;
-    componentDidMount?: Array<() => void>
-    componentDidUpdate?: Array<() => void>
+    componentDidMount?: Array<() => Function | void>
+    componentDidUpdate?: Array<() => Function | void>
   } | null;
   unmount?: boolean;
 };

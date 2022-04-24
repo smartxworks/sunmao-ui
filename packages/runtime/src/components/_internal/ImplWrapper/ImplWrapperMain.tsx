@@ -101,12 +101,18 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     }, [c.properties, stateManager]);
 
     useEffect(() => {
-      propsFromTraits?.componentDidMount?.forEach(e => e());
+      const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
+      return () => {
+        clearFunctions?.forEach(func => func && func());
+      };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useDidUpdate(() => {
-      propsFromTraits?.componentDidUpdate?.forEach(e => e());
+      const clearFunctions = propsFromTraits?.componentDidUpdate?.map(e => e());
+      return () => {
+        clearFunctions?.forEach(func => func && func());
+      };
     });
 
     useDidUnmount(() => {
@@ -163,7 +169,7 @@ const useDidUpdate = (fn: Function) => {
 
   useEffect(() => {
     if (hasMounted.current) {
-      fnRef.current();
+      return fnRef.current();
     } else {
       hasMounted.current = true;
     }
