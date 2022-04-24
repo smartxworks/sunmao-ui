@@ -41,7 +41,7 @@ const options = {
     methods: {},
     slots: ['addAfter', 'prefix', 'suffix', 'addBefore'],
     styleSlots: ['input'],
-    events: ['onChange', 'onBlur', 'onFocus'],
+    events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
 };
 
@@ -75,6 +75,13 @@ export const Input = implementRuntimeComponent(options)(props => {
       onChange={value => {
         setValue(value);
         callbackMap?.onChange?.();
+      }}
+      onClear={() => {
+        setValue('');
+        callbackMap?.onClear?.();
+      }}
+      onPressEnter={() => {
+        callbackMap?.onPressEnter?.();
       }}
       onBlur={() => callbackMap?.onBlur?.()}
       onFocus={() => callbackMap?.onFocus?.()}

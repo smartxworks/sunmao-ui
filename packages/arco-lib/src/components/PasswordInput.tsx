@@ -41,7 +41,7 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ['input'],
-    events: ['onChange'],
+    events: ['onChange', 'onBlur', 'onFocus', 'onPressEnter'],
   },
 };
 
@@ -72,6 +72,11 @@ export const PasswordInput = implementRuntimeComponent(options)(props => {
       onChange={value => {
         setValue(value);
         callbackMap?.onChange?.();
+      }}
+      onBlur={() => callbackMap?.onBlur?.()}
+      onFocus={() => callbackMap?.onFocus?.()}
+      onPressEnter={() => {
+        callbackMap?.onPressEnter?.();
       }}
       {...cProps}
     />

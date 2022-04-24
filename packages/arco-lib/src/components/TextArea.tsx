@@ -43,7 +43,7 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ['TextArea'],
-    events: ['onChange'],
+    events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
 };
 
@@ -74,6 +74,15 @@ export const TextArea = implementRuntimeComponent(options)(props => {
       onChange={value => {
         setValue(value);
         callbackMap?.onChange?.();
+      }}
+      onClear={() => {
+        setValue('');
+        callbackMap?.onClear?.();
+      }}
+      onBlur={() => callbackMap?.onBlur?.()}
+      onFocus={() => callbackMap?.onFocus?.()}
+      onPressEnter={() => {
+        callbackMap?.onPressEnter?.();
       }}
       {...cProps}
     />
