@@ -37,7 +37,7 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: ['onChange', 'onClear', 'onPressEnter'],
+    events: ['onChange', 'onClear', 'onPressEnter', 'onFocus', 'onBlur'],
   },
 };
 
@@ -61,7 +61,6 @@ export const Mentions = implementRuntimeComponent(options)(props => {
   };
 
   const onPressEnter = () => {
-    // TODO complete onPressEnter methods
     callbackMap?.onPressEnter?.();
   };
 
@@ -71,6 +70,8 @@ export const Mentions = implementRuntimeComponent(options)(props => {
       onPressEnter={onPressEnter}
       onClear={onClear}
       className={css(customStyle?.content)}
+      onBlur={() => callbackMap?.onBlur?.()}
+      onFocus={() => callbackMap?.onFocus?.()}
       onChange={onChange}
       {...cProps}
       value={value}

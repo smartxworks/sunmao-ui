@@ -5,24 +5,9 @@ import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { MenuPropsSpec as BaseMenuPropsSpec } from '../generated/types/Menu';
 import { useEffect, useState } from 'react';
-import { Category } from '../constants/category';
 
 const MenuPropsSpec = Type.Object({
   ...BaseMenuPropsSpec,
-  defaultActiveKey: Type.String({
-    title: 'Default Active Key',
-    category: Category.Basic,
-  }),
-  items: Type.Array(
-    Type.Object({
-      key: Type.String(),
-      text: Type.String(),
-      disabled: Type.Optional(Type.Boolean()),
-    }),
-    {
-      category: Category.Basic,
-    }
-  ),
 });
 const MenuStateSpec = Type.Object({
   activeKey: Type.Optional(Type.String()),
@@ -38,6 +23,7 @@ const exampleProperties: Static<typeof MenuPropsSpec> = {
     { key: 'key1', text: 'item1' },
     { key: 'key2', text: 'item2' },
   ],
+  ellipsis:false,
   defaultActiveKey: 'key1',
 };
 

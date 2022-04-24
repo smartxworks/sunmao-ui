@@ -18,6 +18,7 @@ const exampleProperties: Static<typeof ModalPropsSpec> = {
   closable: true,
   maskClosable: true,
   confirmLoading: false,
+  defaultOpen:true
 };
 export const Modal = implementRuntimeComponent({
   version: 'arco/v1',
@@ -43,8 +44,8 @@ export const Modal = implementRuntimeComponent({
   },
 })(props => {
   const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
-  const { getElement, title, ...cProps } = getComponentProps(props);
-  const [visible, setVisible] = useState(true);
+  const { getElement, title, defaultOpen, ...cProps } = getComponentProps(props);
+  const [visible, setVisible] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const afterOpen = () => {
