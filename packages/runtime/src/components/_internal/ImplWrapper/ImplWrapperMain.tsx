@@ -56,7 +56,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       });
       // although traitResults has initialized in useState, it must be set here again
       // because mergeState will be called during the first render of component, and state will change
-      // setTraitResults(c.traits.map((trait, i) => executeTrait(trait, properties[i])));
+      setTraitResults(c.traits.map((trait, i) => executeTrait(trait, properties[i])));
       return () => stops.forEach(s => s());
     }, [c.id, c.traits, executeTrait, stateManager]);
 
