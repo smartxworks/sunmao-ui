@@ -15,11 +15,13 @@ export function useEleRef(props: ImplWrapperProps) {
   };
 
   useEffect(() => {
+    console.info('####ImplWrapper DidMount', c.id);
     // If a component is in module, it should not have mask, so we needn't set it
     if (eleRef.current && !isInModule) {
       eleMap.set(c.id, eleRef.current);
     }
     return () => {
+      console.info('####ImplWrapper DidUnmount', c.id);
       if (!isInModule) {
         eleMap.delete(c.id);
       }

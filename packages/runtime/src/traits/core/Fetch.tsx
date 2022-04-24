@@ -28,6 +28,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
       const lazy = _lazy === undefined ? true : _lazy;
 
       const fetchData = () => {
+        console.log('fetch body', body);
         if (disabled) return;
         // TODO: clear when component destroy
         // FIXME: listen to the header change

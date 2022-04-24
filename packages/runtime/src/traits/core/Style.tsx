@@ -8,9 +8,31 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
     styles.forEach(style => {
       customStyle[style.styleSlot] = style.style;
     });
+    let interval: ReturnType<typeof setInterval> | undefined;
     return {
       props: {
         customStyle,
+        componentDidMount: [
+          () => {
+            if (interval) {
+              clearInterval(interval);
+            }
+            interval = setInterval(() => {
+              console.log(2333, customStyle.content);
+            }, 1000);
+            console.log('开始计时', interval);
+          },
+        ],
+        componentDidUpdate: [],
+        componentDidUnmount: [
+          () => {
+            console.log('停止计时', interval);
+            if (interval) {
+              clearInterval(interval);
+              interval = undefined;
+            }
+          },
+        ],
       },
     };
   };
