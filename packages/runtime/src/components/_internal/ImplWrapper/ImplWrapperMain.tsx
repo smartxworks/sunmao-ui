@@ -12,6 +12,7 @@ import { useGridLayout } from './hooks/useGridLayout';
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   (props, ref) => {
     const { component: c, children } = props;
+    console.info('####ImplWrapper Render', c.id);
     const { registry, stateManager } = props.services;
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
@@ -36,12 +37,14 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     // eval traits' properties then execute traits
     useEffect(() => {
+      console.log('开始监听 trait 表达式变化', c.id);
       const stops: ReturnType<typeof watch>[] = [];
       const properties: Array<RuntimeTraitSchema['properties']> = [];
       c.traits.forEach((t, i) => {
         const { result, stop } = stateManager.deepEvalAndWatch(
           t.properties,
           ({ result: property }: any) => {
+            console.log('trait变了', t.type, property);
             const traitResult = executeTrait(t, property);
             setTraitResults(oldResults => {
               // assume traits number and order will not change
@@ -101,6 +104,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     }, [c.properties, stateManager]);
 
     useEffect(() => {
+      console.info('####Component DidMount', c.id);
       const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
       return () => {
         clearFunctions?.forEach(func => func && func());
@@ -109,6 +113,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     }, []);
 
     useDidUpdate(() => {
+      console.info('####Component Update', c.id);
       const clearFunctions = propsFromTraits?.componentDidUpdate?.map(e => e());
       return () => {
         clearFunctions?.forEach(func => func && func());
@@ -116,6 +121,11 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     });
 
     useDidUnmount(() => {
+      console.info(
+        '####Component DidUnmount',
+        c.id,
+        propsFromTraits?.componentDidUnmount
+      );
       propsFromTraits?.componentDidUnmount?.forEach(e => e());
     });
 

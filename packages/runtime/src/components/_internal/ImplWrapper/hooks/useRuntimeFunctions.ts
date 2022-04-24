@@ -24,6 +24,7 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
 
   const executeTrait = useCallback(
     (trait: RuntimeTraitSchema, traitProperty: RuntimeTraitSchema['properties']) => {
+      console.log('执行了trait', trait.type);
       const tImpl = registry.getTrait(
         trait.parsedType.version,
         trait.parsedType.name
