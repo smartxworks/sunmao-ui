@@ -35,6 +35,7 @@ import { TextArea } from './components/TextArea';
 import { Tabs } from './components/Tabs';
 import { Form } from './components/Form/Form';
 import { FormControl } from './components/Form/FormControl';
+import { Descriptions } from './components/Descriptions';
 
 import './style.css';
 
@@ -75,6 +76,7 @@ export const components: SunmaoLib['components'] = [
   Tabs,
   Form,
   FormControl,
+  Descriptions
 ];
 export const traits: SunmaoLib['traits'] = [];
 export const modules: SunmaoLib['modules'] = [];

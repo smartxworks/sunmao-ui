@@ -6,6 +6,7 @@ import { TableDemoPage } from './pages/table';
 import { LayoutDemoPage } from './pages/layout';
 import { TabDemoPage } from './pages/tab';
 import { DividerDemoPage } from './pages/divider';
+import { DropdownDemoPage } from './pages/Dropdown';
 
 const { Sider, Content, Header } = Layout;
 const ContentMap: Record<string, React.FC> = {
@@ -14,7 +15,8 @@ const ContentMap: Record<string, React.FC> = {
   Table: TableDemoPage,
   Layout: LayoutDemoPage,
   Tab: TabDemoPage,
-  Divider:DividerDemoPage
+  Divider: DividerDemoPage,
+  Dropdown: DropdownDemoPage,
 };
 
 export const ExampleIndexPage: React.FC = () => {
