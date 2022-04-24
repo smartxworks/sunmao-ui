@@ -1,8 +1,8 @@
 import React from 'react';
 import { ImplWrapperProps } from '../../../types';
 import { shallowCompareArray } from '../../../utils/shallowCompareArray';
-import { ImplWrapperMain } from './ImplWrapperMain';
-// import { HiddenImplWrapper } from './HiddenImplWrapper';
+// import { ImplWrapperMain } from './ImplWrapperMain';
+import { HiddenImplWrapper } from './HiddenImplWrapper';
 
 // export const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
 //   (props, ref) => {
@@ -15,7 +15,7 @@ import { ImplWrapperMain } from './ImplWrapperMain';
 // );
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
-  ImplWrapperMain,
+  HiddenImplWrapper,
   (prevProps, nextProps) => {
     const prevChildren = prevProps.childrenMap[prevProps.component.id]?._grandChildren;
     const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;

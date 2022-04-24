@@ -3,12 +3,12 @@ import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
 
 const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+  let interval: ReturnType<typeof setInterval> | undefined;
   return ({ styles }) => {
     const customStyle: Record<string, string> = {};
     styles.forEach(style => {
       customStyle[style.styleSlot] = style.style;
     });
-    let interval: ReturnType<typeof setInterval> | undefined;
     return {
       props: {
         customStyle,
