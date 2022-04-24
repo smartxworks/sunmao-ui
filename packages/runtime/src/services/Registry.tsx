@@ -170,6 +170,10 @@ export class Registry {
     return this.getModule(version, name);
   }
 
+  unregisterAllModules() {
+    this.modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
+  }
+
   registerUtilMethod<T>(m: UtilMethod<T>) {
     if (this.utilMethods.get(m.name)) {
       throw new Error(`Already has utilMethod ${m.name} in this registry.`);

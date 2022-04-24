@@ -7,7 +7,8 @@ export const EditorHeader: React.FC<{
   onPreview: () => void;
   codeMode: boolean;
   onCodeMode: (v: boolean) => void;
-}> = ({ scale, setScale, onPreview, onCodeMode, codeMode }) => {
+  onRefresh: () => void;
+}> = ({ scale, setScale, onPreview, onCodeMode, onRefresh, codeMode }) => {
   return (
     <Flex p={2} borderBottomWidth="2px" borderColor="gray.200" align="center">
       <Flex flex="1">
@@ -31,6 +32,9 @@ export const EditorHeader: React.FC<{
         </Button>
       </Flex>
       <Flex flex="1" justify="end">
+        <Button colorScheme="blue" marginRight="8px" onClick={onRefresh}>
+          refresh
+        </Button>
         <Button colorScheme="blue" onClick={onPreview}>
           preview
         </Button>
