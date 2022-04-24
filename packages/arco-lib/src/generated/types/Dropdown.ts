@@ -23,6 +23,10 @@ export const DropdownPropsSpec = {
     title: 'Default Visible',
     category: Category.Basic,
   }),
+  autoAlignPopupWidth:Type.Boolean({
+    title:'Auto Align Popup Width',
+    category: Category.Basic,
+  }),
   list: Type.Array(
     Type.Object({
       key: Type.String({

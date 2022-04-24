@@ -26,6 +26,7 @@ const exampleProperties: Static<typeof DropdownPropsSpec> = {
     { key: '2', label: 'baidu' },
     { key: '3', label: 'tencent' },
   ],
+  autoAlignPopupWidth: true,
 };
 
 const options = {
@@ -52,7 +53,7 @@ const options = {
 export const Dropdown = implementRuntimeComponent(options)(props => {
   const { elementRef, slotsElements, callbackMap, mergeState } = props;
   const cProps = getComponentProps(props);
-  const { list, dropdownType, ...restProps } = cProps;
+  const { list, dropdownType, autoAlignPopupWidth, ...restProps } = cProps;
   const typeMap = {
     default: BaseDropdown,
     button: BaseDropdown.Button,
@@ -87,6 +88,7 @@ export const Dropdown = implementRuntimeComponent(options)(props => {
       droplist={droplist}
       onVisibleChange={onVisibleChange}
       onClick={callbackMap?.onButtonClick}
+      triggerProps={{ autoAlignPopupMinWidth: autoAlignPopupWidth }}
       unmountOnExit={false}
     >
       <div ref={elementRef}>{slotsElements.trigger || <Button>Click</Button>}</div>
