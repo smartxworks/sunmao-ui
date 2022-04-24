@@ -51,7 +51,6 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   );
 
   const didMount = () => {
-    editorStore.eleMap = ui.eleMap;
     eventBus.send('HTMLElementsUpdated');
   };
   const didUpdate = () => {
@@ -61,7 +60,10 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     eventBus.send('HTMLElementsUpdated');
   };
 
-  const ui = initSunmaoUI({ ...props.runtimeProps, hooks: { didMount, didUpdate, didDomUpdate } });
+  const ui = initSunmaoUI({
+    ...props.runtimeProps,
+    hooks: { didMount, didUpdate, didDomUpdate },
+  });
 
   const App = ui.App;
   const registry = ui.registry;
@@ -84,6 +86,8 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   );
   const widgetManager = new WidgetManager();
   const editorStore = new EditorStore(eventBus, registry, stateManager, appStorage);
+  editorStore.eleMap = ui.eleMap;
+
   const services = {
     App,
     registry: ui.registry,
@@ -97,7 +101,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
 
   const Editor: React.FC = () => {
     const [store, setStore] = useState(stateManager.store);
-    const onRefresh = useCallback(()=> {
+    const onRefresh = useCallback(() => {
       setStore(stateManager.store);
     }, []);
 
@@ -111,7 +115,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
           services={services}
           libs={props.libs || []}
           onRefresh={onRefresh}
-          uiProps={props.uiProps||{}}
+          uiProps={props.uiProps || {}}
         />
       </ChakraProvider>
     );
