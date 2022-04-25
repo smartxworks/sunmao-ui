@@ -39,8 +39,6 @@ export default implementRuntimeTrait({
     const hasInitialized = HasInitializedMap.get(hashId);
 
     if (!hasInitialized) {
-      mergeState({ [key]: initialValue });
-
       const methods = {
         setValue({ key, value }: KeyValue) {
           mergeState({ [key]: value });
@@ -54,7 +52,18 @@ export default implementRuntimeTrait({
     }
 
     return {
-      props: null,
+      props: {
+        componentDidMount: [
+          () => {
+            mergeState({ [key]: initialValue });
+          },
+        ],
+        componentDidUnmount: [
+          () => {
+            HasInitializedMap.delete(hashId);
+          },
+        ],
+      },
     };
   };
 });

@@ -1,5 +1,4 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 import { CORE_VERSION, DUMMY_COMPONENT_NAME } from '@sunmao-ui/shared';
 
@@ -25,12 +24,6 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ effects }) => {
-  useEffect(() => {
-    return () => {
-      effects?.forEach(e => e());
-    };
-  }, [effects]);
-
+})(() => {
   return null;
 });
