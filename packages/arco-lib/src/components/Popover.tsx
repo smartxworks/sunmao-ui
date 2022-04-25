@@ -5,7 +5,6 @@ import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PopoverPropsSpec as BasePopoverPropsSpec } from '../generated/types/Popover';
 import { useEffect, useState } from 'react';
-import { isArray } from 'lodash-es';
 
 const PopoverPropsSpec = Type.Object(BasePopoverPropsSpec);
 const PopoverStateSpec = Type.Object({});
@@ -15,9 +14,9 @@ const exampleProperties: Static<typeof PopoverPropsSpec> = {
   position: 'bottom',
   disabled: false,
   controlled: false,
-  // TODO There are some problems with hover mode that need to be verified later
-  trigger: 'click',
+  trigger: 'hover',
   title: 'Title',
+  unmountOnExit: false,
 };
 
 const options = {
@@ -45,8 +44,8 @@ const options = {
 };
 
 export const Popover = implementRuntimeComponent(options)(props => {
-  const { elementRef, controlled, ...cProps } = getComponentProps(props);
-  const { subscribeMethods, slotsElements, customStyle } = props;
+  const { controlled, ...cProps } = getComponentProps(props);
+  const { subscribeMethods, elementRef, slotsElements, customStyle } = props;
 
   const [popupVisible, setPopupVisible] = useState(false);
 
@@ -61,18 +60,13 @@ export const Popover = implementRuntimeComponent(options)(props => {
     });
   }, [subscribeMethods]);
 
-  // TODO only support arco componets slot now (same as Tooltip)
-  const content = isArray(slotsElements.content)
-    ? slotsElements.content[0]
-    : slotsElements.content;
-
   return controlled ? (
     <BasePopover
       className={css(customStyle?.content)}
       {...cProps}
       content={slotsElements.popupContent}
     >
-      {content || <Button ref={elementRef}>Click</Button>}
+      <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
     </BasePopover>
   ) : (
     <BasePopover
@@ -84,7 +78,7 @@ export const Popover = implementRuntimeComponent(options)(props => {
         setPopupVisible(visible);
       }}
     >
-      {content || <Button ref={elementRef}>Click</Button>}
+      <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
     </BasePopover>
   );
 });
