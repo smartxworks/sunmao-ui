@@ -3,7 +3,7 @@ import { merge } from 'lodash-es';
 import { RuntimeComponentSchema, RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../types';
-import { shallowCompareArray } from '../../utils/shallowCompareArray';
+import { shallowCompareArray, CORE_VERSION, SLOT_TRAIT_NAME } from '@sunmao-ui/shared';
 
 const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, ref) => {
   const { component: c, app, children, services, childrenMap, hooks, isInModule } = props;
@@ -213,7 +213,7 @@ const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>((props, 
 
   let parentComponent;
 
-  const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
+  const slotTrait = c.traits.find(t => t.type === `${CORE_VERSION}/${SLOT_TRAIT_NAME}`);
 
   if (slotTrait && app) {
     parentComponent = app.spec.components.find(

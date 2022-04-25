@@ -1,4 +1,4 @@
-import { JSONSchema7, JSONSchema7Object } from 'json-schema';
+import { JSONSchema7 } from 'json-schema';
 import { Metadata } from './metadata';
 import { MethodSchema } from './method';
 import { parseVersion, Version } from './version';
@@ -12,8 +12,8 @@ export type Trait = {
   spec: TraitSpec;
 };
 
-type TraitSpec = {
-  properties: JSONSchema7Object;
+export type TraitSpec = {
+  properties: JSONSchema7;
   state: JSONSchema7;
   methods: MethodSchema[];
 };
@@ -24,7 +24,7 @@ export type RuntimeTrait = Trait & {
 };
 
 // partial some fields, use as param createModule
-type CreateTraitOptions = {
+export type CreateTraitOptions = {
   version: string;
   metadata: Metadata;
   spec?: Partial<TraitSpec>;

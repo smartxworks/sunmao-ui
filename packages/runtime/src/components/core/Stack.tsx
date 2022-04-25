@@ -2,7 +2,7 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import React, { ReactNode } from 'react';
 import { css, CSSObject } from '@emotion/css';
 import { Static, Type } from '@sinclair/typebox';
-import { StringUnion } from '../../utils/stringUnion';
+import { StringUnion, CORE_VERSION } from '@sunmao-ui/shared';
 
 export const StackPropertySpec = Type.Object({
   align: StringUnion(['start', 'end', 'center', 'baseline'], {
@@ -67,7 +67,7 @@ const Stack = React.forwardRef<HTMLDivElement, StackProps & { children: ReactNod
 );
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
     name: 'stack',
     displayName: 'Stack',

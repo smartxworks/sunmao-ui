@@ -1,6 +1,6 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
-import { Registry, StateManager } from '@sunmao-ui/runtime';
+import { Registry, StateManagerInterface } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
@@ -8,6 +8,14 @@ import { SchemaValidator } from '../validator';
 import { DataSourceType } from '../components/DataSource';
 import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
+
+import {
+  CORE_VERSION,
+  DUMMY_COMPONENT_NAME,
+  FETCH_TRAIT_NAME,
+  STATE_TRAIT_NAME,
+  LOCAL_STORAGE_TRAIT_NAME,
+} from '@sunmao-ui/shared';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -60,7 +68,7 @@ export class EditorStore {
   constructor(
     private eventBus: EventBusType,
     private registry: Registry,
-    private stateManager: StateManager,
+    private stateManager: StateManagerInterface,
     public appStorage: AppStorage
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
@@ -172,16 +180,16 @@ export class EditorStore {
     const localStorages: ComponentSchema[] = [];
 
     this.components.forEach(component => {
-      if (component.type === 'core/v1/dummy') {
+      if (component.type === `${CORE_VERSION}/${DUMMY_COMPONENT_NAME}`) {
         component.traits.forEach(trait => {
-          if (trait.type === 'core/v1/fetch') {
+          if (trait.type === `${CORE_VERSION}/${FETCH_TRAIT_NAME}`) {
             apis.push(component);
           }
 
-          if (trait.type === 'core/v1/state') {
+          if (trait.type === `${CORE_VERSION}/${STATE_TRAIT_NAME}`) {
             states.push(component);
           }
-          if (trait.type === 'core/v1/localStorage') {
+          if (trait.type === `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`) {
             localStorages.push(component);
           }
         });

@@ -10,7 +10,8 @@ import {
   Input,
   Tag,
 } from '@chakra-ui/react';
-import { encodeDragDataTransfer, DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
+import { DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
+import { encodeDragDataTransfer, DUMMY_COMPONENT_NAME, CORE_VERSION } from '@sunmao-ui/shared';
 import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
@@ -42,7 +43,7 @@ function getCategoryOrder(name: string): number {
 function getTagColor(version: string): string {
   if (version.startsWith('chakra_ui/')) {
     return 'teal';
-  } else if (version.startsWith('core/v1')) {
+  } else if (version.startsWith(CORE_VERSION)) {
     return 'yellow';
   } else {
     return 'blackAlpha';
@@ -55,7 +56,7 @@ const tagStyle = css`
   white-space: nowrap;
 `;
 
-const IGNORE_COMPONENTS = ['dummy'];
+const IGNORE_COMPONENTS = [DUMMY_COMPONENT_NAME];
 
 export const ComponentList: React.FC<Props> = ({ services }) => {
   const { registry, editorStore } = services;

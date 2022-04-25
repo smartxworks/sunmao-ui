@@ -1,7 +1,7 @@
-import { Static, Type } from '@sinclair/typebox';
-import { createTrait } from '@sunmao-ui/core';
+import { Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash';
-import { TraitImplFactory } from '../../types';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, LOCAL_STORAGE_TRAIT_NAME } from '@sunmao-ui/shared';
 
 function getLocalStorageValue(key: string) {
   try {
@@ -15,12 +15,30 @@ function getLocalStorageValue(key: string) {
   }
 }
 
-const PropsSpec = Type.Object({
+export const LocalStorageTraitPropertiesSpec = Type.Object({
   key: Type.String(),
   value: Type.Any(),
 });
 
-const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: LOCAL_STORAGE_TRAIT_NAME,
+    description: 'localStorage trait',
+  },
+  spec: {
+    properties: LocalStorageTraitPropertiesSpec,
+    state: Type.Object({}),
+    methods: [
+      {
+        name: 'setValue',
+        parameters: Type.Object({
+          value: Type.Any(),
+        }),
+      },
+    ],
+  },
+})(() => {
   const HasInitializedMap = new Map<string, boolean>();
   const PrevValueCache: Record<string, unknown> = {};
 
@@ -59,27 +77,4 @@ const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () 
       props: null,
     };
   };
-};
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'localStorage',
-      description: 'localStorage trait',
-    },
-    spec: {
-      properties: PropsSpec,
-      state: Type.Object({}),
-      methods: [
-        {
-          name: 'setValue',
-          parameters: Type.Object({
-            value: Type.Any(),
-          }),
-        },
-      ],
-    },
-  }),
-  factory: LocalStorageTraitFactory,
-};
+});

@@ -3,6 +3,7 @@ import {
   AllComponentsValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
+import { CORE_VERSION, SLOT_TRAIT_NAME } from '@sunmao-ui/shared';
 
 class ParentValidatorRule implements AllComponentsValidatorRule {
   kind: 'allComponents' = 'allComponents';
@@ -11,21 +12,21 @@ class ParentValidatorRule implements AllComponentsValidatorRule {
     appModel,
   }: AllComponentsValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
-    const allComponents = appModel.allComponents
-    const allComponentsFromSchema = appModel.allComponentsWithOrphan
+    const allComponents = appModel.allComponents;
+    const allComponentsFromSchema = appModel.allComponentsWithOrphan;
     if (allComponents.length === allComponentsFromSchema.length) {
-      return results
+      return results;
     }
 
-    const orphanComponents = allComponentsFromSchema.filter(c => !allComponents.find(c2 => c2.id === c.id))
+    const orphanComponents = allComponentsFromSchema.filter(c => !allComponents.find(c2 => c2.id === c.id));
   
     orphanComponents.forEach(c => {
-      const parent = appModel.getComponentById(c.parentId!)
+      const parent = appModel.getComponentById(c.parentId!);
       if (!parent) {
         results.push({
           message: `Cannot find parent component: ${c.parentId}.`,
           componentId: c.id,
-          traitType: 'core/v1/slot',
+          traitType: `${CORE_VERSION}/${SLOT_TRAIT_NAME}`,
           property: '/container/id',
         });
       }
@@ -34,7 +35,7 @@ class ParentValidatorRule implements AllComponentsValidatorRule {
         results.push({
           message: `Parent component '${parent.id}' does not have slot: ${c.parentSlot}.`,
           componentId: c.id,
-          traitType: 'core/v1/slot',
+          traitType: `${CORE_VERSION}/${SLOT_TRAIT_NAME}`,
           property: '/container/slot',
         });
       }

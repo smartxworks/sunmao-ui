@@ -32,6 +32,7 @@
     "@emotion/css": "^11.7.1",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.5.4",
+    "@sunmao-ui/shared": "^0.0.0",
     "@vue/reactivity": "^3.1.5",
     "@vue/shared": "^3.2.20",
     "copy-to-clipboard": "^3.3.1",

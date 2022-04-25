@@ -9,6 +9,7 @@ import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget'
 import { RecordWidget } from './RecordField';
 import { SpecWidget } from './SpecWidget';
 import { observer } from 'mobx-react-lite';
+import { CORE_VERSION, EVENT_WIDGET_NAME } from '@sunmao-ui/shared';
 
 const EventWidgetOptions = Type.Object({});
 
@@ -265,8 +266,8 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 );
 
 export default implementWidget<EventWidgetOptionsType>({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'event',
+    name: EVENT_WIDGET_NAME,
   },
 })(EventWidget);

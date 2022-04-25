@@ -7,6 +7,7 @@ import {
   RemoveComponentLeafOperation,
 } from '../../leaf';
 import { BaseBranchOperation } from '../../type';
+import { CORE_VERSION, GRID_LAYOUT_COMPONENT_NAME } from '@sunmao-ui/shared';
 
 export type RemoveComponentBranchOperationContext = {
   componentId: string;
@@ -16,7 +17,7 @@ export class RemoveComponentBranchOperation extends BaseBranchOperation<RemoveCo
   do(prev: AppModel): AppModel {
     const parent = prev.getComponentById(this.context.componentId as ComponentId);
 
-    if (parent && parent.type === 'core/v1/grid_layout') {
+    if (parent && parent.type === `${CORE_VERSION}/${GRID_LAYOUT_COMPONENT_NAME}`) {
       // modify layout property of parent grid layout component
       this.operationStack.insert(
         new ModifyComponentPropertiesLeafOperation(this.registry, {

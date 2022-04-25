@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { Switch } from '@chakra-ui/react';
+import { CORE_VERSION, BOOLEAN_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
 
 export const BooleanField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;
@@ -16,8 +17,8 @@ export const BooleanField: React.FC<WidgetProps> = props => {
 };
 
 export default implementWidget({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'boolean',
+    name: BOOLEAN_FIELD_WIDGET_NAME,
   },
 })(BooleanField);

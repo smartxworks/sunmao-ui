@@ -1,10 +1,10 @@
-import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash-es';
-import { CallbackMap, TraitImplFactory, UIServices } from '../../types';
-import { EventHandlerSpec } from '../../types/traitPropertiesSpec';
+import { CallbackMap, UIServices } from '../../types';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { EventHandlerSpec, CORE_VERSION, EVENT_TRAIT_NAME } from '@sunmao-ui/shared';
 
-const PropsSpec = Type.Object({
+export const EventTraitPropertiesSpec = Type.Object({
   handlers: Type.Array(EventHandlerSpec),
 });
 
@@ -42,7 +42,18 @@ export const generateCallback = (
     : send;
 };
 
-const EventTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: EVENT_TRAIT_NAME,
+    description: 'export component events with advance features',
+  },
+  spec: {
+    properties: EventTraitPropertiesSpec,
+    methods: [],
+    state: {},
+  },
+})(() => {
   return ({ trait, handlers, services }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
     const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSpec>[];
@@ -75,20 +86,4 @@ const EventTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
       },
     };
   };
-};
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'event',
-      description: 'export component events with advance features',
-    },
-    spec: {
-      properties: PropsSpec,
-      methods: [],
-      state: {},
-    },
-  }),
-  factory: EventTraitFactory,
-};
+});

@@ -1,13 +1,17 @@
 import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static, TSchema } from '@sinclair/typebox';
 import { Registry } from '../services/Registry';
-import { StateManager } from '../services/StateManager';
-import { ModuleSpec } from '../types';
-import { parseTypeBox } from './parseTypeBox';
+import { StateManagerInterface } from '../services/StateManager';
+import {
+  ModuleSpec,
+  parseTypeBox,
+  CORE_VERSION,
+  MODULE_CONTAINER_COMPONENT_NAME,
+} from '@sunmao-ui/shared';
 
 export function initStateAndMethod(
   registry: Registry,
-  stateManager: StateManager,
+  stateManager: StateManagerInterface,
   components: RuntimeApplication['spec']['components']
 ) {
   components.forEach(c => {
@@ -24,7 +28,7 @@ export function initStateAndMethod(
 
     stateManager.store[c.id] = state;
 
-    if (c.type === 'core/v1/moduleContainer') {
+    if (c.type === `${CORE_VERSION}/${MODULE_CONTAINER_COMPONENT_NAME}`) {
       const moduleSchema = c.properties as Static<typeof ModuleSpec>;
       try {
         const mSpec = registry.getModuleByType(moduleSchema.type).spec;
@@ -33,9 +37,7 @@ export function initStateAndMethod(
           moduleInitState[key] = undefined;
         }
         stateManager.store[moduleSchema.id] = moduleInitState;
-      } catch {
-        
-      }
+      } catch {}
     }
   });
 }

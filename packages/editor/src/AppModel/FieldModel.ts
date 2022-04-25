@@ -1,4 +1,4 @@
-import { parseExpression } from '@sunmao-ui/runtime';
+import { parseExpression } from '@sunmao-ui/shared';
 import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';

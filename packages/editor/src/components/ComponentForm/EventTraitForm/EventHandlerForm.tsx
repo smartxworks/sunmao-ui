@@ -10,21 +10,19 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from '@chakra-ui/react';
-import { Static, Type } from '@sinclair/typebox';
+import { Static } from '@sinclair/typebox';
 import { JSONSchema7 } from 'json-schema';
 import { CloseIcon, ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons';
-import { EventHandlerSpec, BaseEventSpec } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, EventCallBackHandlerSpec } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-
-const BaseEventObjectSpec = Type.Object(BaseEventSpec);
 
 type Props = {
   index: number;
   size: number;
   component: ComponentSchema;
-  handler: Static<typeof EventHandlerSpec | typeof BaseEventObjectSpec>;
+  handler: Static<typeof EventHandlerSpec | typeof EventCallBackHandlerSpec>;
   onChange: (handler: Static<typeof EventHandlerSpec>) => void;
   onRemove: () => void;
   onUp: () => void;
