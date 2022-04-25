@@ -59,7 +59,7 @@ export * from './utils/buildKit';
 export * from './types';
 export * from './constants';
 export * from './traits/core';
-export * from './services/Registry';
+export { type RegistryInterface, type SunmaoLib } from './services/Registry';
 export { ExpressionError, type StateManagerInterface } from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { default as Text, TextPropertySpec } from './components/_internal/Text';

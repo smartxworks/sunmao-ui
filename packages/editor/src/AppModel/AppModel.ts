@@ -1,5 +1,5 @@
 import { ComponentSchema, parseType } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import { CORE_VERSION, MODULE_CONTAINER_COMPONENT_NAME } from '@sunmao-ui/shared';
 import { ComponentModel } from './ComponentModel';
 import {
@@ -19,7 +19,7 @@ export class AppModel implements IAppModel {
   private componentMap: Record<ComponentId, IComponentModel> = {};
   private componentsCount = 0;
 
-  constructor(components: ComponentSchema[], private registry: Registry) {
+  constructor(components: ComponentSchema[], private registry: RegistryInterface) {
     this.schema = components;
     this.componentsCount = components.length;
     this.resolveTree(components);

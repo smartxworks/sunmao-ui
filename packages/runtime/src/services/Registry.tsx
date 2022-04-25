@@ -29,10 +29,8 @@ import {
   ImplementedRuntimeModule,
   UIServices,
 } from '../types';
-import { UtilMethod } from '../types/utilMethod';
+import { UtilMethod, UtilMethodFactory } from '../types/utilMethod';
 import { UtilMethodManager } from './UtilMethodManager';
-
-export type UtilMethodFactory = () => UtilMethod<any>[];
 
 export type SunmaoLib = {
   components?: ImplementedRuntimeComponent<string, string, string, string>[];
@@ -47,6 +45,9 @@ type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
   string,
   string
 >;
+
+export type RegistryInterface = InstanceType<typeof Registry>
+
 export class Registry {
   components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();

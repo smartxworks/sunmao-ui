@@ -1,6 +1,6 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
-import { Registry, StateManagerInterface } from '@sunmao-ui/runtime';
+import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
@@ -67,7 +67,7 @@ export class EditorStore {
 
   constructor(
     private eventBus: EventBusType,
-    private registry: Registry,
+    private registry: RegistryInterface,
     private stateManager: StateManagerInterface,
     public appStorage: AppStorage
   ) {
