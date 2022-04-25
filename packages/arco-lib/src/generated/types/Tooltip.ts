@@ -36,4 +36,8 @@ export const TooltipPropsSpec = {
     category: Category.Basic,
     weight: 3,
   }),
+  unmountOnExit:Type.Boolean({
+    title:'Unmount On Exit',
+    category: Category.Behavior,
+  })
 };
