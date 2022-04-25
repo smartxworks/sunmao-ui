@@ -76,7 +76,6 @@ export const TextArea = implementRuntimeComponent(options)(props => {
         callbackMap?.onChange?.();
       }}
       onClear={() => {
-        setValue('');
         callbackMap?.onClear?.();
       }}
       onBlur={() => callbackMap?.onBlur?.()}
