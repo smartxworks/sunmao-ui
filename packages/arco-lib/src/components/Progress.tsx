@@ -17,6 +17,7 @@ const exampleProperties: Static<typeof ProgressPropsSpec> = {
   percent: 20,
   width: 100,
   size: 'default',
+  animation:false,
 };
 
 const options = {
@@ -41,10 +42,10 @@ const options = {
 };
 
 export const Progress = implementRuntimeComponent(options)(props => {
-  const { elementRef, ...cProps } = getComponentProps(props);
-  const { customStyle } = props;
+  const { color,...cProps } = getComponentProps(props);
+  const { customStyle, elementRef } = props;
 
   return (
-    <BaseProgress ref={elementRef} className={css(customStyle?.content)} {...cProps} />
+    <BaseProgress ref={elementRef} color={cProps.status==='normal'?color:''} className={css(customStyle?.content)} {...cProps} />
   );
 });
