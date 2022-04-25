@@ -24,13 +24,13 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
     let traitType;
     switch (type) {
       case DataSourceType.API:
-        traitType = `${CORE_VERSION}${FETCH_TRAIT_NAME}`;
+        traitType = `${CORE_VERSION}/${FETCH_TRAIT_NAME}`;
         break;
       case DataSourceType.STATE:
-        traitType = `${CORE_VERSION}${STATE_TRAIT_NAME}`;
+        traitType = `${CORE_VERSION}/${STATE_TRAIT_NAME}`;
         break;
       case DataSourceType.LOCALSTORAGE:
-        traitType = `${CORE_VERSION}${LOCAL_STORAGE_TRAIT_NAME}`;
+        traitType = `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`;
         break;
     }
     const traitSpec = this.registry.getTraitByType(traitType).spec;
