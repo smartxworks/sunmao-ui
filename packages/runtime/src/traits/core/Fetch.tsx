@@ -1,5 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import {
+  consoleWarn,
+  ConsoleType,
   EventHandlerSpec,
   EventCallBackHandlerSpec,
   FETCH_TRAIT_NAME,
@@ -159,7 +161,6 @@ export default implementRuntimeTrait({
           } else {
             // TODO: Add FetchError class and remove console info
             const error = await (isResponseJSON ? response.json() : response.text());
-            console.warn(error);
             mergeState({
               fetch: {
                 code: response.status,
@@ -183,7 +184,7 @@ export default implementRuntimeTrait({
         },
 
         async error => {
-          console.warn(error);
+          consoleWarn(ConsoleType.Trait, FETCH_TRAIT_NAME, error);
           mergeState({
             fetch: {
               code: undefined,
@@ -196,15 +197,12 @@ export default implementRuntimeTrait({
           const rawOnError = trait.properties.onError as Static<
             typeof FetchTraitPropertiesSpec
           >['onError'];
-          rawOnError?.forEach(handler => {
-            const evaledHandler = services.stateManager.deepEval(handler, {
-              evalListItem: false,
-            });
-            services.apiService.send('uiMethod', {
-              componentId: evaledHandler.componentId,
-              name: evaledHandler.method.name,
-              parameters: evaledHandler.method.parameters,
-            });
+          rawOnError?.forEach((rawHandler, index) => {
+            generateCallback(
+              onError![index],
+              rawHandler as Static<typeof EventHandlerSpec>,
+              services
+            )();
           });
         }
       );
@@ -221,8 +219,8 @@ export default implementRuntimeTrait({
       },
     });
 
-      return {
-        props: {},
-      };
+    return {
+      props: {},
     };
+  };
 });
