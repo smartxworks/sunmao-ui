@@ -42,4 +42,8 @@ export const ModalPropsSpec = {
     title: 'Confirm Loading',
     category: Category.Basic,
   }),
+  unmountOnExit:Type.Boolean({
+    title:'Unmount On Exit',
+    category: Category.Behavior
+  }),
 };

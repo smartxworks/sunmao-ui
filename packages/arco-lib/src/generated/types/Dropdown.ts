@@ -29,7 +29,7 @@ export const DropdownPropsSpec = {
   }),
   unmountOnExit:Type.Boolean({
     title:'Unmount On Exit',
-    category: Category.Basic
+    category: Category.Behavior
   }),
   list: Type.Array(
     Type.Object({

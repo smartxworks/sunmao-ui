@@ -4,7 +4,7 @@ import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PaginationPropsSpec as BasePaginationPropsSpec } from '../generated/types/Pagination';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const PaginationPropsSpec = Type.Object(BasePaginationPropsSpec);
 const PaginationStateSpec = Type.Object({
@@ -21,6 +21,7 @@ const exampleProperties: Static<typeof PaginationPropsSpec> = {
   sizeCanChange: false,
   simple: false,
   showJumper: false,
+  showTotal: false,
 };
 
 const options = {
@@ -53,6 +54,10 @@ export const Pagination = implementRuntimeComponent(options)(props => {
   if (cProps.sizeCanChange) {
     Reflect.deleteProperty(cProps, 'pageSize');
   }
+
+  useEffect(() => {
+    mergeState({ currentPage: current });
+  }, []);
 
   const handleChange = (pageNum: number) => {
     setCurrent(pageNum);
