@@ -3,7 +3,6 @@ import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
 
 const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
-  let interval: ReturnType<typeof setInterval> | undefined;
   return ({ styles }) => {
     const customStyle: Record<string, string> = {};
     styles.forEach(style => {
@@ -12,27 +11,6 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
     return {
       props: {
         customStyle,
-        componentDidMount: [
-          () => {
-            if (interval) {
-              clearInterval(interval);
-            }
-            interval = setInterval(() => {
-              console.log(2333, customStyle.content);
-            }, 1000);
-            console.log('开始计时', interval);
-          },
-        ],
-        componentDidUpdate: [],
-        componentDidUnmount: [
-          () => {
-            console.log('停止计时', interval);
-            if (interval) {
-              clearInterval(interval);
-              interval = undefined;
-            }
-          },
-        ],
       },
     };
   };

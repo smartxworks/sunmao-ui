@@ -1,18 +1,7 @@
 import React from 'react';
 import { ImplWrapperProps } from '../../../types';
 import { shallowCompareArray } from '../../../utils/shallowCompareArray';
-// import { ImplWrapperMain } from './ImplWrapperMain';
 import { UnmountImplWrapper } from './UnmountImplWrapper';
-
-// export const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
-//   (props, ref) => {
-//     return (
-//       <UnmountImplWrapper {...props}>
-//         <ImplWrapperMain {...props} ref={ref} />
-//       </UnmountImplWrapper>
-//     );
-//   }
-// );
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
   UnmountImplWrapper,

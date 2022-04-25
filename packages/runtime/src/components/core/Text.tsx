@@ -37,34 +37,6 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(
-  ({
-    value,
-    customStyle,
-    elementRef,
-    // component,
-    // componentDidMount,
-    // componentDidUnmount,
-    // componentDidUpdate,
-  }) => {
-    // console.info('####Component Render', component.id);
-    // useEffect(() => {
-    //   console.info('####Component DidMount', component.id);
-    //   componentDidMount?.forEach(e => e());
-    // }, [component.id, componentDidMount]);
-    // useEffect(() => {
-    //   console.info('####Component Update', component.id);
-    //   componentDidUpdate?.forEach(e => e());
-    // }, [component.id, componentDidMount, componentDidUpdate]);
-    // useEffect(() => {
-    //   return () => {
-    //     console.info('Component DidUnmount', component.id, componentDidUnmount);
-    //     componentDidUnmount?.forEach(e => e());
-    //   };
-    // }, [component.id, componentDidUnmount]);
-    return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
-  }
-);
-
-// 不知道为什么，计时器还在继续，貌似是因为style执行了两次，两个interval，但是clear只执行了一次
-// 另一个问题是，为什么style会执行两次呢？
+})(({ value, customStyle, elementRef }) => {
+  return <_Text value={value} cssStyle={customStyle?.content} ref={elementRef} />;
+});
