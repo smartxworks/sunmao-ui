@@ -1,6 +1,6 @@
 import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static, TSchema } from '@sinclair/typebox';
-import { Registry } from '../services/Registry';
+import { RegistryInterface } from '../services/Registry';
 import { StateManagerInterface } from '../services/StateManager';
 import {
   ModuleSpec,
@@ -10,7 +10,7 @@ import {
 } from '@sunmao-ui/shared';
 
 export function initStateAndMethod(
-  registry: Registry,
+  registry: RegistryInterface,
   stateManager: StateManagerInterface,
   components: RuntimeApplication['spec']['components']
 ) {

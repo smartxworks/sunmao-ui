@@ -1,5 +1,5 @@
 import { TraitSchema, RuntimeTrait } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import {
   IComponentModel,
   TraitType,
@@ -23,7 +23,7 @@ export class TraitModel implements ITraitModel {
   constructor(
     trait: TraitSchema,
     public parent: IComponentModel,
-    private registry: Registry
+    private registry: RegistryInterface
   ) {
     this.schema = trait;
     this.parent = parent;

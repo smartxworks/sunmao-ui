@@ -1,12 +1,12 @@
 import RGL from 'react-grid-layout';
 import { ApiService } from '../services/apiService';
 import { GlobalHandlerMap } from '../services/handler';
-import { Registry } from '../services/Registry';
+import { RegistryInterface } from '../services/Registry';
 import { StateManagerInterface } from '../services/StateManager';
 import { Application } from '@sunmao-ui/core';
 
 export type UIServices = {
-  registry: Registry;
+  registry: RegistryInterface;
   stateManager: StateManagerInterface;
   globalHandlerMap: GlobalHandlerMap;
   apiService: ApiService;

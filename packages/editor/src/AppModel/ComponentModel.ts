@@ -1,5 +1,5 @@
 import { merge } from 'lodash-es';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import { parseTypeBox , CORE_VERSION, SLOT_TRAIT_NAME } from '@sunmao-ui/shared';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { genComponent, genTrait } from './utils';
@@ -44,7 +44,7 @@ export class ComponentModel implements IComponentModel {
   constructor(
     public appModel: IAppModel,
     private schema: ComponentSchema,
-    private registry: Registry
+    private registry: RegistryInterface
   ) {
     this.schema = schema;
 
