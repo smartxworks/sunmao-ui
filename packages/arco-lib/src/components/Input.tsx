@@ -77,7 +77,6 @@ export const Input = implementRuntimeComponent(options)(props => {
         callbackMap?.onChange?.();
       }}
       onClear={() => {
-        setValue('');
         callbackMap?.onClear?.();
       }}
       onPressEnter={() => {

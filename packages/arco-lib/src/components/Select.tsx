@@ -23,6 +23,8 @@ const exampleProperties: Static<typeof SelectPropsSpec> = {
   disabled: false,
   labelInValue: false,
   loading: false,
+  showSearch: false,
+  unmountOnExit: false,
   options: [
     { value: 'alibaba', text: 'alibaba' },
     { value: 'baidu', text: 'baidu' },
@@ -30,6 +32,7 @@ const exampleProperties: Static<typeof SelectPropsSpec> = {
   ],
   placeholder: 'Please select',
   size: 'default',
+  error:false
 };
 
 export const Select = implementRuntimeComponent({
@@ -47,13 +50,20 @@ export const Select = implementRuntimeComponent({
     properties: SelectPropsSpec,
     state: SelectStateSpec,
     methods: {},
-    slots: [],
-    styleSlots: ['content'],
-    events: ['onChange'],
+    slots: ['dropdownRenderSlot'],
+    styleSlots: ['content', 'dropdownRenderWrap'],
+    events: ['onChange', 'onClear', 'onBlur', 'onFocus'],
   },
 })(props => {
-  const { getElement, customStyle, callbackMap, mergeState, defaultValue = '' } = props;
-  const { options = [], ...cProps } = getComponentProps(props);
+  const {
+    getElement,
+    slotsElements,
+    customStyle,
+    callbackMap,
+    mergeState,
+    defaultValue = '',
+  } = props;
+  const { options = [], retainInputValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<string>(defaultValue);
   const ref = useRef<SelectHandle | null>(null);
   useEffect(() => {
@@ -68,6 +78,11 @@ export const Select = implementRuntimeComponent({
     }
   }, [getElement, ref]);
 
+  const showSearch = cProps.showSearch && {
+    retainInputValue,
+    retainInputValueWhileSelect: retainInputValue,
+  };
+
   return (
     <BaseSelect
       ref={ref}
@@ -78,11 +93,25 @@ export const Select = implementRuntimeComponent({
       }}
       value={value}
       {...cProps}
+      showSearch={showSearch}
+      dropdownRender={menu => {
+        return (
+          <div className={css(customStyle?.dropdownRenderWrap)}>
+            {menu}
+            {slotsElements.dropdownRenderSlot}
+          </div>
+        );
+      }}
       mode={cProps.multiple ? 'multiple' : undefined}
+      onClear={() => {
+        callbackMap?.onClear?.();
+      }}
+      onBlur={() => callbackMap?.onBlur?.()}
+      onFocus={() => callbackMap?.onFocus?.()}
     >
       {options.map(o => (
         <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
-          {o.text}
+          {o.text || o.value}
         </BaseSelect.Option>
       ))}
     </BaseSelect>
