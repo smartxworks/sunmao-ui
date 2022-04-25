@@ -18,7 +18,8 @@ const exampleProperties: Static<typeof ModalPropsSpec> = {
   closable: true,
   maskClosable: true,
   confirmLoading: false,
-  defaultOpen:true
+  defaultOpen: true,
+  unmountOnExit: true,
 };
 export const Modal = implementRuntimeComponent({
   version: 'arco/v1',
@@ -89,7 +90,6 @@ export const Modal = implementRuntimeComponent({
         footer={slotsElements.footer}
         className={css(customStyle?.content)}
         mountOnEnter={true}
-        unmountOnExit={true}
         {...cProps}
       >
         <div ref={contentRef}>{slotsElements.content}</div>
