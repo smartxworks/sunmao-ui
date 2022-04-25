@@ -3,7 +3,7 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
 import { partial } from 'lodash-es';
 import { css } from '@emotion/css';
-import { CORE_VERSION } from '@sunmao-ui/shared';
+import { CORE_VERSION, GRID_LAYOUT_COMPONENT_NAME } from '@sunmao-ui/shared';
 
 const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 
@@ -37,7 +37,7 @@ const PropsSpec = Type.Object({
 export default implementRuntimeComponent({
   version: CORE_VERSION,
   metadata: {
-    name: 'grid_layout',
+    name: GRID_LAYOUT_COMPONENT_NAME,
     displayName: 'Grid Layout',
     description: 'drag and drop to layout in a grid',
     isDraggable: true,
