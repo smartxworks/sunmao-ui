@@ -221,8 +221,8 @@ export default implementRuntimeTrait({
       },
     });
 
-    return {
-      props: null,
+      return {
+        props: {},
+      };
     };
-  };
 });

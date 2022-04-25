@@ -51,12 +51,15 @@ export const getComponentProps = <
     data,
     customStyle,
     callbackMap,
-    effects,
     mergeState,
     subscribeMethods,
     getElement,
     elementRef,
     hooks,
+    isInModule,
+    componentDidMount,
+    componentDidUnmount,
+    componentDidUpdate,
     /* eslint-enable @typescript-eslint/no-unused-vars */
     ...rest
   } = props;

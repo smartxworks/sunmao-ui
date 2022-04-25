@@ -1,4 +1,4 @@
-type HandlerMap = Record<string, (parameters?: any) => void>;
+export type HandlerMap = Record<string, (parameters?: any) => void>;
 
 export type GlobalHandlerMap = Map<string, HandlerMap>;
 
