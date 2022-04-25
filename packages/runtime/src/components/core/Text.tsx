@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import _Text, { TextPropertySpec } from '../_internal/Text';
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { CORE_VERSION } from '@sunmao-ui/shared';
+import { CORE_VERSION, TEXT_COMPONENT_NAME } from '@sunmao-ui/shared';
 
 const StateSpec = Type.Object({
   value: Type.String(),
@@ -14,7 +14,7 @@ const PropsSpec = Type.Object({
 export default implementRuntimeComponent({
   version: CORE_VERSION,
   metadata: {
-    name: 'text',
+    name: TEXT_COMPONENT_NAME,
     displayName: 'Text',
     description: 'support plain and markdown formats',
     isDraggable: true,
