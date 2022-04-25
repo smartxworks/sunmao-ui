@@ -1,14 +1,21 @@
 import { Application } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
+import {
+  CORE_VERSION,
+  SLOT_TRAIT_NAME,
+  EVENT_TRAIT_NAME,
+  STYLE_TRAIT_NAME,
+  FETCH_TRAIT_NAME,
+} from '@sunmao-ui/shared';
 
 export const ignoreTraitsList = [
-  'core/v1/slot',
-  'core/v1/event',
-  'core/v1/style',
-  'core/v1/fetch',
+  `${CORE_VERSION}/${SLOT_TRAIT_NAME}`,
+  `${CORE_VERSION}/${EVENT_TRAIT_NAME}`,
+  `${CORE_VERSION}/${STYLE_TRAIT_NAME}`,
+  `${CORE_VERSION}/${FETCH_TRAIT_NAME}`,
 ];
 
-export const hasSpecialFormTraitList = [...ignoreTraitsList, 'core/v1/fetch'];
+export const hasSpecialFormTraitList = [...ignoreTraitsList, `${CORE_VERSION}/${FETCH_TRAIT_NAME}`];
 
 export const RootId = '__root__';
 

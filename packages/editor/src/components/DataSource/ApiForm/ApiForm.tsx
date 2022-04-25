@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { FetchTraitPropertiesSpec, watch } from '@sunmao-ui/runtime';
+import { watch, FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
 import {
   Box,
@@ -28,6 +28,7 @@ import { Body } from './Body';
 import { Response as ResponseInfo } from './Response';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
+import { CORE_VERSION, FETCH_TRAIT_NAME } from '@sunmao-ui/shared';
 
 enum TabIndex {
   Basic,
@@ -57,7 +58,7 @@ export const ApiForm: React.FC<Props> = props => {
     return reactiveStore[api.id]?.fetch ?? {};
   }, [api.id, reactiveStore]);
   const traitIndex = useMemo(
-    () => api.traits.findIndex(({ type }) => type === 'core/v1/fetch'),
+    () => api.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${FETCH_TRAIT_NAME}`),
     [api.traits]
   );
   const trait = useMemo(() => api.traits[traitIndex], [api.traits, traitIndex]);

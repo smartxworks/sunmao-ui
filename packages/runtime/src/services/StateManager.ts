@@ -7,15 +7,13 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { isProxy, reactive, toRaw } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
-import { isNumeric } from '../utils/isNumeric';
-import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants';
+import { isNumeric, parseExpression, consoleError, ConsoleType, type ExpChunk } from '@sunmao-ui/shared';
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear);
 dayjs.extend(LocalizedFormat);
 dayjs.locale('zh-cn');
 
-type ExpChunk = string | ExpChunk[];
 type EvalOptions = {
   evalListItem?: boolean;
   scopeObject?: Record<string, any>;
@@ -35,6 +33,8 @@ export class ExpressionError extends Error {
     this.name = 'ExpressionError';
   }
 }
+
+export type StateManagerInterface = InstanceType<typeof StateManager>
 
 export class StateManager {
   store = reactive<Record<string, any>>({});
@@ -104,7 +104,8 @@ export class StateManager {
     } catch (error) {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
-        console.error(expressionError);
+
+        consoleError(ConsoleType.Expression,  '', expressionError.message);
 
         return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
       }
@@ -191,88 +192,3 @@ export class StateManager {
     };
   }
 }
-
-// copy and modify from
-// https://stackoverflow.com/questions/68161410/javascript-parse-multiple-brackets-recursively-from-a-string
-const EXPRESSION = {
-  START: '{{',
-  END: '}}',
-};
-export const parseExpression = (rawExp: string, parseListItem = false): ExpChunk[] => {
-  const exp = rawExp.trim();
-  // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
-  // unless explicitly pass parseListItem as true
-  if (
-    (exp.includes(LIST_ITEM_EXP) || exp.includes(LIST_ITEM_INDEX_EXP)) &&
-    !parseListItem
-  ) {
-    return [exp];
-  }
-
-  function lexer(str: string): string[] {
-    let token = '';
-    let chars = '';
-    let charsNext = '';
-    let i = 0;
-    const res = [];
-    const collectToken = () => {
-      if (token) {
-        res.push(token);
-        token = '';
-      }
-    };
-    while ((chars = str.slice(i, i + EXPRESSION.START.length))) {
-      switch (chars) {
-        case EXPRESSION.START:
-          // move cursor
-          i += EXPRESSION.START.length;
-          collectToken();
-          res.push(chars);
-          break;
-        case EXPRESSION.END: {
-          let j = i + 1;
-          // looking ahead
-          while ((charsNext = str.slice(j, j + EXPRESSION.END.length))) {
-            if (charsNext === EXPRESSION.END) {
-              token += str[i];
-              // move two cursors
-              j++;
-              i++;
-            } else {
-              // move cursor
-              i += EXPRESSION.END.length;
-              collectToken();
-              res.push(chars);
-              break;
-            }
-          }
-          break;
-        }
-        default:
-          token += str[i];
-          // move cursor
-          i++;
-      }
-    }
-    if (token) {
-      res.push(token);
-    }
-    return res;
-  }
-
-  function build(tokens: string[]): ExpChunk[] {
-    const result: ExpChunk[] = [];
-    let item;
-
-    while ((item = tokens.shift())) {
-      if (item === EXPRESSION.END) return result;
-      result.push(item === EXPRESSION.START ? build(tokens) : item);
-    }
-    return result;
-  }
-
-  const tokens = lexer(exp);
-  const result = build(tokens);
-
-  return result;
-};

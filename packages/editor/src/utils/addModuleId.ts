@@ -3,6 +3,7 @@ import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';
 import produce from 'immer';
+import { CORE_VERSION, MODULE_CONTAINER_COMPONENT_NAME } from '@sunmao-ui/shared';
 
 const ModuleIdPrefix = '{{ $moduleId }}__';
 
@@ -18,7 +19,7 @@ export function addModuleId(originModule: Module): Module {
     const ids: string[] = [];
     module.impl.forEach(c => {
       ids.push(c.id);
-      if (c.type === 'core/v1/moduleContainer') {
+      if (c.type === `${CORE_VERSION}/${MODULE_CONTAINER_COMPONENT_NAME}`) {
         ids.push(c.properties.id as string);
       }
 

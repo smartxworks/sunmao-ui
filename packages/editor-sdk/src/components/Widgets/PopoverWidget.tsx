@@ -13,6 +13,7 @@ import mitt from 'mitt';
 import { SpecWidget } from './SpecWidget';
 import { implementWidget } from '../../utils/widget';
 import { WidgetProps } from '../../types/widget';
+import { CORE_VERSION, POPOVER_WIDGET_NAME } from '@sunmao-ui/shared';
 
 type EvenType = {
   'sub-popover-close': string[];
@@ -138,7 +139,7 @@ export const PopoverWidget = React.forwardRef<
                 {...props}
                 spec={{
                   ...spec,
-                  widget: spec.widget === 'core/v1/Popover' ? '' : spec.widget,
+                  widget: spec.widget === `${CORE_VERSION}/${POPOVER_WIDGET_NAME}` ? '' : spec.widget,
                 }}
               />
             )}
@@ -150,8 +151,8 @@ export const PopoverWidget = React.forwardRef<
 });
 
 export default implementWidget({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'popover',
+    name: POPOVER_WIDGET_NAME,
   },
 })(PopoverWidget);

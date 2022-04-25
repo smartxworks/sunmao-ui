@@ -1,6 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import _Text, { TextPropertySpec } from '../_internal/Text';
 import { implementRuntimeComponent } from '../../utils/buildKit';
+import { CORE_VERSION } from '@sunmao-ui/shared';
 
 const StateSpec = Type.Object({
   value: Type.String(),
@@ -11,7 +12,7 @@ const PropsSpec = Type.Object({
 });
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
     name: 'text',
     displayName: 'Text',

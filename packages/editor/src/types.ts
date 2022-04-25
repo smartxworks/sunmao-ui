@@ -1,5 +1,5 @@
 import { Application, Module } from '@sunmao-ui/core';
-import { initSunmaoUI, Registry, StateManager } from '@sunmao-ui/runtime';
+import { initSunmaoUI, Registry, StateManagerInterface } from '@sunmao-ui/runtime';
 import { WidgetManager } from '@sunmao-ui/editor-sdk';
 import { EditorStore } from './services/EditorStore';
 import { EventBusType } from './services/eventBus';
@@ -11,7 +11,7 @@ export type EditorServices = {
   App: ReturnOfInit['App'];
   registry: Registry;
   apiService: ReturnOfInit['apiService'];
-  stateManager: StateManager;
+  stateManager: StateManagerInterface;
   appModelManager: AppModelManager;
   widgetManager: WidgetManager;
   eventBus: EventBusType;

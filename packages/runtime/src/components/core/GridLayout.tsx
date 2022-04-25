@@ -3,6 +3,7 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
 import { partial } from 'lodash-es';
 import { css } from '@emotion/css';
+import { CORE_VERSION } from '@sunmao-ui/shared';
 
 const BaseGridLayout = React.lazy(() => import('../_internal/GridLayout'));
 
@@ -34,7 +35,7 @@ const PropsSpec = Type.Object({
 });
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
     name: 'grid_layout',
     displayName: 'Grid Layout',

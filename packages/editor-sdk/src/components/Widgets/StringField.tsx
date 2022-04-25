@@ -4,6 +4,7 @@ import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget'
 import { Select } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { ExpressionWidget, ExpressionWidgetOptionsSpec } from './ExpressionWidget';
+import { CORE_VERSION, STRING_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
 
 const StringFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
@@ -49,9 +50,9 @@ export const StringField: React.FC<WidgetProps<StringFieldWidgetOptionsType>> = 
 };
 
 export default implementWidget<StringFieldWidgetOptionsType>({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'string',
+    name: STRING_FIELD_WIDGET_NAME,
   },
   spec: {
     options: StringFieldWidgetOptions,

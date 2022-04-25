@@ -3,12 +3,13 @@ import {
   ComponentValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
+import { CORE_VERSION, MODULE_CONTAINER_COMPONENT_NAME } from '@sunmao-ui/shared';
 
 class ModuleValidatorRule implements ComponentValidatorRule {
   kind: 'component' = 'component';
 
   validate({ component, registry }: ComponentValidateContext): ValidateErrorResult[] {
-    if (component.type !== 'core/v1/moduleContainer') {
+    if (component.type !== `${CORE_VERSION}/${MODULE_CONTAINER_COMPONENT_NAME}`) {
       return [];
     }
 

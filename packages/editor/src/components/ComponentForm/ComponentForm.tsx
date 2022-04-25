@@ -4,7 +4,7 @@ import { FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/react';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
-import { parseTypeBox } from '@sunmao-ui/runtime';
+import { parseTypeBox } from '@sunmao-ui/shared';
 
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';

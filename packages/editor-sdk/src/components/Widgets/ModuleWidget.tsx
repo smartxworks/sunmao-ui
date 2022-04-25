@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { SpecWidget } from './SpecWidget';
+import { CORE_VERSION, MODULE_WIDGET_NAME } from '@sunmao-ui/shared';
 
 export const ModuleWidget: React.FC<WidgetProps> = props => {
   const { component, value, spec, services, path, level, onChange } = props;
@@ -80,8 +81,8 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
 };
 
 export default implementWidget({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'module',
+    name: MODULE_WIDGET_NAME,
   },
 })(ModuleWidget);

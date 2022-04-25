@@ -6,6 +6,7 @@ import { DropComponentWrapper } from './DropComponentWrapper';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
 import { EditorServices } from '../../types';
+import { CORE_VERSION, DUMMY_COMPONENT_NAME } from '@sunmao-ui/shared';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ComponentSchema[]>;
@@ -21,7 +22,7 @@ export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, services } = props;
 
   const realComponents = useMemo(() => {
-    return components.filter(c => c.type !== 'core/v1/dummy');
+    return components.filter(c => c.type !== `${CORE_VERSION}/${DUMMY_COMPONENT_NAME}`);
   }, [components]);
 
   const componentEles = useMemo(() => {

@@ -12,53 +12,15 @@ import {
   isRef,
   stop,
 } from '@vue/reactivity';
-import { hasChanged, isArray, isFunction, isObject, NOOP, isPromise } from '@vue/shared';
-
-export function callWithErrorHandling(fn: Function, type: string, args?: unknown[]) {
-  let res;
-  try {
-    res = args ? fn(...args) : fn();
-  } catch (err) {
-    handleError(err, type);
-  }
-  return res;
-}
-
-export function callWithAsyncErrorHandling(
-  fn: Function | Function[],
-  type: string,
-  args?: unknown[]
-): any[] {
-  if (isFunction(fn)) {
-    const res = callWithErrorHandling(fn, type, args);
-    if (res && isPromise(res)) {
-      res.catch(err => {
-        handleError(err, type);
-      });
-    }
-    return res;
-  }
-
-  const values = [];
-  for (let i = 0; i < fn.length; i++) {
-    values.push(callWithAsyncErrorHandling(fn[i], type, args));
-  }
-
-  return values;
-}
-
-function handleError(err: unknown, type: String) {
-  console.error(new Error(`[@vue-reactivity/watch]: ${type}`));
-  console.error(err);
-}
-
-export function warn(message: string) {
-  console.warn(createError(message));
-}
-
-function createError(message: string) {
-  return new Error(`[reactivue]: ${message}`);
-}
+import { hasChanged, isArray, isFunction, NOOP } from '@vue/shared';
+import {
+  traverse,
+  consoleError,
+  consoleWarn,
+  ConsoleType,
+  callWithAsyncErrorHandling,
+  callWithErrorHandling,
+} from '@sunmao-ui/shared';
 
 export type WatchEffect = (onInvalidate: InvalidateCbRegistrator) => void;
 
@@ -166,8 +128,11 @@ function doWatch(
       source.map(s => {
         if (isRef(s)) return s.value;
         else if (isReactive(s)) return traverse(s);
-        else if (isFunction(s)) return callWithErrorHandling(s, 'watch getter');
-        else warn('invalid source');
+        else if (isFunction(s))
+          return callWithErrorHandling(s, [], error => {
+            consoleError(ConsoleType.Reactivity, 'getter', error.message);
+          });
+        else consoleWarn(ConsoleType.Reactivity, 'getter', 'invalid source');
       });
   } else if (isRef(source)) {
     getter = () => source.value;
@@ -177,13 +142,18 @@ function doWatch(
   } else if (isFunction(source)) {
     if (cb) {
       // getter with cb
-      getter = () => callWithErrorHandling(source, 'watch getter');
+      getter = () =>
+        callWithErrorHandling(source, [], error => {
+          consoleError(ConsoleType.Reactivity, 'getter', error.message);
+        });
     } else {
       // no cb -> simple effect
       getter = () => {
         if (cleanup) cleanup();
 
-        return callWithErrorHandling(source, 'watch callback', [onInvalidate]);
+        return callWithErrorHandling(source, [onInvalidate], error => {
+          consoleError(ConsoleType.Reactivity, 'callback', error.message);
+        });
       };
     }
   } else {
@@ -198,7 +168,9 @@ function doWatch(
   let cleanup: () => void;
   const onInvalidate: InvalidateCbRegistrator = (fn: () => void) => {
     cleanup = (runner as any).options.onStop = () => {
-      callWithErrorHandling(fn, 'watch cleanup');
+      callWithErrorHandling(fn, [], error => {
+        consoleError(ConsoleType.Reactivity, 'cleanup', error.message);
+      });
     };
   };
 
@@ -210,12 +182,18 @@ function doWatch(
           // cleanup before running cb again
           if (cleanup) cleanup();
 
-          callWithAsyncErrorHandling(cb, 'watch callback', [
-            newValue,
-            // pass undefined as the old value when it's changed for the first time
-            oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
-            onInvalidate,
-          ]);
+          callWithAsyncErrorHandling(
+            cb,
+            [
+              newValue,
+              // pass undefined as the old value when it's changed for the first time
+              oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
+              onInvalidate,
+            ],
+            error => {
+              consoleError(ConsoleType.Reactivity, 'callback', error.message);
+            }
+          );
           oldValue = newValue;
         }
       }
@@ -243,25 +221,4 @@ function doWatch(
   };
   stopWatcher.effect = runner;
   return stopWatcher;
-}
-
-function traverse(value: unknown, seen: Set<unknown> = new Set()) {
-  if (!isObject(value) || seen.has(value)) return value;
-
-  seen.add(value);
-  if (isArray(value)) {
-    for (let i = 0; i < value.length; i++) traverse(value[i], seen);
-  } else if (value instanceof Map) {
-    value.forEach((_, key) => {
-      // to register mutation dep for existing keys
-      traverse(value.get(key), seen);
-    });
-  } else if (value instanceof Set) {
-    value.forEach(v => {
-      traverse(v, seen);
-    });
-  } else {
-    for (const key of Object.keys(value)) traverse(value[key], seen);
-  }
-  return value;
 }

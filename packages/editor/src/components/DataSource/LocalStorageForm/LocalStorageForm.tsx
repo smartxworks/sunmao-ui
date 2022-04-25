@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
+import { CORE_VERSION, LOCAL_STORAGE_TRAIT_NAME } from '@sunmao-ui/shared';
 
 interface Values {
   key: string;
@@ -18,7 +19,7 @@ export const LocalStorageForm: React.FC<Props> = props => {
   const { state, services } = props;
   const [name, setName] = useState(state.id);
   const { registry, eventBus, editorStore } = services;
-  const traitIndex = state.traits.findIndex(({ type }) => type === 'core/v1/localStorage');
+  const traitIndex = state.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`);
   const trait = state.traits[traitIndex];
   const formik = useFormik<Values>({
     initialValues: {

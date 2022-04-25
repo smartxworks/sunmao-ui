@@ -5,6 +5,7 @@ import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
+import { CORE_VERSION, MULTI_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
 
 const MultiSpecFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
@@ -92,9 +93,9 @@ export const MultiSpecField: React.FC<WidgetProps<MultiSpecFieldWidgetOptionsTyp
   };
 
 export default implementWidget({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'multi',
+    name: MULTI_FIELD_WIDGET_NAME,
   },
   spec: {
     options: MultiSpecFieldWidgetOptions,
