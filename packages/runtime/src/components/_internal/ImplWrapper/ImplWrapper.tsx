@@ -2,20 +2,20 @@ import React from 'react';
 import { ImplWrapperProps } from '../../../types';
 import { shallowCompareArray } from '../../../utils/shallowCompareArray';
 // import { ImplWrapperMain } from './ImplWrapperMain';
-import { HiddenImplWrapper } from './HiddenImplWrapper';
+import { UnmountImplWrapper } from './UnmountImplWrapper';
 
 // export const _ImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
 //   (props, ref) => {
 //     return (
-//       <HiddenImplWrapper {...props}>
+//       <UnmountImplWrapper {...props}>
 //         <ImplWrapperMain {...props} ref={ref} />
-//       </HiddenImplWrapper>
+//       </UnmountImplWrapper>
 //     );
 //   }
 // );
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
-  HiddenImplWrapper,
+  UnmountImplWrapper,
   (prevProps, nextProps) => {
     const prevChildren = prevProps.childrenMap[prevProps.component.id]?._grandChildren;
     const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;
