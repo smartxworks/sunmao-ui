@@ -1,5 +1,4 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { useEffect } from 'react';
 import { Type } from '@sinclair/typebox';
 
 export default implementRuntimeComponent({
@@ -24,17 +23,6 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ effects, unmountEffects }) => {
-  useEffect(() => {
-    return () => {
-      effects?.forEach(e => e());
-    };
-  }, [effects]);
-  useEffect(() => {
-    return () => {
-      unmountEffects?.forEach(e => e());
-    };
-  }, []);
-
+})(() => {
   return null;
 });

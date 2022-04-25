@@ -141,7 +141,9 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
               typeof FetchTraitPropertiesSpec
             >['onError'];
             rawOnError?.forEach(handler => {
-              const evaledHandler = services.stateManager.deepEval(handler, { evalListItem: false });
+              const evaledHandler = services.stateManager.deepEval(handler, {
+                evalListItem: false,
+              });
               services.apiService.send('uiMethod', {
                 componentId: evaledHandler.componentId,
                 name: evaledHandler.method.name,
@@ -164,7 +166,7 @@ const FetchTraitFactory: TraitImplFactory<Static<typeof FetchTraitPropertiesSpec
       });
 
       return {
-        props: null,
+        props: {},
       };
     };
   };
