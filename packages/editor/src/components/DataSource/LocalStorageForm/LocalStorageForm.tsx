@@ -5,10 +5,12 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
 import { CORE_VERSION, LOCAL_STORAGE_TRAIT_NAME } from '@sunmao-ui/shared';
+import { Type } from '@sinclair/typebox';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
 
 interface Values {
   key: string;
-  value: string;
+  initialValue: string;
 }
 interface Props {
   state: ComponentSchema;
@@ -19,12 +21,14 @@ export const LocalStorageForm: React.FC<Props> = props => {
   const { state, services } = props;
   const [name, setName] = useState(state.id);
   const { registry, eventBus, editorStore } = services;
-  const traitIndex = state.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`);
+  const traitIndex = state.traits.findIndex(
+    ({ type }) => type === `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`
+  );
   const trait = state.traits[traitIndex];
   const formik = useFormik<Values>({
     initialValues: {
-      key: 'value',
-      value: trait.properties.value as string,
+      key: 'initialValue',
+      initialValue: trait.properties.initialValue as string,
     },
     onSubmit: values => {
       eventBus.send(
@@ -55,8 +59,8 @@ export const LocalStorageForm: React.FC<Props> = props => {
 
   useEffect(() => {
     formik.setValues({
-      key: 'value',
-      value: (trait.properties.value as string) ?? '',
+      key: 'initialValue',
+      initialValue: (trait.properties.initialValue as string) ?? '',
     });
   }, [trait.properties, state.id]);
   useEffect(() => {
@@ -79,12 +83,18 @@ export const LocalStorageForm: React.FC<Props> = props => {
         />
       </FormControl>
       <FormControl>
-        <FormLabel>Value</FormLabel>
-        <Input
-          name="value"
-          value={values.value}
-          onChange={formik.handleChange}
-          onBlur={() => formik.handleSubmit()}
+        <FormLabel>Initial Value</FormLabel>
+        <SpecWidget
+          spec={Type.Any()}
+          value={values.initialValue}
+          component={state}
+          level={1}
+          path={['initialValue']}
+          services={services}
+          onChange={value => {
+            formik.setFieldValue('initialValue', value);
+            formik.handleSubmit();
+          }}
         />
       </FormControl>
     </VStack>
