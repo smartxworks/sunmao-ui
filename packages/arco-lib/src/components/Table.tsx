@@ -198,10 +198,11 @@ export const Table = implementRuntimeComponent({
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: [],
+    events: ['onRowClick'],
   },
 })(props => {
-  const { getElement, app, mergeState, customStyle, services, component } = props;
+  const { getElement, callbackMap, app, mergeState, customStyle, services, component } =
+    props;
 
   const ref = useRef<TableInstance | null>(null);
   const { pagination, rowClick, data, ...cProps } = getComponentProps(props);
@@ -451,6 +452,7 @@ export const Table = implementRuntimeComponent({
                   }
                   tr?.classList.add('selected');
                   mergeState({ clickedRow: record });
+                  callbackMap?.onRowClick?.();
                 },
               };
             }
