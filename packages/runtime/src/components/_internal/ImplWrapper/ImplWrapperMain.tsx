@@ -49,9 +49,9 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
               newResults[i] = traitResult;
               return newResults;
             });
-            stops.push(stop);
           }
         );
+        stops.push(stop);
         properties.push(result);
       });
       // although traitResults has initialized in useState, it must be set here again

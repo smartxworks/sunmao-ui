@@ -28,7 +28,7 @@ export function useGlobalHandlerMap(props: ImplWrapperProps) {
 
     return () => {
       apiService.off('uiMethod', handler);
-      handlerMap.delete(c.id);
+      globalHandlerMap.delete(c.id);
     };
   }, [apiService, c.id, globalHandlerMap]);
 }

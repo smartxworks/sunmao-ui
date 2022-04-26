@@ -12,6 +12,9 @@ export default implementRuntimeTrait({
   metadata: {
     name: HIDDEN_TRAIT_NAME,
     description: 'render component with condition',
+    annotations: {
+      beforeRender: true,
+    },
   },
   spec: {
     properties: HiddenTraitPropertiesSpec,
