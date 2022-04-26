@@ -58,18 +58,3 @@ export const FormControlPropsSpec = {
     }
   ),
 };
-
-export const FormPropsSpec = {
-  inline: Type.Boolean({
-    title: 'Inline',
-    category: Category.Layout,
-  }),
-  size: StringUnion(['mini', 'small', 'default', 'large'], {
-    title: 'Size',
-    category: Category.Layout,
-  }),
-  bordered: Type.Boolean({
-    title: 'Bordered',
-    category: Category.Layout,
-  }),
-};
