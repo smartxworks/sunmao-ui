@@ -1,10 +1,10 @@
 import React from 'react';
 import { ImplWrapperProps } from '../../../types';
 import { shallowCompareArray } from '@sunmao-ui/shared';
-import { ImplWrapperMain } from './ImplWrapperMain';
+import { UnmountImplWrapper } from './UnmountImplWrapper';
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
-  ImplWrapperMain,
+  UnmountImplWrapper,
   (prevProps, nextProps) => {
     const prevChildren = prevProps.childrenMap[prevProps.component.id]?._grandChildren;
     const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;
