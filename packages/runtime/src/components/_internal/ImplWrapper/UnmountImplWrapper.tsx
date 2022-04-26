@@ -13,7 +13,7 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const { executeTrait } = useRuntimeFunctions(props);
 
     const unmountTraits = useMemo(
-      () => c.traits.filter(t => registry.getTraitByType(t.type).metadata.annotations?.hasUnmount),
+      () => c.traits.filter(t => registry.getTraitByType(t.type).metadata.annotations?.beforeRender),
       [c.traits, registry]
     );
 

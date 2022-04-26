@@ -10,7 +10,7 @@ describe('trait', () => {
         },
 
         spec: {
-          properties: [{ name: 'width', type: 'number' }],
+          properties: { name: 'width', type: 'number' },
           state: {
             type: 'string',
           },
@@ -29,6 +29,7 @@ describe('trait', () => {
       Object {
         "kind": "Trait",
         "metadata": Object {
+          "annotations": Object {},
           "description": "",
           "name": "test_trait",
         },
@@ -45,12 +46,10 @@ describe('trait', () => {
               },
             },
           ],
-          "properties": Array [
-            Object {
-              "name": "width",
-              "type": "number",
-            },
-          ],
+          "properties": Object {
+            "name": "width",
+            "type": "number",
+          },
           "state": Object {
             "type": "string",
           },
