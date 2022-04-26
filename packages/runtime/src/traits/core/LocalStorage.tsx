@@ -1,6 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
 import { createTrait } from '@sunmao-ui/core';
-import { isEqual } from 'lodash';
 import { TraitImplFactory } from '../../types';
 
 function getLocalStorageValue(key: string) {
@@ -9,27 +8,25 @@ function getLocalStorageValue(key: string) {
     if (json) {
       return JSON.parse(json);
     }
-    return '';
+    return null;
   } catch (error) {
-    return '';
+    return null;
   }
 }
 
 const PropsSpec = Type.Object({
   key: Type.String(),
-  value: Type.Any(),
+  initialValue: Type.Any(),
 });
 
 const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
   const HasInitializedMap = new Map<string, boolean>();
-  const PrevValueCache: Record<string, unknown> = {};
 
-  return ({ key, value, componentId, mergeState, subscribeMethods }) => {
+  return ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
     const hashId = `#${componentId}@${key}`;
     const hasInitialized = HasInitializedMap.get(hashId);
 
     const setValue = (newValue: any) => {
-      PrevValueCache[key] = newValue;
       mergeState({
         [key]: newValue,
       });
@@ -38,20 +35,15 @@ const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () 
 
     if (key) {
       if (!hasInitialized) {
-        PrevValueCache[key] = getLocalStorageValue(hashId);
-        mergeState({
-          [key]: PrevValueCache[key],
-        });
+        const value = getLocalStorageValue(hashId) ?? initialValue;
+        setValue(value);
+
         subscribeMethods({
           setValue: ({ value: newValue }: { value: any }) => {
             setValue(newValue);
           },
         });
         HasInitializedMap.set(hashId, true);
-      } else {
-        if (!isEqual(PrevValueCache[key], value)) {
-          setValue(value);
-        }
       }
     }
 
