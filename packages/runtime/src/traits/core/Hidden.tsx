@@ -33,7 +33,7 @@ export default {
       name: 'hidden',
       description: 'render component with condition',
       annotations: {
-        hasUnmount: true,
+        beforeRender: true,
       },
     },
     spec: {

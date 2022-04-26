@@ -5,7 +5,7 @@ import { parseVersion, Version } from './version';
 
 // spec
 
-type TraitMetaData = Metadata<{ hasUnmount: boolean }>;
+type TraitMetaData = Metadata<{ beforeRender?: boolean }>;
 
 export type Trait = {
   version: string;
@@ -41,7 +41,7 @@ export function createTrait(options: CreateTraitOptions): RuntimeTrait {
     metadata: {
       name: options.metadata.name,
       description: options.metadata.description || '',
-      annotations: options.metadata.annotations,
+      annotations: options.metadata.annotations || {},
     },
     spec: {
       properties: {},
