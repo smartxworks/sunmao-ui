@@ -37,8 +37,8 @@ const options = {
 };
 
 export const Skeleton = implementRuntimeComponent(options)(props => {
-  const { elementRef, ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements } = props;
+  const { ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, slotsElements } = props;
 
   return (
     <BaseSkeleton ref={elementRef} className={css(customStyle?.content)} {...cProps}>

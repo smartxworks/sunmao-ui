@@ -38,8 +38,8 @@ const options = {
 };
 
 export const Link = implementRuntimeComponent(options)(props => {
-  const { elementRef, content, status, ...cProps } = getComponentProps(props);
-  const { customStyle } = props;
+  const { content, status, ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle } = props;
 
   return (
     <BaseLink

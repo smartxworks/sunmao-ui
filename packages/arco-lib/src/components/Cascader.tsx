@@ -7,7 +7,7 @@ import {
   CascaderPropsSpec as BaseCascaderPropsSpec,
   CascaderValueSpec,
 } from '../generated/types/Cascader';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { isArray } from 'lodash-es';
 import { SelectViewHandle } from '@arco-design/web-react/es/_class/select-view';
 
@@ -108,9 +108,9 @@ const options = {
 };
 
 export const Cascader = implementRuntimeComponent(options)(props => {
-  const { getElement, callbackMap, multiple, placeholder, ...cProps } =
-    getComponentProps(props);
-  const { mergeState, slotsElements, customStyle, options } = props;
+  const { getElement, callbackMap, mergeState, slotsElements, customStyle } = props;
+
+  const { multiple, options, placeholder, ...cProps } = getComponentProps(props);
   const ref = useRef<SelectViewHandle | null>(null);
 
   const content = isArray(slotsElements.content)
@@ -124,18 +124,14 @@ export const Cascader = implementRuntimeComponent(options)(props => {
     defaultValue = [cProps.defaultValue as string[]];
   }
 
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState<string[] | string[][]>(defaultValue);
 
-  // optimize the display when switching from single selection to multiple selection
-  useEffect(() => {
+  const convertValue = useMemo(() => {
     if (mode === 'multiple' && !Array.isArray(value[0])) {
-      setValue([value as string[]]);
+      return [value as string[]];
     }
-  }, [mode]);
-
-  useEffect(() => {
-    mergeState({ value });
-  }, [value, mergeState]);
+    return value;
+  }, [value, mode]);
 
   useEffect(() => {
     const ele = ref.current?.dom;
@@ -144,10 +140,14 @@ export const Cascader = implementRuntimeComponent(options)(props => {
     }
   }, [getElement, ref]);
 
-  const onChange = (value: (string | string[])[]) => {
-    setValue(value);
-    callbackMap?.onChange?.();
-  };
+  const onChange = useCallback(
+    (value: string[] | string[][]) => {
+      setValue(value);
+      mergeState({ value });
+      callbackMap?.onChange?.();
+    },
+    [mergeState, callbackMap]
+  );
 
   return (
     <BaseCascader
@@ -155,8 +155,8 @@ export const Cascader = implementRuntimeComponent(options)(props => {
       className={css(customStyle?.content)}
       {...cProps}
       mode={mode}
-      onChange={onChange}
-      value={value}
+      onChange={onChange as ((value: (string | string[])[]) => void) | undefined}
+      value={convertValue}
       options={convertArrToTree(options)}
       placeholder={placeholder}
     >

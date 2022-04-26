@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { InputPropsSpec as BaseInputPropsSpec } from '../generated/types/Input';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { RefInputType } from '@arco-design/web-react/es/Input/interface';
 
 const InputPropsSpec = Type.Object({
@@ -50,11 +50,6 @@ export const Input = implementRuntimeComponent(options)(props => {
   const { defaultValue, ...cProps } = getComponentProps(props);
   const ref = useRef<RefInputType | null>(null);
   const [value, setValue] = useState(defaultValue);
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [mergeState, value]);
 
   useEffect(() => {
     const ele = ref.current?.dom;
@@ -62,6 +57,15 @@ export const Input = implementRuntimeComponent(options)(props => {
       getElement(ele);
     }
   }, [getElement, ref]);
+
+  const onChange = useCallback(
+    value => {
+      setValue(value);
+      mergeState({ value });
+      callbackMap?.onChange?.();
+    },
+    [mergeState, callbackMap]
+  );
 
   return (
     <BaseInput
@@ -72,18 +76,19 @@ export const Input = implementRuntimeComponent(options)(props => {
       prefix={slotsElements.prefix}
       suffix={slotsElements.suffix}
       value={value}
-      onChange={value => {
-        setValue(value);
-        callbackMap?.onChange?.();
-      }}
+      onChange={onChange}
       onClear={() => {
         callbackMap?.onClear?.();
       }}
       onPressEnter={() => {
         callbackMap?.onPressEnter?.();
       }}
-      onBlur={() => callbackMap?.onBlur?.()}
-      onFocus={() => callbackMap?.onFocus?.()}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
       {...cProps}
     />
   );

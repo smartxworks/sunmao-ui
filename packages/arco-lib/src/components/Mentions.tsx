@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { MentionsPropsSpec as BaseMentionsPropsSpec } from '../generated/types/Mentions';
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 const MentionsPropsSpec = Type.Object(BaseMentionsPropsSpec);
 const MentionsStateSpec = Type.Object({
@@ -42,36 +42,36 @@ const options = {
 };
 
 export const Mentions = implementRuntimeComponent(options)(props => {
-  const { elementRef, defaultValue, ...cProps } = getComponentProps(props);
-  const { mergeState, customStyle, callbackMap } = props;
+  const { defaultValue, ...cProps } = getComponentProps(props);
+  const { elementRef, mergeState, customStyle, callbackMap } = props;
 
   const [value, setValue] = useState(defaultValue);
 
-  useEffect(() => {
-    mergeState({ value });
-  }, [mergeState, value]);
-
-  const onChange = (value: string) => {
-    setValue(value);
-    callbackMap?.onChange?.();
-  };
-
-  const onClear = () => {
-    callbackMap?.onClear?.();
-  };
-
-  const onPressEnter = () => {
-    callbackMap?.onPressEnter?.();
-  };
+  const onChange = useCallback(
+    (value: string) => {
+      setValue(value);
+      mergeState({ value });
+      callbackMap?.onChange?.();
+    },
+    [callbackMap, mergeState]
+  );
 
   return (
     <BaseMentions
       ref={elementRef}
-      onPressEnter={onPressEnter}
-      onClear={onClear}
+      onPressEnter={() => {
+        callbackMap?.onPressEnter?.();
+      }}
+      onClear={() => {
+        callbackMap?.onClear?.();
+      }}
       className={css(customStyle?.content)}
-      onBlur={() => callbackMap?.onBlur?.()}
-      onFocus={() => callbackMap?.onFocus?.()}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
       onChange={onChange}
       {...cProps}
       value={value}

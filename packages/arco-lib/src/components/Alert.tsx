@@ -39,8 +39,8 @@ const options = {
 };
 
 export const Alert = implementRuntimeComponent(options)(props => {
-  const { elementRef, ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements, callbackMap } = props;
+  const { ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, slotsElements, callbackMap } = props;
 
   return (
     <BaseAlert

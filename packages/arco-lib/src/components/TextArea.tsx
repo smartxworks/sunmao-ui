@@ -60,12 +60,6 @@ export const TextArea = implementRuntimeComponent(options)(props => {
     }
   }, [getElement, ref]);
 
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [value]);
-
   return (
     <BaseTextArea
       ref={ref}
@@ -73,13 +67,20 @@ export const TextArea = implementRuntimeComponent(options)(props => {
       value={value}
       onChange={value => {
         setValue(value);
+        mergeState({
+          value,
+        });
         callbackMap?.onChange?.();
       }}
       onClear={() => {
         callbackMap?.onClear?.();
       }}
-      onBlur={() => callbackMap?.onBlur?.()}
-      onFocus={() => callbackMap?.onFocus?.()}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
       onPressEnter={() => {
         callbackMap?.onPressEnter?.();
       }}
