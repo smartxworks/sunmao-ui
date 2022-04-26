@@ -52,12 +52,6 @@ export const PasswordInput = implementRuntimeComponent(options)(props => {
   const ref = useRef<RefInputType | null>(null);
 
   useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [value]);
-
-  useEffect(() => {
     const ele = ref.current?.dom;
     if (getElement && ele) {
       getElement(ele);
@@ -71,10 +65,17 @@ export const PasswordInput = implementRuntimeComponent(options)(props => {
       value={value}
       onChange={value => {
         setValue(value);
+        mergeState({
+          value,
+        });
         callbackMap?.onChange?.();
       }}
-      onBlur={() => callbackMap?.onBlur?.()}
-      onFocus={() => callbackMap?.onFocus?.()}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
       onPressEnter={() => {
         callbackMap?.onPressEnter?.();
       }}

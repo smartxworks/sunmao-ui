@@ -44,8 +44,8 @@ export const Modal = implementRuntimeComponent({
     events: ['afterOpen', 'afterClose', 'onCancel', 'onOk'],
   },
 })(props => {
-  const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
-  const { getElement, title, defaultOpen, ...cProps } = getComponentProps(props);
+  const { getElement, subscribeMethods, slotsElements, customStyle, callbackMap } = props;
+  const { title, defaultOpen, ...cProps } = getComponentProps(props);
   const [visible, setVisible] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement | null>(null);
 

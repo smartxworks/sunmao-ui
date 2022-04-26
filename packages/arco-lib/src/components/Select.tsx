@@ -32,7 +32,7 @@ const exampleProperties: Static<typeof SelectPropsSpec> = {
   ],
   placeholder: 'Please select',
   size: 'default',
-  error:false
+  error: false,
 };
 
 export const Select = implementRuntimeComponent({
@@ -66,11 +66,7 @@ export const Select = implementRuntimeComponent({
   const { options = [], retainInputValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<string>(defaultValue);
   const ref = useRef<SelectHandle | null>(null);
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [mergeState, value]);
+
   useEffect(() => {
     const ele = ref.current?.dom;
     if (getElement && ele) {
@@ -89,6 +85,9 @@ export const Select = implementRuntimeComponent({
       className={css(customStyle?.content)}
       onChange={v => {
         setValue(v);
+        mergeState({
+          value:v,
+        });
         callbackMap?.onChange?.();
       }}
       value={value}
@@ -106,8 +105,12 @@ export const Select = implementRuntimeComponent({
       onClear={() => {
         callbackMap?.onClear?.();
       }}
-      onBlur={() => callbackMap?.onBlur?.()}
-      onFocus={() => callbackMap?.onFocus?.()}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
     >
       {options.map(o => (
         <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>

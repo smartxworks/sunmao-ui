@@ -39,7 +39,7 @@ export const getComponentProps = <
   KEvent extends string
 >(
   props: T & ComponentImplProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
-): T => {
+) => {
   const {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     component,
@@ -59,5 +59,5 @@ export const getComponentProps = <
     /* eslint-enable @typescript-eslint/no-unused-vars */
     ...rest
   } = props;
-  return rest as unknown as T;
+  return rest;
 };

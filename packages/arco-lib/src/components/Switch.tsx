@@ -38,20 +38,14 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: [],
+    events: ['onChange'],
   },
 };
 
 export const Switch = implementRuntimeComponent(options)(props => {
-  const { elementRef, customStyle, mergeState } = props;
+  const { elementRef, customStyle, mergeState, callbackMap } = props;
   const { defaultChecked, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState<boolean>(defaultChecked);
-
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [value, mergeState]);
 
   useEffect(() => {
     setValue(defaultChecked);
@@ -63,7 +57,11 @@ export const Switch = implementRuntimeComponent(options)(props => {
       className={css(customStyle?.content)}
       checked={value}
       {...cProps}
-      onChange={value => setValue(value)}
+      onChange={value => {
+        setValue(value);
+        mergeState({ value });
+        callbackMap?.onChange?.();
+      }}
     />
   );
 });

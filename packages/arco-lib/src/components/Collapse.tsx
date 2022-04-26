@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { CollapsePropsSpec as BaseCollapsePropsSpec } from '../generated/types/Collapse';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { EmptyPlaceholder } from './_internal/EmptyPlaceholder';
 
 const CollapsePropsSpec = Type.Object(BaseCollapsePropsSpec);
@@ -61,14 +61,14 @@ export const Collapse = implementRuntimeComponent(options)(props => {
 
   const [activeKey, setActiveKey] = useState<string[]>(defaultActiveKey.map(String));
 
-  useEffect(() => {
-    mergeState({ activeKey });
-  }, [activeKey, mergeState]);
-
-  const onChange = (currentOperateKey: string, activeKey: string[]) => {
-    setActiveKey(activeKey);
-    callbackMap?.onChange?.();
-  };
+  const onChange = useCallback(
+    (currentOperateKey: string, activeKey: string[]) => {
+      setActiveKey(activeKey);
+      mergeState({ activeKey });
+      callbackMap?.onChange?.();
+    },
+    [callbackMap, mergeState]
+  );
 
   const collapseItems = slotsElements.content
     ? ([] as React.ReactElement[]).concat(slotsElements.content)

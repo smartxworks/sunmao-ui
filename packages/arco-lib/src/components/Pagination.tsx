@@ -46,8 +46,8 @@ const options = {
 };
 
 export const Pagination = implementRuntimeComponent(options)(props => {
-  const { elementRef, defaultCurrent, ...cProps } = getComponentProps(props);
-  const { customStyle, mergeState, callbackMap } = props;
+  const { defaultCurrent, ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, mergeState, callbackMap } = props;
 
   const [current, setCurrent] = useState<number>(defaultCurrent || 0);
 
@@ -61,7 +61,7 @@ export const Pagination = implementRuntimeComponent(options)(props => {
 
   const handleChange = (pageNum: number) => {
     setCurrent(pageNum);
-    mergeState({ currentPage: current });
+    mergeState({ currentPage: pageNum });
     callbackMap?.onChange?.();
   };
 

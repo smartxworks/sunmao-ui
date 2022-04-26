@@ -2,14 +2,11 @@ import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
-export const CascaderValueSpec = Type.Array(
-  Type.Union([Type.String(), Type.Array(Type.String())]),
-  {
-    title: 'Default Value',
-    category: Category.Data,
-    widget: 'core/v1/expression',
-  }
-);
+export const CascaderValueSpec = Type.Union([Type.Array(Type.String()), Type.Array(Type.Array(Type.String()))], {
+  title: 'Default Value',
+  category: Category.Data,
+  widget: 'core/v1/expression',
+});
 
 export const CascaderPropsSpec = {
   options: Type.Array(Type.Array(Type.String()), {

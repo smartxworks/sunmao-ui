@@ -51,8 +51,8 @@ const options = {
 };
 
 export const Radio = implementRuntimeComponent(options)(props => {
-  const { customStyle, callbackMap, mergeState, subscribeMethods } = props;
-  const { defaultCheckedValue, elementRef, ...cProps } = getComponentProps(props);
+  const { customStyle, callbackMap, mergeState, subscribeMethods, elementRef } = props;
+  const { defaultCheckedValue, ...cProps } = getComponentProps(props);
   const [checkedValue, setCheckedValue] = useState<string>('');
   const [isInit, setIsInit] = useState(false);
 

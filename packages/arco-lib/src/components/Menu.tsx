@@ -23,7 +23,7 @@ const exampleProperties: Static<typeof MenuPropsSpec> = {
     { key: 'key1', text: 'item1' },
     { key: 'key2', text: 'item2' },
   ],
-  ellipsis:false,
+  ellipsis: false,
   defaultActiveKey: 'key1',
 };
 
@@ -38,29 +38,43 @@ export const Menu = implementRuntimeComponent({
   spec: {
     properties: MenuPropsSpec,
     state: MenuStateSpec,
-    methods: {},
+    methods: {
+      setActive: Type.Object({
+        active: Type.String(),
+      }),
+    },
     slots: [],
     styleSlots: ['content'],
     events: ['onClick'],
   },
 })(props => {
-  const { elementRef, customStyle, callbackMap, mergeState } = props;
+  const { elementRef, customStyle, callbackMap, mergeState, subscribeMethods } = props;
   const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
   const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
 
   useEffect(() => {
-    mergeState({
-      activeKey,
+    setActiveKey(defaultActiveKey ?? 0);
+  }, [defaultActiveKey]);
+
+  useEffect(() => {
+    subscribeMethods({
+      setActive: ({ active }) => {
+        setActiveKey(active);
+        mergeState({ activeKey: active });
+      },
     });
-  }, [activeKey, mergeState]);
+  }, [subscribeMethods]);
 
   return (
     <BaseMenu
       ref={elementRef}
-      defaultSelectedKeys={[defaultActiveKey]}
+      selectedKeys={[activeKey]}
       className={css(customStyle?.content)}
       onClickMenuItem={key => {
         setActiveKey(key);
+        mergeState({
+          activeKey: key,
+        });
         callbackMap?.onClick?.();
       }}
       {...cProps}
