@@ -72,7 +72,7 @@ export const Tooltip = implementRuntimeComponent(options)(props => {
     </div>
   ) : (
     <div>
-      <BaseTooltip elementRef className={css(customStyle?.content)} {...cProps}>
+      <BaseTooltip className={css(customStyle?.content)} {...cProps}>
         <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
       </BaseTooltip>
     </div>
