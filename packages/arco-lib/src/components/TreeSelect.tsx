@@ -60,6 +60,9 @@ const options = {
     ...FALLBACK_METADATA,
     name: 'treeSelect',
     displayName: 'TreeSelect',
+    annotations: {
+      category: 'Display',
+    },
     exampleProperties,
   },
   spec: {
@@ -87,12 +90,9 @@ export const TreeSelect = implementRuntimeComponent(options)(props => {
     }
   }, [getElement, ref]);
 
-  useEffect(() => {
-    mergeState({ selectedOptions });
-  }, [mergeState, selectedOptions]);
-
   const handleChange = (value: string[]) => {
     setSelectedOptions(value);
+    mergeState({ selectedOptions });
     callbackMap?.onChange?.();
   };
 
