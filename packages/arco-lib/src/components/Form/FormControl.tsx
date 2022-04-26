@@ -11,7 +11,6 @@ const FormControlPropsSpec = Type.Object(BaseFormControlPropsSpec);
 const BaseFormControl = Form.Item;
 
 const FormControlStyle = css`
-  margin-right: 10px;
   svg {
     display: inherit;
   }
@@ -35,8 +34,6 @@ const exampleProperties: Static<typeof FormControlPropsSpec> = {
   errorMsg: '',
   labelAlign: 'left',
   colon: false,
-  labelCol: { span: 5, offset: 0 },
-  wrapperCol: { span: 19, offset: 0 },
   help: '',
 };
 
