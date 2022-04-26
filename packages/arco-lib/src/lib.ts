@@ -33,7 +33,6 @@ import { Switch } from './components/Switch';
 import { PasswordInput } from './components/PasswordInput';
 import { TextArea } from './components/TextArea';
 import { Tabs } from './components/Tabs';
-import { Form } from './components/Form/Form';
 import { FormControl } from './components/Form/FormControl';
 import { Descriptions } from './components/Descriptions';
 
@@ -75,7 +74,6 @@ export const components: SunmaoLib['components'] = [
   PasswordInput,
   TextArea,
   Tabs,
-  Form,
   FormControl,
   Descriptions
 ];
