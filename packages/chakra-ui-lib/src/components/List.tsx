@@ -9,12 +9,13 @@ import {
 } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { BASIC } from './constants/category';
+import { CORE_VERSION, EXPRESSION_WIDGET_NAME } from '@sunmao-ui/editor-sdk';
 
 const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {
     title: 'Data',
     category: BASIC,
-    widget: 'core/v1/Expression'
+    widget: `${CORE_VERSION}/${EXPRESSION_WIDGET_NAME}`,
   }),
   template: ModuleSpec,
 });

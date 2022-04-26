@@ -32,6 +32,7 @@
     "@emotion/css": "^11.7.1",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.5.5",
+    "@sunmao-ui/editor-sdk": "^0.1.9",
     "@sunmao-ui/runtime": "^0.5.7",
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash-es": "^4.17.21",

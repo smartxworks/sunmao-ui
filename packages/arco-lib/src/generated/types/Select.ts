@@ -1,6 +1,9 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
+import { CORE_VERSION, EXPRESSION_WIDGET_NAME } from '@sunmao-ui/editor-sdk';
+
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${EXPRESSION_WIDGET_NAME}`;
 
 export const SelectPropsSpec = {
   defaultValue: Type.String({
@@ -24,7 +27,7 @@ export const SelectPropsSpec = {
     {
       title: 'Options',
       category: Category.Data,
-      widget: 'core/v1/expression',
+      widget: EXPRESSION_WIDGET_TYPE,
     }
   ),
   multiple: Type.Boolean({
