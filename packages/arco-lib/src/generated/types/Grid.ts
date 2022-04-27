@@ -10,10 +10,12 @@ export const RowPropsSpec = {
     align: StringUnion(['start', 'center', 'end', 'stretch'], {
         title: 'Align',
         category: Category.Layout,
+        description: 'Vertical alignment, same as css align-items',
     }),
     justify: StringUnion(['start', 'center', 'end', 'space-around', 'space-between'], {
         title: 'Justify',
         category: Category.Layout,
+        description: 'Horizontal alignment, same as css justify-content',
     })
 };
 
