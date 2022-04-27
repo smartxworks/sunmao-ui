@@ -117,6 +117,14 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     [resizeObserver]
   );
 
+  // because this useEffect would run after sunmao didMount hook, so it cannot subscribe the first HTMLElementsUpdated event
+  // we should call the callback function after first render
+  useEffect(() => {
+    observeResize(eleMap);
+    updateCoordinateSystem(eleMap);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     eventBus.on('HTMLElementsUpdated', () => {
       observeResize(eleMap);

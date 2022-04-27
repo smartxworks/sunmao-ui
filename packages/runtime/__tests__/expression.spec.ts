@@ -85,7 +85,7 @@ describe('evalExpression function', () => {
   };
   const stateManager = new StateManager();
   it('can eval {{}} expression', () => {
-    const evalOptions = { evalListItem: false, scopeObject: scope };
+    const evalOptions = { evalListItem: false, scopeObject: scope, noConsoleError: true };
 
     expect(stateManager.maskedEval('value', evalOptions)).toEqual('value');
     expect(stateManager.maskedEval('{{true}}', evalOptions)).toEqual(true);
@@ -140,6 +140,7 @@ describe('evalExpression function', () => {
       stateManager.maskedEval('{{value}}', {
         scopeObject: { override: 'foo' },
         overrideScope: true,
+        noConsoleError: true,
       })
     ).toBeInstanceOf(ExpressionError);
     expect(
@@ -154,6 +155,7 @@ describe('evalExpression function', () => {
     expect(
       stateManager.maskedEval('{{wrongExp}}', {
         fallbackWhenError: exp => exp,
+        noConsoleError: true,
       })
     ).toEqual('{{wrongExp}}');
   });

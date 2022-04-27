@@ -38,6 +38,7 @@
                   "Content-Type": "application/json"
                 },
                 "body": "{{ form.data }}",
+                "bodyType": "json",
                 "onComplete": [
                   {
                     "componentId": "$utils",
