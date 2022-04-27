@@ -43,7 +43,7 @@ export const ModalPropsSpec = {
     category: Category.Basic,
   }),
   unmountOnExit:Type.Boolean({
-    title:'Unmount On Exit',
+    title:'Destroy On Hide',
     category: Category.Behavior
   }),
 };
