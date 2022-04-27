@@ -21,6 +21,7 @@ type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
+  noConsoleError?: boolean
 };
 
 // TODO: use web worker
@@ -76,7 +77,7 @@ export class StateManager {
   };
 
   maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
-    const { evalListItem = false, fallbackWhenError } = options;
+    const { evalListItem = false, fallbackWhenError, noConsoleError } = options;
     let result: unknown[] = [];
 
     try {
@@ -104,7 +105,9 @@ export class StateManager {
     } catch (error) {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
-        console.error(expressionError);
+        if (!noConsoleError) {
+          console.error(expressionError);
+        }
 
         return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
       }

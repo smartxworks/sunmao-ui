@@ -5,10 +5,12 @@ import { parseVersion, Version } from './version';
 
 // spec
 
+type TraitMetaData = Metadata<{ beforeRender?: boolean }>;
+
 export type Trait = {
   version: string;
   kind: 'Trait';
-  metadata: Metadata;
+  metadata: TraitMetaData;
   spec: TraitSpec;
 };
 
@@ -26,7 +28,7 @@ export type RuntimeTrait = Trait & {
 // partial some fields, use as param createModule
 type CreateTraitOptions = {
   version: string;
-  metadata: Metadata;
+  metadata: TraitMetaData;
   spec?: Partial<TraitSpec>;
 };
 
@@ -39,6 +41,7 @@ export function createTrait(options: CreateTraitOptions): RuntimeTrait {
     metadata: {
       name: options.metadata.name,
       description: options.metadata.description || '',
+      annotations: options.metadata.annotations || {},
     },
     spec: {
       properties: {},

@@ -32,6 +32,9 @@ export default {
     metadata: {
       name: 'hidden',
       description: 'render component with condition',
+      annotations: {
+        beforeRender: true,
+      },
     },
     spec: {
       properties: PropsSpec,
