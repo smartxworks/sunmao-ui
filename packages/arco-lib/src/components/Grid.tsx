@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 import { Grid } from '@arco-design/web-react';
 import { css } from '@emotion/css';
 import { RowPropsSpec, ColPropsSpec } from '../generated/types/Grid';
-import { getComponentProps } from 'src/sunmao-helper';
+import { getComponentProps } from '../sunmao-helper';
 import { EmptyPlaceholder } from './_internal/EmptyPlaceholder';
 
 export const Row = implementRuntimeComponent({

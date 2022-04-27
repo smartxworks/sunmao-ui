@@ -36,7 +36,7 @@ const options = {
     methods: {
       openPopover: Type.String(),
       closePopover: Type.String(),
-    } as Record<string, any>,
+    },
     slots: ['popupContent', 'content'],
     styleSlots: ['content'],
     events: [],

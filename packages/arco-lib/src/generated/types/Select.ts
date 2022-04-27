@@ -87,7 +87,7 @@ export const SelectPropsSpec = {
     category: Category.Behavior
   }),
   unmountOnExit: Type.Boolean({
-    title: 'Unmount On Exit',
+    title: 'Destroy On Hide',
     category: Category.Behavior,
   })
 };
