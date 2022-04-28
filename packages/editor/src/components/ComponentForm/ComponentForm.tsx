@@ -22,11 +22,11 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   const { editorStore, registry, eventBus } = services;
   const { selectedComponent, selectedComponentId } = editorStore;
   if (!selectedComponentId) {
-    return <div>No components selected. Click on a component to select it.</div>;
+    return <Text p={2} fontSize='md'>No components selected. Click on a component to select it.</Text>;
   }
 
   if (!selectedComponent) {
-    return <div>Cannot find component with id: {selectedComponentId}.</div>;
+    return <Text  p={2} fontSize='md'>Cannot find component with id: {selectedComponentId}.</Text>;
   }
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
