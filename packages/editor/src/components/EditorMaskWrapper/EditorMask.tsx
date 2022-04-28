@@ -61,6 +61,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   // and the updating maskContainerRect, because maskContainer shares the same coordinates with app
   const updateCoordinateSystem = useCallback(
     (eleMap: Map<string, HTMLElement>) => {
+      console.log('更新')
       function isChild(child: HTMLElement, parent: HTMLElement) {
         let curr = child;
         while (curr.parentElement && !curr.parentElement.isSameNode(wrapperRef.current)) {
