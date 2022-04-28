@@ -185,13 +185,13 @@ export const Editor: React.FC<Props> = observer(
         <>
           <Resizable
             defaultSize={{
-              width: 280,
+              width: 300,
               height: '100%',
             }}
             enable={{ right: true }}
             style={{ zIndex: 2 }}
             maxWidth={480}
-            minWidth={200}
+            minWidth={300}
           >
             <Box
               borderRightWidth="1px"

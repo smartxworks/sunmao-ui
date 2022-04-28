@@ -20,6 +20,8 @@ const outlineMaskTextStyle = css`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
   transform: translateY(-100%);
 `;
 
@@ -61,7 +63,6 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   // and the updating maskContainerRect, because maskContainer shares the same coordinates with app
   const updateCoordinateSystem = useCallback(
     (eleMap: Map<string, HTMLElement>) => {
-      console.log('更新')
       function isChild(child: HTMLElement, parent: HTMLElement) {
         let curr = child;
         while (curr.parentElement && !curr.parentElement.isSameNode(wrapperRef.current)) {
@@ -187,8 +188,8 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   }, [selectedComponentId, getMaskPosition]);
 
   const hoverMask = hoverMaskPosition ? (
-    <Box className={outlineMaskStyle} borderColor="black" style={hoverMaskPosition.style}>
-      <Text className={outlineMaskTextStyle} background="black">
+    <Box className={outlineMaskStyle} borderColor="gray.700" style={hoverMaskPosition.style}>
+      <Text className={outlineMaskTextStyle} background="gray.700">
         {hoverMaskPosition.id}
       </Text>
     </Box>
@@ -208,10 +209,10 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const selectMask = selectedMaskPosition ? (
     <Box
       className={outlineMaskStyle}
-      borderColor="red"
+      borderColor="blue.500"
       style={selectedMaskPosition.style}
     >
-      <Text className={outlineMaskTextStyle} background="red">
+      <Text className={outlineMaskTextStyle} background="blue.500">
         {selectedMaskPosition.id}
       </Text>
     </Box>
