@@ -23,8 +23,7 @@ export const SelectPropsSpec = {
     }),
     {
       title: 'Options',
-      category: Category.Data,
-      widget: 'core/v1/expression',
+      category: Category.Data
     }
   ),
   multiple: Type.Boolean({
@@ -59,6 +58,21 @@ export const SelectPropsSpec = {
     category: Category.Basic,
     weight: 3,
   }),
+  showSearch: Type.Boolean({
+    title: 'Enable Search',
+    category: Category.Behavior,
+  }),
+  retainInputValue: Type.Optional(Type.Boolean({
+    title: 'Retain Input Value',
+    category: Category.Behavior,
+    description: 'Retain the existing content when the search box is focused',
+    conditions: [
+      {
+        key: 'showSearch',
+        value: true
+      }
+    ]
+  })),
   allowClear: Type.Boolean({
     title: 'Allow Clear',
     category: Category.Behavior,
@@ -68,4 +82,12 @@ export const SelectPropsSpec = {
     category: Category.Behavior,
     description: 'Whether to allow new options to be created by input',
   }),
+  error: Type.Boolean({
+    title: 'Error',
+    category: Category.Behavior
+  }),
+  unmountOnExit: Type.Boolean({
+    title: 'Destroy On Hide',
+    category: Category.Behavior,
+  })
 };

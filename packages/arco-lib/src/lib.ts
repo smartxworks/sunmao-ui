@@ -1,7 +1,7 @@
 import { SunmaoLib } from '@sunmao-ui/runtime';
 import { Button } from './components/Button';
 import { Layout } from './components/Layout';
-import { Image } from './components/Image';
+import { Image, ImageGroup } from './components/Image';
 import { Select } from './components/Select';
 import { Menu } from './components/Menu';
 import { Dropdown } from './components/Dropdown';
@@ -15,7 +15,7 @@ import { Progress } from './components/Progress';
 import { Badge } from './components/Badge';
 import { Tooltip } from './components/Tooltip';
 import { Popover } from './components/Popover';
-import { Collapse, CollapseItem } from './components/Collapse';
+import { Collapse } from './components/Collapse';
 import { Cascader } from './components/Cascader';
 import { Skeleton } from './components/Skeleton';
 import { Timeline } from './components/Timeline';
@@ -33,8 +33,9 @@ import { Switch } from './components/Switch';
 import { PasswordInput } from './components/PasswordInput';
 import { TextArea } from './components/TextArea';
 import { Tabs } from './components/Tabs';
-import { Form } from './components/Form/Form';
 import { FormControl } from './components/Form/FormControl';
+import { Descriptions } from './components/Descriptions';
+import { Row, Col } from './components/Grid'
 
 import './style.css';
 
@@ -48,6 +49,7 @@ export const components: SunmaoLib['components'] = [
   Button,
   Layout,
   Image,
+  ImageGroup,
   Select,
   Menu,
   Dropdown,
@@ -62,7 +64,6 @@ export const components: SunmaoLib['components'] = [
   Tooltip,
   Popover,
   Collapse,
-  CollapseItem,
   Cascader,
   Skeleton,
   Timeline,
@@ -74,8 +75,9 @@ export const components: SunmaoLib['components'] = [
   PasswordInput,
   TextArea,
   Tabs,
-  Form,
   FormControl,
+  Descriptions,
+  Row, Col
 ];
 export const traits: SunmaoLib['traits'] = [];
 export const modules: SunmaoLib['modules'] = [];

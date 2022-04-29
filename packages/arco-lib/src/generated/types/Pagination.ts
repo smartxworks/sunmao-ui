@@ -40,4 +40,8 @@ export const PaginationPropsSpec = {
     category: Category.Basic,
     description: 'Whether to display quick jump',
   }),
+  showTotal: Type.Boolean({
+    title: 'Show Total',
+    category: Category.Basic,
+  }),
 };

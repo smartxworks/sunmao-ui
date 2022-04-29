@@ -2,6 +2,31 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
+
+export const CollapseItemPropsSpec = {
+  key: Type.String({
+    title: 'Key',
+    category: Category.Basic,
+    weight: 2,
+  }),
+  header: Type.String({
+    title: 'Header',
+    category: Category.Basic,
+    weight: 1,
+  }),
+  disabled: Type.Boolean({
+    title: 'Disabled',
+    category: Category.Basic,
+  }),
+  showExpandIcon: Type.Boolean({
+    title: 'Show Expand Icon',
+    category: Category.Basic,
+  }),
+  destroyOnHide:Type.Optional(Type.Boolean({
+    title:'Destroy On Hide'
+  }))
+};
+
 export const CollapsePropsSpec = {
   defaultActiveKey: Type.Array(Type.String(), {
     title: 'Default Active Key',
@@ -19,25 +44,19 @@ export const CollapsePropsSpec = {
     title: 'Bordered',
     category: Category.Style,
   }),
+  options: Type.Array(Type.Object(CollapseItemPropsSpec), {
+    title: 'Options',
+    category: Category.Basic,
+    widgetOptions: {
+      displayedKeys: ['header'],
+    }
+  }),
+  lazyLoad:Type.Boolean({
+    title:'Lazy Load',
+    description:'If true, invisible panels will not be rendered on mount'
+  }),
+  destroyOnHide:Type.Boolean({
+    title:'Destroy On Hide'
+  })
 };
 
-export const CollapseItemPropsSpec = {
-  name: Type.String({
-    title: 'Name',
-    category: Category.Basic,
-    weight: 2,
-  }),
-  disabled: Type.Boolean({
-    title: 'Disabled',
-    category: Category.Basic,
-  }),
-  showExpandIcon: Type.Boolean({
-    title: 'Show Expand Icon',
-    category: Category.Basic,
-  }),
-  header: Type.String({
-    title: 'Header',
-    category: Category.Basic,
-    weight: 1,
-  }),
-};

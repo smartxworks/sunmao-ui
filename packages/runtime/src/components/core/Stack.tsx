@@ -5,10 +5,14 @@ import { Static, Type } from '@sinclair/typebox';
 import { StringUnion } from '../../utils/stringUnion';
 
 export const StackPropertySpec = Type.Object({
-  align: StringUnion(['start', 'end', 'center', 'baseline'], {
-    title: 'Align Items',
-    category: 'Layout',
-  }),
+  align: StringUnion(
+    ['flex-start', 'flex-end', 'center', 'baseline', 'stretch', 'auto'],
+    {
+      title: 'Align',
+      category: 'Layout',
+      description: 'Vertical alignment, same as css align-items',
+    }
+  ),
   direction: StringUnion(['vertical', 'horizontal'], {
     title: 'Direction',
     category: 'Layout',
@@ -16,8 +20,9 @@ export const StackPropertySpec = Type.Object({
   justify: StringUnion(
     ['flex-start', 'flex-end', 'center', 'space-between', 'space-around'],
     {
-      title: 'Justify Content',
+      title: 'Justify',
       category: 'Layout',
+      description: 'Horizontal alignment, same as css justify-content',
     }
   ),
   spacing: Type.Number({
@@ -77,7 +82,7 @@ export default implementRuntimeComponent({
     exampleProperties: {
       spacing: 12,
       direction: 'horizontal',
-      align: 'start',
+      align: 'auto',
       wrap: '',
       justify: '',
     },

@@ -1,5 +1,5 @@
 import { Skeleton as BaseSkeleton } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -7,17 +7,6 @@ import { SkeletonPropsSpec as BaseSkeletonPropsSpec } from '../generated/types/S
 
 const SkeletonPropsSpec = Type.Object(BaseSkeletonPropsSpec);
 const SkeletonStateSpec = Type.Object({});
-
-const SkeletonImpl: ComponentImpl<Static<typeof SkeletonPropsSpec>> = props => {
-  const { elementRef, ...cProps } = getComponentProps(props);
-  const { customStyle, slotsElements } = props;
-
-  return (
-    <BaseSkeleton ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content}
-    </BaseSkeleton>
-  );
-};
 
 const exampleProperties: Static<typeof SkeletonPropsSpec> = {
   animation: true,
@@ -47,4 +36,13 @@ const options = {
   },
 };
 
-export const Skeleton = implementRuntimeComponent(options)(SkeletonImpl);
+export const Skeleton = implementRuntimeComponent(options)(props => {
+  const { ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, slotsElements } = props;
+
+  return (
+    <BaseSkeleton ref={elementRef} className={css(customStyle?.content)} {...cProps}>
+      {slotsElements.content}
+    </BaseSkeleton>
+  );
+});

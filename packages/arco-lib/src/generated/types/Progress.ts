@@ -19,6 +19,12 @@ export const ProgressPropsSpec = {
     title: 'Color',
     category: Category.Style,
     description: "Please input a color name such as 'red' or a color code such as '#c10'",
+    conditions: [
+      {
+        key: 'status',
+        value: 'normal',
+      },
+    ],
   }),
   trailColor: Type.String({
     title: 'Trail Color',
@@ -36,4 +42,14 @@ export const ProgressPropsSpec = {
     title: 'Size',
     category: Category.Style,
   }),
+  animation:Type.Boolean({
+    title:'Animation',
+    category:Category.Behavior,
+    conditions: [
+      {
+        key: 'type',
+        value: 'line',
+      },
+    ],
+  })
 };
