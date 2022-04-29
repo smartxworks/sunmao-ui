@@ -1,20 +1,17 @@
 import * as Icons from '@arco-design/web-react/icon';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css, cx } from '@emotion/css';
-import { Type, Static } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 
 const IconPropsSpec = Type.Object({
-  name: Type.KeyOf(Type.Object(Icons as Record<keyof typeof Icons, any>)),
-  spin: Type.Boolean(),
+  name: Type.KeyOf(Type.Object(Icons as Record<keyof typeof Icons, any>), {
+    title: 'Name',
+  }),
+  spin: Type.Boolean({
+    title: 'Spin',
+  }),
 });
-
-const impl: ComponentImpl<Static<typeof IconPropsSpec>> = props => {
-  const { elementRef, name, spin, customStyle } = props;
-  const _Icon = Icons[name];
-
-  return <_Icon ref={elementRef} className={cx(css(customStyle?.content))} spin={spin} />;
-};
 
 export const Icon = implementRuntimeComponent({
   version: 'arco/v1',
@@ -38,4 +35,9 @@ export const Icon = implementRuntimeComponent({
     styleSlots: ['content'],
     events: ['event'],
   },
-})(impl);
+})(props => {
+  const { elementRef, name, spin, customStyle } = props;
+  const _Icon = Icons[name];
+
+  return <_Icon ref={elementRef} className={cx(css(customStyle?.content))} spin={spin} />;
+});

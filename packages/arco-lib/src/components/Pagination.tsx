@@ -1,42 +1,15 @@
 import { Pagination as BasePagination } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PaginationPropsSpec as BasePaginationPropsSpec } from '../generated/types/Pagination';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const PaginationPropsSpec = Type.Object(BasePaginationPropsSpec);
 const PaginationStateSpec = Type.Object({
   currentPage: Type.Number(),
 });
-
-const PaginationImpl: ComponentImpl<Static<typeof PaginationPropsSpec>> = props => {
-  const { elementRef, defaultCurrent, ...cProps } = getComponentProps(props);
-  const { customStyle, mergeState, callbackMap } = props;
-
-  const [current, setCurrent] = useState<number>(defaultCurrent || 0);
-
-  if (cProps.sizeCanChange) {
-    Reflect.deleteProperty(cProps, 'pageSize');
-  }
-
-  const handleChange = (pageNum: number) => {
-    setCurrent(pageNum);
-    mergeState({ currentPage: current });
-    callbackMap?.onChange?.();
-  };
-
-  return (
-    <BasePagination
-      ref={elementRef}
-      className={cx(css(customStyle?.content))}
-      {...cProps}
-      current={current}
-      onChange={handleChange}
-    />
-  );
-};
 
 const exampleProperties: Static<typeof PaginationPropsSpec> = {
   pageSize: 10,
@@ -48,6 +21,7 @@ const exampleProperties: Static<typeof PaginationPropsSpec> = {
   sizeCanChange: false,
   simple: false,
   showJumper: false,
+  showTotal: false,
 };
 
 const options = {
@@ -71,4 +45,33 @@ const options = {
   },
 };
 
-export const Pagination = implementRuntimeComponent(options)(PaginationImpl);
+export const Pagination = implementRuntimeComponent(options)(props => {
+  const { defaultCurrent, ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, mergeState, callbackMap } = props;
+
+  const [current, setCurrent] = useState<number>(defaultCurrent || 0);
+
+  if (cProps.sizeCanChange) {
+    Reflect.deleteProperty(cProps, 'pageSize');
+  }
+
+  useEffect(() => {
+    mergeState({ currentPage: current });
+  }, []);
+
+  const handleChange = (pageNum: number) => {
+    setCurrent(pageNum);
+    mergeState({ currentPage: pageNum });
+    callbackMap?.onChange?.();
+  };
+
+  return (
+    <BasePagination
+      ref={elementRef}
+      className={cx(css(customStyle?.content))}
+      {...cProps}
+      current={current}
+      onChange={handleChange}
+    />
+  );
+});

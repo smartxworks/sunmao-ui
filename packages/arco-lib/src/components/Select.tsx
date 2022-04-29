@@ -1,5 +1,5 @@
 import { Select as BaseSelect } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -14,44 +14,6 @@ const SelectStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const SelectImpl: ComponentImpl<Static<typeof SelectPropsSpec>> = props => {
-  const { getElement, customStyle, callbackMap, mergeState, defaultValue = '' } = props;
-  const { options = [], ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState<string>(defaultValue);
-  const ref = useRef<SelectHandle | null>(null);
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [mergeState, value]);
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
-
-  return (
-    <BaseSelect
-      ref={ref}
-      className={css(customStyle?.content)}
-      onChange={v => {
-        setValue(v);
-        callbackMap?.onChange?.();
-      }}
-      value={value}
-      {...cProps}
-      mode={cProps.multiple ? 'multiple' : undefined}
-    >
-      {options.map(o => (
-        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
-          {o.text}
-        </BaseSelect.Option>
-      ))}
-    </BaseSelect>
-  );
-};
-
 const exampleProperties: Static<typeof SelectPropsSpec> = {
   allowClear: false,
   multiple: false,
@@ -61,6 +23,8 @@ const exampleProperties: Static<typeof SelectPropsSpec> = {
   disabled: false,
   labelInValue: false,
   loading: false,
+  showSearch: false,
+  unmountOnExit: false,
   options: [
     { value: 'alibaba', text: 'alibaba' },
     { value: 'baidu', text: 'baidu' },
@@ -68,6 +32,7 @@ const exampleProperties: Static<typeof SelectPropsSpec> = {
   ],
   placeholder: 'Please select',
   size: 'default',
+  error: false,
 };
 
 export const Select = implementRuntimeComponent({
@@ -85,8 +50,73 @@ export const Select = implementRuntimeComponent({
     properties: SelectPropsSpec,
     state: SelectStateSpec,
     methods: {},
-    slots: [],
-    styleSlots: ['content'],
-    events: ['onChange'],
+    slots: ['dropdownRenderSlot'],
+    styleSlots: ['content', 'dropdownRenderWrap'],
+    events: ['onChange', 'onClear', 'onBlur', 'onFocus'],
   },
-})(SelectImpl);
+})(props => {
+  const {
+    getElement,
+    slotsElements,
+    customStyle,
+    callbackMap,
+    mergeState,
+    defaultValue = '',
+  } = props;
+  const { options = [], retainInputValue, ...cProps } = getComponentProps(props);
+  const [value, setValue] = useState<string>(defaultValue);
+  const ref = useRef<SelectHandle | null>(null);
+
+  useEffect(() => {
+    const ele = ref.current?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
+  const showSearch = cProps.showSearch && {
+    retainInputValue,
+    retainInputValueWhileSelect: retainInputValue,
+  };
+
+  return (
+    <BaseSelect
+      ref={ref}
+      className={css(customStyle?.content)}
+      onChange={v => {
+        setValue(v);
+        mergeState({
+          value:v,
+        });
+        callbackMap?.onChange?.();
+      }}
+      value={value}
+      {...cProps}
+      showSearch={showSearch}
+      dropdownRender={menu => {
+        return (
+          <div className={css(customStyle?.dropdownRenderWrap)}>
+            {menu}
+            {slotsElements.dropdownRenderSlot}
+          </div>
+        );
+      }}
+      mode={cProps.multiple ? 'multiple' : undefined}
+      onClear={() => {
+        callbackMap?.onClear?.();
+      }}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
+    >
+      {options.map(o => (
+        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
+          {o.text || o.value}
+        </BaseSelect.Option>
+      ))}
+    </BaseSelect>
+  );
+});

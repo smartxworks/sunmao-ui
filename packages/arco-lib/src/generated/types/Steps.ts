@@ -3,8 +3,12 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
 export const StepItemSpec = Type.Object({
-  title: Type.String(),
-  description: Type.String(),
+  title: Type.String({
+    title:'Title'
+  }),
+  description: Type.String({
+    title:'Description'
+  })
 });
 
 export const StepsPropsSpec = {
@@ -23,6 +27,20 @@ export const StepsPropsSpec = {
   direction: StringUnion(['vertical', 'horizontal'], {
     title: 'Direction',
     category: Category.Layout,
+    conditions: [
+      {
+        or: [
+          {
+            key: 'type',
+            value: 'default'
+          },
+          {
+            key: 'type',
+            value: 'dot'
+          }
+        ]
+      }
+    ]
   }),
   status: StringUnion(['wait', 'process', 'finish', 'error'], {
     title: 'Status',

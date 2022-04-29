@@ -1,5 +1,5 @@
 import { Cascader as BaseCascader } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -7,7 +7,7 @@ import {
   CascaderPropsSpec as BaseCascaderPropsSpec,
   CascaderValueSpec,
 } from '../generated/types/Cascader';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { isArray } from 'lodash-es';
 import { SelectViewHandle } from '@arco-design/web-react/es/_class/select-view';
 
@@ -63,64 +63,6 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
   return getTree(map);
 };
 
-const CascaderImpl: ComponentImpl<Static<typeof CascaderPropsSpec>> = props => {
-  const { getElement, callbackMap, multiple, placeholder, ...cProps } =
-    getComponentProps(props);
-  const { mergeState, slotsElements, customStyle, options } = props;
-  const ref = useRef<SelectViewHandle | null>(null);
-
-  const content = isArray(slotsElements.content)
-    ? slotsElements.content[0]
-    : slotsElements.content;
-
-  const mode = multiple ? 'multiple' : undefined;
-
-  let defaultValue = cProps.defaultValue;
-  if (mode === 'multiple' && !Array.isArray(cProps.defaultValue[0])) {
-    defaultValue = [cProps.defaultValue as string[]];
-  }
-
-  const [value, _setValue] = useState(defaultValue);
-
-  // optimize the display when switching from single selection to multiple selection
-  useEffect(() => {
-    if (mode === 'multiple' && !Array.isArray(value[0])) {
-      _setValue([value as string[]]);
-    }
-  }, [mode]);
-
-  useEffect(() => {
-    mergeState({ value });
-  }, [value, mergeState]);
-
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
-
-  const onChange = (value: (string | string[])[]) => {
-    _setValue(value);
-    callbackMap?.onChange?.();
-  };
-
-  return (
-    <BaseCascader
-      ref={ref}
-      className={css(customStyle?.content)}
-      {...cProps}
-      mode={mode}
-      onChange={onChange}
-      value={value}
-      options={convertArrToTree(options)}
-      placeholder={placeholder}
-    >
-      {content}
-    </BaseCascader>
-  );
-};
-
 const CascaderExampleOptions = [
   ['beijing', 'chaoyang', 'datunli'],
   ['beijing', 'haidian', 'smartx'],
@@ -165,4 +107,60 @@ const options = {
   },
 };
 
-export const Cascader = implementRuntimeComponent(options)(CascaderImpl);
+export const Cascader = implementRuntimeComponent(options)(props => {
+  const { getElement, callbackMap, mergeState, slotsElements, customStyle } = props;
+
+  const { multiple, options, placeholder, ...cProps } = getComponentProps(props);
+  const ref = useRef<SelectViewHandle | null>(null);
+
+  const content = isArray(slotsElements.content)
+    ? slotsElements.content[0]
+    : slotsElements.content;
+
+  const mode = multiple ? 'multiple' : undefined;
+
+  let defaultValue = cProps.defaultValue;
+  if (mode === 'multiple' && !Array.isArray(cProps.defaultValue[0])) {
+    defaultValue = [cProps.defaultValue as string[]];
+  }
+
+  const [value, setValue] = useState<string[] | string[][]>(defaultValue);
+
+  const convertValue = useMemo(() => {
+    if (mode === 'multiple' && !Array.isArray(value[0])) {
+      return [value as string[]];
+    }
+    return value;
+  }, [value, mode]);
+
+  useEffect(() => {
+    const ele = ref.current?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
+  const onChange = useCallback(
+    (value: string[] | string[][]) => {
+      setValue(value);
+      mergeState({ value });
+      callbackMap?.onChange?.();
+    },
+    [mergeState, callbackMap]
+  );
+
+  return (
+    <BaseCascader
+      ref={ref}
+      className={css(customStyle?.content)}
+      {...cProps}
+      mode={mode}
+      onChange={onChange as ((value: (string | string[])[]) => void) | undefined}
+      value={convertValue}
+      options={convertArrToTree(options)}
+      placeholder={placeholder}
+    >
+      {content}
+    </BaseCascader>
+  );
+});

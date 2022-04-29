@@ -1,5 +1,5 @@
 import { Input } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -15,39 +15,6 @@ const TextAreaStateSpec = Type.Object({
 });
 
 const BaseTextArea = Input.TextArea;
-
-const TextAreaImpl: ComponentImpl<Static<typeof TextAreaPropsSpec>> = props => {
-  const { getElement, customStyle, callbackMap, mergeState } = props;
-  const { defaultValue, ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState(defaultValue);
-  const ref = useRef<RefInputType | null>(null);
-
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
-
-  useEffect(() => {
-    mergeState({
-      value,
-    });
-  }, [value]);
-
-  return (
-    <BaseTextArea
-      ref={ref}
-      className={css(customStyle?.TextArea)}
-      value={value}
-      onChange={value => {
-        setValue(value);
-        callbackMap?.onChange?.();
-      }}
-      {...cProps}
-    />
-  );
-};
 
 const exampleProperties: Static<typeof TextAreaPropsSpec> = {
   allowClear: false,
@@ -76,8 +43,48 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ['TextArea'],
-    events: ['onChange'],
+    events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
 };
 
-export const TextArea = implementRuntimeComponent(options)(TextAreaImpl);
+export const TextArea = implementRuntimeComponent(options)(props => {
+  const { getElement, customStyle, callbackMap, mergeState } = props;
+  const { defaultValue, ...cProps } = getComponentProps(props);
+  const [value, setValue] = useState(defaultValue);
+  const ref = useRef<RefInputType | null>(null);
+
+  useEffect(() => {
+    const ele = ref.current?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
+  return (
+    <BaseTextArea
+      ref={ref}
+      className={css(customStyle?.TextArea)}
+      value={value}
+      onChange={value => {
+        setValue(value);
+        mergeState({
+          value,
+        });
+        callbackMap?.onChange?.();
+      }}
+      onClear={() => {
+        callbackMap?.onClear?.();
+      }}
+      onBlur={() => {
+        callbackMap?.onBlur?.();
+      }}
+      onFocus={() => {
+        callbackMap?.onFocus?.();
+      }}
+      onPressEnter={() => {
+        callbackMap?.onPressEnter?.();
+      }}
+      {...cProps}
+    />
+  );
+});
