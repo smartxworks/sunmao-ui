@@ -1,4 +1,4 @@
-import { ChevronDownIcon, ChevronRightIcon, SmallCloseIcon, TriangleDownIcon } from '@chakra-ui/icons';
+import { SmallCloseIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Spacer, Text } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 
@@ -15,6 +15,9 @@ type Props = {
   onDragEnd?: () => void;
   depth: number;
 };
+
+const LeftPanelPadding = 20;
+const IndentPadding = 12;
 
 export const ComponentItemView: React.FC<Props> = props => {
   const {
@@ -44,7 +47,13 @@ export const ComponentItemView: React.FC<Props> = props => {
       _focus={{
         outline: '0',
       }}
-      icon={isExpanded ? <TriangleDownIcon /> : <TriangleDownIcon transform='rotate(-90deg)' />}
+      icon={
+        isExpanded ? (
+          <TriangleDownIcon />
+        ) : (
+          <TriangleDownIcon transform="rotate(-90deg)" />
+        )
+      }
     />
   );
 
@@ -73,8 +82,8 @@ export const ComponentItemView: React.FC<Props> = props => {
       position="absolute"
       top="0"
       bottom="0"
-      left={`${-depth * 12}px`}
-      right="0"
+      left={`${-depth * IndentPadding - LeftPanelPadding}px`}
+      right={`${-LeftPanelPadding}px`}
       zIndex="-1"
     />
   );
