@@ -124,7 +124,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   useEffect(() => {
     observeResize(eleMap);
     updateCoordinateSystem(eleMap);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -188,7 +188,12 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   }, [selectedComponentId, getMaskPosition]);
 
   const hoverMask = hoverMaskPosition ? (
-    <Box className={outlineMaskStyle} borderColor="gray.700" style={hoverMaskPosition.style}>
+    <Box
+      className={outlineMaskStyle}
+      borderColor="gray.700"
+      zIndex="1"
+      style={hoverMaskPosition.style}
+    >
       <Text className={outlineMaskTextStyle} background="gray.700">
         {hoverMaskPosition.id}
       </Text>
@@ -196,7 +201,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   ) : undefined;
 
   const dragMask = hoverMaskPosition ? (
-    <Box className={outlineMaskStyle} style={hoverMaskPosition.style}>
+    <Box className={outlineMaskStyle} style={hoverMaskPosition.style} zIndex="2">
       <DropSlotMask
         services={services}
         hoverId={hoverComponentId}
@@ -210,6 +215,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     <Box
       className={outlineMaskStyle}
       borderColor="blue.500"
+      zIndex="0"
       style={selectedMaskPosition.style}
     >
       <Text className={outlineMaskTextStyle} background="blue.500">
