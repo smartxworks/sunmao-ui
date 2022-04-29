@@ -39,6 +39,7 @@ export const StructureTree: React.FC<Props> = props => {
         onSelectComponent={onSelectComponent}
         services={services}
         isAncestorDragging={false}
+        depth={0}
       />
     ));
   }, [realComponents, selectedComponentId, onSelectComponent, services]);
