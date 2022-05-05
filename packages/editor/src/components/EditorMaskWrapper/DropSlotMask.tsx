@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@chakra-ui/react';
 import { SlotDropArea } from './SlotDropArea';
 import { EditorServices } from '../../types';
-import { CORE_VERSION, TEXT_COMPONENT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 
 const verticalStackList = ['chakra_ui/v1/vstack'];
 
@@ -21,7 +21,7 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
   const maskRef = useRef<HTMLDivElement>(null);
 
   const hoverComponentType =
-    editorStore.components.find(c => c.id === hoverId)?.type || `${CORE_VERSION}/${TEXT_COMPONENT_NAME}`;
+    editorStore.components.find(c => c.id === hoverId)?.type || `${CORE_VERSION}/${CoreComponentName.Text}`;
 
   const slots = useMemo(() => {
     return registry.getComponentByType(hoverComponentType).spec.slots || [];

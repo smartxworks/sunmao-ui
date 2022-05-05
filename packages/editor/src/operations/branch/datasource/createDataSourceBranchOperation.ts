@@ -7,10 +7,8 @@ import { TSchema } from '@sinclair/typebox';
 import {
   parseTypeBox,
   CORE_VERSION,
-  DUMMY_COMPONENT_NAME,
-  FETCH_TRAIT_NAME,
-  STATE_TRAIT_NAME,
-  LOCAL_STORAGE_TRAIT_NAME,
+  CoreComponentName,
+  CoreTraitName,
 } from '@sunmao-ui/shared';
 
 export type CreateDataSourceBranchOperationContext = {
@@ -24,13 +22,13 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
     let traitType;
     switch (type) {
       case DataSourceType.API:
-        traitType = `${CORE_VERSION}/${FETCH_TRAIT_NAME}`;
+        traitType = `${CORE_VERSION}/${CoreTraitName.Fetch}`;
         break;
       case DataSourceType.STATE:
-        traitType = `${CORE_VERSION}/${STATE_TRAIT_NAME}`;
+        traitType = `${CORE_VERSION}/${CoreTraitName.State}`;
         break;
       case DataSourceType.LOCALSTORAGE:
-        traitType = `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`;
+        traitType = `${CORE_VERSION}/${CoreTraitName.LocalStorage}`;
         break;
     }
     const traitSpec = this.registry.getTraitByType(traitType).spec;
@@ -38,7 +36,7 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
 
     this.operationStack.insert(
       new CreateComponentBranchOperation(this.registry, {
-        componentType: `${CORE_VERSION}/${DUMMY_COMPONENT_NAME}`,
+        componentType: `${CORE_VERSION}/${CoreComponentName.Dummy}`,
         componentId: id,
       })
     );

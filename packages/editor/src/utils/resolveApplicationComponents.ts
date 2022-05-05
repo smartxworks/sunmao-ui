@@ -1,5 +1,5 @@
 import { ComponentSchema } from '@sunmao-ui/core';
-import { CORE_VERSION, SLOT_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ComponentSchema[]>;
@@ -11,7 +11,7 @@ export function resolveApplicationComponents(components: ComponentSchema[]): {
   const topLevelComponents: ComponentSchema[] = [];
   const childrenMap: ChildrenMap = new Map();
   components.forEach(c => {
-    const slotTrait = c.traits.find(t => t.type === `${CORE_VERSION}/${SLOT_TRAIT_NAME}`);
+    const slotTrait = c.traits.find(t => t.type === `${CORE_VERSION}/${CoreTraitName.Slot}`);
     if (slotTrait) {
       const { id: parentId, slot } = slotTrait.properties.container as any;
       if (!childrenMap.has(parentId)) {

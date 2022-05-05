@@ -2,7 +2,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash-es';
 import { CallbackMap, UIServices } from '../../types';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { EventHandlerSpec, CORE_VERSION, EVENT_TRAIT_NAME } from '@sunmao-ui/shared';
+import { EventHandlerSpec, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 export const EventTraitPropertiesSpec = Type.Object({
   handlers: Type.Array(EventHandlerSpec),
@@ -45,7 +45,7 @@ export const generateCallback = (
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: EVENT_TRAIT_NAME,
+    name: CoreTraitName.Event,
     description: 'export component events with advance features',
   },
   spec: {

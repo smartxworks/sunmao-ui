@@ -18,7 +18,7 @@ import { isExpression } from '../../utils/validator';
 import { getTypeString } from '../../utils/type';
 import Ajv, { EnumParams } from 'ajv';
 import { ExpressionError } from '@sunmao-ui/runtime';
-import { CORE_VERSION, EXPRESSION_WIDGET_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -230,7 +230,7 @@ export const ExpressionWidget: React.FC<
 export default implementWidget<Static<typeof ExpressionWidgetOptionsSpec>>({
   version: CORE_VERSION,
   metadata: {
-    name: EXPRESSION_WIDGET_NAME,
+    name: CoreWidgetName.Expression,
   },
   spec: {
     options: ExpressionWidgetOptionsSpec,

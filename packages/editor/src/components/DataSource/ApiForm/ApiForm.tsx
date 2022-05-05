@@ -28,7 +28,7 @@ import { Body } from './Body';
 import { Response as ResponseInfo } from './Response';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
-import { CORE_VERSION, FETCH_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 enum TabIndex {
   Basic,
@@ -58,7 +58,7 @@ export const ApiForm: React.FC<Props> = props => {
     return reactiveStore[api.id]?.fetch ?? {};
   }, [api.id, reactiveStore]);
   const traitIndex = useMemo(
-    () => api.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${FETCH_TRAIT_NAME}`),
+    () => api.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`),
     [api.traits]
   );
   const trait = useMemo(() => api.traits[traitIndex], [api.traits, traitIndex]);

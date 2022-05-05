@@ -1,7 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash-es';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { CORE_VERSION, VALIDATION_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type ValidationResult = Static<typeof ResultSpec>;
 type ValidationRule = (text: string) => ValidationResult;
@@ -25,7 +25,7 @@ export const ValidationTraitPropertiesSpec = Type.Object({
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: VALIDATION_TRAIT_NAME,
+    name: CoreTraitName.Validation,
     description: 'validation trait',
   },
   spec: {

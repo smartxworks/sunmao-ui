@@ -1,7 +1,7 @@
 import React from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
-import { CORE_VERSION, UNSUPPORTED_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 export const UnsupportedField: React.FC<WidgetProps> = props => {
   const { spec, value } = props;
@@ -24,6 +24,6 @@ export const UnsupportedField: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: CORE_VERSION,
   metadata: {
-    name: UNSUPPORTED_FIELD_WIDGET_NAME,
+    name: CoreWidgetName.UnsupportedField,
   },
 })(UnsupportedField);

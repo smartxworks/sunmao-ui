@@ -8,7 +8,7 @@ import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 import { EventHandlerForm } from './EventHandlerForm';
-import { CORE_VERSION, EVENT_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type EventHandler = Static<typeof EventHandlerSpec>;
 
@@ -21,7 +21,7 @@ type HandlerProps = Props & {
   handlers: EventHandler[];
 };
 
-const EVENT_TRAIT_TYPE = `${CORE_VERSION}/${EVENT_TRAIT_NAME}`;
+const EVENT_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Event}`;
 
 const Handler = (props: HandlerProps) => {
   const { handlers, index: i, component, services } = props;

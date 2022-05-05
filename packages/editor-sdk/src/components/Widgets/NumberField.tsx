@@ -8,7 +8,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
-import { CORE_VERSION, NUMBER_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 export const NumberField: React.FC<WidgetProps> = props => {
   const { value, onChange } = props;
@@ -38,6 +38,6 @@ export const NumberField: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: CORE_VERSION,
   metadata: {
-    name: NUMBER_FIELD_WIDGET_NAME,
+    name: CoreWidgetName.NumberField,
   },
 })(NumberField);

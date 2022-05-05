@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { CORE_VERSION, EVENT_WIDGET_NAME } from '../constants/core';
+import { CORE_VERSION, CoreWidgetName } from '../constants/core';
 
 const BaseEventSpecObject = {
   componentId: Type.String({
@@ -43,10 +43,10 @@ export const EventHandlerSpec = Type.Object(
     ...BaseEventSpecObject,
   },
   {
-    widget: `${CORE_VERSION}/${EVENT_WIDGET_NAME}`,
+    widget: `${CORE_VERSION}/${CoreWidgetName.Event}`,
   }
 );
 
 export const EventCallBackHandlerSpec = Type.Object(BaseEventSpecObject, {
-  widget: `${CORE_VERSION}/${EVENT_WIDGET_NAME}`,
+  widget: `${CORE_VERSION}/${CoreWidgetName.Event}`,
 });

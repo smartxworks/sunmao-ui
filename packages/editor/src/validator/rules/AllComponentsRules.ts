@@ -3,7 +3,7 @@ import {
   AllComponentsValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-import { CORE_VERSION, SLOT_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 class ParentValidatorRule implements AllComponentsValidatorRule {
   kind: 'allComponents' = 'allComponents';
@@ -26,7 +26,7 @@ class ParentValidatorRule implements AllComponentsValidatorRule {
         results.push({
           message: `Cannot find parent component: ${c.parentId}.`,
           componentId: c.id,
-          traitType: `${CORE_VERSION}/${SLOT_TRAIT_NAME}`,
+          traitType: `${CORE_VERSION}/${CoreTraitName.Slot}`,
           property: '/container/id',
         });
       }
@@ -35,7 +35,7 @@ class ParentValidatorRule implements AllComponentsValidatorRule {
         results.push({
           message: `Parent component '${parent.id}' does not have slot: ${c.parentSlot}.`,
           componentId: c.id,
-          traitType: `${CORE_VERSION}/${SLOT_TRAIT_NAME}`,
+          traitType: `${CORE_VERSION}/${CoreTraitName.Slot}`,
           property: '/container/slot',
         });
       }

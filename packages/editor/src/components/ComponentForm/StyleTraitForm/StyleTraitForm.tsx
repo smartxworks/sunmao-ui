@@ -15,7 +15,7 @@ import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-import { CORE_VERSION, STYLE_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type Props = {
   component: ComponentSchema;
@@ -27,7 +27,7 @@ type Styles = Array<{
   style: string;
 }>;
 
-const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${STYLE_TRAIT_NAME}`;
+const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Style}`;
 
 export const StyleTraitForm: React.FC<Props> = props => {
   const { component, services } = props;

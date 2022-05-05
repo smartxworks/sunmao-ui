@@ -1,6 +1,6 @@
 import { ComponentSchema, parseType } from '@sunmao-ui/core';
 import { RegistryInterface } from '@sunmao-ui/runtime';
-import { CORE_VERSION, MODULE_CONTAINER_COMPONENT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { ComponentModel } from './ComponentModel';
 import {
   ComponentId,
@@ -40,7 +40,7 @@ export class AppModel implements IAppModel {
 
   get moduleIds(): ModuleId[] {
     return this.allComponents
-      .filter(c => c.type === `${CORE_VERSION}/${MODULE_CONTAINER_COMPONENT_NAME}`)
+      .filter(c => c.type === `${CORE_VERSION}/${CoreComponentName.ModuleContainer}`)
       .map(c => c.properties.rawValue.id);
   }
 
