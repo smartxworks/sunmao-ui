@@ -14,12 +14,21 @@ export const RadioPropsSpec = {
   }),
   options: Type.Array(RadioItemSpec, {
     category: Category.Data,
+    widgetOptions:{
+      displayedKeys: ['label'],
+    }
   }),
   type: StringUnion(['radio', 'button'], {
     category: Category.Style,
   }),
   direction: StringUnion(['horizontal', 'vertical'], {
     category: Category.Style,
+    conditions:[
+      {
+        key:'type',
+        value:'radio'
+      }
+    ]
   }),
   size: StringUnion(['small', 'default', 'large', 'mini'], {
     category: Category.Style,

@@ -123,14 +123,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       title: 'Salary',
       dataIndex: 'salary',
       sorter: true,
-      filter: false,
-      type: 'text',
-      displayValue: '',
-    },
-    {
-      title: 'Time',
-      dataIndex: 'time',
-      sorter: true,
+      sortDirections: ['ascend', 'descend'],
       filter: false,
       type: 'text',
       displayValue: '',
@@ -140,15 +133,22 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       dataIndex: 'link',
       type: 'link',
       filter: true,
-      sorter: false,
+      sortDirections: ['ascend', 'descend'],
       displayValue: '',
+    },
+    {
+      title: 'Button',
+      dataIndex: 'button',
+      type: 'button',
+      filter: true,
+      displayValue: '',
+      btnCfg: { text: 'button', handlers: [] },
     },
     {
       title: 'CustomComponent',
       dataIndex: 'customComponent',
       type: 'module',
       filter: false,
-      sorter: false,
       module: {
         id: 'clistItemName-{{$listItem.id}}',
         handlers: [],
@@ -165,9 +165,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'xzdry'}${index}`,
       link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
-      time: `2021-${Math.floor(Math.random() * 11)}-11T${Math.floor(
-        Math.random() * 23
-      )}:10:45.437Z`,
+      button: `button ${index}`,
     })),
   pagination: {
     pageSize: 6,
@@ -200,13 +198,14 @@ export const Table = implementRuntimeComponent({
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: [],
+    events: ['onRowClick'],
   },
 })(props => {
-  const { getElement, app, mergeState, customStyle, services, data, component } = props;
+  const { getElement, callbackMap, app, mergeState, customStyle, services, component } =
+    props;
 
   const ref = useRef<TableInstance | null>(null);
-  const { pagination, rowClick, ...cProps } = getComponentProps(props);
+  const { pagination, rowClick, data, ...cProps } = getComponentProps(props);
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
 
@@ -453,6 +452,7 @@ export const Table = implementRuntimeComponent({
                   }
                   tr?.classList.add('selected');
                   mergeState({ clickedRow: record });
+                  callbackMap?.onRowClick?.();
                 },
               };
             }

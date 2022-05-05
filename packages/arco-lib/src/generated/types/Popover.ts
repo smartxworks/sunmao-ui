@@ -30,4 +30,8 @@ export const PopoverPropsSpec = {
     title: 'Controlled',
     category: Category.Basic,
   }),
+  unmountOnExit:Type.Boolean({
+    title:'Destroy On Hide',
+    category: Category.Behavior,
+  })
 };

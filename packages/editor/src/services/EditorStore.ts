@@ -98,7 +98,9 @@ export class EditorStore {
           this.setLastSavedComponentsVersion(0);
           this.clearSunmaoGlobalState();
           this.eventBus.send('componentsRefresh', this.originComponents);
+
           this.setComponents(this.originComponents);
+          this.setSelectedComponentId(this.originComponents[0].id || '');
 
           if (
             this.APICount === -1 ||

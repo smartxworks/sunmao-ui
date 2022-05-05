@@ -1,5 +1,5 @@
 import { Divider as BaseDivider } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -9,15 +9,6 @@ const DividerPropsSpec = Type.Object({
   ...BaseDividerPropsSpec,
 });
 const DividerStateSpec = Type.Object({});
-
-const DividerImpl: ComponentImpl<Static<typeof DividerPropsSpec>> = props => {
-  const { elementRef, customStyle } = props;
-  const { ...cProps } = getComponentProps(props);
-
-  return (
-    <BaseDivider ref={elementRef} className={css(customStyle?.content)} {...cProps} />
-  );
-};
 
 const exampleProperties: Static<typeof DividerPropsSpec> = {
   type: 'horizontal',
@@ -45,4 +36,11 @@ const options = {
   },
 };
 
-export const Divider = implementRuntimeComponent(options)(DividerImpl);
+export const Divider = implementRuntimeComponent(options)(props => {
+  const { elementRef, customStyle } = props;
+  const { ...cProps } = getComponentProps(props);
+
+  return (
+    <BaseDivider ref={elementRef} className={css(customStyle?.content)} {...cProps} />
+  );
+});
