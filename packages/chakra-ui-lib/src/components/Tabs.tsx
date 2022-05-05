@@ -49,7 +49,13 @@ export default implementRuntimeComponent({
     state: StateSpec,
     methods: {},
     // tab slot is dynamic
-    slots: ['content'],
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          tabIndex: Type.Number(),
+        }),
+      },
+    },
     styleSlots: ['tabItem', 'tabContent'],
     events: [],
   },
@@ -91,9 +97,6 @@ export default implementRuntimeComponent({
       </TabList>
       <TabPanels>
         {tabNames.map((_, idx) => {
-          const ele = slotsElements.content
-            ? ([] as React.ReactElement[]).concat(slotsElements.content)[idx]
-            : placeholder;
           return (
             <TabPanel
               key={idx}
@@ -101,7 +104,11 @@ export default implementRuntimeComponent({
                 ${customStyle?.tabContent}
               `}
             >
-              {ele}
+              {slotsElements?.content ? (
+                <slotsElements.content tabIndex={idx} />
+              ) : (
+                placeholder
+              )}
             </TabPanel>
           );
         })}

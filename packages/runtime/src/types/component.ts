@@ -1,7 +1,9 @@
+import { Static } from '@sinclair/typebox';
 import {
   RuntimeApplication,
   RuntimeComponentSchema,
   RuntimeComponent,
+  SlotSchema,
 } from '@sunmao-ui/core';
 import React from 'react';
 import { UIServices, ComponentParamsFromApp } from './application';
@@ -14,18 +16,18 @@ export type ImplWrapperProps<KSlot extends string = string> = {
   services: UIServices;
   isInModule: boolean;
   app?: RuntimeApplication;
+  slotProps?: unknown;
 } & ComponentParamsFromApp;
 
 export type ComponentImplProps<
   TState,
   TMethods,
-  KSlot extends string,
+  TSlots extends Record<string, SlotSchema>,
   KStyleSlot extends string,
   KEvent extends string
-> = ImplWrapperProps<KSlot> &
+> = ImplWrapperProps &
   TraitResult<KStyleSlot, KEvent>['props'] &
-  RuntimeFunctions<TState, TMethods> & {
-    slotsElements: Record<KSlot, React.ReactElement[] | React.ReactElement>;
+  RuntimeFunctions<TState, TMethods, TSlots> & {
     elementRef?: React.Ref<any>;
     getElement?: (ele: HTMLElement) => void;
   };
@@ -34,10 +36,10 @@ export type ComponentImpl<
   TProps = any,
   TState = any,
   TMethods = Record<string, any>,
-  KSlot extends string = string,
+  TSlots extends Record<string, SlotSchema> = Record<string, any>,
   KStyleSlot extends string = string,
   KEvent extends string = string
-> = React.FC<TProps & ComponentImplProps<TState, TMethods, KSlot, KStyleSlot, KEvent>>;
+> = React.FC<TProps & ComponentImplProps<TState, TMethods, TSlots, KStyleSlot, KEvent>>;
 
 export type ImplementedRuntimeComponent<
   KMethodName extends string,
@@ -60,8 +62,16 @@ type SubscribeMethods<U> = (map: {
   [K in keyof U]: (parameters: U[K]) => void;
 }) => void;
 type MergeState<T> = (partialState: Partial<T>) => void;
+export type SlotsElements<U extends Record<string, SlotSchema>> = {
+  [K in keyof U]?: React.FC<Static<U[K]['slotProps']>>;
+};
 
-export type RuntimeFunctions<TState, TMethods> = {
+export type RuntimeFunctions<
+  TState,
+  TMethods,
+  TSlots extends Record<string, SlotSchema>
+> = {
   mergeState: MergeState<TState>;
   subscribeMethods: SubscribeMethods<TMethods>;
+  slotsElements: SlotsElements<TSlots>;
 };

@@ -19,7 +19,7 @@ type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
-  noConsoleError?: boolean
+  noConsoleError?: boolean;
 };
 
 // TODO: use web worker
