@@ -7,7 +7,7 @@ import {
   Flex
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseTypeBox, CORE_VERSION, ARRAY_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
+import { parseTypeBox, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { TSchema, Type, Static } from '@sinclair/typebox';
 import { ArrayTable } from '../Form/ArrayTable';
@@ -85,6 +85,6 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
 export default implementWidget<ArrayFieldWidgetOptionsType>({
   version: CORE_VERSION,
   metadata: {
-    name: ARRAY_FIELD_WIDGET_NAME,
+    name: CoreWidgetName.ArrayField,
   },
 })(ArrayField);

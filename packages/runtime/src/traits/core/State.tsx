@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { CORE_VERSION, STATE_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type KeyValue = { key: string; value: unknown };
 
@@ -12,7 +12,7 @@ export const StateTraitPropertiesSpec = Type.Object({
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: STATE_TRAIT_NAME,
+    name: CoreTraitName.State,
     description: 'add state to component',
   },
   spec: {

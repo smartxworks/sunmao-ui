@@ -8,7 +8,7 @@ import {
   ModifyComponentPropertiesLeafOperation,
 } from '../../leaf';
 import { BaseBranchOperation } from '../../type';
-import { CORE_VERSION, GRID_LAYOUT_COMPONENT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 
 export type CreateComponentBranchOperationContext = {
   componentType: string;
@@ -42,7 +42,7 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
 
       if (!parentComponent) {
         console.warn("insert element has an invalid parent, it won't show in the view");
-      } else if (parentComponent.type === `${CORE_VERSION}/${GRID_LAYOUT_COMPONENT_NAME}`) {
+      } else if (parentComponent.type === `${CORE_VERSION}/${CoreComponentName.GridLayout}`) {
         this.operationStack.insert(
           // update grid layout for the new created component, it was pushed into layout by react-grid-layout, so we need to find it and update its id
           new ModifyComponentPropertiesLeafOperation(this.registry, {

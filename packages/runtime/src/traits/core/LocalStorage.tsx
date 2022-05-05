@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { CORE_VERSION, LOCAL_STORAGE_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 function getLocalStorageValue(key: string) {
   try {
@@ -22,7 +22,7 @@ export const LocalStorageTraitPropertiesSpec = Type.Object({
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: LOCAL_STORAGE_TRAIT_NAME,
+    name: CoreTraitName.LocalStorage,
     description: 'localStorage trait',
   },
   spec: {

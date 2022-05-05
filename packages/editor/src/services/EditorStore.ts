@@ -11,10 +11,8 @@ import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
 import {
   CORE_VERSION,
-  DUMMY_COMPONENT_NAME,
-  FETCH_TRAIT_NAME,
-  STATE_TRAIT_NAME,
-  LOCAL_STORAGE_TRAIT_NAME,
+  CoreComponentName,
+  CoreTraitName,
 } from '@sunmao-ui/shared';
 
 type EditingTarget = {
@@ -182,16 +180,16 @@ export class EditorStore {
     const localStorages: ComponentSchema[] = [];
 
     this.components.forEach(component => {
-      if (component.type === `${CORE_VERSION}/${DUMMY_COMPONENT_NAME}`) {
+      if (component.type === `${CORE_VERSION}/${CoreComponentName.Dummy}`) {
         component.traits.forEach(trait => {
-          if (trait.type === `${CORE_VERSION}/${FETCH_TRAIT_NAME}`) {
+          if (trait.type === `${CORE_VERSION}/${CoreTraitName.Fetch}`) {
             apis.push(component);
           }
 
-          if (trait.type === `${CORE_VERSION}/${STATE_TRAIT_NAME}`) {
+          if (trait.type === `${CORE_VERSION}/${CoreTraitName.State}`) {
             states.push(component);
           }
-          if (trait.type === `${CORE_VERSION}/${LOCAL_STORAGE_TRAIT_NAME}`) {
+          if (trait.type === `${CORE_VERSION}/${CoreTraitName.LocalStorage}`) {
             localStorages.push(component);
           }
         });

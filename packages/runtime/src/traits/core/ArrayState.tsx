@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { CORE_VERSION, ARRAY_STATE_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type KeyValue = { key: string; value: unknown };
 
@@ -12,7 +12,7 @@ export const ArrayStateTraitPropertiesSpec = Type.Object({
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: ARRAY_STATE_TRAIT_NAME,
+    name: CoreTraitName.ArrayState,
     description: 'add array state to component',
   },
   spec: {

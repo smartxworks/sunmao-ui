@@ -6,7 +6,7 @@ import {
   ModuleSpec,
   parseTypeBox,
   CORE_VERSION,
-  MODULE_CONTAINER_COMPONENT_NAME,
+  CoreComponentName,
 } from '@sunmao-ui/shared';
 
 export function initStateAndMethod(
@@ -35,7 +35,7 @@ export function initSingleComponentState(
 
   stateManager.store[c.id] = state;
 
-  if (c.type === `${CORE_VERSION}/${MODULE_CONTAINER_COMPONENT_NAME}`) {
+  if (c.type === `${CORE_VERSION}/${CoreComponentName.ModuleContainer}`) {
     const moduleSchema = c.properties as Static<typeof ModuleSpec>;
     try {
       const mSpec = registry.getModuleByType(moduleSchema.type).spec;

@@ -4,9 +4,9 @@ import {
   ConsoleType,
   EventHandlerSpec,
   EventCallBackHandlerSpec,
-  FETCH_TRAIT_NAME,
+  CoreTraitName,
   CORE_VERSION,
-  RECORD_FIELD_WIDGET_NAME,
+  CoreWidgetName,
 } from '@sunmao-ui/shared';
 import { generateCallback } from './Event';
 import { implementRuntimeTrait } from '../../utils/buildKit';
@@ -30,7 +30,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
   }),
   body: Type.Record(Type.String(), Type.String(), {
     title: 'Body',
-    widget: `${CORE_VERSION}/${RECORD_FIELD_WIDGET_NAME}`,
+    widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
   }),
   bodyType: Type.KeyOf(
     Type.Object({
@@ -46,7 +46,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: FETCH_TRAIT_NAME,
+    name: CoreTraitName.Fetch,
     description: 'fetch data to store',
   },
   spec: {
@@ -184,7 +184,7 @@ export default implementRuntimeTrait({
         },
 
         async error => {
-          consoleWarn(ConsoleType.Trait, FETCH_TRAIT_NAME, error);
+          consoleWarn(ConsoleType.Trait, CoreTraitName.Fetch, error);
           mergeState({
             fetch: {
               code: undefined,

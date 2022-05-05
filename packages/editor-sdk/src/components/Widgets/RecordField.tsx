@@ -3,7 +3,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { RecordEditor } from '../Form';
-import { CORE_VERSION, RECORD_FIELD_WIDGET_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 const KeyValueWidgetOptions = Type.Object({
   minNum: Type.Optional(Type.Number()),
@@ -20,7 +20,7 @@ export const RecordWidget: React.FC<WidgetProps<RecordFieldOptionsType>> = props
 export default implementWidget<RecordFieldOptionsType>({
   version: CORE_VERSION,
   metadata: {
-    name: RECORD_FIELD_WIDGET_NAME,
+    name: CoreWidgetName.RecordField,
   },
   spec: {
     options: KeyValueWidgetOptions,

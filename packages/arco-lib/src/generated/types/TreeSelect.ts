@@ -1,9 +1,9 @@
 import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
-import { CORE_VERSION, EXPRESSION_WIDGET_NAME } from '@sunmao-ui/editor-sdk';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
 
-const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${EXPRESSION_WIDGET_NAME}`;
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
 
 export const TreeSelectPropsSpec = {
   treeData: Type.Array(

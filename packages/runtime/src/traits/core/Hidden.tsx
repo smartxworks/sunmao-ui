@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { CORE_VERSION, HIDDEN_TRAIT_NAME } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 export const HiddenTraitPropertiesSpec = Type.Object({
   hidden: Type.Boolean(),
@@ -10,7 +10,7 @@ export const HiddenTraitPropertiesSpec = Type.Object({
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
-    name: HIDDEN_TRAIT_NAME,
+    name: CoreTraitName.Hidden,
     description: 'render component with condition',
     annotations: {
       beforeRender: true,

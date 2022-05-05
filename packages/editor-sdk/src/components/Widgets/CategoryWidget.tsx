@@ -11,7 +11,7 @@ import {
   Box,
   Accordion,
 } from '@chakra-ui/react';
-import { PRESET_PROPERTY_CATEGORY, CORE_VERSION, CATEGORY_WIDGET_NAME } from '@sunmao-ui/shared';
+import { PRESET_PROPERTY_CATEGORY, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { shouldRender } from '../../utils/condition';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
@@ -114,6 +114,6 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
 export default implementWidget({
   version: CORE_VERSION,
   metadata: {
-    name: CATEGORY_WIDGET_NAME,
+    name: CoreWidgetName.Category,
   },
 })(CategoryWidget);

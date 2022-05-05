@@ -1,6 +1,6 @@
 import { EventHandlerSpec } from './event';
 import { Type } from '@sinclair/typebox';
-import { CORE_VERSION, RECORD_FIELD_WIDGET_NAME } from '../constants/core';
+import { CORE_VERSION, CoreWidgetName } from '../constants/core';
 
 export const ModuleSpec = Type.Object(
   {
@@ -15,7 +15,7 @@ export const ModuleSpec = Type.Object(
     properties: Type.Record(Type.String(), Type.Any(), {
       title: 'Module Properties',
       category: 'Basic',
-      widget: `${CORE_VERSION}/${RECORD_FIELD_WIDGET_NAME}`,
+      widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
     }),
     handlers: Type.Array(EventHandlerSpec, {
       title: 'Module Handlers',
