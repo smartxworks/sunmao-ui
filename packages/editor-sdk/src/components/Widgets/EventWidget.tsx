@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
-import { GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
+import { GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
@@ -60,7 +60,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       let spec: WidgetProps['spec'] = Type.Record(Type.String(), Type.String());
 
       if (methodName) {
-        if (value.componentId === GLOBAL_UTILS_ID) {
+        if (value.componentId === GLOBAL_UTIL_METHOD_ID) {
           const targetMethod = utilMethods.get(methodName);
 
           spec = targetMethod?.parameters;
@@ -96,7 +96,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     const updateMethods = useCallback(
       (componentId: string) => {
-        if (componentId === GLOBAL_UTILS_ID) {
+        if (componentId === GLOBAL_UTIL_METHOD_ID) {
           setMethods(Array.from(utilMethods.keys()));
         } else {
           const component = components.find(c => c.id === componentId);
@@ -161,7 +161,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
           placeholder="Select Target Component"
           value={formik.values.componentId}
         >
-          {[{ id: GLOBAL_UTILS_ID }].concat(components).map(c => (
+          {[{ id: GLOBAL_UTIL_METHOD_ID }].concat(components).map(c => (
             <option key={c.id} value={c.id}>
               {c.id}
             </option>
