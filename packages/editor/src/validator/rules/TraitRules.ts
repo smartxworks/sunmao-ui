@@ -4,7 +4,7 @@ import {
   TraitValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-import { EventHandlerSpec, GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
 import { CORE_VERSION, EVENT_TRAIT_NAME } from '@sunmao-ui/shared';
@@ -41,7 +41,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
       }
 
       // TODO: util methods has no method schema to check the parameters, so now temporally skip validation
-      if (isExpression(targetId) || targetId === GLOBAL_UTILS_ID) {
+      if (isExpression(targetId) || targetId === GLOBAL_UTIL_METHOD_ID) {
         return;
       }
 

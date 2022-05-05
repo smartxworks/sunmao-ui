@@ -1,7 +1,7 @@
 export {
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
-  GLOBAL_UTILS_ID,
+  GLOBAL_UTIL_METHOD_ID,
   GLOBAL_MODULE_ID,
 } from '@sunmao-ui/shared';
 
