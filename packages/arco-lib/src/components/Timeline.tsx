@@ -1,5 +1,5 @@
 import { Timeline as BaseTimeline } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -8,27 +8,6 @@ import { TimelinePropsSpec as BaseTimelinePropsSpec } from '../generated/types/T
 const TimelinePropsSpec = Type.Object(BaseTimelinePropsSpec);
 const TimelineStateSpec = Type.Object({});
 
-const TimelineImpl: ComponentImpl<Static<typeof TimelinePropsSpec>> = props => {
-  const { items, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle } = props;
-
-  return (
-    <BaseTimeline ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {items?.map((item, idx) => (
-        <BaseTimeline.Item
-          key={idx}
-          label={item.label}
-          dotColor={item.dotColor}
-          lineType={item.lineType}
-          lineColor={item.lineColor}
-          dotType={item.dotType}
-        >
-          {item.content}
-        </BaseTimeline.Item>
-      ))}
-    </BaseTimeline>
-  );
-};
 const exampleProperties: Static<typeof TimelinePropsSpec> = {
   reverse: false,
   direction: 'vertical',
@@ -88,4 +67,24 @@ const options = {
   },
 };
 
-export const Timeline = implementRuntimeComponent(options)(TimelineImpl);
+export const Timeline = implementRuntimeComponent(options)(props => {
+  const { items, ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle } = props;
+
+  return (
+    <BaseTimeline ref={elementRef} className={css(customStyle?.content)} {...cProps}>
+      {items?.map((item, idx) => (
+        <BaseTimeline.Item
+          key={idx}
+          label={item.label}
+          dotColor={item.dotColor}
+          lineType={item.lineType}
+          lineColor={item.lineColor}
+          dotType={item.dotType}
+        >
+          {item.content}
+        </BaseTimeline.Item>
+      ))}
+    </BaseTimeline>
+  );
+});

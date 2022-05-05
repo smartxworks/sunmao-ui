@@ -1,5 +1,5 @@
 import { TreeSelect as BaseTreeSelect } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -9,49 +9,8 @@ import { RefTreeSelectType } from '@arco-design/web-react/es/TreeSelect';
 
 const TreeSelectPropsSpec = Type.Object(BaseTreeSelectPropsSpec);
 const TreeSelectStateSpec = Type.Object({
-  selectedOptions: Type.String(),
+  selectedOptions: Type.Array(Type.String()),
 });
-
-const TreeSelectImpl: ComponentImpl<Static<typeof TreeSelectPropsSpec>> = props => {
-  const { defaultValue, ...cProps } = getComponentProps(props);
-  const { getElement, customStyle, mergeState, callbackMap } = props;
-  const ref = useRef<RefTreeSelectType | null>(null);
-
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultValue!);
-
-  useEffect(() => {
-    // arco definition doesn't declare dom, but it actually has.
-    const ele = (ref.current as any)?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
-
-  useEffect(() => {
-    mergeState({ selectedOptions });
-  }, [mergeState, selectedOptions]);
-
-  const handleChange = (value: string[]) => {
-    setSelectedOptions(value);
-    callbackMap?.onChange?.();
-  };
-
-  const filterTreeNode = (inputText: string, treeNode: any) => {
-    return treeNode.props.title.toLowerCase().indexOf(inputText.toLowerCase()) > -1;
-  };
-
-  return (
-    <BaseTreeSelect
-      ref={ref}
-      onChange={handleChange}
-      className={css(customStyle?.content)}
-      filterTreeNode={filterTreeNode}
-      {...cProps}
-      value={selectedOptions}
-      treeCheckable={cProps.multiple}
-    />
-  );
-};
 
 const exampleProperties: Static<typeof TreeSelectPropsSpec> = {
   multiple: false,
@@ -101,6 +60,9 @@ const options = {
     ...FALLBACK_METADATA,
     name: 'treeSelect',
     displayName: 'TreeSelect',
+    annotations: {
+      category: 'Display',
+    },
     exampleProperties,
   },
   spec: {
@@ -113,4 +75,40 @@ const options = {
   },
 };
 
-export const TreeSelect = implementRuntimeComponent(options)(TreeSelectImpl);
+export const TreeSelect = implementRuntimeComponent(options)(props => {
+  const { defaultValue, ...cProps } = getComponentProps(props);
+  const { getElement, customStyle, mergeState, callbackMap } = props;
+  const ref = useRef<RefTreeSelectType | null>(null);
+
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(defaultValue!);
+
+  useEffect(() => {
+    // arco definition doesn't declare dom, but it actually has.
+    const ele = (ref.current as any)?.dom;
+    if (getElement && ele) {
+      getElement(ele);
+    }
+  }, [getElement, ref]);
+
+  const handleChange = (value: string[]) => {
+    setSelectedOptions(value);
+    mergeState({ selectedOptions });
+    callbackMap?.onChange?.();
+  };
+
+  const filterTreeNode = (inputText: string, treeNode: any) => {
+    return treeNode.props.title.toLowerCase().indexOf(inputText.toLowerCase()) > -1;
+  };
+
+  return (
+    <BaseTreeSelect
+      ref={ref}
+      onChange={handleChange}
+      className={css(customStyle?.content)}
+      filterTreeNode={filterTreeNode}
+      {...cProps}
+      value={selectedOptions}
+      treeCheckable={cProps.multiple}
+    />
+  );
+});

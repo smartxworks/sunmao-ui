@@ -1,9 +1,5 @@
 import { Modal as BaseModal, ConfigProvider } from '@arco-design/web-react';
-import {
-  ComponentImpl,
-  DIALOG_CONTAINER_ID,
-  implementRuntimeComponent,
-} from '@sunmao-ui/runtime';
+import { DIALOG_CONTAINER_ID, implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -13,10 +9,44 @@ import { useEffect, useRef, useState } from 'react';
 const ModalPropsSpec = Type.Object(BaseModalPropsSpec);
 const ModalStateSpec = Type.Object({});
 
-const ModalImpl: ComponentImpl<Static<typeof ModalPropsSpec>> = props => {
-  const { subscribeMethods, slotsElements, customStyle, callbackMap } = props;
-  const { getElement, title, ...cProps } = getComponentProps(props);
-  const [visible, setVisible] = useState(true);
+const exampleProperties: Static<typeof ModalPropsSpec> = {
+  title: 'Modal title',
+  mask: true,
+  simple: false,
+  okText: 'confirm',
+  cancelText: 'cancel',
+  closable: true,
+  maskClosable: true,
+  confirmLoading: false,
+  defaultOpen: true,
+  unmountOnExit: true,
+};
+export const Modal = implementRuntimeComponent({
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    exampleProperties,
+    name: 'modal',
+    displayName: 'Modal',
+    annotations: {
+      category: 'Display',
+    },
+  },
+  spec: {
+    properties: ModalPropsSpec,
+    state: ModalStateSpec,
+    methods: {
+      openModal: Type.String(),
+      closeModal: Type.String(),
+    },
+    slots: ['content', 'footer'],
+    styleSlots: ['content'],
+    events: ['afterOpen', 'afterClose', 'onCancel', 'onOk'],
+  },
+})(props => {
+  const { getElement, subscribeMethods, slotsElements, customStyle, callbackMap } = props;
+  const { title, defaultOpen, ...cProps } = getComponentProps(props);
+  const [visible, setVisible] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const afterOpen = () => {
@@ -60,45 +90,10 @@ const ModalImpl: ComponentImpl<Static<typeof ModalPropsSpec>> = props => {
         footer={slotsElements.footer}
         className={css(customStyle?.content)}
         mountOnEnter={true}
-        unmountOnExit={true}
         {...cProps}
       >
         <div ref={contentRef}>{slotsElements.content}</div>
       </BaseModal>
     </ConfigProvider>
   );
-};
-
-const exampleProperties: Static<typeof ModalPropsSpec> = {
-  title: 'Modal title',
-  mask: true,
-  simple: false,
-  okText: 'confirm',
-  cancelText: 'cancel',
-  closable: true,
-  maskClosable: true,
-  confirmLoading: false,
-};
-export const Modal = implementRuntimeComponent({
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    exampleProperties,
-    name: 'modal',
-    displayName: 'Modal',
-    annotations: {
-      category: 'Display',
-    },
-  },
-  spec: {
-    properties: ModalPropsSpec,
-    state: ModalStateSpec,
-    methods: {
-      openModal: Type.String(),
-      closeModal: Type.String(),
-    } as Record<string, any>,
-    slots: ['content', 'footer'],
-    styleSlots: ['content'],
-    events: ['afterOpen', 'afterClose', 'onCancel', 'onOk'],
-  },
-})(ModalImpl);
+});

@@ -1,6 +1,6 @@
 import { Checkbox as BaseCheckbox } from '@arco-design/web-react';
 import { Type, Static } from '@sinclair/typebox';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import {
   CheckboxPropsSpec as BaseCheckboxPropsSpec,
   CheckboxOptionSpec as BaseCheckboxOptionSpec,
@@ -17,7 +17,58 @@ const CheckboxStateSpec = Type.Object({
   isCheckAll: Type.Boolean(),
 });
 
-const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
+const exampleProperties = {
+  options: [
+    {
+      label: 'checkbox1',
+      value: 'checkbox1',
+    },
+    {
+      label: 'checkbox2',
+      value: 'checkbox2',
+    },
+    {
+      label: 'checkbox3',
+      value: 'checkbox3',
+    },
+  ],
+  direction: 'horizontal',
+  defaultCheckedValues: ['checkbox1'],
+  showCheckAll: false,
+  checkAllText: 'Check all',
+};
+
+const options = {
+  version: 'arco/v1',
+  metadata: {
+    ...FALLBACK_METADATA,
+    name: 'checkbox',
+    displayName: 'Checkbox',
+    exampleProperties,
+    annotations: {
+      category: 'Input',
+    },
+  },
+  spec: {
+    properties: CheckboxPropsSpec,
+    state: CheckboxStateSpec,
+    methods: {
+      setCheckedValues: Type.Object({
+        checkedValues: Type.Array(Type.String()),
+      }),
+      checkAll: Type.Object({}),
+      uncheckAll: Type.Object({}),
+      toggleValues: Type.Object({
+        values: BaseCheckboxOptionSpec,
+      }),
+    },
+    styleSlots: ['content'],
+    slots: [],
+    events: ['onChange'],
+  },
+};
+
+export const Checkbox = implementRuntimeComponent(options)(props => {
   const { elementRef, mergeState, subscribeMethods, callbackMap, customStyle } = props;
   const {
     options = [],
@@ -93,11 +144,13 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
       });
     }
   }, [defaultCheckedValues, mergeState, isInit]);
+
   useEffect(() => {
     subscribeMethods({
       setCheckedValues: ({ checkedValues: newCheckedValues }) => {
+        setCheckedValues(newCheckedValues);
         mergeState({
-          newCheckedValues,
+          checkedValues: newCheckedValues,
           isCheckAll: checkedValues.length === options.length,
         });
       },
@@ -118,6 +171,7 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
           }
         });
 
+        setCheckedValues(currentCheckedValues);
         mergeState({
           checkedValues: currentCheckedValues,
           isCheckAll: currentCheckedValues.length === options.length,
@@ -167,57 +221,4 @@ const CheckboxImpl: ComponentImpl<Static<typeof CheckboxPropsSpec>> = props => {
       {CheckboxList}
     </div>
   );
-};
-
-const exampleProperties = {
-  options: [
-    {
-      label: 'checkbox1',
-      value: 'checkbox1',
-    },
-    {
-      label: 'checkbox2',
-      value: 'checkbox2',
-    },
-    {
-      label: 'checkbox3',
-      value: 'checkbox3',
-    },
-  ],
-  direction: 'horizontal',
-  defaultCheckedValues: ['checkbox1'],
-  showCheckAll: false,
-  checkAllText: 'Check all',
-};
-
-const options = {
-  version: 'arco/v1',
-  metadata: {
-    ...FALLBACK_METADATA,
-    name: 'checkbox',
-    displayName: 'Checkbox',
-    exampleProperties,
-    annotations: {
-      category: 'Input',
-    },
-  },
-  spec: {
-    properties: CheckboxPropsSpec,
-    state: CheckboxStateSpec,
-    methods: Type.Object({
-      setCheckedValues: Type.Object({
-        values: Type.Array(Type.String()),
-      }),
-      checkAll: Type.Object({}),
-      uncheckAll: Type.Object({}),
-      toggleValues: Type.Object({
-        values: BaseCheckboxOptionSpec,
-      }),
-    }),
-    styleSlots: ['content'],
-    slots: [],
-    events: ['onChange'],
-  },
-};
-
-export const Checkbox = implementRuntimeComponent(options)(CheckboxImpl as any);
+});
