@@ -8,22 +8,25 @@ import { shouldRender } from '../../utils/condition';
 
 const ObjectFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
+  ignoreKeys: Type.Optional(Type.Array(Type.String())),
 });
 
 type ObjectFieldWidgetOptionsType = Static<typeof ObjectFieldWidgetOptions>;
 
 export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = props => {
   const { component, spec, value, services, path, level, onChange } = props;
-  const { expressionOptions } = spec.widgetOptions || {};
+  const { expressionOptions, ignoreKeys = [] } = spec.widgetOptions || {};
 
   const properties = Object.keys(spec.properties || {});
   return (
     <>
       {properties.map(name => {
         const subSpec = (spec.properties || {})[name] as WidgetProps['spec'];
-        if (typeof subSpec === 'boolean') {
+
+        if (typeof subSpec === 'boolean' || ignoreKeys.includes(name)) {
           return null;
         }
+
         return shouldRender(subSpec.conditions || [], value) ? (
           <SpecWidget
             component={component}

@@ -13,7 +13,7 @@ import { EditorServices } from '../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
 
 interface Props {
-  states: ComponentSchema[];
+  datas: ComponentSchema[];
   active: string;
   title: string;
   traitType: string;
@@ -32,10 +32,10 @@ const STATE_MAP: Record<string, string> = {
   object: 'Object',
 };
 
-export const State: React.FC<Props> = props => {
+export const Data: React.FC<Props> = props => {
   const [search, setSearch] = useState('');
   const {
-    states,
+    datas = [],
     active,
     onItemClick,
     onItemRemove,
@@ -47,8 +47,8 @@ export const State: React.FC<Props> = props => {
   const { stateManager } = services;
   const { store } = stateManager;
   const list = useMemo(
-    () => states.filter(({ id }) => id.includes(search)),
-    [search, states]
+    () => datas.filter(({ id }) => id.includes(search)),
+    [search, datas]
   );
   
   const StateItems = () => (

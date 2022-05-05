@@ -16,8 +16,12 @@ function getLocalStorageValue(key: string) {
 }
 
 const PropsSpec = Type.Object({
-  key: Type.String(),
-  value: Type.Any(),
+  key: Type.String({
+    title: 'Key',
+  }),
+  value: Type.Any({
+    title: 'Value',
+  }),
 });
 
 const LocalStorageTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {

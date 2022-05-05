@@ -13,9 +13,9 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer, SchemaEditor } from './CodeEditor';
-import { DataSource, DataSourceType } from './DataSource';
+import { DataSource } from './DataSource';
+import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
 import { ApiForm } from './DataSource/ApiForm';
-import { StateForm } from './DataSource/StateForm';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
@@ -25,7 +25,7 @@ import { EditorServices, UIPros } from '../types';
 import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 import { AppModel } from '../AppModel/AppModel';
-import { LocalStorageForm } from './DataSource/LocalStorageForm';
+import { DataForm } from './DataSource/DataForm';
 import { Explorer } from './Explorer';
 import { Resizable } from 're-resizable';
 
@@ -126,46 +126,45 @@ export const Editor: React.FC<Props> = observer(
       ) : null;
     }, [App, app, gridCallbacks, isDisplayApp]);
 
-    const dataSourceForm = useMemo(() => {
-      let component: React.ReactNode = <ComponentForm services={services} />;
-      if (!activeDataSource) {
-        return component;
+    const inspectForm = useMemo(() => {
+      if (activeDataSource && activeDataSourceType) {
+        return (
+          <DataForm
+            datasource={activeDataSource}
+            services={services}
+            traitType={DATASOURCE_TRAIT_TYPE_MAP[activeDataSourceType]}
+          />
+        );
+      } else {
+        return <ComponentForm services={services} />;
       }
-      switch (activeDataSourceType) {
-        case DataSourceType.STATE:
-          component = <StateForm state={activeDataSource} services={services} />;
-          break;
-        case DataSourceType.LOCALSTORAGE:
-          component = <LocalStorageForm state={activeDataSource} services={services} />;
-          break;
-        default:
-          break;
-      }
-      return component;
     }, [activeDataSource, services, activeDataSourceType]);
 
-    const onRefresh = useCallback(()=> {
+    const onRefresh = useCallback(() => {
       services.stateManager.clear();
       setIsDisplayApp(false);
       onRefreshApp();
     }, [services.stateManager, onRefreshApp]);
-    useEffect(()=> {
+    useEffect(() => {
       // Wait until the app is completely unmounted before remounting it
       if (isDisplayApp === false) {
         setIsDisplayApp(true);
       }
     }, [isDisplayApp]);
-    const onCodeMode = useCallback(v => {
-      setCodeMode(v);
-      if (!v && code) {
-        eventBus.send(
-          'operation',
-          genOperation(registry, 'replaceApp', {
-            app: new AppModel(JSON.parse(code).spec.components, registry),
-          })
-        );
-      }
-    }, [code, eventBus, registry]);
+    const onCodeMode = useCallback(
+      v => {
+        setCodeMode(v);
+        if (!v && code) {
+          eventBus.send(
+            'operation',
+            genOperation(registry, 'replaceApp', {
+              app: new AppModel(JSON.parse(code).spec.components, registry),
+            })
+          );
+        }
+      },
+      [code, eventBus, registry]
+    );
     const onPreview = useCallback(() => setPreview(true), []);
 
     const renderMain = () => {
@@ -301,7 +300,7 @@ export const Editor: React.FC<Props> = observer(
                     <Tab>Insert</Tab>
                   </TabList>
                   <TabPanels flex="1" overflow="auto" background="gray.50">
-                    <TabPanel p={0}>{dataSourceForm}</TabPanel>
+                    <TabPanel p={0}>{inspectForm}</TabPanel>
                     <TabPanel p={0}>
                       <ComponentList services={services} />
                     </TabPanel>
