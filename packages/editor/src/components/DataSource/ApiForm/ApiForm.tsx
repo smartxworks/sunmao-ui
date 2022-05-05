@@ -196,7 +196,6 @@ export const ApiForm: React.FC<Props> = props => {
         <CloseButton
           onClick={() => {
             editorStore.setActiveDataSource(null);
-            editorStore.setActiveDataSourceType(null);
           }}
         />
       </HStack>

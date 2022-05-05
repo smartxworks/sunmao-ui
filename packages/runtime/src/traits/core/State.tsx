@@ -42,8 +42,12 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
 };
 
 const PropsSpec = Type.Object({
-  key: Type.String(),
-  initialValue: Type.Any(),
+  key: Type.String({
+    title: 'Key',
+  }),
+  initialValue: Type.Any({
+    title: 'Initial Value',
+  }),
 });
 
 export default {
