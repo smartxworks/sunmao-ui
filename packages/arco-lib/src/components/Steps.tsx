@@ -1,5 +1,5 @@
 import { Steps as BaseSteps } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -12,34 +12,6 @@ const StepsPropsSpec = Type.Object(BaseStepsPropsSpec);
 const StepsStateSpec = Type.Object({});
 
 type StepItem = Static<typeof StepItemSpec>;
-
-const StepsImpl: ComponentImpl<Static<typeof StepsPropsSpec>> = props => {
-  const { items, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle, slotsElements } = props;
-
-  const labelPlacement = cProps.direction === 'horizontal' ? 'vertical' : 'horizontal';
-
-  return (
-    <BaseSteps
-      className={css(customStyle?.content)}
-      {...cProps}
-      ref={elementRef}
-      labelPlacement={labelPlacement}
-    >
-      {items &&
-        items.map((stepItem: StepItem, idx: number) => {
-          return (
-            <BaseSteps.Step
-              icon={slotsElements.icons}
-              key={idx}
-              title={stepItem.title}
-              description={stepItem.description}
-            />
-          );
-        })}
-    </BaseSteps>
-  );
-};
 
 const exampleProperties: Static<typeof StepsPropsSpec> = {
   type: 'default',
@@ -76,4 +48,30 @@ const options = {
   },
 };
 
-export const Steps = implementRuntimeComponent(options)(StepsImpl);
+export const Steps = implementRuntimeComponent(options)(props => {
+  const { items, ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, slotsElements } = props;
+
+  const labelPlacement = cProps.direction === 'horizontal' ? 'vertical' : 'horizontal';
+
+  return (
+    <BaseSteps
+      className={css(customStyle?.content)}
+      {...cProps}
+      ref={elementRef}
+      labelPlacement={labelPlacement}
+    >
+      {items &&
+        items.map((stepItem: StepItem, idx: number) => {
+          return (
+            <BaseSteps.Step
+              icon={slotsElements.icons}
+              key={idx}
+              title={stepItem.title}
+              description={stepItem.description}
+            />
+          );
+        })}
+    </BaseSteps>
+  );
+});

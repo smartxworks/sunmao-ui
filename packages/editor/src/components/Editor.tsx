@@ -12,7 +12,7 @@ import { StructureTree } from './StructureTree';
 import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
-import { StateViewer, SchemaEditor } from './CodeEditor';
+import { StateViewer } from './CodeEditor';
 import { DataSource } from './DataSource';
 import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
 import { ApiForm } from './DataSource/ApiForm';
@@ -24,10 +24,10 @@ import { WarningArea } from './WarningArea';
 import { EditorServices, UIPros } from '../types';
 import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
-import { AppModel } from '../AppModel/AppModel';
 import { DataForm } from './DataSource/DataForm';
 import { Explorer } from './Explorer';
 import { Resizable } from 're-resizable';
+import { CodeModeModal } from './CodeModeModal';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -69,7 +69,6 @@ export const Editor: React.FC<Props> = observer(
     const [scale, setScale] = useState(100);
     const [preview, setPreview] = useState(false);
     const [codeMode, setCodeMode] = useState(false);
-    const [code, setCode] = useState('');
     const [isDisplayApp, setIsDisplayApp] = useState(true);
 
     const gridCallbacks: GridCallbacks = useMemo(() => {
@@ -151,20 +150,6 @@ export const Editor: React.FC<Props> = observer(
         setIsDisplayApp(true);
       }
     }, [isDisplayApp]);
-    const onCodeMode = useCallback(
-      v => {
-        setCodeMode(v);
-        if (!v && code) {
-          eventBus.send(
-            'operation',
-            genOperation(registry, 'replaceApp', {
-              app: new AppModel(JSON.parse(code).spec.components, registry),
-            })
-          );
-        }
-      },
-      [code, eventBus, registry]
-    );
     const onPreview = useCallback(() => setPreview(true), []);
 
     const renderMain = () => {
@@ -192,30 +177,17 @@ export const Editor: React.FC<Props> = observer(
         </Flex>
       );
 
-      if (codeMode) {
-        return (
-          <Flex width="100%" height="100%">
-            <Box width="full" height="full">
-              <SchemaEditor
-                defaultCode={JSON.stringify(app, null, 2)}
-                onChange={setCode}
-              />
-            </Box>
-            {appBox}
-          </Flex>
-        );
-      }
       return (
         <>
           <Resizable
             defaultSize={{
-              width: 280,
+              width: 300,
               height: '100%',
             }}
             enable={{ right: true }}
             style={{ zIndex: 2 }}
             maxWidth={480}
-            minWidth={200}
+            minWidth={300}
           >
             <Box
               borderRightWidth="1px"
@@ -333,9 +305,8 @@ export const Editor: React.FC<Props> = observer(
             scale={scale}
             setScale={setScale}
             onPreview={onPreview}
-            codeMode={codeMode}
             onRefresh={onRefresh}
-            onCodeMode={onCodeMode}
+            onCodeMode={() => setCodeMode(true)}
           />
           <Box display="flex" flex="1" overflow="auto">
             {renderMain()}
@@ -347,6 +318,13 @@ export const Editor: React.FC<Props> = observer(
             app={app}
             modules={modules}
             libs={libs}
+          />
+        )}
+        {codeMode && (
+          <CodeModeModal
+            onClose={() => setCodeMode(false)}
+            app={app}
+            services={services}
           />
         )}
       </KeyboardEventWrapper>

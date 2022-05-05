@@ -34,7 +34,9 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   };
 
   const onClick = () => {
-    setSelectedComponentId(hoverComponentIdRef.current);
+    if (hoverComponentIdRef.current) {
+      setSelectedComponentId(hoverComponentIdRef.current);
+    }
   };
 
   const throttleSetMousePosition = useMemo(() => {

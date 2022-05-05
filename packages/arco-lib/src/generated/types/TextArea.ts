@@ -19,7 +19,6 @@ export const TextAreaPropsSpec = {
     title: 'Disabled',
     category: Category.Basic,
   }),
-
   size: StringUnion(['default', 'mini', 'small', 'large'], {
     title: 'Size',
     category: Category.Style,

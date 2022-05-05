@@ -36,40 +36,5 @@ export const FormControlPropsSpec = {
   colon: Type.Boolean({
     title: 'Colon',
     category: Category.Style,
-  }),
-  labelCol: Type.Object(
-    {
-      span: Type.Number(),
-      offset: Type.Number(),
-    },
-    {
-      title: 'Label Col',
-      category: Category.Layout,
-    }
-  ),
-  wrapperCol: Type.Object(
-    {
-      span: Type.Number(),
-      offset: Type.Number(),
-    },
-    {
-      title: 'Wrapper Col',
-      category: Category.Layout,
-    }
-  ),
-};
-
-export const FormPropsSpec = {
-  inline: Type.Boolean({
-    title: 'Inline',
-    category: Category.Layout,
-  }),
-  size: StringUnion(['mini', 'small', 'default', 'large'], {
-    title: 'Size',
-    category: Category.Layout,
-  }),
-  bordered: Type.Boolean({
-    title: 'Bordered',
-    category: Category.Layout,
-  }),
+  })
 };

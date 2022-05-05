@@ -1,5 +1,5 @@
 import { Avatar as BaseAvatar } from '@arco-design/web-react';
-import { ComponentImpl, implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
@@ -9,25 +9,6 @@ const AvatarPropsSpec = Type.Object({
   ...BaseAvatarPropsSpec,
 });
 const AvatarStateSpec = Type.Object({});
-
-const AvatarImpl: ComponentImpl<Static<typeof AvatarPropsSpec>> = props => {
-  const { slotsElements, elementRef, callbackMap, customStyle } = props;
-  const { type, src, text, ...cProps } = getComponentProps(props);
-
-  return (
-    <BaseAvatar
-      ref={elementRef}
-      className={css(customStyle?.content)}
-      {...cProps}
-      triggerIcon={slotsElements.triggerIcon}
-      onClick={_e => {
-        callbackMap?.onClick?.();
-      }}
-    >
-      {type === 'img' ? <img src={src} /> : text}
-    </BaseAvatar>
-  );
-};
 
 const exampleProperties: Static<typeof AvatarPropsSpec> = {
   shape: 'circle',
@@ -57,4 +38,21 @@ const options = {
   },
 };
 
-export const Avatar = implementRuntimeComponent(options)(AvatarImpl);
+export const Avatar = implementRuntimeComponent(options)(props => {
+  const { slotsElements, elementRef, callbackMap, customStyle } = props;
+  const { type, src, text, ...cProps } = getComponentProps(props);
+
+  return (
+    <BaseAvatar
+      ref={elementRef}
+      className={css(customStyle?.content)}
+      {...cProps}
+      triggerIcon={slotsElements.triggerIcon}
+      onClick={_e => {
+        callbackMap?.onClick?.();
+      }}
+    >
+      {type === 'img' ? <img src={src} /> : text}
+    </BaseAvatar>
+  );
+});

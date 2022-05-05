@@ -23,6 +23,14 @@ export const DropdownPropsSpec = {
     title: 'Default Visible',
     category: Category.Basic,
   }),
+  autoAlignPopupWidth:Type.Boolean({
+    title:'Auto Align Popup Width',
+    category: Category.Basic,
+  }),
+  unmountOnExit:Type.Boolean({
+    title:'Destroy On Hide',
+    category: Category.Behavior
+  }),
   list: Type.Array(
     Type.Object({
       key: Type.String({
@@ -35,6 +43,7 @@ export const DropdownPropsSpec = {
     {
       title: 'List',
       category: Category.Basic,
+      widget:'core/v1/expression',
       weight: 10,
     }
   ),
