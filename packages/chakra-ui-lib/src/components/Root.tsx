@@ -20,7 +20,11 @@ export default implementRuntimeComponent({
     properties: Type.Object({}),
     state: Type.Object({}),
     methods: {},
-    slots: ['root'],
+    slots: {
+      root: {
+        slotProps: Type.Object({}),
+      },
+    },
     styleSlots: [],
     events: [],
   },
@@ -32,7 +36,7 @@ export default implementRuntimeComponent({
         useSystemColorMode: false,
       })}
     >
-      <div ref={elementRef}>{slotsElements.root}</div>
+      <div ref={elementRef}>{slotsElements.root ? <slotsElements.root /> : null}</div>
     </ChakraProvider>
   );
 });

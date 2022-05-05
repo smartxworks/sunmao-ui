@@ -24,7 +24,14 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
       () => {
-        return c.traits.map(t => executeTrait(t, stateManager.deepEval(t.properties)));
+        return c.traits.map(t =>
+          executeTrait(
+            t,
+            stateManager.deepEval(t.properties, {
+              scopeObject: { $slot: props.slotProps },
+            })
+          )
+        );
       }
     );
 
@@ -49,6 +56,9 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
               newResults[i] = traitResult;
               return newResults;
             });
+          },
+          {
+            scopeObject: { $slot: props.slotProps },
           }
         );
         stops.push(stop);
@@ -58,7 +68,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       // because mergeState will be called during the first render of component, and state will change
       setTraitResults(c.traits.map((trait, i) => executeTrait(trait, properties[i])));
       return () => stops.forEach(s => s());
-    }, [c.id, c.traits, executeTrait, stateManager]);
+    }, [c.id, c.traits, executeTrait, stateManager, props.slotProps]);
 
     // reduce traitResults
     const propsFromTraits: TraitResult<string, string>['props'] = useMemo(() => {
@@ -81,7 +91,10 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
       return merge(
-        stateManager.deepEval(c.properties, { fallbackWhenError: () => undefined }),
+        stateManager.deepEval(c.properties, {
+          fallbackWhenError: () => undefined,
+          scopeObject: { $slot: props.slotProps },
+        }),
         propsFromTraits
       );
     });
@@ -92,13 +105,13 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
         ({ result: newResult }: any) => {
           setEvaledComponentProperties({ ...newResult });
         },
-        { fallbackWhenError: () => undefined }
+        { fallbackWhenError: () => undefined, scopeObject: { $slot: props.slotProps } }
       );
       // must keep this line, reason is the same as above
       setEvaledComponentProperties({ ...result });
 
       return stop;
-    }, [c.properties, stateManager]);
+    }, [c.properties, stateManager, props.slotProps]);
 
     useEffect(() => {
       const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
