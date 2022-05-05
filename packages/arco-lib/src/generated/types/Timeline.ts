@@ -16,15 +16,21 @@ export const TimelinePropsSpec = {
     category: Category.Data,
   }),
   reverse: Type.Boolean({
-    category: Category.Style,
+    category: Category.Behavior,
   }),
   direction: StringUnion(['horizontal', 'vertical'], {
-    category: Category.Style,
+    category: Category.Layout,
   }),
   mode: StringUnion(['left', 'right', 'alternate'], {
-    category: Category.Style,
+    category: Category.Layout,
   }),
   labelPosition: StringUnion(['relative', 'same'], {
-    category: Category.Style,
+    category: Category.Layout,
+    conditions: [
+      {
+        key: 'mode',
+        value: 'alternate'
+      }
+    ]
   }),
 };

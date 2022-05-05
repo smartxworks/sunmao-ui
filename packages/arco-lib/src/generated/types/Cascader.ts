@@ -5,14 +5,11 @@ import { CORE_VERSION, EXPRESSION_WIDGET_NAME } from '@sunmao-ui/editor-sdk';
 
 const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${EXPRESSION_WIDGET_NAME}`;
 
-export const CascaderValueSpec = Type.Array(
-  Type.Union([Type.String(), Type.Array(Type.String())]),
-  {
-    title: 'Default Value',
-    category: Category.Data,
-    widget: EXPRESSION_WIDGET_TYPE,
-  }
-);
+export const CascaderValueSpec = Type.Union([Type.Array(Type.String()), Type.Array(Type.Array(Type.String()))], {
+  title: 'Default Value',
+  category: Category.Data,
+  widget: EXPRESSION_WIDGET_TYPE,
+});
 
 export const CascaderPropsSpec = {
   options: Type.Array(Type.Array(Type.String()), {

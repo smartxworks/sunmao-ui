@@ -15,7 +15,8 @@ type Props = {
   selectedComponentId: string;
   onSelectComponent: (id: string) => void;
   services: EditorServices;
-  isAncestorDragging: boolean
+  isAncestorDragging: boolean;
+  depth: number;
 };
 
 export const ComponentTree: React.FC<Props> = props => {
@@ -28,6 +29,7 @@ export const ComponentTree: React.FC<Props> = props => {
     onSelectComponent,
     services,
     isAncestorDragging,
+    depth,
   } = props;
   const { registry, eventBus } = services;
   const slots = registry.getComponentByType(component.type).spec.slots;
@@ -55,6 +57,7 @@ export const ComponentTree: React.FC<Props> = props => {
               onSelectComponent={onSelectComponent}
               services={services}
               isAncestorDragging={isAncestorDragging || isDragging}
+              depth={depth + 1}
             />
           );
         });
@@ -94,7 +97,18 @@ export const ComponentTree: React.FC<Props> = props => {
         </Box>
       );
     });
-  }, [slots, childrenMap, component.id, selectedComponentId, onSelectComponent, services, isAncestorDragging, isDragging, isExpanded]);
+  }, [
+    slots,
+    childrenMap,
+    component.id,
+    selectedComponentId,
+    onSelectComponent,
+    services,
+    isAncestorDragging,
+    isDragging,
+    depth,
+    isExpanded,
+  ]);
 
   const onClickRemove = () => {
     eventBus.send(
@@ -136,6 +150,7 @@ export const ComponentTree: React.FC<Props> = props => {
           onToggleExpanded={() => setIsExpanded(prev => !prev)}
           onDragStart={() => setIsDragging(true)}
           onDragEnd={() => setIsDragging(false)}
+          depth={depth}
         />
       </DropComponentWrapper>
       {isExpanded ? slotsEle : undefined}

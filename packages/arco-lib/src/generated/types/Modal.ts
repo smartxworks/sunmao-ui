@@ -7,6 +7,10 @@ export const ModalPropsSpec = {
     category: Category.Basic,
     weight: 10,
   }),
+  defaultOpen:Type.Boolean({
+    title:'Default Open',
+    category: Category.Behavior,
+  }),
   mask: Type.Boolean({
     title: 'Mask',
     category: Category.Style,
@@ -37,5 +41,9 @@ export const ModalPropsSpec = {
   confirmLoading: Type.Boolean({
     title: 'Confirm Loading',
     category: Category.Basic,
+  }),
+  unmountOnExit:Type.Boolean({
+    title:'Destroy On Hide',
+    category: Category.Behavior
   }),
 };
