@@ -17,7 +17,7 @@ import { Api } from './Api';
 import { Data } from './Data';
 import { EditorServices } from '../../types';
 import { ToolMenuTabs } from '../../constants/enum';
-import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../../constants/dataSource';
+import { DataSourceType, DATA_DATASOURCES } from '../../constants/dataSource';
 
 interface Props {
   active: string;
@@ -29,29 +29,11 @@ const DATASOURCE_TYPES = Object.values(DataSourceType);
 export const DataSource: React.FC<Props> = props => {
   const { active, services } = props;
   const { editorStore } = services;
-  const NORMAL_DATASOURCES = [
-    {
-      title: DataSourceType.STATE,
-      traitType: DATASOURCE_TRAIT_TYPE_MAP[DataSourceType.STATE],
-      filterPlaceholder: 'filter the states',
-      emptyPlaceholder: 'No States.',
-      datas: editorStore.dataSources[DataSourceType.STATE],
-    },
-    {
-      title: DataSourceType.LOCALSTORAGE,
-      traitType: DATASOURCE_TRAIT_TYPE_MAP[DataSourceType.LOCALSTORAGE],
-      filterPlaceholder: 'filter the localStorages',
-      emptyPlaceholder: 'No LocalStorages.',
-      datas: editorStore.dataSources[DataSourceType.LOCALSTORAGE],
-    },
-    {
-      title: DataSourceType.TRANSFORMER,
-      traitType: DATASOURCE_TRAIT_TYPE_MAP[DataSourceType.TRANSFORMER],
-      filterPlaceholder: 'filter the transformers',
-      emptyPlaceholder: 'No Transformers.',
-      datas: editorStore.dataSources[DataSourceType.TRANSFORMER],
-    },
-  ];
+  const NORMAL_DATASOURCES = DATA_DATASOURCES.map((item)=> ({
+    ...item,
+    title: item.type,
+    datas: editorStore.dataSources[item.type],
+  }));
   const onMenuItemClick = (type: DataSourceType) => {
     editorStore.createDataSource(
       type,
@@ -60,11 +42,11 @@ export const DataSource: React.FC<Props> = props => {
     editorStore.setSelectedComponentId('');
   };
   const onApiItemClick = (api: ComponentSchema) => {
-    editorStore.setActiveDataSource(api);
+    editorStore.setActiveDataSourceId(api.id);
     editorStore.setSelectedComponentId('');
   };
   const onDataSourceItemClick = (dataSource: ComponentSchema) => {
-    editorStore.setActiveDataSource(dataSource);
+    editorStore.setActiveDataSourceId(dataSource.id);
     editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
     editorStore.setSelectedComponentId('');
   };
