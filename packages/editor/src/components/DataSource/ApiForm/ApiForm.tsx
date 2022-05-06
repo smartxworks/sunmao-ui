@@ -48,7 +48,7 @@ const EMPTY_ARRAY: string[] = [];
 export const ApiForm: React.FC<Props> = props => {
   const { api, services, store, className } = props;
   const { editorStore } = services;
-  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({...store});
+  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({ ...store });
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(api.id);
   const [tabIndex, setTabIndex] = useState(0);
@@ -132,13 +132,13 @@ export const ApiForm: React.FC<Props> = props => {
     formik.setValues({
       ...(trait?.properties as Static<typeof FetchTraitPropertiesSpec>),
     });
-    setTabIndex(0);
-  // do not add formik into dependencies, otherwise it will cause infinite loop
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // do not add formik into dependencies, otherwise it will cause infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trait?.properties]);
   useEffect(() => {
     if (api.id) {
       setName(api.id);
+      setTabIndex(0);
     }
   }, [api.id]);
   useEffect(() => {
@@ -252,9 +252,7 @@ export const ApiForm: React.FC<Props> = props => {
             <TabPanel>
               <HeadersForm
                 api={api}
-                spec={
-                  FetchTraitPropertiesSpec.properties.headers as WidgetProps['spec']
-                }
+                spec={FetchTraitPropertiesSpec.properties.headers as WidgetProps['spec']}
                 services={services}
                 formik={formik}
               />
@@ -265,9 +263,7 @@ export const ApiForm: React.FC<Props> = props => {
             <TabPanel>
               <Body
                 api={api}
-                spec={
-                  FetchTraitPropertiesSpec.properties.body as WidgetProps['spec']
-                }
+                spec={FetchTraitPropertiesSpec.properties.body as WidgetProps['spec']}
                 services={services}
                 formik={formik}
               />
