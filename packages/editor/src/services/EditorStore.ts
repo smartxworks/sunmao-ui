@@ -43,7 +43,7 @@ export class EditorStore {
   schemaValidator: SchemaValidator;
 
   // data source
-  activeDataSource: ComponentSchema | null = null;
+  activeDataSourceId: string | null = null;
 
   constructor(
     private eventBus: EventBusType,
@@ -90,7 +90,7 @@ export class EditorStore {
       () => {
         if (this.selectedComponentId) {
           this.setToolMenuTab(ToolMenuTabs.INSPECT);
-          this.setActiveDataSource(null);
+          this.setActiveDataSourceId(null);
         }
       }
     );
@@ -169,6 +169,10 @@ export class EditorStore {
     return dataSources;
   }
 
+  get activeDataSource(): ComponentSchema | null {
+    return this.components.find((component)=> component.id === this.activeDataSourceId) || null;
+  }
+
   get activeDataSourceType(): DataSourceType | null {
     for (const trait of this.activeDataSource?.traits || []) {
       const [dataSourceType] =
@@ -238,8 +242,8 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
-  setActiveDataSource = (dataSource: ComponentSchema | null) => {
-    this.activeDataSource = dataSource;
+  setActiveDataSourceId = (dataSourceId: string | null) => {
+    this.activeDataSourceId = dataSourceId;
   };
 
   createDataSource = (
@@ -277,7 +281,7 @@ export class EditorStore {
 
     const component = this.components.find(({ id: componentId }) => id === componentId);
 
-    this.setActiveDataSource(component!);
+    this.setActiveDataSourceId(component!.id);
 
     if (type === DataSourceType.STATE || type === DataSourceType.LOCALSTORAGE) {
       this.setToolMenuTab(ToolMenuTabs.INSPECT);
@@ -292,7 +296,7 @@ export class EditorStore {
       })
     );
     if (this.activeDataSource?.id === dataSource.id) {
-      this.setActiveDataSource(null);
+      this.setActiveDataSourceId(null);
     }
   };
 
@@ -307,7 +311,7 @@ export class EditorStore {
 
     const component = this.components.find(({ id: componentId }) => componentId === name);
 
-    this.setActiveDataSource(component!);
+    this.setActiveDataSourceId(component!.id);
   };
 
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
