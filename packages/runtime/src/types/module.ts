@@ -14,7 +14,7 @@ export const ModuleSpec = Type.Object({
   properties: Type.Record(Type.String(), Type.Any(), {
     title: 'Module Properties',
     category: 'Basic',
-    widget: 'core/v1/KeyValue',
+    widget: 'core/v1/record',
   }),
   handlers: Type.Array(EventHandlerSpec, {
     title: 'Module Handlers',

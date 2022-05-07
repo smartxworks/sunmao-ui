@@ -14,7 +14,7 @@ const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {
     title: 'Data',
     category: BASIC,
-    widget: 'core/v1/Expression'
+    widget: 'core/v1/expression'
   }),
   template: ModuleSpec,
 });
