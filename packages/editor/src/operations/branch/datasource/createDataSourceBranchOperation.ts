@@ -4,7 +4,12 @@ import { CreateComponentBranchOperation } from '../index';
 import { CreateTraitLeafOperation } from '../../leaf';
 import { DataSourceType } from '../../../components/DataSource/DataSource';
 import { TSchema } from '@sinclair/typebox';
-import { parseTypeBox } from '@sunmao-ui/runtime';
+import {
+  parseTypeBox,
+  CORE_VERSION,
+  CoreComponentName,
+  CoreTraitName,
+} from '@sunmao-ui/shared';
 
 export type CreateDataSourceBranchOperationContext = {
   id: string;
@@ -17,13 +22,13 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
     let traitType;
     switch (type) {
       case DataSourceType.API:
-        traitType = 'core/v1/fetch';
+        traitType = `${CORE_VERSION}/${CoreTraitName.Fetch}`;
         break;
       case DataSourceType.STATE:
-        traitType = 'core/v1/state';
+        traitType = `${CORE_VERSION}/${CoreTraitName.State}`;
         break;
       case DataSourceType.LOCALSTORAGE:
-        traitType = 'core/v1/localStorage';
+        traitType = `${CORE_VERSION}/${CoreTraitName.LocalStorage}`;
         break;
     }
     const traitSpec = this.registry.getTraitByType(traitType).spec;
@@ -31,7 +36,7 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
 
     this.operationStack.insert(
       new CreateComponentBranchOperation(this.registry, {
-        componentType: 'core/v1/dummy',
+        componentType: `${CORE_VERSION}/${CoreComponentName.Dummy}`,
         componentId: id,
       })
     );
@@ -42,9 +47,9 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
         properties:
           type === DataSourceType.API
             ? {
-              ...initProperties,
-              method: 'get',
-            }
+                ...initProperties,
+                method: 'get',
+              }
             : initProperties,
       })
     );

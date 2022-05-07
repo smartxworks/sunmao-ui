@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { DataSourceItem } from './DataSourceItem';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 const COLOR_MAP = {
   GET: 'green',
@@ -36,7 +37,7 @@ export const Api: React.FC<Props> = props => {
   const ApiItems = () => (
     <>
       {list.map(api => {
-        const trait = api.traits.find(({ type }) => type === 'core/v1/fetch');
+        const trait = api.traits.find(({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`);
         const properties = trait!.properties;
         const method = (
           properties.method as string

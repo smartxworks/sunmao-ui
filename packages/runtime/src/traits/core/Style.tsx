@@ -1,8 +1,28 @@
-import { createTrait } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { TraitImplFactory } from '../../types';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
-const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+export const StyleTraitPropertiesSpec = Type.Object({
+  styles: Type.Array(
+    Type.Object({
+      styleSlot: Type.String(),
+      style: Type.String(),
+    })
+  ),
+});
+
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.Style,
+    description: 'add style to component',
+  },
+  spec: {
+    properties: StyleTraitPropertiesSpec,
+    methods: [],
+    state: {},
+  },
+})(() => {
   return ({ styles }) => {
     const customStyle: Record<string, string> = {};
     styles.forEach(style => {
@@ -14,29 +34,4 @@ const StyleTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
       },
     };
   };
-};
-
-const PropsSpec = Type.Object({
-  styles: Type.Array(
-    Type.Object({
-      styleSlot: Type.String(),
-      style: Type.String(),
-    })
-  ),
 });
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'style',
-      description: 'add style to component',
-    },
-    spec: {
-      properties: PropsSpec,
-      methods: [],
-      state: {},
-    },
-  }),
-  factory: StyleTraitFactory,
-};

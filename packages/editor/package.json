@@ -41,6 +41,7 @@
     "@sunmao-ui/core": "^0.5.5",
     "@sunmao-ui/editor-sdk": "^0.1.9",
     "@sunmao-ui/runtime": "^0.5.7",
+    "@sunmao-ui/shared": "^0.0.0",
     "acorn": "^8.7.0",
     "acorn-loose": "^8.3.0",
     "acorn-walk": "^8.2.0",

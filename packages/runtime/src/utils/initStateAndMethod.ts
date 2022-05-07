@@ -1,21 +1,25 @@
 import { RuntimeComponentSchema } from '@sunmao-ui/core';
 import { Static, TSchema } from '@sinclair/typebox';
-import { Registry } from '../services/Registry';
-import { StateManager } from '../services/StateManager';
-import { ModuleSpec } from '../types';
-import { parseTypeBox } from './parseTypeBox';
+import { RegistryInterface } from '../services/Registry';
+import { StateManagerInterface } from '../services/StateManager';
+import {
+  ModuleSpec,
+  parseTypeBox,
+  CORE_VERSION,
+  CoreComponentName,
+} from '@sunmao-ui/shared';
 
 export function initStateAndMethod(
-  registry: Registry,
-  stateManager: StateManager,
+  registry: RegistryInterface,
+  stateManager: StateManagerInterface,
   components: RuntimeComponentSchema[]
 ) {
   components.forEach(c => initSingleComponentState(registry, stateManager, c));
 }
 
 export function initSingleComponentState(
-  registry: Registry,
-  stateManager: StateManager,
+  registry: RegistryInterface,
+  stateManager: StateManagerInterface,
   c: RuntimeComponentSchema
 ) {
   if (stateManager.store[c.id]) {
@@ -31,7 +35,7 @@ export function initSingleComponentState(
 
   stateManager.store[c.id] = state;
 
-  if (c.type === 'core/v1/moduleContainer') {
+  if (c.type === `${CORE_VERSION}/${CoreComponentName.ModuleContainer}`) {
     const moduleSchema = c.properties as Static<typeof ModuleSpec>;
     try {
       const mSpec = registry.getModuleByType(moduleSchema.type).spec;

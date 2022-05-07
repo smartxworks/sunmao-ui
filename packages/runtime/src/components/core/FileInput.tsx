@@ -2,6 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import React, { useEffect, useRef } from 'react';
+import { CORE_VERSION }  from '@sunmao-ui/shared';
 
 const PropsSpec = Type.Object({
   multiple: Type.Boolean({
@@ -33,7 +34,7 @@ const StateSpec = Type.Object({
 });
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
     name: 'fileInput',
     displayName: 'File Input',
