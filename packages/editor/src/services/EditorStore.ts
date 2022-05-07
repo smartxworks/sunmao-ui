@@ -92,7 +92,7 @@ export class EditorStore {
           this.eventBus.send('componentsRefresh', this.originComponents);
 
           this.setComponents(this.originComponents);
-          this.setSelectedComponentId(this.originComponents[0].id || '');
+          this.setSelectedComponentId(this.originComponents[0]?.id || '');
 
           if (
             this.APICount === -1 ||
