@@ -7,3 +7,5 @@ export interface UtilMethod<T extends JSONSchema7> {
   method: (parameters: Static<T>, services: UIServices) => void;
   parameters: T;
 }
+
+export type UtilMethodFactory = () => UtilMethod<any>[];

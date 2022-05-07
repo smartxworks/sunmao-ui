@@ -5,6 +5,7 @@ module.exports = {
     '<rootDir>/packages/runtime',
     '<rootDir>/packages/editor',
     '<rootDir>/packages/editor-sdk',
+    '<rootDir>/packages/shared',
   ],
   collectCoverage: true,
   collectCoverageFrom: ['**/src/**/*.[jt]s?(x)'],

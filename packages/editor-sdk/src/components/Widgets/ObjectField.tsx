@@ -5,6 +5,7 @@ import { WidgetProps } from '../../types/widget';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { shouldRender } from '../../utils/condition';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 const ObjectFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
@@ -55,9 +56,9 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
 };
 
 export default implementWidget({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'object',
+    name: CoreWidgetName.ObjectField,
   },
   spec: {
     options: ObjectFieldWidgetOptions,

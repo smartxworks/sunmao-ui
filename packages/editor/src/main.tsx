@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
 import { widgets as chakraWidgets } from '@sunmao-ui/chakra-ui-lib/dist/esm/widgets/index';
 import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
@@ -8,9 +8,9 @@ import { initSunmaoUIEditor } from './init';
 import { LocalStorageManager } from './LocalStorageManager';
 
 type Options = Partial<{
-  components: Parameters<Registry['registerComponent']>[0][];
-  traits: Parameters<Registry['registerTrait']>[0][];
-  modules: Parameters<Registry['registerModule']>[0][];
+  components: Parameters<RegistryInterface['registerComponent']>[0][];
+  traits: Parameters<RegistryInterface['registerTrait']>[0][];
+  modules: Parameters<RegistryInterface['registerModule']>[0][];
   container: Element;
 }>;
 

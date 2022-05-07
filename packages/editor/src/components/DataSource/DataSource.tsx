@@ -17,6 +17,7 @@ import { Api } from './Api';
 import { State } from './State';
 import { EditorServices } from '../../types';
 import { ToolMenuTabs } from '../../constants/enum';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 export enum DataSourceType {
   API = 'API',
@@ -112,13 +113,13 @@ export const DataSource: React.FC<Props> = props => {
           states={states}
           active={active}
           services={services}
-          traitType="core/v1/state"
+          traitType={`${CORE_VERSION}/${CoreTraitName.State}`}
           onItemClick={onStateItemClick}
           onItemRemove={onStateItemRemove}
         />
         <State
           title="LocalStorage"
-          traitType="core/v1/localStorage"
+          traitType={`${CORE_VERSION}/${CoreTraitName.LocalStorage}`}
           filterPlaceholder="filter the localStorages"
           emptyPlaceholder="No LocalStorages."
           states={localStorages}

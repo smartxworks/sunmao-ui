@@ -3,7 +3,7 @@ import React from 'react';
 import { css } from '@emotion/css';
 import { useResizeDetector } from 'react-resize-detector';
 import { DROP_EXAMPLE_SIZE_PREFIX, GRID_HEIGHT } from '../../constants';
-import { decodeDragDataTransfer } from '../../utils/encodeDragDataTransfer';
+import { decodeDragDataTransfer } from '@sunmao-ui/shared';
 
 const GridLayout: React.FC<RGL.ReactGridLayoutProps> = props => {
   const { children } = props;

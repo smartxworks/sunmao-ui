@@ -6,6 +6,7 @@ import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { Type } from '@sinclair/typebox';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 interface Values {
   key: string;
@@ -20,7 +21,7 @@ export const StateForm: React.FC<Props> = props => {
   const { state, services } = props;
   const [name, setName] = useState(state.id);
   const { registry, eventBus, editorStore } = services;
-  const traitIndex = state.traits.findIndex(({ type }) => type === 'core/v1/state');
+  const traitIndex = state.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${CoreTraitName.State}`);
   const trait = state.traits[traitIndex];
   const formik = useFormik<Values>({
     initialValues: {

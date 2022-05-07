@@ -2,20 +2,7 @@ import React from 'react';
 import { JSONSchema7 } from 'json-schema';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from './editor';
-import { Condition } from './condition';
-
-export type SpecOptions<WidgetOptions = Record<string, any>> = {
-  defaultValue?: any;
-  // widget
-  widget?: string;
-  widgetOptions?: WidgetOptions;
-  // category
-  category?: string;
-  weight?: number;
-  name?: string;
-  // conditional render
-  conditions?: Condition[];
-};
+import { SpecOptions } from '@sunmao-ui/shared';
 
 export type WidgetProps<WidgetOptions = Record<string, any>> = {
   component: ComponentSchema;
