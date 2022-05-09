@@ -21,7 +21,7 @@ import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
-import { EditorServices, UIPros } from '../types';
+import { EditorServices } from '../types';
 import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
 import { DataForm } from './DataSource/DataForm';
@@ -39,7 +39,6 @@ type Props = {
   services: EditorServices;
   libs: SunmaoLib[];
   onRefresh: () => void;
-  uiProps: UIPros;
 };
 
 const ApiFormStyle = css`
@@ -52,7 +51,7 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, services, libs, uiProps, onRefresh: onRefreshApp }) => {
+  ({ App, registry, stateStore, services, libs, onRefresh: onRefreshApp }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
@@ -201,7 +200,7 @@ export const Editor: React.FC<Props> = observer(
                 display="flex"
                 flexDirection="column"
                 textAlign="left"
-                lazyBehavior={uiProps.explorerMenuLazyBehavior}
+                lazyBehavior='keepMounted'
                 isLazy
                 index={explorerMenuTab}
                 onChange={activatedTab => {

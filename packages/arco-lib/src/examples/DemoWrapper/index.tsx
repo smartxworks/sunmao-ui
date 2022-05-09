@@ -33,12 +33,8 @@ const codeStyle = css`
 
 export const DemoWrapper: React.FC<Props> = props => {
   const { application } = props;
-  const ui = initSunmaoUI();
+  const { App } = initSunmaoUI({ libs: [ArcoDesignLib] });
   const [isShowCode, setIsShowCode] = useState(false);
-
-  const App = ui.App;
-  const registry = ui.registry;
-  registry.installLib(ArcoDesignLib);
 
   const sunmaoApp = <App options={application} debugEvent={false} debugStore={false} />;
 
