@@ -1,0 +1,53 @@
+{
+  "name": "@sunmao-ui/shared",
+  "version": "0.0.0",
+  "description": "The Sunmao shared lib",
+  "author": "sunmao-ui developers",
+  "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "typings": "tsc --emitDeclarationOnly",
+    "prepublish": "npm run build && npm run typings",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.21.2",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/json-schema": "^7.0.7",
+    "jest": "^27.1.0",
+    "tsup": "^5.11.0"
+  },
+  "keywords": [],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,html}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "peerDependencies": {
+    "@sinclair/typebox": "^0.21.2",
+    "lodash-es": "^4.17.21"
+  },
+  "gitHead": "c2510d776760530c15386cd45f757d7569ef0bd4"
+}

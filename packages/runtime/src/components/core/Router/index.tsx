@@ -1,6 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import { implementRuntimeComponent } from '../../../utils/buildKit';
 import { Switch } from './component';
+import { CORE_VERSION } from '@sunmao-ui/shared';
 
 export enum RouteType {
   REDIRECT = 'REDIRECT',
@@ -38,7 +39,7 @@ const PropsSpec = Type.Object({
 });
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
     name: 'router',
     displayName: 'Router',

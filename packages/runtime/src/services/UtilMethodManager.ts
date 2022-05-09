@@ -1,4 +1,4 @@
-import { GLOBAL_MODULE_ID, GLOBAL_UTILS_ID } from '../constants';
+import { GLOBAL_MODULE_ID, GLOBAL_UTIL_METHOD_ID } from '../constants';
 import { ApiService } from './apiService';
 import { UtilMethod, UIServices } from '../types';
 
@@ -9,7 +9,7 @@ export class UtilMethodManager {
 
   listenUtilMethod<T>(utilMethod: UtilMethod<T>, services: UIServices) {
     this.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-      if (componentId === GLOBAL_UTILS_ID && name === utilMethod.name) {
+      if (componentId === GLOBAL_UTIL_METHOD_ID && name === utilMethod.name) {
         utilMethod.method(parameters, services);
       }
     });
@@ -25,7 +25,7 @@ export class UtilMethodManager {
             eventType: name,
           });
           break;
-        case GLOBAL_UTILS_ID:
+        case GLOBAL_UTIL_METHOD_ID:
           // handle as window function
           if (name in window) {
             const method = window[name as keyof Window];

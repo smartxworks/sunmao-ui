@@ -1,13 +1,39 @@
-import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { isEqual } from 'lodash-es';
-import { TraitImplFactory } from '../../types';
-import { ValidResultSpec } from '../../types/validResultSpec';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
-type ValidationResult = Static<typeof ValidResultSpec>;
+type ValidationResult = Static<typeof ResultSpec>;
 type ValidationRule = (text: string) => ValidationResult;
 
-const ValidationTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+const ResultSpec = Type.Object({
+  isInvalid: Type.Boolean(),
+  errorMsg: Type.String(),
+});
+
+export const ValidationTraitStateSpec = Type.Object({
+  validResult: ResultSpec,
+});
+
+export const ValidationTraitPropertiesSpec = Type.Object({
+  value: Type.String(),
+  rule: Type.Optional(Type.String()),
+  maxLength: Type.Optional(Type.Integer()),
+  minLength: Type.Optional(Type.Integer()),
+});
+
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.Validation,
+    description: 'validation trait',
+  },
+  spec: {
+    properties: ValidationTraitPropertiesSpec,
+    state: ValidationTraitStateSpec,
+    methods: [],
+  },
+})(() => {
   const rules = new Map<string, ValidationRule>();
 
   function addValidationRule(name: string, rule: ValidationRule) {
@@ -83,29 +109,4 @@ const ValidationTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () =>
       props: null,
     };
   };
-};
-
-const PropsSpec = Type.Object({
-  value: Type.String(),
-  rule: Type.Optional(Type.String()),
-  maxLength: Type.Optional(Type.Integer()),
-  minLength: Type.Optional(Type.Integer()),
 });
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'validation',
-      description: 'validation trait',
-    },
-    spec: {
-      properties: PropsSpec,
-      state: Type.Object({
-        validResult: ValidResultSpec,
-      }),
-      methods: [],
-    },
-  }),
-  factory: ValidationTraitFactory,
-};
