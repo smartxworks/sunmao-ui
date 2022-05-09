@@ -64,6 +64,9 @@ export default implementRuntimeTrait({
       {
         name: 'triggerFetch',
       },
+      {
+        name: 'clear',
+      },
     ],
   },
 })(() => {
@@ -216,6 +219,17 @@ export default implementRuntimeTrait({
     subscribeMethods({
       triggerFetch() {
         fetchData();
+      },
+      clear() {
+        mergeState({
+          fetch: {
+            code: undefined,
+            codeText: '',
+            loading: false,
+            data: undefined,
+            error: undefined,
+          },
+        });
       },
     });
 
