@@ -22,7 +22,3 @@ export type StorageHandler = {
   onSaveApp?: (app: Application) => void;
   onSaveModules?: (module: Module[]) => void;
 };
-
-export type UIPros = {
-  explorerMenuLazyBehavior?: 'keepMounted' | 'unmount'
-}

@@ -1,5 +1,5 @@
 import { Editor as _Editor } from './components/Editor';
-import { initSunmaoUI, SunmaoLib, SunmaoUIRuntimeProps } from '@sunmao-ui/runtime';
+import { initSunmaoUI, SunmaoUIRuntimeProps } from '@sunmao-ui/runtime';
 import { AppModelManager } from './operations/AppModelManager';
 import React, { useState, useCallback } from 'react';
 import {
@@ -15,19 +15,17 @@ import {
 } from '@chakra-ui/react';
 import { initEventBus } from './services/eventBus';
 import { EditorStore } from './services/EditorStore';
-import { StorageHandler, UIPros } from './types';
+import { StorageHandler } from './types';
 import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
 import './styles.css';
 
 type SunmaoUIEditorProps = {
-  libs?: SunmaoLib[];
   widgets?: ImplementedWidget<any>[];
   runtimeProps?: SunmaoUIRuntimeProps;
   storageHandler?: StorageHandler;
   defaultApplication?: Application;
   defaultModules?: Module[];
-  uiProps?: UIPros;
 };
 
 export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
@@ -67,10 +65,6 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
 
   const App = ui.App;
   const registry = ui.registry;
-
-  props.libs?.forEach(lib => {
-    registry.installLib(lib);
-  });
 
   const stateManager = ui.stateManager;
   const eventBus = initEventBus();
@@ -113,9 +107,8 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
           registry={registry}
           stateStore={store}
           services={services}
-          libs={props.libs || []}
+          libs={props.runtimeProps?.libs || []}
           onRefresh={onRefresh}
-          uiProps={props.uiProps || {}}
         />
       </ChakraProvider>
     );
