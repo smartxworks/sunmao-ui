@@ -17,6 +17,7 @@ export enum CoreTraitName {
   State = 'state',
   Slot = 'slot',
   Validation = 'validation',
+  Transformer = 'transformer',
 }
 // core widgets
 export enum CoreWidgetName {

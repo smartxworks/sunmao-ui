@@ -15,8 +15,12 @@ function getLocalStorageValue(key: string) {
 }
 
 export const LocalStorageTraitPropertiesSpec = Type.Object({
-  key: Type.String(),
-  initialValue: Type.Any(),
+  key: Type.String({
+    title: 'Key',
+  }),
+  initialValue: Type.Any({
+    title: 'Initial Value',
+  }),
 });
 
 export default implementRuntimeTrait({
