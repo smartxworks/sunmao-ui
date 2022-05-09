@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Box,
   Text,
@@ -11,9 +11,10 @@ import {
 import { DataSourceItem } from './DataSourceItem';
 import { EditorServices } from '../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
+import { watch } from '@sunmao-ui/runtime';
 
 interface Props {
-  states: ComponentSchema[];
+  datas: ComponentSchema[];
   active: string;
   title: string;
   traitType: string;
@@ -32,10 +33,9 @@ const STATE_MAP: Record<string, string> = {
   object: 'Object',
 };
 
-export const State: React.FC<Props> = props => {
-  const [search, setSearch] = useState('');
+export const Data: React.FC<Props> = props => {
   const {
-    states,
+    datas = [],
     active,
     onItemClick,
     onItemRemove,
@@ -46,10 +46,20 @@ export const State: React.FC<Props> = props => {
   } = props;
   const { stateManager } = services;
   const { store } = stateManager;
+  const [search, setSearch] = useState('');
+  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({...store});
   const list = useMemo(
-    () => states.filter(({ id }) => id.includes(search)),
-    [search, states]
+    () => datas.filter(({ id }) => id.includes(search)),
+    [search, datas]
   );
+
+  useEffect(() => {
+    const stop = watch(store, newValue => {
+      setReactiveStore({ ...newValue });
+    });
+
+    return stop;
+  }, [store]);
   
   const StateItems = () => (
     <>
@@ -59,9 +69,9 @@ export const State: React.FC<Props> = props => {
             key={state.id}
             dataSource={state}
             tag={
-              Array.isArray(store[state.id]?.value)
+              Array.isArray(reactiveStore[state.id]?.value)
                 ? 'Array'
-                : STATE_MAP[typeof store[state.id]?.value] ?? 'Any'
+                : STATE_MAP[typeof reactiveStore[state.id]?.value] ?? 'Any'
             }
             name={state.id}
             active={active === state.id}
