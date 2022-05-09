@@ -1,11 +1,11 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { ModuleSpec } from '../../types';
+import { ModuleSpec, CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'moduleContainer',
+    name: CoreComponentName.ModuleContainer,
     displayName: 'ModuleContainer',
     description: 'ModuleContainer component',
     isDraggable: true,

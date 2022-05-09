@@ -1,10 +1,41 @@
-import { createTrait } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { TraitImplFactory } from '../../types';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type KeyValue = { key: string; value: unknown };
 
-const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+export const StateTraitPropertiesSpec = Type.Object({
+  key: Type.String({
+    title: 'Key',
+  }),
+  initialValue: Type.Any({
+    title: 'Initial Value',
+  }),
+});
+
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.State,
+    description: 'add state to component',
+  },
+  spec: {
+    properties: StateTraitPropertiesSpec,
+    state: Type.Any(),
+    methods: [
+      {
+        name: 'setValue',
+        parameters: Type.Object({
+          key: Type.String(),
+          value: Type.Any(),
+        }),
+      },
+      {
+        name: 'reset',
+      },
+    ],
+  },
+})(() => {
   const HasInitializedMap = new Map<string, boolean>();
 
   return ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
@@ -39,40 +70,4 @@ const StateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
       },
     };
   };
-};
-
-const PropsSpec = Type.Object({
-  key: Type.String({
-    title: 'Key',
-  }),
-  initialValue: Type.Any({
-    title: 'Initial Value',
-  }),
 });
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'state',
-      description: 'add state to component',
-    },
-    spec: {
-      properties: PropsSpec,
-      state: Type.Any(),
-      methods: [
-        {
-          name: 'setValue',
-          parameters: Type.Object({
-            key: Type.String(),
-            value: Type.Any(),
-          }),
-        },
-        {
-          name: 'reset',
-        },
-      ],
-    },
-  }),
-  factory: StateTraitFactory,
-};

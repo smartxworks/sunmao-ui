@@ -1,11 +1,14 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
+
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
 
 export const CascaderValueSpec = Type.Union([Type.Array(Type.String()), Type.Array(Type.Array(Type.String()))], {
   title: 'Default Value',
   category: Category.Data,
-  widget: 'core/v1/expression',
+  widget: EXPRESSION_WIDGET_TYPE,
 });
 
 export const CascaderPropsSpec = {
@@ -14,7 +17,7 @@ export const CascaderPropsSpec = {
     weight: 10,
     description: `An array of arrays`,
     category: Category.Data,
-    widget: 'core/v1/expression',
+    widget: EXPRESSION_WIDGET_TYPE,
   }),
   expandTrigger: StringUnion(['click', 'hover'], {
     title: 'Expand Trigger',

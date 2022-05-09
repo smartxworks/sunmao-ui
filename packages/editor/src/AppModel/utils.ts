@@ -1,8 +1,8 @@
 import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 
 export function genComponent(
-  registry: Registry,
+  registry: RegistryInterface,
   type: string,
   id: string,
   properties?: Record<string, unknown>,

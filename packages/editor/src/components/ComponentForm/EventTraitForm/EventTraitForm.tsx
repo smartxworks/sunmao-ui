@@ -8,6 +8,7 @@ import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 import { EventHandlerForm } from './EventHandlerForm';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type EventHandler = Static<typeof EventHandlerSpec>;
 
@@ -20,6 +21,8 @@ type HandlerProps = Props & {
   handlers: EventHandler[];
 };
 
+const EVENT_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Event}`;
+
 const Handler = (props: HandlerProps) => {
   const { handlers, index: i, component, services } = props;
   const { eventBus, registry } = services;
@@ -28,7 +31,7 @@ const Handler = (props: HandlerProps) => {
 
   const onChange = useCallback(
     (handler: EventHandler) => {
-      const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+      const index = component.traits.findIndex(t => t.type === EVENT_TRAIT_TYPE);
       const newHandlers = produce(handlers!, draft => {
         draft[i] = handler;
       });
@@ -47,7 +50,7 @@ const Handler = (props: HandlerProps) => {
   );
 
   const onRemove = useCallback(() => {
-    const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+    const index = component.traits.findIndex(t => t.type === EVENT_TRAIT_TYPE);
     const newHandlers = produce(handlers!, draft => {
       draft.splice(i, 1);
     });
@@ -65,7 +68,7 @@ const Handler = (props: HandlerProps) => {
 
   const onSort = useCallback(
     (isUp: boolean) => {
-      const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+      const index = component.traits.findIndex(t => t.type === EVENT_TRAIT_TYPE);
       const newHandlers = [...handlers];
       const switchedIndex = isUp ? i - 1 : i + 1;
 
@@ -112,7 +115,7 @@ export const EventTraitForm: React.FC<Props> = props => {
   const { eventBus, registry } = services;
 
   const handlers: EventHandler[] = useMemo(() => {
-    return component.traits.find(t => t.type === 'core/v1/event')?.properties
+    return component.traits.find(t => t.type === EVENT_TRAIT_TYPE)?.properties
       .handlers as Array<Static<typeof EventHandlerSpec>>;
   }, [component]);
 
@@ -140,13 +143,13 @@ export const EventTraitForm: React.FC<Props> = props => {
         'operation',
         genOperation(registry, 'createTrait', {
           componentId: component.id,
-          traitType: 'core/v1/event',
+          traitType: EVENT_TRAIT_TYPE,
           properties: { handlers: [newHandler] },
         })
       );
     } else {
       // assume that we only have one event trait
-      const index = component.traits.findIndex(t => t.type === 'core/v1/event');
+      const index = component.traits.findIndex(t => t.type === EVENT_TRAIT_TYPE);
       eventBus.send(
         'operation',
         genOperation(registry, 'modifyTraitProperty', {

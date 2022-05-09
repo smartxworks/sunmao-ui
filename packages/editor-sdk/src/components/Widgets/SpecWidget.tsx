@@ -30,6 +30,7 @@ import { NullField } from './NullField';
 import { MultiSpecField } from './MultiSpecField';
 import { CategoryWidget } from './CategoryWidget';
 import { UnsupportedField } from './UnsupportedField';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 type ExpressionButtonProps = {
   isExpression?: boolean;
@@ -236,9 +237,9 @@ export const SpecWidget: React.FC<Props> = props => {
 };
 
 export default implementWidget<SchemaFieldWidgetOptionsType>({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'spec',
+    name: CoreWidgetName.Spec,
   },
   spec: {
     options: SchemaFieldWidgetOptions,

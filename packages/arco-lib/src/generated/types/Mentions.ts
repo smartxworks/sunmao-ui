@@ -1,13 +1,16 @@
 import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
+
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
 
 export const MentionsPropsSpec = {
   options: Type.Array(Type.String(), {
     title: 'Options',
     weight: 3,
     category: Category.Data,
-    widget: 'core/v1/expression',
+    widget: EXPRESSION_WIDGET_TYPE,
   }),
   defaultValue: Type.String({
     title: 'Default Value',

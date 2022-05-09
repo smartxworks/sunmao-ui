@@ -1,6 +1,7 @@
 import { createTrait } from '@sunmao-ui/core';
 import { Static, Type } from '@sinclair/typebox';
 import { TraitImplFactory } from '../../types';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 const TransformTraitFactory: TraitImplFactory<
   Static<typeof TransformerTraitPropertiesSpec>
@@ -25,9 +26,9 @@ const TransformerTraitStateSpec = Type.Object({
 
 export default {
   ...createTrait({
-    version: 'core/v1',
+    version: CORE_VERSION,
     metadata: {
-      name: 'transformer',
+      name: CoreTraitName.Transformer,
       description: 'transform the value',
     },
     spec: {

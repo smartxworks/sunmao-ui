@@ -15,6 +15,7 @@ import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type Props = {
   component: ComponentSchema;
@@ -26,6 +27,8 @@ type Styles = Array<{
   style: string;
 }>;
 
+const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Style}`;
+
 export const StyleTraitForm: React.FC<Props> = props => {
   const { component, services } = props;
   const { eventBus, registry } = services;
@@ -35,7 +38,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
   }, [component, registry]);
 
   const styleTraitIndex = useMemo(() => {
-    return component.traits.findIndex(t => t.type === 'core/v1/style');
+    return component.traits.findIndex(t => t.type === STYLE_TRAIT_TYPE);
   }, [component]);
 
   const styleTrait = component.traits[styleTraitIndex];
@@ -46,7 +49,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
       'operation',
       genOperation(registry, 'createTrait', {
         componentId: component.id,
-        traitType: 'core/v1/style',
+        traitType: STYLE_TRAIT_TYPE,
         properties: {
           styles: [
             {

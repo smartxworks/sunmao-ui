@@ -1,6 +1,6 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
-import { Registry, StateManager } from '@sunmao-ui/runtime';
+import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
@@ -12,6 +12,11 @@ import {
 } from '../constants/dataSource';
 import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
+
+import {
+  CORE_VERSION,
+  CoreComponentName,
+} from '@sunmao-ui/shared';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -47,8 +52,8 @@ export class EditorStore {
 
   constructor(
     private eventBus: EventBusType,
-    private registry: Registry,
-    private stateManager: StateManager,
+    private registry: RegistryInterface,
+    private stateManager: StateManagerInterface,
     public appStorage: AppStorage
   ) {
     this.schemaValidator = new SchemaValidator(this.registry);
@@ -151,7 +156,7 @@ export class EditorStore {
     const dataSources: Record<string, ComponentSchema[]> = {};
 
     this.components.forEach(component => {
-      if (component.type === 'core/v1/dummy') {
+      if (component.type === `${CORE_VERSION}/${CoreComponentName.Dummy}`) {
         component.traits.forEach(trait => {
           Object.entries(DATASOURCE_TRAIT_TYPE_MAP).forEach(
             ([dataSourceType, traitType]) => {

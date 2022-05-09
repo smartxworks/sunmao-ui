@@ -1,4 +1,6 @@
 import {
+  TLiteral,
+  Type,
   ArrayKind,
   BooleanKind,
   IntegerKind,
@@ -11,6 +13,28 @@ import {
   UnionKind,
   AnyKind,
 } from '@sinclair/typebox';
+import { JSONSchema7Definition, JSONSchema7 } from 'json-schema';
+
+export type IntoStringUnion<T> = {
+  [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
+};
+
+export function StringUnion<T extends string[]>(values: [...T], options?: any) {
+  return Type.KeyOf(
+    Type.Object(
+      values.reduce((prev, cur) => {
+        prev[cur] = Type.Boolean();
+        return prev;
+      }, {} as Record<T[number], any>)
+    ),
+    {
+      title: options?.title,
+      description: options?.description,
+      category: options?.category,
+      weight: options?.weight,
+    }
+  );
+}
 
 export function parseTypeBox(spec: TSchema, noOptional = false): Static<typeof spec> {
   if (spec.modifier === OptionalModifier && !noOptional) {
@@ -46,4 +70,8 @@ export function parseTypeBox(spec: TSchema, noOptional = false): Static<typeof s
     default:
       return {};
   }
+}
+
+export function isJSONSchema(spec?: JSONSchema7Definition): spec is JSONSchema7 {
+  return spec !== undefined && typeof spec !== 'boolean';
 }

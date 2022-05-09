@@ -1,10 +1,11 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
+import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 
 export default implementRuntimeComponent({
-  version: 'core/v1',
+  version: CORE_VERSION,
   metadata: {
-    name: 'dummy',
+    name: CoreComponentName.Dummy,
     displayName: 'Dummy',
     description: 'Dummy Invisible component',
     isDraggable: false,

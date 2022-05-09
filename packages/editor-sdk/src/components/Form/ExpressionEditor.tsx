@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { css, Global } from '@emotion/react';
-import { parseExpression } from '@sunmao-ui/runtime';
+import { parseExpression } from '@sunmao-ui/shared';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/mode/multiplex';
 import 'codemirror/addon/mode/overlay';

@@ -7,13 +7,13 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import { useMemo } from 'react';
 import { ignoreTraitsList } from '../../../constants';
 import { ComponentSchema } from '@sunmao-ui/core';
 
 type Props = {
-  registry: Registry;
+  registry: RegistryInterface;
   onAddTrait: (traitType: string) => void;
   component: ComponentSchema;
 };
