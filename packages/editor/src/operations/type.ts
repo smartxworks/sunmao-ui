@@ -1,4 +1,4 @@
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import { AppModel } from "../AppModel/AppModel";
 
 export const leafSymbol = Symbol('leaf');
@@ -26,6 +26,7 @@ export class OperationList<TOperation extends IOperation = IOperation> {
   constructor() {
     this._cursor = this.head;
   }
+
   /**
    * insert a new node after cursor, unlink node after cursor and move cursor to the new node
    * @param value inserted operation
@@ -40,6 +41,7 @@ export class OperationList<TOperation extends IOperation = IOperation> {
     this._cursor = this._cursor.next = new ListNode(value, this._cursor);
     return this.cursor;
   }
+
   /**
    * move cursor to its next sibling
    * @returns {TOperation} current cursor's value
@@ -81,6 +83,7 @@ export class OperationList<TOperation extends IOperation = IOperation> {
     }
     return initialData;
   }
+
   /**
    * reverse iterate and reduce each node by reduce function
    * @param cb reduce function
@@ -141,13 +144,14 @@ export interface IOperation<TContext = any> extends IUndoRedo {
  */
 export abstract class BaseLeafOperation<TContext> implements IOperation<TContext> {
   context: TContext;
-  registry: Registry;
+  registry: RegistryInterface;
   type = leafSymbol;
 
-  constructor(registry: Registry, context: TContext) {
+  constructor(registry: RegistryInterface, context: TContext) {
     this.registry = registry;
     this.context = context;
   }
+
   /**
    * do a leaf operation, implement it in subclass
    * @param prev prev application schema
@@ -162,6 +166,7 @@ export abstract class BaseLeafOperation<TContext> implements IOperation<TContext
   redo(prev: AppModel): AppModel {
     return this.do(prev);
   }
+
   /**
    * undo a leaf operation, implement it in subclass
    * @param prev prev application schema
@@ -181,10 +186,10 @@ export abstract class BaseBranchOperation<TContext>
 {
   operationStack: OperationList;
   context: TContext;
-  registry: Registry;
+  registry: RegistryInterface;
   type = branchSymbol;
 
-  constructor(registry: Registry, context: TContext) {
+  constructor(registry: RegistryInterface, context: TContext) {
     this.context = context;
     this.registry = registry;
     this.operationStack = new OperationList();

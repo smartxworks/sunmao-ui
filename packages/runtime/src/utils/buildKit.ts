@@ -1,6 +1,17 @@
 import { Static } from '@sinclair/typebox';
-import { createComponent, CreateComponentOptions } from '@sunmao-ui/core';
-import { ComponentImpl, ImplementedRuntimeComponent } from '../types';
+import {
+  createComponent,
+  CreateComponentOptions,
+  createTrait,
+  CreateTraitOptions,
+  TraitSpec,
+} from '@sunmao-ui/core';
+import {
+  ComponentImpl,
+  ImplementedRuntimeComponent,
+  TraitImplFactory,
+  ImplementedRuntimeTraitFactory,
+} from '../types';
 
 type ToMap<U> = {
   [K in keyof U]: Static<U[K]>;
@@ -29,5 +40,18 @@ export function implementRuntimeComponent<
   return impl => ({
     ...createComponent(options),
     impl,
+  });
+}
+
+export function implementRuntimeTrait<T extends CreateTraitOptions>(
+  options: T
+): (
+  factory: TraitImplFactory<
+    Static<T['spec'] extends TraitSpec ? T['spec']['properties'] : undefined>
+  >
+) => ImplementedRuntimeTraitFactory {
+  return factory => ({
+    ...createTrait(options),
+    factory,
   });
 }

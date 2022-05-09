@@ -1,8 +1,27 @@
-import { createTrait } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { TraitImplFactory } from '../../types';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
-const HiddenTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+export const HiddenTraitPropertiesSpec = Type.Object({
+  hidden: Type.Boolean(),
+  visually: Type.Optional(Type.Boolean()),
+});
+
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.Hidden,
+    description: 'render component with condition',
+    annotations: {
+      beforeRender: true,
+    },
+  },
+  spec: {
+    properties: HiddenTraitPropertiesSpec,
+    state: {},
+    methods: [],
+  },
+})(() => {
   return ({ hidden, visually }) => {
     if (visually) {
       return {
@@ -19,28 +38,4 @@ const HiddenTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
       unmount: hidden,
     };
   };
-};
-
-const PropsSpec = Type.Object({
-  hidden: Type.Boolean(),
-  visually: Type.Optional(Type.Boolean()),
 });
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'hidden',
-      description: 'render component with condition',
-      annotations: {
-        beforeRender: true,
-      },
-    },
-    spec: {
-      properties: PropsSpec,
-      state: {},
-      methods: [],
-    },
-  }),
-  factory: HiddenTraitFactory,
-};

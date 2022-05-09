@@ -1,3 +1,6 @@
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+
+
 export enum DataSourceType {
   API = 'API',
   STATE = 'State',
@@ -13,10 +16,10 @@ export const DATASOURCE_NAME_MAP = {
 };
 
 export const DATASOURCE_TRAIT_TYPE_MAP = {
-  [DataSourceType.API]: 'core/v1/fetch',
-  [DataSourceType.STATE]: 'core/v1/state',
-  [DataSourceType.LOCALSTORAGE]: 'core/v1/localStorage',
-  [DataSourceType.TRANSFORMER]: 'core/v1/transformer',
+  [DataSourceType.API]: `${CORE_VERSION}/${CoreTraitName.Fetch}`,
+  [DataSourceType.STATE]: `${CORE_VERSION}/${CoreTraitName.State}`,
+  [DataSourceType.LOCALSTORAGE]: `${CORE_VERSION}/${CoreTraitName.LocalStorage}`,
+  [DataSourceType.TRANSFORMER]: `${CORE_VERSION}/${CoreTraitName.Transformer}`,
 };
 
 export const DATA_DATASOURCES = [

@@ -4,9 +4,10 @@ import {
   TraitValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-import { EventHandlerSpec, GLOBAL_UTILS_ID } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 class EventHandlerValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
@@ -19,7 +20,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
     ajv,
   }: TraitValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
-    if (trait.type !== 'core/v1/event') {
+    if (trait.type !== `${CORE_VERSION}/${CoreTraitName.Event}`) {
       return results;
     }
     const handlers = trait.rawProperties.handlers as Static<typeof EventHandlerSpec>[];
@@ -40,7 +41,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
       }
 
       // TODO: util methods has no method schema to check the parameters, so now temporally skip validation
-      if (isExpression(targetId) || targetId === GLOBAL_UTILS_ID) {
+      if (isExpression(targetId) || targetId === GLOBAL_UTIL_METHOD_ID) {
         return;
       }
 

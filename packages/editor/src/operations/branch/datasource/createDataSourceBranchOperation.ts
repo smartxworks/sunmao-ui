@@ -4,7 +4,11 @@ import { CreateComponentBranchOperation } from '../index';
 import { CreateTraitLeafOperation } from '../../leaf';
 import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../../../constants/dataSource';
 import { TSchema } from '@sinclair/typebox';
-import { parseTypeBox } from '@sunmao-ui/runtime';
+import {
+  parseTypeBox,
+  CORE_VERSION,
+  CoreComponentName,
+} from '@sunmao-ui/shared';
 
 export type CreateDataSourceBranchOperationContext = {
   id: string;
@@ -21,7 +25,7 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
 
     this.operationStack.insert(
       new CreateComponentBranchOperation(this.registry, {
-        componentType: 'core/v1/dummy',
+        componentType: `${CORE_VERSION}/${CoreComponentName.Dummy}`,
         componentId: id,
       })
     );

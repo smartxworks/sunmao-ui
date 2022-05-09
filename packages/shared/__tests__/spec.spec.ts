@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { parseTypeBox } from '../src/utils/parseTypeBox';
+import { parseTypeBox } from '../src/utils/spec';
 
 describe('parseTypeBox function', () => {
   it('can parse array', () => {

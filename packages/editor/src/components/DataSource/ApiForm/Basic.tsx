@@ -12,9 +12,8 @@ import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandlerForm';
 import {
   FetchTraitPropertiesSpec,
-  EventCallBackHandlerSpec,
-  BaseEventSpec,
 } from '@sunmao-ui/runtime';
+import { EventCallBackHandlerSpec } from '@sunmao-ui/shared';
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
@@ -34,8 +33,6 @@ type HandlerProps = Props & {
   handler: EventHandler;
   type: HandlerType;
 };
-
-const eventSpec = Type.Object(BaseEventSpec);
 
 const Handler = (props: HandlerProps) => {
   const { index: i, handler, type, api, formik, services } = props;
@@ -84,7 +81,7 @@ const Handler = (props: HandlerProps) => {
       size={(formik.values[type] ?? []).length}
       component={api}
       handler={handler}
-      spec={eventSpec}
+      spec={EventCallBackHandlerSpec}
       onChange={onChange}
       onRemove={onRemove}
       onUp={onUp}
