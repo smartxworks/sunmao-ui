@@ -1,5 +1,6 @@
 import React from 'react';
 import { ImplWrapperProps } from '../../../../types';
+import { CORE_VERSION, CoreTraitName, CoreComponentName } from '@sunmao-ui/shared';
 
 export function useGridLayout(
   props: ImplWrapperProps,
@@ -10,7 +11,7 @@ export function useGridLayout(
 
   let parentComponent;
 
-  const slotTrait = c.traits.find(t => t.type === 'core/v1/slot');
+  const slotTrait = c.traits.find(t => t.type === `${CORE_VERSION}/${CoreTraitName.Slot}`);
 
   if (slotTrait && app) {
     parentComponent = app.spec.components.find(
@@ -18,7 +19,7 @@ export function useGridLayout(
     );
   }
 
-  if (parentComponent?.parsedType.name === 'grid_layout') {
+  if (parentComponent?.parsedType.name === CoreComponentName.GridLayout) {
     /* eslint-disable */
     const { component, services, app, gridCallbacks, ...restProps } = props;
     /* eslint-enable */

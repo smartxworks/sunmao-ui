@@ -1,5 +1,5 @@
 import { ComponentSchema } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import { EventBusType } from '../services/eventBus';
 import { AppModel } from '../AppModel/AppModel';
 import { IUndoRedoManager, IOperation, OperationList } from './type';
@@ -10,7 +10,7 @@ export class AppModelManager implements IUndoRedoManager {
 
   constructor(
     private eventBus: EventBusType,
-    private registry: Registry,
+    private registry: RegistryInterface,
     initComponents: ComponentSchema[]
   ) {
     this.appModel = new AppModel(initComponents, this.registry);

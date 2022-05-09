@@ -1,29 +1,27 @@
-import { createTrait } from '@sunmao-ui/core';
 import { Type } from '@sinclair/typebox';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
-export const ContainerPropertySpec = Type.Object({
+const ContainerSpec = Type.Object({
   id: Type.String(),
   slot: Type.String(),
 });
 
-const PropsSpec = Type.Object({
-  container: ContainerPropertySpec,
+export const SlotTraitPropertiesSpec = Type.Object({
+  container: ContainerSpec,
 });
 
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'slot',
-      description: 'nested components by slots',
-    },
-    spec: {
-      properties: PropsSpec,
-      state: {},
-      methods: [],
-    },
-  }),
-  factory: () => () => ({
-    props: null,
-  }),
-};
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.Slot,
+    description: 'nested components by slots',
+  },
+  spec: {
+    properties: SlotTraitPropertiesSpec,
+    state: {},
+    methods: [],
+  },
+})(() => () => ({
+  props: null,
+}));

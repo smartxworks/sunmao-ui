@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { ModuleSpec, BaseEventSpec } from '@sunmao-ui/runtime';
+import { ModuleSpec, EventCallBackHandlerSpec } from '@sunmao-ui/runtime';
 import { BASIC, APPEARANCE, BEHAVIOR } from '../constants/category';
 
 export const MajorKeyPropertySpec = Type.String({
@@ -57,7 +57,7 @@ export const ColumnSpec = Type.Object(
         text: Type.String({
           title: 'Button Text',
         }),
-        handlers: Type.Array(Type.Object(BaseEventSpec, { widget: 'core/v1/event' }), {
+        handlers: Type.Array(EventCallBackHandlerSpec, {
           title: 'Button Handlers',
         }),
       },
