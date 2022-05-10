@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentTree } from './ComponentTree';
@@ -20,9 +20,12 @@ type Props = {
 
 export const StructureTree: React.FC<Props> = props => {
   const { components, selectedComponentId, onSelectComponent, services } = props;
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const realComponents = useMemo(() => {
-    return components.filter(c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`);
+    return components.filter(
+      c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`
+    );
   }, [components]);
 
   const componentEles = useMemo(() => {
@@ -45,9 +48,15 @@ export const StructureTree: React.FC<Props> = props => {
     ));
   }, [realComponents, selectedComponentId, onSelectComponent, services]);
 
+  useEffect(() => {
+    wrapperRef.current
+      ?.querySelector(`#tree-item-${selectedComponentId}`)
+      ?.scrollIntoView();
+  }, [selectedComponentId]);
+
   return (
-    <VStack spacing="2" padding="5" alignItems="start">
-      <Text fontSize="lg" fontWeight="bold">
+    <VStack ref={wrapperRef} spacing="2" padding="4" alignItems="start" overflow="auto">
+      <Text fontSize="lg" fontWeight="bold" mb="0.5rem">
         Components
       </Text>
       {componentEles.length > 0 ? componentEles : <Placeholder services={services} />}
