@@ -16,7 +16,6 @@ type Options = Partial<{
 
 const lsManager = new LocalStorageManager();
 const { Editor, registry } = initSunmaoUIEditor({
-  libs: [sunmaoChakraUILib, ArcoDesignLib],
   widgets: [...chakraWidgets],
   storageHandler: {
     onSaveApp(app) {
@@ -28,8 +27,8 @@ const { Editor, registry } = initSunmaoUIEditor({
   },
   defaultApplication: lsManager.getAppFromLS(),
   defaultModules: lsManager.getModulesFromLS(),
-  uiProps: {
-    explorerMenuLazyBehavior: 'keepMounted',
+  runtimeProps: {
+    libs: [sunmaoChakraUILib, ArcoDesignLib],
   },
 });
 

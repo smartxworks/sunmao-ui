@@ -18,8 +18,8 @@ export const App: React.FC<AppProps> = props => {
     options,
     services,
     gridCallbacks,
-    debugStore = true,
-    debugEvent = true,
+    debugStore = false,
+    debugEvent = false,
     hooks,
   } = props;
   const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());

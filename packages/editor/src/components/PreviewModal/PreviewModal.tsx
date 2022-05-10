@@ -13,9 +13,8 @@ type Props = {
 };
 
 export const PreviewModal: React.FC<Props> = ({ app, modules, libs, onClose }) => {
-  const { App, registry } = initSunmaoUI();
+  const { App, registry } = initSunmaoUI({libs});
   modules.forEach(m => registry.registerModule(createModule(m)));
-  libs.forEach(lib => registry.installLib(lib));
 
   return (
     <GeneralModal onClose={onClose} title="Preview Modal">

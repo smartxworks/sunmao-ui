@@ -18,7 +18,7 @@ type Example = {
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
   const { Editor, registry } = initSunmaoUIEditor({
-    libs: [sunmaoChakraUILib],
+    runtimeProps: { libs: [sunmaoChakraUILib] },
     defaultApplication: example?.value.app,
   });
   example?.value.modules?.forEach(m => registry.registerModule(m));
