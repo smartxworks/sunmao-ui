@@ -50,12 +50,15 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
 
   const didMount = () => {
     eventBus.send('HTMLElementsUpdated');
+    if (props.runtimeProps?.hooks?.didMount) props.runtimeProps.hooks.didMount();
   };
   const didUpdate = () => {
     eventBus.send('HTMLElementsUpdated');
+    if (props.runtimeProps?.hooks?.didUpdate) props.runtimeProps.hooks.didUpdate();
   };
   const didDomUpdate = () => {
     eventBus.send('HTMLElementsUpdated');
+    if (props.runtimeProps?.hooks?.didDomUpdate) props.runtimeProps.hooks.didDomUpdate();
   };
 
   const ui = initSunmaoUI({
