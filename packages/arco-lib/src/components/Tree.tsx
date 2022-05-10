@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 import { TreePropsSpec, TreeNodeSpec } from '../generated/types/Tree';
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
@@ -72,7 +72,7 @@ const exampleProperties: Static<typeof TreePropsSpec> = {
   ],
 };
 
-const options = {
+export const Tree = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -89,20 +89,31 @@ const options = {
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: [],
+    events: ['onSelect'],
   },
-};
+})(props => {
+  const {
+    elementRef,
+    data,
+    callbackMap,
+    multiple,
+    autoExpandParent,
+    customStyle,
+    mergeState,
+  } = props;
 
-export const Tree = implementRuntimeComponent(options)(props => {
-  const { elementRef, data, multiple, autoExpandParent, customStyle, mergeState } = props;
-  const [selectedNodes, setSelectedNodes] = useState<Static<typeof TreeNodeSpec>[]>([]);
+  const onSelect = useCallback(
+    (value, extra) => {
+      const selectNodes = extra.selectedNodes.map(formatNode);
 
-  useEffect(() => {
-    mergeState({
-      selectedNode: selectedNodes[0],
-      selectedNodes: selectedNodes,
-    });
-  }, [mergeState, selectedNodes]);
+      mergeState({
+        selectedNode: selectNodes[0],
+        selectedNodes: selectNodes,
+      });
+      callbackMap?.onSelect?.();
+    },
+    [mergeState, callbackMap]
+  );
 
   return (
     <div ref={elementRef} className={css(customStyle?.content)}>
@@ -110,9 +121,7 @@ export const Tree = implementRuntimeComponent(options)(props => {
         treeData={data}
         multiple={multiple}
         autoExpandParent={autoExpandParent}
-        onSelect={(value, extra) => {
-          setSelectedNodes(extra.selectedNodes.map(formatNode));
-        }}
+        onSelect={onSelect}
       />
     </div>
   );
