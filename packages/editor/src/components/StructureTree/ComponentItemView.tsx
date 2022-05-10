@@ -90,6 +90,7 @@ export const ComponentItemView: React.FC<Props> = props => {
 
   return (
     <Box
+      id={`tree-item-${id}`}
       width="full"
       padding="1"
       onMouseOver={() => setIsHover(true)}
