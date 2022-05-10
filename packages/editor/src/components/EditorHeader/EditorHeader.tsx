@@ -14,13 +14,13 @@ export const EditorHeader: React.FC<{
       <Flex flex="1" />
       <Flex flex="1" align="center" justify="center">
         <Button size="sm" disabled={scale <= 50} onClick={() => setScale(scale - 10)}>
-          <AddIcon />
+          <MinusIcon />
         </Button>
         <Box fontSize="sm" mx="2" width={10} textAlign="center">
           {scale}%
         </Box>
         <Button size="sm" disabled={scale >= 100} onClick={() => setScale(scale + 10)}>
-          <MinusIcon />
+          <AddIcon />
         </Button>
       </Flex>
       <Flex flex="1" justify="end">
