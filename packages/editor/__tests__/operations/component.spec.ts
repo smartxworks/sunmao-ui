@@ -1,6 +1,6 @@
 import { AppModel } from '../../src/AppModel/AppModel';
 import { ComponentId } from '../../src/AppModel/IAppModel';
-import { registry } from '../sevices';
+import { registry } from '../services';
 import { AppSchema } from './mock';
 import { genOperation } from '../../src/operations';
 

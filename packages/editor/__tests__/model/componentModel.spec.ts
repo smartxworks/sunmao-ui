@@ -8,7 +8,7 @@ import {
 import { AppSchema, EventHandlerMockSchema } from './mock';
 import { produce } from 'immer';
 import { get } from 'lodash-es';
-import { registry } from '../sevices';
+import { registry } from '../services';
 
 describe('ComponentModel test', () => {
   it('compute component property', () => {
