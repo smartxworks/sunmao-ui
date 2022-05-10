@@ -6,7 +6,7 @@ import { TableDemoPage } from './pages/table';
 import { LayoutDemoPage } from './pages/layout';
 import { TabDemoPage } from './pages/tab';
 import { DividerDemoPage } from './pages/divider';
-import { DropdownDemoPage } from './pages/Dropdown';
+import { DropdownDemoPage } from './pages/dropdown';
 
 const { Sider, Content, Header } = Layout;
 const ContentMap: Record<string, React.FC> = {

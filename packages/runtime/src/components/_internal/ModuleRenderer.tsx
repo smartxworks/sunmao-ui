@@ -10,12 +10,8 @@ import {
 } from '@sunmao-ui/core';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
-import {
-  ImplementedRuntimeModule,
-  EventHandlerSpec,
-  UIServices,
-  ModuleSpec,
-} from '../../types';
+import { ImplementedRuntimeModule, UIServices } from '../../types';
+import { EventHandlerSpec, ModuleSpec } from '@sunmao-ui/shared';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 import { initStateAndMethod } from '../../utils/initStateAndMethod';
 import { ExpressionError } from '../../services/StateManager';

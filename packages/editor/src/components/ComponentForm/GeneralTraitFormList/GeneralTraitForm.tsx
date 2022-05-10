@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
-import { parseTypeBox } from '@sunmao-ui/runtime';
+import { parseTypeBox } from '@sunmao-ui/shared';
 import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
 import { formWrapperCSS } from '../style';

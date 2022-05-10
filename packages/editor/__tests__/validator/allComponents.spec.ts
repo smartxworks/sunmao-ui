@@ -1,6 +1,6 @@
 import { OrphanComponentSchema } from './mock';
 import { SchemaValidator } from '../../src/validator';
-import { registry } from '../sevices';
+import { registry } from '../services';
 
 const schemaValidator = new SchemaValidator(registry);
 

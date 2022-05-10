@@ -1,5 +1,6 @@
 import { merge } from 'lodash-es';
-import { parseTypeBox, Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
+import { parseTypeBox, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { genComponent, genTrait } from './utils';
 import {
@@ -19,7 +20,7 @@ import {
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
 
-const SlotTraitType: TraitType = 'core/v1/slot' as TraitType;
+const SlotTraitType: TraitType = `${CORE_VERSION}/${CoreTraitName.Slot}` as TraitType;
 
 type ComponentSpecModel = RuntimeComponent<
   MethodName,
@@ -43,7 +44,7 @@ export class ComponentModel implements IComponentModel {
   constructor(
     public appModel: IAppModel,
     private schema: ComponentSchema,
-    private registry: Registry
+    private registry: RegistryInterface
   ) {
     this.schema = schema;
 

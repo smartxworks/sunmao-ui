@@ -1,6 +1,6 @@
 import { AppModel } from '../../src/AppModel/AppModel';
 import { ComponentId, ComponentType } from '../../src/AppModel/IAppModel';
-import { registry } from '../sevices';
+import { registry } from '../services';
 import { AppSchema, DuplicatedIdSchema } from './mock';
 
 describe('AppModel test', () => {

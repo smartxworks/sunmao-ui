@@ -13,18 +13,18 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer } from './CodeEditor';
-import { DataSource, DataSourceType } from './DataSource';
+import { DataSource } from './DataSource';
+import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
 import { ApiForm } from './DataSource/ApiForm';
-import { StateForm } from './DataSource/StateForm';
 import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
-import { EditorServices, UIPros } from '../types';
+import { EditorServices } from '../types';
 import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
-import { LocalStorageForm } from './DataSource/LocalStorageForm';
+import { DataForm } from './DataSource/DataForm';
 import { Explorer } from './Explorer';
 import { Resizable } from 're-resizable';
 import { CodeModeModal } from './CodeModeModal';
@@ -39,7 +39,6 @@ type Props = {
   services: EditorServices;
   libs: SunmaoLib[];
   onRefresh: () => void;
-  uiProps: UIPros;
 };
 
 const ApiFormStyle = css`
@@ -52,7 +51,7 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, services, libs, uiProps, onRefresh: onRefreshApp }) => {
+  ({ App, registry, stateStore, services, libs, onRefresh: onRefreshApp }) => {
     const { eventBus, editorStore } = services;
     const {
       components,
@@ -117,30 +116,24 @@ export const Editor: React.FC<Props> = observer(
         <ErrorBoundary>
           <App
             options={app}
-            debugEvent={false}
-            debugStore={false}
             gridCallbacks={gridCallbacks}
           />
         </ErrorBoundary>
       ) : null;
     }, [App, app, gridCallbacks, isDisplayApp]);
 
-    const dataSourceForm = useMemo(() => {
-      let component: React.ReactNode = <ComponentForm services={services} />;
-      if (!activeDataSource) {
-        return component;
+    const inspectForm = useMemo(() => {
+      if (activeDataSource && activeDataSourceType) {
+        return (
+          <DataForm
+            datasource={activeDataSource}
+            services={services}
+            traitType={DATASOURCE_TRAIT_TYPE_MAP[activeDataSourceType]}
+          />
+        );
+      } else {
+        return <ComponentForm services={services} />;
       }
-      switch (activeDataSourceType) {
-        case DataSourceType.STATE:
-          component = <StateForm state={activeDataSource} services={services} />;
-          break;
-        case DataSourceType.LOCALSTORAGE:
-          component = <LocalStorageForm state={activeDataSource} services={services} />;
-          break;
-        default:
-          break;
-      }
-      return component;
     }, [activeDataSource, services, activeDataSourceType]);
 
     const onRefresh = useCallback(() => {
@@ -205,7 +198,7 @@ export const Editor: React.FC<Props> = observer(
                 display="flex"
                 flexDirection="column"
                 textAlign="left"
-                lazyBehavior={uiProps.explorerMenuLazyBehavior}
+                lazyBehavior='keepMounted'
                 isLazy
                 index={explorerMenuTab}
                 onChange={activatedTab => {
@@ -276,7 +269,7 @@ export const Editor: React.FC<Props> = observer(
                     <Tab>Insert</Tab>
                   </TabList>
                   <TabPanels flex="1" overflow="auto" background="gray.50">
-                    <TabPanel p={0}>{dataSourceForm}</TabPanel>
+                    <TabPanel p={0}>{inspectForm}</TabPanel>
                     <TabPanel p={0}>
                       <ComponentList services={services} />
                     </TabPanel>

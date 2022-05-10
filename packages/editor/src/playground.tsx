@@ -1,6 +1,6 @@
 import { Flex, Box, ChakraProvider, Button } from '@chakra-ui/react';
 import { Application } from '@sunmao-ui/core';
-import { Registry } from '@sunmao-ui/runtime';
+import { RegistryInterface } from '@sunmao-ui/runtime';
 import React, { StrictMode, useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -11,14 +11,14 @@ type Example = {
   name: string;
   value: {
     app: Application;
-    modules?: Parameters<Registry['registerModule']>[0][];
+    modules?: Parameters<RegistryInterface['registerModule']>[0][];
   };
 };
 
 const Playground: React.FC<{ examples: Example[] }> = ({ examples }) => {
   const [example, setExample] = useState<Example | null>(examples[0]);
   const { Editor, registry } = initSunmaoUIEditor({
-    libs: [sunmaoChakraUILib],
+    runtimeProps: { libs: [sunmaoChakraUILib] },
     defaultApplication: example?.value.app,
   });
   example?.value.modules?.forEach(m => registry.registerModule(m));

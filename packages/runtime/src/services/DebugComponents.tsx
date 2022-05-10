@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StateManager } from './StateManager';
+import { StateManagerInterface } from './StateManager';
 import { ApiService } from './apiService';
 import { watch } from '../utils/watchReactivity';
 import copy from 'copy-to-clipboard';
 
-export const DebugStore: React.FC<{ stateManager: StateManager }> = ({
+export const DebugStore: React.FC<{ stateManager: StateManagerInterface }> = ({
   stateManager,
 }) => {
   const [store, setStore] = useState(stateManager.store);

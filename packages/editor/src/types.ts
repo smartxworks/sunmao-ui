@@ -1,5 +1,5 @@
 import { Application, Module } from '@sunmao-ui/core';
-import { initSunmaoUI, Registry, StateManager } from '@sunmao-ui/runtime';
+import { initSunmaoUI, RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 import { WidgetManager } from '@sunmao-ui/editor-sdk';
 import { EditorStore } from './services/EditorStore';
 import { EventBusType } from './services/eventBus';
@@ -9,9 +9,9 @@ type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
 export type EditorServices = {
   App: ReturnOfInit['App'];
-  registry: Registry;
+  registry: RegistryInterface;
   apiService: ReturnOfInit['apiService'];
-  stateManager: StateManager;
+  stateManager: StateManagerInterface;
   appModelManager: AppModelManager;
   widgetManager: WidgetManager;
   eventBus: EventBusType;
@@ -22,7 +22,3 @@ export type StorageHandler = {
   onSaveApp?: (app: Application) => void;
   onSaveModules?: (module: Module[]) => void;
 };
-
-export type UIPros = {
-  explorerMenuLazyBehavior?: 'keepMounted' | 'unmount'
-}

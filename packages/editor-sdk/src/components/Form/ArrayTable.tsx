@@ -2,13 +2,12 @@ import React from 'react';
 import { css } from '@emotion/css';
 import { IconButton, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseTypeBox } from '@sunmao-ui/runtime';
+import { parseTypeBox, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
 import { TSchema } from '@sinclair/typebox';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
 import { WidgetProps } from '../../types';
-import { isJSONSchema } from '../../utils/schema';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 
 const TableWrapperStyle = css`
@@ -45,7 +44,7 @@ export const ArrayTable: React.FC<Props> = props => {
             <Th width="24px" />
             {keys.map((key: string) => {
               const propertySpec = itemSpec.properties?.[key];
-              const title = isJSONSchema(propertySpec) ? (propertySpec.title || key) : key;
+              const title = isJSONSchema(propertySpec) ? propertySpec.title || key : key;
 
               return <Th key={key}>{title}</Th>;
             })}
@@ -86,11 +85,14 @@ export const ArrayTable: React.FC<Props> = props => {
                     onChange(newValue);
                   }}
                 >
-                  { typeof children === 'function' ? children(props, itemValue, itemIndex) : null }
+                  {typeof children === 'function'
+                    ? children(props, itemValue, itemIndex)
+                    : null}
                 </PopoverWidget>
               </Td>
               {keys.map((key: string) => {
-                const propertyValue = key === 'index' ? (itemValue[key] ?? itemIndex) : itemValue[key];
+                const propertyValue =
+                  key === 'index' ? itemValue[key] ?? itemIndex : itemValue[key];
 
                 return <Td key={key}>{propertyValue}</Td>;
               })}

@@ -1,10 +1,10 @@
 import { StateManager } from './services/StateManager';
 import { genApp } from './App';
-import { initRegistry } from './services/Registry';
+import { initRegistry, SunmaoLib } from './services/Registry';
 import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
 import { UtilMethodManager } from './services/UtilMethodManager';
-import { AppHooks, UtilMethod } from './types';
+import { AppHooks } from './types';
 import { enableES5, setAutoFreeze } from 'immer';
 import './style.css';
 
@@ -14,8 +14,8 @@ enableES5();
 setAutoFreeze(false);
 
 export type SunmaoUIRuntimeProps = {
+  libs?: SunmaoLib[];
   dependencies?: Record<string, any>;
-  utilMethods?: UtilMethod<any>[];
   hooks?: AppHooks;
 };
 
@@ -36,6 +36,10 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   );
   const hooks = props.hooks;
 
+  props.libs?.forEach(lib => {
+    registry.installLib(lib);
+  });
+
   return {
     App: genApp(
       {
@@ -55,16 +59,20 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   };
 }
 
-export * from './utils/parseTypeBox';
 export * from './utils/buildKit';
-export * from './utils/encodeDragDataTransfer';
 export * from './types';
-export * from './types/traitPropertiesSpec';
 export * from './constants';
-export * from './services/Registry';
-export * from './services/StateManager';
+export * from './traits/core';
+export type { RegistryInterface, SunmaoLib } from './services/Registry';
+export { ExpressionError } from './services/StateManager';
+export type { StateManagerInterface } from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { default as Text, TextPropertySpec } from './components/_internal/Text';
+export {
+  EventHandlerSpec,
+  EventCallBackHandlerSpec,
+  ModuleSpec,
+} from '@sunmao-ui/shared';
 
 // TODO: check this export
 export { watch } from './utils/watchReactivity';
