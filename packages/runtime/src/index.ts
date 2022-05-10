@@ -36,6 +36,10 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   );
   const hooks = props.hooks;
 
+  props.libs?.forEach(lib => {
+    registry.installLib(lib);
+  });
+
   return {
     App: genApp(
       {
