@@ -36,7 +36,7 @@ export const DemoWrapper: React.FC<Props> = props => {
   const { App } = initSunmaoUI({ libs: [ArcoDesignLib] });
   const [isShowCode, setIsShowCode] = useState(false);
 
-  const sunmaoApp = <App options={application} debugEvent={false} debugStore={false} />;
+  const sunmaoApp = <App options={application} />;
 
   const codeArea = (
     <pre className={codeStyle}>{JSON.stringify(application, null, 2)}</pre>
