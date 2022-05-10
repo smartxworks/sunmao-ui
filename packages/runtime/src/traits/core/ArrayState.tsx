@@ -1,10 +1,68 @@
-import { createTrait } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { TraitImplFactory } from '../../types';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeTrait } from '../../utils/buildKit';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type KeyValue = { key: string; value: unknown };
 
-const ArrayStateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () => {
+export const ArrayStateTraitPropertiesSpec = Type.Object({
+  key: Type.String(),
+  initialValue: Type.Optional(Type.Array(Type.Any())),
+});
+
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.ArrayState,
+    description: 'add array state to component',
+  },
+  spec: {
+    properties: ArrayStateTraitPropertiesSpec,
+    methods: [
+      {
+        name: 'setArray',
+        parameters: Type.Object({
+          key: Type.String(),
+          value: Type.Array(Type.Any()),
+        }),
+      },
+      {
+        name: 'deleteItemByIndex',
+        parameters: Type.Object({
+          key: Type.String(),
+          index: Type.Integer(),
+        }),
+      },
+      {
+        name: 'deleteItemById',
+        parameters: Type.Object({
+          key: Type.String(),
+          itemIdKey: Type.String(),
+          itemId: Type.String(),
+        }),
+      },
+      {
+        name: 'pushItem',
+        parameters: Type.Object({
+          key: Type.String(),
+          item: Type.Any(),
+        }),
+      },
+      {
+        name: 'modifyItemById',
+        parameters: Type.Object({
+          key: Type.String(),
+          itemIdKey: Type.String(),
+          itemId: Type.String(),
+          newItem: Type.Any(),
+        }),
+      },
+      {
+        name: 'reset',
+      },
+    ],
+    state: {},
+  },
+})(() => {
   const HasInitializedMap = new Map<string, boolean>();
 
   return ({ key, initialValue, componentId, mergeState, subscribeMethods, services }) => {
@@ -66,67 +124,4 @@ const ArrayStateTraitFactory: TraitImplFactory<Static<typeof PropsSpec>> = () =>
       props: null,
     };
   };
-};
-
-const PropsSpec = Type.Object({
-  key: Type.String(),
-  initialValue: Type.Optional(Type.Array(Type.Any())),
 });
-
-export default {
-  ...createTrait({
-    version: 'core/v1',
-    metadata: {
-      name: 'arrayState',
-      description: 'add array state to component',
-    },
-    spec: {
-      properties: PropsSpec,
-      methods: [
-        {
-          name: 'setArray',
-          parameters: Type.Object({
-            key: Type.String(),
-            value: Type.Array(Type.Any()),
-          }),
-        },
-        {
-          name: 'deleteItemByIndex',
-          parameters: Type.Object({
-            key: Type.String(),
-            index: Type.Integer(),
-          }),
-        },
-        {
-          name: 'deleteItemById',
-          parameters: Type.Object({
-            key: Type.String(),
-            itemIdKey: Type.String(),
-            itemId: Type.String(),
-          }),
-        },
-        {
-          name: 'pushItem',
-          parameters: Type.Object({
-            key: Type.String(),
-            item: Type.Any(),
-          }),
-        },
-        {
-          name: 'modifyItemById',
-          parameters: Type.Object({
-            key: Type.String(),
-            itemIdKey: Type.String(),
-            itemId: Type.String(),
-            newItem: Type.Any(),
-          }),
-        },
-        {
-          name: 'reset',
-        },
-      ],
-      state: {},
-    },
-  }),
-  factory: ArrayStateTraitFactory,
-};

@@ -1,6 +1,6 @@
 import { TSchema } from '@sinclair/typebox';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { parseTypeBox } from '@sunmao-ui/runtime';
+import { parseTypeBox } from '@sunmao-ui/shared';
 import { HStack, VStack } from '@chakra-ui/react';
 
 import { AddTraitButton } from './AddTraitButton';

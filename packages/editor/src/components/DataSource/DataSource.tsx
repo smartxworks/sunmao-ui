@@ -14,49 +14,39 @@ import {
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Api } from './Api';
-import { State } from './State';
+import { Data } from './Data';
 import { EditorServices } from '../../types';
 import { ToolMenuTabs } from '../../constants/enum';
-
-export enum DataSourceType {
-  API = 'API',
-  STATE = 'State',
-  LOCALSTORAGE = 'LocalStorage',
-}
+import { DataSourceType, DATA_DATASOURCES } from '../../constants/dataSource';
 
 interface Props {
   active: string;
   services: EditorServices;
 }
 
-const DATASOURCE_TYPES = [
-  DataSourceType.API,
-  DataSourceType.STATE,
-  DataSourceType.LOCALSTORAGE,
-];
+const DATASOURCE_TYPES = Object.values(DataSourceType);
 
 export const DataSource: React.FC<Props> = props => {
   const { active, services } = props;
   const { editorStore } = services;
-  const { apis, states, localStorages } = editorStore.dataSources;
+  const NORMAL_DATASOURCES = DATA_DATASOURCES.map((item)=> ({
+    ...item,
+    title: item.type,
+    datas: editorStore.dataSources[item.type],
+  }));
   const onMenuItemClick = (type: DataSourceType) => {
-    editorStore.createDataSource(type);
+    editorStore.createDataSource(
+      type,
+      type === DataSourceType.API ? {} : { key: 'value' }
+    );
     editorStore.setSelectedComponentId('');
   };
   const onApiItemClick = (api: ComponentSchema) => {
-    editorStore.setActiveDataSource(api);
-    editorStore.setActiveDataSourceType(DataSourceType.API);
+    editorStore.setActiveDataSourceId(api.id);
     editorStore.setSelectedComponentId('');
   };
-  const onStateItemClick = (state: ComponentSchema) => {
-    editorStore.setActiveDataSource(state);
-    editorStore.setActiveDataSourceType(DataSourceType.STATE);
-    editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
-    editorStore.setSelectedComponentId('');
-  };
-  const onLocalStorageItemClick = (state: ComponentSchema) => {
-    editorStore.setActiveDataSource(state);
-    editorStore.setActiveDataSourceType(DataSourceType.LOCALSTORAGE);
+  const onDataSourceItemClick = (dataSource: ComponentSchema) => {
+    editorStore.setActiveDataSourceId(dataSource.id);
     editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
     editorStore.setSelectedComponentId('');
   };
@@ -98,35 +88,30 @@ export const DataSource: React.FC<Props> = props => {
           </MenuList>
         </Menu>
       </Flex>
-      <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
+      <Accordion
+        defaultIndex={[0].concat(NORMAL_DATASOURCES.map((_, i) => i + 1))}
+        allowMultiple
+      >
         <Api
-          apis={apis}
+          apis={editorStore.dataSources[DataSourceType.API] || []}
           active={active}
           onItemClick={onApiItemClick}
           onItemRemove={onApiItemRemove}
         />
-        <State
-          title="State"
-          filterPlaceholder="filter the states"
-          emptyPlaceholder="No States."
-          states={states}
-          active={active}
-          services={services}
-          traitType="core/v1/state"
-          onItemClick={onStateItemClick}
-          onItemRemove={onStateItemRemove}
-        />
-        <State
-          title="LocalStorage"
-          traitType="core/v1/localStorage"
-          filterPlaceholder="filter the localStorages"
-          emptyPlaceholder="No LocalStorages."
-          states={localStorages}
-          active={active}
-          services={services}
-          onItemClick={onLocalStorageItemClick}
-          onItemRemove={onStateItemRemove}
-        />
+        {NORMAL_DATASOURCES.map(dataSourceItem => (
+          <Data
+            key={dataSourceItem.title}
+            title={dataSourceItem.title}
+            filterPlaceholder={dataSourceItem.filterPlaceholder}
+            emptyPlaceholder={dataSourceItem.emptyPlaceholder}
+            traitType={dataSourceItem.traitType}
+            datas={dataSourceItem.datas}
+            active={active}
+            services={services}
+            onItemClick={onDataSourceItemClick}
+            onItemRemove={onStateItemRemove}
+          />
+        ))}
       </Accordion>
     </VStack>
   );
