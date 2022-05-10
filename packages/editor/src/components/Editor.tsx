@@ -116,8 +116,6 @@ export const Editor: React.FC<Props> = observer(
         <ErrorBoundary>
           <App
             options={app}
-            debugEvent={false}
-            debugStore={false}
             gridCallbacks={gridCallbacks}
           />
         </ErrorBoundary>
