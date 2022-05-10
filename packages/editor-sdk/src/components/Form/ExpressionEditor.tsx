@@ -408,11 +408,12 @@ export const ExpressionEditor = React.forwardRef<
           borderStyle="solid"
           borderWidth="1px"
           borderRadius="0 0 4px 4px"
+          whiteSpace="pre-wrap"
         >
           <Box fontWeight="bold" marginBottom="4px">
             {error ? 'Error' : getTypeString(evaledValue)}
           </Box>
-          {error || JSON.stringify(evaledValue)}
+          {error || JSON.stringify(evaledValue, null, 2)}
         </Box>
       ) : null}
       {showModal && (

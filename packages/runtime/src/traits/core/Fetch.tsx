@@ -28,7 +28,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
   headers: Type.Record(Type.String(), Type.String(), {
     title: 'Headers',
   }),
-  body: Type.Record(Type.String(), Type.String(), {
+  body: Type.Record(Type.String(), Type.Any(), {
     title: 'Body',
     widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
   }),
