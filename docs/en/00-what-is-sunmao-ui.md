@@ -2,7 +2,7 @@
 
 Although more and more people are becoming interested in low-code development, they still have some reservations.
 
-The most common concerns about low-code is a lack of flexibility and vendor lock-in.
+The most common concerns about low-code are a lack of flexibility and vendor lock-in.
 
 That is reasonable because no user wants to be told that they cannot implement certain features in their application or that they must rewrite the application when moving it off of a vendor's platform.
 
@@ -39,6 +39,7 @@ Although It took us longer to develop a solution that overcames all of the drawb
 ### 3. Extensible in every aspect
 
 Sunmao-ui contains three layers: the core spec, the runtime, and the editor.
+
 The schema of a component or an application is described in the core spec. Aside from the usual fields, users can add annotations and use them later in the runtime or editor.
 
 We've already discussed how components functions for the runtime, and all of them are customizable. Later on, we'll talk about trait, which is another approach to expand the runtime.
