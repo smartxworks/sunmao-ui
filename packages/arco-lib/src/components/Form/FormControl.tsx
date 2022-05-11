@@ -52,7 +52,9 @@ export const FormControl = implementRuntimeComponent({
     properties: FormControlPropsSpec,
     state: Type.Object({}),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -73,7 +75,7 @@ export const FormControl = implementRuntimeComponent({
       {...cProps}
     >
       {slotsElements.content ? (
-        slotsElements.content
+        <slotsElements.content />
       ) : (
         <EmptyPlaceholder componentName="Input" />
       )}

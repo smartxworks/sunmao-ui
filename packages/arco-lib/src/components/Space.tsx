@@ -31,7 +31,9 @@ export const Space = implementRuntimeComponent({
     properties: SpacePropsSpec,
     state: SpaceStateSpec,
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onClick'],
   },
@@ -41,7 +43,7 @@ export const Space = implementRuntimeComponent({
 
   return (
     <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content}
+      {slotsElements.content ? <slotsElements.content /> : null}
     </BaseSpace>
   );
 });

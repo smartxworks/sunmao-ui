@@ -36,7 +36,9 @@ const options = {
     properties: ButtonPropsSpec,
     state: ButtonStateSpec,
     methods: {},
-    slots: ['icon'],
+    slots: {
+      icon: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onClick'],
   },
@@ -51,7 +53,7 @@ export const Button = implementRuntimeComponent(options)(props => {
       ref={elementRef}
       className={css(customStyle?.content)}
       onClick={callbackMap?.onClick}
-      icon={slotsElements.icon}
+      icon={slotsElements.icon ? <slotsElements.icon /> : null}
       {...cProps}
       loadingFixedWidth
     >

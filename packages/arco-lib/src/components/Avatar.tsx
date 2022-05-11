@@ -32,7 +32,9 @@ const options = {
     properties: AvatarPropsSpec,
     state: AvatarStateSpec,
     methods: {},
-    slots: ['triggerIcon'],
+    slots: {
+      triggerIcon: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onClick'],
   },
@@ -47,7 +49,7 @@ export const Avatar = implementRuntimeComponent(options)(props => {
       ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
-      triggerIcon={slotsElements.triggerIcon}
+      triggerIcon={slotsElements.triggerIcon ? <slotsElements.triggerIcon /> : null}
       onClick={_e => {
         callbackMap?.onClick?.();
       }}

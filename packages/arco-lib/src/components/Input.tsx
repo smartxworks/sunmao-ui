@@ -39,7 +39,12 @@ const options = {
     properties: InputPropsSpec,
     state: InputStateSpec,
     methods: {},
-    slots: ['addAfter', 'prefix', 'suffix', 'addBefore'],
+    slots: {
+      addAfter: { slotProps: Type.Object({}) },
+      prefix: { slotProps: Type.Object({}) },
+      suffix: { slotProps: Type.Object({}) },
+      addBefore: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['input'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
@@ -71,10 +76,10 @@ export const Input = implementRuntimeComponent(options)(props => {
     <BaseInput
       className={css(customStyle?.input)}
       ref={ref}
-      addAfter={slotsElements.addAfter}
-      addBefore={slotsElements.addBefore}
-      prefix={slotsElements.prefix}
-      suffix={slotsElements.suffix}
+      addAfter={slotsElements.addAfter ? <slotsElements.addAfter /> : null}
+      addBefore={slotsElements.addBefore ? <slotsElements.addBefore /> : null}
+      prefix={slotsElements.prefix ? <slotsElements.prefix /> : null}
+      suffix={slotsElements.suffix ? <slotsElements.suffix /> : null}
       value={value}
       onChange={onChange}
       onClear={() => {

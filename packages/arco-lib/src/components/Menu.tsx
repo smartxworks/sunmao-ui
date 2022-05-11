@@ -43,7 +43,7 @@ export const Menu = implementRuntimeComponent({
         active: Type.String(),
       }),
     },
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onClick'],
   },

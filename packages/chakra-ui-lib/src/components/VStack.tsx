@@ -41,7 +41,9 @@ export default implementRuntimeComponent({
   spec: {
     properties: PropsSpec,
     state: Type.Object({}),
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     methods: {},
     events: [],
@@ -72,7 +74,7 @@ export default implementRuntimeComponent({
         ref={elementRef}
         {...{ direction, wrap, align, justify, spacing }}
       >
-        {slotsElements.content}
+        {slotsElements.content ? <slotsElements.content /> : null}
       </BaseVStack>
     );
   }

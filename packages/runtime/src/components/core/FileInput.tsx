@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import React, { useEffect, useRef } from 'react';
-import { CORE_VERSION }  from '@sunmao-ui/shared';
+import { CORE_VERSION } from '@sunmao-ui/shared';
 
 const PropsSpec = Type.Object({
   multiple: Type.Boolean({
@@ -57,7 +57,9 @@ export default implementRuntimeComponent({
     methods: {
       selectFile: Type.Object({}),
     },
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -105,7 +107,7 @@ export default implementRuntimeComponent({
           accept={fileTypes.join(',')}
           onChange={onChange}
         />
-        {slotsElements.content}
+        {slotsElements.content ? <slotsElements.content /> : null}
       </div>
     );
   }

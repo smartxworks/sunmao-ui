@@ -31,7 +31,7 @@ const options = {
     properties: LinkPropsSpec,
     state: LinkStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

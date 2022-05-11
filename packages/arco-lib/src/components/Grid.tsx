@@ -28,7 +28,9 @@ export const Row = implementRuntimeComponent({
     properties: Type.Object(RowPropsSpec),
     state: Type.Object({}),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['wrapper'],
     events: [],
   },
@@ -38,7 +40,11 @@ export const Row = implementRuntimeComponent({
 
   return (
     <Grid.Row className={css(customStyle?.wrapper)} ref={elementRef} {...cProps}>
-      {slotsElements.content || <EmptyPlaceholder componentName="" />}
+      {slotsElements.content ? (
+        <slotsElements.content />
+      ) : (
+        <EmptyPlaceholder componentName="" />
+      )}
     </Grid.Row>
   );
 });
@@ -67,7 +73,9 @@ export const Col = implementRuntimeComponent({
     properties: Type.Object(ColPropsSpec),
     state: Type.Object({}),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['wrapper'],
     events: [],
   },
@@ -76,7 +84,11 @@ export const Col = implementRuntimeComponent({
   const { ...cProps } = getComponentProps(props);
   return (
     <Grid.Col className={css(customStyle?.wrapper)} ref={elementRef} {...cProps}>
-      {slotsElements.content || <EmptyPlaceholder componentName="" />}
+      {slotsElements.content ? (
+        <slotsElements.content />
+      ) : (
+        <EmptyPlaceholder componentName="" />
+      )}
     </Grid.Col>
   );
 });

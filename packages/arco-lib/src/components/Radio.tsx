@@ -44,7 +44,7 @@ const options = {
         value: Type.String(),
       }),
     },
-    slots: [],
+    slots: {},
     styleSlots: ['group'],
     events: ['onChange'],
   },

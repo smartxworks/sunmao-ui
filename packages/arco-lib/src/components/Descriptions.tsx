@@ -60,14 +60,14 @@ const options = {
     properties: DescriptionPropsSpec,
     state: DescriptionStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },
 };
 
 export const Descriptions = implementRuntimeComponent(options)(props => {
-  const { data,...cProps } = getComponentProps(props);
+  const { data, ...cProps } = getComponentProps(props);
   const { customStyle } = props;
 
   return (

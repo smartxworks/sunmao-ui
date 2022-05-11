@@ -39,7 +39,7 @@ const options = {
     properties: PaginationPropsSpec,
     state: PaginationStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange'],
   },

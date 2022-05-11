@@ -31,7 +31,9 @@ const options = {
     properties: BadgePropsSpec,
     state: BadgeStateSpec,
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -57,7 +59,7 @@ export const Badge = implementRuntimeComponent(options)(props => {
       {...cProps}
       color={cProps.dotColor}
     >
-      {slotsElements.content}
+      {slotsElements.content ? <slotsElements.content /> : null}
     </BaseBadge>
   );
 });

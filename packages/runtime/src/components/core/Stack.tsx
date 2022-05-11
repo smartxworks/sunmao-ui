@@ -95,14 +95,16 @@ export default implementRuntimeComponent({
     properties: StackPropertySpec,
     state: StateSpec,
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
 })(({ customStyle, elementRef, slotsElements, ...restProps }) => {
   return (
     <Stack cssStyle={customStyle?.content} ref={elementRef} {...restProps}>
-      {slotsElements.content}
+      {slotsElements.content ? <slotsElements.content /> : null}
     </Stack>
   );
 });

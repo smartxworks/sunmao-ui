@@ -61,7 +61,7 @@ const options = {
     properties: TimelinePropsSpec,
     state: TimelineStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },
