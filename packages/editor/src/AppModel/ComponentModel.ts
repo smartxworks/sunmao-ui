@@ -60,7 +60,7 @@ export class ComponentModel implements IComponentModel {
   }
 
   get slots() {
-    return (this.spec ? this.spec.spec.slots : []) as SlotName[];
+    return (this.spec ? Object.keys(this.spec.spec.slots) : []) as SlotName[];
   }
 
   get events() {

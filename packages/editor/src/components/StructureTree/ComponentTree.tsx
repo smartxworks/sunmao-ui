@@ -32,7 +32,7 @@ export const ComponentTree: React.FC<Props> = props => {
     depth,
   } = props;
   const { registry, eventBus } = services;
-  const slots = registry.getComponentByType(component.type).spec.slots;
+  const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
 
