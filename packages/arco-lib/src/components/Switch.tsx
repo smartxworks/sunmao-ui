@@ -36,7 +36,7 @@ const options = {
     properties: SwitchPropsSpec,
     state: SwitchStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange'],
   },

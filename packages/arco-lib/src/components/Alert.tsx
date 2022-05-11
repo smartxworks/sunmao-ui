@@ -32,7 +32,10 @@ const options = {
     properties: AlertPropsSpec,
     state: AlertStateSpec,
     methods: {},
-    slots: ['action', 'icon'],
+    slots: {
+      action: { slotProps: Type.Object({}) },
+      icon: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onClose', 'afterClose'],
   },
@@ -45,8 +48,8 @@ export const Alert = implementRuntimeComponent(options)(props => {
   return (
     <BaseAlert
       ref={elementRef}
-      action={slotsElements.action}
-      icon={slotsElements.icon}
+      action={slotsElements.action ? <slotsElements.action /> : null}
+      icon={slotsElements.icon ? <slotsElements.icon /> : null}
       onClose={_e => {
         callbackMap?.onClose?.();
       }}

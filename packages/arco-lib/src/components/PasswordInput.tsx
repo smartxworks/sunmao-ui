@@ -39,7 +39,7 @@ const options = {
     properties: InputPropsSpec,
     state: InputStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['input'],
     events: ['onChange', 'onBlur', 'onFocus', 'onPressEnter'],
   },

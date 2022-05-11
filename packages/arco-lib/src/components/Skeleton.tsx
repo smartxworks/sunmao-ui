@@ -30,7 +30,9 @@ const options = {
     properties: SkeletonPropsSpec,
     state: SkeletonStateSpec,
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -42,7 +44,7 @@ export const Skeleton = implementRuntimeComponent(options)(props => {
 
   return (
     <BaseSkeleton ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content}
+      {slotsElements.content ? <slotsElements.content /> : null}
     </BaseSkeleton>
   );
 });

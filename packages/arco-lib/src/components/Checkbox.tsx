@@ -63,7 +63,7 @@ const options = {
       }),
     },
     styleSlots: ['content'],
-    slots: [],
+    slots: {},
     events: ['onChange'],
   },
 };

@@ -69,7 +69,7 @@ const options = {
     properties: TreeSelectPropsSpec,
     state: TreeSelectStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange'],
   },

@@ -49,7 +49,9 @@ const options = {
     methods: {
       setActiveKey: Type.String(),
     },
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onChange'],
   },
@@ -71,7 +73,7 @@ export const Collapse = implementRuntimeComponent(options)(props => {
   );
 
   const collapseItems = slotsElements.content
-    ? ([] as React.ReactElement[]).concat(slotsElements.content)
+    ? ([] as React.ReactElement[]).concat(<slotsElements.content />)
     : [];
 
   return (

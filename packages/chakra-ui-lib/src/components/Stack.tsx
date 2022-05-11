@@ -82,14 +82,16 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     state: Type.Object({}),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: [],
     events: [],
   },
 })(({ direction, wrap, align, justify, spacing, slotsElements, elementRef }) => {
   return (
     <BaseStack {...{ direction, wrap, align, justify, spacing }} ref={elementRef}>
-      {slotsElements.content}
+      {slotsElements.content ? <slotsElements.content /> : null}
     </BaseStack>
   );
 });

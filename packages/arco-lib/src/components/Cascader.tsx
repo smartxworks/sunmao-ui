@@ -8,7 +8,6 @@ import {
   CascaderValueSpec,
 } from '../generated/types/Cascader';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { isArray } from 'lodash-es';
 import { SelectViewHandle } from '@arco-design/web-react/es/_class/select-view';
 
 const CascaderPropsSpec = Type.Object(BaseCascaderPropsSpec);
@@ -101,7 +100,9 @@ const options = {
     properties: CascaderPropsSpec,
     state: CascaderStateSpec,
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onChange'],
   },
@@ -113,9 +114,7 @@ export const Cascader = implementRuntimeComponent(options)(props => {
   const { multiple, options, placeholder, ...cProps } = getComponentProps(props);
   const ref = useRef<SelectViewHandle | null>(null);
 
-  const content = isArray(slotsElements.content)
-    ? slotsElements.content[0]
-    : slotsElements.content;
+  const content = slotsElements.content ? <slotsElements.content /> : null;
 
   const mode = multiple ? 'multiple' : undefined;
 

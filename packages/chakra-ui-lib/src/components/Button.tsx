@@ -50,7 +50,7 @@ export default implementRuntimeComponent({
     methods: {
       click: undefined,
     },
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onClick'],
   },

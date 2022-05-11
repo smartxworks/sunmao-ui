@@ -30,7 +30,7 @@ const options = {
     properties: DividerPropsSpec,
     state: DividerStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

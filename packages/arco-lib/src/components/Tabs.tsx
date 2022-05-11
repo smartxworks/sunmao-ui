@@ -39,7 +39,13 @@ export const Tabs = implementRuntimeComponent({
         activeTab: Type.Number(),
       }),
     },
-    slots: ['content'],
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          tabIndex: Type.Number(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -59,10 +65,6 @@ export const Tabs = implementRuntimeComponent({
       getElement(ele);
     }
   }, [getElement, ref]);
-
-  const slots = Array.isArray(slotsElements.content)
-    ? slotsElements.content
-    : [slotsElements.content];
 
   useEffect(() => {
     subscribeMethods({
@@ -85,8 +87,8 @@ export const Tabs = implementRuntimeComponent({
       ref={ref}
     >
       {tabNames.map((tabName, idx) => (
-        <TabPane key={idx} title={tabName}>
-          {slots[idx]}
+        <TabPane key={String(idx)} title={tabName}>
+          {slotsElements?.content ? <slotsElements.content tabIndex={idx} /> : null}
         </TabPane>
       ))}
     </BaseTabs>

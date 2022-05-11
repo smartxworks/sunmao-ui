@@ -144,7 +144,9 @@ export default implementRuntimeComponent({
     properties: StyleSpec,
     state: Type.Object({}),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -164,7 +166,7 @@ export default implementRuntimeComponent({
       `}
       ref={elementRef}
     >
-      {slotsElements.content}
+      {slotsElements.content ? <slotsElements.content /> : null}
     </BaseBox>
   );
 });

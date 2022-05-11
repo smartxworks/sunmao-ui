@@ -37,7 +37,9 @@ export default implementRuntimeComponent({
     methods: {
       resetForm: undefined,
     },
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['onSubmit'],
   },
@@ -158,7 +160,7 @@ export default implementRuntimeComponent({
         `}
         ref={elementRef}
       >
-        {slotsElements.content}
+        {slotsElements.content ? <slotsElements.content /> : null}
         {hideSubmit ? undefined : (
           <Button
             marginInlineStart="auto !important"

@@ -41,7 +41,7 @@ const options = {
     properties: TextAreaPropsSpec,
     state: TextAreaStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['TextArea'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },

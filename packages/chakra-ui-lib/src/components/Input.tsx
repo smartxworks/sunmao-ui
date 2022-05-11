@@ -133,7 +133,7 @@ export default implementRuntimeComponent({
       }),
       resetInputValue: undefined,
     },
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

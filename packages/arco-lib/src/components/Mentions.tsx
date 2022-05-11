@@ -35,7 +35,7 @@ const options = {
     properties: MentionsPropsSpec,
     state: MentionsStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange', 'onClear', 'onPressEnter', 'onFocus', 'onBlur'],
   },

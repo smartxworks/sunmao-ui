@@ -33,7 +33,7 @@ describe('component', () => {
           },
         ],
         styleSlots: ['content'],
-        slots: [],
+        slots: {},
         events: [],
       },
     });
