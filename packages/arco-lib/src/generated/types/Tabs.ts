@@ -3,8 +3,8 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
 export const TabsPropsSpec = {
-  defaultActiveTab: Type.String({
-    title: 'Default Active Tab Index',
+  defaultActiveTab: Type.Number({
+    title: 'Default Active Tab',
     category: Category.Basic,
     description: 'The index of default active Tab. Start with 0.',
   }),
