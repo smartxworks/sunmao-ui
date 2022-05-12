@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { ComponentItemView } from './ComponentItemView';
@@ -110,14 +110,20 @@ export const ComponentTree: React.FC<Props> = props => {
     isExpanded,
   ]);
 
-  const onClickRemove = () => {
+  const onClickRemove = useCallback(() => {
     eventBus.send(
       'operation',
       genOperation(registry, 'removeComponent', {
         componentId: component.id,
       })
     );
-  };
+  }, [component.id, eventBus, registry]);
+  const onClickItem = useCallback(() => {
+    onSelectComponent(component.id);
+  }, [component.id, onSelectComponent]);
+  const onToggleExpanded = useCallback(() => setIsExpanded(prev => !prev), []);
+  const onDragStart = useCallback(() => setIsDragging(true), []);
+  const onDragEnd = useCallback(() => setIsDragging(false), []);
 
   return (
     <VStack
@@ -141,15 +147,13 @@ export const ComponentTree: React.FC<Props> = props => {
           id={component.id}
           title={component.id}
           isSelected={component.id === selectedComponentId}
-          onClick={() => {
-            onSelectComponent(component.id);
-          }}
+          onClick={onClickItem}
           onClickRemove={onClickRemove}
           noChevron={slots.length === 0}
           isExpanded={isExpanded}
-          onToggleExpanded={() => setIsExpanded(prev => !prev)}
-          onDragStart={() => setIsDragging(true)}
-          onDragEnd={() => setIsDragging(false)}
+          onToggleExpanded={onToggleExpanded}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
           depth={depth}
         />
       </DropComponentWrapper>
