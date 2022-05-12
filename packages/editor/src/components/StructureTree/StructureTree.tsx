@@ -52,8 +52,8 @@ export const StructureTree: React.FC<Props> = props => {
     wrapperRef.current
       ?.querySelector(`#tree-item-${selectedComponentId}`)
       ?.scrollIntoView({
-        behavior:'smooth',
-        block:'center'
+        block: 'nearest',
+        inline: 'nearest'
       });
   }, [selectedComponentId]);
 
