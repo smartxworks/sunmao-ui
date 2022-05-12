@@ -17,6 +17,7 @@ import {
   CORE_VERSION,
   CoreComponentName,
 } from '@sunmao-ui/shared';
+import { isEqual } from 'lodash-es';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -77,7 +78,12 @@ export class EditorStore {
     // when switch app or module, components should refresh
     reaction(
       () => this.currentEditingTarget,
-      target => {
+      (target, prevTarget) => {
+
+        if (isEqual(prevTarget, target)) {
+          return;
+        }
+
         if (target.name) {
           this.setCurrentComponentsVersion(0);
           this.setLastSavedComponentsVersion(0);
@@ -175,7 +181,7 @@ export class EditorStore {
   }
 
   get activeDataSource(): ComponentSchema | null {
-    return this.components.find((component)=> component.id === this.activeDataSourceId) || null;
+    return this.components.find((component) => component.id === this.activeDataSourceId) || null;
   }
 
   get activeDataSourceType(): DataSourceType | null {
