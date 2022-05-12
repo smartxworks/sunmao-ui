@@ -51,11 +51,14 @@ export const StructureTree: React.FC<Props> = props => {
   useEffect(() => {
     wrapperRef.current
       ?.querySelector(`#tree-item-${selectedComponentId}`)
-      ?.scrollIntoView();
+      ?.scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
   }, [selectedComponentId]);
 
   return (
-    <VStack ref={wrapperRef} spacing="2" padding="4" alignItems="start" overflow="auto">
+    <VStack ref={wrapperRef} height='full' spacing="2" padding="4" alignItems="start" overflowX='hidden' overflowY="auto">
       <Text fontSize="lg" fontWeight="bold" mb="0.5rem">
         Components
       </Text>

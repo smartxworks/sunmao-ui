@@ -114,10 +114,7 @@ export const Editor: React.FC<Props> = observer(
     const appComponent = useMemo(() => {
       return isDisplayApp ? (
         <ErrorBoundary>
-          <App
-            options={app}
-            gridCallbacks={gridCallbacks}
-          />
+          <App options={app} gridCallbacks={gridCallbacks} />
         </ErrorBoundary>
       ) : null;
     }, [App, app, gridCallbacks, isDisplayApp]);
@@ -198,7 +195,7 @@ export const Editor: React.FC<Props> = observer(
                 display="flex"
                 flexDirection="column"
                 textAlign="left"
-                lazyBehavior='keepMounted'
+                lazyBehavior="keepMounted"
                 isLazy
                 index={explorerMenuTab}
                 onChange={activatedTab => {
@@ -211,11 +208,11 @@ export const Editor: React.FC<Props> = observer(
                   <Tab>Data</Tab>
                   <Tab>State</Tab>
                 </TabList>
-                <TabPanels flex="1" overflow="auto">
-                  <TabPanel p={0}>
+                <TabPanels overflow='hidden' height="full" flex="1">
+                  <TabPanel height="full" overflow="auto" p={0}>
                     <Explorer services={services} />
                   </TabPanel>
-                  <TabPanel p={0}>
+                  <TabPanel height="full" overflow="auto" p={0}>
                     <StructureTree
                       components={components}
                       selectedComponentId={selectedComponentId}
@@ -225,10 +222,10 @@ export const Editor: React.FC<Props> = observer(
                       services={services}
                     />
                   </TabPanel>
-                  <TabPanel p={0}>
+                  <TabPanel height="full" overflow="auto" p={0}>
                     <DataSource active={activeDataSource?.id ?? ''} services={services} />
                   </TabPanel>
-                  <TabPanel p={0} height="100%">
+                  <TabPanel overflow="auto" p={0} height="100%">
                     <StateViewer store={stateStore} />
                   </TabPanel>
                 </TabPanels>
