@@ -7,7 +7,7 @@ import { ImplWrapperProps, TraitResult } from '../../../types';
 import { watch } from '../../..';
 
 export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
-  (props, ref) => {
+  function UnmountImplWrapper(props, ref) {
     const { component: c, services } = props;
     const { stateManager, registry } = services;
     const { executeTrait } = useRuntimeFunctions(props);

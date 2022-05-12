@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
-import { implementRuntimeTrait } from 'src/utils/buildKit';
+import { implementRuntimeTrait } from '../../utils/buildKit';
 
 const ContainerPropertySpec = Type.Object({
   id: Type.String(),

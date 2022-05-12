@@ -14,7 +14,14 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
 
     if (prevChildren && nextChildren) {
       isEqual = shallowCompareArray(prevChildren, nextChildren);
+    } else if (prevChildren === nextChildren) {
+      isEqual = true;
     }
-    return isEqual && prevComponent === nextComponent;
+    return (
+      isEqual &&
+      prevComponent === nextComponent &&
+      // TODO: keep ImplWrapper memorized and get slot props from store
+      prevProps.slotProps === nextProps.slotProps
+    );
   }
 );

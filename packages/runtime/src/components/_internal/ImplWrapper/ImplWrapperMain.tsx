@@ -4,13 +4,13 @@ import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
 import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
-import { useSlotElements } from './hooks/useSlotChildren';
+import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
 import { useGridLayout } from './hooks/useGridLayout';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
-  (props, ref) => {
+  function ImplWrapperMain(props, ref) {
     const { component: c, children } = props;
     const { registry, stateManager } = props.services;
 
@@ -138,7 +138,32 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     const unmount = traitResults.some(result => result.unmount);
-    const slotElements = useSlotElements(props);
+    const slotElements = useMemo(() => {
+      return getSlotElements({
+        app: props.app,
+        childrenMap: props.childrenMap,
+        children: props.children,
+        component: props.component,
+        gridCallbacks: props.gridCallbacks,
+        services: props.services,
+        hooks: props.hooks,
+        isInModule: props.isInModule,
+      });
+    }, [
+      /**
+       * exclude props.slotProps from dependency,
+       * otherwise, new slotProps will create new slotElements,
+       * which cause extra re-mount
+       */
+      props.app,
+      props.children,
+      props.childrenMap,
+      props.component,
+      props.gridCallbacks,
+      props.hooks,
+      props.isInModule,
+      props.services,
+    ]);
 
     const C = unmount ? null : (
       <Impl
