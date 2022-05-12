@@ -7,7 +7,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { isProxy, reactive, toRaw } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
-import { isNumeric, parseExpression, consoleError, ConsoleType, type ExpChunk } from '@sunmao-ui/shared';
+import { isNumeric, parseExpression, consoleError, ConsoleType } from '@sunmao-ui/shared';
+import type { ExpChunk } from '@sunmao-ui/shared';
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear);
@@ -35,7 +36,7 @@ export class ExpressionError extends Error {
   }
 }
 
-export type StateManagerInterface = InstanceType<typeof StateManager>
+export type StateManagerInterface = InstanceType<typeof StateManager>;
 
 export class StateManager {
   store = reactive<Record<string, any>>({});
@@ -105,9 +106,9 @@ export class StateManager {
     } catch (error) {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
-        
+
         if (!noConsoleError) {
-          consoleError(ConsoleType.Expression,  '', expressionError.message);
+          consoleError(ConsoleType.Expression, '', expressionError.message);
         }
 
         return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
