@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useImperativeHandle,
+} from 'react';
 import {
   Popover,
   PopoverTrigger,
@@ -38,10 +44,20 @@ export const PopoverWidget = React.forwardRef<
 >((props, ref) => {
   const { spec, path, children } = props;
   const isObjectChildren = children && typeof children === 'object';
+  const [isInit, setIsInit] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const mergedSpec = useMemo(
+    () => ({
+      ...spec,
+      widget:
+        spec.widget === `${CORE_VERSION}/${CoreWidgetName.Popover}` ? '' : spec.widget,
+    }),
+    [spec]
+  );
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
+    setIsInit(true);
     emitter.emit('other-popover-close', path);
   }, [path]);
   const handleClickTrigger = useCallback(event => {
@@ -132,17 +148,13 @@ export const PopoverWidget = React.forwardRef<
         <PopoverContent onClick={handleClickContent}>
           <PopoverArrow />
           <PopoverBody maxHeight="400px" overflow="auto">
-            {isObjectChildren && 'body' in children ? (
-              (children as Children).body
-            ) : (
-              <SpecWidget
-                {...props}
-                spec={{
-                  ...spec,
-                  widget: spec.widget === `${CORE_VERSION}/${CoreWidgetName.Popover}` ? '' : spec.widget,
-                }}
-              />
-            )}
+            {isInit ? (
+              isObjectChildren && 'body' in children ? (
+                (children as Children).body
+              ) : (
+                <SpecWidget {...props} spec={mergedSpec} />
+              )
+            ) : null}
           </PopoverBody>
         </PopoverContent>
       </Portal>
