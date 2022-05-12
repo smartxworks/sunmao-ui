@@ -58,7 +58,7 @@ export const StructureTree: React.FC<Props> = props => {
   }, [selectedComponentId]);
 
   return (
-    <VStack ref={wrapperRef} height='full' spacing="2" padding="4" alignItems="start" overflowWrap='break-word' overflowX='hidden' overflowY="auto">
+    <VStack ref={wrapperRef} height='full' spacing="2" padding="4" alignItems="start" overflowX='hidden' overflowY="auto">
       <Text fontSize="lg" fontWeight="bold" mb="0.5rem">
         Components
       </Text>
