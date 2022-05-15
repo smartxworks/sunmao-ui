@@ -50,7 +50,12 @@ const options = {
       setActiveKey: Type.String(),
     },
     slots: {
-      content: { slotProps: Type.Object({}) },
+      content: {
+        slotProps: Type.Object({
+          activeKey: Type.Array(Type.String()),
+          index: Type.Number(),
+        }),
+      },
     },
     styleSlots: ['content'],
     events: ['onChange'],
@@ -72,10 +77,6 @@ export const Collapse = implementRuntimeComponent(options)(props => {
     [callbackMap, mergeState]
   );
 
-  const collapseItems = slotsElements.content
-    ? ([] as React.ReactElement[]).concat(slotsElements.content({}))
-    : [];
-
   return (
     <BaseCollapse
       ref={elementRef}
@@ -84,12 +85,12 @@ export const Collapse = implementRuntimeComponent(options)(props => {
       activeKey={activeKey}
       onChange={onChange}
     >
-      {options.map((o, idx) => {
+      {options.map((o, index) => {
         const { key, ...props } = o;
         return (
           <BaseCollapse.Item key={key} name={String(key)} {...props}>
-            {collapseItems.length ? (
-              collapseItems[idx]
+            {slotsElements?.content ? (
+              slotsElements.content({ activeKey, index })
             ) : (
               <EmptyPlaceholder componentName="" />
             )}

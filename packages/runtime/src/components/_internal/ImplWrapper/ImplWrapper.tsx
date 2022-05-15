@@ -17,12 +17,6 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
     } else if (prevChildren === nextChildren) {
       isEqual = true;
     }
-    console.log(
-      prevProps.component.id,
-      isEqual,
-      prevComponent === nextComponent,
-      prevProps.slotProps === nextProps.slotProps
-    );
     return (
       isEqual &&
       prevComponent === nextComponent &&
