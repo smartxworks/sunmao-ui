@@ -99,9 +99,9 @@ export const Select = implementRuntimeComponent({
         return (
           <div className={css(customStyle?.dropdownRenderWrap)}>
             {menu}
-            {slotsElements.dropdownRenderSlot ? (
-              <slotsElements.dropdownRenderSlot />
-            ) : null}
+            {slotsElements.dropdownRenderSlot
+              ? slotsElements.dropdownRenderSlot({})
+              : null}
           </div>
         );
       }}

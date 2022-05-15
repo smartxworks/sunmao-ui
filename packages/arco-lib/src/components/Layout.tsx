@@ -105,22 +105,22 @@ export const Layout = implementRuntimeComponent({
     <BaseLayout {...baseProps}>
       {showHeader && (
         <BaseLayout.Header {...headerProps}>
-          {slotsElements.header ? <slotsElements.header /> : null}
+          {slotsElements.header ? slotsElements.header({}) : null}
         </BaseLayout.Header>
       )}
       <BaseLayout>
         {showSideBar && (
           <BaseLayout.Sider {...siderProps}>
-            {slotsElements.sidebar ? <slotsElements.sidebar /> : null}
+            {slotsElements.sidebar ? slotsElements.sidebar({}) : null}
           </BaseLayout.Sider>
         )}
         <BaseLayout.Content {...contentProps}>
-          {slotsElements.content ? <slotsElements.content /> : null}
+          {slotsElements.content ? slotsElements.content({}) : null}
         </BaseLayout.Content>
       </BaseLayout>
       {showFooter && (
         <BaseLayout.Footer {...footerProps}>
-          {slotsElements.footer ? <slotsElements.footer /> : null}
+          {slotsElements.footer ? slotsElements.footer({}) : null}
         </BaseLayout.Footer>
       )}
     </BaseLayout>

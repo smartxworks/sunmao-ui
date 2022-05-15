@@ -43,7 +43,7 @@ export const Space = implementRuntimeComponent({
 
   return (
     <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content ? <slotsElements.content /> : null}
+      {slotsElements.content ? slotsElements.content({}) : null}
     </BaseSpace>
   );
 });

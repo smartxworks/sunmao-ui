@@ -107,7 +107,7 @@ export default implementRuntimeComponent({
           accept={fileTypes.join(',')}
           onChange={onChange}
         />
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </div>
     );
   }

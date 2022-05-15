@@ -75,7 +75,7 @@ export const FormControl = implementRuntimeComponent({
       {...cProps}
     >
       {slotsElements.content ? (
-        <slotsElements.content />
+        slotsElements.content({})
       ) : (
         <EmptyPlaceholder componentName="Input" />
       )}

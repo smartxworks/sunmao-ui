@@ -80,7 +80,7 @@ export default implementRuntimeComponent({
           ${customStyle?.content}
         `}
       >
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </BaseGridLayout>
     </Suspense>
   );

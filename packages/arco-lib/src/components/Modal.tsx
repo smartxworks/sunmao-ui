@@ -90,13 +90,13 @@ export const Modal = implementRuntimeComponent({
         }}
         afterClose={afterClose}
         afterOpen={afterOpen}
-        footer={slotsElements.footer ? <slotsElements.footer /> : null}
+        footer={slotsElements.footer ? slotsElements.footer({}) : null}
         className={css(customStyle?.content)}
         mountOnEnter={true}
         {...cProps}
       >
         <div ref={contentRef}>
-          {slotsElements.content ? <slotsElements.content /> : null}
+          {slotsElements.content ? slotsElements.content({}) : null}
         </div>
       </BaseModal>
     </ConfigProvider>

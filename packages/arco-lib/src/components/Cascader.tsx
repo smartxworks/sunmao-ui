@@ -114,7 +114,7 @@ export const Cascader = implementRuntimeComponent(options)(props => {
   const { multiple, options, placeholder, ...cProps } = getComponentProps(props);
   const ref = useRef<SelectViewHandle | null>(null);
 
-  const content = slotsElements.content ? <slotsElements.content /> : null;
+  const content = slotsElements.content ? slotsElements.content({}) : null;
 
   const mode = multiple ? 'multiple' : undefined;
 

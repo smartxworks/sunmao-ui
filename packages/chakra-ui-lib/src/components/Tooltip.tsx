@@ -115,7 +115,7 @@ export default implementRuntimeComponent({
         shouldWrapChildren={shouldWrapChildren}
         ref={elementRef}
       >
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </Tooltip>
     );
   }

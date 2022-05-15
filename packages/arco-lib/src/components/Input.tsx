@@ -76,10 +76,10 @@ export const Input = implementRuntimeComponent(options)(props => {
     <BaseInput
       className={css(customStyle?.input)}
       ref={ref}
-      addAfter={slotsElements.addAfter ? <slotsElements.addAfter /> : null}
-      addBefore={slotsElements.addBefore ? <slotsElements.addBefore /> : null}
-      prefix={slotsElements.prefix ? <slotsElements.prefix /> : null}
-      suffix={slotsElements.suffix ? <slotsElements.suffix /> : null}
+      addAfter={slotsElements.addAfter ? slotsElements.addAfter({}) : null}
+      addBefore={slotsElements.addBefore ? slotsElements.addBefore({}) : null}
+      prefix={slotsElements.prefix ? slotsElements.prefix({}) : null}
+      suffix={slotsElements.suffix ? slotsElements.suffix({}) : null}
       value={value}
       onChange={onChange}
       onClear={() => {

@@ -49,7 +49,7 @@ export const Avatar = implementRuntimeComponent(options)(props => {
       ref={elementRef}
       className={css(customStyle?.content)}
       {...cProps}
-      triggerIcon={slotsElements.triggerIcon ? <slotsElements.triggerIcon /> : null}
+      triggerIcon={slotsElements.triggerIcon ? slotsElements.triggerIcon({}) : null}
       onClick={_e => {
         callbackMap?.onClick?.();
       }}

@@ -59,7 +59,7 @@ export const Badge = implementRuntimeComponent(options)(props => {
       {...cProps}
       color={cProps.dotColor}
     >
-      {slotsElements.content ? <slotsElements.content /> : null}
+      {slotsElements.content ? slotsElements.content({}) : null}
     </BaseBadge>
   );
 });

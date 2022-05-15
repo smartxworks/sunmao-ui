@@ -63,7 +63,7 @@ export default implementRuntimeComponent({
         isDisabled={isDisabled}
         onChange={val => setValue(val)}
       >
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </BaseCheckboxGroup>
     </Box>
   );

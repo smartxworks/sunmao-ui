@@ -73,7 +73,7 @@ export const Collapse = implementRuntimeComponent(options)(props => {
   );
 
   const collapseItems = slotsElements.content
-    ? ([] as React.ReactElement[]).concat(<slotsElements.content />)
+    ? ([] as React.ReactElement[]).concat(slotsElements.content({}))
     : [];
 
   return (

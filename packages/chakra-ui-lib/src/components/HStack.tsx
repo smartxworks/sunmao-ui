@@ -74,7 +74,7 @@ export default implementRuntimeComponent({
         ref={elementRef}
         {...{ direction, wrap, align, justify, spacing }}
       >
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </BaseHStack>
     );
   }

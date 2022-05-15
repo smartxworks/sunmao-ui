@@ -36,7 +36,7 @@ export default implementRuntimeComponent({
         useSystemColorMode: false,
       })}
     >
-      <div ref={elementRef}>{slotsElements.root ? <slotsElements.root /> : null}</div>
+      <div ref={elementRef}>{slotsElements.root ? slotsElements.root({}) : null}</div>
     </ChakraProvider>
   );
 });

@@ -41,7 +41,7 @@ export const Row = implementRuntimeComponent({
   return (
     <Grid.Row className={css(customStyle?.wrapper)} ref={elementRef} {...cProps}>
       {slotsElements.content ? (
-        <slotsElements.content />
+        slotsElements.content({})
       ) : (
         <EmptyPlaceholder componentName="" />
       )}
@@ -85,7 +85,7 @@ export const Col = implementRuntimeComponent({
   return (
     <Grid.Col className={css(customStyle?.wrapper)} ref={elementRef} {...cProps}>
       {slotsElements.content ? (
-        <slotsElements.content />
+        slotsElements.content({})
       ) : (
         <EmptyPlaceholder componentName="" />
       )}
