@@ -70,7 +70,7 @@ export const Tooltip = implementRuntimeComponent(options)(props => {
       >
         {/* need the child node of Tooltip accepts onMouseEnter, onMouseLeave, onFocus, onClick events */}
         <span ref={elementRef}>
-          {slotsElements.content ? <slotsElements.content /> : <Button>Hover Me</Button>}
+          {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
         </span>
       </BaseTooltip>
     </div>
@@ -78,7 +78,7 @@ export const Tooltip = implementRuntimeComponent(options)(props => {
     <div>
       <BaseTooltip className={css(customStyle?.content)} {...cProps}>
         <span ref={elementRef}>
-          {slotsElements.content ? <slotsElements.content /> : <Button>Hover Me</Button>}
+          {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
         </span>
       </BaseTooltip>
     </div>

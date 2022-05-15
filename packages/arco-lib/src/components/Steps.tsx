@@ -67,7 +67,7 @@ export const Steps = implementRuntimeComponent(options)(props => {
         items.map((stepItem: StepItem, idx: number) => {
           return (
             <BaseSteps.Step
-              icon={slotsElements.icons ? <slotsElements.icons /> : null}
+              icon={slotsElements.icons ? slotsElements.icons({}) : null}
               key={idx}
               title={stepItem.title}
               description={stepItem.description}

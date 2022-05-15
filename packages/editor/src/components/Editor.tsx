@@ -208,7 +208,7 @@ export const Editor: React.FC<Props> = observer(
                   <Tab>Data</Tab>
                   <Tab>State</Tab>
                 </TabList>
-                <TabPanels overflow='hidden' height="full" flex="1">
+                <TabPanels overflow="hidden" height="full" flex="1">
                   <TabPanel height="full" overflow="auto" p={0}>
                     <Explorer services={services} />
                   </TabPanel>

@@ -17,8 +17,8 @@ export function getSlotElements(
       return <ImplWrapper key={child.id} {...props} component={child} />;
     });
 
-    slotElements[slot] = function inlineSlot(slotProps) {
-      return <>{slotChildren.map(child => React.cloneElement(child, { slotProps }))}</>;
+    slotElements[slot] = function getSlot(slotProps) {
+      return slotChildren.map(child => React.cloneElement(child, { slotProps }));
     };
   }
   return slotElements;

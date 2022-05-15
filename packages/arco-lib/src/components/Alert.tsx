@@ -48,8 +48,8 @@ export const Alert = implementRuntimeComponent(options)(props => {
   return (
     <BaseAlert
       ref={elementRef}
-      action={slotsElements.action ? <slotsElements.action /> : null}
-      icon={slotsElements.icon ? <slotsElements.icon /> : null}
+      action={slotsElements.action ? slotsElements.action({}) : null}
+      icon={slotsElements.icon ? slotsElements.icon({}) : null}
       onClose={_e => {
         callbackMap?.onClose?.();
       }}

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { merge, mergeWith, isArray } from 'lodash-es';
+import { merge, mergeWith, isArray, omit } from 'lodash-es';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
@@ -138,37 +138,21 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     const unmount = traitResults.some(result => result.unmount);
-    const slotElements = useMemo(() => {
-      return getSlotElements({
-        app: props.app,
-        childrenMap: props.childrenMap,
-        children: props.children,
-        component: props.component,
-        gridCallbacks: props.gridCallbacks,
-        services: props.services,
-        hooks: props.hooks,
-        isInModule: props.isInModule,
-      });
-    }, [
-      /**
-       * exclude props.slotProps from dependency,
-       * otherwise, new slotProps will create new slotElements,
-       * which cause extra re-mount
-       */
-      props.app,
-      props.children,
-      props.childrenMap,
-      props.component,
-      props.gridCallbacks,
-      props.hooks,
-      props.isInModule,
-      props.services,
-    ]);
+    const slotElements = getSlotElements({
+      app: props.app,
+      childrenMap: props.childrenMap,
+      children: props.children,
+      component: props.component,
+      gridCallbacks: props.gridCallbacks,
+      services: props.services,
+      hooks: props.hooks,
+      isInModule: props.isInModule,
+    });
 
     const C = unmount ? null : (
       <Impl
         key={c.id}
-        {...props}
+        {...omit(props, 'slotProps')}
         {...mergedProps}
         slotsElements={slotElements}
         mergeState={mergeState}

@@ -63,7 +63,7 @@ type SubscribeMethods<U> = (map: {
 }) => void;
 type MergeState<T> = (partialState: Partial<T>) => void;
 export type SlotsElements<U extends Record<string, SlotSchema>> = {
-  [K in keyof U]?: React.FC<Static<U[K]['slotProps']>>;
+  [K in keyof U]?: (props: Static<U[K]['slotProps']>) => React.ReactNode;
 };
 
 export type RuntimeFunctions<

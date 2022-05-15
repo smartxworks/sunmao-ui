@@ -104,7 +104,7 @@ export default implementRuntimeComponent({
 })(({ customStyle, elementRef, slotsElements, ...restProps }) => {
   return (
     <Stack cssStyle={customStyle?.content} ref={elementRef} {...restProps}>
-      {slotsElements.content ? <slotsElements.content /> : null}
+      {slotsElements.content ? slotsElements.content({}) : null}
     </Stack>
   );
 });

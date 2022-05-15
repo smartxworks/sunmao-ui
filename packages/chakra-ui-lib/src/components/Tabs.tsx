@@ -104,11 +104,9 @@ export default implementRuntimeComponent({
                 ${customStyle?.tabContent}
               `}
             >
-              {slotsElements?.content ? (
-                <slotsElements.content tabIndex={idx} />
-              ) : (
-                placeholder
-              )}
+              {slotsElements?.content
+                ? slotsElements.content({ tabIndex: idx })
+                : placeholder}
             </TabPanel>
           );
         })}

@@ -92,7 +92,7 @@ export const Dropdown = implementRuntimeComponent(options)(props => {
       triggerProps={{ autoAlignPopupMinWidth: autoAlignPopupWidth }}
     >
       <div ref={elementRef}>
-        {slotsElements.trigger ? <slotsElements.trigger /> : <Button>Click</Button>}
+        {slotsElements.trigger ? slotsElements.trigger({}) : <Button>Click</Button>}
       </div>
     </Dropdown>
   );

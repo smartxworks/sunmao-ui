@@ -91,7 +91,7 @@ export default implementRuntimeComponent({
 })(({ direction, wrap, align, justify, spacing, slotsElements, elementRef }) => {
   return (
     <BaseStack {...{ direction, wrap, align, justify, spacing }} ref={elementRef}>
-      {slotsElements.content ? <slotsElements.content /> : null}
+      {slotsElements.content ? slotsElements.content({}) : null}
     </BaseStack>
   );
 });

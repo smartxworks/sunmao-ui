@@ -44,7 +44,7 @@ export const Skeleton = implementRuntimeComponent(options)(props => {
 
   return (
     <BaseSkeleton ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content ? <slotsElements.content /> : null}
+      {slotsElements.content ? slotsElements.content({}) : null}
     </BaseSkeleton>
   );
 });

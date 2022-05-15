@@ -163,7 +163,7 @@ export default implementRuntimeComponent({
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
             <AlertDialogBody>
-              {slotsElements.content ? <slotsElements.content /> : null}
+              {slotsElements.content ? slotsElements.content({}) : null}
             </AlertDialogBody>
 
             <AlertDialogFooter>

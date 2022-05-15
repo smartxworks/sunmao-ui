@@ -88,7 +88,11 @@ export const Tabs = implementRuntimeComponent({
     >
       {tabNames.map((tabName, idx) => (
         <TabPane key={String(idx)} title={tabName}>
-          {slotsElements?.content ? <slotsElements.content tabIndex={idx} /> : null}
+          {slotsElements?.content
+            ? slotsElements.content({
+                tabIndex: idx,
+              })
+            : null}
         </TabPane>
       ))}
     </BaseTabs>

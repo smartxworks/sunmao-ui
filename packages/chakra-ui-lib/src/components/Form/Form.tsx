@@ -160,7 +160,7 @@ export default implementRuntimeComponent({
         `}
         ref={elementRef}
       >
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
         {hideSubmit ? undefined : (
           <Button
             marginInlineStart="auto !important"

@@ -69,7 +69,7 @@ export default implementRuntimeComponent({
         `}
         ref={elementRef}
       >
-        {slotsElements.content ? <slotsElements.content /> : null}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </BaseRadioGroup>
     );
   }
