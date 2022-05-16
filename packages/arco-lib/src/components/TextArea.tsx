@@ -24,6 +24,7 @@ const exampleProperties: Static<typeof TextAreaPropsSpec> = {
   error: false,
   size: 'default',
   autoSize: true,
+  updateWhenDefaultValueChanges:false
 };
 
 const options = {
@@ -48,7 +49,13 @@ const options = {
 };
 
 export const TextArea = implementRuntimeComponent(options)(props => {
-  const { getElement, customStyle, callbackMap, mergeState } = props;
+  const {
+    getElement,
+    updateWhenDefaultValueChanges,
+    customStyle,
+    callbackMap,
+    mergeState,
+  } = props;
   const { defaultValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useState(defaultValue);
   const ref = useRef<RefInputType | null>(null);
@@ -59,6 +66,13 @@ export const TextArea = implementRuntimeComponent(options)(props => {
       getElement(ele);
     }
   }, [getElement, ref]);
+
+  useEffect(() => {
+    if (updateWhenDefaultValueChanges) {
+      setValue(defaultValue);
+      mergeState({ value: defaultValue });
+    }
+  }, [defaultValue, updateWhenDefaultValueChanges]);
 
   return (
     <BaseTextArea
