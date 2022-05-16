@@ -19,6 +19,7 @@ const exampleProperties: Static<typeof InputPropsSpec> = {
   disabled: false,
   readOnly: false,
   defaultValue: '',
+  updateWhenDefaultValueChanges: false,
   placeholder: 'please input',
   error: false,
   size: 'default',
@@ -46,7 +47,14 @@ const options = {
 };
 
 export const Input = implementRuntimeComponent(options)(props => {
-  const { getElement, slotsElements, customStyle, callbackMap, mergeState } = props;
+  const {
+    getElement,
+    updateWhenDefaultValueChanges,
+    slotsElements,
+    customStyle,
+    callbackMap,
+    mergeState,
+  } = props;
   const { defaultValue, ...cProps } = getComponentProps(props);
   const ref = useRef<RefInputType | null>(null);
   const [value, setValue] = useState(defaultValue);
@@ -57,6 +65,13 @@ export const Input = implementRuntimeComponent(options)(props => {
       getElement(ele);
     }
   }, [getElement, ref]);
+
+  useEffect(() => {
+    if (updateWhenDefaultValueChanges) {
+      setValue(defaultValue);
+      mergeState({ value: defaultValue });
+    }
+  }, [defaultValue, updateWhenDefaultValueChanges]);
 
   const onChange = useCallback(
     value => {

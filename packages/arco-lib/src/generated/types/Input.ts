@@ -15,7 +15,7 @@ export const InputPropsSpec = {
   }),
   updateWhenDefaultValueChanges: Type.Boolean({
     title: 'Update When Default Value Changes',
-    category: 'Basic',
+    category: Category.Basic,
   }),
   allowClear: Type.Boolean({
     title: 'Allow Clear',

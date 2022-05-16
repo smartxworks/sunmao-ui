@@ -19,6 +19,10 @@ export const TextAreaPropsSpec = {
     title: 'Disabled',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {
     title: 'Size',
     category: Category.Style,
