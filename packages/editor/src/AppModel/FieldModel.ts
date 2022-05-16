@@ -125,7 +125,7 @@ export class FieldModel implements IFieldModel {
               if (path.startsWith('.')) {
                 path = path.slice(1, path.length);
               }
-              this.refs[lastIdentifier].push(path);
+              this.refs[lastIdentifier]?.push(path);
               break;
             default:
           }
