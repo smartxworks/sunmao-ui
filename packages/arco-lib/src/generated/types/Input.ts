@@ -13,6 +13,10 @@ export const InputPropsSpec = {
     category: Category.Basic,
     weight: 1,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   allowClear: Type.Boolean({
     title: 'Allow Clear',
     category: Category.Basic,
