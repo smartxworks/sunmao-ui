@@ -17,7 +17,23 @@ const exampleProperties: Static<typeof TabsPropsSpec> = {
   defaultActiveTab: 0,
   tabPosition: 'top',
   size: 'default',
-  tabNames: ['Tab1', 'Tab2', 'Tab3'],
+  tabs: [
+    {
+      title: 'Tab 1',
+      hidden: false,
+      destroyOnHide: true,
+    },
+    {
+      title: 'Tab 2',
+      hidden: false,
+      destroyOnHide: true,
+    },
+    {
+      title: 'Tab 3',
+      hidden: false,
+      destroyOnHide: true,
+    },
+  ],
 };
 
 export const Tabs = implementRuntimeComponent({
@@ -41,11 +57,18 @@ export const Tabs = implementRuntimeComponent({
     },
     slots: ['content'],
     styleSlots: ['content'],
-    events: [],
+    events: ['onChange', 'onClickTab'],
   },
 })(props => {
-  const { defaultActiveTab, tabNames, ...cProps } = getComponentProps(props);
-  const { getElement, customStyle, mergeState, subscribeMethods, slotsElements } = props;
+  const { defaultActiveTab, tabs, ...cProps } = getComponentProps(props);
+  const {
+    getElement,
+    callbackMap,
+    customStyle,
+    mergeState,
+    subscribeMethods,
+    slotsElements,
+  } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
   const [activeTab, setActiveTab] = useState<number>(defaultActiveTab ?? 0);
 
@@ -79,16 +102,24 @@ export const Tabs = implementRuntimeComponent({
       onChange={key => {
         setActiveTab(Number(key));
         mergeState({ activeTab: Number(key) });
+        callbackMap?.onChange?.();
+      }}
+      onClickTab={key => {
+        setActiveTab(Number(key));
+        mergeState({ activeTab: Number(key) });
+        callbackMap?.onClickTab?.();
       }}
       {...cProps}
       activeTab={String(activeTab)}
       ref={ref}
     >
-      {tabNames.map((tabName, idx) => (
-        <TabPane key={idx} title={tabName}>
-          {slots[idx]}
-        </TabPane>
-      ))}
+      {tabs.map((tab, idx) =>
+        tab.hidden ? null : (
+          <TabPane key={idx} title={tab.title} destroyOnHide={tab.destroyOnHide}>
+            {slots[idx]}
+          </TabPane>
+        )
+      )}
     </BaseTabs>
   );
 });
