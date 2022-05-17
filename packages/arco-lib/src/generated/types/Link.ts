@@ -18,7 +18,7 @@ export const LinkPropsSpec = {
     category: Category.Style,
     description: 'Whether to hide background when hover'
   }),
-  status: StringUnion(['success', 'warning', 'error'], {
+  status: StringUnion(['default','success', 'warning', 'error'], {
     title: 'Status',
     category: Category.Style,
   }),
