@@ -178,9 +178,5 @@ const ComponentTree = (props: ComponentTreeProps) => {
 };
 
 export const ComponentTreeWrapper: React.FC<Props> = observeSelected(
-  React.memo(ComponentTree, (prevProps, nextProps) => {
-    return (Object.keys(prevProps) as (keyof typeof prevProps)[]).every(
-      key => prevProps[key] === nextProps[key]
-    );
-  })
+  React.memo(ComponentTree)
 );
