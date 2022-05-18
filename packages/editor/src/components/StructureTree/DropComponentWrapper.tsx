@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
 
@@ -31,83 +31,99 @@ export const DropComponentWrapper: React.FC<Props> = props => {
   const [dragDirection, setDragDirection] = useState<'prev' | 'next' | undefined>();
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
-  const onDragOver = (e: React.DragEvent) => {
-    if (!droppable) {
-      return;
-    }
-    setIsDragOver(true);
-    e.preventDefault();
-    e.stopPropagation();
+  const onDragOver = useCallback(
+    (e: React.DragEvent) => {
+      if (!droppable) {
+        return;
+      }
+      setIsDragOver(true);
+      e.preventDefault();
+      e.stopPropagation();
 
-    if (isDropInOnly) return;
+      if (isDropInOnly) return;
 
-    const rect = ref.current?.getBoundingClientRect();
+      const rect = ref.current?.getBoundingClientRect();
 
-    if (!rect) return;
+      if (!rect) return;
 
-    if (e.clientY < rect.top + rect.height / 2) {
-      setDragDirection('prev');
-    } else if (e.clientY >= rect.top + rect.height / 2) {
-      setDragDirection('next');
-    }
-  };
+      if (e.clientY < rect.top + rect.height / 2) {
+        setDragDirection('prev');
+      } else if (e.clientY >= rect.top + rect.height / 2) {
+        setDragDirection('next');
+      }
+    },
+    [droppable, isDropInOnly]
+  );
 
-  const onDragLeave = () => {
+  const onDragLeave = useCallback(() => {
     if (!droppable) {
       return;
     }
     setDragDirection(undefined);
     setIsDragOver(false);
-  };
+  }, [droppable]);
 
-  const onDrop = (e: React.DragEvent) => {
-    if (!droppable) {
-      return;
-    }
-    e.stopPropagation();
-    e.preventDefault();
-    const creatingComponent = e.dataTransfer?.getData('component') || '';
-    const movingComponent = e.dataTransfer?.getData('moveComponent') || '';
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      if (!droppable) {
+        return;
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      const creatingComponent = e.dataTransfer?.getData('component') || '';
+      const movingComponent = e.dataTransfer?.getData('moveComponent') || '';
 
-    let targetParentId = parentId;
-    let targetParentSlot = parentSlot;
-    let targetId = componentId;
-    if (dragDirection === 'next' && isExpanded && hasSlot) {
-      targetParentId = componentId;
-      targetParentSlot = 'content';
-      targetId = undefined;
-    }
+      let targetParentId = parentId;
+      let targetParentSlot = parentSlot;
+      let targetId = componentId;
+      if (dragDirection === 'next' && isExpanded && hasSlot) {
+        targetParentId = componentId;
+        targetParentSlot = 'content';
+        targetId = undefined;
+      }
 
-    // move component before or after currentComponent
-    if (movingComponent) {
-      eventBus.send(
-        'operation',
-        genOperation(registry, 'moveComponent', {
-          fromId: movingComponent,
-          toId: targetParentId,
-          slot: targetParentSlot,
-          targetId: targetId,
-          direction: dragDirection,
-        })
-      );
-    }
+      // move component before or after currentComponent
+      if (movingComponent) {
+        eventBus.send(
+          'operation',
+          genOperation(registry, 'moveComponent', {
+            fromId: movingComponent,
+            toId: targetParentId,
+            slot: targetParentSlot,
+            targetId: targetId,
+            direction: dragDirection,
+          })
+        );
+      }
 
-    // create component as children
-    if (creatingComponent) {
-      eventBus.send(
-        'operation',
-        genOperation(registry, 'createComponent', {
-          componentType: creatingComponent,
-          parentId: targetParentId,
-          slot: targetParentSlot,
-          targetId: targetId,
-          direction: dragDirection,
-        })
-      );
-    }
-    setDragDirection(undefined);
-    setIsDragOver(false);
-  };
+      // create component as children
+      if (creatingComponent) {
+        eventBus.send(
+          'operation',
+          genOperation(registry, 'createComponent', {
+            componentType: creatingComponent,
+            parentId: targetParentId,
+            slot: targetParentSlot,
+            targetId: targetId,
+            direction: dragDirection,
+          })
+        );
+      }
+      setDragDirection(undefined);
+      setIsDragOver(false);
+    },
+    [
+      droppable,
+      dragDirection,
+      isExpanded,
+      hasSlot,
+      componentId,
+      parentId,
+      parentSlot,
+      eventBus,
+      registry,
+    ]
+  );
 
   const boxShadow = useMemo(() => {
     if (isDropInOnly) return '';
@@ -124,7 +140,7 @@ export const DropComponentWrapper: React.FC<Props> = props => {
       ref={ref}
       width="full"
       boxShadow={boxShadow}
-      background={ isDragOver ? '#ffc6c6' : undefined}
+      background={isDragOver ? '#ffc6c6' : undefined}
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}

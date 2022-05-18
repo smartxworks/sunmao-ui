@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { css } from '@emotion/css';
 import { IconButton, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
@@ -27,13 +27,74 @@ const TableRowStyle = css`
   }
 `;
 
-type Props = WidgetProps & {
+type ArrayTableProps = WidgetProps & {
   itemSpec: JSONSchema7;
 };
+type RowProps = ArrayTableProps & {
+  itemValue: any;
+  itemIndex: number;
+};
 
-export const ArrayTable: React.FC<Props> = props => {
-  const { value, itemSpec, spec, level, path, children, onChange } = props;
+const DEFAULT_KEYS = ['index'];
+
+const TableRow: React.FC<RowProps> = props => {
+  const { value, itemSpec, spec, level, path, children, itemValue, itemIndex, onChange } =
+    props;
   const { expressionOptions, displayedKeys = [] } = spec.widgetOptions || {};
+  const keys = displayedKeys.length ? displayedKeys : DEFAULT_KEYS;
+  const mergedSpec = useMemo(
+    () =>
+      mergeWidgetOptionsIntoSpec(
+        {
+          ...itemSpec,
+          title: '',
+        },
+        {
+          expressionOptions,
+        }
+      ),
+    [itemSpec, expressionOptions]
+  );
+  const nextPath = useMemo(() => path.concat(String(itemIndex)), [path, itemIndex]);
+  const onPopoverWidgetChange = useCallback(
+    (newItemValue: any) => {
+      const newValue = [...value];
+      newValue[itemIndex] = newItemValue;
+      onChange(newValue);
+    },
+    [itemIndex, onChange, value]
+  );
+
+  return (
+    <Tr className={TableRowStyle}>
+      <Td key="setting">
+        <PopoverWidget
+          {...props}
+          value={itemValue}
+          spec={mergedSpec}
+          path={nextPath}
+          level={level + 1}
+          onChange={onPopoverWidgetChange}
+        >
+          {typeof children === 'function' ? children(props, itemValue, itemIndex) : null}
+        </PopoverWidget>
+      </Td>
+      {keys.map((key: string) => {
+        const propertyValue =
+          key === 'index' ? itemValue[key] ?? itemIndex : itemValue[key];
+
+        return <Td key={key}>{propertyValue}</Td>;
+      })}
+      <Td key="button">
+        <ArrayButtonGroup index={itemIndex} value={value} onChange={onChange} />
+      </Td>
+    </Tr>
+  );
+};
+
+export const ArrayTable: React.FC<ArrayTableProps> = props => {
+  const { value, itemSpec, spec, onChange } = props;
+  const { displayedKeys = [] } = spec.widgetOptions || {};
   const keys = displayedKeys.length ? displayedKeys : ['index'];
 
   return (
@@ -63,43 +124,12 @@ export const ArrayTable: React.FC<Props> = props => {
         </Thead>
         <Tbody>
           {value.map((itemValue: any, itemIndex: number) => (
-            <Tr key={itemIndex} className={TableRowStyle}>
-              <Td key="setting">
-                <PopoverWidget
-                  {...props}
-                  value={itemValue}
-                  spec={mergeWidgetOptionsIntoSpec(
-                    {
-                      ...itemSpec,
-                      title: '',
-                    },
-                    {
-                      expressionOptions,
-                    }
-                  )}
-                  path={path.concat(String(itemIndex))}
-                  level={level + 1}
-                  onChange={(newItemValue: any) => {
-                    const newValue = [...value];
-                    newValue[itemIndex] = newItemValue;
-                    onChange(newValue);
-                  }}
-                >
-                  {typeof children === 'function'
-                    ? children(props, itemValue, itemIndex)
-                    : null}
-                </PopoverWidget>
-              </Td>
-              {keys.map((key: string) => {
-                const propertyValue =
-                  key === 'index' ? itemValue[key] ?? itemIndex : itemValue[key];
-
-                return <Td key={key}>{propertyValue}</Td>;
-              })}
-              <Td key="button">
-                <ArrayButtonGroup index={itemIndex} value={value} onChange={onChange} />
-              </Td>
-            </Tr>
+            <TableRow
+              {...props}
+              key={itemIndex}
+              itemValue={itemValue}
+              itemIndex={itemIndex}
+            />
           ))}
         </Tbody>
       </Table>
