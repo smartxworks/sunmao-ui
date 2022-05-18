@@ -29,7 +29,7 @@ export type ImplementedRuntimeTraitFactory = RuntimeTrait & {
   factory: TraitImplFactory;
 };
 
-export type ImplementedRuntimeTrait = RuntimeTrait & {
+export type ImplementedRuntimeTrait = ImplementedRuntimeTraitFactory & {
   impl: TraitImpl;
 };
 
