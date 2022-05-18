@@ -13,6 +13,7 @@ export type EventNames = {
   // it is only used for some operations' side effect
   selectComponent: string;
   HTMLElementsUpdated: undefined;
+  captureEditorScroll: undefined;
 };
 
 export const initEventBus = () => {
@@ -22,6 +23,6 @@ export const initEventBus = () => {
     off: emitter.off,
     send: emitter.emit,
   };
-}
+};
 
-export type EventBusType = ReturnType<typeof initEventBus>
+export type EventBusType = ReturnType<typeof initEventBus>;
