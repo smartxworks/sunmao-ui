@@ -24,7 +24,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
       () => {
-        return c.traits.map(t => executeTrait(t, stateManager.deepEval(t.properties)));
+        return c.traits.map(t => executeTrait(t, stateManager.deepEval(t.properties, { fallbackWhenError: () => undefined })));
       }
     );
 
@@ -49,7 +49,8 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
               newResults[i] = traitResult;
               return newResults;
             });
-          }
+          },
+          { fallbackWhenError: () => undefined }
         );
         stops.push(stop);
         properties.push(result);

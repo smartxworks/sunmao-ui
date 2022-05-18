@@ -176,6 +176,10 @@ export class Registry {
     this.modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
   }
 
+  unregisterAllTraits() {
+    this.traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
+  }
+
   registerUtilMethod<T>(m: UtilMethod<T>) {
     if (this.utilMethods.get(m.name)) {
       throw new Error(`Already has utilMethod ${m.name} in this registry.`);
