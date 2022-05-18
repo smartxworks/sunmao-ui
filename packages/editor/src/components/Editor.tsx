@@ -144,6 +144,12 @@ export const Editor: React.FC<Props> = observer(
       }
     }, [isDisplayApp]);
     const onPreview = useCallback(() => setPreview(true), []);
+    const onSelectComponent = useCallback(id => {
+      editorStore.setSelectedComponentId(id);
+    }, [editorStore]);
+    const onRightTabChange = useCallback(activatedTab => {
+      setToolMenuTab(activatedTab);
+    }, []);
 
     const renderMain = () => {
       const appBox = (
@@ -215,9 +221,7 @@ export const Editor: React.FC<Props> = observer(
                     <StructureTree
                       components={components}
                       selectedComponentId={selectedComponentId}
-                      onSelectComponent={id => {
-                        editorStore.setSelectedComponentId(id);
-                      }}
+                      onSelectComponent={onSelectComponent}
                       services={services}
                     />
                   </TabPanel>
@@ -256,9 +260,8 @@ export const Editor: React.FC<Props> = observer(
                   display="flex"
                   flexDirection="column"
                   index={toolMenuTab}
-                  onChange={activatedTab => {
-                    setToolMenuTab(activatedTab);
-                  }}
+                  onChange={onRightTabChange}
+                  isLazy
                 >
                   <TabList background="gray.50">
                     <Tab>Inspect</Tab>

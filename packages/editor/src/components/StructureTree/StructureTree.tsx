@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { ComponentTree } from './ComponentTree';
+import { ComponentTreeWrapper } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
@@ -33,27 +33,26 @@ export const StructureTree: React.FC<Props> = props => {
       resolveApplicationComponents(realComponents);
 
     return topLevelComponents.map(c => (
-      <ComponentTree
+      <ComponentTreeWrapper
         key={c.id}
         component={c}
         parentId={undefined}
         slot={undefined}
         childrenMap={childrenMap}
-        selectedComponentId={selectedComponentId}
         onSelectComponent={onSelectComponent}
         services={services}
         isAncestorDragging={false}
         depth={0}
       />
     ));
-  }, [realComponents, selectedComponentId, onSelectComponent, services]);
+  }, [realComponents, onSelectComponent, services]);
 
   useEffect(() => {
     wrapperRef.current
       ?.querySelector(`#tree-item-${selectedComponentId}`)
       ?.scrollIntoView({
-        behavior:'smooth',
-        block:'center'
+        block: 'nearest',
+        inline: 'nearest'
       });
   }, [selectedComponentId]);
 
