@@ -134,10 +134,9 @@ export const Editor: React.FC<Props> = observer(
     }, [activeDataSource, services, activeDataSourceType]);
 
     const onRefresh = useCallback(() => {
-      services.stateManager.clear();
       setIsDisplayApp(false);
       onRefreshApp();
-    }, [services.stateManager, onRefreshApp]);
+    }, [onRefreshApp]);
     useEffect(() => {
       // Wait until the app is completely unmounted before remounting it
       if (isDisplayApp === false) {

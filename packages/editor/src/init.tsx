@@ -99,7 +99,14 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   const Editor: React.FC = () => {
     const [store, setStore] = useState(stateManager.store);
     const onRefresh = useCallback(() => {
+      const traits = registry.getAllTraits();
+      
+      stateManager.clear();
       setStore(stateManager.store);
+      registry.unregisterAllTraits();
+      traits.forEach(trait => {
+        registry.registerTrait(trait);
+      });
     }, []);
 
     return (
