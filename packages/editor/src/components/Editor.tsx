@@ -160,8 +160,6 @@ export const Editor: React.FC<Props> = observer(
             flexDirection="column"
             width="full"
             height="full"
-            overflow="auto"
-            padding="20px"
             transform={`scale(${scale / 100})`}
             position="relative"
           >

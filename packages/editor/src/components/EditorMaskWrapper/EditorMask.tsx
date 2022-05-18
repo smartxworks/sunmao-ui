@@ -132,6 +132,10 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
       observeResize(eleMap);
       updateCoordinateSystem(eleMap);
     });
+
+    eventBus.on('captureEditorScroll', () => {
+      updateCoordinateSystem(eleMap);
+    });
   }, [eleMap, eventBus, observeResize, updateCoordinateSystem]);
 
   // listen elements resize and update coordinates
