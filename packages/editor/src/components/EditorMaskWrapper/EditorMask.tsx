@@ -57,6 +57,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const maskContainerRect = useRef<DOMRect>();
   const [coordinates, setCoordinates] = useState<Record<string, DOMRect>>({});
   const [coordinatesOffset, setCoordinatedOffset] = useState<[number, number]>([0, 0]);
+  const visibleMap = useRef(new Map<Element, boolean>());
 
   // establish the coordinateSystem by getting all the rect of elements,
   // and recording the current scroll Offset
@@ -87,12 +88,12 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
       }
 
       const foregroundEleMap = modalEleMap.size > 0 ? modalEleMap : eleMap;
-
-      for (const id of foregroundEleMap.keys()) {
-        const ele = eleMap.get(id)!;
-        const rect = ele.getBoundingClientRect();
-        _rects[id] = rect;
-      }
+      foregroundEleMap.forEach((ele, id) => {
+        if (visibleMap.current.get(ele)) {
+          const rect = ele.getBoundingClientRect();
+          _rects[id] = rect;
+        }
+      });
       maskContainerRect.current = maskContainerRef.current?.getBoundingClientRect();
       setCoordinates(_rects);
       setCoordinatedOffset([wrapperRef.current.scrollLeft, wrapperRef.current.scrollTop]);
@@ -118,33 +119,64 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
     },
     [resizeObserver]
   );
+  const intersectionObserver = useMemo(() => {
+    const debouncedUpdateRects = debounce(updateCoordinateSystem, 50);
+
+    const options = {
+      root: document.getElementById('editor-mask-wrapper'),
+      rootMargin: '0px',
+      threshold: buildThresholdList(),
+    };
+
+    return new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        visibleMap.current.set(e.target, e.isIntersecting);
+      });
+      console.log('visibleMap', visibleMap);
+      debouncedUpdateRects(eleMap);
+    }, options);
+  }, [eleMap, updateCoordinateSystem]);
+
+  const observeIntersect = useCallback(
+    (eleMap: Map<string, HTMLElement>) => {
+      eleMap.forEach(ele => {
+        intersectionObserver.observe(ele);
+      });
+    },
+    [intersectionObserver]
+  );
 
   // because this useEffect would run after sunmao didMount hook, so it cannot subscribe the first HTMLElementsUpdated event
   // we should call the callback function after first render
   useEffect(() => {
     observeResize(eleMap);
+    observeIntersect(eleMap);
     updateCoordinateSystem(eleMap);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     eventBus.on('HTMLElementsUpdated', () => {
       observeResize(eleMap);
+      observeIntersect(eleMap);
       updateCoordinateSystem(eleMap);
     });
 
     eventBus.on('captureEditorScroll', () => {
       updateCoordinateSystem(eleMap);
     });
-  }, [eleMap, eventBus, observeResize, updateCoordinateSystem]);
+  }, [eleMap, eventBus, observeIntersect, observeResize, updateCoordinateSystem]);
 
   // listen elements resize and update coordinates
   useEffect(() => {
     observeResize(eleMap);
+    observeIntersect(eleMap);
     return () => {
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
     };
-  }, [eleMap, observeResize, resizeObserver]);
+  }, [eleMap, intersectionObserver, observeIntersect, observeResize, resizeObserver]);
 
   const hoverComponentId = useMemo(() => {
     const where = whereIsMouse(
@@ -255,6 +287,7 @@ export function whereIsMouse(
     id: '',
     sum: 0,
   };
+  console.log(left, top, rects)
   for (const id in rects) {
     const rect = rects[id];
     if (
@@ -265,10 +298,23 @@ export function whereIsMouse(
     ) {
       continue;
     }
-    const sum = rect.top + rect.left;
+    const sum = (top - rect.top) + (left - rect.left);
     if (sum > nearest.sum) {
       nearest = { id, sum };
     }
   }
+  console.log('nearest.id', nearest.id);
   return nearest.id;
+}
+function buildThresholdList() {
+  const thresholds: number[] = [];
+  const numSteps = 20;
+
+  for (let i = 1.0; i <= numSteps; i++) {
+    const ratio = i / numSteps;
+    thresholds.push(ratio);
+  }
+
+  thresholds.push(0);
+  return thresholds;
 }

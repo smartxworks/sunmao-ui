@@ -162,6 +162,7 @@ export const Editor: React.FC<Props> = observer(
             height="full"
             transform={`scale(${scale / 100})`}
             position="relative"
+            overflow='hidden'
           >
             <EditorMaskWrapper services={services}>
               {appComponent}
