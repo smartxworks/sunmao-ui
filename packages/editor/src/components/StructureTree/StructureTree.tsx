@@ -103,7 +103,9 @@ export const StructureTree: React.FC<Props> = props => {
         </AutoComplete>
       </VStack>
       <Box width="full" flex={1} minHeight={0} overflowY="auto" overflowX="hidden">
-        {componentEles.length > 0 ? componentEles : <Placeholder services={services} />}
+        {componentEles.length > 0 ? componentEles : (<Box padding="4">
+          <Placeholder services={services} />
+        </Box>)}
       </Box>
     </VStack>
   );
