@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentTreeWrapper } from './ComponentTree';
@@ -12,7 +12,7 @@ import {
   AutoCompleteInput,
   AutoCompleteItem,
   AutoCompleteList,
-  type Item
+  type Item,
 } from '@choc-ui/chakra-autocomplete';
 import { css } from '@emotion/css';
 
@@ -32,25 +32,34 @@ const AutoCompleteStyle = css`
 `;
 
 export const StructureTree: React.FC<Props> = props => {
+  const [search, setSearch] = useState('');
   const { components, onSelectComponent, services } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
-  
-  const onSelectOption = useCallback(({item}: {item: Item}) => {
-    onSelectComponent(item.value);
-  }, [onSelectComponent]);
-  const onSelected = useCallback((selectedId)=> {
+
+  const onSelectOption = useCallback(
+    ({ item }: { item: Item }) => {
+      onSelectComponent(item.value);
+      setSearch(item.value);
+    },
+    [onSelectComponent]
+  );
+  const onSelected = useCallback(selectedId => {
     if (selectedId) {
       // wait the component tree to be expanded
-      setTimeout(()=> {
-        wrapperRef.current
-          ?.querySelector(`#tree-item-${selectedId}`)
-          ?.scrollIntoView({
-            block: 'nearest',
-            inline: 'nearest'
-          });
+      setTimeout(() => {
+        wrapperRef.current?.querySelector(`#tree-item-${selectedId}`)?.scrollIntoView({
+          block: 'nearest',
+          inline: 'nearest',
+        });
       });
     }
   }, []);
+  const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    event => {
+      setSearch(event.target.value);
+    },
+    []
+  );
 
   const realComponents = useMemo(() => {
     return components.filter(
@@ -91,21 +100,36 @@ export const StructureTree: React.FC<Props> = props => {
         <Text fontSize="lg" fontWeight="bold">
           Components
         </Text>
-        <AutoComplete openOnFocus  onSelectOption={onSelectOption} className={AutoCompleteStyle}>
-          <AutoCompleteInput placeholder="please input the component id" size="md" variant="filled" marginTop={0} />
+        <AutoComplete
+          openOnFocus
+          onSelectOption={onSelectOption}
+          className={AutoCompleteStyle}
+        >
+          <AutoCompleteInput
+            value={search}
+            placeholder="please input the component id"
+            size="md"
+            variant="filled"
+            marginTop={0}
+            onChange={onSearchChange}
+          />
           <AutoCompleteList>
             {realComponents.map(component => (
               <AutoCompleteItem key={component.id} value={component.id}>
                 {component.id}
               </AutoCompleteItem>
-          ))}
+            ))}
           </AutoCompleteList>
         </AutoComplete>
       </VStack>
       <Box width="full" flex={1} minHeight={0} overflowY="auto" overflowX="hidden">
-        {componentEles.length > 0 ? componentEles : (<Box padding="4">
-          <Placeholder services={services} />
-        </Box>)}
+        {componentEles.length > 0 ? (
+          componentEles
+        ) : (
+          <Box padding="4">
+            <Placeholder services={services} />
+          </Box>
+        )}
       </Box>
     </VStack>
   );
