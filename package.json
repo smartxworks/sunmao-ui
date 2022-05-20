@@ -8,11 +8,17 @@
     "lint": "eslint packages --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix packages --ext .ts --ext .tsx",
     "release": "lerna publish",
-    "release:canary": "branch=$(git rev-parse --abbrev-ref HEAD); lerna publish --canary --preid $branch"
+    "release:canary": "branch=$(git rev-parse --abbrev-ref HEAD); lerna publish --canary --preid $branch",
+    "commit": "git cz",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
+    "commitizen": "^4.0.4",
+    "cz-customizable": "^6.2.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
@@ -30,7 +36,8 @@
   ],
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --edit $1"
     }
   },
   "lint-staged": {
