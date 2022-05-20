@@ -13,7 +13,6 @@ export type EventNames = {
   // it is only used for some operations' side effect
   selectComponent: string;
   HTMLElementsUpdated: undefined;
-  captureEditorScroll: undefined;
 };
 
 export const initEventBus = () => {
