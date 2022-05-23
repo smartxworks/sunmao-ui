@@ -13,19 +13,20 @@ import {
 import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
-import {
-  CORE_VERSION,
-  CoreComponentName,
-} from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { isEqual } from 'lodash-es';
 
 type EditingTarget = {
   kind: 'app' | 'module';
   version: string;
   name: string;
+  spec?: {
+    properties?: Record<string, any>;
+  };
 };
 
 export class EditorStore {
+  globalDependencies: Record<string, unknown> = {};
   components: ComponentSchema[] = [];
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
@@ -57,6 +58,7 @@ export class EditorStore {
     private stateManager: StateManagerInterface,
     public appStorage: AppStorage
   ) {
+    this.globalDependencies = this.stateManager.dependencies;
     this.schemaValidator = new SchemaValidator(this.registry);
     makeAutoObservable(this, {
       eleMap: false,
@@ -79,7 +81,6 @@ export class EditorStore {
     reaction(
       () => this.currentEditingTarget,
       (target, prevTarget) => {
-
         if (isEqual(prevTarget, target)) {
           return;
         }
@@ -92,6 +93,14 @@ export class EditorStore {
 
           this.setComponents(this.originComponents);
           this.setSelectedComponentId(this.originComponents[0]?.id || '');
+          const evaledDependencies = stateManager.deepEval(
+            target.spec?.properties || {},
+            { fallbackWhenError: () => undefined }
+          );
+          this.stateManager.setDependencies({
+            ...this.globalDependencies,
+            ...evaledDependencies,
+          });
         }
       }
     );
@@ -181,7 +190,9 @@ export class EditorStore {
   }
 
   get activeDataSource(): ComponentSchema | null {
-    return this.components.find((component) => component.id === this.activeDataSourceId) || null;
+    return (
+      this.components.find(component => component.id === this.activeDataSourceId) || null
+    );
   }
 
   get activeDataSourceType(): DataSourceType | null {
@@ -224,12 +235,14 @@ export class EditorStore {
   updateCurrentEditingTarget = (
     kind: 'app' | 'module',
     version: string,
-    name: string
+    name: string,
+    spec?: EditingTarget['spec']
   ) => {
     this.currentEditingTarget = {
       kind,
       name,
       version,
+      spec,
     };
   };
 
