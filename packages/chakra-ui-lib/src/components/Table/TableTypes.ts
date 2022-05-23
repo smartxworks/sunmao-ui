@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { ModuleSpec, EventCallBackHandlerSpec } from '@sunmao-ui/runtime';
+import { ModuleRenderSpec, EventCallBackHandlerSpec } from '@sunmao-ui/shared';
 import { BASIC, APPEARANCE, BEHAVIOR } from '../constants/category';
 
 export const MajorKeyPropertySpec = Type.String({
@@ -71,7 +71,7 @@ export const ColumnSpec = Type.Object(
         ],
       }
     ),
-    module: { ...ModuleSpec, conditions: [{ key: 'type', value: 'module' }] },
+    module: { ...ModuleRenderSpec, conditions: [{ key: 'type', value: 'module' }] },
   },
   {
     title: 'Column',
