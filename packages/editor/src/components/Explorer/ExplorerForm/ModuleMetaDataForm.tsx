@@ -9,6 +9,7 @@ export type ModuleMetaDataFormData = {
   name: string;
   version: string;
   stateMap: Record<string, string>;
+  properties: Record<string, any>;
 };
 
 type ModuleMetaDataFormProps = {
@@ -58,6 +59,17 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
             value={formik.values.stateMap}
             onChange={json => {
               formik.setFieldValue('stateMap', json);
+              formik.submitForm();
+            }}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Module Mock Properties</FormLabel>
+          <RecordEditor
+            services={services}
+            value={formik.values.properties}
+            onChange={json => {
+              formik.setFieldValue('properties', json);
               formik.submitForm();
             }}
           />
