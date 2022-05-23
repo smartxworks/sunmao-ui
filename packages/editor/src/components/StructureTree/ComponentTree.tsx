@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { ComponentItemView } from './ComponentItemView';
@@ -14,6 +14,7 @@ type Props = {
   slot: string | undefined;
   childrenMap: ChildrenMap;
   onSelectComponent: (id: string) => void;
+  onSelected?: (id: string) => void;
   services: EditorServices;
   isAncestorDragging: boolean;
   depth: number;
@@ -24,12 +25,18 @@ type ComponentTreeProps = Props & {
 
 const observeSelected = (Component: React.FC<ComponentTreeProps>) => {
   const ObserveActive: React.FC<Props> = props => {
-    const { services } = props;
+    const { services, component, onSelected } = props;
     const { editorStore } = services;
     const { selectedComponentId } = editorStore;
 
+    useEffect(() => {
+      if (selectedComponentId === component.id) {
+        onSelected?.(selectedComponentId);
+      }
+    }, [selectedComponentId, component.id, onSelected]);
+
     return (
-      <Component {...props} isSelected={selectedComponentId === props.component.id} />
+      <Component {...props} isSelected={selectedComponentId === component.id} />
     );
   };
 
@@ -44,6 +51,7 @@ const ComponentTree = (props: ComponentTreeProps) => {
     slot,
     isSelected,
     onSelectComponent,
+    onSelected,
     services,
     isAncestorDragging,
     depth,
@@ -52,6 +60,11 @@ const ComponentTree = (props: ComponentTreeProps) => {
   const slots = registry.getComponentByType(component.type).spec.slots;
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+
+  const onChildSelected = useCallback((selectedId) => {
+    setIsExpanded(true);
+    onSelected?.(selectedId);
+  }, [onSelected]);
 
   const slotsEle = useMemo(() => {
     if (slots.length === 0) {
@@ -71,6 +84,7 @@ const ComponentTree = (props: ComponentTreeProps) => {
               slot={_slot}
               childrenMap={childrenMap}
               onSelectComponent={onSelectComponent}
+              onSelected={onChildSelected}
               services={services}
               isAncestorDragging={isAncestorDragging || isDragging}
               depth={depth + 1}
@@ -89,7 +103,7 @@ const ComponentTree = (props: ComponentTreeProps) => {
             droppable={!isAncestorDragging && !isDragging}
             hasSlot={true}
           >
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="gray.500" paddingLeft="6" paddingY={1}>
               Empty
             </Text>
           </DropComponentWrapper>
@@ -97,13 +111,13 @@ const ComponentTree = (props: ComponentTreeProps) => {
       }
 
       const slotName = (
-        <Text color="gray.500" fontWeight="medium">
+        <Text color="gray.500" fontSize={12} fontWeight="medium" paddingLeft="3">
           Slot: {_slot}
         </Text>
       );
 
       return (
-        <Box key={_slot} paddingLeft="3" width="full">
+        <Box key={_slot} paddingLeft="3" width="full" display={isExpanded ? '' : 'none'}>
           {/* although component can have multiple slots, but for now, most components have only one slot
         so we hide slot name to save more view area */}
           {slots.length > 1 ? slotName : undefined}
@@ -118,6 +132,7 @@ const ComponentTree = (props: ComponentTreeProps) => {
     childrenMap,
     component.id,
     onSelectComponent,
+    onChildSelected,
     services,
     isAncestorDragging,
     isDragging,
@@ -172,7 +187,7 @@ const ComponentTree = (props: ComponentTreeProps) => {
           depth={depth}
         />
       </DropComponentWrapper>
-      {isExpanded ? slotsEle : undefined}
+      {slotsEle}
     </VStack>
   );
 };
