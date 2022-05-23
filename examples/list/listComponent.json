@@ -1,0 +1,224 @@
+{
+  "modules": [{
+    "version": "core/v1",
+    "kind": "Module",
+    "parsedVersion": {
+      "category": "core/v1",
+      "value": "littleItem"
+    },
+    "metadata": {
+      "name": "littleItem"
+    },
+    "spec": {
+      "properties": {},
+      "events": ["onEdit"],
+      "stateMap": {
+        "value": "{{ $moduleId }}__input.value"
+      }
+    },
+    "impl": [
+      {
+        "id": "{{ $moduleId }}__hstack",
+        "type": "chakra_ui/v1/hstack",
+        "properties": {},
+        "traits": []
+      },
+      {
+        "id": "{{ $moduleId }}__text",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "**{{value}}**",
+            "format": "md"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "{{ $moduleId }}__hstack",
+                "slot": "content"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "{{ $moduleId }}__inputValueText",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "**{{ {{ $moduleId }}__input.value }}**",
+            "format": "md"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "{{ $moduleId }}__hstack",
+                "slot": "content"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "{{ $moduleId }}__input",
+        "type": "chakra_ui/v1/input",
+        "properties": {},
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "{{ $moduleId }}__hstack",
+                "slot": "content"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "{{ $moduleId }}__button",
+        "type": "chakra_ui/v1/button",
+        "properties": {
+          "text": {
+            "raw": "click{{value}}",
+            "format": "md"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/event",
+            "properties": {
+              "handlers": [
+                {
+                  "type": "onClick",
+                  "componentId": "$module",
+                  "method": {
+                    "name": "onEdit",
+                    "parameters": {
+                      "moduleId": "{{$moduleId}}"
+                    }
+                  },
+                  "wait": {},
+                  "disabled": false
+                }
+              ]
+            }
+          },
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "{{ $moduleId }}__hstack",
+                "slot": "content"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }],
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "list_component",
+      "description": "list component example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "root",
+          "type": "chakra_ui/v1/root",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "listTitle",
+                "initialValue": "客户列表"
+              }
+            },
+            {
+              "type": "core/v1/arrayState",
+              "properties": {
+                "key": "listData",
+                "initialValue": [
+                  {
+                    "id": 1,
+                    "name": "马云",
+                    "email": "jack.ma@deck.com"
+                  },
+                  {
+                    "id": 2,
+                    "name": "马化腾",
+                    "email": "pony.ma@conversation.com"
+                  },
+                  {
+                    "id": 3,
+                    "name": "李彦宏",
+                    "email": "robin.li@response.com"
+                  },
+                  {
+                    "id": 4,
+                    "name": "张一鸣",
+                    "email": "yiming.zhang@example.com"
+                  },
+                  {
+                    "id": 5,
+                    "name": "王兴",
+                    "email": "xing.wang@widget.org"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "type": "core/v1/list",
+          "properties": {
+            "listData": "{{ root.listData }}",
+            "template": {
+              "id": "littleItem{{$listItem.id}}",
+              "type": "chakra_ui/v1/button",
+              "properties": {
+                "text": {
+                  "raw": "{{$listItem.name}}",
+                  "format": "md"
+                }
+              },
+              "handlers": [
+                {
+                  "type": "onClick",
+                  "componentId": "$utils",
+                  "method": {
+                    "name": "alert",
+                    "parameters": "listen module event：{{ $listItem.name }}!"
+                  },
+                  "wait": {},
+                  "disabled": false
+                }
+              ]
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
