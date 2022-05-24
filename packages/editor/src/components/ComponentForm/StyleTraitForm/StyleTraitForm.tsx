@@ -16,6 +16,7 @@ import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import { SizeField } from '@sunmao-ui/editor-sdk';
 
 type Props = {
   component: ComponentSchema;
@@ -127,6 +128,25 @@ export const StyleTraitForm: React.FC<Props> = props => {
       };
       return (
         <VStack key={`${styleSlot}-${i}`} css={formWrapperCSS} width="full" spacing="2">
+          <FormControl>
+            <FormLabel marginInlineEnd="0">
+              <HStack width="full" justify="space-between">
+                <Text>Size</Text>
+                <IconButton
+                  aria-label="remove style"
+                  size="sm"
+                  variant="ghost"
+                  colorScheme="red"
+                  icon={<CloseIcon />}
+                  onClick={removeStyle}
+                />
+              </HStack>
+            </FormLabel>
+            <SizeField
+              value={{ width: '123px', height: '666px' }}
+              onChange={() => console.log('hhh')}
+            />
+          </FormControl>
           <FormControl id={styleSlot}>
             <FormLabel marginInlineEnd="0">
               <HStack width="full" justify="space-between">
