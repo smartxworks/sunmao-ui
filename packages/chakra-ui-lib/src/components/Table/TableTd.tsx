@@ -1,3 +1,4 @@
+import React from 'react';
 import { RuntimeApplication } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSpec, ColumnsPropertySpec } from './TableTypes';
@@ -17,7 +18,7 @@ export const TableTd: React.FC<{
   rawColumn: Static<typeof ColumnsPropertySpec>[0];
   onClickItem: () => void;
   services: UIServices;
-  app?: RuntimeApplication;
+  app: RuntimeApplication;
 }> = props => {
   const { item, index, column, rawColumn, onClickItem, services, app } = props;
   const evalOptions = {

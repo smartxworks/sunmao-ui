@@ -19,7 +19,7 @@ import { ExpressionError } from '../../services/StateManager';
 type Props = Static<typeof ModuleRenderSpec> & {
   evalScope?: Record<string, any>;
   services: UIServices;
-  app?: RuntimeApplication;
+  app: RuntimeApplication;
 };
 
 export const ModuleRenderer = React.forwardRef<HTMLDivElement, Props>((props, ref) => {

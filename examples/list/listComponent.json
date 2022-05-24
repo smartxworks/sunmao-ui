@@ -1,128 +1,5 @@
 {
-  "modules": [{
-    "version": "core/v1",
-    "kind": "Module",
-    "parsedVersion": {
-      "category": "core/v1",
-      "value": "littleItem"
-    },
-    "metadata": {
-      "name": "littleItem"
-    },
-    "spec": {
-      "properties": {},
-      "events": ["onEdit"],
-      "stateMap": {
-        "value": "{{ $moduleId }}__input.value"
-      }
-    },
-    "impl": [
-      {
-        "id": "{{ $moduleId }}__hstack",
-        "type": "chakra_ui/v1/hstack",
-        "properties": {},
-        "traits": []
-      },
-      {
-        "id": "{{ $moduleId }}__text",
-        "type": "core/v1/text",
-        "properties": {
-          "value": {
-            "raw": "**{{value}}**",
-            "format": "md"
-          }
-        },
-        "traits": [
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "{{ $moduleId }}__inputValueText",
-        "type": "core/v1/text",
-        "properties": {
-          "value": {
-            "raw": "**{{ {{ $moduleId }}__input.value }}**",
-            "format": "md"
-          }
-        },
-        "traits": [
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "{{ $moduleId }}__input",
-        "type": "chakra_ui/v1/input",
-        "properties": {},
-        "traits": [
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "{{ $moduleId }}__button",
-        "type": "chakra_ui/v1/button",
-        "properties": {
-          "text": {
-            "raw": "click{{value}}",
-            "format": "md"
-          }
-        },
-        "traits": [
-          {
-            "type": "core/v1/event",
-            "properties": {
-              "handlers": [
-                {
-                  "type": "onClick",
-                  "componentId": "$module",
-                  "method": {
-                    "name": "onEdit",
-                    "parameters": {
-                      "moduleId": "{{$moduleId}}"
-                    }
-                  },
-                  "wait": {},
-                  "disabled": false
-                }
-              ]
-            }
-          },
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      }
-    ]
-  }],
+  "modules": [],
   "app": {
     "version": "example/v1",
     "metadata": {
@@ -182,29 +59,7 @@
           "id": "list",
           "type": "core/v1/list",
           "properties": {
-            "listData": "{{ root.listData }}",
-            "template": {
-              "id": "littleItem{{$listItem.id}}",
-              "type": "chakra_ui/v1/button",
-              "properties": {
-                "text": {
-                  "raw": "{{$listItem.name}}",
-                  "format": "md"
-                }
-              },
-              "handlers": [
-                {
-                  "type": "onClick",
-                  "componentId": "$utils",
-                  "method": {
-                    "name": "alert",
-                    "parameters": "listen module event：{{ $listItem.name }}!"
-                  },
-                  "wait": {},
-                  "disabled": false
-                }
-              ]
-            }
+            "listData": "{{ root.listData }}"
           },
           "traits": [
             {
@@ -213,6 +68,51 @@
                 "container": {
                   "id": "root",
                   "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "listSlot",
+          "type": "chakra_ui/v1/button",
+          "properties": {
+            "text": {
+              "raw": "我是Slot{{$slot.$listItem.name}}",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "$utils",
+                    "method": {
+                      "name": "chakra_ui/v1/openToast",
+                      "parameters": {
+                        "id": "createSuccessToast",
+                        "title": "Tost",
+                        "description": "data{{$slot.$listItem.name}}",
+                        "position": "bottom-right",
+                        "duration": null,
+                        "isClosable": true
+                      }
+                    },
+                    "wait": {},
+                    "disabled": false
+                  }
+                ]
+              }
+            },
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "list",
+                  "slot": "content"
                 }
               }
             }
