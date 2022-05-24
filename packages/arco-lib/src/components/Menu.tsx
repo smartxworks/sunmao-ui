@@ -4,7 +4,8 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { MenuPropsSpec as BaseMenuPropsSpec } from '../generated/types/Menu';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useStateValue } from '../hooks/useStateValue';
 
 const MenuPropsSpec = Type.Object({
   ...BaseMenuPropsSpec,
@@ -25,6 +26,7 @@ const exampleProperties: Static<typeof MenuPropsSpec> = {
   ],
   ellipsis: false,
   defaultActiveKey: 'key1',
+  updateWhenDefaultValueChanges: false,
 };
 
 export const Menu = implementRuntimeComponent({
@@ -49,12 +51,18 @@ export const Menu = implementRuntimeComponent({
   },
 })(props => {
   const { elementRef, customStyle, callbackMap, mergeState, subscribeMethods } = props;
-  const { items = [], defaultActiveKey, ...cProps } = getComponentProps(props);
-  const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
-
-  useEffect(() => {
-    setActiveKey(defaultActiveKey ?? 0);
-  }, [defaultActiveKey]);
+  const {
+    items = [],
+    defaultActiveKey,
+    updateWhenDefaultValueChanges,
+    ...cProps
+  } = getComponentProps(props);
+  const [activeKey, setActiveKey] = useStateValue(
+    defaultActiveKey ?? 0,
+    mergeState,
+    updateWhenDefaultValueChanges,
+    'activeKey'
+  );
 
   useEffect(() => {
     subscribeMethods({

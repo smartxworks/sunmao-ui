@@ -27,7 +27,7 @@ const exampleProperties: Static<typeof StepsPropsSpec> = {
   ],
 };
 
-const options = {
+export const Steps = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -46,9 +46,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Steps = implementRuntimeComponent(options)(props => {
+})(props => {
   const { items, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 

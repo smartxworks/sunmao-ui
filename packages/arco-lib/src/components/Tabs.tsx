@@ -4,7 +4,8 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TabsPropsSpec as BaseTabsPropsSpec } from '../generated/types/Tabs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const TabsPropsSpec = Type.Object(BaseTabsPropsSpec);
 const TabsStateSpec = Type.Object({
@@ -17,6 +18,7 @@ const exampleProperties: Static<typeof TabsPropsSpec> = {
   defaultActiveTab: 0,
   tabPosition: 'top',
   size: 'default',
+  updateWhenDefaultValueChanges: false,
   tabs: [
     {
       title: 'Tab 1',
@@ -60,7 +62,8 @@ export const Tabs = implementRuntimeComponent({
     events: ['onChange', 'onClickTab'],
   },
 })(props => {
-  const { defaultActiveTab, tabs, ...cProps } = getComponentProps(props);
+  const { defaultActiveTab, updateWhenDefaultValueChanges, tabs, ...cProps } =
+    getComponentProps(props);
   const {
     getElement,
     callbackMap,
@@ -70,11 +73,12 @@ export const Tabs = implementRuntimeComponent({
     slotsElements,
   } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
-  const [activeTab, setActiveTab] = useState<number>(defaultActiveTab ?? 0);
-
-  useEffect(() => {
-    mergeState({ activeTab: defaultActiveTab });
-  }, []);
+  const [activeTab, setActiveTab] = useStateValue<number>(
+    defaultActiveTab ?? 0,
+    mergeState,
+    updateWhenDefaultValueChanges,
+    'activeTab'
+  );
 
   useEffect(() => {
     const ele = ref.current?.current;

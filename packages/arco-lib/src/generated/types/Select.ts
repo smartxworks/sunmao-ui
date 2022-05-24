@@ -23,9 +23,17 @@ export const SelectPropsSpec = {
     }),
     {
       title: 'Options',
-      category: Category.Data
+      category: Category.Data,
+      widgetOptions:{
+        displayedKeys:['value']
+      }
     }
   ),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+    weight:6
+  }),
   multiple: Type.Boolean({
     title: 'Multiple',
     category: Category.Basic,

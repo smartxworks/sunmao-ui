@@ -4,7 +4,7 @@ import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PaginationPropsSpec as BasePaginationPropsSpec } from '../generated/types/Pagination';
-import { useEffect, useState } from 'react';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const PaginationPropsSpec = Type.Object(BasePaginationPropsSpec);
 const PaginationStateSpec = Type.Object({
@@ -22,9 +22,10 @@ const exampleProperties: Static<typeof PaginationPropsSpec> = {
   simple: false,
   showJumper: false,
   showTotal: false,
+  updateWhenDefaultValueChanges: false,
 };
 
-const options = {
+export const Pagination = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -43,21 +44,21 @@ const options = {
     styleSlots: ['content'],
     events: ['onChange'],
   },
-};
-
-export const Pagination = implementRuntimeComponent(options)(props => {
-  const { defaultCurrent, ...cProps } = getComponentProps(props);
+})(props => {
+  const { defaultCurrent, updateWhenDefaultValueChanges, ...cProps } =
+    getComponentProps(props);
   const { elementRef, customStyle, mergeState, callbackMap } = props;
 
-  const [current, setCurrent] = useState<number>(defaultCurrent || 0);
+  const [current, setCurrent] = useStateValue<number>(
+    defaultCurrent || 0,
+    mergeState,
+    updateWhenDefaultValueChanges,
+    'currentPage'
+  );
 
   if (cProps.sizeCanChange) {
     Reflect.deleteProperty(cProps, 'pageSize');
   }
-
-  useEffect(() => {
-    mergeState({ currentPage: current });
-  }, []);
 
   const handleChange = (pageNum: number) => {
     setCurrent(pageNum);

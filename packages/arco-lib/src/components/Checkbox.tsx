@@ -7,7 +7,8 @@ import {
 } from '../generated/types/Checkbox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { css } from '@emotion/css';
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
+import { useStateValue } from '../hooks/useStateValue';
 
 const CheckboxPropsSpec = Type.Object({
   ...BaseCheckboxPropsSpec,
@@ -36,9 +37,10 @@ const exampleProperties = {
   defaultCheckedValues: ['checkbox1'],
   showCheckAll: false,
   checkAllText: 'Check all',
+  updateWhenDefaultValueChanges: false,
 };
 
-const options = {
+export const Checkbox = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -66,19 +68,23 @@ const options = {
     slots: [],
     events: ['onChange'],
   },
-};
-
-export const Checkbox = implementRuntimeComponent(options)(props => {
+})(props => {
   const { elementRef, mergeState, subscribeMethods, callbackMap, customStyle } = props;
   const {
+    updateWhenDefaultValueChanges,
     options = [],
     defaultCheckedValues,
     showCheckAll,
     checkAllText,
     ...checkboxProps
   } = getComponentProps(props);
-  const [checkedValues, setCheckedValues] = useState<string[]>([]);
-  const [isInit, setIsInit] = useState<boolean>(false);
+
+  const [checkedValues, setCheckedValues] = useStateValue<string[]>(
+    defaultCheckedValues,
+    mergeState,
+    updateWhenDefaultValueChanges,
+    'checkedValues'
+  );
   const enabledOptions = useMemo(
     () => options.filter(({ disabled }) => !disabled),
     [options]
@@ -134,16 +140,6 @@ export const Checkbox = implementRuntimeComponent(options)(props => {
       uncheckAll();
     }
   };
-
-  useEffect(() => {
-    if (!isInit) {
-      setIsInit(true);
-      setCheckedValues(defaultCheckedValues);
-      mergeState({
-        checkedValues: defaultCheckedValues,
-      });
-    }
-  }, [defaultCheckedValues, mergeState, isInit]);
 
   useEffect(() => {
     subscribeMethods({
