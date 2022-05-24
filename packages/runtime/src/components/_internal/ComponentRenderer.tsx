@@ -9,14 +9,16 @@ import { initStateAndMethod } from '../../utils/initStateAndMethod';
 type Props = Static<typeof ModuleRenderSpec> & {
   evalScope?: Record<string, any>;
   services: UIServices;
-  app?: RuntimeApplication;
+  app: RuntimeApplication;
+  traits: any;
 };
 
 export const ComponentRenderer = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { type } = props;
   try {
     return <ComponentRendererContent {...props} ref={ref} />;
-  } catch {
+  } catch (e) {
+    console.log(e);
     return <div ref={ref}>Cannot find Module {type}.</div>;
   }
 });
@@ -37,16 +39,17 @@ const ComponentRendererContent = React.forwardRef<HTMLDivElement, Props>((props,
 
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
+  const evaledTraits = evalObject(props.traits);
 
   const componentSchema: RuntimeComponentSchema = useMemo(() => {
     return {
       id: componentId,
       properties: evaledProperties,
       type: props.type,
-      traits: [],
+      traits: evaledTraits,
       parsedType: parseType(props.type),
     };
-  }, [componentId, evaledProperties, props.type]);
+  }, [componentId, evaledProperties, evaledTraits, props.type]);
 
   const result = useMemo(() => {
     // Must init components' state, otherwise store cannot listen these components' state changing

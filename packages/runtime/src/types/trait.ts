@@ -20,6 +20,8 @@ export type TraitImpl<T = any> = (
       trait: RuntimeTraitSchema;
       componentId: string;
       services: UIServices;
+      evalListItem?: boolean;
+      slotProps?: unknown;
     }
 ) => TraitResult<string, string>;
 

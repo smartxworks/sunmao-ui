@@ -2,8 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { implementRuntimeComponent } from '../../utils/buildKit';
-import { ModuleRenderSpec } from '@sunmao-ui/shared';
-import { ComponentRenderer } from '../_internal/ComponentRenderer';
+import { ImplWrapper } from '../_internal/ImplWrapper';
 
 const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {
@@ -11,19 +10,12 @@ const PropsSpec = Type.Object({
     category: 'Basic',
     widget: `core/v1/expression`,
   }),
-  template: ModuleRenderSpec,
+  itemId: Type.String(),
 });
 
 const exampleProperties = {
   listData: [{ id: '1' }, { id: '2' }, { id: '3' }],
-  template: {
-    id: 'listItemName-{{$listItem.id}}',
-    type: 'custom/v1/myModule0',
-    properties: {
-      value: '{{$listItem.id}}',
-    },
-    handlers: [],
-  },
+  itemId: 'listItemName-{{$listItem.id}}',
 };
 
 export default implementRuntimeComponent({
@@ -44,32 +36,45 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     methods: {},
     state: Type.Object({}),
-    slots: [],
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          [LIST_ITEM_EXP]: Type.Any(),
+          [LIST_ITEM_INDEX_EXP]: Type.Number(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: [],
   },
-})(({ listData, template, app, services, customStyle, elementRef }) => {
+})(({ listData, app, services, customStyle, elementRef }) => {
   if (!listData) {
     return null;
   }
 
+  const childSchema = app.spec.components.find(c => c.id === 'listSlot')!;
   const listItems = listData.map((listItem, i) => {
-    const evalScope = {
-      [LIST_ITEM_EXP]: listItem,
-      [LIST_ITEM_INDEX_EXP]: i,
+    // const evalScope = {
+    //   [LIST_ITEM_EXP]: listItem,
+    //   [LIST_ITEM_INDEX_EXP]: i,
+    // };
+    const _childSchema = {
+      ...childSchema,
+      id: `list_${childSchema.id}${i}`,
     };
     const listItemEle = (
-      <li key={listItem.id}>
-        <ComponentRenderer
-          id={template.id}
-          type={template.type}
-          properties={template.properties}
-          handlers={template.handlers}
-          services={services}
-          evalScope={evalScope}
-          app={app}
-        />
-      </li>
+      <ImplWrapper
+        component={_childSchema}
+        app={app}
+        services={services}
+        childrenMap={{}}
+        isInModule
+        evalListItem
+        slotProps={{
+          [LIST_ITEM_EXP]: listItem,
+          [LIST_ITEM_INDEX_EXP]: i,
+        }}
+      />
     );
 
     return listItemEle;
@@ -78,6 +83,7 @@ export default implementRuntimeComponent({
   return (
     <ul
       className={css`
+        list-style: none;
         ${customStyle?.content}
       `}
       ref={elementRef}
