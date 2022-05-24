@@ -64,17 +64,12 @@ const convertArrToTree = (arr: Array<Array<string>>) => {
 };
 
 const CascaderExampleOptions = [
-  ['beijing', 'chaoyang', 'datunli'],
-  ['beijing', 'haidian', 'smartx'],
-  ['beijing', 'changping'],
-  ['beijing', 'wangjing', 'soho'],
-  ['shanghai', 'huangpu'],
-  ['shanghai', 'pukou', 'chuansha', 'disney'],
-  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'andemen'],
-  ['jiangsu', 'nanjing', 'qinhuai', 'yuhuatai', 'tiexinqiao'],
+  ['Beijing', 'Dongcheng District', 'The Forbidden City'],
+  ['Shanghai', 'Pukou', 'Disney'],
+  ['Zhejiang', 'Hangzhou', 'The West Lake'],
 ];
 const exampleProperties: Static<typeof CascaderPropsSpec> = {
-  defaultValue: ['beijing', 'haidian', 'smartx'],
+  defaultValue: ['Zhejiang', 'Hangzhou', 'The West Lake'],
   expandTrigger: 'click',
   multiple: false,
   placeholder: 'Please select ...',
@@ -89,7 +84,7 @@ const exampleProperties: Static<typeof CascaderPropsSpec> = {
   options: CascaderExampleOptions,
 };
 
-const options = {
+export const Cascader = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -105,9 +100,7 @@ const options = {
     styleSlots: ['content'],
     events: ['onChange'],
   },
-};
-
-export const Cascader = implementRuntimeComponent(options)(props => {
+})(props => {
   const { getElement, callbackMap, mergeState, slotsElements, customStyle } = props;
 
   const { multiple, options, placeholder, ...cProps } = getComponentProps(props);

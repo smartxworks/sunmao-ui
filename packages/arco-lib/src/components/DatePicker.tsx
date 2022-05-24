@@ -66,7 +66,7 @@ export const DatePicker = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
-    name: 'DatePicker',
+    name: 'datePicker',
     displayName: 'DatePicker',
     exampleProperties,
     annotations: {

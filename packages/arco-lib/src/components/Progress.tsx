@@ -17,10 +17,10 @@ const exampleProperties: Static<typeof ProgressPropsSpec> = {
   percent: 20,
   width: 100,
   size: 'default',
-  animation:false,
+  animation: false,
 };
 
-const options = {
+export const Progress = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -39,13 +39,16 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Progress = implementRuntimeComponent(options)(props => {
-  const { color,...cProps } = getComponentProps(props);
+})(props => {
+  const { color, ...cProps } = getComponentProps(props);
   const { customStyle, elementRef } = props;
 
   return (
-    <BaseProgress ref={elementRef} color={cProps.status==='normal'?color:''} className={css(customStyle?.content)} {...cProps} />
+    <BaseProgress
+      ref={elementRef}
+      color={cProps.status === 'normal' ? color : ''}
+      className={css(customStyle?.content)}
+      {...cProps}
+    />
   );
 });

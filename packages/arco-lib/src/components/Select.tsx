@@ -4,8 +4,9 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SelectPropsSpec as BaseSelectPropsSpec } from '../generated/types/Select';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { SelectHandle } from '@arco-design/web-react/es/Select/interface';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const SelectPropsSpec = Type.Object({
   ...BaseSelectPropsSpec,
@@ -19,20 +20,21 @@ const exampleProperties: Static<typeof SelectPropsSpec> = {
   multiple: false,
   allowCreate: false,
   bordered: true,
-  defaultValue: 'alibaba',
+  defaultValue: 'Beijing',
   disabled: false,
   labelInValue: false,
   loading: false,
   showSearch: false,
   unmountOnExit: false,
   options: [
-    { value: 'alibaba', text: 'alibaba' },
-    { value: 'baidu', text: 'baidu' },
-    { value: 'tencent', text: 'tencent' },
+    { value: 'Beijing', text: 'Beijing' },
+    { value: 'London', text: 'London' },
+    { value: 'NewYork', text: 'NewYork' },
   ],
-  placeholder: 'Please select',
+  placeholder: 'Select city',
   size: 'default',
   error: false,
+  updateWhenDefaultValueChanges: false,
 };
 
 export const Select = implementRuntimeComponent({
@@ -63,8 +65,17 @@ export const Select = implementRuntimeComponent({
     mergeState,
     defaultValue = '',
   } = props;
-  const { options = [], retainInputValue, ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState<string>(defaultValue);
+  const {
+    options = [],
+    retainInputValue,
+    updateWhenDefaultValueChanges,
+    ...cProps
+  } = getComponentProps(props);
+  const [value, setValue] = useStateValue(
+    defaultValue,
+    mergeState,
+    updateWhenDefaultValueChanges
+  );
   const ref = useRef<SelectHandle | null>(null);
 
   useEffect(() => {
@@ -86,7 +97,7 @@ export const Select = implementRuntimeComponent({
       onChange={v => {
         setValue(v);
         mergeState({
-          value:v,
+          value: v,
         });
         callbackMap?.onChange?.();
       }}
