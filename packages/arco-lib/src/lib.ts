@@ -37,6 +37,7 @@ import { FormControl } from './components/Form/FormControl';
 import { Descriptions } from './components/Descriptions';
 import { Row, Col } from './components/Grid'
 import { Slider } from './components/Slider';
+import { DatePicker } from './components/DatePicker'
 
 import './style.css';
 
@@ -79,7 +80,8 @@ export const components: SunmaoLib['components'] = [
   FormControl,
   Descriptions,
   Row, Col,
-  Slider
+  Slider,
+  DatePicker
 ];
 export const traits: SunmaoLib['traits'] = [];
 export const modules: SunmaoLib['modules'] = [];
