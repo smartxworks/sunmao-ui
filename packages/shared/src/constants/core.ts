@@ -1,4 +1,5 @@
 export const CORE_VERSION = 'core/v1';
+export declare const STYLE_VERSION = "style/v1";
 // core components
 export enum CoreComponentName {
   Dummy = 'dummy',
@@ -36,4 +37,8 @@ export enum CoreWidgetName {
   Spec = 'spec',
   StringField = 'string',
   UnsupportedField = 'unsupported',
+}
+
+export enum StyleWidgetName {
+  Size = 'size'
 }
