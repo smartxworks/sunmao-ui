@@ -21,7 +21,7 @@ type EditingTarget = {
   version: string;
   name: string;
   spec?: {
-    properties?: Record<string, any>;
+    exampleProperties?: Record<string, any>;
   };
 };
 
@@ -94,7 +94,7 @@ export class EditorStore {
           this.setComponents(this.originComponents);
           this.setSelectedComponentId(this.originComponents[0]?.id || '');
           const evaledDependencies = stateManager.deepEval(
-            target.spec?.properties || {},
+            target.spec?.exampleProperties || {},
             { fallbackWhenError: () => undefined }
           );
           this.stateManager.setDependencies({
