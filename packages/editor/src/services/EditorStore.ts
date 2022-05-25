@@ -93,14 +93,7 @@ export class EditorStore {
 
           this.setComponents(this.originComponents);
           this.setSelectedComponentId(this.originComponents[0]?.id || '');
-          const evaledDependencies = stateManager.deepEval(
-            target.spec?.exampleProperties || {},
-            { fallbackWhenError: () => undefined }
-          );
-          this.stateManager.setDependencies({
-            ...this.globalDependencies,
-            ...evaledDependencies,
-          });
+          this.setModuleDependencies(target.spec?.exampleProperties);
         }
       }
     );
@@ -348,5 +341,16 @@ export class EditorStore {
 
   setIsDraggingNewComponent = (val: boolean) => {
     this.isDraggingNewComponent = val;
+  };
+
+  setModuleDependencies = (exampleProperties?: Record<string, unknown>) => {
+    const evaledDependencies = this.stateManager.deepEval(exampleProperties || {}, {
+      fallbackWhenError: () => undefined,
+    });
+
+    this.stateManager.setDependencies({
+      ...this.globalDependencies,
+      ...evaledDependencies,
+    });
   };
 }

@@ -26,6 +26,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
         { originName: initData.name, originVersion: initData.version },
         value
       );
+      editorStore.setModuleDependencies(value.exampleProperties);
       onSubmitForm?.(value);
     };
     const formik = useFormik({
