@@ -22,6 +22,6 @@ export const initEventBus = () => {
     off: emitter.off,
     send: emitter.emit,
   };
-}
+};
 
-export type EventBusType = ReturnType<typeof initEventBus>
+export type EventBusType = ReturnType<typeof initEventBus>;
