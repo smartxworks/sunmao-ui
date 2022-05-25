@@ -7,6 +7,7 @@ export const StyleTraitPropertiesSpec = Type.Object({
     Type.Object({
       styleSlot: Type.String(),
       style: Type.String(),
+      cssProperties: Type.Optional(Type.Object(Type.String(), Type.String())),
     })
   ),
 });
@@ -24,14 +25,15 @@ export default implementRuntimeTrait({
   },
 })(() => {
   return ({ styles }) => {
-    const customStyle: Record<string, string> = {};
-    styles.forEach(({ style, styleSlot }) => {
-      if (!customStyle[styleSlot]) {
-        customStyle[styleSlot] = '';
+    const customStyle = styles.reduce((result, { style, styleSlot, cssProperties }) => {
+      if (!result[styleSlot]) {
+        result[styleSlot] = '';
       }
+      const cssPropertiesStr = convertCssObjToText(cssProperties || {});
       // add a ';' between css texts, in case user forgets to add ';' in the end
-      customStyle[styleSlot] = `&&& {${customStyle[styleSlot]};${style}}`;
-    });
+      result[styleSlot] = `&&& {${result[styleSlot]};${style};${cssPropertiesStr}}`;
+      return result;
+    }, {} as Record<string, string>);
     return {
       props: {
         customStyle,
@@ -39,3 +41,20 @@ export default implementRuntimeTrait({
     };
   };
 });
+
+const regex = /[A-Z]/g;
+const kebabCase = (str: string) => str.replace(regex, v => `-${v.toLowerCase()}`);
+
+function convertCssObjToText(style: Record<string, string>): string {
+  const finalResult = Object.keys(style).reduce((accumulator, key) => {
+    // transform the key from camelCase to kebab-case
+    const cssKey = kebabCase(key);
+    // remove ' in value
+    const cssValue = style[key].replace("'", '');
+    // build the result
+    // you can break the line, add indent for it if you need
+    return `${accumulator}${cssKey}:${cssValue};`;
+  }, '');
+
+  return finalResult;
+}

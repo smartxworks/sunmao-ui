@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import produce from 'immer';
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
+import { AddIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import {
   FormControl,
   FormLabel,
@@ -26,6 +26,7 @@ type Props = {
 type Styles = Array<{
   styleSlot: string;
   style: string;
+  cssProperties: React.CSSProperties;
 }>;
 
 const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Style}`;
@@ -56,6 +57,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
             {
               styleSlot: styleSlots[0],
               style: '',
+              cssProperties: {},
             },
           ],
         },
@@ -83,6 +85,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
     const newStyles: Styles = (styles || []).concat({
       styleSlot: styleSlots[0],
       style: '',
+      cssProperties: {},
     });
     updateStyles(newStyles);
   }, [updateStyles, styleSlots, styles]);
@@ -121,46 +124,33 @@ export const StyleTraitForm: React.FC<Props> = props => {
     if (!styles) {
       return null;
     }
-    return styles.map(({ style, styleSlot }, i) => {
+    return styles.map(({ style, styleSlot, cssProperties }, i) => {
       const removeStyle = () => {
         const newStyles = styles.filter((_, j) => j !== i);
         updateStyles(newStyles);
       };
+
+      const changeCssProperties = (newCss: React.CSSProperties) => {
+        const newCssProperties = Object.assign({}, style, newCss);
+        const newStyles = produce(styles, draft => {
+          draft[i].cssProperties = newCssProperties;
+        });
+        updateStyles(newStyles);
+      };
       return (
         <VStack key={`${styleSlot}-${i}`} css={formWrapperCSS} width="full" spacing="2">
-          <FormControl>
-            <FormLabel marginInlineEnd="0">
-              <HStack width="full" justify="space-between">
-                <Text>Size</Text>
-                <IconButton
-                  aria-label="remove style"
-                  size="sm"
-                  variant="ghost"
-                  colorScheme="red"
-                  icon={<CloseIcon />}
-                  onClick={removeStyle}
-                />
-              </HStack>
-            </FormLabel>
-            <SizeField
-              value={{ width: '123px', height: '666px' }}
-              onChange={() => console.log('hhh')}
+          <HStack width="full" justify="space-between">
+            <Text>{styleSlot}</Text>
+            <IconButton
+              aria-label="remove style"
+              size="sm"
+              variant="ghost"
+              colorScheme="red"
+              icon={<CloseIcon />}
+              onClick={removeStyle}
             />
-          </FormControl>
-          <FormControl id={styleSlot}>
-            <FormLabel marginInlineEnd="0">
-              <HStack width="full" justify="space-between">
-                <Text>Style Slot</Text>
-                <IconButton
-                  aria-label="remove style"
-                  size="sm"
-                  variant="ghost"
-                  colorScheme="red"
-                  icon={<CloseIcon />}
-                  onClick={removeStyle}
-                />
-              </HStack>
-            </FormLabel>
+          </HStack>
+          <CollapsibleFormControl label="Style Slot">
             <Select value={styleSlot} onChange={e => changeStyleSlot(i, e.target.value)}>
               {styleSlots.map(s => (
                 <option key={s} value={s}>
@@ -168,8 +158,13 @@ export const StyleTraitForm: React.FC<Props> = props => {
                 </option>
               ))}
             </Select>
-          </FormControl>
-          <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
+          </CollapsibleFormControl>
+          <CollapsibleFormControl label="Size">
+            <SizeField value={cssProperties} onChange={changeCssProperties} />
+          </CollapsibleFormControl>
+          <CollapsibleFormControl label="CSS">
+            <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
+          </CollapsibleFormControl>
         </VStack>
       );
     });
@@ -190,5 +185,26 @@ export const StyleTraitForm: React.FC<Props> = props => {
       </HStack>
       {styleForms}
     </VStack>
+  );
+};
+
+const CollapsibleFormControl: React.FC<{ label: string }> = props => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  return (
+    <FormControl>
+      <FormLabel marginInlineEnd="0">
+        <HStack width="full" justify="space-between">
+          <Text>{props.label}</Text>
+          <IconButton
+            aria-label="toggle collapse"
+            size="sm"
+            variant="ghost"
+            icon={isCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          />
+        </HStack>
+      </FormLabel>
+      {isCollapsed ? props.children : null}
+    </FormControl>
   );
 };
