@@ -17,6 +17,7 @@ type ModuleSpec = {
   properties: JSONSchema7Object;
   events: string[];
   stateMap: Record<string, string>;
+  exampleProperties?: Record<string, string>;
 };
 
 // extended runtime
@@ -45,7 +46,7 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
       properties: {},
       events: [],
       stateMap: {},
-      ...options.spec
+      ...options.spec,
     },
     impl: options.impl || [],
   };
