@@ -7,7 +7,7 @@ export const StyleTraitPropertiesSpec = Type.Object({
     Type.Object({
       styleSlot: Type.String(),
       style: Type.String(),
-      cssProperties: Type.Optional(Type.Object(Type.String(), Type.String())),
+      cssProperties: Type.Optional(Type.Record(Type.String(), Type.String())),
     })
   ),
 });
@@ -50,7 +50,10 @@ function convertCssObjToText(style: Record<string, string>): string {
     // transform the key from camelCase to kebab-case
     const cssKey = kebabCase(key);
     // remove ' in value
-    const cssValue = style[key].replace("'", '');
+    let cssValue = style[key];
+    if (typeof style[key] === 'string') {
+      cssValue = style[key].replace("'", '');
+    }
     // build the result
     // you can break the line, add indent for it if you need
     return `${accumulator}${cssKey}:${cssValue};`;

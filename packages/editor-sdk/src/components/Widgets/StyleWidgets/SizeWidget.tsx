@@ -1,48 +1,42 @@
 import React from 'react';
-import { HStack, Input, Text } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
 import { implementWidget } from '../../../utils/widget';
+import { ExpressionEditor } from '../../Form';
 
 type Size = {
-  width: string;
-  height: string;
+  width?: string;
+  height?: string;
 };
 
 export const SizeField: React.FC<WidgetProps<{}, Size>> = props => {
   const { value, onChange } = props;
-  // const [size, setSize] = React.useState<Size>({ width: '', height: '' });
 
   return (
     <HStack>
       <Text>W</Text>
-      <Input
-        value={value.width}
-        onChange={e => {
+      <ExpressionEditor
+        compact={true}
+        defaultCode={value.width || ''}
+        onBlur={v => {
           const newSize = {
             ...value,
-            height: e.target.value,
+            width: v,
           };
-          // setSize({
-          //   ...size,
-          //   width: e.target.value,
-          // });
           onChange(newSize);
         }}
       />
       <Text>H</Text>
-      <Input
-        value={value.height}
-        onChange={e => {
+      <ExpressionEditor
+        compact={true}
+        defaultCode={value.height || ''}
+        onBlur={v => {
           const newSize = {
             ...value,
-            height: e.target.value,
+            height: v,
           };
           onChange(newSize);
-          // setSize({
-          //   ...size,
-          //   height: e.target.value,
-          // });
         }}
       />
     </HStack>

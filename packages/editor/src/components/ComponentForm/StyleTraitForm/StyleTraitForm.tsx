@@ -125,6 +125,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
       return null;
     }
     return styles.map(({ style, styleSlot, cssProperties }, i) => {
+      const _cssProperties = cssProperties || {};
       const removeStyle = () => {
         const newStyles = styles.filter((_, j) => j !== i);
         updateStyles(newStyles);
@@ -160,7 +161,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
             </Select>
           </CollapsibleFormControl>
           <CollapsibleFormControl label="Size">
-            <SizeField value={cssProperties} onChange={changeCssProperties} />
+            <SizeField value={_cssProperties || {} as any} onChange={changeCssProperties} />
           </CollapsibleFormControl>
           <CollapsibleFormControl label="CSS">
             <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
