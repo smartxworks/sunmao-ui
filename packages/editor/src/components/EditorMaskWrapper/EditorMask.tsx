@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useRef } from 'react';
 import { css } from '@emotion/css';
-import { EditorServices } from '../../types';
-import { observer } from 'mobx-react-lite';
-import { DropSlotMask } from './DropSlotMask';
-import { debounce } from 'lodash-es';
-import { Box, Text } from '@chakra-ui/react';
 import { DIALOG_CONTAINER_ID } from '@sunmao-ui/runtime';
+import { Box, Text } from '@chakra-ui/react';
+import { observer, useLocalStore } from 'mobx-react-lite';
+import { DropSlotMask } from './DropSlotMask';
+import { EditorMaskManager } from './EditorMaskManager';
+import { EditorServices } from '../../types';
 
 const outlineMaskTextStyle = css`
   position: absolute;
@@ -51,153 +51,30 @@ type Props = {
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const { services, mousePosition, wrapperRef, hoverComponentIdRef, dragOverSlotRef } =
     props;
-  const { eventBus, editorStore } = services;
-  const { selectedComponentId, eleMap, isDraggingNewComponent } = editorStore;
+  const { editorStore } = services;
+  const { isDraggingNewComponent } = editorStore;
   const maskContainerRef = useRef<HTMLDivElement>(null);
-  const maskContainerRect = useRef<DOMRect>();
-  const [coordinates, setCoordinates] = useState<Record<string, DOMRect>>({});
-  const [coordinatesOffset, setCoordinatedOffset] = useState<[number, number]>([0, 0]);
 
-  // establish the coordinateSystem by getting all the rect of elements,
-  // and recording the current scroll Offset
-  // and the updating maskContainerRect, because maskContainer shares the same coordinates with app
-  const updateCoordinateSystem = useCallback(
-    (eleMap: Map<string, HTMLElement>) => {
-      function isChild(child: HTMLElement, parent: HTMLElement) {
-        let curr = child;
-        while (curr.parentElement && !curr.parentElement.isSameNode(wrapperRef.current)) {
-          if (curr.parentElement.isSameNode(parent)) {
-            return true;
-          }
-          curr = curr.parentElement;
-        }
-        return false;
-      }
-
-      if (!wrapperRef.current) return;
-      const _rects: Record<string, DOMRect> = {};
-      const modalContainerEle = document.getElementById(DIALOG_CONTAINER_ID)!;
-      const modalEleMap = new Map<string, HTMLElement>();
-      // detect if there are components in modal
-      for (const id of eleMap.keys()) {
-        const ele = eleMap.get(id)!;
-        if (isChild(ele, modalContainerEle)) {
-          modalEleMap.set(id, ele);
-        }
-      }
-
-      const foregroundEleMap = modalEleMap.size > 0 ? modalEleMap : eleMap;
-
-      for (const id of foregroundEleMap.keys()) {
-        const ele = eleMap.get(id)!;
-        const rect = ele.getBoundingClientRect();
-        _rects[id] = rect;
-      }
-      maskContainerRect.current = maskContainerRef.current?.getBoundingClientRect();
-      setCoordinates(_rects);
-      setCoordinatedOffset([wrapperRef.current.scrollLeft, wrapperRef.current.scrollTop]);
-    },
-    [wrapperRef]
+  const store = useLocalStore(
+    () =>
+      new EditorMaskManager(services, wrapperRef, maskContainerRef, hoverComponentIdRef)
   );
 
-  const resizeObserver = useMemo(() => {
-    const debouncedUpdateRects = debounce(updateCoordinateSystem, 50);
-    return new ResizeObserver(() => {
-      debouncedUpdateRects(eleMap);
-    });
-  }, [eleMap, updateCoordinateSystem]);
-
-  const observeResize = useCallback(
-    (eleMap: Map<string, HTMLElement>) => {
-      for (const id of eleMap.keys()) {
-        const ele = eleMap.get(id);
-        if (ele) {
-          resizeObserver.observe(ele);
-        }
-      }
-    },
-    [resizeObserver]
-  );
-
-  // because this useEffect would run after sunmao didMount hook, so it cannot subscribe the first HTMLElementsUpdated event
-  // we should call the callback function after first render
+  const { hoverComponentId, hoverMaskPosition, selectedMaskPosition } = store;
   useEffect(() => {
-    observeResize(eleMap);
-    updateCoordinateSystem(eleMap);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    eventBus.on('HTMLElementsUpdated', () => {
-      observeResize(eleMap);
-      updateCoordinateSystem(eleMap);
-    });
-  }, [eleMap, eventBus, observeResize, updateCoordinateSystem]);
-
-  // listen elements resize and update coordinates
-  useEffect(() => {
-    observeResize(eleMap);
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [eleMap, observeResize, resizeObserver]);
-
-  const hoverComponentId = useMemo(() => {
-    const where = whereIsMouse(
-      mousePosition[0] - coordinatesOffset[0],
-      mousePosition[1] - coordinatesOffset[1],
-      coordinates
-    );
-    return where;
-  }, [coordinatesOffset, mousePosition, coordinates]);
+    store.setMousePosition(mousePosition);
+  }, [mousePosition, store]);
 
   useEffect(() => {
     hoverComponentIdRef.current = hoverComponentId;
-  }, [hoverComponentIdRef, hoverComponentId]);
+  }, [hoverComponentId, hoverComponentIdRef]);
 
-  const getMaskPosition = useCallback(
-    (componentId: string) => {
-      const rect = coordinates[componentId];
-      const padding = 4;
-      if (!maskContainerRect.current || !wrapperRef.current || !rect) return;
-      return {
-        id: componentId,
-        style: {
-          top: rect.top - maskContainerRect.current.top - padding,
-          left: rect.left - maskContainerRect.current.left - padding,
-          height: rect.height + padding * 2,
-          width: rect.width + padding * 2,
-        },
-      };
-    },
-    [coordinates, wrapperRef]
-  );
-
-  const hoverMaskPosition = useMemo(() => {
-    if (!maskContainerRect.current || !hoverComponentId) {
-      return undefined;
-    }
-
-    return getMaskPosition(hoverComponentId);
-  }, [hoverComponentId, getMaskPosition]);
-
-  const selectedMaskPosition = useMemo(() => {
-    if (!maskContainerRect.current || !selectedComponentId) return undefined;
-
-    return getMaskPosition(selectedComponentId);
-  }, [selectedComponentId, getMaskPosition]);
+  useEffect(() => {
+    store.modalContainerEle = document.getElementById(DIALOG_CONTAINER_ID);
+  });
 
   const hoverMask = hoverMaskPosition ? (
-    <Box
-      className={outlineMaskStyle}
-      borderColor="gray.700"
-      zIndex="1"
-      style={hoverMaskPosition.style}
-    >
-      <Text className={outlineMaskTextStyle} background="gray.700">
-        {hoverMaskPosition.id}
-      </Text>
-    </Box>
+    <HoverMask style={hoverMaskPosition.style} id={hoverMaskPosition.id} />
   ) : undefined;
 
   const dragMask = hoverMaskPosition ? (
@@ -212,16 +89,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   ) : undefined;
 
   const selectMask = selectedMaskPosition ? (
-    <Box
-      className={outlineMaskStyle}
-      borderColor="blue.500"
-      zIndex="0"
-      style={selectedMaskPosition.style}
-    >
-      <Text className={outlineMaskTextStyle} background="blue.500">
-        {selectedMaskPosition.id}
-      </Text>
-    </Box>
+    <SelectMask style={selectedMaskPosition.style} id={selectedMaskPosition.id} />
   ) : undefined;
 
   return (
@@ -242,29 +110,37 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   );
 });
 
-export function whereIsMouse(
-  left: number,
-  top: number,
-  rects: Record<string, DOMRect>
-): string {
-  let nearest = {
-    id: '',
-    sum: 0,
-  };
-  for (const id in rects) {
-    const rect = rects[id];
-    if (
-      top < rect.top ||
-      left < rect.left ||
-      top > rect.top + rect.height ||
-      left > rect.left + rect.width
-    ) {
-      continue;
-    }
-    const sum = rect.top + rect.left;
-    if (sum > nearest.sum) {
-      nearest = { id, sum };
-    }
-  }
-  return nearest.id;
-}
+type MaskProps = {
+  style: CSSProperties;
+  id: string;
+};
+
+const HoverMask: React.FC<MaskProps> = (props: MaskProps) => {
+  return (
+    <Box
+      className={outlineMaskStyle}
+      borderColor="gray.700"
+      zIndex="1"
+      style={props.style}
+    >
+      <Text className={outlineMaskTextStyle} background="gray.700">
+        {props.id}
+      </Text>
+    </Box>
+  );
+};
+
+const SelectMask: React.FC<MaskProps> = (props: MaskProps) => {
+  return (
+    <Box
+      className={outlineMaskStyle}
+      borderColor="blue.500"
+      zIndex="0"
+      style={props.style}
+    >
+      <Text className={outlineMaskTextStyle} background="blue.500">
+        {props.id}
+      </Text>
+    </Box>
+  );
+};
