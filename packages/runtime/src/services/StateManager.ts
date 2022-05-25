@@ -7,7 +7,13 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { isProxy, reactive, toRaw } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
-import { isNumeric, parseExpression, consoleError, ConsoleType, type ExpChunk } from '@sunmao-ui/shared';
+import {
+  isNumeric,
+  parseExpression,
+  consoleError,
+  ConsoleType,
+  ExpChunk,
+} from '@sunmao-ui/shared';
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear);
@@ -19,7 +25,9 @@ type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
-  noConsoleError?: boolean
+  noConsoleError?: boolean;
+  // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
+  ignoreEvalError?: boolean;
 };
 
 // TODO: use web worker
@@ -35,7 +43,7 @@ export class ExpressionError extends Error {
   }
 }
 
-export type StateManagerInterface = InstanceType<typeof StateManager>
+export type StateManagerInterface = InstanceType<typeof StateManager>;
 
 export class StateManager {
   store = reactive<Record<string, any>>({});
@@ -55,25 +63,33 @@ export class StateManager {
       return expChunk;
     }
 
-    const { scopeObject = {}, overrideScope = false } = options;
+    const { scopeObject = {}, overrideScope = false, ignoreEvalError = false } = options;
     const evalText = expChunk.map(ex => this.evalExp(ex, { scopeObject })).join('');
 
-    // eslint-disable-next-line no-useless-call, no-new-func
-    const evaled = new Function(
-      'store, dependencies, scopeObject',
-      // trim leading space and newline
-      `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
-        /^\s+/g,
-        ''
-      )} } } }`
-    ).call(
-      null,
-      overrideScope ? {} : this.store,
-      overrideScope ? {} : this.dependencies,
-      scopeObject
-    );
+    try {
+      // eslint-disable-next-line no-useless-call, no-new-func
+      const evaled = new Function(
+        'store, dependencies, scopeObject',
+        // trim leading space and newline
+        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+          /^\s+/g,
+          ''
+        )} } } }`
+      ).call(
+        null,
+        overrideScope ? {} : this.store,
+        overrideScope ? {} : this.dependencies,
+        scopeObject
+      );
 
-    return evaled;
+      return evaled;
+    } catch (error) {
+      if (ignoreEvalError) {
+        // convert it to expression and return
+        return `{{${evalText}}}`;
+      }
+      throw error;
+    }
   };
 
   maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
