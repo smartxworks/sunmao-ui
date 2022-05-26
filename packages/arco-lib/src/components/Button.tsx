@@ -21,7 +21,7 @@ const exampleProperties: Static<typeof ButtonPropsSpec> = {
   text: 'button',
 };
 
-const options = {
+export const Button = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -40,9 +40,7 @@ const options = {
     styleSlots: ['content'],
     events: ['onClick'],
   },
-};
-
-export const Button = implementRuntimeComponent(options)(props => {
+})(props => {
   const { elementRef, slotsElements, customStyle, text, callbackMap } = props;
   const { ...cProps } = getComponentProps(props);
 

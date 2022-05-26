@@ -24,7 +24,7 @@ const exampleProperties: Static<typeof InputPropsSpec> = {
   visibilityToggle: true,
 };
 
-const options = {
+export const PasswordInput = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -43,9 +43,7 @@ const options = {
     styleSlots: ['input'],
     events: ['onChange', 'onBlur', 'onFocus', 'onPressEnter'],
   },
-};
-
-export const PasswordInput = implementRuntimeComponent(options)(props => {
+})(props => {
   const { getElement, customStyle, callbackMap, mergeState } = props;
   const { ...cProps } = getComponentProps(props);
   const [value, setValue] = useState('');

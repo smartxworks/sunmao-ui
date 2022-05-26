@@ -17,7 +17,7 @@ const exampleProperties: Static<typeof AlertPropsSpec> = {
   type: 'info',
 };
 
-const options = {
+export const Alert = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -36,9 +36,7 @@ const options = {
     styleSlots: ['content'],
     events: ['onClose', 'afterClose'],
   },
-};
-
-export const Alert = implementRuntimeComponent(options)(props => {
+})(props => {
   const { ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements, callbackMap } = props;
 

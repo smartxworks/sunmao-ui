@@ -24,6 +24,10 @@ export const TreeSelectPropsSpec = {
     category: Category.Data,
     widget: EXPRESSION_WIDGET_TYPE,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   multiple: Type.Boolean({
     title: 'Multiple',
     category: Category.Basic,

@@ -7,6 +7,10 @@ export const TextAreaPropsSpec = {
     title: 'Default Value',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   placeholder: Type.String({
     title: 'Placeholder',
     category: Category.Basic,
@@ -17,10 +21,6 @@ export const TextAreaPropsSpec = {
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
-  }),
-  updateWhenDefaultValueChanges: Type.Boolean({
-    title: 'Update When Default Value Changes',
     category: Category.Basic,
   }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {

@@ -18,6 +18,10 @@ export const RadioPropsSpec = {
       displayedKeys: ['label'],
     }
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   type: StringUnion(['radio', 'button'], {
     category: Category.Style,
   }),

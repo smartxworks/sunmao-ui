@@ -38,4 +38,8 @@ export const CheckboxPropsSpec = {
     title: 'Check All Text',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
 };

@@ -14,17 +14,30 @@ export const MenuPropsSpec = {
   }),
   items: Type.Array(
     Type.Object({
-      key: Type.String(),
-      text: Type.String(),
-      disabled: Type.Optional(Type.Boolean()),
+      key: Type.String({
+        title:'Key'
+      }),
+      text: Type.String({
+        title:'Text'
+      }),
+      disabled: Type.Optional(Type.Boolean({
+        title:'Disabled'
+      })),
     }),
     {
       title:'Items',
       category: Category.Basic,
+      widgetOptions:{
+        displayedKeys:['text']
+      }
     }
   ),
   defaultActiveKey: Type.String({
     title: 'Default Active Key',
+    category: Category.Basic,
+  }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
     category: Category.Basic,
   }),
   autoOpen: Type.Boolean({

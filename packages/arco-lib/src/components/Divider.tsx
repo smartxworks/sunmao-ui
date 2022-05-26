@@ -15,7 +15,7 @@ const exampleProperties: Static<typeof DividerPropsSpec> = {
   orientation: 'center',
 };
 
-const options = {
+export const Divider = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -34,9 +34,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Divider = implementRuntimeComponent(options)(props => {
+})(props => {
   const { elementRef, customStyle } = props;
   const { ...cProps } = getComponentProps(props);
 
