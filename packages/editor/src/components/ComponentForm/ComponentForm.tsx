@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/react';
+import { Accordion, Input, Text, VStack } from '@chakra-ui/react';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
@@ -12,6 +12,7 @@ import { genOperation } from '../../operations';
 import ErrorBoundary from '../ErrorBoundary';
 import { StyleTraitForm } from './StyleTraitForm';
 import { EditorServices } from '../../types';
+import { FormSection } from './FormSection';
 
 type Props = {
   services: EditorServices;
@@ -22,11 +23,19 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   const { editorStore, registry, eventBus } = services;
   const { selectedComponent, selectedComponentId } = editorStore;
   if (!selectedComponentId) {
-    return <Text p={2} fontSize='md'>No components selected. Click on a component to select it.</Text>;
+    return (
+      <Text p={2} fontSize="md">
+        No components selected. Click on a component to select it.
+      </Text>
+    );
   }
 
   if (!selectedComponent) {
-    return <Text  p={2} fontSize='md'>Cannot find component with id: {selectedComponentId}.</Text>;
+    return (
+      <Text p={2} fontSize="md">
+        Cannot find component with id: {selectedComponentId}.
+      </Text>
+    );
   }
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
@@ -53,26 +62,27 @@ export const ComponentForm: React.FC<Props> = observer(props => {
 
   return (
     <ErrorBoundary>
-      <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
-        <FormControl>
-          <FormLabel>
-            <strong>Component Type</strong>
-          </FormLabel>
-          <Text paddingLeft='3'>{selectedComponent.type}</Text>
-        </FormControl>
-        <FormControl>
-          <FormLabel>
-            <strong>Component ID</strong>
-          </FormLabel>
+      <Accordion
+        defaultIndex={[0, 1, 2, 3, 4, 5]}
+        background="gray.50"
+        paddingBottom="200px"
+        allowMultiple
+        onKeyDown={onKeyDown}
+      >
+        <FormSection title="Component Type">
+          <Text paddingLeft="3">{selectedComponent.type}</Text>
+        </FormSection>
+        <FormSection title="Component ID">
           <Input
             key={selectedComponent.id}
-            defaultValue={selectedComponent.id}
             background="white"
+            border="1px solid"
+            borderColor="gray.400"
+            defaultValue={selectedComponent.id}
             onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
           />
-        </FormControl>
-        <VStack width="full" alignItems="start">
-          <strong>Properties</strong>
+        </FormSection>
+        <FormSection title="Properties">
           <VStack width="full" background="white">
             <SpecWidget
               key={selectedComponent.id}
@@ -93,11 +103,17 @@ export const ComponentForm: React.FC<Props> = observer(props => {
               services={services}
             />
           </VStack>
-        </VStack>
-        <EventTraitForm component={selectedComponent} services={services} />
-        <StyleTraitForm component={selectedComponent} services={services} />
-        <GeneralTraitFormList component={selectedComponent} services={services} />
-      </VStack>
+        </FormSection>
+        <FormSection title="Events">
+          <EventTraitForm component={selectedComponent} services={services} />
+        </FormSection>
+        <FormSection title="Styles">
+          <StyleTraitForm component={selectedComponent} services={services} />
+        </FormSection>
+        <FormSection title="Traits">
+          <GeneralTraitFormList component={selectedComponent} services={services} />
+        </FormSection>
+      </Accordion>
     </ErrorBoundary>
   );
 });

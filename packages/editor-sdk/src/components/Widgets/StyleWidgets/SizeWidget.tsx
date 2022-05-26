@@ -1,16 +1,11 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { HStack, Text } from '@chakra-ui/react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
 import { implementWidget } from '../../../utils/widget';
 import { ExpressionEditor } from '../../Form';
 
-type Size = {
-  width?: string;
-  height?: string;
-};
-
-export const SizeField: React.FC<WidgetProps<{}, Size>> = props => {
+export const SizeWidget: React.FC<WidgetProps<{}, CSSProperties>> = props => {
   const { value, onChange } = props;
 
   return (
@@ -18,7 +13,7 @@ export const SizeField: React.FC<WidgetProps<{}, Size>> = props => {
       <Text>W</Text>
       <ExpressionEditor
         compact={true}
-        defaultCode={value.width || ''}
+        defaultCode={String(value.width) || ''}
         onBlur={v => {
           const newSize = {
             ...value,
@@ -30,7 +25,7 @@ export const SizeField: React.FC<WidgetProps<{}, Size>> = props => {
       <Text>H</Text>
       <ExpressionEditor
         compact={true}
-        defaultCode={value.height || ''}
+        defaultCode={String(value.height) || ''}
         onBlur={v => {
           const newSize = {
             ...value,
@@ -48,4 +43,4 @@ export default implementWidget({
   metadata: {
     name: StyleWidgetName.Size,
   },
-})(SizeField);
+})(SizeWidget);

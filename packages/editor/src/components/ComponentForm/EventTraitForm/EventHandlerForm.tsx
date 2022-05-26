@@ -53,7 +53,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
     <Accordion width="100%" allowMultiple onChange={onAccordionChange}>
       <AccordionItem>
         <h2>
-          <AccordionButton>
+          <AccordionButton bg='white'>
             <Box flex="1" textAlign="left">
               Handler {index + 1}
             </Box>
