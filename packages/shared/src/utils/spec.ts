@@ -27,12 +27,7 @@ export function StringUnion<T extends string[]>(values: [...T], options?: any) {
         return prev;
       }, {} as Record<T[number], any>)
     ),
-    {
-      title: options?.title,
-      description: options?.description,
-      category: options?.category,
-      weight: options?.weight,
-    }
+    options
   );
 }
 

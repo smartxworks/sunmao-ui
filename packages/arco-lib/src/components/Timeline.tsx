@@ -49,7 +49,7 @@ const exampleProperties: Static<typeof TimelinePropsSpec> = {
   ],
 };
 
-const options = {
+export const Timeline = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -65,9 +65,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Timeline = implementRuntimeComponent(options)(props => {
+})(props => {
   const { items, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle } = props;
 

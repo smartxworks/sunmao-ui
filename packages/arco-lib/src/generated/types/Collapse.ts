@@ -51,6 +51,10 @@ export const CollapsePropsSpec = {
       displayedKeys: ['header'],
     }
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   lazyLoad:Type.Boolean({
     title:'Lazy Load',
     description:'If true, invisible panels will not be rendered on mount'

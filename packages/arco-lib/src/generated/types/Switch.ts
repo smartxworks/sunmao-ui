@@ -7,6 +7,10 @@ export const SwitchPropsSpec = {
     title: 'Default Checked',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   disabled: Type.Boolean({
     title: 'Disabled',
     category: Category.Basic,

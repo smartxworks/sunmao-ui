@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SwitchPropsSpec as BaseSwitchPropsSpec } from '../generated/types/Switch';
-import { useEffect, useState } from 'react';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const SwitchPropsSpec = Type.Object({
   ...BaseSwitchPropsSpec,
@@ -19,9 +19,10 @@ const exampleProperties: Static<typeof SwitchPropsSpec> = {
   loading: false,
   type: 'circle',
   size: 'default',
+  updateWhenDefaultValueChanges: false,
 };
 
-const options = {
+export const Switch = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -40,16 +41,15 @@ const options = {
     styleSlots: ['content'],
     events: ['onChange'],
   },
-};
-
-export const Switch = implementRuntimeComponent(options)(props => {
+})(props => {
   const { elementRef, customStyle, mergeState, callbackMap } = props;
-  const { defaultChecked, ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState<boolean>(defaultChecked);
-
-  useEffect(() => {
-    setValue(defaultChecked);
-  }, [defaultChecked]);
+  const { defaultChecked, updateWhenDefaultValueChanges, ...cProps } =
+    getComponentProps(props);
+  const [value, setValue] = useStateValue<boolean>(
+    defaultChecked,
+    mergeState,
+    updateWhenDefaultValueChanges,
+  );
 
   return (
     <BaseSwitch
