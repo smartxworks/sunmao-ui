@@ -1,21 +1,19 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash-es';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Type } from '@sinclair/typebox';
 import { SpecWidget } from '../Widgets/SpecWidget';
 import { ExpressionWidget } from '../Widgets/ExpressionWidget';
+import { ExpressionEditor } from '../Form/ExpressionEditor';
 import { WidgetProps } from '../../types/widget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { ExpressionEditorProps } from './ExpressionEditor';
 
 const IGNORE_SPEC_TYPES = ['array', 'object'];
 
-type RecordEditorProps = Omit<
-  WidgetProps,
-  'component' | 'spec' | 'level' | 'path'
-> & {
+type RecordEditorProps = Omit<WidgetProps, 'component' | 'spec' | 'level' | 'path'> & {
   component?: WidgetProps['component'];
   spec?: WidgetProps['spec'];
   path?: WidgetProps['path'];
@@ -45,10 +43,8 @@ const RowItem = (props: RowItemProps) => {
     onRemoveRow,
     emitDataChange,
   } = props;
-  const { minNum = 0, onlySetValue } = useMemo(
-    () => spec?.widgetOptions || {},
-    [spec]
-  );
+  const { stateManager } = services;
+  const { minNum = 0, onlySetValue } = useMemo(() => spec?.widgetOptions || {}, [spec]);
   const expressionOptions = useMemo<{
     compactOptions: ExpressionEditorProps['compactOptions'];
   }>(
@@ -152,16 +148,24 @@ const RowItem = (props: RowItemProps) => {
           )}
         </HStack>
       ) : (
-        <Input
-          flex={2}
-          minWidth={0}
-          name="value"
-          value={value}
-          title={value}
-          placeholder="value"
-          onChange={onInputChange}
-          onBlur={onBlur}
-        />
+        (() => {
+          const evaledResult = stateManager.maskedEval(value);
+
+          return (
+            <Box flex="2 2 66.66%" minWidth={0}>
+              <ExpressionEditor
+                compactOptions={{
+                  height: '32px',
+                }}
+                defaultCode={value}
+                evaledValue={evaledResult}
+                error={evaledResult instanceof Error ? evaledResult.message : undefined}
+                onChange={onValueChange}
+                onBlur={onBlur}
+              />
+            </Box>
+          );
+        })()
       )}
       {onlySetValue ? null : (
         <IconButton
