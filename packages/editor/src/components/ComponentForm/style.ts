@@ -5,6 +5,6 @@ export const formWrapperCSS = css`
   padding: var(--chakra-space-4);
   background: white;
   border: 1px solid var(--chakra-colors-gray-200);
-  border-radius: 4px;
+  border-top: none;
   align-items: start;
 `;
