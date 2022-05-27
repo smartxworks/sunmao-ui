@@ -62,7 +62,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
 
   const { hoverComponentId, hoverMaskPosition, selectedMaskPosition } = store;
   useEffect(() => {
-    store.setMousePosition(mousePosition);
+    // store.setMousePosition(mousePosition);
   }, [mousePosition, store]);
 
   useEffect(() => {
