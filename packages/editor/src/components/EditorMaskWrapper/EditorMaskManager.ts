@@ -1,5 +1,7 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { forEach } from 'lodash-es';
+import { action, autorun, computed, makeObservable, observable } from 'mobx';
 import React from 'react';
+import { consoleError } from '../../../../shared/lib';
 import { EditorServices } from '../../types';
 
 export class EditorMaskManager {
@@ -12,20 +14,15 @@ export class EditorMaskManager {
   // observable: the coordinate system offset, it is almost equal to the scroll value of maskWrapper
   systemOffset: [number, number] = [0, 0];
   modalContainerEle: HTMLElement | null = null;
+  elementIdMap = new Map<Element, string>();
+  hoverElement: Element | null = null;
+  hoverComponentId = '';
   // visible status of all components.
   private visibleMap = new Map<Element, boolean>();
   private resizeObserver: ResizeObserver;
   private intersectionObserver: IntersectionObserver;
   private MaskPadding = 4;
-
-  get hoverComponentId() {
-    const where = whereIsMouse(
-      this.mousePosition[0] - this.systemOffset[0],
-      this.mousePosition[1] - this.systemOffset[1],
-      this.rects
-    );
-    return where;
-  }
+  private hoverElementCache: Element | null = null;
 
   get hoverMaskPosition() {
     return this.getMaskPosition(this.hoverComponentId);
@@ -46,17 +43,23 @@ export class EditorMaskManager {
       mousePosition: observable.ref,
       maskContainerRect: observable.ref,
       systemOffset: observable.ref,
+      elementIdMap: observable.ref,
+      hoverElement: observable.ref,
+      hoverComponentId: observable,
       setRects: action,
       setMousePosition: action,
       setMaskContainerRect: action,
       setSystemOffset: action,
-      hoverComponentId: computed,
+      setElementIdMap: action,
+      setHoverElement: action,
+      setHoverComponentId: action,
       hoverMaskPosition: computed,
       selectedMaskPosition: computed,
     });
 
     this.resizeObserver = new ResizeObserver(() => {
       this.refreshSystem();
+      this.refreshHoverElement();
     });
 
     this.intersectionObserver = this.initIntersectionObserver();
@@ -64,6 +67,36 @@ export class EditorMaskManager {
     this.observeIntersection();
     this.observeResize();
     this.observeEvents();
+
+    setTimeout(() => {
+      document.addEventListener('mousemove', e => {
+        this.setMousePosition([e.x, e.y]);
+        this.refreshHoverElement();
+      });
+    });
+
+    autorun(() => {
+      if (!this.hoverElement) return;
+      if (this.hoverElement === this.hoverElementCache) return;
+      console.log('hoverComponentId 计算');
+      const root = document.getElementById('editor-mask-wrapper');
+
+      let curr = this.hoverElement;
+      while (!this.elementIdMap.has(curr)) {
+        if (curr !== root && curr.parentElement) {
+          curr = curr.parentElement;
+        } else {
+          break;
+        }
+      }
+      console.log(this.elementIdMap.get(curr) || '');
+      this.hoverElementCache = this.hoverElement;
+      this.setHoverComponentId(this.elementIdMap.get(curr) || '');
+    });
+
+    autorun(() => {
+      this.hoverComponentIdRef.current = this.hoverComponentId;
+    });
   }
 
   private initIntersectionObserver(): IntersectionObserver {
@@ -81,6 +114,7 @@ export class EditorMaskManager {
       });
       // the coordinate system need to be refresh
       this.refreshSystem();
+      this.refreshHoverElement();
     }, options);
   }
 
@@ -107,6 +141,13 @@ export class EditorMaskManager {
       this.refreshSystem();
       this.observeIntersection();
       this.observeResize();
+
+      const eleIdMap = new Map<Element, string>();
+      this.eleMap.forEach((ele, id) => {
+        eleIdMap.set(ele, id);
+      });
+      this.setElementIdMap(eleIdMap);
+      this.refreshHoverElement();
     });
   }
 
@@ -169,6 +210,10 @@ export class EditorMaskManager {
     };
   }
 
+  private refreshHoverElement() {
+    this.setHoverElement(document.elementFromPoint(...this.mousePosition));
+  }
+
   setMousePosition(val: [number, number]) {
     this.mousePosition = val;
   }
@@ -183,6 +228,20 @@ export class EditorMaskManager {
 
   setMaskContainerRect(maskContainerRect: DOMRect) {
     this.maskContainerRect = maskContainerRect;
+  }
+
+  setElementIdMap(elementIdMap: Map<Element, string>) {
+    this.elementIdMap = elementIdMap;
+  }
+
+  setHoverElement(hoverElement: Element | null) {
+    console.log('setHoverElement');
+    this.hoverElement = hoverElement;
+  }
+
+  setHoverComponentId(hoverComponentId: string) {
+    console.log('sethoverComponentId');
+    this.hoverComponentId = hoverComponentId;
   }
 
   private get eleMap() {
