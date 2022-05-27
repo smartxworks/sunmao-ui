@@ -1,11 +1,16 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { HStack, Text } from '@chakra-ui/react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
 import { implementWidget } from '../../../utils/widget';
 import { ExpressionEditor } from '../../Form';
 
-export const SizeWidget: React.FC<WidgetProps<{}, CSSProperties>> = props => {
+type Size = {
+  width?: number | string;
+  height?: number | string;
+};
+
+export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
   const { value, onChange } = props;
 
   return (
