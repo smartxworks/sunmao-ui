@@ -16,7 +16,7 @@ const exampleProperties: Static<typeof BadgePropsSpec> = {
   offset: [6, -2],
 };
 
-const options = {
+export const Badge = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -37,9 +37,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Badge = implementRuntimeComponent(options)(props => {
+})(props => {
   const { ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 

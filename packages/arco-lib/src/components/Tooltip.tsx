@@ -20,7 +20,7 @@ const exampleProperties: Static<typeof TooltipPropsSpec> = {
   unmountOnExit: true,
 };
 
-const options = {
+export const Tooltip = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -41,9 +41,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Tooltip = implementRuntimeComponent(options)(props => {
+})(props => {
   const { controlled, ...cProps } = getComponentProps(props);
   const { elementRef, subscribeMethods, slotsElements, customStyle } = props;
 

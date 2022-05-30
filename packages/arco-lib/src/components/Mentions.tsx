@@ -4,7 +4,8 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { MentionsPropsSpec as BaseMentionsPropsSpec } from '../generated/types/Mentions';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useStateValue } from '../hooks/useStateValue';
 
 const MentionsPropsSpec = Type.Object(BaseMentionsPropsSpec);
 const MentionsStateSpec = Type.Object({
@@ -12,8 +13,8 @@ const MentionsStateSpec = Type.Object({
 });
 
 const exampleProperties: Static<typeof MentionsPropsSpec> = {
-  defaultValue: 'smartx',
-  options: ['smartx', 'byte and dance', 'baidu'],
+  defaultValue: 'option1',
+  options: ['option1', 'option2', 'option3'],
   prefix: '@',
   position: 'bl',
   split: ' ',
@@ -21,9 +22,10 @@ const exampleProperties: Static<typeof MentionsPropsSpec> = {
   allowClear: true,
   disabled: false,
   placeholder: 'you can mentions sb by prefix "@"',
+  updateWhenDefaultValueChanges: false,
 };
 
-const options = {
+export const Mentions = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -39,13 +41,16 @@ const options = {
     styleSlots: ['content'],
     events: ['onChange', 'onClear', 'onPressEnter', 'onFocus', 'onBlur'],
   },
-};
-
-export const Mentions = implementRuntimeComponent(options)(props => {
-  const { defaultValue, ...cProps } = getComponentProps(props);
+})(props => {
+  const { defaultValue, updateWhenDefaultValueChanges, ...cProps } =
+    getComponentProps(props);
   const { elementRef, mergeState, customStyle, callbackMap } = props;
 
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useStateValue(
+    defaultValue,
+    mergeState,
+    updateWhenDefaultValueChanges
+  );
 
   const onChange = useCallback(
     (value: string) => {

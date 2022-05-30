@@ -11,12 +11,19 @@ const LinkStateSpec = Type.Object({});
 const exampleProperties: Static<typeof LinkPropsSpec> = {
   disabled: false,
   hoverable: true,
-  status: 'warning',
+  status: 'default',
   href: 'https://www.smartx.com/',
   content: 'Link',
 };
 
-const options = {
+const statusMap = {
+  default: undefined,
+  success: 'success',
+  error: 'error',
+  warning: 'warning',
+} as const;
+
+export const Link = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -35,16 +42,14 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Link = implementRuntimeComponent(options)(props => {
+})(props => {
   const { content, status, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle } = props;
 
   return (
     <BaseLink
       ref={elementRef}
-      status={status}
+      status={statusMap[status]}
       className={css(customStyle?.content)}
       {...cProps}
     >

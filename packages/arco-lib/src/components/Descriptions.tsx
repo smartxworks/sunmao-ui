@@ -45,7 +45,7 @@ const exampleProperties: Static<typeof DescriptionPropsSpec> = {
   column: 2,
 };
 
-const options = {
+export const Descriptions = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -64,9 +64,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Descriptions = implementRuntimeComponent(options)(props => {
+})(props => {
   const { data, ...cProps } = getComponentProps(props);
   const { customStyle } = props;
 

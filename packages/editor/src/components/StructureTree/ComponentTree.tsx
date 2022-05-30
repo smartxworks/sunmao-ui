@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { ComponentItemView } from './ComponentItemView';
@@ -6,27 +6,50 @@ import { DropComponentWrapper } from './DropComponentWrapper';
 import { ChildrenMap } from './StructureTree';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
+import { observer } from 'mobx-react-lite';
 
 type Props = {
   component: ComponentSchema;
   parentId: string | undefined;
   slot: string | undefined;
   childrenMap: ChildrenMap;
-  selectedComponentId: string;
   onSelectComponent: (id: string) => void;
+  onSelected?: (id: string) => void;
   services: EditorServices;
   isAncestorDragging: boolean;
   depth: number;
 };
+type ComponentTreeProps = Props & {
+  isSelected: boolean;
+};
 
-export const ComponentTree: React.FC<Props> = props => {
+const observeSelected = (Component: React.FC<ComponentTreeProps>) => {
+  const ObserveActive: React.FC<Props> = props => {
+    const { services, component, onSelected } = props;
+    const { editorStore } = services;
+    const { selectedComponentId } = editorStore;
+
+    useEffect(() => {
+      if (selectedComponentId === component.id) {
+        onSelected?.(selectedComponentId);
+      }
+    }, [selectedComponentId, component.id, onSelected]);
+
+    return <Component {...props} isSelected={selectedComponentId === component.id} />;
+  };
+
+  return observer(ObserveActive);
+};
+
+const ComponentTree = (props: ComponentTreeProps) => {
   const {
     component,
     childrenMap,
     parentId,
     slot,
-    selectedComponentId,
+    isSelected,
     onSelectComponent,
+    onSelected,
     services,
     isAncestorDragging,
     depth,
@@ -35,6 +58,14 @@ export const ComponentTree: React.FC<Props> = props => {
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+
+  const onChildSelected = useCallback(
+    selectedId => {
+      setIsExpanded(true);
+      onSelected?.(selectedId);
+    },
+    [onSelected]
+  );
 
   const slotsEle = useMemo(() => {
     if (slots.length === 0) {
@@ -47,14 +78,14 @@ export const ComponentTree: React.FC<Props> = props => {
       if (slotChildren && slotChildren.length > 0) {
         slotContent = slotChildren.map(c => {
           return (
-            <ComponentTree
+            <ComponentTreeWrapper
               key={c.id}
               component={c}
               parentId={component.id}
               slot={_slot}
               childrenMap={childrenMap}
-              selectedComponentId={selectedComponentId}
               onSelectComponent={onSelectComponent}
+              onSelected={onChildSelected}
               services={services}
               isAncestorDragging={isAncestorDragging || isDragging}
               depth={depth + 1}
@@ -73,7 +104,7 @@ export const ComponentTree: React.FC<Props> = props => {
             droppable={!isAncestorDragging && !isDragging}
             hasSlot={true}
           >
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="gray.500" paddingLeft="6" paddingY={1}>
               Empty
             </Text>
           </DropComponentWrapper>
@@ -81,15 +112,15 @@ export const ComponentTree: React.FC<Props> = props => {
       }
 
       const slotName = (
-        <Text color="gray.500" fontWeight="medium">
+        <Text color="gray.500" fontSize={12} fontWeight="medium" paddingLeft="3">
           Slot: {_slot}
         </Text>
       );
 
       return (
-        <Box key={_slot} paddingLeft="3" width="full">
+        <Box key={_slot} paddingLeft="3" width="full" display={isExpanded ? '' : 'none'}>
           {/* although component can have multiple slots, but for now, most components have only one slot
-          so we hide slot name to save more view area */}
+        so we hide slot name to save more view area */}
           {slots.length > 1 ? slotName : undefined}
           <VStack spacing="0" width="full" alignItems="start">
             {slotContent}
@@ -101,8 +132,8 @@ export const ComponentTree: React.FC<Props> = props => {
     slots,
     childrenMap,
     component.id,
-    selectedComponentId,
     onSelectComponent,
+    onChildSelected,
     services,
     isAncestorDragging,
     isDragging,
@@ -110,14 +141,20 @@ export const ComponentTree: React.FC<Props> = props => {
     isExpanded,
   ]);
 
-  const onClickRemove = () => {
+  const onClickRemove = useCallback(() => {
     eventBus.send(
       'operation',
       genOperation(registry, 'removeComponent', {
         componentId: component.id,
       })
     );
-  };
+  }, [component.id, eventBus, registry]);
+  const onClickItem = useCallback(() => {
+    onSelectComponent(component.id);
+  }, [component.id, onSelectComponent]);
+  const onToggleExpanded = useCallback(() => setIsExpanded(prev => !prev), []);
+  const onDragStart = useCallback(() => setIsDragging(true), []);
+  const onDragEnd = useCallback(() => setIsDragging(false), []);
 
   return (
     <VStack
@@ -140,20 +177,22 @@ export const ComponentTree: React.FC<Props> = props => {
         <ComponentItemView
           id={component.id}
           title={component.id}
-          isSelected={component.id === selectedComponentId}
-          onClick={() => {
-            onSelectComponent(component.id);
-          }}
+          isSelected={isSelected}
+          onClick={onClickItem}
           onClickRemove={onClickRemove}
           noChevron={slots.length === 0}
           isExpanded={isExpanded}
-          onToggleExpanded={() => setIsExpanded(prev => !prev)}
-          onDragStart={() => setIsDragging(true)}
-          onDragEnd={() => setIsDragging(false)}
+          onToggleExpanded={onToggleExpanded}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
           depth={depth}
         />
       </DropComponentWrapper>
-      {isExpanded ? slotsEle : undefined}
+      {slotsEle}
     </VStack>
   );
 };
+
+export const ComponentTreeWrapper: React.FC<Props> = observeSelected(
+  React.memo(ComponentTree)
+);

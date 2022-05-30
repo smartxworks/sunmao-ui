@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { EventWidget } from '@sunmao-ui/editor-sdk';
 import {
   Box,
@@ -44,9 +44,13 @@ export const EventHandlerForm: React.FC<Props> = props => {
     onUp,
     onDown,
   } = props;
+  const [hasOpened, setHasOpened] = React.useState<boolean>(false);
+  const onAccordionChange = useCallback(() => {
+    setHasOpened(true);
+  }, []);
 
   return (
-    <Accordion width="100%" allowMultiple>
+    <Accordion width="100%" allowMultiple onChange={onAccordionChange}>
       <AccordionItem>
         <h2>
           <AccordionButton>
@@ -57,45 +61,47 @@ export const EventHandlerForm: React.FC<Props> = props => {
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4} pt={2} padding={0}>
-          <Box position="relative" width="100%">
-            <VStack className={formWrapperCSS}>
-              <EventWidget
-                component={component}
-                spec={spec}
-                value={handler}
-                path={[]}
-                level={1}
-                services={services}
-                onChange={onChange}
-            />
-            </VStack>
-            <Box position="absolute" right="4" top="4">
-              <IconButton
-                aria-label="up event handler"
-                icon={<ArrowUpIcon />}
-                size="xs"
-                variant="ghost"
-                disabled={index === 0}
-                onClick={onUp}
-            />
-              <IconButton
-                aria-label="down event handler"
-                icon={<ArrowDownIcon />}
-                size="xs"
-                variant="ghost"
-                disabled={index === size - 1}
-                onClick={onDown}
-            />
-              <IconButton
-                aria-label="remove event handler"
-                colorScheme="red"
-                icon={<CloseIcon />}
-                onClick={onRemove}
-                size="xs"
-                variant="ghost"
-            />
+          {hasOpened ? (
+            <Box position="relative" width="100%">
+              <VStack className={formWrapperCSS}>
+                <EventWidget
+                  component={component}
+                  spec={spec}
+                  value={handler}
+                  path={[]}
+                  level={1}
+                  services={services}
+                  onChange={onChange}
+                />
+              </VStack>
+              <Box position="absolute" right="4" top="4">
+                <IconButton
+                  aria-label="up event handler"
+                  icon={<ArrowUpIcon />}
+                  size="xs"
+                  variant="ghost"
+                  disabled={index === 0}
+                  onClick={onUp}
+                />
+                <IconButton
+                  aria-label="down event handler"
+                  icon={<ArrowDownIcon />}
+                  size="xs"
+                  variant="ghost"
+                  disabled={index === size - 1}
+                  onClick={onDown}
+                />
+                <IconButton
+                  aria-label="remove event handler"
+                  colorScheme="red"
+                  icon={<CloseIcon />}
+                  onClick={onRemove}
+                  size="xs"
+                  variant="ghost"
+                />
+              </Box>
             </Box>
-          </Box>
+          ) : null}
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

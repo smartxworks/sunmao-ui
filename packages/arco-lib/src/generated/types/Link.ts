@@ -16,9 +16,9 @@ export const LinkPropsSpec = {
   hoverable: Type.Boolean({
     title: 'Hoverable',
     category: Category.Style,
-    description: 'Whether to hide background when hover'
+    description: 'Whether to hide background when hover',
   }),
-  status: StringUnion(['success', 'warning', 'error'], {
+  status: StringUnion(['default', 'success', 'warning', 'error'], {
     title: 'Status',
     category: Category.Style,
   }),

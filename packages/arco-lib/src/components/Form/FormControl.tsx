@@ -35,6 +35,14 @@ const exampleProperties: Static<typeof FormControlPropsSpec> = {
   labelAlign: 'left',
   colon: false,
   help: '',
+  labelCol: {
+    span: 3,
+    offset: 0,
+  },
+  wrapperCol: {
+    span: 21,
+    offset: 0,
+  },
 };
 
 export const FormControl = implementRuntimeComponent({

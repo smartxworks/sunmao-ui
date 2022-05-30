@@ -38,7 +38,6 @@ export const ComponentItemView: React.FC<Props> = props => {
   const expandIcon = (
     <IconButton
       margin="auto"
-      ml="-5"
       flex="0 0 auto"
       aria-label="showChildren"
       size="xs"
@@ -92,7 +91,7 @@ export const ComponentItemView: React.FC<Props> = props => {
     <Box
       id={`tree-item-${id}`}
       width="full"
-      padding="1"
+      paddingY="1"
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       onDragStart={_onDragStart}
@@ -103,7 +102,12 @@ export const ComponentItemView: React.FC<Props> = props => {
       onClick={onClick}
     >
       {highlightBackground}
-      <HStack width="full" justify="space-between" spacing="0">
+      <HStack
+        width="full"
+        justify="space-between"
+        spacing="0"
+        paddingLeft={noChevron ? '6' : '0'}
+      >
         {noChevron ? null : expandIcon}
         <Text
           cursor="pointer"
@@ -111,6 +115,7 @@ export const ComponentItemView: React.FC<Props> = props => {
           whiteSpace="nowrap"
           textOverflow="ellipsis"
           fontSize="sm"
+          title={title}
         >
           {title}
         </Text>
