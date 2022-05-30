@@ -5,3 +5,4 @@ export * from './application';
 export * from './method';
 export * from './module';
 export * from './version';
+export * from './utilMethod';
