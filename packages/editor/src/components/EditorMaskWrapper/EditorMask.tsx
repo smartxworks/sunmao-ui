@@ -1,8 +1,7 @@
 import React, { CSSProperties, useEffect, useRef } from 'react';
 import { css } from '@emotion/css';
-import { DIALOG_CONTAINER_ID } from '@sunmao-ui/runtime';
 import { Box, Text } from '@chakra-ui/react';
-import { observer, useLocalStore } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { DropSlotMask } from './DropSlotMask';
 import { EditorMaskManager } from './EditorMaskManager';
 import { EditorServices } from '../../types';
@@ -55,23 +54,29 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const { isDraggingNewComponent } = editorStore;
   const maskContainerRef = useRef<HTMLDivElement>(null);
 
-  const store = useLocalStore(
+  const manager = useLocalObservable(
     () =>
       new EditorMaskManager(services, wrapperRef, maskContainerRef, hoverComponentIdRef)
   );
 
-  const { hoverComponentId, hoverMaskPosition, selectedMaskPosition } = store;
-  useEffect(() => {
-    // store.setMousePosition(mousePosition);
-  }, [mousePosition, store]);
+  const { hoverComponentId, hoverMaskPosition, selectedMaskPosition } = manager;
 
   useEffect(() => {
     hoverComponentIdRef.current = hoverComponentId;
   }, [hoverComponentId, hoverComponentIdRef]);
 
   useEffect(() => {
-    store.modalContainerEle = document.getElementById(DIALOG_CONTAINER_ID);
-  });
+    manager.init();
+    return () => {
+      manager.destroy();
+    };
+  }, [manager]);
+
+  useEffect(() => {
+    if (mousePosition[0] > 0 && mousePosition[1] > 0) {
+      manager.setMousePosition(mousePosition);
+    }
+  }, [manager, mousePosition]);
 
   const hoverMask = hoverMaskPosition ? (
     <HoverMask style={hoverMaskPosition.style} id={hoverMaskPosition.id} />

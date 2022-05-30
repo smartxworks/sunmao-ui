@@ -30,6 +30,7 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const onScroll = () => {
     if (wrapperRef.current) {
       setScrollOffset([wrapperRef.current.scrollLeft, wrapperRef.current.scrollTop]);
+      eventBus.send('MaskWrapperScrollCapture');
     }
   };
 
