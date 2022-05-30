@@ -4,8 +4,9 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { InputPropsSpec as BaseInputPropsSpec } from '../generated/types/Input';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { RefInputType } from '@arco-design/web-react/es/Input/interface';
+import { useStateValue } from '../hooks/useStateValue';
 
 const InputPropsSpec = Type.Object({
   ...BaseInputPropsSpec,
@@ -47,17 +48,16 @@ const options = {
 };
 
 export const Input = implementRuntimeComponent(options)(props => {
-  const {
-    getElement,
-    updateWhenDefaultValueChanges,
-    slotsElements,
-    customStyle,
-    callbackMap,
-    mergeState,
-  } = props;
-  const { defaultValue, ...cProps } = getComponentProps(props);
+  const { getElement, slotsElements, customStyle, callbackMap, mergeState } = props;
+
+  const { updateWhenDefaultValueChanges, defaultValue, ...cProps } =
+    getComponentProps(props);
   const ref = useRef<RefInputType | null>(null);
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useStateValue(
+    defaultValue,
+    mergeState,
+    updateWhenDefaultValueChanges
+  );
 
   useEffect(() => {
     const ele = ref.current?.dom;
@@ -65,13 +65,6 @@ export const Input = implementRuntimeComponent(options)(props => {
       getElement(ele);
     }
   }, [getElement, ref]);
-
-  useEffect(() => {
-    if (updateWhenDefaultValueChanges) {
-      setValue(defaultValue);
-      mergeState({ value: defaultValue });
-    }
-  }, [defaultValue, updateWhenDefaultValueChanges]);
 
   const onChange = useCallback(
     value => {

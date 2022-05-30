@@ -30,7 +30,9 @@ export const ExplorerForm: React.FC<Props> = observer(
           name,
           version,
         };
-        form = <AppMetaDataForm data={appMetaData} services={services} onSubmit={onSubmit} />;
+        form = (
+          <AppMetaDataForm data={appMetaData} services={services} onSubmit={onSubmit} />
+        );
         break;
       case 'module':
         const moduleSpec = editorStore.appStorage.modules.find(
@@ -40,8 +42,15 @@ export const ExplorerForm: React.FC<Props> = observer(
           name,
           version,
           stateMap: moduleSpec?.spec.stateMap || {},
+          exampleProperties: moduleSpec?.spec.exampleProperties || {},
         };
-        form = <ModuleMetaDataForm services={services} initData={moduleMetaData} onSubmit={onSubmit} />;
+        form = (
+          <ModuleMetaDataForm
+            services={services}
+            initData={moduleMetaData}
+            onSubmit={onSubmit}
+          />
+        );
         break;
     }
     return (

@@ -23,9 +23,17 @@ export const SelectPropsSpec = {
     }),
     {
       title: 'Options',
-      category: Category.Data
+      category: Category.Data,
+      widgetOptions: {
+        displayedKeys: ['value'],
+      },
     }
   ),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+    weight: 6,
+  }),
   multiple: Type.Boolean({
     title: 'Multiple',
     category: Category.Basic,
@@ -62,17 +70,19 @@ export const SelectPropsSpec = {
     title: 'Enable Search',
     category: Category.Behavior,
   }),
-  retainInputValue: Type.Optional(Type.Boolean({
-    title: 'Retain Input Value',
-    category: Category.Behavior,
-    description: 'Retain the existing content when the search box is focused',
-    conditions: [
-      {
-        key: 'showSearch',
-        value: true
-      }
-    ]
-  })),
+  retainInputValue: Type.Optional(
+    Type.Boolean({
+      title: 'Retain Input Value',
+      category: Category.Behavior,
+      description: 'Retain the existing content when the search box is focused',
+      conditions: [
+        {
+          key: 'showSearch',
+          value: true,
+        },
+      ],
+    })
+  ),
   allowClear: Type.Boolean({
     title: 'Allow Clear',
     category: Category.Behavior,
@@ -84,10 +94,10 @@ export const SelectPropsSpec = {
   }),
   error: Type.Boolean({
     title: 'Error',
-    category: Category.Behavior
+    category: Category.Behavior,
   }),
   unmountOnExit: Type.Boolean({
     title: 'Destroy On Hide',
     category: Category.Behavior,
-  })
+  }),
 };

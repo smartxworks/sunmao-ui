@@ -19,7 +19,7 @@ const exampleProperties: Static<typeof PopoverPropsSpec> = {
   unmountOnExit: false,
 };
 
-const options = {
+export const Popover = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -41,9 +41,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Popover = implementRuntimeComponent(options)(props => {
+})(props => {
   const { controlled, ...cProps } = getComponentProps(props);
   const { subscribeMethods, elementRef, slotsElements, customStyle } = props;
 

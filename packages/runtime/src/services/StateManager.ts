@@ -121,9 +121,9 @@ export class StateManager {
     } catch (error) {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
-        
+
         if (!noConsoleError) {
-          consoleError(ConsoleType.Expression,  '', expressionError.message);
+          consoleError(ConsoleType.Expression, '', expressionError.message);
         }
 
         return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
@@ -188,7 +188,7 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(value, options);
+          const result = this.maskedEval(value as string, options);
 
           return result;
         },
@@ -209,5 +209,9 @@ export class StateManager {
       result: evaluated,
       stop: () => stops.forEach(s => s()),
     };
+  }
+
+  setDependencies(dependencies: Record<string, unknown> = {}) {
+    this.dependencies = { ...DefaultDependencies, ...dependencies };
   }
 }

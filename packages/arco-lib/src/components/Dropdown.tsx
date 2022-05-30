@@ -21,15 +21,15 @@ const exampleProperties: Static<typeof DropdownPropsSpec> = {
   disabled: false,
   defaultPopupVisible: false,
   list: [
-    { key: '1', label: 'smartx' },
-    { key: '2', label: 'baidu' },
-    { key: '3', label: 'tencent' },
+    { key: '1', label: 'Menu item 1' },
+    { key: '2', label: 'Menu item 2' },
+    { key: '3', label: 'Menu item 3' },
   ],
   autoAlignPopupWidth: true,
   unmountOnExit: false,
 };
 
-const options = {
+export const Dropdown = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -48,9 +48,7 @@ const options = {
     styleSlots: [],
     events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
   },
-};
-
-export const Dropdown = implementRuntimeComponent(options)(props => {
+})(props => {
   const { elementRef, slotsElements, callbackMap, mergeState } = props;
   const cProps = getComponentProps(props);
   const { list, dropdownType, autoAlignPopupWidth, ...restProps } = cProps;
