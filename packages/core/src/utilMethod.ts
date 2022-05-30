@@ -8,7 +8,7 @@ export type UtilMethodSpec = {
 
 export type UtilMethod = {
   version: string;
-  king: 'UtilMethod';
+  kind: 'UtilMethod';
   metadata: Metadata;
   spec: UtilMethodSpec;
 };
@@ -17,12 +17,12 @@ export type RuntimeUtilMethod = UtilMethod & {
   parsedVersion: Version;
 };
 
-export type CreateUtilMethodOptions = Omit<UtilMethod, 'king'>;
+export type CreateUtilMethodOptions = Omit<UtilMethod, 'kind'>;
 
 export function createUtilMethod(options: CreateUtilMethodOptions): RuntimeUtilMethod {
   return {
     ...options,
-    king: 'UtilMethod',
+    kind: 'UtilMethod',
     parsedVersion: parseVersion(options.version),
   };
 }
