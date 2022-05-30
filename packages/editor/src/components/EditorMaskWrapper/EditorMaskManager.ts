@@ -1,40 +1,29 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, autorun, makeObservable, observable } from 'mobx';
 import React from 'react';
 import { EditorServices } from '../../types';
 
+type MaskPosition = {
+  id: string;
+  style: {
+    top: number;
+    left: number;
+    height: number;
+    width: number;
+  };
+};
 export class EditorMaskManager {
-  // observable: current mouse position
+  hoverComponentId = '';
+  hoverMaskPosition: MaskPosition | null = null;
+  selectedMaskPosition: MaskPosition | null = null;
   mousePosition: [number, number] = [0, 0];
-  // observable: rects of all foreground components
-  rects: Record<string, DOMRect> = {};
-  // observable: rect of mask container
-  maskContainerRect: DOMRect | null = null;
-  // observable: the coordinate system offset, it is almost equal to the scroll value of maskWrapper
-  systemOffset: [number, number] = [0, 0];
-  modalContainerEle: HTMLElement | null = null;
-  // visible status of all components.
-  private visibleMap = new Map<Element, boolean>();
+  private elementIdMap = new Map<Element, string>();
+  // rect of mask container
+  private maskContainerRect: DOMRect | null = null;
   private resizeObserver: ResizeObserver;
+  private visibleMap = new Map<Element, boolean>();
   private intersectionObserver: IntersectionObserver;
   private MaskPadding = 4;
-
-  get hoverComponentId() {
-    const where = whereIsMouse(
-      this.mousePosition[0] - this.systemOffset[0],
-      this.mousePosition[1] - this.systemOffset[1],
-      this.rects
-    );
-    return where;
-  }
-
-  get hoverMaskPosition() {
-    return this.getMaskPosition(this.hoverComponentId);
-  }
-
-  get selectedMaskPosition() {
-    return this.getMaskPosition(this.services.editorStore.selectedComponentId);
-  }
-
+  private lastHoverElement: Element | null = null;
   constructor(
     public services: EditorServices,
     public wrapperRef: React.MutableRefObject<HTMLDivElement | null>,
@@ -42,33 +31,67 @@ export class EditorMaskManager {
     public hoverComponentIdRef: React.MutableRefObject<string>
   ) {
     makeObservable(this, {
-      rects: observable.shallow,
-      mousePosition: observable.ref,
-      maskContainerRect: observable.ref,
-      systemOffset: observable.ref,
-      setRects: action,
+      mousePosition: observable,
+      hoverMaskPosition: observable.ref,
+      selectedMaskPosition: observable.ref,
+      hoverComponentId: observable,
       setMousePosition: action,
-      setMaskContainerRect: action,
-      setSystemOffset: action,
-      hoverComponentId: computed,
-      hoverMaskPosition: computed,
-      selectedMaskPosition: computed,
+      setHoverComponentId: action,
+      setHoverMaskPosition: action,
+      setSelectedMaskPosition: action,
     });
 
     this.resizeObserver = new ResizeObserver(() => {
-      this.refreshSystem();
+      this.refreshHoverElement();
     });
 
     this.intersectionObserver = this.initIntersectionObserver();
+  }
+
+  init() {
+    this.maskContainerRect =
+      this.maskContainerRef.current?.getBoundingClientRect() || null;
 
     this.observeIntersection();
     this.observeResize();
-    this.observeEvents();
+    // listen to the DOM elements' mount and unmount events
+    // TODO: This is not very accurate, because sunmao runtime 'didDOMUpdate' hook is not accurate.
+    // We will refactor the 'didDOMUpdate' hook with components' life cycle in the future.
+    this.services.eventBus.on('HTMLElementsUpdated', this.onHTMLElementsUpdated);
+
+    // listen scroll events
+    // scroll events' timing is similar to intersection events, but they are different. Both of them are necessary.
+    this.services.eventBus.on('MaskWrapperScrollCapture', this.onScroll);
+
+    // expose hoverComponentId
+    autorun(() => {
+      this.hoverComponentIdRef.current = this.hoverComponentId;
+    });
+
+    // when hoverComponentId & selectedComponentId change, refresh mask position
+    autorun(() => {
+      this.refreshMaskPosition();
+    });
+
+    // listen mousePosition change to refreshHoverElement 
+    autorun(() => {
+      this.refreshHoverElement();
+    });
+  }
+
+  destroy() {
+    this.intersectionObserver.disconnect();
+    this.resizeObserver.disconnect();
+    this.services.eventBus.off('HTMLElementsUpdated', this.onHTMLElementsUpdated);
+
+    // listen scroll events
+    // scroll events' timing is similar to intersection events, but they are different. Both of them are necessary.
+    this.services.eventBus.off('MaskWrapperScrollCapture', this.onScroll);
   }
 
   private initIntersectionObserver(): IntersectionObserver {
     const options = {
-      root: document.getElementById('editor-mask-wrapper'),
+      root: null,
       rootMargin: '0px',
       threshold: buildThresholdList(),
     };
@@ -79,8 +102,8 @@ export class EditorMaskManager {
       entries.forEach(e => {
         this.visibleMap.set(e.target, e.isIntersecting);
       });
-      // the coordinate system need to be refresh
-      this.refreshSystem();
+      // Refresh the mask, because the component visibility changed,
+      this.refreshMaskPosition();
     }, options);
   }
 
@@ -99,64 +122,28 @@ export class EditorMaskManager {
     });
   }
 
-  private observeEvents() {
-    // listen to the DOM elements' mount and unmount events
-    // TODO: This is not very accurate, because sunmao runtime 'didDOMUpdate' hook is not accurate.
-    // We will refactor the 'didDOMUpdate' hook with components' life cycle in the future.
-    this.services.eventBus.on('HTMLElementsUpdated', () => {
-      this.refreshSystem();
-      this.observeIntersection();
-      this.observeResize();
+  private onHTMLElementsUpdated = () => {
+    this.observeIntersection();
+    this.observeResize();
+
+    // generate elementIdMap, this only aim to improving the  performance of refreshHoverElement method
+    const elementIdMap = new Map<Element, string>();
+    this.eleMap.forEach((ele, id) => {
+      elementIdMap.set(ele, id);
     });
-  }
 
-  // Refresh the whole coordinate system.
-  // Coordinate system is made up of: reacts, maskContainerRect and systemOffset.
-  private refreshSystem() {
-    this.updateEleRects();
-    if (this.maskContainerEle) {
-      this.setMaskContainerRect(this.maskContainerEle.getBoundingClientRect());
-    }
-    if (this.wrapperEle) {
-      this.setSystemOffset([this.wrapperEle.scrollLeft, this.wrapperEle.scrollTop]);
-    }
-  }
+    this.elementIdMap = elementIdMap;
+    this.refreshHoverElement();
+    this.refreshMaskPosition();
+  };
 
-  private updateEleRects() {
-    const _rects: Record<string, DOMRect> = {};
-    const modalEleMap = new Map<string, HTMLElement>();
-    // detect if there are components in modal
-    for (const id of this.eleMap.keys()) {
-      const ele = this.eleMap.get(id)!;
-      if (this.isChild(ele, this.modalContainerEle!)) {
-        modalEleMap.set(id, ele);
-      }
-    }
-
-    const foregroundEleMap = modalEleMap.size > 0 ? modalEleMap : this.eleMap;
-
-    foregroundEleMap.forEach((ele, id) => {
-      if (this.visibleMap.get(ele)) {
-        const rect = ele.getBoundingClientRect();
-        _rects[id] = rect;
-      }
-    });
-    this.setRects(_rects);
-  }
-
-  private isChild(child: HTMLElement, parent: HTMLElement) {
-    let curr = child;
-    while (curr.parentElement && !curr.parentElement.isSameNode(this.wrapperEle)) {
-      if (curr.parentElement.isSameNode(parent)) {
-        return true;
-      }
-      curr = curr.parentElement;
-    }
-    return false;
-  }
+  private onScroll = () => {
+    this.refreshHoverElement();
+    this.refreshMaskPosition();
+  };
 
   private getMaskPosition(id: string) {
-    const rect = this.rects[id];
+    const rect = this.eleMap.get(id)?.getBoundingClientRect();
     if (!this.maskContainerRect || !rect) return null;
     return {
       id,
@@ -169,32 +156,55 @@ export class EditorMaskManager {
     };
   }
 
-  setMousePosition(val: [number, number]) {
-    this.mousePosition = val;
+  private refreshHoverElement() {
+    const hoverElement = document.elementFromPoint(...this.mousePosition);
+    if (!hoverElement) return;
+    if (hoverElement === this.lastHoverElement) return;
+    const root = this.wrapperRef.current;
+
+    // check all the parents of hoverElement, until find a sunmao component's element
+    let curr = hoverElement;
+    while (!this.elementIdMap.has(curr)) {
+      if (curr !== root && curr.parentElement) {
+        curr = curr.parentElement;
+      } else {
+        break;
+      }
+    }
+
+    this.lastHoverElement = hoverElement;
+    this.setHoverComponentId(this.elementIdMap.get(curr) || '');
   }
 
-  setSystemOffset(systemOffset: [number, number]) {
-    this.systemOffset = systemOffset;
+  private refreshMaskPosition() {
+    this.setHoverMaskPosition(this.getMaskPosition(this.hoverComponentId));
+    const selectedComponentId = this.services.editorStore.selectedComponentId;
+    const selectedComponentEle = this.eleMap.get(selectedComponentId);
+    if (selectedComponentEle && this.visibleMap.get(selectedComponentEle)) {
+      this.setSelectedMaskPosition(this.getMaskPosition(selectedComponentId));
+    } else {
+      this.setSelectedMaskPosition(null);
+    }
   }
 
-  setRects(rects: Record<string, DOMRect>) {
-    this.rects = rects;
+  setMousePosition(mousePosition: [number, number]) {
+    this.mousePosition = mousePosition;
   }
 
-  setMaskContainerRect(maskContainerRect: DOMRect) {
-    this.maskContainerRect = maskContainerRect;
+  setHoverComponentId(hoverComponentId: string) {
+    this.hoverComponentId = hoverComponentId;
+  }
+
+  setHoverMaskPosition(hoverMaskPosition: MaskPosition | null) {
+    this.hoverMaskPosition = hoverMaskPosition;
+  }
+
+  setSelectedMaskPosition(selectedMaskPosition: MaskPosition | null) {
+    this.selectedMaskPosition = selectedMaskPosition;
   }
 
   private get eleMap() {
     return this.services.editorStore.eleMap;
-  }
-
-  private get wrapperEle() {
-    return this.wrapperRef.current;
-  }
-
-  private get maskContainerEle() {
-    return this.maskContainerRef.current;
   }
 }
 
@@ -209,31 +219,4 @@ function buildThresholdList() {
 
   thresholds.push(0);
   return thresholds;
-}
-
-export function whereIsMouse(
-  left: number,
-  top: number,
-  rects: Record<string, DOMRect>
-): string {
-  let nearest = {
-    id: '',
-    sum: Infinity,
-  };
-  for (const id in rects) {
-    const rect = rects[id];
-    if (
-      top < rect.top ||
-      left < rect.left ||
-      top > rect.top + rect.height ||
-      left > rect.left + rect.width
-    ) {
-      continue;
-    }
-    const sum = top - rect.top + (left - rect.left);
-    if (sum < nearest.sum) {
-      nearest = { id, sum };
-    }
-  }
-  return nearest.id;
 }
