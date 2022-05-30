@@ -6,33 +6,45 @@ import {
   Table as BaseTable,
   PaginationProps,
 } from '@arco-design/web-react';
-import { css } from '@emotion/css';
-import { Type, Static } from '@sinclair/typebox';
-import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { TablePropsSpec, ColumnSpec } from '../generated/types/Table';
-import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import { sortBy } from 'lodash-es';
 import {
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
   implementRuntimeComponent,
 } from '@sunmao-ui/runtime';
+import { css } from '@emotion/css';
+import { sortBy } from 'lodash-es';
+import { Type, Static } from '@sinclair/typebox';
+import { FALLBACK_METADATA, getComponentProps } from '../../sunmao-helper';
+import { TablePropsSpec, ColumnSpec } from '../../generated/types/Table';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { TableInstance } from '@arco-design/web-react/es/Table/table';
 import { ColumnProps } from '@arco-design/web-react/es/Table';
-import { Resizable, ResizeCallbackData } from 'react-resizable';
+import { useStateValue } from 'src/hooks/useStateValue';
+import { ResizableTitle } from './ResizableTitle';
+import { RefInputType } from '@arco-design/web-react/es/Input/interface';
+import { ResizeCallbackData } from 'react-resizable';
 
 const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
+  filterRule: Type.Any(),
+  sortRule: Type.Object({
+    field: Type.Optional(Type.String()),
+    direction: Type.Optional(Type.String()),
+  }),
+  currentPage: Type.Number(),
+  pageSize: Type.Number(),
 });
 
 type SortRule = {
-  field: string;
+  field?: string;
   direction?: 'ascend' | 'descend';
 };
+
+type FilterRule = Partial<Record<string, string[]>>;
 
 type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps;
 
@@ -57,56 +69,6 @@ const rowClickStyle = css`
     background-color: rgb(228, 236, 243) !important;
   }
 `;
-
-const resizableStyle = css`
-  position: relative;
-  background-clip: padding-box;
-`;
-const resizableHandleStyle = css`
-  position: absolute;
-  width: 10px;
-  height: 100%;
-  bottom: 0;
-  right: -5px;
-  cursor: col-resize;
-  z-index: 1;
-`;
-
-type ResizableTitleProps = {
-  onResize: (e: React.SyntheticEvent, data: ResizeCallbackData) => void;
-  width: number;
-  style: CSSProperties;
-};
-
-const ResizableTitle = (props: ResizableTitleProps) => {
-  const { onResize, width, ...restProps } = props;
-
-  if (!width) {
-    return <th {...restProps} />;
-  }
-
-  return (
-    <Resizable
-      width={width}
-      height={0}
-      handle={
-        <span
-          className={css`
-            ${resizableStyle}
-            ${resizableHandleStyle}
-          `}
-          onClick={e => {
-            e.stopPropagation();
-          }}
-        />
-      }
-      onResize={onResize}
-      draggableOpts={{ enableUserSelectHack: false }}
-    >
-      <th {...restProps} />
-    </Resizable>
-  );
-};
 
 export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
@@ -137,14 +99,6 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       displayValue: '',
     },
     {
-      title: 'Button',
-      dataIndex: 'button',
-      type: 'button',
-      filter: true,
-      displayValue: '',
-      btnCfg: { text: 'button', handlers: [] },
-    },
-    {
       title: 'CustomComponent',
       dataIndex: 'customComponent',
       type: 'module',
@@ -162,19 +116,24 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
     .fill('')
     .map((_, index) => ({
       key: `key ${index}`,
-      name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'xzdry'}${index}`,
+      name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'Naomi Cook'}${index}`,
       link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
-      button: `button ${index}`,
     })),
   pagination: {
+    enablePagination: true,
     pageSize: 6,
+    defaultCurrent: 1,
+    updateWhenDefaultPageChanges: false,
+    useCustomPagination: false,
   },
   rowClick: false,
   tableLayoutFixed: false,
   borderCell: false,
   stripe: false,
   size: 'default',
+  useDefaultFilter: true,
+  useDefaultSort: true,
   pagePosition: 'bottomCenter',
   rowSelectionType: 'single',
   border: true,
@@ -198,25 +157,53 @@ export const Table = implementRuntimeComponent({
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: ['onRowClick'],
+    events: [
+      'onRowClick',
+      'onSearch',
+      'onSelect',
+      'onSelectAll',
+      'onPageChange',
+      'onFilter',
+      'onSort',
+      'onChange',
+    ],
   },
 })(props => {
   const { getElement, callbackMap, app, mergeState, customStyle, services, component } =
     props;
 
   const ref = useRef<TableInstance | null>(null);
-  const { pagination, rowClick, data, ...cProps } = getComponentProps(props);
+  const { pagination, rowClick, useDefaultFilter, useDefaultSort, data, ...cProps } =
+    getComponentProps(props);
+
+  const {
+    pageSize,
+    updateWhenDefaultPageChanges,
+    enablePagination,
+    total,
+    defaultCurrent,
+    useCustomPagination,
+    ...restPaginationProps
+  } = pagination;
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sortRule, setSortRule] = useState<SortRule>({
-    field: 'name',
-    direction: undefined,
-  });
-  const [filterRule, setFilterRule] = useState();
+  const [currentPage, setCurrentPage] = useStateValue<number>(
+    defaultCurrent ?? 1,
+    mergeState,
+    updateWhenDefaultPageChanges,
+    'currentPage'
+  );
+
+  useEffect(() => {
+    mergeState({ pageSize });
+  }, []);
+
+  const [sortRule, setSortRule] = useState<SortRule | null>(null);
+
   const [columns, setColumns] = useState<ColumnProperty[]>([]);
+  const inputRef = useRef<RefInputType | null>(null);
 
   const handleResize = (
     columnIdx: number
@@ -235,33 +222,28 @@ export const Table = implementRuntimeComponent({
     };
   };
 
-  const filteredData = useMemo(() => {
-    let filteredData = Array.isArray(data) ? data : [];
-    if (filterRule) {
-      Object.keys(filterRule).forEach(colIdx => {
-        const value = filterRule[colIdx][0];
-        filteredData = filteredData?.filter(row =>
-          value ? row[colIdx].indexOf(value) !== -1 : true
-        );
-      });
-    }
-    return filteredData;
-  }, [data, filterRule]);
-
   const sortedData = useMemo(() => {
+    const sortedData = Array.isArray(data) ? data : [];
     if (!sortRule || !sortRule.direction) {
-      return filteredData;
+      return sortedData;
     }
 
-    const sorted = sortBy(filteredData, sortRule.field);
+    const sorted = sortBy(sortedData, sortRule.field!);
     return sortRule.direction === 'ascend' ? sorted : sorted.reverse();
-  }, [filteredData, sortRule]);
+  }, [data, sortRule]);
 
-  const { pageSize } = pagination;
-  const currentPageData = sortedData?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const currentPageData = useMemo(() => {
+    if (enablePagination) {
+      // If the `useCustomPagination` is true, then no pagination will be done and data over the pagesize will be sliced
+      // Otherwise it will automatically paginate on the front end based on the current page
+      if (useCustomPagination) {
+        return sortedData?.slice(0, pageSize);
+      } else {
+        return sortedData?.slice((currentPage - 1) * pageSize!, currentPage * pageSize!);
+      }
+    }
+    return sortedData;
+  }, [pageSize, currentPage, sortedData, enablePagination, useCustomPagination]);
 
   useEffect(() => {
     mergeState({
@@ -282,6 +264,7 @@ export const Table = implementRuntimeComponent({
             return (
               <div className="arco-table-custom-filter">
                 <Input.Search
+                  ref={inputRef}
                   searchButton
                   placeholder="Please input and enter"
                   value={filterKeys?.[0] || ''}
@@ -290,13 +273,29 @@ export const Table = implementRuntimeComponent({
                   }}
                   onSearch={() => {
                     confirm && confirm();
+                    callbackMap?.onSearch?.();
                   }}
                 />
               </div>
             );
           };
-        }
 
+          newColumn.onFilterDropdownVisibleChange = visible => {
+            if (visible) {
+              setTimeout(() => inputRef.current && inputRef.current.focus(), 100);
+            }
+          };
+
+          if (useDefaultFilter) {
+            newColumn.onFilter = (value, row) => {
+              return value
+                ? String(row[newColumn.dataIndex])
+                    .toLowerCase()
+                    .indexOf(String(value).toLowerCase()) !== -1
+                : true;
+            };
+          }
+        }
         if (newColumn.width) {
           newColumn.onHeaderCell = col => ({
             width: col.width,
@@ -382,18 +381,38 @@ export const Table = implementRuntimeComponent({
   const handleChange = (
     pagination: PaginationProps,
     sorter: { field?: string; direction?: 'descend' | 'ascend' },
-    filter: any
+    filters: FilterRule,
+    extra: { currentData: any[]; action: 'paginate' | 'sort' | 'filter' }
   ) => {
     const { current } = pagination;
-    if (current !== currentPage) {
-      setCurrentPage(current!);
-      return;
+    const { action } = extra;
+
+    switch (action) {
+      case 'paginate':
+        if (useCustomPagination) {
+          mergeState({ currentPage: current, pageSize });
+          callbackMap?.onPageChange?.();
+        }
+        setCurrentPage(current!);
+        break;
+      case 'sort':
+        if (useDefaultSort) {
+          setSortRule(sorter);
+        } else {
+          setSortRule(null);
+          mergeState({ sortRule: sorter });
+          callbackMap?.onSort?.();
+        }
+        break;
+      case 'filter':
+        if (!useDefaultFilter) {
+          mergeState({ filterRule: filters });
+          callbackMap?.onFilter?.();
+        }
+        break;
     }
 
-    // TODO can be optimized
-    setSortRule(sorter as SortRule);
-
-    setFilterRule(filter);
+    callbackMap?.onChange?.();
   };
 
   useEffect(() => {
@@ -417,12 +436,14 @@ export const Table = implementRuntimeComponent({
         },
       }}
       columns={columns}
-      pagination={{
-        total: sortedData!.length,
-        current: currentPage,
-        pageSize,
-        hideOnSinglePage: true,
-      }}
+      pagination={
+        enablePagination && {
+          total: useCustomPagination ? total : sortedData.length,
+          current: currentPage,
+          pageSize,
+          ...restPaginationProps,
+        }
+      }
       data={currentPageData}
       onChange={handleChange}
       rowSelection={{
@@ -434,9 +455,11 @@ export const Table = implementRuntimeComponent({
         onSelect: (selected, record, selectedRows) => {
           selected && mergeState({ selectedRow: record });
           mergeState({ selectedRows });
+          callbackMap?.onSelect?.();
         },
         onSelectAll(selected, selectedRows) {
           mergeState({ selectedRows });
+          callbackMap?.onSelectAll?.();
         },
       }}
       onRow={
