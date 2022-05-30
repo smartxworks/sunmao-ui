@@ -3,30 +3,33 @@ import { StringUnion } from '../../sunmao-helper';
 import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { Category } from '../../constants/category';
 
-const moduleSpec = Type.Object({
-  id: Type.String({
-    title: 'Module ID',
-  }),
-  type: Type.String({
-    title: 'Module Type',
-  }),
-  properties: Type.Record(Type.String(), Type.Any(), {
-    title: 'Module Properties',
-    category: 'Basic',
-    widget: 'core/v1/record',
-  }),
-  handlers: Type.Array(EventHandlerSpec, {
-    title: 'Events',
-  }),
-}, {
-  title: 'Module Config',
-  conditions: [
-    {
-      key: 'type',
-      value: 'module'
-    }
-  ]
-})
+const moduleSpec = Type.Object(
+  {
+    id: Type.String({
+      title: 'Module ID',
+    }),
+    type: Type.String({
+      title: 'Module Type',
+    }),
+    properties: Type.Record(Type.String(), Type.Any(), {
+      title: 'Module Properties',
+      category: 'Basic',
+      widget: 'core/v1/record',
+    }),
+    handlers: Type.Array(EventHandlerSpec, {
+      title: 'Events',
+    }),
+  },
+  {
+    title: 'Module Config',
+    conditions: [
+      {
+        key: 'type',
+        value: 'module',
+      },
+    ],
+  }
+);
 
 export const ColumnSpec = Type.Object({
   title: Type.String({
@@ -69,44 +72,59 @@ export const ColumnSpec = Type.Object({
         'If the cell content exceeds the length, whether it is automatically omitted and displays ...,After setting this property, the table-layout of the table will automatically become fixed.',
     })
   ),
-  sorter: Type.Optional(Type.Boolean({
-    title: 'Enable Sort',
-    conditions: [
-      {
-        key: 'type',
-        value: 'text'
-      }
-    ],
-  })),
-  filter: Type.Boolean({
-    title: 'Enable Filter',
-  }),
-  sortDirections: Type.Optional(Type.Array(StringUnion(['descend', 'ascend']), {
-    conditions: [
-      {
-        key: 'sorter',
-        value: true
-      }
-    ],
-    widget: 'core/v1/expression'
-  })),
-  btnCfg: Type.Optional(
-    Type.Object({
-      text: Type.String({
-        title:'Text'
-      }),
-      handlers: Type.Array(EventHandlerSpec,{
-        title:'Events'
-      }),
-    }, {
-      title:'Button Config',
+  sorter: Type.Optional(
+    Type.Boolean({
+      title: 'Enable Sort',
       conditions: [
         {
           key: 'type',
-          value: 'button'
-        }
-      ]
+          value: 'text',
+        },
+      ],
     })
+  ),
+  filter: Type.Boolean({
+    title: 'Enable Filter',
+  }),
+  sortDirections: Type.Optional(
+    Type.Array(StringUnion(['descend', 'ascend']), {
+      conditions: [
+        {
+          key: 'sorter',
+          value: true,
+        },
+      ],
+      widget: 'core/v1/expression',
+    })
+  ),
+  btnCfg: Type.Optional(
+    Type.Object(
+      {
+        text: Type.String({
+          title: 'Text',
+        }),
+        handlers: Type.Array(
+          {
+            ...EventHandlerSpec,
+            widgetOptions: {
+              componentType: 'arco/v1/button',
+            },
+          },
+          {
+            title: 'Events',
+          }
+        ),
+      },
+      {
+        title: 'Button Config',
+        conditions: [
+          {
+            key: 'type',
+            value: 'button',
+          },
+        ],
+      }
+    )
   ),
   module: Type.Optional(moduleSpec),
 });
@@ -116,14 +134,14 @@ export const TablePropsSpec = Type.Object({
     title: 'Data',
     category: Category.Data,
     weight: 0,
-    widget: 'core/v1/expression'
+    widget: 'core/v1/expression',
   }),
   columns: Type.Array(ColumnSpec, {
     title: 'Columns',
     description: '',
     category: Category.Columns,
     widgetOptions: {
-      displayedKeys: ['title']
+      displayedKeys: ['title'],
     },
     weight: 0,
   }),
@@ -158,7 +176,7 @@ export const TablePropsSpec = Type.Object({
       }),
     },
     {
-      title:'Pagination',
+      title: 'Pagination',
       category: Category.Layout,
     }
   ),
@@ -186,5 +204,5 @@ export const TablePropsSpec = Type.Object({
   loading: Type.Boolean({
     title: 'Show Loading',
     category: Category.Basic,
-  })
+  }),
 });

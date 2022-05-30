@@ -11,13 +11,16 @@ import { SpecWidget } from './SpecWidget';
 import { observer } from 'mobx-react-lite';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
-const EventWidgetOptions = Type.Object({});
+const EventWidgetOptions = Type.Object({
+  componentType: Type.String(),
+});
 
 type EventWidgetOptionsType = Static<typeof EventWidgetOptions>;
 
 export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observer(
   props => {
     const { value, path, level, component, spec, services, onChange } = props;
+    const { componentType } = spec.widgetOptions || {};
     const { registry, editorStore, appModelManager } = services;
     const { utilMethods } = registry;
     const { components } = editorStore;
@@ -48,7 +51,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     };
 
     const eventTypes = useMemo(() => {
-      return registry.getComponentByType(component.type).spec.events;
+      return registry.getComponentByType(componentType || component.type).spec.events;
     }, [component.type, registry]);
     const hasParams = useMemo(
       () => Object.keys(formik.values.method.parameters ?? {}).length,
@@ -93,10 +96,16 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
       return params;
     }, [formik.values.method.name]);
-    const parametersPath = useMemo(()=> path.concat('method', 'parameters'), [path]);
-    const parametersSpec = useMemo(()=> mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true }), [paramsSpec]);
-    const disabledPath = useMemo(()=> path.concat('disabled'), [path]);
-    const disabledSpec = useMemo(()=> Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } }), []);
+    const parametersPath = useMemo(() => path.concat('method', 'parameters'), [path]);
+    const parametersSpec = useMemo(
+      () => mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true }),
+      [paramsSpec]
+    );
+    const disabledPath = useMemo(() => path.concat('disabled'), [path]);
+    const disabledSpec = useMemo(
+      () => Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } }),
+      []
+    );
 
     const updateMethods = useCallback(
       (componentId: string) => {
@@ -131,22 +140,31 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       }
     }, [value, updateMethods]);
 
-    const onTargetComponentChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-      updateMethods(e.target.value);
-      formik.handleChange(e);
-      formik.setFieldValue('method', { name: '', parameters: {} });
-    }, [updateMethods, formik]);
+    const onTargetComponentChange = useCallback(
+      (e: React.ChangeEvent<HTMLSelectElement>) => {
+        updateMethods(e.target.value);
+        formik.handleChange(e);
+        formik.setFieldValue('method', { name: '', parameters: {} });
+      },
+      [updateMethods, formik]
+    );
     const onSubmit = useCallback(() => {
       formik.submitForm();
     }, [formik]);
-    const onParametersChange = useCallback(json => {
-      formik.setFieldValue('method.parameters', json);
-      formik.submitForm();
-    }, [formik]);
-    const onDisabledChange = useCallback(value => {
-      formik.setFieldValue('disabled', value);
-      formik.submitForm();
-    }, [formik]);
+    const onParametersChange = useCallback(
+      json => {
+        formik.setFieldValue('method.parameters', json);
+        formik.submitForm();
+      },
+      [formik]
+    );
+    const onDisabledChange = useCallback(
+      value => {
+        formik.setFieldValue('disabled', value);
+        formik.submitForm();
+      },
+      [formik]
+    );
 
     const typeField = (
       <FormControl>
