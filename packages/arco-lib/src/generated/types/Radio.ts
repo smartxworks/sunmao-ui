@@ -14,9 +14,9 @@ export const RadioPropsSpec = {
   }),
   options: Type.Array(RadioItemSpec, {
     category: Category.Data,
-    widgetOptions:{
+    widgetOptions: {
       displayedKeys: ['label'],
-    }
+    },
   }),
   updateWhenDefaultValueChanges: Type.Boolean({
     title: 'Update When Default Value Changes',
@@ -27,12 +27,12 @@ export const RadioPropsSpec = {
   }),
   direction: StringUnion(['horizontal', 'vertical'], {
     category: Category.Style,
-    conditions:[
+    conditions: [
       {
-        key:'type',
-        value:'radio'
-      }
-    ]
+        key: 'type',
+        value: 'radio',
+      },
+    ],
   }),
   size: StringUnion(['small', 'default', 'large', 'mini'], {
     category: Category.Style,

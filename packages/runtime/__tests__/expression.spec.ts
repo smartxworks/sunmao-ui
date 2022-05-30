@@ -102,4 +102,17 @@ describe('evalExpression function', () => {
       })
     ).toEqual('{{wrongExp}}');
   });
+
+  it('can partially eval nest expression, even when some error happens', () => {
+    expect(
+      stateManager.maskedEval('{{text}} {{{{ $moduleId }}__state0.value}}', {
+        scopeObject: {
+          $moduleId: 'myModule',
+          text: 'hello',
+        },
+        noConsoleError: true,
+        ignoreEvalError: true
+      })
+    ).toEqual(`hello {{myModule__state0.value}}`);
+  });
 });
