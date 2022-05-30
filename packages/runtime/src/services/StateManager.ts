@@ -12,7 +12,7 @@ import {
   parseExpression,
   consoleError,
   ConsoleType,
-  type ExpChunk,
+  ExpChunk,
 } from '@sunmao-ui/shared';
 
 dayjs.extend(relativeTime);
@@ -26,6 +26,8 @@ type EvalOptions = {
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
   noConsoleError?: boolean;
+  // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
+  ignoreEvalError?: boolean;
 };
 
 // TODO: use web worker
@@ -61,25 +63,33 @@ export class StateManager {
       return expChunk;
     }
 
-    const { scopeObject = {}, overrideScope = false } = options;
+    const { scopeObject = {}, overrideScope = false, ignoreEvalError = false } = options;
     const evalText = expChunk.map(ex => this.evalExp(ex, { scopeObject })).join('');
 
-    // eslint-disable-next-line no-useless-call, no-new-func
-    const evaled = new Function(
-      'store, dependencies, scopeObject',
-      // trim leading space and newline
-      `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
-        /^\s+/g,
-        ''
-      )} } } }`
-    ).call(
-      null,
-      overrideScope ? {} : this.store,
-      overrideScope ? {} : this.dependencies,
-      scopeObject
-    );
+    try {
+      // eslint-disable-next-line no-useless-call, no-new-func
+      const evaled = new Function(
+        'store, dependencies, scopeObject',
+        // trim leading space and newline
+        `with(store) { with(dependencies) { with(scopeObject) { return ${evalText.replace(
+          /^\s+/g,
+          ''
+        )} } } }`
+      ).call(
+        null,
+        overrideScope ? {} : this.store,
+        overrideScope ? {} : this.dependencies,
+        scopeObject
+      );
 
-    return evaled;
+      return evaled;
+    } catch (error) {
+      if (ignoreEvalError) {
+        // convert it to expression and return
+        return `{{${evalText}}}`;
+      }
+      throw error;
+    }
   };
 
   maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
@@ -178,7 +188,7 @@ export class StateManager {
 
       const stop = watch(
         () => {
-          const result = this.maskedEval(value, options);
+          const result = this.maskedEval(value as string, options);
 
           return result;
         },
