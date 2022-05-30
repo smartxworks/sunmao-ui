@@ -30,6 +30,7 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const onScroll = () => {
     if (wrapperRef.current) {
       setScrollOffset([wrapperRef.current.scrollLeft, wrapperRef.current.scrollTop]);
+      eventBus.send('MaskWrapperScrollCapture');
     }
   };
 
@@ -74,17 +75,19 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
     <Box
       id="editor-mask-wrapper"
       width="full"
-      height="0"
-      flex="1"
-      overflow="visible"
+      height="full"
+      overflow="auto"
       position="relative"
+      padding="20px"
       // some components stop click event propagation, so here we should capture onClick
       onClickCapture={onClick}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      onScroll={onScroll}
+      // here we use capture to detect all the components and their children's scroll event
+      // because every scroll event may change their children's location in coordinates system
+      onScrollCapture={onScroll}
       ref={wrapperRef}
     >
       {children}

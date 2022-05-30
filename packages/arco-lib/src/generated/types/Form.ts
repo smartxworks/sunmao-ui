@@ -36,5 +36,25 @@ export const FormControlPropsSpec = {
   colon: Type.Boolean({
     title: 'Colon',
     category: Category.Style,
-  })
+  }),
+  labelCol: Type.Object(
+    {
+      span: Type.Number(),
+      offset: Type.Number(),
+    },
+    {
+      title: 'Label Col',
+      category: Category.Layout,
+    }
+  ),
+  wrapperCol: Type.Object(
+    {
+      span: Type.Number(),
+      offset: Type.Number(),
+    },
+    {
+      title: 'Wrapper Col',
+      category: Category.Layout,
+    }
+  ),
 };

@@ -1,7 +1,4 @@
-import {
-  StateManager,
-  ExpressionError,
-} from '../src/services/StateManager';
+import { StateManager, ExpressionError } from '../src/services/StateManager';
 
 describe('evalExpression function', () => {
   const scope = {
@@ -101,5 +98,18 @@ describe('evalExpression function', () => {
         noConsoleError: true,
       })
     ).toEqual('{{wrongExp}}');
+  });
+
+  it('can partially eval nest expression, even when some error happens', () => {
+    expect(
+      stateManager.maskedEval('{{text}} {{{{ $moduleId }}__state0.value}}', {
+        scopeObject: {
+          $moduleId: 'myModule',
+          text: 'hello',
+        },
+        noConsoleError: true,
+        ignoreEvalError: true,
+      })
+    ).toEqual(`hello {{myModule__state0.value}}`);
   });
 });

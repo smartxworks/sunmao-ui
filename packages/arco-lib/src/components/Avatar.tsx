@@ -17,7 +17,7 @@ const exampleProperties: Static<typeof AvatarPropsSpec> = {
   type: 'text',
 };
 
-const options = {
+export const Avatar = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -38,9 +38,7 @@ const options = {
     styleSlots: ['content'],
     events: ['onClick'],
   },
-};
-
-export const Avatar = implementRuntimeComponent(options)(props => {
+})(props => {
   const { slotsElements, elementRef, callbackMap, customStyle } = props;
   const { type, src, text, ...cProps } = getComponentProps(props);
 

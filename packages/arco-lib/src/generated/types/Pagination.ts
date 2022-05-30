@@ -15,6 +15,10 @@ export const PaginationPropsSpec = {
     title: 'Current Page',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   disabled: Type.Boolean({
     title: 'Disabled',
     category: Category.Basic,

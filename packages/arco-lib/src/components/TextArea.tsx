@@ -4,8 +4,9 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TextAreaPropsSpec as BaseTextAreaPropsSpec } from '../generated/types/TextArea';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { RefInputType } from '@arco-design/web-react/es/Input/interface';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const TextAreaPropsSpec = Type.Object({
   ...BaseTextAreaPropsSpec,
@@ -24,9 +25,10 @@ const exampleProperties: Static<typeof TextAreaPropsSpec> = {
   error: false,
   size: 'default',
   autoSize: true,
+  updateWhenDefaultValueChanges: false,
 };
 
-const options = {
+export const TextArea = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -45,12 +47,20 @@ const options = {
     styleSlots: ['TextArea'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
-};
-
-export const TextArea = implementRuntimeComponent(options)(props => {
-  const { getElement, customStyle, callbackMap, mergeState } = props;
+})(props => {
+  const {
+    getElement,
+    updateWhenDefaultValueChanges,
+    customStyle,
+    callbackMap,
+    mergeState,
+  } = props;
   const { defaultValue, ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useStateValue(
+    defaultValue,
+    mergeState,
+    updateWhenDefaultValueChanges
+  );
   const ref = useRef<RefInputType | null>(null);
 
   useEffect(() => {

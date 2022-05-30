@@ -20,7 +20,7 @@ const exampleProperties: Static<typeof ProgressPropsSpec> = {
   animation: false,
 };
 
-const options = {
+export const Progress = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -39,9 +39,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Progress = implementRuntimeComponent(options)(props => {
+})(props => {
   const { color, ...cProps } = getComponentProps(props);
   const { customStyle, elementRef } = props;
 

@@ -4,7 +4,8 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TabsPropsSpec as BaseTabsPropsSpec } from '../generated/types/Tabs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const TabsPropsSpec = Type.Object(BaseTabsPropsSpec);
 const TabsStateSpec = Type.Object({
@@ -17,7 +18,24 @@ const exampleProperties: Static<typeof TabsPropsSpec> = {
   defaultActiveTab: 0,
   tabPosition: 'top',
   size: 'default',
-  tabNames: ['Tab1', 'Tab2', 'Tab3'],
+  updateWhenDefaultValueChanges: false,
+  tabs: [
+    {
+      title: 'Tab 1',
+      hidden: false,
+      destroyOnHide: true,
+    },
+    {
+      title: 'Tab 2',
+      hidden: false,
+      destroyOnHide: true,
+    },
+    {
+      title: 'Tab 3',
+      hidden: false,
+      destroyOnHide: true,
+    },
+  ],
 };
 
 export const Tabs = implementRuntimeComponent({
@@ -47,17 +65,26 @@ export const Tabs = implementRuntimeComponent({
       },
     },
     styleSlots: ['content'],
-    events: [],
+    events: ['onChange', 'onClickTab'],
   },
 })(props => {
-  const { defaultActiveTab, tabNames, ...cProps } = getComponentProps(props);
-  const { getElement, customStyle, mergeState, subscribeMethods, slotsElements } = props;
+  const { defaultActiveTab, updateWhenDefaultValueChanges, tabs, ...cProps } =
+    getComponentProps(props);
+  const {
+    getElement,
+    callbackMap,
+    customStyle,
+    mergeState,
+    subscribeMethods,
+    slotsElements,
+  } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
-  const [activeTab, setActiveTab] = useState<number>(defaultActiveTab ?? 0);
-
-  useEffect(() => {
-    mergeState({ activeTab: defaultActiveTab });
-  }, []);
+  const [activeTab, setActiveTab] = useStateValue<number>(
+    defaultActiveTab ?? 0,
+    mergeState,
+    updateWhenDefaultValueChanges,
+    'activeTab'
+  );
 
   useEffect(() => {
     const ele = ref.current?.current;
@@ -81,12 +108,18 @@ export const Tabs = implementRuntimeComponent({
       onChange={key => {
         setActiveTab(Number(key));
         mergeState({ activeTab: Number(key) });
+        callbackMap?.onChange?.();
+      }}
+      onClickTab={key => {
+        setActiveTab(Number(key));
+        mergeState({ activeTab: Number(key) });
+        callbackMap?.onClickTab?.();
       }}
       {...cProps}
       activeTab={String(activeTab)}
       ref={ref}
     >
-      {tabNames.map((tabName, idx) => (
+      {tabs.map((tabName, idx) => (
         <TabPane key={String(idx)} title={tabName}>
           {slotsElements?.content
             ? slotsElements.content({

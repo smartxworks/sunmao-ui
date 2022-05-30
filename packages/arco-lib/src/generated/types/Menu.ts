@@ -10,27 +10,42 @@ export const MenuPropsSpec = {
   // }),
   mode: StringUnion(['vertical', 'horizontal'], {
     title: 'Mode',
-    category: Category.Basic
+    category: Category.Basic,
   }),
   items: Type.Array(
     Type.Object({
-      key: Type.String(),
-      text: Type.String(),
-      disabled: Type.Optional(Type.Boolean()),
+      key: Type.String({
+        title: 'Key',
+      }),
+      text: Type.String({
+        title: 'Text',
+      }),
+      disabled: Type.Optional(
+        Type.Boolean({
+          title: 'Disabled',
+        })
+      ),
     }),
     {
-      title:'Items',
+      title: 'Items',
       category: Category.Basic,
+      widgetOptions: {
+        displayedKeys: ['text'],
+      },
     }
   ),
   defaultActiveKey: Type.String({
     title: 'Default Active Key',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   autoOpen: Type.Boolean({
     title: 'Auto Open',
     description: 'Whether to expand all multi-level menus by default',
-    category: Category.Basic
+    category: Category.Basic,
   }),
   collapse: Type.Boolean({
     title: 'Collapse',
@@ -42,14 +57,14 @@ export const MenuPropsSpec = {
   ellipsis: Type.Boolean({
     title: 'Ellipsis',
     description: 'Whether the horizontal menu automatically collapses when it overflows',
-    category: Category.Basic
+    category: Category.Basic,
   }),
   autoScrollIntoView: Type.Boolean({
     title: 'Auto Scroll Into View',
-    category: Category.Basic
+    category: Category.Basic,
   }),
   hasCollapseButton: Type.Boolean({
     title: 'Collapse Button',
-    category: Category.Basic
+    category: Category.Basic,
   }),
 };

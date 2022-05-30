@@ -7,6 +7,10 @@ export const TextAreaPropsSpec = {
     title: 'Default Value',
     category: Category.Basic,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   placeholder: Type.String({
     title: 'Placeholder',
     category: Category.Basic,

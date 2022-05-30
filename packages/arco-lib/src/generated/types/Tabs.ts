@@ -8,8 +8,28 @@ export const TabsPropsSpec = {
     category: Category.Basic,
     description: 'The index of default active Tab. Start with 0.',
   }),
-  tabNames: Type.Array(Type.String(), {
-    title: 'Tab Names',
+  tabs: Type.Array(
+    Type.Object({
+      title: Type.String({
+        title: 'Title',
+      }),
+      hidden: Type.Boolean({
+        title: 'Hidden',
+      }),
+      destroyOnHide: Type.Boolean({
+        title: 'Destroy On Hide',
+      }),
+    }),
+    {
+      title: 'Tabs',
+      category: Category.Basic,
+      widgetOptions: {
+        displayedKeys: ['title'],
+      },
+    }
+  ),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
     category: Category.Basic,
   }),
   type: StringUnion(['line', 'card', 'card-gutter', 'text', 'rounded', 'capsule'], {

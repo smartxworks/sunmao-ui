@@ -47,7 +47,7 @@ type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
   string
 >;
 
-export type RegistryInterface = InstanceType<typeof Registry>
+export type RegistryInterface = InstanceType<typeof Registry>;
 
 export class Registry {
   components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
@@ -174,6 +174,10 @@ export class Registry {
 
   unregisterAllModules() {
     this.modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
+  }
+
+  unregisterAllTraits() {
+    this.traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   }
 
   registerUtilMethod<T>(m: UtilMethod<T>) {

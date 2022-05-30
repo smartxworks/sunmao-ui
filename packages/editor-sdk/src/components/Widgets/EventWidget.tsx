@@ -93,6 +93,16 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
       return params;
     }, [formik.values.method.name]);
+    const parametersPath = useMemo(() => path.concat('method', 'parameters'), [path]);
+    const parametersSpec = useMemo(
+      () => mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true }),
+      [paramsSpec]
+    );
+    const disabledPath = useMemo(() => path.concat('disabled'), [path]);
+    const disabledSpec = useMemo(
+      () => Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } }),
+      []
+    );
 
     const updateMethods = useCallback(
       (componentId: string) => {
@@ -127,18 +137,38 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       }
     }, [value, updateMethods]);
 
-    const onTargetComponentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      updateMethods(e.target.value);
-      formik.handleChange(e);
-      formik.setFieldValue('method', { name: '', parameters: {} });
-    };
+    const onTargetComponentChange = useCallback(
+      (e: React.ChangeEvent<HTMLSelectElement>) => {
+        updateMethods(e.target.value);
+        formik.handleChange(e);
+        formik.setFieldValue('method', { name: '', parameters: {} });
+      },
+      [updateMethods, formik]
+    );
+    const onSubmit = useCallback(() => {
+      formik.submitForm();
+    }, [formik]);
+    const onParametersChange = useCallback(
+      json => {
+        formik.setFieldValue('method.parameters', json);
+        formik.submitForm();
+      },
+      [formik]
+    );
+    const onDisabledChange = useCallback(
+      value => {
+        formik.setFieldValue('disabled', value);
+        formik.submitForm();
+      },
+      [formik]
+    );
 
     const typeField = (
       <FormControl>
         <FormLabel>Event Type</FormLabel>
         <Select
           name="type"
-          onBlur={() => formik.submitForm()}
+          onBlur={onSubmit}
           onChange={formik.handleChange}
           placeholder="Select Event Type"
           value={formik.values.type}
@@ -156,7 +186,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Target Component</FormLabel>
         <Select
           name="componentId"
-          onBlur={() => formik.submitForm()}
+          onBlur={onSubmit}
           onChange={onTargetComponentChange}
           placeholder="Select Target Component"
           value={formik.values.componentId}
@@ -174,7 +204,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Method</FormLabel>
         <Select
           name="method.name"
-          onBlur={() => formik.submitForm()}
+          onBlur={onSubmit}
           onChange={formik.handleChange}
           placeholder="Select Method"
           value={formik.values.method.name}
@@ -193,15 +223,12 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Parameters</FormLabel>
         <RecordWidget
           component={component}
-          path={path.concat('method', 'parameters')}
+          path={parametersPath}
           level={level + 1}
-          spec={mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true })}
+          spec={parametersSpec}
           services={services}
           value={formik.values.method.parameters}
-          onChange={json => {
-            formik.setFieldValue('method.parameters', json);
-            formik.submitForm();
-          }}
+          onChange={onParametersChange}
         />
       </FormControl>
     );
@@ -211,7 +238,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Wait Type</FormLabel>
         <Select
           name="wait.type"
-          onBlur={() => formik.submitForm()}
+          onBlur={onSubmit}
           onChange={formik.handleChange}
           value={formik.values.wait?.type}
         >
@@ -227,7 +254,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Wait Time</FormLabel>
         <Input
           name="wait.time"
-          onBlur={() => formik.submitForm()}
+          onBlur={onSubmit}
           onChange={formik.handleChange}
           value={formik.values.wait?.time}
         />
@@ -239,14 +266,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel>Disabled</FormLabel>
         <SpecWidget
           {...props}
-          spec={Type.Boolean({ widgetOptions: { isShowAsideExpressionButton: true } })}
+          spec={disabledSpec}
           level={level + 1}
-          path={['disabled']}
+          path={disabledPath}
           value={formik.values.disabled}
-          onChange={value => {
-            formik.setFieldValue('disabled', value);
-            formik.submitForm();
-          }}
+          onChange={onDisabledChange}
         />
       </FormControl>
     );

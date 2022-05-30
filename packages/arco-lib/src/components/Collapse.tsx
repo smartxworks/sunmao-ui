@@ -4,8 +4,9 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { CollapsePropsSpec as BaseCollapsePropsSpec } from '../generated/types/Collapse';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { EmptyPlaceholder } from './_internal/EmptyPlaceholder';
+import { useStateValue } from '../hooks/useStateValue';
 
 const CollapsePropsSpec = Type.Object(BaseCollapsePropsSpec);
 const CollapseStateSpec = Type.Object({
@@ -28,6 +29,7 @@ const exampleProperties: Static<typeof CollapsePropsSpec> = {
       showExpandIcon: true,
     },
   ],
+  updateWhenDefaultValueChanges: false,
   accordion: false,
   expandIconPosition: 'left',
   bordered: false,
@@ -35,7 +37,7 @@ const exampleProperties: Static<typeof CollapsePropsSpec> = {
   lazyLoad: true,
 };
 
-const options = {
+export const Collapse = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -60,13 +62,17 @@ const options = {
     styleSlots: ['content'],
     events: ['onChange'],
   },
-};
-
-export const Collapse = implementRuntimeComponent(options)(props => {
-  const { defaultActiveKey, options, ...cProps } = getComponentProps(props);
+})(props => {
+  const { defaultActiveKey, options, updateWhenDefaultValueChanges, ...cProps } =
+    getComponentProps(props);
   const { elementRef, mergeState, slotsElements, customStyle, callbackMap } = props;
 
-  const [activeKey, setActiveKey] = useState<string[]>(defaultActiveKey.map(String));
+  const [activeKey, setActiveKey] = useStateValue<string[]>(
+    defaultActiveKey.map(String),
+    mergeState,
+    updateWhenDefaultValueChanges,
+    'activeKey'
+  );
 
   const onChange = useCallback(
     (currentOperateKey: string, activeKey: string[]) => {

@@ -15,7 +15,7 @@ const exampleProperties: Static<typeof SkeletonPropsSpec> = {
   text: { rows: 3, width: ['100%', 600, 400] },
 };
 
-const options = {
+export const Skeleton = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -36,9 +36,7 @@ const options = {
     styleSlots: ['content'],
     events: [],
   },
-};
-
-export const Skeleton = implementRuntimeComponent(options)(props => {
+})(props => {
   const { ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 

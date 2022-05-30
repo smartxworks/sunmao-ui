@@ -9,7 +9,10 @@ export type IntoStringUnion<T> = {
   [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
 };
 
-export function StringUnion<T extends string[]>(values: [...T], options?: any) {
+export function StringUnion<T extends string[] | number[]>(
+  values: [...T],
+  options?: any
+) {
   return Type.KeyOf(
     Type.Object(
       values.reduce((prev, cur) => {
