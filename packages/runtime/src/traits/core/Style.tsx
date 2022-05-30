@@ -30,7 +30,7 @@ export default implementRuntimeTrait({
         customStyle[styleSlot] = '';
       }
       // add a ';' between css texts, in case user forgets to add ';' in the end
-      customStyle[styleSlot] = `${customStyle[styleSlot]};${style}`;
+      customStyle[styleSlot] = `&&& {${customStyle[styleSlot]};${style}}`;
     });
     return {
       props: {

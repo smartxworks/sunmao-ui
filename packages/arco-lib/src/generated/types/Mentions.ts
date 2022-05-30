@@ -17,6 +17,10 @@ export const MentionsPropsSpec = {
     weight: 2,
     category: Category.Data,
   }),
+  updateWhenDefaultValueChanges: Type.Boolean({
+    title: 'Update When Default Value Changes',
+    category: Category.Basic,
+  }),
   prefix: Type.String({
     title: 'Prefix',
     category: Category.Basic,

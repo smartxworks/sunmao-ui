@@ -8,15 +8,22 @@ import {
   AccordionButton,
   AccordionIcon,
   Input,
+  InputGroup,
+  InputRightElement,
   Tag,
 } from '@chakra-ui/react';
 import { DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
-import { encodeDragDataTransfer, CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
+import {
+  encodeDragDataTransfer,
+  CoreComponentName,
+  CORE_VERSION,
+} from '@sunmao-ui/shared';
 import { groupBy, sortBy } from 'lodash-es';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { RuntimeComponent } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
+import { ComponentFilter } from './ComponentFilter';
 
 type Props = {
   services: EditorServices;
@@ -56,15 +63,31 @@ const tagStyle = css`
   white-space: nowrap;
 `;
 
-const IGNORE_COMPONENTS: string[] = [CoreComponentName.Dummy];
+const IGNORE_COMPONENTS: string[] = [
+  CoreComponentName.Dummy,
+  CoreComponentName.GridLayout,
+];
 
 export const ComponentList: React.FC<Props> = ({ services }) => {
   const { registry, editorStore } = services;
   const [filterText, setFilterText] = useState('');
+  const [checkedVersions, setCheckedVersions] = useState<string[]>([]);
+
+  const versions = useMemo<string[]>(() => {
+    const versions: Record<string, string> = {};
+    registry.getAllComponents().forEach(c => {
+      versions[c.version] = '';
+    });
+    return Object.keys(versions);
+  }, [registry]);
+
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
-        if (IGNORE_COMPONENTS.includes(c.metadata.name)) {
+        if (
+          IGNORE_COMPONENTS.includes(c.metadata.name) ||
+          (checkedVersions.length && !checkedVersions.includes(c.version))
+        ) {
           return false;
         } else if (!filterText) {
           return true;
@@ -80,15 +103,24 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
       })),
       c => -getCategoryOrder(c.name)
     );
-  }, [filterText, registry]);
+  }, [filterText, registry, checkedVersions]);
 
   return (
     <>
-      <Input
-        placeholder="filter the components"
-        value={filterText}
-        onChange={evt => setFilterText(evt.currentTarget.value)}
-      />
+      <InputGroup>
+        <Input
+          placeholder="filter the components"
+          value={filterText}
+          onChange={evt => setFilterText(evt.currentTarget.value)}
+        />
+        <InputRightElement>
+          <ComponentFilter
+            versions={versions}
+            checkedVersions={checkedVersions}
+            setCheckedVersions={setCheckedVersions}
+          />
+        </InputRightElement>
+      </InputGroup>
       <Accordion allowMultiple defaultIndex={categories.map((_, idx) => idx)}>
         {categories.map(category => {
           return (
