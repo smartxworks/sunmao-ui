@@ -106,6 +106,10 @@ export const Select = implementRuntimeComponent({
       value={value}
       {...cProps}
       showSearch={showSearch}
+      filterOption={(inputValue, option) =>
+        option.props.value.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0 ||
+        option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
+      }
       dropdownRender={menu => {
         return (
           <div className={css(customStyle?.dropdownRenderWrap)}>

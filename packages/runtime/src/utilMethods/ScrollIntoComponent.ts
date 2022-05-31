@@ -1,20 +1,22 @@
 import { Type } from '@sinclair/typebox';
-import { UtilMethod } from '../types/utilMethod';
+import { implementUtilMethod } from '../utils/buildKit';
 
 const ScrollToComponentMethodParameters = Type.Object({
   componentId: Type.String(),
 });
 
-const ScrollToComponentMethod: UtilMethod<typeof ScrollToComponentMethodParameters> = {
-  name: 'scrollToComponent',
-  method(parameters, services) {
-    if (!parameters) return;
-    const ele = services.eleMap.get(parameters?.componentId);
-    if (ele) {
-      ele.scrollIntoView({ behavior: 'smooth' });
-    }
+export default implementUtilMethod({
+  version: 'core/v1',
+  metadata: {
+    name: 'scrollToComponent',
   },
-  parameters: ScrollToComponentMethodParameters,
-};
-
-export default ScrollToComponentMethod;
+  spec: {
+    parameters: ScrollToComponentMethodParameters,
+  },
+})((parameters, services) => {
+  if (!parameters) return;
+  const ele = services.eleMap.get(parameters?.componentId);
+  if (ele) {
+    ele.scrollIntoView({ behavior: 'smooth' });
+  }
+});

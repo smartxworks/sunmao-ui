@@ -1,6 +1,6 @@
 import { Type, Static, TProperties, TObject } from '@sinclair/typebox';
 import { createStandaloneToast } from '@chakra-ui/react';
-import { UtilMethod } from '@sunmao-ui/runtime';
+import { implementUtilMethod } from '@sunmao-ui/runtime';
 
 const ToastPosition = Type.KeyOf(
   Type.Object({
@@ -49,7 +49,7 @@ export const ToastOpenParameterSpec = Type.Object({
 export const ToastCloseParameterSpec = Type.Object({
   id: Type.String(),
   positions: Type.Array(ToastPosition, {
-    defaultValue: []
+    defaultValue: [],
   }),
 });
 
@@ -70,37 +70,46 @@ const pickProperty = <T, U extends Record<string, any>>(
 export default function ToastUtilMethodFactory() {
   let toast: ReturnType<typeof createStandaloneToast> | undefined;
 
-  const toastOpen: UtilMethod<typeof ToastOpenParameterSpec> = {
-    name: 'toast.open',
-    method(parameters) {
-      if (!toast) {
-        toast = createStandaloneToast();
-      }
-      if (parameters) {
-        toast(pickProperty(ToastOpenParameterSpec, parameters));
-      }
+  const toastOpen = implementUtilMethod({
+    version: 'chakra_ui/v1',
+    metadata: {
+      name: 'openToast',
     },
-    parameters: ToastOpenParameterSpec,
-  };
+    spec: {
+      parameters: ToastOpenParameterSpec,
+    },
+  })(parameters => {
+    if (!toast) {
+      toast = createStandaloneToast();
+    }
+    if (parameters) {
+      toast(pickProperty(ToastOpenParameterSpec, parameters));
+    }
+  });
 
-  const toastClose: UtilMethod<typeof ToastCloseParameterSpec> = {
-    name: 'toast.close',
-    method(parameters) {
-      if (!toast) {
-        return;
-      }
-      if (!parameters) {
-        toast.closeAll();
-      } else {
-        const closeParameters = pickProperty(ToastCloseParameterSpec, parameters);
-        if (closeParameters.id !== undefined) {
-          toast.close(closeParameters.id);
-        } else {
-          toast.closeAll(closeParameters);
-        }
-      }
+  const toastClose = implementUtilMethod({
+    version: 'chakra_ui/v1',
+    metadata: {
+      name: 'closeToast',
     },
-    parameters: ToastCloseParameterSpec,
-  };
+    spec: {
+      parameters: ToastCloseParameterSpec,
+    },
+  })(parameters => {
+    if (!toast) {
+      return;
+    }
+    if (!parameters) {
+      toast.closeAll();
+    } else {
+      const closeParameters = pickProperty(ToastCloseParameterSpec, parameters);
+      if (closeParameters.id !== undefined) {
+        toast.close(closeParameters.id);
+      } else {
+        toast.closeAll(closeParameters);
+      }
+    }
+  });
+
   return [toastOpen, toastClose];
 }

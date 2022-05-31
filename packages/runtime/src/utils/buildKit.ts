@@ -5,12 +5,16 @@ import {
   createTrait,
   CreateTraitOptions,
   TraitSpec,
+  createUtilMethod,
+  CreateUtilMethodOptions,
 } from '@sunmao-ui/core';
 import {
   ComponentImpl,
   ImplementedRuntimeComponent,
   TraitImplFactory,
   ImplementedRuntimeTraitFactory,
+  UtilMethodImpl,
+  ImplementedUtilMethod,
 } from '../types';
 
 type ToMap<U> = {
@@ -53,5 +57,16 @@ export function implementRuntimeTrait<T extends CreateTraitOptions>(
   return factory => ({
     ...createTrait(options),
     factory,
+  });
+}
+
+export function implementUtilMethod<T extends CreateUtilMethodOptions>(
+  options: T
+): (
+  impl: UtilMethodImpl<Static<T['spec']['parameters']>>
+) => ImplementedUtilMethod<Static<T['spec']['parameters']>> {
+  return impl => ({
+    ...createUtilMethod(options),
+    impl,
   });
 }

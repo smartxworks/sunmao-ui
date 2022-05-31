@@ -1,16 +1,19 @@
 import { GLOBAL_MODULE_ID, GLOBAL_UTIL_METHOD_ID } from '../constants';
 import { ApiService } from './apiService';
-import { UtilMethod, UIServices } from '../types';
+import { ImplementedUtilMethod, UIServices } from '../types';
 
 export class UtilMethodManager {
   constructor(private apiService: ApiService) {
     this.listenSystemMethods();
   }
 
-  listenUtilMethod<T>(utilMethod: UtilMethod<T>, services: UIServices) {
+  listenUtilMethod<T>(utilMethod: ImplementedUtilMethod<T>, services: UIServices) {
     this.apiService.on('uiMethod', ({ componentId, name, parameters }) => {
-      if (componentId === GLOBAL_UTIL_METHOD_ID && name === utilMethod.name) {
-        utilMethod.method(parameters, services);
+      if (
+        componentId === GLOBAL_UTIL_METHOD_ID &&
+        name === `${utilMethod.version}/${utilMethod.metadata.name}`
+      ) {
+        utilMethod.impl(parameters, services);
       }
     });
   }

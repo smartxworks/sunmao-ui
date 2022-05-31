@@ -19,8 +19,8 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
   props => {
     const { value, path, level, component, spec, services, onChange } = props;
     const { registry, editorStore, appModelManager } = services;
-    const { utilMethods } = registry;
     const { components } = editorStore;
+    const utilMethods = useMemo(() => registry.getAllUtilMethods(), [registry]);
     const [methods, setMethods] = useState<string[]>([]);
 
     const formik = useFormik({
@@ -29,23 +29,26 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         onChange(values);
       },
     });
-    const findMethodsByComponent = (component?: ComponentSchema) => {
-      if (!component) {
-        return [];
-      }
+    const findMethodsByComponent = useCallback(
+      (component?: ComponentSchema) => {
+        if (!component) {
+          return [];
+        }
 
-      const componentMethods = Object.entries(
-        registry.getComponentByType(component.type).spec.methods
-      ).map(([name, parameters]) => ({
-        name,
-        parameters,
-      }));
-      const traitMethods = component.traits
-        .map(trait => registry.getTraitByType(trait.type).spec.methods)
-        .flat();
+        const componentMethods = Object.entries(
+          registry.getComponentByType(component.type).spec.methods
+        ).map(([name, parameters]) => ({
+          name,
+          parameters,
+        }));
+        const traitMethods = component.traits
+          .map(trait => registry.getTraitByType(trait.type).spec.methods)
+          .flat();
 
-      return ([] as any[]).concat(componentMethods, traitMethods);
-    };
+        return ([] as any[]).concat(componentMethods, traitMethods);
+      },
+      [registry]
+    );
 
     const eventTypes = useMemo(() => {
       return registry.getComponentByType(component.type).spec.events;
@@ -55,15 +58,14 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       [formik.values.method.parameters]
     );
     const paramsSpec = useMemo(() => {
-      const { values } = formik;
-      const methodName = values.method.name;
+      const methodType = formik.values.method.name;
       let spec: WidgetProps['spec'] = Type.Record(Type.String(), Type.String());
 
-      if (methodName) {
+      if (methodType) {
         if (value.componentId === GLOBAL_UTIL_METHOD_ID) {
-          const targetMethod = utilMethods.get(methodName);
+          const targetMethod = registry.getUtilMethodByType(methodType)!;
 
-          spec = targetMethod?.parameters;
+          spec = targetMethod.spec.parameters;
         } else {
           const targetComponent = appModelManager.appModel.getComponentById(
             value.componentId
@@ -79,20 +81,26 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       }
 
       return spec;
-    }, [formik.values.method]);
+    }, [
+      formik.values.method.name,
+      registry,
+      appModelManager,
+      value.componentId,
+      findMethodsByComponent,
+    ]);
     const params = useMemo(() => {
       const params: Record<string, string> = {};
-      const { values } = formik;
+      const parameters = formik.values.method.parameters;
 
       for (const key in paramsSpec?.properties ?? {}) {
         const defaultValue = (paramsSpec?.properties?.[key] as WidgetProps['spec'])
           .defaultValue;
 
-        params[key] = values.method.parameters?.[key] ?? defaultValue ?? '';
+        params[key] = parameters?.[key] ?? defaultValue ?? '';
       }
 
       return params;
-    }, [formik.values.method.name]);
+    }, [formik.values.method.parameters, paramsSpec?.properties]);
     const parametersPath = useMemo(() => path.concat('method', 'parameters'), [path]);
     const parametersSpec = useMemo(
       () => mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true }),
@@ -107,7 +115,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     const updateMethods = useCallback(
       (componentId: string) => {
         if (componentId === GLOBAL_UTIL_METHOD_ID) {
-          setMethods(Array.from(utilMethods.keys()));
+          setMethods(
+            utilMethods.map(
+              utilMethod => `${utilMethod.version}/${utilMethod.metadata.name}`
+            )
+          );
         } else {
           const component = components.find(c => c.id === componentId);
 
@@ -120,7 +132,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
           }
         }
       },
-      [components, registry]
+      [components, utilMethods, findMethodsByComponent]
     );
 
     useEffect(() => {
