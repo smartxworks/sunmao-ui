@@ -24,6 +24,12 @@ const TableRowStyle = css`
     padding-bottom: var(--chakra-space-1);
     border-bottom-width: 1px;
     border-color: var(--chakra-colors-gray-100);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  & > th:last-child {
+    width: 76px;
   }
 `;
 
@@ -99,7 +105,7 @@ export const ArrayTable: React.FC<ArrayTableProps> = props => {
 
   return (
     <div className={TableWrapperStyle}>
-      <Table size="sm">
+      <Table size="sm" sx={{ tableLayout: 'fixed' }}>
         <Thead>
           <Tr className={TableRowStyle}>
             <Th width="24px" />
@@ -109,7 +115,7 @@ export const ArrayTable: React.FC<ArrayTableProps> = props => {
 
               return <Th key={key}>{title}</Th>;
             })}
-            <Th key="button" display="flex" justifyContent="end">
+            <Th key="button">
               <IconButton
                 aria-label="add"
                 icon={<AddIcon />}
