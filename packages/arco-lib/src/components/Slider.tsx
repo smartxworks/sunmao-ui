@@ -37,7 +37,7 @@ export const Slider = implementRuntimeComponent({
     properties: SliderPropsSpec,
     state: SliderStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange', 'onAfterChange'],
   },
