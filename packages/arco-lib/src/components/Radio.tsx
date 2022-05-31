@@ -54,7 +54,7 @@ export const Radio = implementRuntimeComponent({
   const { customStyle, callbackMap, mergeState, subscribeMethods, elementRef } = props;
   const { defaultCheckedValue, updateWhenDefaultValueChanges, ...cProps } =
     getComponentProps(props);
-  const [checkedValue, setCheckedValue] = useStateValue<string>(
+  const [checkedValue, setCheckedValue] = useStateValue(
     defaultCheckedValue,
     mergeState,
     updateWhenDefaultValueChanges,

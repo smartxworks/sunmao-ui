@@ -79,7 +79,7 @@ export const Tabs = implementRuntimeComponent({
     slotsElements,
   } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
-  const [activeTab, setActiveTab] = useStateValue<number>(
+  const [activeTab, setActiveTab] = useStateValue(
     defaultActiveTab ?? 0,
     mergeState,
     updateWhenDefaultValueChanges,

@@ -45,7 +45,7 @@ export const Switch = implementRuntimeComponent({
   const { elementRef, customStyle, mergeState, callbackMap } = props;
   const { defaultChecked, updateWhenDefaultValueChanges, ...cProps } =
     getComponentProps(props);
-  const [value, setValue] = useStateValue<boolean>(
+  const [value, setValue] = useStateValue(
     defaultChecked,
     mergeState,
     updateWhenDefaultValueChanges
