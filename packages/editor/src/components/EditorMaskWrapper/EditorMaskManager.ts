@@ -54,6 +54,7 @@ export class EditorMaskManager {
 
     this.observeIntersection();
     this.observeResize();
+    this.refreshElementIdMap();
     // listen to the DOM elements' mount and unmount events
     // TODO: This is not very accurate, because sunmao runtime 'didDOMUpdate' hook is not accurate.
     // We will refactor the 'didDOMUpdate' hook with components' life cycle in the future.
@@ -73,7 +74,7 @@ export class EditorMaskManager {
       this.refreshMaskPosition();
     });
 
-    // listen mousePosition change to refreshHoverElement 
+    // listen mousePosition change to refreshHoverElement
     autorun(() => {
       this.refreshHoverElement();
     });
@@ -125,14 +126,7 @@ export class EditorMaskManager {
   private onHTMLElementsUpdated = () => {
     this.observeIntersection();
     this.observeResize();
-
-    // generate elementIdMap, this only aim to improving the  performance of refreshHoverElement method
-    const elementIdMap = new Map<Element, string>();
-    this.eleMap.forEach((ele, id) => {
-      elementIdMap.set(ele, id);
-    });
-
-    this.elementIdMap = elementIdMap;
+    this.refreshElementIdMap();
     this.refreshHoverElement();
     this.refreshMaskPosition();
   };
@@ -154,6 +148,16 @@ export class EditorMaskManager {
         width: rect.width + this.MaskPadding * 2,
       },
     };
+  }
+
+  private refreshElementIdMap() {
+    // generate elementIdMap, this only aim to improving the  performance of refreshHoverElement method
+    const elementIdMap = new Map<Element, string>();
+    this.eleMap.forEach((ele, id) => {
+      elementIdMap.set(ele, id);
+    });
+
+    this.elementIdMap = elementIdMap;
   }
 
   private refreshHoverElement() {
