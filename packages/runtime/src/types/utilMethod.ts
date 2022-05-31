@@ -1,11 +1,10 @@
-import { Static } from '@sinclair/typebox';
-import { JSONSchema7 } from 'json-schema';
 import { UIServices } from './application';
+import { RuntimeUtilMethod } from '@sunmao-ui/core';
 
-export interface UtilMethod<T extends JSONSchema7> {
-  name: string;
-  method: (parameters: Static<T>, services: UIServices) => void;
-  parameters: T;
-}
+export type UtilMethodImpl<T = any> = (parameters: T, services: UIServices) => void;
 
-export type UtilMethodFactory = () => UtilMethod<any>[];
+export type ImplementedUtilMethod<T = any> = RuntimeUtilMethod & {
+  impl: UtilMethodImpl<T>;
+};
+
+export type UtilMethodFactory = () => ImplementedUtilMethod<any>[];
