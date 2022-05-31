@@ -12,9 +12,10 @@ export const GeneralModal: React.FC<{
   onClose: () => void;
   title: string;
   size?: string;
-}> = ({ title, onClose, size = 'full', children }) => {
+  scrollBehavior?: 'inside' | 'outside';
+}> = ({ title, onClose, size = 'full', children, scrollBehavior = 'inside' }) => {
   return (
-    <Modal onClose={onClose} size={size} isOpen>
+    <Modal onClose={onClose} scrollBehavior={scrollBehavior} size={size} isOpen>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
