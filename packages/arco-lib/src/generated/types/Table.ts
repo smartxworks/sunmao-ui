@@ -262,7 +262,7 @@ export const ColumnSpec = Type.Object({
 
 export const TablePropsSpec = Type.Object({
   data: Type.Array(Type.Any(), {
-    title: 'Default Data',
+    title: 'Data',
     category: Category.Data,
     weight: 0,
     widget: 'core/v1/expression',
@@ -327,14 +327,19 @@ export const TablePropsSpec = Type.Object({
     category: Category.Layout,
     weight: 10,
   }),
-  rowSelectionType: StringUnion(['multiple', 'single', 'disable'], {
-    title: 'Row Selection Type',
-    category: Category.Basic,
-  }),
   rowClick: Type.Boolean({
     title: 'Row Click',
     category: Category.Basic,
     description: 'If on, the table can be selected without setting the rowSelectionType',
+  }),
+  checkCrossPage: Type.Boolean({
+    title: 'Check Cross Page',
+    category: Category.Basic,
+    description: 'Whether the checkboxes in multi-select mode cross pages',
+  }),
+  rowSelectionType: StringUnion(['multiple', 'single', 'disable'], {
+    title: 'Row Selection Type',
+    category: Category.Basic,
   }),
   loading: Type.Boolean({
     title: 'Show Loading',

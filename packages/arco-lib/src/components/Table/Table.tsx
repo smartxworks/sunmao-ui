@@ -120,6 +120,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
     })),
+  checkCrossPage: true,
   pagination: {
     enablePagination: true,
     pageSize: 6,
@@ -157,20 +158,19 @@ export const Table = implementRuntimeComponent({
     methods: {},
     slots: [],
     styleSlots: ['content'],
-    events: [
-      'onRowClick',
-      'onSearch',
-      'onSelect',
-      'onSelectAll',
-      'onPageChange',
-      'onFilter',
-      'onSort',
-      'onChange',
-    ],
+    events: ['onRowClick', 'onSearch', 'onPageChange', 'onFilter', 'onSort', 'onChange'],
   },
 })(props => {
-  const { getElement, callbackMap, app, mergeState, customStyle, services, component } =
-    props;
+  const {
+    getElement,
+    checkCrossPage,
+    callbackMap,
+    app,
+    mergeState,
+    customStyle,
+    services,
+    component,
+  } = props;
 
   const ref = useRef<TableInstance | null>(null);
   const { pagination, rowClick, useDefaultFilter, useDefaultSort, data, ...cProps } =
@@ -188,7 +188,6 @@ export const Table = implementRuntimeComponent({
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useStateValue<number>(
     defaultCurrent ?? 1,
     mergeState,
@@ -233,23 +232,13 @@ export const Table = implementRuntimeComponent({
   }, [data, sortRule]);
 
   const currentPageData = useMemo(() => {
-    if (enablePagination) {
+    if (enablePagination && useCustomPagination) {
       // If the `useCustomPagination` is true, then no pagination will be done and data over the pagesize will be sliced
       // Otherwise it will automatically paginate on the front end based on the current page
-      if (useCustomPagination) {
-        return sortedData?.slice(0, pageSize);
-      } else {
-        return sortedData?.slice((currentPage - 1) * pageSize!, currentPage * pageSize!);
-      }
+      return sortedData?.slice(0, pageSize);
     }
     return sortedData;
-  }, [pageSize, currentPage, sortedData, enablePagination, useCustomPagination]);
-
-  useEffect(() => {
-    mergeState({
-      selectedRowKeys,
-    });
-  }, [selectedRowKeys, mergeState]);
+  }, [pageSize, sortedData, enablePagination, useCustomPagination]);
 
   useEffect(() => {
     setColumns(
@@ -448,18 +437,14 @@ export const Table = implementRuntimeComponent({
       onChange={handleChange}
       rowSelection={{
         type: rowSelectionType,
-        selectedRowKeys,
-        onChange(selectedRowKeys) {
-          setSelectedRowKeys(selectedRowKeys as string[]);
-        },
-        onSelect: (selected, record, selectedRows) => {
-          selected && mergeState({ selectedRow: record });
-          mergeState({ selectedRows });
-          callbackMap?.onSelect?.();
-        },
-        onSelectAll(selected, selectedRows) {
-          mergeState({ selectedRows });
-          callbackMap?.onSelectAll?.();
+        checkCrossPage: checkCrossPage,
+        // This option is required to achieve multi-selection across pages when customizing paging
+        preserveSelectedRowKeys: useCustomPagination ? checkCrossPage : undefined,
+        onChange(selectedRowKeys, selectedRows) {
+          mergeState({
+            selectedRowKeys: selectedRowKeys as string[],
+            selectedRows,
+          });
         },
       }}
       onRow={
