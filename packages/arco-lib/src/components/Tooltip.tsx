@@ -35,7 +35,9 @@ export const Tooltip = implementRuntimeComponent({
       openTooltip: Type.String(),
       closeTooltip: Type.String(),
     },
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -65,13 +67,17 @@ export const Tooltip = implementRuntimeComponent({
         popupVisible={popupVisible}
       >
         {/* need the child node of Tooltip accepts onMouseEnter, onMouseLeave, onFocus, onClick events */}
-        <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
+        <span ref={elementRef}>
+          {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
+        </span>
       </BaseTooltip>
     </div>
   ) : (
     <div>
       <BaseTooltip className={css(customStyle?.content)} {...cProps}>
-        <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
+        <span ref={elementRef}>
+          {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
+        </span>
       </BaseTooltip>
     </div>
   );

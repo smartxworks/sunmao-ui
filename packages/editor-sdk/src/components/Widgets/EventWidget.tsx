@@ -100,7 +100,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       }
 
       return params;
-    }, [paramsSpec]);
+    }, [formik.values.method.parameters, paramsSpec?.properties]);
     const parametersPath = useMemo(() => path.concat('method', 'parameters'), [path]);
     const parametersSpec = useMemo(
       () => mergeWidgetOptionsIntoSpec(paramsSpec, { onlySetValue: true }),

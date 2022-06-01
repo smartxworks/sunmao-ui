@@ -37,7 +37,7 @@
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "in tab1",
+              "raw": "only in tab {{ $slot.tabIndex + 1 }}",
               "format": "plain"
             }
           },
@@ -48,7 +48,8 @@
                 "container": {
                   "id": "tabs",
                   "slot": "content"
-                }
+                },
+                "ifCondition": "{{ $slot.tabIndex === 0 }}"
               }
             }
           ]

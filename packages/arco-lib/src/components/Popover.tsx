@@ -37,7 +37,10 @@ export const Popover = implementRuntimeComponent({
       openPopover: Type.String(),
       closePopover: Type.String(),
     },
-    slots: ['popupContent', 'content'],
+    slots: {
+      popupContent: { slotProps: Type.Object({}) },
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -62,21 +65,25 @@ export const Popover = implementRuntimeComponent({
     <BasePopover
       className={css(customStyle?.content)}
       {...cProps}
-      content={slotsElements.popupContent}
+      content={slotsElements.popupContent ? slotsElements.popupContent({}) : null}
     >
-      <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
+      <span ref={elementRef}>
+        {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
+      </span>
     </BasePopover>
   ) : (
     <BasePopover
       className={css(customStyle?.content)}
       {...cProps}
-      content={slotsElements.popupContent}
+      content={slotsElements.popupContent ? slotsElements.popupContent({}) : null}
       popupVisible={popupVisible}
       onVisibleChange={visible => {
         setPopupVisible(visible);
       }}
     >
-      <span ref={elementRef}>{slotsElements.content || <Button>Hover Me</Button>}</span>
+      <span ref={elementRef}>
+        {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
+      </span>
     </BasePopover>
   );
 });

@@ -1,7 +1,4 @@
-import {
-  StateManager,
-  ExpressionError,
-} from '../src/services/StateManager';
+import { StateManager, ExpressionError } from '../src/services/StateManager';
 
 describe('evalExpression function', () => {
   const scope = {
@@ -111,7 +108,7 @@ describe('evalExpression function', () => {
           text: 'hello',
         },
         noConsoleError: true,
-        ignoreEvalError: true
+        ignoreEvalError: true,
       })
     ).toEqual(`hello {{myModule__state0.value}}`);
   });

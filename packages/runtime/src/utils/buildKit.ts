@@ -36,7 +36,7 @@ export function implementRuntimeComponent<
     Static<T['spec']['properties']>,
     Static<T['spec']['state']>,
     ToMap<T['spec']['methods']>,
-    ToStringUnion<T['spec']['slots']>,
+    T['spec']['slots'],
     ToStringUnion<T['spec']['styleSlots']>,
     ToStringUnion<T['spec']['events']>
   >

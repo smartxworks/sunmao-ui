@@ -87,7 +87,7 @@ export const Tree = implementRuntimeComponent({
     properties: TreePropsSpec,
     state: TreeStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onSelect'],
   },

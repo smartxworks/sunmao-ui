@@ -101,7 +101,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     const onRefresh = useCallback(() => {
       // need to reregister all the traits to clear the trait states which like `HasInitializedMap`
       const traits = registry.getAllTraits();
-      
+
       stateManager.clear();
       setStore(stateManager.store);
       registry.unregisterAllTraits();

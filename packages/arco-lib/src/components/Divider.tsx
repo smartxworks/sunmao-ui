@@ -30,7 +30,7 @@ export const Divider = implementRuntimeComponent({
     properties: DividerPropsSpec,
     state: DividerStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },
