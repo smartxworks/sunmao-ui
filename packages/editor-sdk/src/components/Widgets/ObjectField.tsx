@@ -6,6 +6,7 @@ import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { shouldRender } from '../../utils/condition';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
+import { VStack } from '@chakra-ui/react';
 
 const ObjectFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
@@ -20,7 +21,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
 
   const properties = Object.keys(spec.properties || {});
   return (
-    <>
+    <VStack spacing='0' paddingLeft='3'>
       {properties.map(name => {
         const subSpec = (spec.properties || {})[name] as WidgetProps['spec'];
 
@@ -54,7 +55,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
           />
         ) : null;
       })}
-    </>
+    </VStack>
   );
 };
 

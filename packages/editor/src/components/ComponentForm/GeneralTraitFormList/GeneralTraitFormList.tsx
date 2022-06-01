@@ -1,7 +1,8 @@
+import React from 'react';
 import { TSchema } from '@sinclair/typebox';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { parseTypeBox } from '@sunmao-ui/shared';
-import { HStack, VStack } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 
 import { AddTraitButton } from './AddTraitButton';
 import { GeneralTraitForm } from './GeneralTraitForm';
@@ -57,16 +58,9 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
   });
 
   return (
-    <VStack width="full" alignItems="start">
-      <HStack width="full" justify="space-between">
-        <strong>Traits</strong>
-        <AddTraitButton
-          onAddTrait={onAddTrait}
-          registry={registry}
-          component={component}
-        />
-      </HStack>
+    <VStack width="full" alignItems="start" spacing="2">
       {traitFields}
+      <AddTraitButton onAddTrait={onAddTrait} registry={registry} component={component} />
     </VStack>
   );
 };

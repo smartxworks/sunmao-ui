@@ -4,14 +4,14 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { EditorServices } from './editor';
 import { SpecOptions } from '@sunmao-ui/shared';
 
-export type WidgetProps<WidgetOptions = Record<string, any>> = {
+export type WidgetProps<WidgetOptions = Record<string, any>, ValueType = any> = {
   component: ComponentSchema;
   spec: JSONSchema7 & SpecOptions<WidgetOptions>;
   services: EditorServices;
   path: string[];
   level: number;
-  value: any;
-  onChange: (v: any) => void;
+  value: ValueType;
+  onChange: (v: ValueType) => void;
 };
 
 export type Widget = {
@@ -23,10 +23,13 @@ export type Widget = {
   spec?: {
     options?: JSONSchema7;
   };
-}
+};
 
 export type CreateWidgetOptions = Omit<Widget, 'kind'>;
 
-export type ImplementedWidget<T = Record<string, any>> = CreateWidgetOptions & {
-  impl: React.ComponentType<WidgetProps<T>>;
+export type ImplementedWidget<
+  T = Record<string, any>,
+  ValueType = any
+> = CreateWidgetOptions & {
+  impl: React.ComponentType<WidgetProps<T, ValueType>>;
 };
