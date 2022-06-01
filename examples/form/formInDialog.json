@@ -43,7 +43,7 @@
                   {
                     "componentId": "$utils",
                     "method": {
-                      "name": "toast.open",
+                      "name": "chakra_ui/v1/openToast",
                       "parameters": {
                         "id": "createSuccessToast",
                         "title": "恭喜",

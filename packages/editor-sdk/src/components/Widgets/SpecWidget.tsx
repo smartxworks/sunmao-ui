@@ -12,6 +12,7 @@ import {
 import { isEmpty } from 'lodash-es';
 import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
 import { css } from '@emotion/css';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { isExpression as _isExpression } from '../../utils/validator';
 import { WidgetProps } from '../../types/widget';
 import {
@@ -30,7 +31,6 @@ import { NullField } from './NullField';
 import { MultiSpecField } from './MultiSpecField';
 import { CategoryWidget } from './CategoryWidget';
 import { UnsupportedField } from './UnsupportedField';
-import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 type ExpressionButtonProps = {
   isExpression?: boolean;
@@ -73,6 +73,17 @@ type TemplateProps = {
   setIsExpression?: (v: boolean) => void;
 };
 
+const FormControlStyle = css`
+  &:not(:last-of-type) {
+    margin-bottom: var(--chakra-space-2);
+  }
+`;
+
+const LabelStyle = css`
+  font-weight: normal;
+  font-size: 14px;
+`;
+
 const DefaultTemplate: React.FC<TemplateProps> = props => {
   const {
     id,
@@ -93,18 +104,12 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
     return <div className="hidden">{children.content}</div>;
   }
 
-  const FormControlStyle = css`
-    &:not(:last-of-type) {
-      margin-bottom: var(--chakra-space-2);
-    }
-  `;
-
   return (
     <FormControl className={FormControlStyle} isRequired={required} id={id}>
       {displayLabel && (
         <Tooltip label={description} placement="auto-start">
           <FormLabel display="flex" alignItems="center">
-            {children.title || label}
+            <span className={LabelStyle}>{children.title || label}</span>
             {codeMode && (
               <ExpressionButton
                 isExpression={isExpression}

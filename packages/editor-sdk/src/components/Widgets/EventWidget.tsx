@@ -177,7 +177,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     const typeField = (
       <FormControl>
-        <FormLabel>Event Type</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Event Type</FormLabel>
         <Select
           name="type"
           onBlur={onSubmit}
@@ -195,7 +195,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     );
     const targetField = (
       <FormControl>
-        <FormLabel>Target Component</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Target Component</FormLabel>
         <Select
           name="componentId"
           onBlur={onSubmit}
@@ -213,7 +213,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     );
     const methodField = (
       <FormControl>
-        <FormLabel>Method</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Method</FormLabel>
         <Select
           name="method.name"
           onBlur={onSubmit}
@@ -232,7 +232,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     const parametersField = (
       <FormControl>
-        <FormLabel>Parameters</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Parameters</FormLabel>
         <RecordWidget
           component={component}
           path={parametersPath}
@@ -247,7 +247,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     const waitTypeField = (
       <FormControl>
-        <FormLabel>Wait Type</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Wait Type</FormLabel>
         <Select
           name="wait.type"
           onBlur={onSubmit}
@@ -263,7 +263,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     const waitTimeField = (
       <FormControl>
-        <FormLabel>Wait Time</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Wait Time</FormLabel>
         <Input
           name="wait.time"
           onBlur={onSubmit}
@@ -275,7 +275,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     const disabledField = (
       <FormControl>
-        <FormLabel>Disabled</FormLabel>
+        <FormLabel fontSize='14px' fontWeight='normal'>Disabled</FormLabel>
         <SpecWidget
           {...props}
           spec={disabledSpec}
