@@ -3,30 +3,172 @@ import { StringUnion } from '../../sunmao-helper';
 import { EventHandlerSpec } from '@sunmao-ui/runtime';
 import { Category } from '../../constants/category';
 
-const moduleSpec = Type.Object({
-  id: Type.String({
-    title: 'Module ID',
-  }),
-  type: Type.String({
-    title: 'Module Type',
-  }),
-  properties: Type.Record(Type.String(), Type.Any(), {
-    title: 'Module Properties',
-    category: 'Basic',
-    widget: 'core/v1/record',
-  }),
-  handlers: Type.Array(EventHandlerSpec, {
-    title: 'Events',
-  }),
-}, {
-  title: 'Module Config',
-  conditions: [
-    {
-      key: 'type',
-      value: 'module'
-    }
-  ]
-})
+const PaginationSpec = Type.Object(
+  {
+    enablePagination: Type.Boolean({
+      title: 'Enable Pagination',
+    }),
+    useCustomPagination: Type.Boolean({
+      title: 'Custom Pagination',
+      description:
+        'If true, there will be no automatic pagination. You can customize pagination with Pagination config and onPageChange events',
+      conditions: [
+        {
+          key: 'enablePagination',
+          value: true,
+        },
+      ],
+    }),
+    total: Type.Optional(
+      Type.Number({
+        title: 'Total',
+        category: Category.Basic,
+        conditions: [
+          {
+            and: [
+              {
+                key: 'enablePagination',
+                value: true,
+              },
+              {
+                key: 'useCustomPagination',
+                value: true,
+              },
+            ],
+          },
+        ],
+      })
+    ),
+    pageSize: Type.Optional(
+      Type.Number({
+        title: 'Page Size',
+        category: Category.Basic,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+      })
+    ),
+    defaultCurrent: Type.Optional(
+      Type.Number({
+        title: 'Default Current Page',
+        category: Category.Basic,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+      })
+    ),
+    updateWhenDefaultPageChanges: Type.Boolean({
+      title: 'Update When Default Page Changes',
+      category: Category.Basic,
+      conditions: [
+        {
+          key: 'enablePagination',
+          value: true,
+        },
+      ],
+    }),
+    hideOnSinglePage: Type.Optional(
+      Type.Boolean({
+        title: 'Hide On Single Page',
+        category: Category.Basic,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+      })
+    ),
+    size: Type.Optional(
+      StringUnion(['mini', 'small', 'default', 'large'], {
+        title: 'Size',
+        category: Category.Style,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+      })
+    ),
+    simple: Type.Optional(
+      Type.Boolean({
+        title: 'Simple',
+        category: Category.Basic,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+      })
+    ),
+    showJumper: Type.Optional(
+      Type.Boolean({
+        title: 'Show Jumper',
+        category: Category.Basic,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+        description: 'Whether to display quick jump',
+      })
+    ),
+    showTotal: Type.Optional(
+      Type.Boolean({
+        title: 'Show Total',
+        category: Category.Basic,
+        conditions: [
+          {
+            key: 'enablePagination',
+            value: true,
+          },
+        ],
+      })
+    ),
+  },
+  {
+    category: 'Pagination',
+    description:
+      'Custom pagination, dynamically update table data by setting total, pagesize, etc. and customize pagination style, size, etc',
+  }
+);
+
+const moduleSpec = Type.Object(
+  {
+    id: Type.String({
+      title: 'Module ID',
+    }),
+    type: Type.String({
+      title: 'Module Type',
+    }),
+    properties: Type.Record(Type.String(), Type.Any(), {
+      title: 'Module Properties',
+      category: 'Basic',
+      widget: 'core/v1/record',
+    }),
+    handlers: Type.Array(EventHandlerSpec, {
+      title: 'Events',
+    }),
+  },
+  {
+    title: 'Module Config',
+    conditions: [
+      {
+        key: 'type',
+        value: 'module',
+      },
+    ],
+  }
+);
 
 export const ColumnSpec = Type.Object({
   title: Type.String({
@@ -55,7 +197,7 @@ export const ColumnSpec = Type.Object({
   displayValue: Type.String({
     title: 'Display Value',
     category: Category.Basic,
-    description: 'The text you want to display instead of raw text.',
+    description: 'The text you want to display instead of raw text',
   }),
   width: Type.Optional(
     Type.Number({
@@ -69,61 +211,68 @@ export const ColumnSpec = Type.Object({
         'If the cell content exceeds the length, whether it is automatically omitted and displays ...,After setting this property, the table-layout of the table will automatically become fixed.',
     })
   ),
-  sorter: Type.Optional(Type.Boolean({
-    title: 'Enable Sort',
-    conditions: [
-      {
-        key: 'type',
-        value: 'text'
-      }
-    ],
-  })),
-  filter: Type.Boolean({
-    title: 'Enable Filter',
-  }),
-  sortDirections: Type.Optional(Type.Array(StringUnion(['descend', 'ascend']), {
-    conditions: [
-      {
-        key: 'sorter',
-        value: true
-      }
-    ],
-    widget: 'core/v1/expression'
-  })),
-  btnCfg: Type.Optional(
-    Type.Object({
-      text: Type.String({
-        title:'Text'
-      }),
-      handlers: Type.Array(EventHandlerSpec,{
-        title:'Events'
-      }),
-    }, {
-      title:'Button Config',
+  sorter: Type.Optional(
+    Type.Boolean({
+      title: 'Enable Sort',
       conditions: [
         {
           key: 'type',
-          value: 'button'
-        }
-      ]
+          value: 'text',
+        },
+      ],
     })
+  ),
+  filter: Type.Boolean({
+    title: 'Enable Filter',
+  }),
+  sortDirections: Type.Optional(
+    Type.Array(StringUnion(['descend', 'ascend']), {
+      conditions: [
+        {
+          key: 'sorter',
+          value: true,
+        },
+      ],
+      widget: 'core/v1/expression',
+    })
+  ),
+  btnCfg: Type.Optional(
+    Type.Object(
+      {
+        text: Type.String({
+          title: 'Text',
+        }),
+        handlers: Type.Array(EventHandlerSpec, {
+          title: 'Events',
+        }),
+      },
+      {
+        title: 'Button Config',
+        conditions: [
+          {
+            key: 'type',
+            value: 'button',
+          },
+        ],
+      }
+    )
   ),
   module: Type.Optional(moduleSpec),
 });
 
 export const TablePropsSpec = Type.Object({
   data: Type.Array(Type.Any(), {
-    title: 'Data',
+    title: 'Default Data',
     category: Category.Data,
     weight: 0,
-    widget: 'core/v1/expression'
+    widget: 'core/v1/expression',
   }),
   columns: Type.Array(ColumnSpec, {
     title: 'Columns',
     description: '',
     category: Category.Columns,
     widgetOptions: {
-      displayedKeys: ['title']
+      displayedKeys: ['title'],
     },
     weight: 0,
   }),
@@ -151,23 +300,27 @@ export const TablePropsSpec = Type.Object({
     category: Category.Style,
     weight: 2,
   }),
-  pagination: Type.Object(
-    {
-      pageSize: Type.Number({
-        title: 'Page Size',
-      }),
-    },
-    {
-      title:'Pagination',
-      category: Category.Layout,
-    }
-  ),
+  pagination: PaginationSpec,
   size: StringUnion(['default', 'middle', 'small', 'mini'], {
     title: 'Size',
     description: 'table size',
     category: Category.Style,
     weight: 0,
   }),
+  useDefaultFilter: Type.Optional(
+    Type.Boolean({
+      title: 'Default Filter',
+      category: Category.Basic,
+      description: 'If true, the built-in filter function will be used to filter',
+    })
+  ),
+  useDefaultSort: Type.Optional(
+    Type.Boolean({
+      title: 'Default Sort',
+      category: Category.Basic,
+      description: 'If true, the built-in sort function will be used to sort',
+    })
+  ),
   pagePosition: StringUnion(['br', 'bl', 'tr', 'tl', 'topCenter', 'bottomCenter'], {
     title: 'Page Position',
     description: '',
@@ -186,5 +339,5 @@ export const TablePropsSpec = Type.Object({
   loading: Type.Boolean({
     title: 'Show Loading',
     category: Category.Basic,
-  })
+  }),
 });
