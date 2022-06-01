@@ -1,5 +1,5 @@
 import { JSONSchema7 } from 'json-schema';
 
-export type SlotSchema = {
+export type SlotSpec = {
   slotProps?: JSONSchema7;
 };
