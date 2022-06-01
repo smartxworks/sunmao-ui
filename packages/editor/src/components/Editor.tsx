@@ -134,10 +134,9 @@ export const Editor: React.FC<Props> = observer(
     }, [activeDataSource, services, activeDataSourceType]);
 
     const onRefresh = useCallback(() => {
-      services.stateManager.clear();
       setIsDisplayApp(false);
       onRefreshApp();
-    }, [services.stateManager, onRefreshApp]);
+    }, [onRefreshApp]);
     useEffect(() => {
       // Wait until the app is completely unmounted before remounting it
       if (isDisplayApp === false) {
@@ -145,6 +144,12 @@ export const Editor: React.FC<Props> = observer(
       }
     }, [isDisplayApp]);
     const onPreview = useCallback(() => setPreview(true), []);
+    const onSelectComponent = useCallback(id => {
+      editorStore.setSelectedComponentId(id);
+    }, [editorStore]);
+    const onRightTabChange = useCallback(activatedTab => {
+      setToolMenuTab(activatedTab);
+    }, []);
 
     const renderMain = () => {
       const appBox = (
@@ -155,10 +160,9 @@ export const Editor: React.FC<Props> = observer(
             flexDirection="column"
             width="full"
             height="full"
-            overflow="auto"
-            padding="20px"
             transform={`scale(${scale / 100})`}
             position="relative"
+            overflow='hidden'
           >
             <EditorMaskWrapper services={services}>
               {appComponent}
@@ -216,9 +220,7 @@ export const Editor: React.FC<Props> = observer(
                     <StructureTree
                       components={components}
                       selectedComponentId={selectedComponentId}
-                      onSelectComponent={id => {
-                        editorStore.setSelectedComponentId(id);
-                      }}
+                      onSelectComponent={onSelectComponent}
                       services={services}
                     />
                   </TabPanel>
@@ -257,9 +259,8 @@ export const Editor: React.FC<Props> = observer(
                   display="flex"
                   flexDirection="column"
                   index={toolMenuTab}
-                  onChange={activatedTab => {
-                    setToolMenuTab(activatedTab);
-                  }}
+                  onChange={onRightTabChange}
+                  isLazy
                 >
                   <TabList background="gray.50">
                     <Tab>Inspect</Tab>

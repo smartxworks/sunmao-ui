@@ -55,7 +55,12 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(
       const moduleItemId = genItemId('module', module.version, module.metadata.name);
       const onClickModule = () => {
         setSelectedItem(moduleItemId);
-        updateCurrentEditingTarget('module', module.version, module.metadata.name);
+        updateCurrentEditingTarget(
+          'module',
+          module.version,
+          module.metadata.name,
+          module.spec
+        );
       };
       const onEditModule = () => {
         onEdit('module', module.version, module.metadata.name);

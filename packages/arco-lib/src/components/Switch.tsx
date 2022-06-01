@@ -48,7 +48,7 @@ export const Switch = implementRuntimeComponent({
   const [value, setValue] = useStateValue<boolean>(
     defaultChecked,
     mergeState,
-    updateWhenDefaultValueChanges,
+    updateWhenDefaultValueChanges
   );
 
   return (

@@ -24,7 +24,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
       () => {
-        return c.traits.map(t => executeTrait(t, stateManager.deepEval(t.properties)));
+        return c.traits.map(t => executeTrait(t, stateManager.deepEval(t.properties, { fallbackWhenError: () => undefined })));
       }
     );
 
@@ -49,7 +49,8 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
               newResults[i] = traitResult;
               return newResults;
             });
-          }
+          },
+          { fallbackWhenError: () => undefined }
         );
         stops.push(stop);
         properties.push(result);
@@ -68,9 +69,11 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             return prevProps;
           }
 
-          return mergeWith(prevProps, result.props, (obj, src) => {
-            if (isArray(obj)) {
-              return obj.concat(src);
+          return mergeWith({}, prevProps, result.props, (target, src, key) => {
+            if (isArray(target)) {
+              return target.concat(src);
+            } else if (key === 'customStyle') {
+              return mergeCustomStyle(target, src);
             }
           });
         },
@@ -175,3 +178,14 @@ const useDidUpdate = (fn: Function) => {
     }
   });
 };
+
+function mergeCustomStyle(s1?: Record<string, string>, s2?: Record<string, string>) {
+  if (s1 && s2) {
+    return mergeWith({}, s1, s2, (target: string, src: string) => {
+      if (target && src) {
+        return `${target};${src}`;
+      }
+    });
+  }
+  return s1 || s2;
+}
