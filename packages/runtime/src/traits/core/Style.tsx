@@ -25,8 +25,12 @@ export default implementRuntimeTrait({
 })(() => {
   return ({ styles }) => {
     const customStyle: Record<string, string> = {};
-    styles.forEach(style => {
-      customStyle[style.styleSlot] = style.style;
+    styles.forEach(({ style, styleSlot }) => {
+      if (!customStyle[styleSlot]) {
+        customStyle[styleSlot] = '';
+      }
+      // add a ';' between css texts, in case user forgets to add ';' in the end
+      customStyle[styleSlot] = `&&& {${customStyle[styleSlot]};${style}}`;
     });
     return {
       props: {

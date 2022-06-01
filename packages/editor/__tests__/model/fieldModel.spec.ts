@@ -15,6 +15,12 @@ describe('Field test', () => {
     expect(field.rawValue).toEqual('{{input.value}} + {{list[0].text}}');
   });
 
+  it('parse inline variable in expression', () => {
+    const field = new FieldModel('{{ [].length }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refs).toEqual({});
+  });
+
   it('parse object property', () => {
     const field = new FieldModel({ raw: '{{input.value}}', format: 'md' });
     expect(field.isDynamic).toEqual(false);
@@ -45,13 +51,13 @@ describe('Field test', () => {
 
   it('update array property', () => {
     const field = new FieldModel({ data: ['A', 'B'] });
-    
+
     expect(field.rawValue).toEqual({ data: ['A', 'B'] });
-    field.update({data: ['B']});
+    field.update({ data: ['B'] });
     expect(field.rawValue).toEqual({ data: ['B'] });
-    field.update({data: ['C']});
+    field.update({ data: ['C'] });
     expect(field.rawValue).toEqual({ data: ['C'] });
-  })
+  });
 
   it('update object property', () => {
     const field = new FieldModel({ data: { a: 1, b: 2 }, value: '' });
@@ -63,5 +69,5 @@ describe('Field test', () => {
     expect(field.rawValue).toEqual({ data: { a: 2 }, value: '' });
     field.update({ value: 'text' });
     expect(field.rawValue).toEqual({ data: { a: 2 }, value: 'text' });
-  })
+  });
 });

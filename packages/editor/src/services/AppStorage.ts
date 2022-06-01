@@ -113,10 +113,12 @@ export class AppStorage {
       version,
       name,
       stateMap,
+      exampleProperties,
     }: {
       version: string;
       name: string;
       stateMap: Record<string, string>;
+      exampleProperties: Record<string, string>;
     }
   ) {
     const i = this.modules.findIndex(
@@ -125,6 +127,7 @@ export class AppStorage {
     const newModules = produce(toJS(this.modules), draft => {
       draft[i].metadata.name = name;
       draft[i].spec.stateMap = stateMap;
+      draft[i].spec.exampleProperties = exampleProperties;
       draft[i].version = version;
     });
 

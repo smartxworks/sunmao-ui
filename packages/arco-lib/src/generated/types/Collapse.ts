@@ -2,7 +2,6 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
-
 export const CollapseItemPropsSpec = {
   key: Type.String({
     title: 'Key',
@@ -22,9 +21,11 @@ export const CollapseItemPropsSpec = {
     title: 'Show Expand Icon',
     category: Category.Basic,
   }),
-  destroyOnHide:Type.Optional(Type.Boolean({
-    title:'Destroy On Hide'
-  }))
+  destroyOnHide: Type.Optional(
+    Type.Boolean({
+      title: 'Destroy On Hide',
+    })
+  ),
 };
 
 export const CollapsePropsSpec = {
@@ -49,18 +50,17 @@ export const CollapsePropsSpec = {
     category: Category.Basic,
     widgetOptions: {
       displayedKeys: ['header'],
-    }
+    },
   }),
   updateWhenDefaultValueChanges: Type.Boolean({
     title: 'Update When Default Value Changes',
     category: Category.Basic,
   }),
-  lazyLoad:Type.Boolean({
-    title:'Lazy Load',
-    description:'If true, invisible panels will not be rendered on mount'
+  lazyLoad: Type.Boolean({
+    title: 'Lazy Load',
+    description: 'If true, invisible panels will not be rendered on mount',
   }),
-  destroyOnHide:Type.Boolean({
-    title:'Destroy On Hide'
-  })
+  destroyOnHide: Type.Boolean({
+    title: 'Destroy On Hide',
+  }),
 };
-

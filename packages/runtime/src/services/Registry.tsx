@@ -28,9 +28,10 @@ import {
   ImplementedRuntimeTraitFactory,
   ImplementedRuntimeTrait,
   ImplementedRuntimeModule,
+  UtilMethodFactory,
   UIServices,
 } from '../types';
-import { UtilMethod, UtilMethodFactory } from '../types/utilMethod';
+import { ImplementedUtilMethod } from '../types/utilMethod';
 import { UtilMethodManager } from './UtilMethodManager';
 
 export type SunmaoLib = {
@@ -47,13 +48,13 @@ type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
   string
 >;
 
-export type RegistryInterface = InstanceType<typeof Registry>
+export type RegistryInterface = InstanceType<typeof Registry>;
 
 export class Registry {
   components = new Map<string, Map<string, AnyImplementedRuntimeComponent>>();
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
-  utilMethods = new Map<string, UtilMethod<any>>();
+  utilMethods = new Map<string, Map<string, ImplementedUtilMethod>>();
   private services: UIServices;
 
   constructor(
@@ -176,12 +177,44 @@ export class Registry {
     this.modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
   }
 
-  registerUtilMethod<T>(m: UtilMethod<T>) {
-    if (this.utilMethods.get(m.name)) {
-      throw new Error(`Already has utilMethod ${m.name} in this registry.`);
+  unregisterAllTraits() {
+    this.traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
+  }
+
+  registerUtilMethod<T>(m: ImplementedUtilMethod<T>) {
+    if (this.utilMethods.get(m.version)?.get(m.metadata.name)) {
+      throw new Error(
+        `Already has utilMethod ${m.version}/${m.metadata.name} in this registry.`
+      );
     }
-    this.utilMethods.set(m.name, m);
+    if (!this.utilMethods.has(m.version)) {
+      this.utilMethods.set(m.version, new Map());
+    }
+
+    this.utilMethods.get(m.version)!.set(m.metadata.name, m);
     this.utilMethodManager.listenUtilMethod(m, this.services);
+  }
+
+  getUtilMethod(version: string, name: string): ImplementedUtilMethod<any> | null {
+    return this.utilMethods.get(version)?.get(name) || null;
+  }
+
+  getUtilMethodByType(type: string): ImplementedUtilMethod<any> | null {
+    const { version, name } = parseType(type);
+
+    return this.getUtilMethod(version, name);
+  }
+
+  getAllUtilMethods(): ImplementedUtilMethod[] {
+    const res: ImplementedUtilMethod[] = [];
+
+    for (const version of this.utilMethods.values()) {
+      for (const utilMethod of version.values()) {
+        res.push(utilMethod);
+      }
+    }
+
+    return res;
   }
 
   installLib(lib: SunmaoLib) {
