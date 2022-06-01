@@ -59,7 +59,7 @@
                     "type": "onClick",
                     "componentId": "$utils",
                     "method": {
-                      "name": "toast.open",
+                      "name": "chakra_ui/v1/openToast",
                       "parameters": {
                         "id": "{{open_button.lastToast}}",
                         "title": "i am a title",
@@ -103,7 +103,7 @@
                     "type": "onClick",
                     "componentId": "$utils",
                     "method": {
-                      "name": "toast.close",
+                      "name": "chakra_ui/v1/closeToast",
                       "parameters": {
                         "id": "{{open_button.lastToast}}"
                       }
@@ -156,7 +156,7 @@
                     "type": "onClick",
                     "componentId": "$utils",
                     "method": {
-                      "name": "toast.close"
+                      "name": "chakra_ui/v1/closeToast"
                     },
                     "wait": {}
                   }
