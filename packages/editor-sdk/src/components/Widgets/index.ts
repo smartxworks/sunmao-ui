@@ -14,6 +14,7 @@ import moduleWidgetSpec from './ModuleWidget';
 import recordWidgetSpec from './RecordField';
 import eventWidgetSpec from './EventWidget';
 import popoverWidgetSpec from './PopoverWidget';
+import sizeWidgetSpec from './StyleWidgets/SizeWidget';
 
 export * from './SpecWidget';
 export * from './ArrayField';
@@ -30,6 +31,8 @@ export * from './ModuleWidget';
 export * from './RecordField';
 export * from './EventWidget';
 export * from './PopoverWidget';
+export * from './StyleWidgets/SizeWidget';
+
 export const widgets: ImplementedWidget<any>[] = [
   specWidgetSpec,
   arrayFieldSpec,
@@ -45,5 +48,6 @@ export const widgets: ImplementedWidget<any>[] = [
   expressionWidgetSpec,
   recordWidgetSpec,
   eventWidgetSpec,
-  popoverWidgetSpec
+  popoverWidgetSpec,
+  sizeWidgetSpec,
 ];

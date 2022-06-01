@@ -24,7 +24,7 @@ import { TreeSelect } from './components/TreeSelect';
 import { Checkbox } from './components/Checkbox';
 import { Modal } from './components/Modal';
 import { Radio } from './components/Radio';
-import { Table } from './components/Table';
+import { Table } from './components/Table/Table';
 import { Pagination } from './components/Pagination';
 import { Steps } from './components/Steps';
 import { Alert } from './components/Alert';

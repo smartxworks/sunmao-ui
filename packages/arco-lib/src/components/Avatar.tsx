@@ -15,6 +15,8 @@ const exampleProperties: Static<typeof AvatarPropsSpec> = {
   triggerType: 'button',
   size: 50,
   type: 'text',
+  text: 'A',
+  src: '//p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/8361eeb82904210b4f55fab888fe8416.png~tplv-uwbnlip3yd-webp.webp',
 };
 
 export const Avatar = implementRuntimeComponent({
