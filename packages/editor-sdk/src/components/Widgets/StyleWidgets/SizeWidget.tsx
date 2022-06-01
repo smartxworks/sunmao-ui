@@ -14,7 +14,7 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
   const { value, onChange } = props;
 
   return (
-    <HStack>
+    <HStack width="full">
       <Text>W</Text>
       <ExpressionEditor
         compact={true}
