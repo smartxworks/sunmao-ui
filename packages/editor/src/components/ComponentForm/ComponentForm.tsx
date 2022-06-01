@@ -108,7 +108,11 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           <EventTraitForm component={selectedComponent} services={services} />
         </FormSection>
         <FormSection title="Styles">
-          <StyleTraitForm component={selectedComponent} services={services} />
+          <StyleTraitForm
+            key={selectedComponentId}
+            component={selectedComponent}
+            services={services}
+          />
         </FormSection>
         <FormSection title="Traits">
           <GeneralTraitFormList component={selectedComponent} services={services} />

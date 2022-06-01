@@ -144,9 +144,12 @@ export const Editor: React.FC<Props> = observer(
       }
     }, [isDisplayApp]);
     const onPreview = useCallback(() => setPreview(true), []);
-    const onSelectComponent = useCallback(id => {
-      editorStore.setSelectedComponentId(id);
-    }, [editorStore]);
+    const onSelectComponent = useCallback(
+      id => {
+        editorStore.setSelectedComponentId(id);
+      },
+      [editorStore]
+    );
     const onRightTabChange = useCallback(activatedTab => {
       setToolMenuTab(activatedTab);
     }, []);
@@ -162,7 +165,7 @@ export const Editor: React.FC<Props> = observer(
             height="full"
             transform={`scale(${scale / 100})`}
             position="relative"
-            overflow='hidden'
+            overflow="hidden"
           >
             <EditorMaskWrapper services={services}>
               {appComponent}
@@ -212,7 +215,7 @@ export const Editor: React.FC<Props> = observer(
                   <Tab>Data</Tab>
                   <Tab>State</Tab>
                 </TabList>
-                <TabPanels overflow='hidden' height="full" flex="1">
+                <TabPanels overflow="hidden" height="full" flex="1">
                   <TabPanel height="full" overflow="auto" p={0}>
                     <Explorer services={services} />
                   </TabPanel>
@@ -238,12 +241,12 @@ export const Editor: React.FC<Props> = observer(
             {appBox}
             <Resizable
               defaultSize={{
-                width: 320,
+                width: 360,
                 height: '100%',
               }}
               enable={{ left: true }}
               maxWidth={480}
-              minWidth={250}
+              minWidth={300}
             >
               <Box
                 height="full"
