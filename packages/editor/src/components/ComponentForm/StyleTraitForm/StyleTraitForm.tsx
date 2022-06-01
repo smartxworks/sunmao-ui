@@ -24,6 +24,8 @@ import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 
+type PartialCSSProperties = Partial<Record<keyof React.CSSProperties, any>>;
+
 type Props = {
   component: ComponentSchema;
   services: EditorServices;
@@ -32,7 +34,7 @@ type Props = {
 type Styles = Array<{
   styleSlot: string;
   style: string;
-  cssProperties: React.CSSProperties;
+  cssProperties: PartialCSSProperties;
 }>;
 
 const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Style}`;
@@ -147,7 +149,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
         updateStyles(newStyles);
       };
 
-      const changeCssProperties = (newCss: React.CSSProperties) => {
+      const changeCssProperties = (newCss: PartialCSSProperties) => {
         const newCssProperties = Object.assign({}, style, newCss);
         const newStyles = produce(styles, draft => {
           draft[i].cssProperties = newCssProperties;
@@ -199,12 +201,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
               <CollapsibleFormControl label="Font">
                 <FontWidget
                   value={_cssProperties || {}}
-                  onChange={font => {
-                    changeCssProperties({
-                      fontSize: font.fontSize,
-                      fontWeight: font.fontWeight as any,
-                    });
-                  }}
+                  onChange={changeCssProperties}
                   {...widgetProps}
                 />
               </CollapsibleFormControl>
