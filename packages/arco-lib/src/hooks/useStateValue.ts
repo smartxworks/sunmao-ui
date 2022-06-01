@@ -2,7 +2,11 @@ import { RuntimeFunctions } from '@sunmao-ui/runtime';
 import { useState, useEffect } from 'react';
 import { SlotSpec } from '@sunmao-ui/core';
 
-export const useStateValue = <T, TMethods, TSlots extends Record<string, SlotSpec>>(
+export const useStateValue = <
+  T,
+  TMethods = any,
+  TSlots extends Record<string, SlotSpec> = Record<string, SlotSpec>
+>(
   defaultValue: T,
   mergeState?: RuntimeFunctions<Record<string, T>, TMethods, TSlots>['mergeState'],
   updateWhenDefaultValueChanges?: boolean,
