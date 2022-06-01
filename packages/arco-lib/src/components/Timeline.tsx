@@ -61,7 +61,7 @@ export const Timeline = implementRuntimeComponent({
     properties: TimelinePropsSpec,
     state: TimelineStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

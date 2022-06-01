@@ -3,6 +3,7 @@
 import { ComponentMetadata } from '@sunmao-ui/core/lib/metadata';
 import { ComponentImplProps } from '@sunmao-ui/runtime';
 import { TLiteral, Type } from '@sinclair/typebox';
+import { SlotSpec } from '@sunmao-ui/core';
 
 export type IntoStringUnion<T> = {
   [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
@@ -37,11 +38,11 @@ export const getComponentProps = <
   T,
   TState,
   TMethods,
-  KSlot extends string,
+  TSlots extends Record<string, SlotSpec>,
   KStyleSlot extends string,
   KEvent extends string
 >(
-  props: T & ComponentImplProps<TState, TMethods, KSlot, KStyleSlot, KEvent>
+  props: T & ComponentImplProps<TState, TMethods, TSlots, KStyleSlot, KEvent>
 ) => {
   const {
     /* eslint-disable @typescript-eslint/no-unused-vars */

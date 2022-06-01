@@ -31,7 +31,7 @@ export const Icon = implementRuntimeComponent({
     properties: IconPropsSpec,
     state: Type.Object({}),
     methods: {},
-    slots: ['slot'],
+    slots: {},
     styleSlots: ['content'],
     events: ['event'],
   },

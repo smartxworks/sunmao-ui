@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { merge, mergeWith, isArray } from 'lodash-es';
+import { merge, mergeWith, isArray, omit } from 'lodash-es';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
 import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
-import { useSlotElements } from './hooks/useSlotChildren';
+import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
 import { useGridLayout } from './hooks/useGridLayout';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
-  (props, ref) => {
+  function ImplWrapperMain(props, ref) {
     const { component: c, children } = props;
     const { registry, stateManager } = props.services;
 
@@ -24,7 +24,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
       () => {
-        return c.traits.map(t => executeTrait(t, stateManager.deepEval(t.properties, { fallbackWhenError: () => undefined })));
+        return c.traits.map(t =>
+          executeTrait(
+            t,
+            stateManager.deepEval(t.properties, {
+              scopeObject: { $slot: props.slotProps },
+              fallbackWhenError: () => undefined,
+            })
+          )
+        );
       }
     );
 
@@ -50,7 +58,10 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
               return newResults;
             });
           },
-          { fallbackWhenError: () => undefined }
+          {
+            scopeObject: { $slot: props.slotProps },
+            fallbackWhenError: () => undefined,
+          }
         );
         stops.push(stop);
         properties.push(result);
@@ -59,7 +70,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       // because mergeState will be called during the first render of component, and state will change
       setTraitResults(c.traits.map((trait, i) => executeTrait(trait, properties[i])));
       return () => stops.forEach(s => s());
-    }, [c.id, c.traits, executeTrait, stateManager]);
+    }, [c.id, c.traits, executeTrait, stateManager, props.slotProps]);
 
     // reduce traitResults
     const propsFromTraits: TraitResult<string, string>['props'] = useMemo(() => {
@@ -84,7 +95,10 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     // component properties
     const [evaledComponentProperties, setEvaledComponentProperties] = useState(() => {
       return merge(
-        stateManager.deepEval(c.properties, { fallbackWhenError: () => undefined }),
+        stateManager.deepEval(c.properties, {
+          fallbackWhenError: () => undefined,
+          scopeObject: { $slot: props.slotProps },
+        }),
         propsFromTraits
       );
     });
@@ -95,13 +109,13 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
         ({ result: newResult }: any) => {
           setEvaledComponentProperties({ ...newResult });
         },
-        { fallbackWhenError: () => undefined }
+        { fallbackWhenError: () => undefined, scopeObject: { $slot: props.slotProps } }
       );
       // must keep this line, reason is the same as above
       setEvaledComponentProperties({ ...result });
 
       return stop;
-    }, [c.properties, stateManager]);
+    }, [c.properties, stateManager, props.slotProps]);
 
     useEffect(() => {
       const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
@@ -128,12 +142,21 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     const unmount = traitResults.some(result => result.unmount);
-    const slotElements = useSlotElements(props);
+    const slotElements = getSlotElements({
+      app: props.app,
+      childrenMap: props.childrenMap,
+      children: props.children,
+      component: props.component,
+      gridCallbacks: props.gridCallbacks,
+      services: props.services,
+      hooks: props.hooks,
+      isInModule: props.isInModule,
+    });
 
     const C = unmount ? null : (
       <Impl
         key={c.id}
-        {...props}
+        {...omit(props, 'slotProps')}
         {...mergedProps}
         slotsElements={slotElements}
         mergeState={mergeState}

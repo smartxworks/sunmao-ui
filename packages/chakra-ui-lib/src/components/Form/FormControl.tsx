@@ -66,7 +66,9 @@ export default implementRuntimeComponent({
       value: Type.Any(),
     }),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -149,7 +151,7 @@ export default implementRuntimeComponent({
     }, [inputId, fieldName, isInvalid, isRequired, inputValue, mergeState]);
 
     const placeholder = <Text color="gray.200">Please Add Input Here</Text>;
-    const slotView = slotsElements.content;
+    const slotView = slotsElements.content ? slotsElements.content({}) : null;
 
     return (
       <FormControl

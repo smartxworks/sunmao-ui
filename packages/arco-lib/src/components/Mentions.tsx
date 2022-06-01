@@ -37,7 +37,7 @@ export const Mentions = implementRuntimeComponent({
     properties: MentionsPropsSpec,
     state: MentionsStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange', 'onClear', 'onPressEnter', 'onFocus', 'onBlur'],
   },

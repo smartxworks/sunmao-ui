@@ -54,51 +54,58 @@ const PropsSpec = Type.Object({
       category: APPEARANCE,
     }
   ),
-  customerIncrement: Type.Optional(Type.Object(
-    {
-      bg: Type.String({
-        title: 'Background',
-      }),
-      children: Type.String({
-        title: 'Text',
-      }),
-      _active: Type.Object({
+  customerIncrement: Type.Optional(
+    Type.Object(
+      {
         bg: Type.String({
-          title: 'Active Background',
+          title: 'Background',
         }),
-      }, {
-        title: 'Active',
-      }),
-    },
-    {
-      title: 'Increment Button',
-      category: APPEARANCE,
-    }
-  )),
-  customerDecrement: Type.Optional(Type.Object(
-    {
-      bg: Type.String({
-        title: 'Background',
-      }),
-      children: Type.String({
-        title: 'Text',
-      }),
-      _active: Type.Object(
-        {
-          bg: Type.String({
-            title: 'Active Background',
-          }),
-        },
-        {
-          title: 'Active',
-        }
-      ),
-    },
-    {
-      title: 'Decrement Button',
-      category: APPEARANCE,
-    }
-  )),
+        children: Type.String({
+          title: 'Text',
+        }),
+        _active: Type.Object(
+          {
+            bg: Type.String({
+              title: 'Active Background',
+            }),
+          },
+          {
+            title: 'Active',
+          }
+        ),
+      },
+      {
+        title: 'Increment Button',
+        category: APPEARANCE,
+      }
+    )
+  ),
+  customerDecrement: Type.Optional(
+    Type.Object(
+      {
+        bg: Type.String({
+          title: 'Background',
+        }),
+        children: Type.String({
+          title: 'Text',
+        }),
+        _active: Type.Object(
+          {
+            bg: Type.String({
+              title: 'Active Background',
+            }),
+          },
+          {
+            title: 'Active',
+          }
+        ),
+      },
+      {
+        title: 'Decrement Button',
+        category: APPEARANCE,
+      }
+    )
+  ),
 });
 
 const StateSpec = Type.Object({
@@ -137,7 +144,7 @@ export default implementRuntimeComponent({
       }),
       resetInputValue: undefined,
     },
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

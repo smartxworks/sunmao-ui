@@ -8,15 +8,15 @@ export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
     customStyle?: Record<KStyleSlot, string>;
     callbackMap?: CallbackMap<KEvent>;
     componentDidUnmount?: Array<() => void>;
-    componentDidMount?: Array<() => Function | void>
-    componentDidUpdate?: Array<() => Function | void>
+    componentDidMount?: Array<() => Function | void>;
+    componentDidUpdate?: Array<() => Function | void>;
   } | null;
   unmount?: boolean;
 };
 
 export type TraitImpl<T = any> = (
   props: T &
-    RuntimeFunctions<unknown, unknown> & {
+    RuntimeFunctions<unknown, unknown, any> & {
       trait: RuntimeTraitSchema;
       componentId: string;
       services: UIServices;

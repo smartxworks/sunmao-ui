@@ -16,7 +16,6 @@ const exampleProperties: Static<typeof LinkPropsSpec> = {
   content: 'Link',
 };
 
-
 const statusMap = {
   default: undefined,
   success: 'success',
@@ -39,7 +38,7 @@ export const Link = implementRuntimeComponent({
     properties: LinkPropsSpec,
     state: LinkStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

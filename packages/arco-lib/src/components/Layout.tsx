@@ -48,7 +48,12 @@ export const Layout = implementRuntimeComponent({
     }),
     state: LayoutStateSpec,
     methods: {},
-    slots: ['header', 'content', 'sidebar', 'footer'],
+    slots: {
+      header: { slotProps: Type.Object({}) },
+      content: { slotProps: Type.Object({}) },
+      sidebar: { slotProps: Type.Object({}) },
+      footer: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['layout', 'header', 'content', 'sidebar', 'footer'],
     events: [],
   },
@@ -99,16 +104,24 @@ export const Layout = implementRuntimeComponent({
   return (
     <BaseLayout {...baseProps}>
       {showHeader && (
-        <BaseLayout.Header {...headerProps}>{slotsElements.header}</BaseLayout.Header>
+        <BaseLayout.Header {...headerProps}>
+          {slotsElements.header ? slotsElements.header({}) : null}
+        </BaseLayout.Header>
       )}
       <BaseLayout>
         {showSideBar && (
-          <BaseLayout.Sider {...siderProps}>{slotsElements.sidebar}</BaseLayout.Sider>
+          <BaseLayout.Sider {...siderProps}>
+            {slotsElements.sidebar ? slotsElements.sidebar({}) : null}
+          </BaseLayout.Sider>
         )}
-        <BaseLayout.Content {...contentProps}>{slotsElements.content}</BaseLayout.Content>
+        <BaseLayout.Content {...contentProps}>
+          {slotsElements.content ? slotsElements.content({}) : null}
+        </BaseLayout.Content>
       </BaseLayout>
       {showFooter && (
-        <BaseLayout.Footer {...footerProps}>{slotsElements.footer}</BaseLayout.Footer>
+        <BaseLayout.Footer {...footerProps}>
+          {slotsElements.footer ? slotsElements.footer({}) : null}
+        </BaseLayout.Footer>
       )}
     </BaseLayout>
   );
