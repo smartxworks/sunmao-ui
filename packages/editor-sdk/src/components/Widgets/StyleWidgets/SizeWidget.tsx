@@ -18,7 +18,7 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
       <Text>W</Text>
       <ExpressionEditor
         compact={true}
-        defaultCode={String(value.width) || ''}
+        defaultCode={value.width === undefined ? '' : String(value.width) || ''}
         onBlur={v => {
           const newSize = {
             ...value,
@@ -30,7 +30,7 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
       <Text>H</Text>
       <ExpressionEditor
         compact={true}
-        defaultCode={String(value.height) || ''}
+        defaultCode={value.height === undefined ? '' : String(value.height) || ''}
         onBlur={v => {
           const newSize = {
             ...value,

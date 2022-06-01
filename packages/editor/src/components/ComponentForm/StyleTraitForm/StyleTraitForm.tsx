@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
-import { SizeWidget } from '@sunmao-ui/editor-sdk';
+import { FontWidget, SizeWidget } from '@sunmao-ui/editor-sdk';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
@@ -196,6 +196,18 @@ export const StyleTraitForm: React.FC<Props> = props => {
                   {...widgetProps}
                 />
               </CollapsibleFormControl>
+              <CollapsibleFormControl label="Font">
+                <FontWidget
+                  value={_cssProperties || {}}
+                  onChange={font => {
+                    changeCssProperties({
+                      fontSize: font.fontSize,
+                      fontWeight: font.fontWeight as any,
+                    });
+                  }}
+                  {...widgetProps}
+                />
+              </CollapsibleFormControl>
               <CollapsibleFormControl label="CSS">
                 <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
               </CollapsibleFormControl>
@@ -204,7 +216,14 @@ export const StyleTraitForm: React.FC<Props> = props => {
         </AccordionItem>
       );
     });
-  }, [styles, styleSlots, updateStyles, changeStyleSlot, changeStyleContent]);
+  }, [
+    styles,
+    styleSlots,
+    widgetProps,
+    updateStyles,
+    changeStyleSlot,
+    changeStyleContent,
+  ]);
 
   return (
     <VStack width="full" alignItems="self-start" spacing="2">
