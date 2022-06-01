@@ -15,3 +15,11 @@
 .CodeMirror-Tern-tooltip {
   z-index: 1800;
 }
+
+a:focus,
+button:focus,
+input:focus,
+textarea:focus {
+  box-shadow: none !important;
+}
+

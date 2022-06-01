@@ -248,7 +248,7 @@ export const Editor: React.FC<Props> = observer(
               <Box
                 height="full"
                 borderLeftWidth="1px"
-                borderColor="gray.200"
+                borderColor="gray.400"
                 position="relative"
                 zIndex="0"
               >
