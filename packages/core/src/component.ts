@@ -2,7 +2,7 @@ import { JSONSchema7 } from 'json-schema';
 import { parseVersion, Version } from './version';
 import { ComponentMetadata } from './metadata';
 import { MethodSchema } from './method';
-import { SlotSchema } from './slot';
+import { SlotSpec } from './slot';
 
 type ComponentSpec<
   KMethodName extends string,
@@ -14,7 +14,7 @@ type ComponentSpec<
   state: JSONSchema7;
   methods: Record<KMethodName, MethodSchema['parameters']>;
   styleSlots: ReadonlyArray<KStyleSlot>;
-  slots: Record<KSlot, SlotSchema>;
+  slots: Record<KSlot, SlotSpec>;
   events: ReadonlyArray<KEvent>;
 };
 

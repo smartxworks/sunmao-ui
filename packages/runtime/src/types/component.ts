@@ -3,7 +3,7 @@ import {
   RuntimeApplication,
   RuntimeComponentSchema,
   RuntimeComponent,
-  SlotSchema,
+  SlotSpec,
 } from '@sunmao-ui/core';
 import React from 'react';
 import { UIServices, ComponentParamsFromApp } from './application';
@@ -22,7 +22,7 @@ export type ImplWrapperProps<KSlot extends string = string> = {
 export type ComponentImplProps<
   TState,
   TMethods,
-  TSlots extends Record<string, SlotSchema>,
+  TSlots extends Record<string, SlotSpec>,
   KStyleSlot extends string,
   KEvent extends string
 > = ImplWrapperProps &
@@ -36,7 +36,7 @@ export type ComponentImpl<
   TProps = any,
   TState = any,
   TMethods = Record<string, any>,
-  TSlots extends Record<string, SlotSchema> = Record<string, any>,
+  TSlots extends Record<string, SlotSpec> = Record<string, any>,
   KStyleSlot extends string = string,
   KEvent extends string = string
 > = React.FC<TProps & ComponentImplProps<TState, TMethods, TSlots, KStyleSlot, KEvent>>;
@@ -62,14 +62,14 @@ type SubscribeMethods<U> = (map: {
   [K in keyof U]: (parameters: U[K]) => void;
 }) => void;
 type MergeState<T> = (partialState: Partial<T>) => void;
-export type SlotsElements<U extends Record<string, SlotSchema>> = {
+export type SlotsElements<U extends Record<string, SlotSpec>> = {
   [K in keyof U]?: (props: Static<U[K]['slotProps']>) => React.ReactNode;
 };
 
 export type RuntimeFunctions<
   TState,
   TMethods,
-  TSlots extends Record<string, SlotSchema>
+  TSlots extends Record<string, SlotSpec>
 > = {
   mergeState: MergeState<TState>;
   subscribeMethods: SubscribeMethods<TMethods>;

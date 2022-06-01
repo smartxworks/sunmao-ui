@@ -1,17 +1,17 @@
 import React from 'react';
-import { SlotSchema } from '@sunmao-ui/core';
+import { SlotSpec } from '@sunmao-ui/core';
 import { ImplWrapperProps, SlotsElements } from '../../../../types';
 import { ImplWrapper } from '../ImplWrapper';
 
 export function getSlotElements(
   props: ImplWrapperProps & { children?: React.ReactNode }
-): SlotsElements<Record<string, SlotSchema>> {
+): SlotsElements<Record<string, SlotSpec>> {
   const { component: c, childrenMap } = props;
 
   if (!childrenMap[c.id]) {
     return {};
   }
-  const slotElements: SlotsElements<Record<string, SlotSchema>> = {};
+  const slotElements: SlotsElements<Record<string, SlotSpec>> = {};
   for (const slot in childrenMap[c.id]) {
     const slotChildren = childrenMap[c.id][slot].map(child => {
       return <ImplWrapper key={child.id} {...props} component={child} />;
