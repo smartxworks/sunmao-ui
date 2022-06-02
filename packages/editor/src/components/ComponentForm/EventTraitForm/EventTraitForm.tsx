@@ -1,14 +1,14 @@
 import React, { useMemo, useCallback } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { HStack, IconButton, VStack } from '@chakra-ui/react';
+import { Button, VStack } from '@chakra-ui/react';
 import { Static } from '@sinclair/typebox';
 import produce from 'immer';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { EventHandlerSpec } from '@sunmao-ui/runtime';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 import { EventHandlerForm } from './EventHandlerForm';
-import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type EventHandler = Static<typeof EventHandlerSpec>;
 
@@ -161,7 +161,7 @@ export const EventTraitForm: React.FC<Props> = props => {
     }
   }, [component, eventBus, handlers, registry, eventTypes]);
 
-  if (!eventTypes.length) return null;
+  if (!eventTypes.length) return <span>No events.</span>;
 
   const handlerForms = () =>
     (handlers || []).map((_, i) => (
@@ -169,21 +169,19 @@ export const EventTraitForm: React.FC<Props> = props => {
     ));
 
   return (
-    <VStack width="full">
-      <HStack justify="space-between" width="full">
-        <strong>Events</strong>
-        <IconButton
-          aria-label="add event"
-          colorScheme="blue"
-          icon={<AddIcon />}
-          onClick={onClickAddHandler}
-          size="sm"
-          variant="ghost"
-        />
-      </HStack>
-      <VStack width="full" spacing={0}>
+    <VStack width="full" spacing="2" alignItems="self-start">
+      <VStack width="full" spacing="0">
         {handlerForms()}
       </VStack>
+      <Button
+        leftIcon={<AddIcon />}
+        colorScheme="blue"
+        size="sm"
+        variant="ghost"
+        onClick={onClickAddHandler}
+      >
+        Add Event
+      </Button>
     </VStack>
   );
 };

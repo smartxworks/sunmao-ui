@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import produce from 'immer';
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
+import { AddIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import {
   FormControl,
   FormLabel,
@@ -9,13 +9,20 @@ import {
   IconButton,
   Text,
   Select,
+  Button,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionIcon,
+  AccordionPanel,
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import { SizeWidget } from '@sunmao-ui/editor-sdk';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 type Props = {
   component: ComponentSchema;
@@ -25,6 +32,7 @@ type Props = {
 type Styles = Array<{
   styleSlot: string;
   style: string;
+  cssProperties: React.CSSProperties;
 }>;
 
 const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Style}`;
@@ -55,6 +63,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
             {
               styleSlot: styleSlots[0],
               style: '',
+              cssProperties: {},
             },
           ],
         },
@@ -82,6 +91,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
     const newStyles: Styles = (styles || []).concat({
       styleSlot: styleSlots[0],
       style: '',
+      cssProperties: {},
     });
     updateStyles(newStyles);
   }, [updateStyles, styleSlots, styles]);
@@ -116,59 +126,129 @@ export const StyleTraitForm: React.FC<Props> = props => {
     [updateStyles, styles]
   );
 
+  const widgetProps = useMemo(() => {
+    return {
+      component,
+      spec: {},
+      services,
+      path: [],
+      level: 1,
+    };
+  }, [component, services]);
+
   const styleForms = useMemo(() => {
     if (!styles) {
       return null;
     }
-    return styles.map(({ style, styleSlot }, i) => {
+    return styles.map(({ style, styleSlot, cssProperties }, i) => {
+      const _cssProperties = cssProperties || {};
       const removeStyle = () => {
         const newStyles = styles.filter((_, j) => j !== i);
         updateStyles(newStyles);
       };
+
+      const changeCssProperties = (newCss: React.CSSProperties) => {
+        const newCssProperties = Object.assign({}, style, newCss);
+        const newStyles = produce(styles, draft => {
+          draft[i].cssProperties = newCssProperties;
+        });
+        updateStyles(newStyles);
+      };
       return (
-        <VStack key={`${styleSlot}-${i}`} css={formWrapperCSS} width="full" spacing="2">
-          <FormControl id={styleSlot}>
-            <FormLabel marginInlineEnd="0">
-              <HStack width="full" justify="space-between">
-                <Text>Style Slot</Text>
+        <AccordionItem width="full" key={`${styleSlot}${i}`}>
+          <AccordionButton justifyContent="space-between" bg="white">
+            {styleSlot}
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel bg="white" padding="0">
+            <VStack
+              key={`${styleSlot}-${i}`}
+              className={formWrapperCSS}
+              width="full"
+              spacing="2"
+            >
+              <HStack width="full" justify="end">
                 <IconButton
                   aria-label="remove style"
                   size="sm"
                   variant="ghost"
                   colorScheme="red"
-                  icon={<CloseIcon />}
+                  icon={<CloseIcon fontSize="12px" />}
                   onClick={removeStyle}
                 />
               </HStack>
-            </FormLabel>
-            <Select value={styleSlot} onChange={e => changeStyleSlot(i, e.target.value)}>
-              {styleSlots.map(s => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-          <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
-        </VStack>
+              <CollapsibleFormControl label="Style Slot">
+                <Select
+                  value={styleSlot}
+                  onChange={e => changeStyleSlot(i, e.target.value)}
+                >
+                  {styleSlots.map(s => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </Select>
+              </CollapsibleFormControl>
+              <CollapsibleFormControl label="Size">
+                <SizeWidget
+                  value={_cssProperties || {}}
+                  onChange={changeCssProperties}
+                  {...widgetProps}
+                />
+              </CollapsibleFormControl>
+              <CollapsibleFormControl label="CSS">
+                <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
+              </CollapsibleFormControl>
+            </VStack>
+          </AccordionPanel>
+        </AccordionItem>
       );
     });
   }, [styles, styleSlots, updateStyles, changeStyleSlot, changeStyleContent]);
 
   return (
-    <VStack width="full">
-      <HStack width="full" justify="space-between">
-        <strong>Styles</strong>
-        <IconButton
-          aria-label="Styles"
-          size="sm"
-          variant="ghost"
-          colorScheme="blue"
-          icon={<AddIcon />}
-          onClick={onClickCreate}
-        />
-      </HStack>
-      {styleForms}
+    <VStack width="full" alignItems="self-start" spacing="2">
+      <Accordion width="full" defaultIndex={[0]} allowMultiple>
+        {styleForms}
+      </Accordion>
+      <Button
+        leftIcon={<AddIcon />}
+        colorScheme="blue"
+        size="sm"
+        variant="ghost"
+        onClick={onClickCreate}
+      >
+        Add Style
+      </Button>
     </VStack>
+  );
+};
+
+const CollapsibleFormControl: React.FC<{ label: string }> = props => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  return (
+    <FormControl>
+      <FormLabel marginInlineEnd="0">
+        <HStack width="full" justify="space-between">
+          <Text fontSize="14px" fontWeight="normal">
+            {props.label}
+          </Text>
+          <IconButton
+            aria-label="toggle collapse"
+            size="sm"
+            variant="ghost"
+            icon={
+              isCollapsed ? (
+                <ChevronDownIcon fontSize="20px" />
+              ) : (
+                <ChevronUpIcon fontSize="20px" />
+              )
+            }
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          />
+        </HStack>
+      </FormLabel>
+      {isCollapsed ? props.children : null}
+    </FormControl>
   );
 };

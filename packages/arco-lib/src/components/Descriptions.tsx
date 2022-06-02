@@ -60,7 +60,7 @@ export const Descriptions = implementRuntimeComponent({
     properties: DescriptionPropsSpec,
     state: DescriptionStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

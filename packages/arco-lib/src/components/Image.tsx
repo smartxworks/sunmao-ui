@@ -20,7 +20,7 @@ const exampleProperties: Static<typeof ImagePropsSpec> = {
   preview: false,
   width: 200,
   height: 200,
-  error:''
+  error: '',
 };
 
 const options = {
@@ -38,7 +38,7 @@ const options = {
     properties: ImagePropsSpec,
     state: ImageStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onClick'],
   },
@@ -101,7 +101,7 @@ export const ImageGroup = implementRuntimeComponent({
       current: Type.Number(),
     }),
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange'],
   },

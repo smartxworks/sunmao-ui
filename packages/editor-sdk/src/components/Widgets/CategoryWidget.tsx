@@ -11,7 +11,11 @@ import {
   Box,
   Accordion,
 } from '@chakra-ui/react';
-import { PRESET_PROPERTY_CATEGORY, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
+import {
+  PRESET_PROPERTY_CATEGORY,
+  CORE_VERSION,
+  CoreWidgetName,
+} from '@sunmao-ui/shared';
 import { shouldRender } from '../../utils/condition';
 
 const PRESET_PROPERTY_CATEGORY_WEIGHT: Record<
@@ -68,8 +72,8 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
         const specs = category.specs;
 
         return (
-          <AccordionItem width="full" key={category.name} background="#F7FAFC">
-            <AccordionButton>
+          <AccordionItem width="full" key={category.name}>
+            <AccordionButton bg='white'>
               <Box flex="1" textAlign="left">
                 {category.name}
               </Box>

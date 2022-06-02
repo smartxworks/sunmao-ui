@@ -52,7 +52,9 @@ export const Select = implementRuntimeComponent({
     properties: SelectPropsSpec,
     state: SelectStateSpec,
     methods: {},
-    slots: ['dropdownRenderSlot'],
+    slots: {
+      dropdownRenderSlot: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content', 'dropdownRenderWrap'],
     events: ['onChange', 'onClear', 'onBlur', 'onFocus'],
   },
@@ -112,7 +114,9 @@ export const Select = implementRuntimeComponent({
         return (
           <div className={css(customStyle?.dropdownRenderWrap)}>
             {menu}
-            {slotsElements.dropdownRenderSlot}
+            {slotsElements.dropdownRenderSlot
+              ? slotsElements.dropdownRenderSlot({})
+              : null}
           </div>
         );
       }}
