@@ -67,6 +67,7 @@ export type { RegistryInterface, SunmaoLib } from './services/Registry';
 export { ExpressionError } from './services/StateManager';
 export type { StateManagerInterface } from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
+export { ImplWrapper } from './components/_internal/ImplWrapper';
 export { default as Text, TextPropertySpec } from './components/_internal/Text';
 
 // TODO: check this export

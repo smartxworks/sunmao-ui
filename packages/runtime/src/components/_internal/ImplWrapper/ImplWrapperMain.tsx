@@ -14,14 +14,14 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
   function ImplWrapperMain(props, ref) {
     const { component: c, children, slotProps, evalListItem } = props;
     const { registry, stateManager } = props.services;
-    console.log(c.id, slotProps);
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
     useGlobalHandlerMap(props);
 
+    // This code is to init dynamic generated components
+    // because they have not be initialized before
     if (!stateManager.store[c.id]) {
-      console.log('init了', c.id);
       initStateAndMethod(registry, stateManager, [c]);
     }
 

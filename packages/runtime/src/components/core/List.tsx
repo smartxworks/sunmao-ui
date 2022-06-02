@@ -10,12 +10,10 @@ const PropsSpec = Type.Object({
     category: 'Basic',
     widget: `core/v1/expression`,
   }),
-  itemId: Type.String(),
 });
 
 const exampleProperties = {
   listData: [{ id: '1' }, { id: '2' }, { id: '3' }],
-  itemId: 'listItemName-{{$listItem.id}}',
 };
 
 export default implementRuntimeComponent({
@@ -47,37 +45,57 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ listData, app, services, customStyle, elementRef }) => {
+})(({ listData, component, app, services, customStyle, elementRef }) => {
   if (!listData) {
     return null;
   }
-
-  const childSchema = app.spec.components.find(c => c.id === 'listSlot')!;
-  const listItems = listData.map((listItem, i) => {
-    // const evalScope = {
-    //   [LIST_ITEM_EXP]: listItem,
-    //   [LIST_ITEM_INDEX_EXP]: i,
-    // };
-    const _childSchema = {
-      ...childSchema,
-      id: `list_${childSchema.id}${i}`,
-    };
-    const listItemEle = (
-      <ImplWrapper
-        component={_childSchema}
-        app={app}
-        services={services}
-        childrenMap={{}}
-        isInModule
-        evalListItem
-        slotProps={{
-          [LIST_ITEM_EXP]: listItem,
-          [LIST_ITEM_INDEX_EXP]: i,
-        }}
-      />
+  const childrenSchema = app.spec.components.filter(c => {
+    return c.traits.find(
+      t =>
+        t.type === 'core/v1/slot' && (t.properties.container as any).id === component.id
     );
+  });
 
-    return listItemEle;
+  if (childrenSchema.length === 0) {
+    return (
+      <div
+        className={css`
+          ${customStyle?.content}
+        `}
+        ref={elementRef}
+      >
+        List has no children. Drag components into here to add listItems.
+      </div>
+    );
+  }
+
+  const listItems = listData.map((listItem, i) => {
+    const _childrenSchema = childrenSchema.map(child => {
+      return {
+        ...child,
+        id: `${component.id}_${child.id}_${i}`,
+      };
+    });
+
+    const childrenEles = _childrenSchema.map(child => {
+      return (
+        <ImplWrapper
+          key={child.id}
+          component={child}
+          app={app}
+          services={services}
+          childrenMap={{}}
+          isInModule
+          evalListItem
+          slotProps={{
+            [LIST_ITEM_EXP]: listItem,
+            [LIST_ITEM_INDEX_EXP]: i,
+          }}
+        />
+      );
+    });
+
+    return <li key={i}>{childrenEles}</li>;
   });
 
   return (
