@@ -82,7 +82,9 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     state: Type.Object({}),
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: [],
     events: [],
   },
@@ -113,7 +115,7 @@ export default implementRuntimeComponent({
         shouldWrapChildren={shouldWrapChildren}
         ref={elementRef}
       >
-        {slotsElements.content}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </Tooltip>
     );
   }

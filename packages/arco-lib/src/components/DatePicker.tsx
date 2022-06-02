@@ -77,7 +77,14 @@ export const DatePicker = implementRuntimeComponent({
     properties: DatePickerPropsSpec,
     state: DatePickerStateSpec,
     methods: {},
-    slots: ['footer', 'triggerElement'],
+    slots: {
+      footer: {
+        slotProps: Type.Object({}),
+      },
+      triggerElement: {
+        slotProps: Type.Object({}),
+      },
+    },
     styleSlots: ['content'],
     events: ['onChange', 'onClear', 'onVisibleChange'],
   },

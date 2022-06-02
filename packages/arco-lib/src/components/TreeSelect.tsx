@@ -71,7 +71,7 @@ export const TreeSelect = implementRuntimeComponent({
     properties: TreeSelectPropsSpec,
     state: TreeSelectStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange'],
   },
@@ -81,7 +81,7 @@ export const TreeSelect = implementRuntimeComponent({
   const { getElement, customStyle, mergeState, callbackMap } = props;
   const ref = useRef<RefTreeSelectType | null>(null);
 
-  const [selectedOptions, setSelectedOptions] = useStateValue<string[]>(
+  const [selectedOptions, setSelectedOptions] = useStateValue(
     defaultValue!,
     mergeState,
     updateWhenDefaultValueChanges,

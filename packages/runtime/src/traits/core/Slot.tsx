@@ -1,14 +1,15 @@
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeTrait } from '../../utils/buildKit';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import { implementRuntimeTrait } from '../../utils/buildKit';
 
-const ContainerSpec = Type.Object({
+const ContainerPropertySpec = Type.Object({
   id: Type.String(),
   slot: Type.String(),
 });
 
-export const SlotTraitPropertiesSpec = Type.Object({
-  container: ContainerSpec,
+export const PropsSpec = Type.Object({
+  container: ContainerPropertySpec,
+  ifCondition: Type.Optional(Type.Boolean()),
 });
 
 export default implementRuntimeTrait({
@@ -16,12 +17,18 @@ export default implementRuntimeTrait({
   metadata: {
     name: CoreTraitName.Slot,
     description: 'nested components by slots',
+    annotations: {
+      beforeRender: true,
+    },
   },
   spec: {
-    properties: SlotTraitPropertiesSpec,
-    state: {},
+    properties: PropsSpec,
+    state: Type.Object({}),
     methods: [],
   },
-})(() => () => ({
-  props: null,
-}));
+})(() => {
+  return ({ ifCondition }) => ({
+    props: null,
+    unmount: ifCondition === false,
+  });
+});

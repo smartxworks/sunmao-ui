@@ -42,7 +42,9 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     state: StateSpec,
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -67,7 +69,7 @@ export default implementRuntimeComponent({
         `}
         ref={elementRef}
       >
-        {slotsElements.content}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </BaseRadioGroup>
     );
   }

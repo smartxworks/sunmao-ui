@@ -1,26 +1,25 @@
 import React from 'react';
-import { RuntimeComponentSchema } from '@sunmao-ui/core';
-import { ImplWrapperProps } from '../../../../types';
+import { SlotSpec } from '@sunmao-ui/core';
+import { ImplWrapperProps, SlotsElements } from '../../../../types';
 import { ImplWrapper } from '../ImplWrapper';
 
-export function useSlotElements(props: ImplWrapperProps) {
+export function getSlotElements(
+  props: ImplWrapperProps & { children?: React.ReactNode }
+): SlotsElements<Record<string, SlotSpec>> {
   const { component: c, childrenMap } = props;
-  const childrenCache = new Map<RuntimeComponentSchema, React.ReactElement>();
 
   if (!childrenMap[c.id]) {
     return {};
   }
-  const slotElements: Record<string, React.ReactElement[] | React.ReactElement> = {};
+  const slotElements: SlotsElements<Record<string, SlotSpec>> = {};
   for (const slot in childrenMap[c.id]) {
     const slotChildren = childrenMap[c.id][slot].map(child => {
-      if (!childrenCache.get(child)) {
-        const ele = <ImplWrapper key={child.id} {...props} component={child} />;
-        childrenCache.set(child, ele);
-      }
-      return childrenCache.get(child)!;
+      return <ImplWrapper key={child.id} {...props} component={child} />;
     });
 
-    slotElements[slot] = slotChildren.length === 1 ? slotChildren[0] : slotChildren;
+    slotElements[slot] = function getSlot(slotProps) {
+      return slotChildren.map(child => React.cloneElement(child, { slotProps }));
+    };
   }
   return slotElements;
 }

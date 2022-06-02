@@ -7,19 +7,24 @@ import { ImplWrapperProps, TraitResult } from '../../../types';
 import { watch } from '../../..';
 
 export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
-  (props, ref) => {
+  function UnmountImplWrapper(props, ref) {
     const { component: c, services } = props;
     const { stateManager, registry } = services;
     const { executeTrait } = useRuntimeFunctions(props);
 
     const unmountTraits = useMemo(
-      () => c.traits.filter(t => registry.getTraitByType(t.type).metadata.annotations?.beforeRender),
+      () =>
+        c.traits.filter(
+          t => registry.getTraitByType(t.type).metadata.annotations?.beforeRender
+        ),
       [c.traits, registry]
     );
 
     const [isHidden, setIsHidden] = useState(() => {
       const results: TraitResult<string, string>[] = unmountTraits.map(t => {
-        const properties = stateManager.deepEval(t.properties);
+        const properties = stateManager.deepEval(t.properties, {
+          scopeObject: { $slot: props.slotProps },
+        });
         return executeTrait(t, properties);
       });
       return results.some(result => result.unmount);
@@ -42,8 +47,12 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
       const stops: ReturnType<typeof watch>[] = [];
       if (unmountTraits.length > 0) {
         unmountTraits.forEach(t => {
-          const { result, stop } = stateManager.deepEvalAndWatch(t.properties, newValue =>
-            traitChangeCallback(t, newValue.result)
+          const { result, stop } = stateManager.deepEvalAndWatch(
+            t.properties,
+            newValue => traitChangeCallback(t, newValue.result),
+            {
+              scopeObject: { $slot: props.slotProps },
+            }
           );
           traitChangeCallback(t, result);
           stops.push(stop);
@@ -52,7 +61,14 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
       return () => {
         stops.forEach(stop => stop());
       };
-    }, [c, executeTrait, unmountTraits, stateManager, traitChangeCallback]);
+    }, [
+      c,
+      executeTrait,
+      unmountTraits,
+      stateManager,
+      traitChangeCallback,
+      props.slotProps,
+    ]);
 
     // If a component is unmount, its state would be removed.
     // So if it mount again, we should init its state again.

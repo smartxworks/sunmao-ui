@@ -20,7 +20,7 @@ export default implementRuntimeComponent({
     properties: Type.Object({}),
     state: Type.Object({}),
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: [],
     events: [],
   },

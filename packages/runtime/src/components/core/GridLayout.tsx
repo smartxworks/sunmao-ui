@@ -54,7 +54,9 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     state: {},
     methods: {},
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -78,7 +80,7 @@ export default implementRuntimeComponent({
           ${customStyle?.content}
         `}
       >
-        {slotsElements.content}
+        {slotsElements.content ? slotsElements.content({}) : null}
       </BaseGridLayout>
     </Suspense>
   );

@@ -156,7 +156,7 @@ export const Table = implementRuntimeComponent({
     properties: TablePropsSpec,
     state: TableStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onRowClick', 'onSearch', 'onPageChange', 'onFilter', 'onSort', 'onChange'],
   },

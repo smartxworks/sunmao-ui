@@ -76,7 +76,9 @@ export default implementRuntimeComponent({
       confirmDialog: undefined,
       cancelDialog: undefined,
     },
-    slots: ['content'],
+    slots: {
+      content: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: ['cancelDialog', 'confirmDialog'],
   },
@@ -160,7 +162,9 @@ export default implementRuntimeComponent({
             ref={contentRef}
           >
             <AlertDialogHeader>{title}</AlertDialogHeader>
-            <AlertDialogBody>{slotsElements.content}</AlertDialogBody>
+            <AlertDialogBody>
+              {slotsElements.content ? slotsElements.content({}) : null}
+            </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button

@@ -44,7 +44,9 @@ export const Dropdown = implementRuntimeComponent({
     properties: DropdownPropsSpec,
     state: DropdownStateSpec,
     methods: {},
-    slots: ['trigger'],
+    slots: {
+      trigger: { slotProps: Type.Object({}) },
+    },
     styleSlots: [],
     events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
   },
@@ -87,7 +89,9 @@ export const Dropdown = implementRuntimeComponent({
       onClick={callbackMap?.onButtonClick}
       triggerProps={{ autoAlignPopupMinWidth: autoAlignPopupWidth }}
     >
-      <div ref={elementRef}>{slotsElements.trigger || <Button>Click</Button>}</div>
+      <div ref={elementRef}>
+        {slotsElements.trigger ? slotsElements.trigger({}) : <Button>Click</Button>}
+      </div>
     </Dropdown>
   );
 });

@@ -35,9 +35,7 @@ const observeSelected = (Component: React.FC<ComponentTreeProps>) => {
       }
     }, [selectedComponentId, component.id, onSelected]);
 
-    return (
-      <Component {...props} isSelected={selectedComponentId === component.id} />
-    );
+    return <Component {...props} isSelected={selectedComponentId === component.id} />;
   };
 
   return observer(ObserveActive);
@@ -57,14 +55,17 @@ const ComponentTree = (props: ComponentTreeProps) => {
     depth,
   } = props;
   const { registry, eventBus } = services;
-  const slots = registry.getComponentByType(component.type).spec.slots;
+  const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
 
-  const onChildSelected = useCallback((selectedId) => {
-    setIsExpanded(true);
-    onSelected?.(selectedId);
-  }, [onSelected]);
+  const onChildSelected = useCallback(
+    selectedId => {
+      setIsExpanded(true);
+      onSelected?.(selectedId);
+    },
+    [onSelected]
+  );
 
   const slotsEle = useMemo(() => {
     if (slots.length === 0) {
