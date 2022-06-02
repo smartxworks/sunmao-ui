@@ -1,5 +1,5 @@
 import React from 'react';
-import { RuntimeApplication } from '@sunmao-ui/core';
+import { RuntimeApplication, RuntimeComponentSchema } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSpec, ColumnsPropertySpec } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
@@ -9,6 +9,7 @@ import {
   ModuleRenderer,
   UIServices,
   ExpressionError,
+  ImplWrapper,
 } from '@sunmao-ui/runtime';
 
 export const TableTd: React.FC<{
@@ -18,9 +19,10 @@ export const TableTd: React.FC<{
   rawColumn: Static<typeof ColumnsPropertySpec>[0];
   onClickItem: () => void;
   services: UIServices;
+  component: RuntimeComponentSchema;
   app: RuntimeApplication;
 }> = props => {
-  const { item, index, column, rawColumn, onClickItem, services, app } = props;
+  const { item, index, component, column, rawColumn, onClickItem, services, app } = props;
   const evalOptions = {
     evalListItem: true,
     scopeObject: {
@@ -71,10 +73,6 @@ export const TableTd: React.FC<{
       content = <Button onClick={onClick}>{buttonConfig.text}</Button>;
       break;
     case 'module':
-      const evalScope = {
-        [LIST_ITEM_EXP]: item,
-        [LIST_ITEM_INDEX_EXP]: index,
-      };
       content = (
         <ModuleRenderer
           id={column.module.id}
@@ -82,8 +80,48 @@ export const TableTd: React.FC<{
           properties={column.module.properties}
           handlers={column.module.handlers}
           services={services}
-          evalScope={evalScope}
+          evalScope={{
+            [LIST_ITEM_EXP]: item,
+            [LIST_ITEM_INDEX_EXP]: index,
+          }}
           app={app}
+        />
+      );
+      break;
+    case 'component':
+      const childrenSchema = app.spec.components.filter(c => {
+        return c.traits.find(
+          t =>
+            t.type === 'core/v1/slot' &&
+            (t.properties.container as any).id === component.id
+        );
+      });
+
+      const childSchema = childrenSchema[column.componentSlotIndex];
+      if (!childSchema) {
+        return (
+          <div>Cannot find child with index {column.componentSlotIndex} in slot.</div>
+        );
+      }
+
+      const _childrenSchema = {
+        ...childSchema,
+        id: `${component.id}_${childSchema.id}_${index}`,
+      };
+
+      content = (
+        <ImplWrapper
+          key={_childrenSchema.id}
+          component={_childrenSchema}
+          app={app}
+          services={services}
+          childrenMap={{}}
+          isInModule
+          evalListItem
+          slotProps={{
+            [LIST_ITEM_EXP]: item,
+            [LIST_ITEM_INDEX_EXP]: index,
+          }}
         />
       );
       break;

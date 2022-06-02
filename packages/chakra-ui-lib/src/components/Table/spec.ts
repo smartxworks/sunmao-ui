@@ -1,5 +1,9 @@
 import { Type } from '@sinclair/typebox';
-import { implementRuntimeComponent } from '@sunmao-ui/runtime';
+import {
+  implementRuntimeComponent,
+  LIST_ITEM_EXP,
+  LIST_ITEM_INDEX_EXP,
+} from '@sunmao-ui/runtime';
 import {
   ColumnsPropertySpec,
   DataPropertySpec,
@@ -62,7 +66,14 @@ export const implementTable = implementRuntimeComponent({
     properties: PropsSpec,
     state: TableStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          [LIST_ITEM_EXP]: Type.Any(),
+          [LIST_ITEM_INDEX_EXP]: Type.Number(),
+        }),
+      },
+    },
     styleSlots: [],
     events: [],
   },

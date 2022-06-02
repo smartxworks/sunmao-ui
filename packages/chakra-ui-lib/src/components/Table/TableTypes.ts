@@ -30,6 +30,7 @@ export const TableSizePropertySpec = Type.KeyOf(
 export const TdTypeSpec = Type.KeyOf(
   Type.Object({
     text: Type.String(),
+    component: Type.String(),
     image: Type.String(),
     link: Type.String(),
     button: Type.String(),
@@ -52,6 +53,15 @@ export const ColumnSpec = Type.Object(
       title: 'Display value',
     }),
     type: TdTypeSpec,
+    componentSlotIndex: Type.Number({
+      title: 'Component Slot Index',
+      conditions: [
+        {
+          key: 'type',
+          value: 'component',
+        },
+      ],
+    }),
     buttonConfig: Type.Object(
       {
         text: Type.String({
