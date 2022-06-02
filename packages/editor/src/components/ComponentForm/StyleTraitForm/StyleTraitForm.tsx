@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import produce from 'immer';
 import { AddIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import {
+  Box,
   FormControl,
   FormLabel,
   VStack,
@@ -18,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
-import { SizeWidget } from '@sunmao-ui/editor-sdk';
+import { SizeWidget, ColorWidget } from '@sunmao-ui/editor-sdk';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
@@ -191,10 +192,32 @@ export const StyleTraitForm: React.FC<Props> = props => {
               </CollapsibleFormControl>
               <CollapsibleFormControl label="Size">
                 <SizeWidget
-                  value={_cssProperties || {}}
-                  onChange={changeCssProperties}
                   {...widgetProps}
+                  value={_cssProperties}
+                  onChange={changeCssProperties}
                 />
+              </CollapsibleFormControl>
+              <CollapsibleFormControl label="Color">
+                <Box mb="8px">
+                  <Text mb="8px">Text Color</Text>
+                  <ColorWidget
+                    {...widgetProps}
+                    value={_cssProperties.color || ''}
+                    onChange={(color: string) =>
+                      changeCssProperties({ ..._cssProperties, color })
+                    }
+                  />
+                </Box>
+                <Box mb="8px">
+                  <Text mb="8px">Background Color</Text>
+                  <ColorWidget
+                    {...widgetProps}
+                    value={_cssProperties.backgroundColor || ''}
+                    onChange={(color: string) =>
+                      changeCssProperties({ ..._cssProperties, backgroundColor: color })
+                    }
+                  />
+                </Box>
               </CollapsibleFormControl>
               <CollapsibleFormControl label="CSS">
                 <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
