@@ -15,6 +15,7 @@ import recordWidgetSpec from './RecordField';
 import eventWidgetSpec from './EventWidget';
 import popoverWidgetSpec from './PopoverWidget';
 import sizeWidgetSpec from './StyleWidgets/SizeWidget';
+import colorWidgetSpec from './StyleWidgets/ColorWidget';
 
 export * from './SpecWidget';
 export * from './ArrayField';
@@ -32,6 +33,7 @@ export * from './RecordField';
 export * from './EventWidget';
 export * from './PopoverWidget';
 export * from './StyleWidgets/SizeWidget';
+export * from './StyleWidgets/ColorWidget';
 
 export const widgets: ImplementedWidget<any>[] = [
   specWidgetSpec,
@@ -50,4 +52,5 @@ export const widgets: ImplementedWidget<any>[] = [
   eventWidgetSpec,
   popoverWidgetSpec,
   sizeWidgetSpec,
+  colorWidgetSpec,
 ];
