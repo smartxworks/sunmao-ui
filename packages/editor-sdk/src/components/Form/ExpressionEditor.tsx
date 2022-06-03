@@ -156,6 +156,7 @@ type ExpressionEditorStyleProps = {
   height?: string;
   maxHeight?: string;
   paddingY?: string;
+  isHiddenExpand?: boolean;
 };
 type BaseExpressionEditorProps = CommonExpressionEditorProps &
   ExpressionEditorStyleProps & {
@@ -377,20 +378,22 @@ export const ExpressionEditor = React.forwardRef<
           onFocus={onExpressionFocus}
           onBlur={onExpressionBlur}
         />
-        <IconButton
-          aria-label="expand editor"
-          position="absolute"
-          right="0"
-          bottom="0"
-          size="xs"
-          variant="ghost"
-          colorScheme="blue"
-          zIndex="9"
-          className="expand-icon"
-          onClick={onExpand}
-        >
-          <ExternalLinkIcon />
-        </IconButton>
+        {compactOptions.isHiddenExpand ? null : (
+          <IconButton
+            aria-label="expand editor"
+            position="absolute"
+            right="0"
+            bottom="0"
+            size="xs"
+            variant="ghost"
+            colorScheme="blue"
+            zIndex="9"
+            className="expand-icon"
+            onClick={onExpand}
+          >
+            <ExternalLinkIcon />
+          </IconButton>
+        )}
       </Box>
       {isFocus ? (
         <Box
