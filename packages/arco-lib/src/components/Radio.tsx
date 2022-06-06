@@ -5,7 +5,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { RadioPropsSpec as BaseRadioPropsSpec } from '../generated/types/Radio';
 import { useEffect } from 'react';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const RadioPropsSpec = Type.Object({
   ...BaseRadioPropsSpec,
