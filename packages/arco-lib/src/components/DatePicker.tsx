@@ -11,6 +11,7 @@ import {
   DisabledTimeFunc,
   DisabledTimeProps,
 } from '@arco-design/web-react/es/DatePicker/interface';
+import React from 'react';
 
 const DatePickerPropsSpec = Type.Object(BaseDatePickerPropsSpec);
 const DatePickerStateSpec = Type.Object({
@@ -30,6 +31,9 @@ const RangePicker = BaseDatePicker.RangePicker;
 
 const exampleProperties: Static<typeof DatePickerPropsSpec> = {
   disabled: false,
+  useUtcOffset: false,
+  utcOffset: 0,
+  timezone: '',
   placeholder: 'Please Select',
   position: 'bl',
   dayStartOfWeek: 0,
@@ -94,71 +98,72 @@ export const DatePicker = implementRuntimeComponent({
     disabledRangeTime,
     disabledDate,
     range,
-    placeholder,
+    utcOffset,
+    useUtcOffset,
     rangePlaceholder,
     rangeDisabled,
     type,
     panelOnly,
     clearRangeOnReselect,
+    showTime,
     ...cProps
   } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements, callbackMap, mergeState } = props;
   const Picker = DatePickerType[type];
+  const triggerElement = slotsElements.triggerElement && slotsElements.triggerElement({});
+
+  const pickerProps = {
+    showTime: type === 'date' ? showTime : undefined,
+    extra: slotsElements.footer && slotsElements.footer({}),
+    utcOffset: useUtcOffset ? utcOffset : undefined,
+    triggerElement: triggerElement
+      ? (triggerElement as React.ReactNode[])[0]
+      : panelOnly
+      ? null
+      : undefined,
+    disabledDate: (current: Dayjs) => getDisabledDate(current, disabledDate),
+    onChange: (dateString: string | string[], date: Dayjs | Dayjs[]) => {
+      mergeState({
+        date,
+        dateString,
+      });
+      callbackMap?.onChange?.();
+    },
+    onVisibleChange: (visible: boolean | undefined) => {
+      mergeState({ visible });
+      callbackMap?.onVisibleChange?.();
+    },
+    ...cProps,
+  };
 
   return (
     <span ref={elementRef} className={css(customStyle?.content)}>
       {range ? (
         <RangePicker
+          {...pickerProps}
           disabledTime={(date, type) =>
             getDisabledRangeTime(date, type, disabledRangeTime!)
           }
-          disabledDate={current => getDisabledDate(current, disabledDate)}
-          extra={slotsElements.footer}
-          triggerElement={panelOnly ? null : slotsElements.triggerElement}
           mode={type}
           placeholder={rangePlaceholder?.length === 0 ? undefined : rangePlaceholder}
           clearRangeOnReselect={clearRangeOnReselect}
-          {...cProps}
           disabled={rangeDisabled}
-          onChange={(dateString, date) => {
-            mergeState({
-              date,
-              dateString,
-            });
-            callbackMap?.onChange?.();
-          }}
-          onVisibleChange={visible => {
-            mergeState({ visible });
-            callbackMap?.onVisibleChange?.();
-          }}
         />
       ) : (
         <Picker
+          {...pickerProps}
           disabledTime={date => getDisabledTime(date, disabledTime)}
           disabledDate={current => getDisabledDate(current, disabledDate)}
-          extra={slotsElements.footer}
-          triggerElement={panelOnly ? null : slotsElements.triggerElement}
-          placeholder={placeholder}
-          {...cProps}
-          onChange={(dateString, date) => {
-            mergeState({
-              date,
-              dateString,
-            });
-            callbackMap?.onChange?.();
-          }}
-          onVisibleChange={visible => {
-            mergeState({ visible });
-            callbackMap?.onVisibleChange?.();
-          }}
         />
       )}
     </span>
   );
 });
 
+export type Dayjs = Parameters<DisabledTimeFunc>[0];
+
 function getDisabledDate(
-  date: Parameters<DisabledTimeFunc>[0],
+  date: Dayjs,
   disabledDate: Static<typeof BaseDatePickerPropsSpec.disabledDate>
 ) {
   if (disabledDate.disabledType === 'after') {
@@ -167,6 +172,7 @@ function getDisabledDate(
   if (disabledDate.disabledType === 'before') {
     return date!.isBefore(disabledDate.date);
   }
+  // TODO support year, month, and week
   if (disabledDate.disabledType === 'range') {
     if (!disabledDate.dateRange || !Array.isArray(disabledDate.dateRange)) {
       return false;
@@ -181,8 +187,8 @@ function getDisabledDate(
   return false;
 }
 
-function getDisabledTime(
-  date: Parameters<DisabledTimeFunc>[0],
+export function getDisabledTime(
+  date: Dayjs,
   range: Static<typeof BaseDatePickerPropsSpec.disabledTime>
 ): DisabledTimeProps {
   const result: DisabledTimeProps = {};
@@ -197,8 +203,8 @@ function getDisabledTime(
   return result;
 }
 
-function getDisabledRangeTime(
-  date: Parameters<DisabledTimeFunc>[0],
+export function getDisabledRangeTime(
+  date: Dayjs,
   type: 'start' | 'end',
   range: Static<typeof RangePickerPropsSpec.disabledRangeTime>
 ): DisabledTimeProps {
