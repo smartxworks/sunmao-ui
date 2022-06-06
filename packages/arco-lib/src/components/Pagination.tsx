@@ -4,7 +4,7 @@ import { css, cx } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PaginationPropsSpec as BasePaginationPropsSpec } from '../generated/types/Pagination';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const PaginationPropsSpec = Type.Object(BasePaginationPropsSpec);
 const PaginationStateSpec = Type.Object({

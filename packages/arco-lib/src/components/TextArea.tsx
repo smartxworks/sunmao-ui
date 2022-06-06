@@ -6,7 +6,7 @@ import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TextAreaPropsSpec as BaseTextAreaPropsSpec } from '../generated/types/TextArea';
 import { useEffect, useRef } from 'react';
 import { RefInputType } from '@arco-design/web-react/es/Input/interface';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const TextAreaPropsSpec = Type.Object({
   ...BaseTextAreaPropsSpec,
