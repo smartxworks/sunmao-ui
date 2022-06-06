@@ -65,7 +65,7 @@ export const Checkbox = implementRuntimeComponent({
       }),
     },
     styleSlots: ['content'],
-    slots: [],
+    slots: {},
     events: ['onChange'],
   },
 })(props => {
@@ -79,7 +79,7 @@ export const Checkbox = implementRuntimeComponent({
     ...checkboxProps
   } = getComponentProps(props);
 
-  const [checkedValues, setCheckedValues] = useStateValue<string[]>(
+  const [checkedValues, setCheckedValues] = useStateValue(
     defaultCheckedValues,
     mergeState,
     updateWhenDefaultValueChanges,

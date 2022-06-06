@@ -150,13 +150,7 @@ const ModuleRendererContent = React.forwardRef<
         services.apiService.off('moduleEvent', h);
       });
     };
-  }, [
-    evalScope,
-    handlers,
-    moduleId,
-    services.apiService,
-    services.stateManager,
-  ]);
+  }, [evalScope, handlers, moduleId, services.apiService, services.stateManager]);
 
   const result = useMemo(() => {
     // Must init components' state, otherwise store cannot listen these components' state changing

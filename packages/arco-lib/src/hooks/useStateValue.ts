@@ -1,9 +1,14 @@
 import { RuntimeFunctions } from '@sunmao-ui/runtime';
 import { useState, useEffect } from 'react';
+import { SlotSpec } from '@sunmao-ui/core';
 
-export const useStateValue = <T>(
+export const useStateValue = <
+  T,
+  TMethods = any,
+  TSlots extends Record<string, SlotSpec> = Record<string, SlotSpec>
+>(
   defaultValue: T,
-  mergeState?: RuntimeFunctions<Record<string, T>, any>['mergeState'],
+  mergeState?: RuntimeFunctions<Record<string, T>, TMethods, TSlots>['mergeState'],
   updateWhenDefaultValueChanges?: boolean,
   key = 'value'
 ): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -13,6 +18,7 @@ export const useStateValue = <T>(
     if (mergeState) {
       mergeState({ [key]: defaultValue });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -20,7 +26,7 @@ export const useStateValue = <T>(
       setValue(defaultValue);
       mergeState({ [key]: defaultValue });
     }
-  }, [defaultValue, updateWhenDefaultValueChanges, mergeState]);
+  }, [defaultValue, updateWhenDefaultValueChanges, mergeState, key]);
 
   return [value, setValue];
 };

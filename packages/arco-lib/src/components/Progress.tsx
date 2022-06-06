@@ -35,7 +35,7 @@ export const Progress = implementRuntimeComponent({
     properties: ProgressPropsSpec,
     state: ProgressStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

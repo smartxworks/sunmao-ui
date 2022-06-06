@@ -1,5 +1,7 @@
 import { RuntimeComponentSchema } from '@sunmao-ui/core';
 import { ChildrenMap } from '../types';
+import { PropsSpec as SlotPropsSpec } from '../traits/core/Slot';
+import { Static } from '@sinclair/typebox';
 
 export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
   childrenMap: ChildrenMap<string>;
@@ -14,7 +16,9 @@ export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
       topLevelComponents.push(c);
       continue;
     }
-    const { id, slot } = slotTrait.properties.container as any;
+    const {
+      container: { id, slot },
+    } = slotTrait.properties as Static<typeof SlotPropsSpec>;
     if (!childrenMap[id]) {
       childrenMap[id] = {
         _allChildren: [],
@@ -22,7 +26,7 @@ export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
     }
     const children = childrenMap[id];
     if (!children[slot]) {
-      children[slot] = []; 
+      children[slot] = [];
     }
     children[slot].push(c);
     children._allChildren.push(c);

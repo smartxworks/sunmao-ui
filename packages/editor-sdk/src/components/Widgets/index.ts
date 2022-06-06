@@ -16,6 +16,7 @@ import eventWidgetSpec from './EventWidget';
 import popoverWidgetSpec from './PopoverWidget';
 import sizeWidgetSpec from './StyleWidgets/SizeWidget';
 import fontWidgetSpec from './StyleWidgets/FontWidget';
+import colorWidgetSpec from './StyleWidgets/ColorWidget';
 
 export * from './SpecWidget';
 export * from './ArrayField';
@@ -34,6 +35,7 @@ export * from './EventWidget';
 export * from './PopoverWidget';
 export * from './StyleWidgets/SizeWidget';
 export * from './StyleWidgets/FontWidget';
+export * from './StyleWidgets/ColorWidget';
 
 export const widgets: ImplementedWidget<any>[] = [
   specWidgetSpec,
@@ -53,4 +55,5 @@ export const widgets: ImplementedWidget<any>[] = [
   popoverWidgetSpec,
   sizeWidgetSpec,
   fontWidgetSpec,
+  colorWidgetSpec,
 ];
