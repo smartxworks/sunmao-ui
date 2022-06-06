@@ -17,7 +17,7 @@
               "type": "core/v1/state",
               "properties": {
                 "key": "listTitle",
-                "initialValue": "客户列表"
+                "initialValue": "Customers List"
               }
             },
             {
@@ -27,28 +27,28 @@
                 "initialValue": [
                   {
                     "id": 1,
-                    "name": "马云",
-                    "email": "jack.ma@deck.com"
+                    "name": "Tom",
+                    "email": "tom@deck.com"
                   },
                   {
                     "id": 2,
-                    "name": "马化腾",
-                    "email": "pony.ma@conversation.com"
+                    "name": "Jack",
+                    "email": "jack@conversation.com"
                   },
                   {
                     "id": 3,
-                    "name": "李彦宏",
-                    "email": "robin.li@response.com"
+                    "name": "Pony",
+                    "email": "pony@response.com"
                   },
                   {
                     "id": 4,
-                    "name": "张一鸣",
-                    "email": "yiming.zhang@example.com"
+                    "name": "Peter",
+                    "email": "peter@example.com"
                   },
                   {
                     "id": 5,
-                    "name": "王兴",
-                    "email": "xing.wang@widget.org"
+                    "name": "John",
+                    "email": "john@widget.org"
                   }
                 ]
               }
@@ -74,11 +74,32 @@
           ]
         },
         {
-          "id": "listSlot",
+          "id": "listSlotText",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "{{$slot.$listItem.name}}",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "list",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "listSlotButton",
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "我是Slot{{$slot.$listItem.name}}",
+              "raw": "Click Me",
               "format": "md"
             }
           },
@@ -95,8 +116,8 @@
                       "parameters": {
                         "id": "createSuccessToast",
                         "title": "Tost",
-                        "description": "data{{$slot.$listItem.name}}",
-                        "position": "bottom-right",
+                        "description": "Hello, {{$slot.$listItem.name}}!",
+                        "position": "top",
                         "duration": null,
                         "isClosable": true
                       }
