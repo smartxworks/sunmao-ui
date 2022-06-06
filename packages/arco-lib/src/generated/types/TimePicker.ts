@@ -156,7 +156,7 @@ export const TimePickerPropsSpec = {
       },
     ],
   }),
-  showNowButton: Type.Boolean({
+  showNowBtn: Type.Boolean({
     title: 'Show Now Button',
     category: Category.Behavior,
   }),
