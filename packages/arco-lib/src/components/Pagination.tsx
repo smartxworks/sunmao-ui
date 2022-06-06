@@ -40,7 +40,7 @@ export const Pagination = implementRuntimeComponent({
     properties: PaginationPropsSpec,
     state: PaginationStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: ['onChange'],
   },
@@ -49,7 +49,7 @@ export const Pagination = implementRuntimeComponent({
     getComponentProps(props);
   const { elementRef, customStyle, mergeState, callbackMap } = props;
 
-  const [current, setCurrent] = useStateValue<number>(
+  const [current, setCurrent] = useStateValue(
     defaultCurrent || 0,
     mergeState,
     updateWhenDefaultValueChanges,

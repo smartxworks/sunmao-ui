@@ -56,14 +56,10 @@ export default implementRuntimeComponent({
     state: Type.Object({}),
     methods: {},
     // route slots are dynamic
-    slots: [],
+    slots: {},
     styleSlots: [],
     events: [],
   },
-})((props) => {
-  return (
-    <Switch
-      {...props}
-     />
-  );
+})(props => {
+  return <Switch {...props} />;
 });

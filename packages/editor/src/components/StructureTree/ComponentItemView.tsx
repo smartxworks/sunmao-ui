@@ -102,7 +102,12 @@ export const ComponentItemView: React.FC<Props> = props => {
       onClick={onClick}
     >
       {highlightBackground}
-      <HStack width="full" justify="space-between" spacing="0" paddingLeft={noChevron ? '6' : '0'}>
+      <HStack
+        width="full"
+        justify="space-between"
+        spacing="0"
+        paddingLeft={noChevron ? '6' : '0'}
+      >
         {noChevron ? null : expandIcon}
         <Text
           cursor="pointer"

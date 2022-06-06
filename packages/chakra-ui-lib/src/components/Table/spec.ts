@@ -33,8 +33,8 @@ const exampleProperties = {
       type: 'text',
       displayValue: '',
       buttonConfig: {
-        handlers: []
-      }
+        handlers: [],
+      },
     },
   ],
   majorKey: 'id',
@@ -62,7 +62,7 @@ export const implementTable = implementRuntimeComponent({
     properties: PropsSpec,
     state: TableStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: [],
     events: [],
   },

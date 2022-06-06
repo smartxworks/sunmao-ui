@@ -57,7 +57,13 @@ export const Tabs = implementRuntimeComponent({
         activeTab: Type.Number(),
       }),
     },
-    slots: ['content'],
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          tabIndex: Type.Number(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: ['onChange', 'onClickTab'],
   },
@@ -73,7 +79,7 @@ export const Tabs = implementRuntimeComponent({
     slotsElements,
   } = props;
   const ref = useRef<{ current: HTMLDivElement }>(null);
-  const [activeTab, setActiveTab] = useStateValue<number>(
+  const [activeTab, setActiveTab] = useStateValue(
     defaultActiveTab ?? 0,
     mergeState,
     updateWhenDefaultValueChanges,
@@ -86,10 +92,6 @@ export const Tabs = implementRuntimeComponent({
       getElement(ele);
     }
   }, [getElement, ref]);
-
-  const slots = Array.isArray(slotsElements.content)
-    ? slotsElements.content
-    : [slotsElements.content];
 
   useEffect(() => {
     subscribeMethods({
@@ -117,13 +119,15 @@ export const Tabs = implementRuntimeComponent({
       activeTab={String(activeTab)}
       ref={ref}
     >
-      {tabs.map((tab, idx) =>
-        tab.hidden ? null : (
-          <TabPane key={idx} title={tab.title} destroyOnHide={tab.destroyOnHide}>
-            {slots[idx]}
-          </TabPane>
-        )
-      )}
+      {tabs.map((tabName, idx) => (
+        <TabPane key={String(idx)} title={tabName}>
+          {slotsElements?.content
+            ? slotsElements.content({
+                tabIndex: idx,
+              })
+            : null}
+        </TabPane>
+      ))}
     </BaseTabs>
   );
 });

@@ -42,7 +42,9 @@ export const Steps = implementRuntimeComponent({
     properties: StepsPropsSpec,
     state: StepsStateSpec,
     methods: {},
-    slots: ['icons'],
+    slots: {
+      icons: { slotProps: Type.Object({}) },
+    },
     styleSlots: ['content'],
     events: [],
   },
@@ -63,7 +65,7 @@ export const Steps = implementRuntimeComponent({
         items.map((stepItem: StepItem, idx: number) => {
           return (
             <BaseSteps.Step
-              icon={slotsElements.icons}
+              icon={slotsElements.icons ? slotsElements.icons({}) : null}
               key={idx}
               title={stepItem.title}
               description={stepItem.description}

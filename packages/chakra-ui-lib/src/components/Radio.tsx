@@ -87,7 +87,7 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     state: StateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

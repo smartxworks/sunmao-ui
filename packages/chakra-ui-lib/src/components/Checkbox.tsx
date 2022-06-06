@@ -100,7 +100,7 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     state: CheckboxStateSpec,
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },

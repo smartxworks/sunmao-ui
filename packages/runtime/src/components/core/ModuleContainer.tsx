@@ -23,7 +23,7 @@ export default implementRuntimeComponent({
     properties: ModuleSpec,
     state: {},
     methods: {},
-    slots: [],
+    slots: {},
     styleSlots: [],
     events: [],
   },

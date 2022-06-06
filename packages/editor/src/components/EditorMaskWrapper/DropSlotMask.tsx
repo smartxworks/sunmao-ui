@@ -21,10 +21,11 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
   const maskRef = useRef<HTMLDivElement>(null);
 
   const hoverComponentType =
-    editorStore.components.find(c => c.id === hoverId)?.type || `${CORE_VERSION}/${CoreComponentName.Text}`;
+    editorStore.components.find(c => c.id === hoverId)?.type ||
+    `${CORE_VERSION}/${CoreComponentName.Text}`;
 
   const slots = useMemo(() => {
-    return registry.getComponentByType(hoverComponentType).spec.slots || [];
+    return Object.keys(registry.getComponentByType(hoverComponentType).spec.slots) || [];
   }, [hoverComponentType, registry]);
 
   // calculate the slot which is being dragged over
@@ -59,7 +60,7 @@ export const DropSlotMask: React.FC<Props> = observer((props: Props) => {
       display="flex"
       flexDirection={vertical ? 'column' : 'row'}
       ref={maskRef}
-      border='1px solid orange'
+      border="1px solid orange"
     >
       {slots.map(slot => {
         return (

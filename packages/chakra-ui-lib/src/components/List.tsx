@@ -50,7 +50,7 @@ export default implementRuntimeComponent({
     properties: PropsSpec,
     methods: {},
     state: Type.Object({}),
-    slots: [],
+    slots: {},
     styleSlots: ['content'],
     events: [],
   },
