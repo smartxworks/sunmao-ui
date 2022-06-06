@@ -169,11 +169,19 @@ export const DatePickerPropsSpec = {
     category: Category.Behavior,
     weight: 98,
   }),
-  showTime: Type.Boolean({
-    title: 'Show Time',
-    category: Category.Behavior,
-    weight: 97,
-  }),
+  showTime: Type.Optional(
+    Type.Boolean({
+      title: 'Show Time',
+      category: Category.Behavior,
+      conditions: [
+        {
+          key: 'type',
+          value: 'date',
+        },
+      ],
+      weight: 97,
+    })
+  ),
   disabledDate: Type.Object(DisabledDateSpec, {
     title: 'Disabled Date',
     category: Category.Behavior,
@@ -210,6 +218,24 @@ export const DatePickerPropsSpec = {
   size: StringUnion(['mini', 'small', 'default', 'large'], {
     title: 'Size',
     category: Category.Layout,
+  }),
+  timezone: Type.String({
+    title: 'Timezone',
+    category: Category.Behavior,
+  }),
+  useUtcOffset: Type.Boolean({
+    title: 'Open UTC Offset',
+    category: Category.Behavior,
+  }),
+  utcOffset: Type.Number({
+    title: 'UTC Offset',
+    category: Category.Behavior,
+    conditions: [
+      {
+        key: 'useUtcOffset',
+        value: true,
+      },
+    ],
   }),
   ...RangePickerPropsSpec,
 };

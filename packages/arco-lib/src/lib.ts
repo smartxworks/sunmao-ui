@@ -38,8 +38,10 @@ import { Descriptions } from './components/Descriptions';
 import { Row, Col } from './components/Grid';
 import { Slider } from './components/Slider';
 import { DatePicker } from './components/DatePicker';
+import { TimePicker } from './components/TimePicker';
 
 import './style.css';
+import { MessageUtilMethodFactory } from './methods/Message';
 
 export const components: SunmaoLib['components'] = [
   Table,
@@ -83,12 +85,15 @@ export const components: SunmaoLib['components'] = [
   Col,
   Slider,
   DatePicker,
+  TimePicker,
 ];
 export const traits: SunmaoLib['traits'] = [];
 export const modules: SunmaoLib['modules'] = [];
+export const utilMethods: SunmaoLib['utilMethods'] = [MessageUtilMethodFactory];
 
 export const ArcoDesignLib: SunmaoLib = {
   components,
   traits,
   modules,
+  utilMethods,
 };
