@@ -22,7 +22,7 @@ const exampleProperties: Static<typeof TimePickerPropsSpec> = {
     minute: 1,
     second: 1,
   },
-  showNowButton: true,
+  showNowBtn: true,
   placeholder: 'Please Select',
   position: 'bl',
   format: 'HH:mm:ss',
