@@ -1,5 +1,26 @@
 import { Application } from '@sunmao-ui/core';
 
+export const SingleComponentSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'single',
+        type: 'test/v1/tester',
+        properties: {
+          testId: 'single',
+          text: 'Hello, world!',
+        },
+        traits: [],
+      },
+    ],
+  },
+};
+
 export const MockSchema: Application = {
   version: 'sunmao/v1',
   kind: 'Application',

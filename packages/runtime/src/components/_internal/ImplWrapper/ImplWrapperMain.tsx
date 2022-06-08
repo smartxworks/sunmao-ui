@@ -166,7 +166,6 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       hooks: props.hooks,
       isInModule: props.isInModule,
     });
-
     const C = unmount ? null : (
       <Impl
         key={c.id}
@@ -188,10 +187,11 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     const element = useGridLayout(props, result, ref);
-
     return element;
   }
 );
+
+ImplWrapperMain.whyDidYouRender = true;
 
 // This hook will only run unmount function when unmount, not every time when unmount function changes.
 const useDidUnmount = (fn: Function) => {
