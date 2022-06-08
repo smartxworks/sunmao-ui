@@ -210,12 +210,16 @@ export const ColumnSpec = Type.Object({
     description: 'The text you want to display instead of raw text',
     conditions: [
       {
-        key: 'type',
-        value: 'link',
-      },
-      {
-        key: 'type',
-        value: 'text',
+        or: [
+          {
+            key: 'type',
+            value: 'link',
+          },
+          {
+            key: 'type',
+            value: 'text',
+          },
+        ],
       },
     ],
   }),
