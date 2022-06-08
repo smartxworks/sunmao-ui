@@ -28,7 +28,7 @@ export type ComponentImplProps<
 > = ImplWrapperProps &
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods, TSlots> & {
-    elementRef?: React.Ref<any>;
+    elementRef?: React.MutableRefObject<any>;
     getElement?: (ele: HTMLElement) => void;
   };
 
