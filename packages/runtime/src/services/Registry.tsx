@@ -9,6 +9,7 @@ import CoreModuleContainer from '../components/core/ModuleContainer';
 import CoreStack from '../components/core/Stack';
 import CoreFileInput from '../components/core/FileInput';
 import CoreList from '../components/core/List';
+import CoreIframe from '../components/core/Iframe';
 
 // traits
 import CoreArrayState from '../traits/core/ArrayState';
@@ -244,6 +245,7 @@ export function initRegistry(
   registry.registerComponent(CoreStack);
   registry.registerComponent(CoreFileInput);
   registry.registerComponent(CoreList);
+  registry.registerComponent(CoreIframe);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);
