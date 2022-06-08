@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { Box } from '@chakra-ui/react';
@@ -65,6 +65,26 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
       })
     );
   };
+
+  const onClickIframe = useCallback(() => {
+    if (document.activeElement?.tagName === 'IFRAME') {
+      setSelectedComponentId(document.activeElement?.getAttribute('title') || '');
+      setTimeout(() => {
+        window.focus();
+      });
+    }
+  }, [setSelectedComponentId]);
+
+  // can't capture the iframe click event
+  // use window's blur event to detect whether clicking the iframes
+  useEffect(() => {
+    window.focus();
+    window.addEventListener('blur', onClickIframe);
+
+    return () => {
+      window.removeEventListener('blur', onClickIframe);
+    };
+  }, [onClickIframe]);
 
   const mousePositionWithOffset: [number, number] = [
     mousePosition[0] + scrollOffset[0],
