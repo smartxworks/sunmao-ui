@@ -34,7 +34,6 @@ export default implementRuntimeComponent({
   },
 })(({ testId, text }) => {
   renderTimesMap[testId] = (renderTimesMap[testId] || 0) + 1;
-  console.log('render', renderTimesMap[testId]);
 
   useEffect(() => {
     return () => {
