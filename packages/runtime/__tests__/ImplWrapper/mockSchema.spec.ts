@@ -21,6 +21,37 @@ export const SingleComponentSchema: Application = {
   },
 };
 
+// for testing whether a component and its siblings will unmount after schema changes
+export const ComponentSchemaChangeSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'staticComponent',
+        type: 'test/v1/tester',
+        properties: {
+          testId: 'staticComponent',
+          text: 'foo',
+        },
+        traits: [],
+      },
+      {
+        id: 'dynamicComponent',
+        type: 'test/v1/tester',
+        properties: {
+          testId: 'dynamicComponent',
+          text: 'bar',
+        },
+        traits: [],
+      },
+    ],
+  },
+};
+
 export const MockSchema: Application = {
   version: 'sunmao/v1',
   kind: 'Application',
