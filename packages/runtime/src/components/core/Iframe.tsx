@@ -2,6 +2,7 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
 import { CORE_VERSION, CoreComponentName, StringUnion } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
+import { useEffect } from 'react';
 
 export default implementRuntimeComponent({
   version: CORE_VERSION,
@@ -16,7 +17,6 @@ export default implementRuntimeComponent({
       referrerpolicy: 'unset',
       sandbox: 'unset',
       fetchpriority: 'auto',
-      allowfullscreen: true,
     },
     exampleSize: [1, 1],
     annotations: {
@@ -69,29 +69,50 @@ export default implementRuntimeComponent({
         description:
           'Provides a hint of the relative priority to use when fetching the iframe document',
       }),
-      allowfullscreen: Type.Boolean({ title: 'Allow fullscreen' }),
     }),
     state: Type.Object({}),
-    methods: {},
+    methods: {
+      requestFullscreen: Type.Object({}),
+    },
     slots: {},
     styleSlots: ['content'],
     events: [],
   },
-})(({ component, src, referrerpolicy, sandbox, elementRef, customStyle }) => {
-  const iframeProps: Record<string, unknown> = {
-    title: component.id,
+})(
+  ({
+    component,
     src,
-  };
+    referrerpolicy,
+    sandbox,
+    fetchpriority,
+    elementRef,
+    customStyle,
+    subscribeMethods,
+  }) => {
+    const iframeProps: Record<string, unknown> = {
+      title: component.id,
+      src,
+      fetchpriority,
+    };
 
-  if (referrerpolicy !== 'unset') {
-    iframeProps.referrerpolicy = referrerpolicy;
+    if (referrerpolicy !== 'unset') {
+      iframeProps.referrerpolicy = referrerpolicy;
+    }
+
+    if (sandbox !== 'unset') {
+      iframeProps.sandbox = sandbox;
+    }
+
+    useEffect(() => {
+      subscribeMethods({
+        requestFullscreen() {
+          elementRef?.current.requestFullscreen();
+        },
+      });
+    }, [elementRef, subscribeMethods]);
+
+    return (
+      <iframe ref={elementRef} {...iframeProps} className={css(customStyle?.content)} />
+    );
   }
-
-  if (sandbox !== 'unset') {
-    iframeProps.sandbox = sandbox;
-  }
-
-  return (
-    <iframe ref={elementRef} {...iframeProps} className={css(customStyle?.content)} />
-  );
-});
+);
