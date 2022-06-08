@@ -66,6 +66,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-grid-layout": "^1.1.2",
     "@vitejs/plugin-react": "^1.0.1",
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "babel-jest": "^27.1.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.1.0",
