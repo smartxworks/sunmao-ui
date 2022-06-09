@@ -38,6 +38,9 @@ export const Tooltip = implementRuntimeComponent({
     slots: {
       content: { slotProps: Type.Object({}) },
     },
+    annotations: {
+      category: 'Display',
+    },
     styleSlots: ['content'],
     events: [],
   },
