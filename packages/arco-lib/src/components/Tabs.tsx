@@ -119,15 +119,21 @@ export const Tabs = implementRuntimeComponent({
       activeTab={String(activeTab)}
       ref={ref}
     >
-      {tabs.map((tabName, idx) => (
-        <TabPane key={String(idx)} title={tabName}>
-          {slotsElements?.content
-            ? slotsElements.content({
-                tabIndex: idx,
-              })
-            : null}
-        </TabPane>
-      ))}
+      {tabs.map((tabItem, idx) =>
+        tabItem.hidden ? null : (
+          <TabPane
+            destroyOnHide={tabItem.destroyOnHide}
+            key={String(idx)}
+            title={tabItem.title}
+          >
+            {slotsElements?.content
+              ? slotsElements.content({
+                  tabIndex: idx,
+                })
+              : null}
+          </TabPane>
+        )
+      )}
     </BaseTabs>
   );
 });
