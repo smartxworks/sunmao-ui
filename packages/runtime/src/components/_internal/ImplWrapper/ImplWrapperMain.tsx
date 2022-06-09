@@ -177,7 +177,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
   }
 );
 
-ImplWrapperMain.whyDidYouRender = true;
+// ImplWrapperMain.whyDidYouRender = true;
 
 // This hook will only run unmount function when unmount, not every time when unmount function changes.
 const useDidUnmount = (fn: Function) => {

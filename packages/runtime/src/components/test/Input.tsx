@@ -1,6 +1,6 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
-import { useState , useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export default implementRuntimeComponent({
   version: 'test/v1',
@@ -33,7 +33,7 @@ export default implementRuntimeComponent({
   const [value, setValue] = useState(defaultValue || '');
   useEffect(() => {
     mergeState({ value });
-  });
+  }, [mergeState, value]);
   return (
     <input data-testid={testId} value={value} onChange={e => setValue(e.target.value)} />
   );
