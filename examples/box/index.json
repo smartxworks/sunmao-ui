@@ -1,15 +1,18 @@
 {
   "app": {
-    "version": "example/v1",
-    "metadata": { "name": "box", "description": "box" },
+    "version": "sunmao/v1",
+    "kind": "Application",
+    "metadata": {
+      "name": "some App"
+    },
     "spec": {
       "components": [
         {
-          "id": "tester5",
+          "id": "tester",
           "type": "test/v1/tester",
           "properties": {
-            "testId": "single",
-            "text": "text"
+            "testId": "tester",
+            "text": "2333"
           },
           "traits": []
         }
