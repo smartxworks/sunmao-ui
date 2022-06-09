@@ -44,7 +44,7 @@
                     "componentId": "$utils",
                     "method": {
                       "name": "alert",
-                      "parameters": "邮箱：{{ form.data ? form.data.email : \"\" }} 手机：{{ form.data ? form.data.phone : \"\" }}"
+                      "parameters": "email：{{ form.data ? form.data.email : \"\" }} phone：{{ form.data ? form.data.phone : \"\" }}"
                     },
                     "wait": {},
                     "disabled": false
@@ -70,7 +70,7 @@
           "id": "emailFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "邮箱",
+            "label": "email",
             "fieldName": "email",
             "isRequired": true
           },
@@ -106,7 +106,7 @@
           "id": "phoneFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "手机",
+            "label": "phone",
             "fieldName": "phone",
             "isRequired": true
           },
