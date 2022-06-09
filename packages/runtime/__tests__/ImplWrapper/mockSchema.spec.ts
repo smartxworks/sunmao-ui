@@ -118,3 +118,40 @@ export const MockSchema: Application = {
     ],
   },
 };
+
+export const HiddenTraitSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'input1',
+        type: 'test/v1/input',
+        properties: {
+          testId: '',
+          defaultValue: 'foo',
+        },
+        traits: [
+          {
+            type: 'core/v1/hidden',
+            properties: {
+              hidden: true,
+            },
+          },
+        ],
+      },
+      {
+        id: 'tester',
+        type: 'test/v1/tester',
+        properties: {
+          testId: 'tester',
+          text: '{{input1.value}}',
+        },
+        traits: [],
+      },
+    ],
+  },
+};

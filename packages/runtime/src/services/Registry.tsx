@@ -14,6 +14,7 @@ import CoreIframe from '../components/core/Iframe';
 // test
 import TestButton from '../components/test/Button';
 import TestTester from '../components/test/Tester';
+import TestInput from '../components/test/Input';
 
 // traits
 import CoreArrayState from '../traits/core/ArrayState';
@@ -253,6 +254,7 @@ export function initRegistry(
 
   registry.registerComponent(TestTester);
   registry.registerComponent(TestButton);
+  registry.registerComponent(TestInput);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);

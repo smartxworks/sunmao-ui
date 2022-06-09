@@ -3,7 +3,13 @@ import { render, fireEvent, screen, waitFor, act } from '@testing-library/react'
 import produce from 'immer';
 import { times } from 'lodash';
 import { initSunmaoUI } from '../../src';
-import { SingleComponentSchema, ComponentSchemaChangeSchema } from './mockSchema.spec';
+import {
+  SingleComponentSchema,
+  ComponentSchemaChangeSchema,
+  HiddenTraitSchema,
+} from './mockSchema.spec';
+
+const SingleComponentRenderTimes = '2';
 
 describe('single component condition', () => {
   it('only render one time', () => {
@@ -11,7 +17,7 @@ describe('single component condition', () => {
     const { unmount } = render(<App options={SingleComponentSchema} />);
 
     // simple component will render 2 times, because it have to eval trait and properties twice
-    expect(screen.getByTestId('single')?.textContent).toEqual('2');
+    expect(screen.getByTestId('single')?.textContent).toEqual(SingleComponentRenderTimes);
     expect(screen.getByTestId('single-destroy')?.textContent).toEqual('0');
     unmount();
   });
@@ -34,6 +40,19 @@ describe('after the schema changes', () => {
 
     expect(screen.getByTestId('staticComponent-destroy')?.textContent).toEqual('0');
     expect(screen.getByTestId('dynamicComponent-destroy')?.textContent).toEqual('0');
+    unmount();
+  });
+});
+
+describe('hidden trait condition', () => {
+  it('the hidden component should not merge state in store', () => {
+    const { App, stateManager } = initSunmaoUI();
+    stateManager.noConsoleError = true;
+    const { unmount } = render(<App options={HiddenTraitSchema} />);
+    expect(screen.getByTestId('tester')?.textContent).toEqual(SingleComponentRenderTimes);
+    expect(screen.getByTestId('tester-text')?.textContent).toEqual('');
+    expect(stateManager.store['input1']).toBeUndefined();
+
     unmount();
   });
 });
