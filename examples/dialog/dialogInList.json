@@ -32,7 +32,7 @@
           "type": "core/v1/text",
           "properties": {
             "value": {
-              "raw": "姓名：{{name}}",
+              "raw": "name：{{name}}",
               "format": "plain"
             }
           },
@@ -74,7 +74,7 @@
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "删除",
+              "raw": "Delete",
               "format": "plain"
             }
           },
@@ -118,7 +118,7 @@
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "编辑",
+              "raw": "Edit",
               "format": "plain"
             }
           },
@@ -205,7 +205,7 @@
               "type": "core/v1/state",
               "properties": {
                 "key": "listTitle",
-                "initialValue": "客户列表"
+                "initialValue": "Customers List"
               }
             },
             {
@@ -215,28 +215,28 @@
                 "initialValue": [
                   {
                     "id": 1,
-                    "name": "马云",
-                    "email": "jack.ma@deck.com"
+                    "name": "Tom",
+                    "email": "tom@deck.com"
                   },
                   {
                     "id": 2,
-                    "name": "马化腾",
-                    "email": "pony.ma@conversation.com"
+                    "name": "Jack",
+                    "email": "jack@conversation.com"
                   },
                   {
                     "id": 3,
-                    "name": "李彦宏",
-                    "email": "robin.li@response.com"
+                    "name": "Pony",
+                    "email": "pony@response.com"
                   },
                   {
                     "id": 4,
-                    "name": "张一鸣",
-                    "email": "yiming.zhang@example.com"
+                    "name": "Peter",
+                    "email": "peter@example.com"
                   },
                   {
                     "id": 5,
-                    "name": "王兴",
-                    "email": "xing.wang@widget.org"
+                    "name": "John",
+                    "email": "john@widget.org"
                   }
                 ]
               }
@@ -297,7 +297,7 @@
                     "name": "setValue",
                     "parameters": {
                       "key": "deleteContent",
-                      "value": "是否确认删除『{{ $listItem.name }}: {{ $listItem.email }}』"
+                      "value": "Confirm to delete {{ $listItem.name }}: {{ $listItem.email }}』"
                     }
                   },
                   "wait": {
@@ -312,7 +312,7 @@
                   "method": {
                     "name": "openDialog",
                     "parameters": {
-                      "title": "删除信息"
+                      "title": "Delete Info"
                     }
                   },
                   "wait": {},
@@ -363,7 +363,7 @@
                   "method": {
                     "name": "openDialog",
                     "parameters": {
-                      "title": "编辑信息"
+                      "title": "Edit Info"
                     }
                   },
                   "wait": {},
@@ -485,7 +485,7 @@
           "properties": {
             "left": {
               "type": "addon",
-              "children": "姓名"
+              "children": "name"
             },
             "defaultValue": "{{ root.nameInputInitialValue }}"
           },
@@ -507,7 +507,7 @@
           "properties": {
             "left": {
               "type": "addon",
-              "children": "邮箱"
+              "children": "email"
             },
             "defaultValue": "{{ root.emailInputInitialValue }}"
           },
@@ -529,10 +529,10 @@
           "properties": {
             "title": "This is a dialog",
             "confirmButton": {
-              "text": "确定"
+              "text": "Delete"
             },
             "cancelButton": {
-              "text": "取消"
+              "text": "Cancel"
             }
           },
           "traits": [
@@ -623,7 +623,7 @@
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "添加客户",
+              "raw": "Add Customer",
               "format": "plain"
             }
           },
@@ -642,7 +642,7 @@
                     "method": {
                       "name": "openDialog",
                       "parameters": {
-                        "title": "编辑信息"
+                        "title": "Edit Info"
                       }
                     },
                     "wait": {},
@@ -735,7 +735,7 @@
           "properties": {
             "left": {
               "type": "addon",
-              "children": "姓名"
+              "children": "name"
             },
             "defaultValue": ""
           },
@@ -757,7 +757,7 @@
           "properties": {
             "left": {
               "type": "addon",
-              "children": "邮箱"
+              "children": "email"
             },
             "initialValue": ""
           },

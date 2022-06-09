@@ -81,7 +81,7 @@ export const sortAndFilter: Application = {
             },
             {
               key: 'key 3',
-              name: 'xzdry3',
+              name: 'Peter3',
               link: 'link-B',
               salary: 427,
               time: '2021-10-11T9:10:45.437Z',
@@ -95,7 +95,7 @@ export const sortAndFilter: Application = {
             },
             {
               key: 'key 5',
-              name: 'xzdry5',
+              name: 'Peter5',
               link: 'link-B',
               salary: 811,
               time: '2021-8-11T5:10:45.437Z',
@@ -116,7 +116,7 @@ export const sortAndFilter: Application = {
             },
             {
               key: 'key 8',
-              name: 'xzdry8',
+              name: 'Peter8',
               link: 'link-A',
               salary: 87,
               time: '2021-3-11T6:10:45.437Z',
@@ -130,14 +130,14 @@ export const sortAndFilter: Application = {
             },
             {
               key: 'key 10',
-              name: 'xzdry10',
+              name: 'Peter10',
               link: 'link-B',
               salary: 935,
               time: '2021-10-11T4:10:45.437Z',
             },
             {
               key: 'key 11',
-              name: 'xzdry11',
+              name: 'Peter11',
               link: 'link-A',
               salary: 381,
               time: '2021-0-11T14:10:45.437Z',

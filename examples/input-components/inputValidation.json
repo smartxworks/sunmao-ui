@@ -14,7 +14,7 @@
             "size": "lg",
             "left": {
               "type": "addon",
-              "children": "邮箱"
+              "children": "email"
             }
           },
           "traits": [
@@ -47,7 +47,7 @@
             "size": "lg",
             "left": {
               "type": "addon",
-              "children": "手机"
+              "children": "phone"
             }
           },
           "traits": [
@@ -78,7 +78,7 @@
           "type": "chakra_ui/v1/button",
           "properties": {
             "text": {
-              "raw": "提交",
+              "raw": "Submit",
               "format": "plain"
             }
           },
@@ -92,7 +92,7 @@
                     "componentId": "$utils",
                     "method": {
                       "name": "alert",
-                      "parameters": "{{ `邮箱：${ emailInput.value } 手机号：${ phoneInput.value }` }}"
+                      "parameters": "{{ `email：${ emailInput.value } phone：${ phoneInput.value }` }}"
                     },
                     "wait": {},
                     "disabled": "{{ emailInput.validResult.isInvalid || phoneInput.validResult.isInvalid }}"
