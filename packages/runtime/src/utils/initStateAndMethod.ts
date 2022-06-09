@@ -3,7 +3,7 @@ import { Static, TSchema } from '@sinclair/typebox';
 import { RegistryInterface } from '../services/Registry';
 import { StateManagerInterface } from '../services/StateManager';
 import {
-  ModuleSpec,
+  ModuleRenderSpec,
   parseTypeBox,
   CORE_VERSION,
   CoreComponentName,
@@ -36,7 +36,7 @@ export function initSingleComponentState(
   stateManager.store[c.id] = state;
 
   if (c.type === `${CORE_VERSION}/${CoreComponentName.ModuleContainer}`) {
-    const moduleSchema = c.properties as Static<typeof ModuleSpec>;
+    const moduleSchema = c.properties as Static<typeof ModuleRenderSpec>;
     try {
       const mSpec = registry.getModuleByType(moduleSchema.type).spec;
       const moduleInitState: Record<string, unknown> = {};

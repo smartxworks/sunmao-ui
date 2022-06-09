@@ -67,12 +67,8 @@ export type { RegistryInterface, SunmaoLib } from './services/Registry';
 export { ExpressionError } from './services/StateManager';
 export type { StateManagerInterface } from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
+export { ImplWrapper } from './components/_internal/ImplWrapper';
 export { default as Text, TextPropertySpec } from './components/_internal/Text';
-export {
-  EventHandlerSpec,
-  EventCallBackHandlerSpec,
-  ModuleSpec,
-} from '@sunmao-ui/shared';
 
 // TODO: check this export
 export { watch } from './utils/watchReactivity';

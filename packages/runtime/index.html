@@ -29,8 +29,11 @@
       const rootEl = document.querySelector('#root');
       const render = example => {
         ReactDOM.unmountComponentAtNode(rootEl);
-        const { App, registry } = initSunmaoUI({libs: [sunmaoChakraUILib]});
+        const { App, registry } = initSunmaoUI({ libs: [sunmaoChakraUILib] });
         const { app, modules = [] } = example.value;
+        console.log('example', example);
+        console.log('modules', modules);
+        window.registry = registry;
         modules.forEach(m => {
           registry.registerModule(m);
         });

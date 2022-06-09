@@ -8,6 +8,7 @@ import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
 import CoreStack from '../components/core/Stack';
 import CoreFileInput from '../components/core/FileInput';
+import CoreList from '../components/core/List';
 import CoreIframe from '../components/core/Iframe';
 
 // traits
@@ -243,6 +244,7 @@ export function initRegistry(
   registry.registerComponent(CoreModuleContainer);
   registry.registerComponent(CoreStack);
   registry.registerComponent(CoreFileInput);
+  registry.registerComponent(CoreList);
   registry.registerComponent(CoreIframe);
 
   registry.registerTrait(CoreState);

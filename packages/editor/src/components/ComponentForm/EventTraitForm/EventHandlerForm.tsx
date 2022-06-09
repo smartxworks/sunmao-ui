@@ -13,7 +13,7 @@ import {
 import { Static } from '@sinclair/typebox';
 import { JSONSchema7 } from 'json-schema';
 import { CloseIcon, ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons';
-import { EventHandlerSpec, EventCallBackHandlerSpec } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, EventCallBackHandlerSpec } from '@sunmao-ui/shared';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';

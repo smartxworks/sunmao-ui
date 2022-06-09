@@ -34,6 +34,7 @@
     "@sunmao-ui/core": "^0.6.0",
     "@sunmao-ui/editor-sdk": "^0.2.0",
     "@sunmao-ui/runtime": "^0.6.0",
+    "@sunmao-ui/shared": "^0.1.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash-es": "^4.17.21",
     "react": "^17.0.2",

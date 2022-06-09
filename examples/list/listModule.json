@@ -1,133 +1,135 @@
 {
-  "modules": [{
-    "version": "core/v1",
-    "kind": "Module",
-    "parsedVersion": {
-      "category": "core/v1",
-      "value": "littleItem"
-    },
-    "metadata": {
-      "name": "littleItem"
-    },
-    "spec": {
-      "properties": {},
-      "events": ["onEdit"],
-      "stateMap": {
-        "value": "{{ $moduleId }}__input.value"
-      }
-    },
-    "impl": [
-      {
-        "id": "{{ $moduleId }}__hstack",
-        "type": "chakra_ui/v1/hstack",
+  "modules": [
+    {
+      "version": "custom/v1",
+      "kind": "Module",
+      "parsedVersion": {
+        "category": "custom/v1",
+        "value": "listItem"
+      },
+      "metadata": {
+        "name": "listItem"
+      },
+      "spec": {
         "properties": {},
-        "traits": []
+        "events": ["onEdit"],
+        "stateMap": {
+          "value": "{{ $moduleId }}__input.value"
+        }
       },
-      {
-        "id": "{{ $moduleId }}__text",
-        "type": "core/v1/text",
-        "properties": {
-          "value": {
-            "raw": "**{{value}}**",
-            "format": "md"
-          }
+      "impl": [
+        {
+          "id": "{{ $moduleId }}__hstack",
+          "type": "chakra_ui/v1/hstack",
+          "properties": {},
+          "traits": []
         },
-        "traits": [
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "{{ $moduleId }}__inputValueText",
-        "type": "core/v1/text",
-        "properties": {
-          "value": {
-            "raw": "**{{ {{ $moduleId }}__input.value }}**",
-            "format": "md"
-          }
-        },
-        "traits": [
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "{{ $moduleId }}__input",
-        "type": "chakra_ui/v1/input",
-        "properties": {},
-        "traits": [
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "{{ $moduleId }}__button",
-        "type": "chakra_ui/v1/button",
-        "properties": {
-          "text": {
-            "raw": "click{{value}}",
-            "format": "md"
-          }
-        },
-        "traits": [
-          {
-            "type": "core/v1/event",
-            "properties": {
-              "handlers": [
-                {
-                  "type": "onClick",
-                  "componentId": "$module",
-                  "method": {
-                    "name": "onEdit",
-                    "parameters": {
-                      "moduleId": "{{$moduleId}}"
-                    }
-                  },
-                  "wait": {},
-                  "disabled": false
-                }
-              ]
+        {
+          "id": "{{ $moduleId }}__text",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "**{{value}}**",
+              "format": "md"
             }
           },
-          {
-            "type": "core/v1/slot",
-            "properties": {
-              "container": {
-                "id": "{{ $moduleId }}__hstack",
-                "slot": "content"
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{ $moduleId }}__hstack",
+                  "slot": "content"
+                }
               }
             }
-          }
-        ]
-      }
-    ]
-  }],
+          ]
+        },
+        {
+          "id": "{{ $moduleId }}__inputValueText",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "**{{ {{ $moduleId }}__input.value }}**",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{ $moduleId }}__hstack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "{{ $moduleId }}__input",
+          "type": "chakra_ui/v1/input",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{ $moduleId }}__hstack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "{{ $moduleId }}__button",
+          "type": "chakra_ui/v1/button",
+          "properties": {
+            "text": {
+              "raw": "click{{value}}",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "$module",
+                    "method": {
+                      "name": "onEdit",
+                      "parameters": {
+                        "moduleId": "{{$moduleId}}"
+                      }
+                    },
+                    "wait": {},
+                    "disabled": false
+                  }
+                ]
+              }
+            },
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "{{ $moduleId }}__hstack",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "app": {
-    "version": "example/v1",
+    "version": "sunmao/v1",
+    "kind": "Application",
     "metadata": {
-      "name": "list_component",
-      "description": "list component example"
+      "name": "some App"
     },
     "spec": {
       "components": [
@@ -140,7 +142,7 @@
               "type": "core/v1/state",
               "properties": {
                 "key": "listTitle",
-                "initialValue": "客户列表"
+                "initialValue": "Customers List"
               }
             },
             {
@@ -150,28 +152,28 @@
                 "initialValue": [
                   {
                     "id": 1,
-                    "name": "马云",
-                    "email": "jack.ma@deck.com"
+                    "name": "Tom",
+                    "email": "tom@deck.com"
                   },
                   {
                     "id": 2,
-                    "name": "马化腾",
-                    "email": "pony.ma@conversation.com"
+                    "name": "Jack",
+                    "email": "jack@conversation.com"
                   },
                   {
                     "id": 3,
-                    "name": "李彦宏",
-                    "email": "robin.li@response.com"
+                    "name": "Pony",
+                    "email": "pony@response.com"
                   },
                   {
                     "id": 4,
-                    "name": "张一鸣",
-                    "email": "yiming.zhang@example.com"
+                    "name": "Peter",
+                    "email": "peter@example.com"
                   },
                   {
                     "id": 5,
-                    "name": "王兴",
-                    "email": "xing.wang@widget.org"
+                    "name": "John",
+                    "email": "john@widget.org"
                   }
                 ]
               }
@@ -180,12 +182,12 @@
         },
         {
           "id": "list",
-          "type": "chakra_ui/v1/list",
+          "type": "core/v1/list",
           "properties": {
             "listData": "{{ root.listData }}",
             "template": {
-              "id": "littleItem{{$listItem.id}}",
-              "type": "core/v1/littleItem",
+              "id": "listItem{{$listItem.id}}",
+              "type": "custom/v1/listItem",
               "properties": {
                 "value": "{{$listItem.name}}"
               },
@@ -210,6 +212,47 @@
                 "container": {
                   "id": "root",
                   "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "moduleContainer2",
+          "type": "core/v1/moduleContainer",
+          "properties": {
+            "id": "listItem{{$slot.$listItem.id}}",
+            "type": "custom/v1/listItem",
+            "properties": {
+              "value": "{{$slot.$listItem.name}}"
+            },
+            "handlers": [
+              {
+                "type": "onEdit",
+                "componentId": "$utils",
+                "method": {
+                  "name": "chakra_ui/v1/openToast",
+                  "parameters": {
+                    "position": "top",
+                    "duration": 1000,
+                    "title": "Hello,{{$slot.$listItem.name}}!",
+                    "description": "",
+                    "isClosable": false,
+                    "variant": "subtle",
+                    "status": "info",
+                    "id": ""
+                  }
+                }
+              }
+            ]
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "list",
+                  "slot": "content"
                 }
               }
             }
