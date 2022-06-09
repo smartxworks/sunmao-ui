@@ -69,8 +69,7 @@
   "lint-staged": {
     "*.{ts,tsx,html}": [
       "prettier --write",
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "peerDependencies": {

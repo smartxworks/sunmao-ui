@@ -7,8 +7,8 @@
     "test:ci": "jest -c config/jest.ci.config.js",
     "lint": "eslint packages --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix packages --ext .ts --ext .tsx",
-    "release": "lerna publish",
-    "release:canary": "branch=$(git rev-parse --abbrev-ref HEAD); lerna publish --canary --preid $branch",
+    "release": "lerna publish -m 'chore(*): publish'",
+    "release:canary": "branch=$(git rev-parse --abbrev-ref HEAD); lerna publish --canary --preid $branch -m 'chore(*): publish'",
     "commit": "git cz",
     "prepare": "husky install"
   },
@@ -43,8 +43,7 @@
   "lint-staged": {
     "*.{ts,tsx,html}": [
       "prettier --write",
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   }
 }
