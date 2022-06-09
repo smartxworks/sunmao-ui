@@ -3,13 +3,25 @@ import { render, fireEvent, screen, waitFor, act } from '@testing-library/react'
 import produce from 'immer';
 import { times } from 'lodash';
 import { initSunmaoUI } from '../../src';
+import { destroyTimesMap } from '../../src/components/test/Tester';
+import { renderTimesMap } from '../../src/components/test/Tester';
 import {
   SingleComponentSchema,
   ComponentSchemaChangeSchema,
   HiddenTraitSchema,
+  MergeStateSchema,
 } from './mockSchema.spec';
 
 const SingleComponentRenderTimes = '2';
+
+function clear() {
+  for (const key in renderTimesMap) {
+    delete renderTimesMap[key];
+  }
+  for (const key in destroyTimesMap) {
+    delete destroyTimesMap[key];
+  }
+}
 
 describe('single component condition', () => {
   it('only render one time', () => {
@@ -20,6 +32,7 @@ describe('single component condition', () => {
     expect(screen.getByTestId('single')?.textContent).toEqual(SingleComponentRenderTimes);
     expect(screen.getByTestId('single-destroy')?.textContent).toEqual('0');
     unmount();
+    clear();
   });
 });
 
@@ -41,6 +54,7 @@ describe('after the schema changes', () => {
     expect(screen.getByTestId('staticComponent-destroy')?.textContent).toEqual('0');
     expect(screen.getByTestId('dynamicComponent-destroy')?.textContent).toEqual('0');
     unmount();
+    clear();
   });
 });
 
@@ -54,9 +68,38 @@ describe('hidden trait condition', () => {
     expect(stateManager.store['input1']).toBeUndefined();
 
     unmount();
+    clear();
   });
 });
 
+describe('when component merge state synchronously', () => {
+  it('it will not cause extra render', () => {
+    const { App, stateManager } = initSunmaoUI();
+    const { unmount } = render(<App options={MergeStateSchema} />);
+    expect(screen.getByTestId('tester')?.textContent).toEqual(SingleComponentRenderTimes);
+    expect(screen.getByTestId('tester-text')?.textContent).toEqual('foo-bar-baz');
+    expect(stateManager.store['input'].value).toBe('foo');
+
+    unmount();
+    clear();
+  });
+
+  it(`the components' order will not cause extra render`, () => {
+    const newMergeStateSchema = produce(MergeStateSchema, draft => {
+      const temp = draft.spec.components[0];
+      draft.spec.components[0] = draft.spec.components[1];
+      draft.spec.components[1] = temp;
+    });
+    const { App, stateManager } = initSunmaoUI();
+    const { unmount } = render(<App options={newMergeStateSchema} />);
+    expect(screen.getByTestId('tester')?.textContent).toEqual(SingleComponentRenderTimes);
+    expect(screen.getByTestId('tester-text')?.textContent).toEqual('foo-bar-baz');
+    expect(stateManager.store['input'].value).toBe('foo');
+
+    unmount();
+    clear();
+  });
+});
 // expect(screen.getByTestId('tester1-text')?.textContent).toEqual('0');
 
 // expect(screen.getByTestId('tester1')?.textContent).toEqual('3');

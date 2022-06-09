@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 
 (window as any).renderTimesMap = {};
 (window as any).destroyTimesMap = {};
-const renderTimesMap = (window as any).renderTimesMap;
-const destroyTimesMap = (window as any).destroyTimesMap;
+export const renderTimesMap = (window as any).renderTimesMap;
+export const destroyTimesMap = (window as any).destroyTimesMap;
 
 export default implementRuntimeComponent({
   version: 'test/v1',
@@ -34,7 +34,6 @@ export default implementRuntimeComponent({
   },
 })(({ testId, text }) => {
   renderTimesMap[testId] = (renderTimesMap[testId] || 0) + 1;
-  console.log('testId', renderTimesMap);
 
   useEffect(() => {
     return () => {

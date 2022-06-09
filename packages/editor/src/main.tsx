@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
@@ -43,10 +42,5 @@ export default function renderApp(options: Options = {}) {
   traits.forEach(t => registry.registerTrait(t));
   modules.forEach(m => registry.registerModule(m));
 
-  ReactDOM.render(
-    <StrictMode>
-      <Editor />
-    </StrictMode>,
-    container
-  );
+  ReactDOM.render(<Editor />, container);
 }
