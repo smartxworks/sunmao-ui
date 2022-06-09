@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
-import { EventHandlerSpec } from '@sunmao-ui/runtime';
+import { EventHandlerSpec } from '@sunmao-ui/shared';
 import { Category } from '../../constants/category';
 
 const PaginationSpec = Type.Object(
@@ -182,12 +182,22 @@ export const ColumnSpec = Type.Object({
       link: Type.String(),
       button: Type.String(),
       module: Type.String(),
+      component: Type.String(),
     }),
     {
       title: 'Type',
       category: Category.Basic,
     }
   ),
+  componentSlotIndex: Type.Number({
+    title: 'Component Slot Index',
+    conditions: [
+      {
+        key: 'type',
+        value: 'component',
+      },
+    ],
+  }),
   dataIndex: Type.String({
     title: 'Key',
     category: Category.Basic,
@@ -198,6 +208,20 @@ export const ColumnSpec = Type.Object({
     title: 'Display Value',
     category: Category.Basic,
     description: 'The text you want to display instead of raw text',
+    conditions: [
+      {
+        or: [
+          {
+            key: 'type',
+            value: 'link',
+          },
+          {
+            key: 'type',
+            value: 'text',
+          },
+        ],
+      },
+    ],
   }),
   width: Type.Optional(
     Type.Number({

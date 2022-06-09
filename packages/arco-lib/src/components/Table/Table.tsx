@@ -1,4 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { css } from '@emotion/css';
+import { sortBy } from 'lodash-es';
+import { ResizeCallbackData } from 'react-resizable';
+import { TableInstance } from '@arco-design/web-react/es/Table/table';
+import { ColumnProps } from '@arco-design/web-react/es/Table';
+import { RefInputType } from '@arco-design/web-react/es/Input/interface';
 import {
   Button,
   Link,
@@ -11,19 +18,14 @@ import {
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
   implementRuntimeComponent,
+  ImplWrapper,
 } from '@sunmao-ui/runtime';
-import { css } from '@emotion/css';
-import { sortBy } from 'lodash-es';
 import { Type, Static } from '@sinclair/typebox';
+import { ResizableTitle } from './ResizableTitle';
+
 import { FALLBACK_METADATA, getComponentProps } from '../../sunmao-helper';
 import { TablePropsSpec, ColumnSpec } from '../../generated/types/Table';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { TableInstance } from '@arco-design/web-react/es/Table/table';
-import { ColumnProps } from '@arco-design/web-react/es/Table';
-import { useStateValue } from 'src/hooks/useStateValue';
-import { ResizableTitle } from './ResizableTitle';
-import { RefInputType } from '@arco-design/web-react/es/Input/interface';
-import { ResizeCallbackData } from 'react-resizable';
+import { useStateValue } from '../../hooks/useStateValue';
 
 const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
@@ -80,6 +82,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       type: 'text',
       filter: true,
       displayValue: '',
+      componentSlotIndex: 0,
     },
     {
       title: 'Salary',
@@ -89,6 +92,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       filter: false,
       type: 'text',
       displayValue: '',
+      componentSlotIndex: 0,
     },
     {
       title: 'Link',
@@ -97,19 +101,7 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       filter: true,
       sortDirections: ['ascend', 'descend'],
       displayValue: '',
-    },
-    {
-      title: 'CustomComponent',
-      dataIndex: 'customComponent',
-      type: 'module',
-      filter: false,
-      module: {
-        id: 'clistItemName-{{$listItem.id}}',
-        handlers: [],
-        properties: [],
-        type: 'core/v1/text',
-      },
-      displayValue: '',
+      componentSlotIndex: 0,
     },
   ],
   data: Array(13)
@@ -156,7 +148,14 @@ export const Table = implementRuntimeComponent({
     properties: TablePropsSpec,
     state: TableStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          [LIST_ITEM_EXP]: Type.Any(),
+          [LIST_ITEM_INDEX_EXP]: Type.Number(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: ['onRowClick', 'onSearch', 'onPageChange', 'onFilter', 'onSort', 'onChange'],
   },
@@ -355,6 +354,46 @@ export const Table = implementRuntimeComponent({
                 />
               );
               break;
+
+            case 'component':
+              const childrenSchema = app.spec.components.filter(c => {
+                return c.traits.find(
+                  t =>
+                    t.type === 'core/v1/slot' &&
+                    (t.properties.container as any).id === component.id
+                );
+              });
+
+              const childSchema = childrenSchema[evaledColumn.componentSlotIndex || 0];
+              if (!childSchema) {
+                return (
+                  <div>
+                    Cannot find child with index {column.componentSlotIndex} in slot.
+                  </div>
+                );
+              }
+
+              const _childrenSchema = {
+                ...childSchema,
+                id: `${component.id}_${childSchema.id}_${index}`,
+              };
+
+              colItem = (
+                <ImplWrapper
+                  key={_childrenSchema.id}
+                  component={_childrenSchema}
+                  app={app}
+                  services={services}
+                  childrenMap={{}}
+                  isInModule
+                  evalListItem
+                  slotProps={{
+                    [LIST_ITEM_EXP]: record,
+                    [LIST_ITEM_INDEX_EXP]: index,
+                  }}
+                />
+              );
+              break;
             default:
               const text = evaledColumn.displayValue || value;
               colItem = <span title={column.ellipsis ? text : ''}>{text}</span>;
@@ -365,7 +404,15 @@ export const Table = implementRuntimeComponent({
         return newColumn;
       })
     );
-  }, [cProps.columns]);
+  }, [
+    app,
+    cProps.columns,
+    callbackMap,
+    component.id,
+    component.properties.columns,
+    services,
+    useDefaultFilter,
+  ]);
 
   const handleChange = (
     pagination: PaginationProps,

@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import { HandlerMap } from '../../../../services/handler';
 
 export function useRuntimeFunctions(props: ImplWrapperProps) {
-  const { component: c, services } = props;
+  const { component: c, services, slotProps, evalListItem } = props;
   const { stateManager, registry, globalHandlerMap } = services;
 
   const mergeState = useCallback(
@@ -35,9 +35,11 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
         mergeState,
         subscribeMethods,
         services,
+        slotProps,
+        evalListItem,
       });
     },
-    [c.id, mergeState, registry, services, subscribeMethods]
+    [c.id, evalListItem, mergeState, registry, services, slotProps, subscribeMethods]
   );
   return {
     mergeState,

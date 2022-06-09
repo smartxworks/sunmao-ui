@@ -6,7 +6,7 @@ import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TreeSelectPropsSpec as BaseTreeSelectPropsSpec } from '../generated/types/TreeSelect';
 import { useEffect, useRef } from 'react';
 import { RefTreeSelectType } from '@arco-design/web-react/es/TreeSelect';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const TreeSelectPropsSpec = Type.Object(BaseTreeSelectPropsSpec);
 const TreeSelectStateSpec = Type.Object({

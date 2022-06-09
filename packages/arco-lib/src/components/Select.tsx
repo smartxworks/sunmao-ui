@@ -6,7 +6,7 @@ import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SelectPropsSpec as BaseSelectPropsSpec } from '../generated/types/Select';
 import { useEffect, useRef } from 'react';
 import { SelectHandle } from '@arco-design/web-react/es/Select/interface';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const SelectPropsSpec = Type.Object({
   ...BaseSelectPropsSpec,
