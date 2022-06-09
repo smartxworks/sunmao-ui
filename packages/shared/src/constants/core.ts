@@ -6,6 +6,7 @@ export enum CoreComponentName {
   ModuleContainer = 'moduleContainer',
   GridLayout = 'grid_layout',
   Text = 'text',
+  Iframe = 'iframe',
 }
 // core traits
 export enum CoreTraitName {

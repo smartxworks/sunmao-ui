@@ -4,10 +4,10 @@ import {
   TraitValidateContext,
   ValidateErrorResult,
 } from '../interfaces';
-import { EventHandlerSpec, GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
+import { GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
-import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName, EventHandlerSpec } from '@sunmao-ui/shared';
 
 class EventHandlerValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
@@ -93,6 +93,4 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
   }
 }
 
-export const TraitRules = [
-  new EventHandlerValidatorRule(),
-];
+export const TraitRules = [new EventHandlerValidatorRule()];

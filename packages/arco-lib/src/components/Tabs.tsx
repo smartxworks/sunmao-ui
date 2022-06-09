@@ -5,7 +5,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TabsPropsSpec as BaseTabsPropsSpec } from '../generated/types/Tabs';
 import { useEffect, useRef } from 'react';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const TabsPropsSpec = Type.Object(BaseTabsPropsSpec);
 const TabsStateSpec = Type.Object({
@@ -119,15 +119,21 @@ export const Tabs = implementRuntimeComponent({
       activeTab={String(activeTab)}
       ref={ref}
     >
-      {tabs.map((tabName, idx) => (
-        <TabPane key={String(idx)} title={tabName}>
-          {slotsElements?.content
-            ? slotsElements.content({
-                tabIndex: idx,
-              })
-            : null}
-        </TabPane>
-      ))}
+      {tabs.map((tabItem, idx) =>
+        tabItem.hidden ? null : (
+          <TabPane
+            destroyOnHide={tabItem.destroyOnHide}
+            key={String(idx)}
+            title={tabItem.title}
+          >
+            {slotsElements?.content
+              ? slotsElements.content({
+                  tabIndex: idx,
+                })
+              : null}
+          </TabPane>
+        )
+      )}
     </BaseTabs>
   );
 });

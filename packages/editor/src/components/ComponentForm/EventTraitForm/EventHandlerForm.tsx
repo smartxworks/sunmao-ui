@@ -13,7 +13,7 @@ import {
 import { Static } from '@sinclair/typebox';
 import { JSONSchema7 } from 'json-schema';
 import { CloseIcon, ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons';
-import { EventHandlerSpec, EventCallBackHandlerSpec } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, EventCallBackHandlerSpec } from '@sunmao-ui/shared';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
@@ -53,7 +53,7 @@ export const EventHandlerForm: React.FC<Props> = props => {
     <Accordion width="100%" allowMultiple onChange={onAccordionChange}>
       <AccordionItem>
         <h2>
-          <AccordionButton bg='white'>
+          <AccordionButton bg="white">
             <Box flex="1" textAlign="left">
               Handler {index + 1}
             </Box>

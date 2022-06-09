@@ -190,10 +190,17 @@ export const TableImpl = implementTable(
                   {columns.map((column, j) => (
                     <TableTd
                       index={i}
+                      component={component}
                       key={column.key}
                       item={item}
                       onClickItem={() => selectItem(item)}
-                      rawColumn={(component.properties.columns as Static<typeof ColumnsPropertySpec>)[j]}
+                      rawColumn={
+                        (
+                          component.properties.columns as Static<
+                            typeof ColumnsPropertySpec
+                          >
+                        )[j]
+                      }
                       column={column}
                       services={services}
                       app={app}
