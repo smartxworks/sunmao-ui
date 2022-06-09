@@ -9,7 +9,6 @@
     <select></select>
     <div id="root"></div>
     <script type="module">
-      import './wdyr';
       import React from 'react';
       import ReactDOM from 'react-dom';
       import { initSunmaoUI } from './src';
@@ -32,19 +31,14 @@
         ReactDOM.unmountComponentAtNode(rootEl);
         const { App, registry } = initSunmaoUI({ libs: [sunmaoChakraUILib] });
         const { app, modules = [] } = example.value;
-        window.registry = registry;
         modules.forEach(m => {
           registry.registerModule(m);
         });
         ReactDOM.render(
           React.createElement(
-            React.StrictMode,
+            ChakraProvider,
             null,
-            React.createElement(
-              ChakraProvider,
-              null,
-              React.createElement(App, { options: app }, null)
-            )
+            React.createElement(App, { options: app }, null)
           ),
           rootEl
         );

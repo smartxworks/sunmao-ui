@@ -12,7 +12,34 @@
           "type": "test/v1/tester",
           "properties": {
             "testId": "tester",
-            "text": "2333"
+            "text": "{{input.value}}{{input2.value}}{{input3.value}}"
+          },
+          "traits": []
+        },
+        {
+          "id": "input",
+          "type": "test/v1/input",
+          "properties": {
+            "testId": "",
+            "defaultValue": "foo"
+          },
+          "traits": []
+        },
+        {
+          "id": "input2",
+          "type": "test/v1/input",
+          "properties": {
+            "testId": "",
+            "defaultValue": "bar"
+          },
+          "traits": []
+        },
+        {
+          "id": "input3",
+          "type": "test/v1/input",
+          "properties": {
+            "testId": "",
+            "defaultValue": "baz"
           },
           "traits": []
         }

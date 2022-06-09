@@ -52,73 +52,6 @@ export const ComponentSchemaChangeSchema: Application = {
   },
 };
 
-export const MockSchema: Application = {
-  version: 'sunmao/v1',
-  kind: 'Application',
-  metadata: {
-    name: 'some App',
-  },
-  spec: {
-    components: [
-      {
-        id: 'tester1',
-        type: 'test/v1/tester',
-        properties: {
-          testId: 'tester1',
-          text: '{{state0.value}}',
-        },
-        traits: [],
-      },
-      {
-        id: 'button1',
-        type: 'test/v1/button',
-        properties: {
-          testId: 'button1',
-        },
-        traits: [
-          {
-            type: 'core/v1/event',
-            properties: {
-              handlers: [
-                {
-                  type: 'click',
-                  componentId: 'state0',
-                  method: {
-                    name: 'setValue',
-                    parameters: {
-                      key: 'value',
-                      value: '{{state0.value  + 1}}',
-                    },
-                  },
-                  disabled: false,
-                  wait: {
-                    type: 'delay',
-                    time: 0,
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-      {
-        id: 'state0',
-        type: 'core/v1/dummy',
-        properties: {},
-        traits: [
-          {
-            type: 'core/v1/state',
-            properties: {
-              key: 'value',
-              initialValue: '0',
-            },
-          },
-        ],
-      },
-    ],
-  },
-};
-
 export const HiddenTraitSchema: Application = {
   version: 'sunmao/v1',
   kind: 'Application',
@@ -149,6 +82,54 @@ export const HiddenTraitSchema: Application = {
         properties: {
           testId: 'tester',
           text: '{{input1.value}}',
+        },
+        traits: [],
+      },
+    ],
+  },
+};
+
+export const MergeStateSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'tester',
+        type: 'test/v1/tester',
+        properties: {
+          testId: 'tester',
+          text: '{{input.value}}-{{input2.value}}-{{input3.value}}',
+        },
+        traits: [],
+      },
+      {
+        id: 'input',
+        type: 'test/v1/input',
+        properties: {
+          testId: '',
+          defaultValue: 'foo',
+        },
+        traits: [],
+      },
+      {
+        id: 'input2',
+        type: 'test/v1/input',
+        properties: {
+          testId: '',
+          defaultValue: 'bar',
+        },
+        traits: [],
+      },
+      {
+        id: 'input3',
+        type: 'test/v1/input',
+        properties: {
+          testId: '',
+          defaultValue: 'baz',
         },
         traits: [],
       },
