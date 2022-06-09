@@ -64,9 +64,6 @@ export const TimePicker = implementRuntimeComponent({
       footer: {
         slotProps: Type.Object({}),
       },
-      triggerElement: {
-        slotProps: Type.Object({}),
-      },
     },
     styleSlots: ['content'],
     events: ['onChange', 'onClear', 'onVisibleChange'],
@@ -84,7 +81,7 @@ export const TimePicker = implementRuntimeComponent({
   const { elementRef, customStyle, slotsElements, callbackMap, mergeState } = props;
 
   const pickerProps = {
-    extra: slotsElements.footer,
+    extra: slotsElements.footer && slotsElements.footer({}),
     utcOffset: useUtcOffset ? utcOffset : undefined,
     onChange: (timeString: string | string[], time: Dayjs | Dayjs[]) => {
       mergeState({

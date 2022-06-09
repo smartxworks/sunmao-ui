@@ -29,9 +29,11 @@ export const PopoverPropsSpec = {
   controlled: Type.Boolean({
     title: 'Controlled',
     category: Category.Basic,
+    description:
+      'Control the opening and closing of popups via openPopupover and closePopupover events',
   }),
-  unmountOnExit:Type.Boolean({
-    title:'Destroy On Hide',
+  unmountOnExit: Type.Boolean({
+    title: 'Destroy On Hide',
     category: Category.Behavior,
-  })
+  }),
 };
