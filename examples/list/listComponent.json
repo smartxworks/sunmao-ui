@@ -1,0 +1,145 @@
+{
+  "modules": [],
+  "app": {
+    "version": "example/v1",
+    "metadata": {
+      "name": "list_component",
+      "description": "list component example"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "root",
+          "type": "chakra_ui/v1/root",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/state",
+              "properties": {
+                "key": "listTitle",
+                "initialValue": "Customers List"
+              }
+            },
+            {
+              "type": "core/v1/arrayState",
+              "properties": {
+                "key": "listData",
+                "initialValue": [
+                  {
+                    "id": 1,
+                    "name": "Tom",
+                    "email": "tom@deck.com"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Jack",
+                    "email": "jack@conversation.com"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Pony",
+                    "email": "pony@response.com"
+                  },
+                  {
+                    "id": 4,
+                    "name": "Peter",
+                    "email": "peter@example.com"
+                  },
+                  {
+                    "id": 5,
+                    "name": "John",
+                    "email": "john@widget.org"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "type": "core/v1/list",
+          "properties": {
+            "listData": "{{ root.listData }}"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "root",
+                  "slot": "root"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "listSlotText",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "{{$slot.$listItem.name}}",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "list",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "listSlotButton",
+          "type": "chakra_ui/v1/button",
+          "properties": {
+            "text": {
+              "raw": "Click Me",
+              "format": "md"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "$utils",
+                    "method": {
+                      "name": "chakra_ui/v1/openToast",
+                      "parameters": {
+                        "id": "createSuccessToast",
+                        "title": "Tost",
+                        "description": "Hello, {{$slot.$listItem.name}}!",
+                        "position": "top",
+                        "duration": null,
+                        "isClosable": true
+                      }
+                    },
+                    "wait": {},
+                    "disabled": false
+                  }
+                ]
+              }
+            },
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "list",
+                  "slot": "content"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

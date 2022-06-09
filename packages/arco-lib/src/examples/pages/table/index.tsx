@@ -4,6 +4,7 @@ import { basicUsage } from './basicUsage';
 import { selection } from './selection';
 import { attributes } from './attributes';
 import { sortAndFilter } from './sortAndFilter';
+import { customComponent } from './customComponent';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -23,6 +24,12 @@ export const TableDemoPage: React.FC = () => {
       <Title heading={3}>Attributes</Title>
       <Paragraph>You can easily open or close the properties of the table</Paragraph>
       <DemoWrapper application={attributes} />
+      <Divider />
+      <Title heading={3}>Custom Column Component</Title>
+      <Paragraph>
+        You can use any Sunmao component as column element instead of plain text.
+      </Paragraph>
+      <DemoWrapper application={customComponent} />
       <Divider />
       <Title heading={3}>Sort and filter</Title>
       <Paragraph>

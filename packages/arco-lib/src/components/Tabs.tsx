@@ -5,7 +5,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TabsPropsSpec as BaseTabsPropsSpec } from '../generated/types/Tabs';
 import { useEffect, useRef } from 'react';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const TabsPropsSpec = Type.Object(BaseTabsPropsSpec);
 const TabsStateSpec = Type.Object({
