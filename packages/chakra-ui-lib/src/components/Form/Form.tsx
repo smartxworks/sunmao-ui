@@ -167,7 +167,7 @@ export default implementRuntimeComponent({
             disabled={isFormInvalid}
             onClick={onSubmit}
           >
-            提交
+            Submit
           </Button>
         )}
       </VStack>

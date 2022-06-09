@@ -49,7 +49,7 @@ export default implementRuntimeTrait({
     } else {
       return {
         isInvalid: true,
-        errorMsg: '请输入正确的 email',
+        errorMsg: 'Please enter valid email.',
       };
     }
   });
@@ -63,7 +63,7 @@ export default implementRuntimeTrait({
     } else {
       return {
         isInvalid: true,
-        errorMsg: '请输入正确的手机号码',
+        errorMsg: 'Please enter valid phone number.',
       };
     }
   });
@@ -79,10 +79,10 @@ export default implementRuntimeTrait({
 
     if (maxLength !== undefined && value.length > maxLength) {
       result.isInvalid = true;
-      result.errorMsg = `最长不能超过${maxLength}个字符`;
+      result.errorMsg = `Can not be longer than ${maxLength}.`;
     } else if (minLength !== undefined && value.length < minLength) {
       result.isInvalid = true;
-      result.errorMsg = `不能少于${minLength}个字符`;
+      result.errorMsg = `Can not be shorter than ${minLength}.`;
     } else {
       const rulesArr = rule ? rule.split(',') : [];
       for (const ruleName of rulesArr) {
