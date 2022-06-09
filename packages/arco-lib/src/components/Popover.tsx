@@ -64,6 +64,7 @@ export const Popover = implementRuntimeComponent({
   return controlled ? (
     <BasePopover
       className={css(customStyle?.content)}
+      popupVisible={popupVisible}
       {...cProps}
       content={slotsElements.popupContent ? slotsElements.popupContent({}) : null}
     >

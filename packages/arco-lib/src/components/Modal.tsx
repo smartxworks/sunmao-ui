@@ -90,7 +90,7 @@ export const Modal = implementRuntimeComponent({
         }}
         afterClose={afterClose}
         afterOpen={afterOpen}
-        footer={slotsElements.footer ? slotsElements.footer({}) : null}
+        footer={slotsElements.footer ? slotsElements.footer({}) : undefined}
         className={css(customStyle?.content)}
         mountOnEnter={true}
         {...cProps}

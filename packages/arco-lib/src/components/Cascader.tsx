@@ -152,7 +152,7 @@ export const Cascader = implementRuntimeComponent({
       options={convertArrToTree(options)}
       placeholder={placeholder}
     >
-      {content}
+      {content ? <div>{content}</div> : null}
     </BaseCascader>
   );
 });
