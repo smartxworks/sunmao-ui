@@ -11,11 +11,16 @@ export const EventTraitPropertiesSpec = Type.Object({
 export const generateCallback = (
   handler: Omit<Static<typeof EventHandlerSpec>, 'type'>,
   rawHandler: Static<typeof EventHandlerSpec>,
-  services: UIServices
+  services: UIServices,
+  slotProps?: unknown,
+  evalListItem?: boolean
 ) => {
   const send = () => {
     // Eval before sending event to assure the handler object is evaled from the latest state.
-    const evaledHandler = services.stateManager.deepEval(rawHandler);
+    const evaledHandler = services.stateManager.deepEval(rawHandler, {
+      scopeObject: { $slot: slotProps },
+      evalListItem,
+    });
 
     if (evaledHandler.disabled && typeof evaledHandler.disabled === 'boolean') {
       return;
@@ -54,7 +59,7 @@ export default implementRuntimeTrait({
     state: {},
   },
 })(() => {
-  return ({ trait, handlers, services }) => {
+  return ({ trait, handlers, services, slotProps, evalListItem }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
     const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSpec>[];
     // setup current handlers
@@ -64,7 +69,7 @@ export default implementRuntimeTrait({
         callbackQueueMap[handler.type] = [];
       }
       callbackQueueMap[handler.type].push(
-        generateCallback(handler, rawHandlers[i], services)
+        generateCallback(handler, rawHandlers[i], services, slotProps, evalListItem)
       );
     }
 

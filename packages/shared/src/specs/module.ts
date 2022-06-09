@@ -2,7 +2,7 @@ import { EventHandlerSpec } from './event';
 import { Type } from '@sinclair/typebox';
 import { CORE_VERSION, CoreWidgetName } from '../constants/core';
 
-export const ModuleSpec = Type.Object(
+export const ModuleRenderSpec = Type.Object(
   {
     id: Type.String({
       title: 'Module ID',

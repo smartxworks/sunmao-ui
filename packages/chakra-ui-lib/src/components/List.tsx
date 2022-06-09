@@ -4,9 +4,9 @@ import {
   implementRuntimeComponent,
   LIST_ITEM_EXP,
   LIST_ITEM_INDEX_EXP,
-  ModuleSpec,
   ModuleRenderer,
 } from '@sunmao-ui/runtime';
+import { ModuleRenderSpec } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
 import { BASIC } from './constants/category';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
@@ -17,7 +17,7 @@ const PropsSpec = Type.Object({
     category: BASIC,
     widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
   }),
-  template: ModuleSpec,
+  template: ModuleRenderSpec,
 });
 
 const exampleProperties = {
