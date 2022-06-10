@@ -2,8 +2,8 @@ import React from 'react';
 import { HStack, Select, Text, VStack } from '@chakra-ui/react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
-import { implementWidget } from '../../../utils/widget';
-import { ExpressionEditor } from '../../Form';
+import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../../utils/widget';
+import { ExpressionWidget } from '../ExpressionWidget';
 
 type Font = {
   fontSize?: string | number;
@@ -35,10 +35,13 @@ export const FontWidget: React.FC<WidgetProps<{}, Font>> = props => {
     <VStack width="full">
       <HStack width="full">
         <Text>Size</Text>
-        <ExpressionEditor
-          compact={true}
-          defaultCode={value.fontSize === undefined ? '' : String(value.fontSize)}
-          onBlur={v => {
+        <ExpressionWidget
+          {...props}
+          spec={mergeWidgetOptionsIntoSpec(props.spec, {
+            compactOptions: { isHiddenExpand: true, height: '32px' },
+          })}
+          value={value.fontSize === undefined ? '' : String(value.fontSize)}
+          onChange={v => {
             const newFont = {
               ...value,
               fontSize: v,
@@ -97,6 +100,6 @@ export const FontWidget: React.FC<WidgetProps<{}, Font>> = props => {
 export default implementWidget({
   version: CORE_VERSION,
   metadata: {
-    name: StyleWidgetName.Size,
+    name: StyleWidgetName.Font,
   },
 })(FontWidget);
