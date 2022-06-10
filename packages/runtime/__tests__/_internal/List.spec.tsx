@@ -143,8 +143,9 @@ const ListEventSchema: Application = {
 };
 
 describe('Core List Component', () => {
+  const { App, stateManager } = initSunmaoUI();
+  stateManager.noConsoleError = true;
   it('can render component directly', () => {
-    const { App } = initSunmaoUI();
     const { unmount } = render(<App options={ListSchema} />);
 
     expect(screen.getByTestId('list_tester_0-text')).toHaveTextContent('foo');
@@ -155,11 +156,8 @@ describe('Core List Component', () => {
   });
 
   it('can add event to list items', () => {
-    const { App, stateManager } = initSunmaoUI();
-    stateManager.noConsoleError = true;
     const { unmount } = render(<App options={ListEventSchema} />);
 
-    // waitFor(async () => {
     fireEvent.click(screen.getByTestId('list_button_0'));
     fireEvent.click(screen.getByTestId('list_button_1'));
     fireEvent.click(screen.getByTestId('list_button_2'));
