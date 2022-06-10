@@ -12,7 +12,6 @@ export const SingleComponentSchema: Application = {
         id: 'single',
         type: 'test/v1/tester',
         properties: {
-          testId: 'single',
           text: 'Hello, world!',
         },
         traits: [],
@@ -34,7 +33,6 @@ export const ComponentSchemaChangeSchema: Application = {
         id: 'staticComponent',
         type: 'test/v1/tester',
         properties: {
-          testId: 'staticComponent',
           text: 'foo',
         },
         traits: [],
@@ -43,7 +41,6 @@ export const ComponentSchemaChangeSchema: Application = {
         id: 'dynamicComponent',
         type: 'test/v1/tester',
         properties: {
-          testId: 'dynamicComponent',
           text: 'bar',
         },
         traits: [],
@@ -64,7 +61,6 @@ export const HiddenTraitSchema: Application = {
         id: 'input1',
         type: 'test/v1/input',
         properties: {
-          testId: '',
           defaultValue: 'foo',
         },
         traits: [
@@ -80,7 +76,6 @@ export const HiddenTraitSchema: Application = {
         id: 'tester',
         type: 'test/v1/tester',
         properties: {
-          testId: 'tester',
           text: '{{input1.value}}',
         },
         traits: [],
@@ -101,7 +96,6 @@ export const MergeStateSchema: Application = {
         id: 'tester',
         type: 'test/v1/tester',
         properties: {
-          testId: 'tester',
           text: '{{input.value}}-{{input2.value}}-{{input3.value}}',
         },
         traits: [],
@@ -110,7 +104,6 @@ export const MergeStateSchema: Application = {
         id: 'input',
         type: 'test/v1/input',
         properties: {
-          testId: '',
           defaultValue: 'foo',
         },
         traits: [],
@@ -119,7 +112,6 @@ export const MergeStateSchema: Application = {
         id: 'input2',
         type: 'test/v1/input',
         properties: {
-          testId: '',
           defaultValue: 'bar',
         },
         traits: [],
@@ -128,8 +120,53 @@ export const MergeStateSchema: Application = {
         id: 'input3',
         type: 'test/v1/input',
         properties: {
-          testId: '',
           defaultValue: 'baz',
+        },
+        traits: [],
+      },
+    ],
+  },
+};
+
+export const AsyncMergeStateSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'input',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: 'foo',
+        },
+        traits: [],
+      },
+      {
+        id: 'text',
+        type: 'core/v1/text',
+        properties: {
+          value: {
+            raw: 'text',
+            format: 'plain',
+          },
+        },
+        traits: [
+          {
+            type: 'test/v1/timeout',
+            properties: {
+              value: '{{input.value + Math.random()}}',
+            },
+          },
+        ],
+      },
+      {
+        id: 'tester',
+        type: 'test/v1/tester',
+        properties: {
+          text: '{{text.result}}',
         },
         traits: [],
       },

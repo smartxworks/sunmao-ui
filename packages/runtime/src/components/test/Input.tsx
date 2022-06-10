@@ -18,7 +18,6 @@ export default implementRuntimeComponent({
   },
   spec: {
     properties: Type.Object({
-      testId: Type.String(),
       defaultValue: Type.String(),
     }),
     state: Type.Object({
@@ -29,12 +28,17 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ testId, defaultValue, mergeState }) => {
+})(({ component, defaultValue, mergeState, elementRef }) => {
   const [value, setValue] = useState(defaultValue || '');
   useEffect(() => {
     mergeState({ value });
   }, [mergeState, value]);
   return (
-    <input data-testid={testId} value={value} onChange={e => setValue(e.target.value)} />
+    <input
+      ref={elementRef}
+      data-testid={component.id}
+      value={value}
+      onChange={e => setValue(e.target.value)}
+    />
   );
 });
