@@ -1,28 +1,21 @@
-import '@testing-library/jest-dom';
-import { render, fireEvent, screen, waitFor, act } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+import { render, screen, waitFor } from '@testing-library/react';
 import produce from 'immer';
-import { times } from 'lodash';
 import { initSunmaoUI } from '../../src';
-import { destroyTimesMap } from '../../src/components/test/Tester';
-import { renderTimesMap } from '../../src/components/test/Tester';
+import {
+  destroyTimesMap,
+  renderTimesMap,
+  clearTesterMap,
+} from '../../src/components/test/Tester';
 import {
   SingleComponentSchema,
   ComponentSchemaChangeSchema,
   HiddenTraitSchema,
   MergeStateSchema,
   AsyncMergeStateSchema,
-} from './mockSchema.spec';
+} from './mockSchema';
 
 const SingleComponentRenderTimes = '2';
-
-function clear() {
-  for (const key in renderTimesMap) {
-    delete renderTimesMap[key];
-  }
-  for (const key in destroyTimesMap) {
-    delete destroyTimesMap[key];
-  }
-}
 
 describe('single component condition', () => {
   it('only render one time', () => {
@@ -33,7 +26,7 @@ describe('single component condition', () => {
     expect(screen.getByTestId('single')).toHaveTextContent(SingleComponentRenderTimes);
     expect(screen.getByTestId('single-destroy-times')).toHaveTextContent('0');
     unmount();
-    clear();
+    clearTesterMap();
   });
 });
 
@@ -55,7 +48,7 @@ describe('after the schema changes', () => {
     expect(screen.getByTestId('staticComponent-destroy-times')).toHaveTextContent('0');
     expect(screen.getByTestId('dynamicComponent-destroy-times')).toHaveTextContent('0');
     unmount();
-    clear();
+    clearTesterMap();
   });
 });
 
@@ -69,7 +62,7 @@ describe('hidden trait condition', () => {
     expect(stateManager.store['input1']).toBeUndefined();
 
     unmount();
-    clear();
+    clearTesterMap();
   });
 });
 
@@ -82,7 +75,7 @@ describe('when component merge state synchronously', () => {
     expect(stateManager.store['input'].value).toBe('foo');
 
     unmount();
-    clear();
+    clearTesterMap();
   });
 
   it(`the components' order will not cause extra render`, () => {
@@ -99,7 +92,7 @@ describe('when component merge state synchronously', () => {
     expect(stateManager.store['input'].value).toBe('foo');
 
     unmount();
-    clear();
+    clearTesterMap();
   });
 });
 
@@ -117,7 +110,7 @@ describe('when component merge state asynchronously', () => {
     expect(await screen.findByTestId('tester')).toHaveTextContent('4');
 
     unmount();
-    clear();
+    clearTesterMap();
   });
 
   it(`the components' order may cause extra render`, async () => {
@@ -133,6 +126,6 @@ describe('when component merge state asynchronously', () => {
     expect(await screen.findByTestId('tester')).toHaveTextContent('5');
 
     unmount();
-    clear();
+    clearTesterMap();
   });
 });

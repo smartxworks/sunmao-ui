@@ -5,6 +5,15 @@ import { useEffect } from 'react';
 export const renderTimesMap: Record<string, number> = {};
 export const destroyTimesMap: Record<string, number> = {};
 
+export function clearTesterMap() {
+  for (const key in renderTimesMap) {
+    delete renderTimesMap[key];
+  }
+  for (const key in destroyTimesMap) {
+    delete destroyTimesMap[key];
+  }
+}
+
 export default implementRuntimeComponent({
   version: 'test/v1',
   metadata: {
