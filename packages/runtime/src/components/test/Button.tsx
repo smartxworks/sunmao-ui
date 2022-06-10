@@ -16,22 +16,20 @@ export default implementRuntimeComponent({
     },
   },
   spec: {
-    properties: Type.Object({
-      testId: Type.String(),
-    }),
+    properties: Type.Object({}),
     state: Type.Object({}),
     methods: {},
     slots: {},
     styleSlots: [],
     events: ['click'],
   },
-})(({ callbackMap, testId }) => {
+})(({ callbackMap, component, elementRef }) => {
   const onClick = () => {
     callbackMap?.click();
   };
   return (
-    <div>
-      <button onClick={onClick} data-testid={testId}>
+    <div ref={elementRef}>
+      <button onClick={onClick} data-testid={component.id}>
         Test Button
       </button>
     </div>

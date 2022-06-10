@@ -2,10 +2,8 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
 import { useEffect } from 'react';
 
-(window as any).renderTimesMap = {};
-(window as any).destroyTimesMap = {};
-export const renderTimesMap = (window as any).renderTimesMap;
-export const destroyTimesMap = (window as any).destroyTimesMap;
+export const renderTimesMap: Record<string, number> = {};
+export const destroyTimesMap: Record<string, number> = {};
 
 export default implementRuntimeComponent({
   version: 'test/v1',
@@ -23,7 +21,6 @@ export default implementRuntimeComponent({
   },
   spec: {
     properties: Type.Object({
-      testId: Type.String(),
       text: Type.String(),
     }),
     state: Type.Object({}),
@@ -32,25 +29,26 @@ export default implementRuntimeComponent({
     styleSlots: [],
     events: [],
   },
-})(({ testId, text }) => {
-  renderTimesMap[testId] = (renderTimesMap[testId] || 0) + 1;
+})(({ component, elementRef, text }) => {
+  const id = component.id;
+  renderTimesMap[id] = (renderTimesMap[id] || 0) + 1;
 
   useEffect(() => {
     return () => {
-      destroyTimesMap[testId] = (destroyTimesMap[testId] || 0) + 1;
+      destroyTimesMap[id] = (destroyTimesMap[id] || 0) + 1;
     };
-  }, [testId]);
+  }, [id]);
   return (
-    <div>
+    <div ref={elementRef}>
       <p>
         <span>RenderTimes:</span>
-        <span data-testid={testId}>{renderTimesMap[testId] || 0}</span>{' '}
+        <span data-testid={id}>{renderTimesMap[id] || 0}</span>{' '}
       </p>
       <p>
         <span>DestroyTimes:</span>
-        <span data-testid={`${testId}-destroy`}>{destroyTimesMap[testId] || 0}</span>{' '}
+        <span data-testid={`${id}-destroy-times`}>{destroyTimesMap[id] || 0}</span>{' '}
       </p>
-      <span data-testid={`${testId}-text`}>{text}</span>
+      <span data-testid={`${id}-text`}>{text}</span>
     </div>
   );
 });

@@ -4,15 +4,14 @@ import { TraitImplFactory } from '../../types';
 
 const TimeoutTraitPropertiesSpec = Type.Object({
   value: Type.String(),
+  timeout: Type.Optional(Type.Number()),
 });
 
 const TimeoutTrait: TraitImplFactory<Static<typeof TimeoutTraitPropertiesSpec>> = () => {
-  // This trait will merge it property value in its state after 50ms
-  return ({ value, mergeState }) => {
+  return ({ value, mergeState, timeout }) => {
     setTimeout(() => {
-      console.log('timeout: ', value);
       mergeState({ result: value });
-    }, 50);
+    }, timeout || 0);
 
     return {
       props: null,
