@@ -47,7 +47,7 @@ Sunmao 是一个 monorepo 项目，其中分别包含下面这些包：
 | chakra-ui-lib | Sunmao 封装的 [chakra-ui](https://chakra-ui.com/) 组件库             |
 | arco-lib      | Sunmao 封装的 [arco-design](https://arco.design/) 组件库（推荐使用） |
 
-![depend-graph](/Users/tanbowen/develop/sunmao-ui/docs/images/dependGraph.png)
+![depend-graph](../images/dependGraph.png)
 
 ## 本地开发
 
