@@ -13,7 +13,7 @@ type Props = {
   component: ComponentSchema;
   trait: TraitSchema;
   traitIndex: number;
-  onRemove: () => void;
+  onRemove?: (() => void) | null;
   services: EditorServices;
 };
 
@@ -29,7 +29,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
   const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
     const propertySpec = (tImpl.spec.properties as TSchema).properties?.[key];
-    const onChange = (newValue: any)=> {
+    const onChange = (newValue: any) => {
       const operation = genOperation(registry, 'modifyTraitProperty', {
         componentId: component.id,
         traitIndex: traitIndex,
@@ -48,7 +48,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
         path={[key]}
         spec={{
           ...propertySpec,
-          title: propertySpec.title || key
+          title: propertySpec.title || key,
         }}
         value={value}
         services={services}
@@ -62,14 +62,16 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     <VStack key={trait.type} className={formWrapperCSS}>
       <HStack width="full" justifyContent="space-between">
         <strong>{trait.type}</strong>
-        <IconButton
-          aria-label="remove trait"
-          variant="ghost"
-          colorScheme="red"
-          size="xs"
-          icon={<CloseIcon />}
-          onClick={onRemove}
-        />
+        {onRemove ? (
+          <IconButton
+            aria-label="remove trait"
+            variant="ghost"
+            colorScheme="red"
+            size="xs"
+            icon={<CloseIcon />}
+            onClick={onRemove}
+          />
+        ) : null}
       </HStack>
       {fields}
     </VStack>

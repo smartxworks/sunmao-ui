@@ -277,7 +277,10 @@ export class ComponentModel implements IComponentModel {
       this._slotTrait.properties.update({ container: { id: parent, slot } });
       this._slotTrait._isDirty = true;
     } else {
-      this.addTrait(SlotTraitType, { container: { id: parent, slot } });
+      this.addTrait(SlotTraitType, {
+        container: { id: parent, slot },
+        ifCondition: true,
+      });
     }
     this._isDirty = true;
   }
