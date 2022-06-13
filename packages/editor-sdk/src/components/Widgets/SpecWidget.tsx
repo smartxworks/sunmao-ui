@@ -21,7 +21,6 @@ import {
   shouldDisplayLabel,
   getCodeMode,
 } from '../../utils/widget';
-import { shouldRender } from '../../utils/condition';
 import { ExpressionWidget, ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { StringField } from './StringField';
 import { ObjectField } from './ObjectField';
@@ -131,6 +130,7 @@ export const SchemaFieldWidgetOptions = Type.Object({
   isDisplayLabel: Type.Optional(Type.Boolean()),
   isShowAsideExpressionButton: Type.Optional(Type.Boolean()),
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
+  isHidden: Type.Optional(Type.Boolean()),
 });
 
 type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
@@ -145,7 +145,8 @@ type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
 export const SpecWidget: React.FC<Props> = props => {
   const { component, spec, level, path, value, services, children, onChange } = props;
   const { title, widgetOptions } = spec;
-  const { isShowAsideExpressionButton, expressionOptions } = widgetOptions || {};
+  const { isShowAsideExpressionButton, expressionOptions, isHidden } =
+    widgetOptions || {};
   const label = title ?? '';
   const { widgetManager } = services;
   const [isExpression, setIsExpression] = useState(() => _isExpression(value));
@@ -153,7 +154,7 @@ export const SpecWidget: React.FC<Props> = props => {
     widgetOptions?.isDisplayLabel !== false && shouldDisplayLabel(spec, label);
   const codeMode = getCodeMode(spec);
 
-  if (isEmpty(spec) || !shouldRender(spec.conditions || [], value)) {
+  if (isEmpty(spec) || isHidden) {
     return null;
   }
 
