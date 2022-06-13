@@ -49,7 +49,7 @@ export const AddTraitButton: React.FC<Props> = props => {
         >
           Add Trait
         </MenuButton>
-        <MenuList zIndex={2}>{menuItems}</MenuList>
+        <MenuList zIndex={100}>{menuItems}</MenuList>
       </Menu>
     </Box>
   );
