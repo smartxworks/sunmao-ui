@@ -29,8 +29,6 @@
     "prepublish": "npm run build && npm run typings"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.18.2",
-    "@babel/runtime": "^7.18.3",
     "@emotion/css": "^11.7.1",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.7.0",
@@ -59,6 +57,7 @@
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.15.0",
+    "@babel/runtime": "^7.18.3",
     "@sunmao-ui/vite-plugins": "^1.0.2",
     "@swc/core": "^1.2.121",
     "@testing-library/jest-dom": "^5.16.4",
@@ -69,7 +68,6 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-grid-layout": "^1.1.2",
     "@vitejs/plugin-react": "^1.0.1",
-    "@welldone-software/why-did-you-render": "^7.0.1",
     "babel-jest": "^27.1.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.1.0",

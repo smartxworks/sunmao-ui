@@ -2,7 +2,8 @@ import '@testing-library/jest-dom/extend-expect';
 import { Application } from '@sunmao-ui/core';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { initSunmaoUI } from '../../src';
-import { clearTesterMap } from '../../src/components/test/Tester';
+import { clearTesterMap } from '../testLib/Tester';
+import { TestLib } from '../testLib';
 
 const ListSchema: Application = {
   version: 'sunmao/v1',
@@ -143,7 +144,7 @@ const ListEventSchema: Application = {
 };
 
 describe('Core List Component', () => {
-  const { App, stateManager } = initSunmaoUI();
+  const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
   stateManager.noConsoleError = true;
   it('can render component directly', () => {
     const { unmount } = render(<App options={ListSchema} />);

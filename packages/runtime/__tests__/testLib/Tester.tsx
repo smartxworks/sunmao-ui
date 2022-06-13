@@ -1,4 +1,4 @@
-import { implementRuntimeComponent } from '../../utils/buildKit';
+import { implementRuntimeComponent } from '../../src/utils/buildKit';
 import { Type } from '@sinclair/typebox';
 import { useEffect } from 'react';
 
