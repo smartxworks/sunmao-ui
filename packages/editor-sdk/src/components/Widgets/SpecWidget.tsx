@@ -21,6 +21,7 @@ import {
   shouldDisplayLabel,
   getCodeMode,
 } from '../../utils/widget';
+import { shouldRender } from '../../utils/condition';
 import { ExpressionWidget, ExpressionWidgetOptionsSpec } from './ExpressionWidget';
 import { StringField } from './StringField';
 import { ObjectField } from './ObjectField';
@@ -152,7 +153,7 @@ export const SpecWidget: React.FC<Props> = props => {
     widgetOptions?.isDisplayLabel !== false && shouldDisplayLabel(spec, label);
   const codeMode = getCodeMode(spec);
 
-  if (isEmpty(spec)) {
+  if (isEmpty(spec) || !shouldRender(spec.conditions || [], value)) {
     return null;
   }
 

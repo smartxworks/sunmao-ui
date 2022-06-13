@@ -6,7 +6,7 @@ import { VStack } from '@chakra-ui/react';
 
 import { AddTraitButton } from './AddTraitButton';
 import { GeneralTraitForm } from './GeneralTraitForm';
-import { hasSpecialFormTraitList } from '../../../constants';
+import { hasSpecialFormTraitList, unremovableTraits } from '../../../constants';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
 
@@ -36,15 +36,18 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
     if (hasSpecialFormTraitList.includes(trait.type)) {
       return null;
     }
-    const onRemoveTrait = () => {
-      eventBus.send(
-        'operation',
-        genOperation(registry, 'removeTrait', {
-          componentId: component.id,
-          index,
-        })
-      );
-    };
+    const onRemoveTrait = unremovableTraits.includes(trait.type)
+      ? null
+      : () => {
+          eventBus.send(
+            'operation',
+            genOperation(registry, 'removeTrait', {
+              componentId: component.id,
+              index,
+            })
+          );
+        };
+
     return (
       <GeneralTraitForm
         key={index}
