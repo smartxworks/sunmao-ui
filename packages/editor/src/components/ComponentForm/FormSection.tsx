@@ -24,7 +24,7 @@ const SectionTitleCSS = css`
   position: sticky;
   padding: 4px 0;
   top: 0;
-  z-index: 100;
+  z-index: 1;
   font-size: 18px;
   font-weight: 600;
   color: var(--chakra-colors-gray-600);
@@ -36,8 +36,8 @@ export const FormSection: React.FC<Props> = props => {
   return (
     <AccordionItem className={FormSectionCSS} width="full">
       <HStack className={SectionTitleCSS}>
-        <Text flex='1'>{props.title}</Text>
-        <AccordionButton width='auto'>
+        <Text flex="1">{props.title}</Text>
+        <AccordionButton width="auto">
           <AccordionIcon />
         </AccordionButton>
       </HStack>

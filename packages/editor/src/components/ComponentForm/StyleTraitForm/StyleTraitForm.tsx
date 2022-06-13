@@ -19,11 +19,13 @@ import {
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
-import { SizeWidget, ColorWidget } from '@sunmao-ui/editor-sdk';
+import { FontWidget, SizeWidget, ColorWidget } from '@sunmao-ui/editor-sdk';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
+
+type PartialCSSProperties = Partial<Record<keyof React.CSSProperties, any>>;
 
 type Props = {
   component: ComponentSchema;
@@ -33,7 +35,7 @@ type Props = {
 type Styles = Array<{
   styleSlot: string;
   style: string;
-  cssProperties: React.CSSProperties;
+  cssProperties: PartialCSSProperties;
 }>;
 
 const STYLE_TRAIT_TYPE = `${CORE_VERSION}/${CoreTraitName.Style}`;
@@ -148,7 +150,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
         updateStyles(newStyles);
       };
 
-      const changeCssProperties = (newCss: React.CSSProperties) => {
+      const changeCssProperties = (newCss: PartialCSSProperties) => {
         const newCssProperties = Object.assign({}, style, newCss);
         const newStyles = produce(styles, draft => {
           draft[i].cssProperties = newCssProperties;
@@ -197,6 +199,13 @@ export const StyleTraitForm: React.FC<Props> = props => {
                   onChange={changeCssProperties}
                 />
               </CollapsibleFormControl>
+              <CollapsibleFormControl label="Font">
+                <FontWidget
+                  value={_cssProperties || {}}
+                  onChange={changeCssProperties}
+                  {...widgetProps}
+                />
+              </CollapsibleFormControl>
               <CollapsibleFormControl label="Color">
                 <Box mb="8px">
                   <Text mb="8px">Text Color</Text>
@@ -227,7 +236,14 @@ export const StyleTraitForm: React.FC<Props> = props => {
         </AccordionItem>
       );
     });
-  }, [styles, styleSlots, updateStyles, changeStyleSlot, changeStyleContent]);
+  }, [
+    styles,
+    styleSlots,
+    widgetProps,
+    updateStyles,
+    changeStyleSlot,
+    changeStyleContent,
+  ]);
 
   return (
     <VStack width="full" alignItems="self-start" spacing="2">
