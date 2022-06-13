@@ -8,7 +8,7 @@ const ContainerPropertySpec = Type.Object(
     slot: Type.String(),
   },
   // don't show this property in the editor
-  { conditions: [{ key: '', value: '' }] }
+  { widgetOptions: { isHidden: true } }
 );
 
 export const PropsSpec = Type.Object({
