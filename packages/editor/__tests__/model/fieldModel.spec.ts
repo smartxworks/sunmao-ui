@@ -3,6 +3,7 @@ import { FieldModel } from '../../src/AppModel/FieldModel';
 import { ComponentId } from '../../src/AppModel/IAppModel';
 import { registry } from '../services';
 import { ChangeIdMockSchema } from './mock';
+import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 describe('Field test', () => {
   it('parse static property', () => {
@@ -82,6 +83,7 @@ describe('Field test', () => {
     const appModel = new AppModel(ChangeIdMockSchema, registry);
     const input = appModel.getComponentById('input' as ComponentId);
     const text = appModel.getComponentById('text' as ComponentId);
+    const button = appModel.getComponentById('button' as ComponentId);
 
     input.changeId('input1' as ComponentId);
 
@@ -91,6 +93,28 @@ describe('Field test', () => {
         raw: "pre {{(function () {\n    const object = { value: input1.value + input1.notExistKey };\n    return '-' + object.value + '-';\n}());}} end",
         format: 'plain',
       },
+    });
+    expect(
+      button.traits.find(trait => trait.type === `${CORE_VERSION}/${CoreTraitName.Event}`)
+        .properties.rawValue
+    ).toEqual({
+      handlers: [
+        {
+          type: 'onClick',
+          componentId: 'input1',
+          method: {
+            name: 'setInputValue',
+            parameters: {
+              value: 'Hello',
+            },
+          },
+          disabled: false,
+          wait: {
+            type: 'delay',
+            time: 0,
+          },
+        },
+      ],
     });
   });
 });

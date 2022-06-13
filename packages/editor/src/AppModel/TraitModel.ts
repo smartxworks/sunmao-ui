@@ -33,7 +33,13 @@ export class TraitModel implements ITraitModel {
     this.id = `${this.parent.id}_trait${traitIdCount++}` as TraitId;
     this.spec = this.registry.getTraitByType(this.type);
 
-    this.properties = new FieldModel(trait.properties, this.appModel, this.parent);
+    this.properties = new FieldModel(
+      trait.properties,
+      this.spec.spec.properties,
+      this.appModel,
+      this.parent,
+      this
+    );
   }
 
   get rawProperties() {

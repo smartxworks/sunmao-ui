@@ -58,7 +58,12 @@ export class ComponentModel implements IComponentModel {
     this.genStateExample();
     this.parentId = this._slotTrait?.rawProperties.container.id;
     this.parentSlot = this._slotTrait?.rawProperties.container.slot;
-    this.properties = new FieldModel(schema.properties, this.appModel, this);
+    this.properties = new FieldModel(
+      schema.properties,
+      this.spec.spec.properties,
+      this.appModel,
+      this
+    );
   }
 
   get slots() {
@@ -207,25 +212,23 @@ export class ComponentModel implements IComponentModel {
   changeId(newId: ComponentId) {
     const oldId = this.id;
     const isIdExist = !!this.appModel.getComponentById(newId);
+
     if (isIdExist) {
       throw Error(`Id ${newId} already exist`);
     }
+
     this.id = newId;
     for (const slot in this.children) {
       const slotChildren = this.children[slot as SlotName];
+
       slotChildren.forEach(child => {
         child.parentId = newId;
-        const slotTrait = child.traits.find(t => t.type === SlotTraitType);
-        if (slotTrait) {
-          slotTrait.properties.update({ container: { id: newId, slot } });
-          slotTrait._isDirty = true;
-        }
-        child._isDirty = true;
       });
     }
     this._isDirty = true;
     this.appModel.changeComponentMapId(oldId, newId);
     this.appModel.emitter.emit('idChange', { oldId, newId });
+
     return this;
   }
 
