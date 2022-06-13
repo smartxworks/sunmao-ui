@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom/extend-expect';
-import { Application, Module } from '@sunmao-ui/core';
+import { Application, createModule, RuntimeModule } from '@sunmao-ui/core';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { initSunmaoUI } from '../../src';
-import { clearTesterMap } from '../../src/components/test/Tester';
+import { clearTesterMap } from '../testLib/Tester';
+import { TestLib } from '../testLib';
 
-const ModuleSchema: Module = {
-  kind: 'Module',
+const ModuleSchema: RuntimeModule = createModule({
   version: 'custom/v1',
   metadata: { name: 'myModule0', description: 'my module' },
   spec: {
@@ -48,7 +48,7 @@ const ModuleSchema: Module = {
       traits: [],
     },
   ],
-};
+});
 
 const ApplicationSchema: Application = {
   version: 'sunmao/v1',
@@ -115,7 +115,7 @@ const ApplicationSchema: Application = {
   },
 };
 describe('ModuleRenderer', () => {
-  const { App, stateManager, registry } = initSunmaoUI();
+  const { App, stateManager, registry } = initSunmaoUI({ libs: [TestLib] });
   registry.registerModule(ModuleSchema);
   stateManager.noConsoleError = true;
   it('can accept properties', () => {

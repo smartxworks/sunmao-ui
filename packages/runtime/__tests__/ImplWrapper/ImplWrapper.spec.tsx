@@ -2,11 +2,8 @@ import '@testing-library/jest-dom/extend-expect';
 import { render, screen, waitFor } from '@testing-library/react';
 import produce from 'immer';
 import { initSunmaoUI } from '../../src';
-import {
-  destroyTimesMap,
-  renderTimesMap,
-  clearTesterMap,
-} from '../../src/components/test/Tester';
+import { TestLib } from '../testLib';
+import { destroyTimesMap, renderTimesMap, clearTesterMap } from '../testLib/Tester';
 import {
   SingleComponentSchema,
   ComponentSchemaChangeSchema,
@@ -15,11 +12,15 @@ import {
   AsyncMergeStateSchema,
 } from './mockSchema';
 
+// A pure single sunmao component will render twice when it mount.
+// The first one is its first render, the second one is because traitResults and evaledProperties updates.
+// If you find the renderTimes in tests is different from what you get in browser,
+// please check whether the react is in StrictMode, because in StrictMode, component will render twice by default.
 const SingleComponentRenderTimes = '2';
 
 describe('single component condition', () => {
   it('only render one time', () => {
-    const { App } = initSunmaoUI();
+    const { App } = initSunmaoUI({ libs: [TestLib] });
     const { unmount } = render(<App options={SingleComponentSchema} />);
 
     // simple component will render 2 times, because it have to eval trait and properties twice
@@ -32,7 +33,7 @@ describe('single component condition', () => {
 
 describe('after the schema changes', () => {
   it('the component and its siblings will not unmount after schema changes', () => {
-    const { App } = initSunmaoUI();
+    const { App } = initSunmaoUI({ libs: [TestLib] });
     const { rerender, unmount } = render(<App options={ComponentSchemaChangeSchema} />);
     expect(screen.getByTestId('staticComponent-destroy-times')).toHaveTextContent('0');
     expect(screen.getByTestId('dynamicComponent-destroy-times')).toHaveTextContent('0');
@@ -54,7 +55,7 @@ describe('after the schema changes', () => {
 
 describe('hidden trait condition', () => {
   it('the hidden component should not merge state in store', () => {
-    const { App, stateManager } = initSunmaoUI();
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
     stateManager.noConsoleError = true;
     const { unmount } = render(<App options={HiddenTraitSchema} />);
     expect(screen.getByTestId('tester')).toHaveTextContent(SingleComponentRenderTimes);
@@ -68,7 +69,7 @@ describe('hidden trait condition', () => {
 
 describe('when component merge state synchronously', () => {
   it('it will not cause extra render', () => {
-    const { App, stateManager } = initSunmaoUI();
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
     const { unmount } = render(<App options={MergeStateSchema} />);
     expect(screen.getByTestId('tester')).toHaveTextContent(SingleComponentRenderTimes);
     expect(screen.getByTestId('tester-text')).toHaveTextContent('foo-bar-baz');
@@ -78,13 +79,13 @@ describe('when component merge state synchronously', () => {
     clearTesterMap();
   });
 
-  it(`the components' order will not cause extra render`, () => {
+  it(`the components' order will not affect render result`, () => {
     const newMergeStateSchema = produce(MergeStateSchema, draft => {
       const temp = draft.spec.components[0];
       draft.spec.components[0] = draft.spec.components[1];
       draft.spec.components[1] = temp;
     });
-    const { App, stateManager } = initSunmaoUI();
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
     stateManager.noConsoleError = true;
     const { unmount } = render(<App options={newMergeStateSchema} />);
     expect(screen.getByTestId('tester')).toHaveTextContent(SingleComponentRenderTimes);
@@ -103,10 +104,11 @@ describe('when component merge state asynchronously', () => {
     });
 
   it('it will cause extra render', async () => {
-    const { App, stateManager } = initSunmaoUI();
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
     stateManager.noConsoleError = true;
     const { unmount } = render(<App options={AsyncMergeStateSchema} />);
     await waitFor(timeoutPromise);
+    // 4 = 2 default render times + timeout trait run twice causing another 2 renders
     expect(await screen.findByTestId('tester')).toHaveTextContent('4');
 
     unmount();
@@ -119,10 +121,11 @@ describe('when component merge state asynchronously', () => {
       draft.spec.components[0] = draft.spec.components[1];
       draft.spec.components[1] = temp;
     });
-    const { App, stateManager } = initSunmaoUI();
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
     stateManager.noConsoleError = true;
     const { unmount } = render(<App options={newMergeStateSchema} />);
     await waitFor(timeoutPromise);
+    // 5 = 2 default render times + timeout trait run twice causing another 2 renders + order causing change
     expect(await screen.findByTestId('tester')).toHaveTextContent('5');
 
     unmount();

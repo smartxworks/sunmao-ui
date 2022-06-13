@@ -11,12 +11,6 @@ import CoreFileInput from '../components/core/FileInput';
 import CoreList from '../components/core/List';
 import CoreIframe from '../components/core/Iframe';
 
-// test
-import TestButton from '../components/test/Button';
-import TestTester from '../components/test/Tester';
-import TestInput from '../components/test/Input';
-import TimeoutTrait from '../components/test/TimeoutTrait';
-
 // traits
 import CoreArrayState from '../traits/core/ArrayState';
 import CoreState from '../traits/core/State';
@@ -252,11 +246,6 @@ export function initRegistry(
   registry.registerComponent(CoreFileInput);
   registry.registerComponent(CoreList);
   registry.registerComponent(CoreIframe);
-
-  registry.registerComponent(TestTester);
-  registry.registerComponent(TestButton);
-  registry.registerComponent(TestInput);
-  registry.registerTrait(TimeoutTrait);
 
   registry.registerTrait(CoreState);
   registry.registerTrait(CoreArrayState);
