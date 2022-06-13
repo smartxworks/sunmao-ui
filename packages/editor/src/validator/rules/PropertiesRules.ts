@@ -69,7 +69,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
     properties.traverse((fieldModel, key) => {
       Object.keys(fieldModel.refs).forEach((id: string) => {
         const targetComponent = appModel.getComponentById(id as ComponentId);
-        const paths = fieldModel.refs[id as ComponentId];
+        const paths = fieldModel.refs[id as ComponentId].properties;
 
         if (targetComponent) {
           // case 1: id is a component
