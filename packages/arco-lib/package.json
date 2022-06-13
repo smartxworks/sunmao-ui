@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/arco-lib",
-  "version": "0.3.0-alpha.2",
+  "version": "0.3.0-alpha.3",
   "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
   "license": "MIT",
   "publishConfig": {
@@ -32,8 +32,8 @@
     "@emotion/css": "^11.7.1",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.7.0-alpha.0",
-    "@sunmao-ui/editor-sdk": "^0.3.0-alpha.2",
-    "@sunmao-ui/runtime": "^0.7.0-alpha.2",
+    "@sunmao-ui/editor-sdk": "^0.3.0-alpha.3",
+    "@sunmao-ui/runtime": "^0.7.0-alpha.3",
     "@sunmao-ui/shared": "^0.2.0-alpha.2",
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash-es": "^4.17.21",
