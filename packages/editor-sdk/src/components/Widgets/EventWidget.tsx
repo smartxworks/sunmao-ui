@@ -95,10 +95,13 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         const spec = paramsSpec!.properties![key] as TSchema;
         const defaultValue = spec.defaultValue;
 
-        params[key] = defaultValue ?? parseTypeBox(spec);
+        params[key] =
+          formik.values.method.parameters?.[key] ?? defaultValue ?? parseTypeBox(spec);
       }
 
       return params;
+      // only update when params spec change
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paramsSpec]);
     const parametersPath = useMemo(() => path.concat('method', 'parameters'), [path]);
     const parametersSpec = useMemo(

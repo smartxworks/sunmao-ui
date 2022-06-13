@@ -88,12 +88,14 @@ describe('append to another component', () => {
     expect(newComponent.traits[0].type).toEqual('core/v1/slot');
     expect(newComponent.traits[0].rawProperties).toEqual({
       container: { id: 'vstack1', slot: 'content' },
+      ifCondition: true,
     });
   });
   it('update parent children', () => {
     expect(parent.children['content' as any]).toContain(newComponent);
     expect(newComponent.traits[0].rawProperties).toEqual({
       container: { id: 'vstack1', slot: 'content' },
+      ifCondition: true,
     });
   });
   it('is in right place in allComponents', () => {
@@ -109,6 +111,7 @@ describe('append to another component', () => {
     expect(newComponentSchema.id).toBe('text10');
     expect(newComponentSchema.traits[0].properties).toEqual({
       container: { id: 'vstack1', slot: 'content' },
+      ifCondition: true,
     });
   });
 
@@ -139,7 +142,7 @@ describe('append component as child to self', () => {
   it('append top level component', () => {
     const apiFetch = appModel.getComponentById('apiFetch' as any)!;
     hstack1.appendChild(apiFetch, 'content' as SlotName);
-    const children = hstack1.children['content']
+    const children = hstack1.children['content'];
     expect(children[children.length - 1].id).toBe('apiFetch');
   });
 });
@@ -247,8 +250,7 @@ describe('move component', () => {
       expect(newSchema[0].id).toEqual('apiFetch');
       expect(newSchema[1].id).toEqual('hstack1');
     });
-  })
-
+  });
 
   it('can move component to the first', () => {
     hstack1.moveAfter(null);

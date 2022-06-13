@@ -110,7 +110,7 @@
         {
           "id": "component0",
           "type": "chakra_ui/v1/button",
-          "properties": { "text": { "raw": "提交" } },
+          "properties": { "text": { "raw": "Submit" } },
           "traits": [
             {
               "type": "core/v1/slot",

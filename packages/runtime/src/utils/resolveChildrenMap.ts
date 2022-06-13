@@ -26,7 +26,7 @@ export function resolveChildrenMap(components: RuntimeComponentSchema[]): {
     }
     const children = childrenMap[id];
     if (!children[slot]) {
-      children[slot] = []; 
+      children[slot] = [];
     }
     children[slot].push(c);
     children._allChildren.push(c);

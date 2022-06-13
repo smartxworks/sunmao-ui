@@ -487,6 +487,16 @@ export const Table = implementRuntimeComponent({
         checkCrossPage: checkCrossPage,
         // This option is required to achieve multi-selection across pages when customizing paging
         preserveSelectedRowKeys: useCustomPagination ? checkCrossPage : undefined,
+        onSelect: (selected, record) => {
+          mergeState({
+            selectedRow: selected ? record : undefined,
+          });
+        },
+        onSelectAll: () => {
+          mergeState({
+            selectedRow: undefined,
+          });
+        },
         onChange(selectedRowKeys, selectedRows) {
           mergeState({
             selectedRowKeys: selectedRowKeys as string[],

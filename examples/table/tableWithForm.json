@@ -46,8 +46,8 @@
                       "name": "chakra_ui/v1/openToast",
                       "parameters": {
                         "id": "createSuccessToast",
-                        "title": "恭喜",
-                        "description": "创建虚拟卷成功",
+                        "title": "Congratulations",
+                        "description": "Create Success",
                         "position": "bottom-right",
                         "duration": null,
                         "isClosable": true
@@ -137,38 +137,38 @@
               },
               {
                 "key": "name",
-                "title": "名称",
+                "title": "Name",
                 "type": "text"
               },
               {
                 "key": "type",
-                "title": "类别",
+                "title": "Type",
                 "type": "text",
-                "displayValue": "{{$listItem.type === \"sharing\" ? \"共享虚拟卷\" : \"虚拟卷\"}}"
+                "displayValue": "{{$listItem.type === \"sharing\" ? \"Shared Volume\" : \"Volume\"}}"
               },
               {
                 "key": "size",
-                "title": "容量",
+                "title": "Capacity",
                 "type": "text",
                 "displayValue": "{{$listItem.size}} GiB"
               },
               {
                 "key": "policy",
-                "title": "存储策略",
+                "title": "Policy",
                 "type": "text"
               },
               {
                 "key": "isActive",
-                "title": "是否激活",
+                "title": "Active",
                 "type": "text",
-                "displayValue": "{{$listItem.isActive ? \"是\" : \"否\"}}"
+                "displayValue": "{{$listItem.isActive ? \"Yes\" : \"No\"}}"
               },
               {
                 "key": "operation",
-                "title": "操作",
+                "title": "Operation",
                 "type": "button",
                 "buttonConfig": {
-                  "text": "删除",
+                  "text": "Delete",
                   "handlers": [
                     {
                       "componentId": "deleteVolume",
@@ -229,7 +229,7 @@
           "id": "nameFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "名称",
+            "label": "Name",
             "fieldName": "name",
             "isRequired": true
           },
@@ -275,9 +275,8 @@
           "id": "typeFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "类型",
-            "fieldName": "type",
-            "helperText": "共享虚拟卷支持被多台虚拟机同时挂载。类型创建后不可修改。"
+            "label": "Type",
+            "fieldName": "type"
           },
           "traits": [
             {
@@ -314,7 +313,7 @@
           "type": "chakra_ui/v1/radio",
           "properties": {
             "text": {
-              "raw": "虚拟卷",
+              "raw": "Volume",
               "format": "plain"
             },
             "value": "notSharing"
@@ -336,7 +335,7 @@
           "type": "chakra_ui/v1/radio",
           "properties": {
             "text": {
-              "raw": "共享虚拟卷",
+              "raw": "Shared Volume",
               "format": "plain"
             },
             "value": "sharing",
@@ -358,7 +357,7 @@
           "id": "sizeFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "容量",
+            "label": "Capacity",
             "fieldName": "size",
             "isRequired": true
           },
@@ -402,7 +401,7 @@
           "id": "policyFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "存储策略",
+            "label": "Policy",
             "fieldName": "policy"
           },
           "traits": [
@@ -425,19 +424,19 @@
             "options": [
               {
                 "value": "2thin",
-                "label": "2 副本，精简置备"
+                "label": "2 replicas，thin"
               },
               {
                 "value": "3thin",
-                "label": "3 副本，精简置备"
+                "label": "3 replicas，thin"
               },
               {
                 "value": "2thick",
-                "label": "2 副本，厚置备"
+                "label": "2 replicas，thick"
               },
               {
                 "value": "3thick",
-                "label": "3 副本，厚置备"
+                "label": "3 replicas，thick"
               }
             ]
           },
@@ -457,7 +456,7 @@
           "id": "isActiveFormControl",
           "type": "chakra_ui/v1/formControl",
           "properties": {
-            "label": "激活",
+            "label": "Active",
             "fieldName": "isActive"
           },
           "traits": [
@@ -479,7 +478,7 @@
             "value": "isActive",
             "defaultIsChecked": "{{table.selectedItem ? !!table.selectedItem.isActive : false}}",
             "text": {
-              "raw": "激活",
+              "raw": "Active",
               "format": "plain"
             }
           },
