@@ -1,4 +1,4 @@
-import { parseExpression, expChunkToString } from '@sunmao-ui/shared';
+import { parseExpression, expChunkToString, SpecOptions } from '@sunmao-ui/shared';
 import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';
@@ -8,11 +8,13 @@ import {
   ComponentId,
   IAppModel,
   IComponentModel,
+  ITraitModel,
   IFieldModel,
   ModuleId,
   RefInfo,
 } from './IAppModel';
 import escodegen from 'escodegen';
+import { JSONSchema7 } from 'json-schema';
 
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
@@ -24,8 +26,10 @@ export class FieldModel implements IFieldModel {
 
   constructor(
     value: unknown,
+    public spec?: JSONSchema7 & SpecOptions,
     public appModel?: IAppModel,
-    public componentModel?: IComponentModel
+    public componentModel?: IComponentModel,
+    public traitModel?: ITraitModel
   ) {
     this.update(value);
     this.appModel?.emitter.on('idChange', this.onReferenceIdChange.bind(this));
@@ -63,7 +67,15 @@ export class FieldModel implements IFieldModel {
             (oldValue as FieldModel).updateValue(value[key], false);
             newValue = oldValue;
           } else {
-            newValue = new FieldModel(value[key], this.appModel, this.componentModel);
+            newValue = new FieldModel(
+              value[key],
+              (this.spec?.properties?.[key] || this.spec?.items) as
+                | (JSONSchema7 & SpecOptions)
+                | undefined,
+              this.appModel,
+              this.componentModel,
+              this.traitModel
+            );
           }
 
           if (isArray(result)) {
@@ -170,32 +182,40 @@ export class FieldModel implements IFieldModel {
   }
 
   onReferenceIdChange({ oldId, newId }: { oldId: ComponentId; newId: ComponentId }) {
-    if (!(this.refs[oldId] && this.componentModel)) {
+    if (!this.componentModel) {
       return;
     }
 
-    const exps = parseExpression(this.value as string);
-    const newExps = exps.map(exp => {
-      const node = this.nodes[exp.toString()];
-
-      if (node) {
-        const ref = this.refs[oldId];
-
-        ref.nodes.forEach(refNode => {
-          refNode.name = newId;
-        });
-
-        this.refs[newId] = ref;
-        delete this.refs[oldId];
-
-        return [escodegen.generate(node)];
+    if (this.spec?.isComponentId && this.value === oldId) {
+      if (this.traitModel) {
+        this.traitModel._isDirty = true;
       }
+      this.componentModel._isDirty = true;
+      this.update(newId);
+    } else if (this.refs[oldId]) {
+      const exps = parseExpression(this.value as string);
+      const newExps = exps.map(exp => {
+        const node = this.nodes[exp.toString()];
 
-      return exp;
-    });
-    const value = expChunkToString(newExps);
+        if (node) {
+          const ref = this.refs[oldId];
 
-    this.componentModel._isDirty = true;
-    this.update(value);
+          ref.nodes.forEach(refNode => {
+            refNode.name = newId;
+          });
+
+          this.refs[newId] = ref;
+          delete this.refs[oldId];
+
+          return [escodegen.generate(node)];
+        }
+
+        return exp;
+      });
+      const value = expChunkToString(newExps);
+
+      this.componentModel._isDirty = true;
+      this.update(value);
+    }
   }
 }

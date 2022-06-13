@@ -4,8 +4,10 @@ import {
   MethodSchema,
   RuntimeTrait,
 } from '@sunmao-ui/core';
+import { SpecOptions } from '@sunmao-ui/shared';
 import { Emitter } from 'mitt';
 import { Node } from 'acorn';
+import { JSONSchema7 } from 'json-schema';
 
 export type ComponentId = string & {
   kind: 'componentId';
@@ -133,6 +135,7 @@ export interface IFieldModel {
   // value: any;
   appModel?: IAppModel;
   componentModel?: IComponentModel;
+  spec?: JSONSchema7 & SpecOptions;
   isDynamic: boolean;
   rawValue: any;
   update: (value: unknown) => void;

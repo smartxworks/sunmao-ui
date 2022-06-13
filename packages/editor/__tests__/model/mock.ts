@@ -188,6 +188,63 @@ export const EventHandlerMockSchema: ComponentSchema[] = [
 
 export const ChangeIdMockSchema: ComponentSchema[] = [
   {
+    id: 'stack',
+    type: 'core/v1/stack',
+    properties: {
+      spacing: 12,
+      direction: 'horizontal',
+      align: 'auto',
+      wrap: '',
+      justify: '',
+    },
+    traits: [],
+  },
+  {
+    id: 'button',
+    type: 'chakra_ui/v1/button',
+    properties: {
+      text: {
+        raw: 'text',
+        format: 'plain',
+      },
+      isLoading: false,
+      colorScheme: 'blue',
+    },
+    traits: [
+      {
+        type: 'core/v1/event',
+        properties: {
+          handlers: [
+            {
+              type: 'onClick',
+              componentId: 'input',
+              method: {
+                name: 'setInputValue',
+                parameters: {
+                  value: 'Hello',
+                },
+              },
+              disabled: false,
+              wait: {
+                type: 'delay',
+                time: 0,
+              },
+            },
+          ],
+        },
+      },
+      {
+        type: 'core/v1/slot',
+        properties: {
+          container: {
+            id: 'stack',
+            slot: 'content',
+          },
+        },
+      },
+    ],
+  },
+  {
     id: 'text',
     type: 'core/v1/text',
     properties: {
@@ -196,7 +253,31 @@ export const ChangeIdMockSchema: ComponentSchema[] = [
         format: 'plain',
       },
     },
-    traits: [],
+    traits: [
+      {
+        type: 'core/v1/style',
+        properties: {
+          styles: [
+            {
+              styleSlot: 'content',
+              style: '',
+              cssProperties: {
+                padding: '8px 0px 9px 0px ',
+              },
+            },
+          ],
+        },
+      },
+      {
+        type: 'core/v1/slot',
+        properties: {
+          container: {
+            id: 'stack',
+            slot: 'content',
+          },
+        },
+      },
+    ],
   },
   {
     id: 'input',
@@ -210,6 +291,16 @@ export const ChangeIdMockSchema: ComponentSchema[] = [
       isRequired: false,
       defaultValue: '',
     },
-    traits: [],
+    traits: [
+      {
+        type: 'core/v1/slot',
+        properties: {
+          container: {
+            id: 'stack',
+            slot: 'content',
+          },
+        },
+      },
+    ],
   },
 ];
