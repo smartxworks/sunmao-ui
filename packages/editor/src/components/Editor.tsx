@@ -241,12 +241,12 @@ export const Editor: React.FC<Props> = observer(
             {appBox}
             <Resizable
               defaultSize={{
-                width: 320,
+                width: 360,
                 height: '100%',
               }}
               enable={{ left: true }}
               maxWidth={480}
-              minWidth={250}
+              minWidth={300}
             >
               <Box
                 height="full"

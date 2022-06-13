@@ -43,4 +43,5 @@ export enum CoreWidgetName {
 export enum StyleWidgetName {
   Size = 'size',
   Color = 'color',
+  Font = 'font',
 }

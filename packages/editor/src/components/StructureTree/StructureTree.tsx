@@ -107,7 +107,7 @@ export const StructureTree: React.FC<Props> = props => {
         >
           <AutoCompleteInput
             value={search}
-            placeholder="please input the component id"
+            placeholder="Search component"
             size="md"
             variant="filled"
             marginTop={0}

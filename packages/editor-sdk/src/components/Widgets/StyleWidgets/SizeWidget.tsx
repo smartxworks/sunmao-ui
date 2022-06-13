@@ -23,7 +23,7 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
             spec={mergeWidgetOptionsIntoSpec(props.spec, {
               compactOptions: { height: '32px' },
             })}
-            value={String(value.width) || ''}
+            value={value.width === undefined ? '' : String(value.width) || ''}
             onChange={v => {
               const newSize = {
                 ...value,
@@ -42,7 +42,7 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
             spec={mergeWidgetOptionsIntoSpec(props.spec, {
               compactOptions: { height: '32px' },
             })}
-            value={String(value.height) || ''}
+            value={value.height === undefined ? '' : String(value.height) || ''}
             onChange={v => {
               const newSize = {
                 ...value,
