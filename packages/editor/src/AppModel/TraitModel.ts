@@ -6,6 +6,7 @@ import {
   ITraitModel,
   IFieldModel,
   TraitId,
+  IAppModel,
 } from './IAppModel';
 import { FieldModel } from './FieldModel';
 import { genTrait } from './utils';
@@ -22,8 +23,9 @@ export class TraitModel implements ITraitModel {
 
   constructor(
     trait: TraitSchema,
-    public parent: IComponentModel,
-    private registry: RegistryInterface
+    private registry: RegistryInterface,
+    public appModel: IAppModel,
+    public parent: IComponentModel
   ) {
     this.schema = trait;
     this.parent = parent;
@@ -31,7 +33,7 @@ export class TraitModel implements ITraitModel {
     this.id = `${this.parent.id}_trait${traitIdCount++}` as TraitId;
     this.spec = this.registry.getTraitByType(this.type);
 
-    this.properties = new FieldModel(trait.properties);
+    this.properties = new FieldModel(trait.properties, this.appModel, this.parent);
   }
 
   get rawProperties() {

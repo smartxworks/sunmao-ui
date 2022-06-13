@@ -185,3 +185,31 @@ export const EventHandlerMockSchema: ComponentSchema[] = [
     ],
   },
 ];
+
+export const ChangeIdMockSchema: ComponentSchema[] = [
+  {
+    id: 'text',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: "pre {{(function () {\n    const object = { value: input.value + input.notExistKey };\n    return '-' + object.value + '-';\n}());}} end",
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+  {
+    id: 'input',
+    type: 'chakra_ui/v1/input',
+    properties: {
+      variant: 'outline',
+      placeholder: 'Please input value',
+      size: 'md',
+      focusBorderColor: '',
+      isDisabled: false,
+      isRequired: false,
+      defaultValue: '',
+    },
+    traits: [],
+  },
+];
