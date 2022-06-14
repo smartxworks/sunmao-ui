@@ -24,7 +24,7 @@ export class TraitModel implements ITraitModel {
   constructor(
     trait: TraitSchema,
     private registry: RegistryInterface,
-    public appModel: IAppModel,
+    private appModel: IAppModel,
     public parent: IComponentModel
   ) {
     this.schema = trait;

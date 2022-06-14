@@ -252,6 +252,12 @@ export const ChangeIdMockSchema: ComponentSchema[] = [
         raw: "pre {{(function () {\n    const object = { value: input.value + input.notExistKey };\n    return '-' + object.value + '-';\n}());}} end",
         format: 'plain',
       },
+      string: 'Please input here',
+      expressionString: "{{ 'input' }}",
+      array: ['input'],
+      expressionArray: "{{['input']}}",
+      object: { input: 'input' },
+      expressionObject: "{{{'input': 'input'}}}",
     },
     traits: [
       {

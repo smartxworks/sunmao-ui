@@ -113,7 +113,6 @@ export interface IComponentModel {
 
 export interface ITraitModel {
   // trait id only exists in model, doesn't exist in schema
-  appModel: IAppModel;
   spec: RuntimeTrait;
   id: TraitId;
   parent: IComponentModel;
@@ -126,15 +125,15 @@ export interface ITraitModel {
   updateProperty: (key: string, value: any) => void;
 }
 
+export type ASTNode = Node & { name: string };
+
 export type RefInfo = {
-  nodes: (Node & { name: string })[];
-  properties: string[];
+  componentIdASTNodes: ASTNode[];
+  refProperties: string[];
 };
 
 export interface IFieldModel {
   // value: any;
-  appModel?: IAppModel;
-  componentModel?: IComponentModel;
   spec?: JSONSchema7 & SpecOptions;
   isDynamic: boolean;
   rawValue: any;
@@ -142,7 +141,6 @@ export interface IFieldModel {
   getProperty: (key: string) => IFieldModel | void;
   getValue: () => unknown | void | IFieldModel;
   traverse: (cb: (f: IFieldModel, key: string) => void) => void;
-  onReferenceIdChange: (params: AppModelEventType['idChange']) => void;
   // ids of used components in the expression
-  refs: Record<ComponentId | ModuleId, RefInfo>;
+  refComponentInfos: Record<ComponentId | ModuleId, RefInfo>;
 }
