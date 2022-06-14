@@ -15,6 +15,7 @@ const DropdownStateSpec = Type.Object({
 });
 
 const exampleProperties: Static<typeof DropdownPropsSpec> = {
+  text: 'Click',
   dropdownType: 'default',
   trigger: 'click',
   position: 'bl',
@@ -51,7 +52,7 @@ export const Dropdown = implementRuntimeComponent({
     events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
   },
 })(props => {
-  const { elementRef, slotsElements, callbackMap, mergeState } = props;
+  const { text, elementRef, slotsElements, callbackMap, mergeState } = props;
   const cProps = getComponentProps(props);
   const { list, dropdownType, autoAlignPopupWidth, ...restProps } = cProps;
   const typeMap = {
@@ -90,7 +91,11 @@ export const Dropdown = implementRuntimeComponent({
       triggerProps={{ autoAlignPopupMinWidth: autoAlignPopupWidth }}
     >
       <div ref={elementRef}>
-        {slotsElements.trigger ? slotsElements.trigger({}) : <Button>Click</Button>}
+        {slotsElements.trigger ? (
+          slotsElements.trigger({})
+        ) : (
+          <Button>{text || null}</Button>
+        )}
       </div>
     </Dropdown>
   );
