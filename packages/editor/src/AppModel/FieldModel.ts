@@ -12,24 +12,24 @@ import {
   IFieldModel,
   ModuleId,
   RefInfo,
+  ASTNode,
+  AppModelEventType,
 } from './IAppModel';
 import escodegen from 'escodegen';
 import { JSONSchema7 } from 'json-schema';
 
-type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
-
 export class FieldModel implements IFieldModel {
   isDynamic = false;
-  refs: Record<ComponentId | ModuleId, RefInfo> = {};
-  private nodes: Record<string, acorn.Node> = {};
+  refComponentInfos: Record<ComponentId | ModuleId, RefInfo> = {};
+  private astNodes: Record<string, ASTNode> = {};
   private value: unknown | Array<IFieldModel> | Record<string, IFieldModel>;
 
   constructor(
     value: unknown,
     public spec?: JSONSchema7 & SpecOptions,
-    public appModel?: IAppModel,
-    public componentModel?: IComponentModel,
-    public traitModel?: ITraitModel
+    private appModel?: IAppModel,
+    private componentModel?: IComponentModel,
+    private traitModel?: ITraitModel
   ) {
     this.update(value);
     this.appModel?.emitter.on('idChange', this.onReferenceIdChange.bind(this));
@@ -137,14 +137,14 @@ export class FieldModel implements IFieldModel {
       parseExpression(this.value as string).filter(exp => typeof exp !== 'string')
     );
 
-    this.refs = {};
-    this.nodes = {};
+    this.refComponentInfos = {};
+    this.astNodes = {};
 
     exps.forEach(exp => {
       let lastIdentifier: ComponentId = '' as ComponentId;
       const node = (acornLoose as typeof acorn).parse(exp, { ecmaVersion: 2020 });
 
-      this.nodes[exp] = node;
+      this.astNodes[exp] = node as ASTNode;
 
       simpleWalk(node, {
         Expression: expressionNode => {
@@ -155,12 +155,14 @@ export class FieldModel implements IFieldModel {
                 expressionNode.end
               ) as ComponentId;
 
-              if (this.refs[key]) {
-                this.refs[key].nodes.push(expressionNode as Flatten<RefInfo['nodes']>);
+              if (this.refComponentInfos[key]) {
+                this.refComponentInfos[key].componentIdASTNodes.push(
+                  expressionNode as ASTNode
+                );
               } else {
-                this.refs[key] = {
-                  nodes: [expressionNode as Flatten<RefInfo['nodes']>],
-                  properties: [],
+                this.refComponentInfos[key] = {
+                  componentIdASTNodes: [expressionNode as ASTNode],
+                  refProperties: [],
                 };
               }
               lastIdentifier = key;
@@ -172,7 +174,7 @@ export class FieldModel implements IFieldModel {
               if (path.startsWith('.')) {
                 path = path.slice(1, path.length);
               }
-              this.refs[lastIdentifier]?.properties.push(path);
+              this.refComponentInfos[lastIdentifier]?.refProperties.push(path);
               break;
             default:
           }
@@ -181,7 +183,7 @@ export class FieldModel implements IFieldModel {
     });
   }
 
-  onReferenceIdChange({ oldId, newId }: { oldId: ComponentId; newId: ComponentId }) {
+  private onReferenceIdChange({ oldId, newId }: AppModelEventType['idChange']) {
     if (!this.componentModel) {
       return;
     }
@@ -192,20 +194,20 @@ export class FieldModel implements IFieldModel {
       }
       this.componentModel._isDirty = true;
       this.update(newId);
-    } else if (this.refs[oldId]) {
+    } else if (this.refComponentInfos[oldId]) {
       const exps = parseExpression(this.value as string);
       const newExps = exps.map(exp => {
-        const node = this.nodes[exp.toString()];
+        const node = this.astNodes[exp.toString()];
 
         if (node) {
-          const ref = this.refs[oldId];
+          const ref = this.refComponentInfos[oldId];
 
-          ref.nodes.forEach(refNode => {
+          ref.componentIdASTNodes.forEach(refNode => {
             refNode.name = newId;
           });
 
-          this.refs[newId] = ref;
-          delete this.refs[oldId];
+          this.refComponentInfos[newId] = ref;
+          delete this.refComponentInfos[oldId];
 
           return [escodegen.generate(node)];
         }
@@ -214,6 +216,9 @@ export class FieldModel implements IFieldModel {
       });
       const value = expChunkToString(newExps);
 
+      if (this.traitModel) {
+        this.traitModel._isDirty = true;
+      }
       this.componentModel._isDirty = true;
       this.update(value);
     }
