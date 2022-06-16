@@ -2,25 +2,42 @@ import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
 import { CallbackMap, UIServices } from '../../types';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { EventHandlerSpec, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import {
+  EventHandlerSpec,
+  EventCallBackHandlerSpec,
+  CORE_VERSION,
+  CoreTraitName,
+  PropsBeforeEvaled,
+} from '@sunmao-ui/shared';
 
+const HandlersSpec = Type.Array(EventHandlerSpec);
+const CallbackSpec = Type.Array(EventCallBackHandlerSpec);
 export const EventTraitPropertiesSpec = Type.Object({
-  handlers: Type.Array(EventHandlerSpec),
+  handlers: HandlersSpec,
 });
 
 export const generateCallback = (
-  handler: Omit<Static<typeof EventHandlerSpec>, 'type'>,
-  rawHandler: Static<typeof EventHandlerSpec>,
+  handler: Omit<Static<typeof EventCallBackHandlerSpec>, 'type'>,
+  rawHandlers: string | PropsBeforeEvaled<Static<typeof CallbackSpec>>,
+  index: number,
   services: UIServices,
   slotProps?: unknown,
   evalListItem?: boolean
 ) => {
+  const { stateManager } = services;
   const send = () => {
     // Eval before sending event to assure the handler object is evaled from the latest state.
-    const evaledHandler = services.stateManager.deepEval(rawHandler, {
+    const evalOptions = {
       scopeObject: { $slot: slotProps },
       evalListItem,
-    });
+    };
+    const evaledHandlers =
+      typeof rawHandlers === 'string'
+        ? (stateManager.maskedEval(rawHandlers, evalOptions) as Static<
+            typeof EventCallBackHandlerSpec
+          >[])
+        : stateManager.deepEval(rawHandlers);
+    const evaledHandler = evaledHandlers[index];
 
     if (evaledHandler.disabled && typeof evaledHandler.disabled === 'boolean') {
       return;
@@ -61,15 +78,23 @@ export default implementRuntimeTrait({
 })(() => {
   return ({ trait, handlers, services, slotProps, evalListItem }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
-    const rawHandlers = trait.properties.handlers as Static<typeof EventHandlerSpec>[];
+    const rawHandlers = trait.properties.handlers;
     // setup current handlers
     for (const i in handlers) {
       const handler = handlers[i];
+
       if (!callbackQueueMap[handler.type]) {
         callbackQueueMap[handler.type] = [];
       }
       callbackQueueMap[handler.type].push(
-        generateCallback(handler, rawHandlers[i], services, slotProps, evalListItem)
+        generateCallback(
+          handler,
+          rawHandlers,
+          Number(i),
+          services,
+          slotProps,
+          evalListItem
+        )
       );
     }
 

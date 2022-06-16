@@ -33,7 +33,9 @@ export function implementRuntimeComponent<
   options: T
 ): (
   impl: ComponentImpl<
-    Static<T['spec']['properties']>,
+    Static<T['spec']['properties']> extends Record<string, unknown>
+      ? Static<T['spec']['properties']>
+      : Record<string, unknown>,
     Static<T['spec']['state']>,
     ToMap<T['spec']['methods']>,
     T['spec']['slots'],
