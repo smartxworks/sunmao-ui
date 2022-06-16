@@ -11,7 +11,7 @@ import {
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
 import { ImplementedRuntimeModule, UIServices } from '../../types';
-import { EventHandlerSpec, ModuleRenderSpec } from '@sunmao-ui/shared';
+import { EventHandlerSpec, ModuleRenderSpec, PropsAfterEvaled } from '@sunmao-ui/shared';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 import { initStateAndMethod } from '../../utils/initStateAndMethod';
 import { ExpressionError } from '../../services/StateManager';
@@ -42,9 +42,11 @@ const ModuleRendererContent = React.forwardRef<
     scopeObject: evalScope,
   }) as string | ExpressionError;
 
-  function evalObject<T extends Record<string, any>>(obj: T): T {
+  function evalObject<T extends Record<string, any> = Record<string, any>>(
+    obj: T
+  ): PropsAfterEvaled<{ obj: T }>['obj'] {
     const evalOptions = { evalListItem: true, scopeObject: evalScope };
-    return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
+    return services.stateManager.mapValuesDeep(obj, ({ value }) => {
       if (typeof value === 'string') {
         return services.stateManager.maskedEval(value, evalOptions);
       }

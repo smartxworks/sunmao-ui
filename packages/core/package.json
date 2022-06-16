@@ -32,6 +32,7 @@
     "url": "https://github.com/webzard-io/sunmao-ui/issues"
   },
   "devDependencies": {
+    "@sunmao-ui/shared": "^0.1.0",
     "@swc/core": "^1.2.121",
     "@types/jest": "^26.0.23",
     "@types/lodash-es": "^4.17.5",

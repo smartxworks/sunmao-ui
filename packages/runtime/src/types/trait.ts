@@ -14,10 +14,10 @@ export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
   unmount?: boolean;
 };
 
-export type TraitImpl<T = any> = (
-  props: T &
+export type TraitImpl<TProperties = any> = (
+  props: TProperties &
     RuntimeFunctions<unknown, unknown, any> & {
-      trait: RuntimeTraitSchema;
+      trait: RuntimeTraitSchema<TProperties>;
       componentId: string;
       services: UIServices;
       evalListItem?: boolean;

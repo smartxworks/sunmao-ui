@@ -15,8 +15,6 @@ import { TablePagination } from './Pagination';
 
 import { TableTd } from './TableTd';
 import { implementTable } from './spec';
-import { ColumnsPropertySpec } from './TableTypes';
-import { Static } from '@sinclair/typebox';
 
 type SortRule = {
   key: string;
@@ -187,20 +185,14 @@ export const TableImpl = implementTable(
                   }}
                 >
                   {isMultiSelect ? checkbox : undefined}
-                  {columns.map((column, j) => (
+                  {columns.map(column => (
                     <TableTd
                       index={i}
                       component={component}
                       key={column.key}
                       item={item}
                       onClickItem={() => selectItem(item)}
-                      rawColumn={
-                        (
-                          component.properties.columns as Static<
-                            typeof ColumnsPropertySpec
-                          >
-                        )[j]
-                      }
+                      rawColumns={component.properties.columns}
                       column={column}
                       services={services}
                       app={app}
