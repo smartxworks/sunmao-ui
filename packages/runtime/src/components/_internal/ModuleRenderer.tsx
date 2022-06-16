@@ -1,6 +1,6 @@
 import { Static } from '@sinclair/typebox';
 import React, { useEffect, useMemo } from 'react';
-import { get } from 'lodash-es';
+import { get } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   Application,

@@ -7,7 +7,7 @@ import {
 } from '../../src/AppModel/IAppModel';
 import { AppSchema, EventHandlerMockSchema } from './mock';
 import { produce } from 'immer';
-import { get } from 'lodash-es';
+import { get } from 'lodash';
 import { registry } from '../services';
 
 describe('ComponentModel test', () => {

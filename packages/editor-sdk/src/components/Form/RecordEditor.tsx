@@ -1,7 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
-import { fromPairs, toPairs } from 'lodash-es';
+import { fromPairs, toPairs } from 'lodash';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Type } from '@sinclair/typebox';
 import { SpecWidget } from '../Widgets/SpecWidget';

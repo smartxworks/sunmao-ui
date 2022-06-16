@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'lodash';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
