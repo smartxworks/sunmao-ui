@@ -3439,6 +3439,14 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@sunmao-ui/shared@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/shared/-/shared-0.1.0.tgz#67f55f911664d7184d60467e4a7ed6133a92a899"
+  integrity sha512-PLQzSZZpUWGKyVmoNG7j2x9ppa8j1Fkcylx0UQuoi/eo22cDuFf26+haaY+eKYB2esJdCTFBjdy1NMjVfB3ZfQ==
+  dependencies:
+    "@sinclair/typebox" "^0.21.2"
+    lodash-es "^4.17.21"
+
 "@swc/core-android-arm64@^1.2.121":
   version "1.2.186"
   resolved "https://registry.yarnpkg.com/@swc/core-android-arm64/-/core-android-arm64-1.2.186.tgz#0b4cf17ea869126bfbf0a75dd1b0486bbedfb8a7"
