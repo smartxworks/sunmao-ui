@@ -20,11 +20,11 @@ import {
 import { ComponentSchema } from '@sunmao-ui/core';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 import { FontWidget, SizeWidget, ColorWidget, SpaceWidget } from '@sunmao-ui/editor-sdk';
+import { capitalize } from 'lodash';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-import { capitalize } from 'lodash-es';
 
 type PartialCSSProperties = Partial<Record<keyof React.CSSProperties, any>>;
 

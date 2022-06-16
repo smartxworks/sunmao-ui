@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { isArray, sortBy } from 'lodash-es';
+import { isArray, sortBy } from 'lodash';
 import {
   Table as BaseTable,
   Thead,
