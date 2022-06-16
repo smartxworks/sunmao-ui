@@ -4,12 +4,18 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { ObjectField, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
+import { css } from '@emotion/css';
 
 interface Props {
   datasource: ComponentSchema;
   services: EditorServices;
   traitType: string;
 }
+
+const LabelStyle = css`
+  font-weight: normal;
+  font-size: 14px;
+`;
 
 export const DataForm: React.FC<Props> = props => {
   const { datasource, services, traitType } = props;
@@ -46,14 +52,22 @@ export const DataForm: React.FC<Props> = props => {
     e.stopPropagation();
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     setName(datasource.id);
   }, [datasource.id]);
 
   return (
-    <VStack p="2" spacing="2" background="gray.50" onKeyDown={onKeyDown}>
+    <VStack
+      p="2"
+      spacing="2"
+      background="gray.50"
+      alignItems="stretch"
+      onKeyDown={onKeyDown}
+    >
       <FormControl>
-        <FormLabel>Name</FormLabel>
+        <FormLabel>
+          <span className={LabelStyle}>Name</span>
+        </FormLabel>
         <Input
           value={name}
           onChange={e => {
