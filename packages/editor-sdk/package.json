@@ -66,6 +66,7 @@
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.4.1",
     "@sunmao-ui/runtime": "^0.4.1",
+    "@sunmao-ui/shared": "^0.1.0",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
     "lodash-es": "^4.17.21",

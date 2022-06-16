@@ -68,6 +68,8 @@
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.4.1",
     "@sunmao-ui/runtime": "^0.4.1",
+    "@sunmao-ui/shared": "^0.1.0",
+    "framer-motion": "^4",
     "lodash-es": "^4.17.21",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
