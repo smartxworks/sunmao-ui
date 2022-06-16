@@ -1,4 +1,4 @@
-import { isObject, isArray } from 'lodash-es';
+import { isObject, isArray } from 'lodash';
 
 export function traverse(value: unknown, seen: Set<unknown> = new Set()) {
   if (!isObject(value) || seen.has(value)) return value;

@@ -35,7 +35,7 @@
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
-    "lodash-es": "^4.17.21",
+    "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "mobx-react-lite": "^3.2.2",
     "react": "^17.0.2",
@@ -44,6 +44,7 @@
     "tern": "^0.24.3"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "tsup": "^5.11.0"
   },
   "keywords": [],
@@ -68,7 +69,6 @@
     "@sunmao-ui/runtime": "^0.4.1",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
-    "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "mobx-react-lite": "^3.2.2",
     "react": "^17.0.0",

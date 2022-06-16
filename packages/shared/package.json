@@ -25,10 +25,11 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.21.2",
-    "lodash-es": "^4.17.21"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.7",
+    "@types/lodash": "^4.14.182",
     "jest": "^27.1.0",
     "tsup": "^5.11.0"
   },
@@ -45,8 +46,7 @@
     ]
   },
   "peerDependencies": {
-    "@sinclair/typebox": "^0.21.2",
-    "lodash-es": "^4.17.21"
+    "@sinclair/typebox": "^0.21.2"
   },
   "gitHead": "c2510d776760530c15386cd45f757d7569ef0bd4"
 }

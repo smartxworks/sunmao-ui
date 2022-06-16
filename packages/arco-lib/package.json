@@ -36,14 +36,13 @@
     "@sunmao-ui/runtime": "^0.6.0",
     "@sunmao-ui/shared": "^0.1.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "lodash-es": "^4.17.21",
+    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-resizable": "^3.0.4"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.170",
-    "@types/lodash-es": "^4.17.5",
+    "@types/lodash": "^4.14.182",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-resizable": "^1.7.4",

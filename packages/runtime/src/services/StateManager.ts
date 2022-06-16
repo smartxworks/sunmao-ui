@@ -1,4 +1,4 @@
-import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
+import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';

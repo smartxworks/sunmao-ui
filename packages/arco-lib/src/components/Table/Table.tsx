@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { css } from '@emotion/css';
-import { sortBy } from 'lodash-es';
+import { sortBy } from 'lodash';
 import { ResizeCallbackData } from 'react-resizable';
 import { TableInstance } from '@arco-design/web-react/es/Table/table';
 import { ColumnProps } from '@arco-design/web-react/es/Table';

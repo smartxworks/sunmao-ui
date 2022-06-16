@@ -18,7 +18,7 @@ import {
   CoreComponentName,
   CORE_VERSION,
 } from '@sunmao-ui/shared';
-import { groupBy, sortBy } from 'lodash-es';
+import { groupBy, sortBy } from 'lodash';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { RuntimeComponent } from '@sunmao-ui/core';

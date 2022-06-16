@@ -2,7 +2,7 @@ import { parseExpression } from '@sunmao-ui/shared';
 import * as acorn from 'acorn';
 import * as acornLoose from 'acorn-loose';
 import { simple as simpleWalk } from 'acorn-walk';
-import { flattenDeep, isArray, isObject } from 'lodash-es';
+import { flattenDeep, isArray, isObject } from 'lodash';
 import { isExpression } from '../validator/utils';
 import { ComponentId, IFieldModel, ModuleId } from './IAppModel';
 

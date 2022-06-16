@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
-import { partial } from 'lodash-es';
+import { partial } from 'lodash';
 import { css } from '@emotion/css';
 import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 
