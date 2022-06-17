@@ -44,4 +44,5 @@ export enum StyleWidgetName {
   Size = 'size',
   Color = 'color',
   Font = 'font',
+  Space = 'space',
 }
