@@ -40,7 +40,11 @@ const options = {
   spec: {
     properties: InputPropsSpec,
     state: InputStateSpec,
-    methods: {},
+    methods: {
+      setInputValue: Type.Object({
+        value: Type.String(),
+      }),
+    },
     slots: {
       addAfter: { slotProps: Type.Object({}) },
       prefix: { slotProps: Type.Object({}) },
@@ -53,7 +57,14 @@ const options = {
 };
 
 export const Input = implementRuntimeComponent(options)(props => {
-  const { getElement, slotsElements, customStyle, callbackMap, mergeState } = props;
+  const {
+    getElement,
+    slotsElements,
+    customStyle,
+    callbackMap,
+    mergeState,
+    subscribeMethods,
+  } = props;
 
   const { updateWhenDefaultValueChanges, defaultValue, ...cProps } =
     getComponentProps(props);
@@ -77,8 +88,18 @@ export const Input = implementRuntimeComponent(options)(props => {
       mergeState({ value });
       callbackMap?.onChange?.();
     },
-    [mergeState, callbackMap]
+    [setValue, mergeState, callbackMap]
   );
+
+  useEffect(() => {
+    subscribeMethods({
+      setInputValue({ value }) {
+        setValue(value);
+        mergeState({ value });
+        callbackMap?.onChange?.();
+      },
+    });
+  }, [setValue, mergeState, callbackMap, subscribeMethods]);
 
   return (
     <BaseInput
