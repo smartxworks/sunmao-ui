@@ -42,7 +42,11 @@ export const TextArea = implementRuntimeComponent({
   spec: {
     properties: TextAreaPropsSpec,
     state: TextAreaStateSpec,
-    methods: {},
+    methods: {
+      setInputValue: Type.Object({
+        value: Type.String(),
+      }),
+    },
     slots: {},
     styleSlots: ['TextArea'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
@@ -54,6 +58,7 @@ export const TextArea = implementRuntimeComponent({
     customStyle,
     callbackMap,
     mergeState,
+    subscribeMethods,
   } = props;
   const { defaultValue, ...cProps } = getComponentProps(props);
   const [value, setValue] = useStateValue(
@@ -69,6 +74,16 @@ export const TextArea = implementRuntimeComponent({
       getElement(ele);
     }
   }, [getElement, ref]);
+
+  useEffect(() => {
+    subscribeMethods({
+      setInputValue({ value }) {
+        setValue(value);
+        mergeState({ value });
+        callbackMap?.onChange?.();
+      },
+    });
+  }, [setValue, mergeState, callbackMap, subscribeMethods]);
 
   return (
     <BaseTextArea
