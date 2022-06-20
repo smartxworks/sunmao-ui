@@ -1,9 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
-import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
-
-const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
+import { EXPRESSION_WIDGET_TYPE } from '../../constants/widget';
 
 export const CheckboxOptionSpec = Type.Array(
   Type.Object({
@@ -15,7 +13,9 @@ export const CheckboxOptionSpec = Type.Array(
   {
     title: 'Options',
     category: Category.Data,
-    widget: EXPRESSION_WIDGET_TYPE,
+    widgetOptions: {
+      displayedKeys: ['label'],
+    },
   }
 );
 
@@ -25,6 +25,10 @@ export const CheckboxPropsSpec = {
     title: 'Default Value',
     category: Category.Data,
     widget: EXPRESSION_WIDGET_TYPE,
+  }),
+  disabled: Type.Boolean({
+    title: 'Disabled',
+    category: Category.Basic,
   }),
   direction: StringUnion(['horizontal', 'vertical'], {
     title: 'Direction',

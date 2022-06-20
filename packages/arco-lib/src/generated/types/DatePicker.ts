@@ -2,6 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 import { CoreWidgetName, CORE_VERSION } from '@sunmao-ui/editor-sdk';
+import { EXPRESSION_WIDGET_TYPE } from '../../constants/widget';
 
 const DisabledDateSpec = {
   disabledType: StringUnion(['before', 'after', 'range'], {
@@ -16,7 +17,7 @@ const DisabledDateSpec = {
   dateRange: Type.Optional(
     Type.Array(Type.Any(), {
       title: 'Date Range',
-      widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
+      widget: EXPRESSION_WIDGET_TYPE,
       conditions: [{ key: 'disabledType', value: 'range' }],
     })
   ),
@@ -25,20 +26,20 @@ const DisabledDateSpec = {
 const DisabledTimeSpec = {
   disabledHours: Type.Array(Type.Number(), {
     title: 'Disabled Hours',
-    widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
+    widget: EXPRESSION_WIDGET_TYPE,
   }),
   disabledMinutes: Type.Array(Type.Number(), {
     title: 'Disabled Minutes',
-    widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
+    widget: EXPRESSION_WIDGET_TYPE,
   }),
   disabledSeconds: Type.Array(Type.Number(), {
     title: 'Disabled Seconds',
-    widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
+    widget: EXPRESSION_WIDGET_TYPE,
   }),
 };
 
 const DisabledTimeRangeItemSpec = Type.Array(Type.Number(), {
-  widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
+  widget: EXPRESSION_WIDGET_TYPE,
 });
 
 const DisabledTimeRangeSpec = {
@@ -92,7 +93,7 @@ export const RangePickerPropsSpec = {
   rangeDisabled: Type.Tuple([Type.Boolean(), Type.Boolean()], {
     title: 'Disabled',
     category: Category.Behavior,
-    widget: `${CORE_VERSION}/${CoreWidgetName.Expression}`,
+    widget: EXPRESSION_WIDGET_TYPE,
     weight: 99,
     conditions: [
       {
