@@ -509,6 +509,10 @@ export const Table = implementRuntimeComponent({
           ? record => {
               return {
                 onClick(event: React.ChangeEvent<HTMLButtonElement>) {
+                  // When user clicks a radio or checkbox, the 'rowClicked' event should not be triggered.
+                  const OPERATION_COLUMN_CLASS_SELECTOR = '.arco-table-operation';
+                  if (event.target.closest(OPERATION_COLUMN_CLASS_SELECTOR) !== null)
+                    return;
                   const tr = event.target.closest('tr');
                   const tbody = tr?.parentNode;
                   if (tbody) {
