@@ -8,10 +8,7 @@ export default implementRuntimeComponent({
     name: 'root',
     displayName: 'Root',
     description: 'chakra-ui provider',
-    isDraggable: false,
-    isResizable: true,
     exampleProperties: {},
-    exampleSize: [6, 6],
     annotations: {
       category: 'Advance',
     },

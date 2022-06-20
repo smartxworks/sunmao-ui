@@ -7,7 +7,6 @@ import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
-import { useGridLayout } from './hooks/useGridLayout';
 import { initStateAndMethod } from '../../../utils/initStateAndMethod';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
@@ -161,7 +160,6 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       childrenMap: props.childrenMap,
       children: props.children,
       component: props.component,
-      gridCallbacks: props.gridCallbacks,
       services: props.services,
       hooks: props.hooks,
       isInModule: props.isInModule,
@@ -169,6 +167,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     const C = unmount ? null : (
       <Impl
+        ref={ref}
         key={c.id}
         {...omit(props, 'slotProps')}
         {...mergedProps}
@@ -180,16 +179,12 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       />
     );
 
-    const result = (
+    return (
       <React.Fragment key={c.id}>
         {C}
         {children}
       </React.Fragment>
     );
-
-    const element = useGridLayout(props, result, ref);
-
-    return element;
   }
 );
 

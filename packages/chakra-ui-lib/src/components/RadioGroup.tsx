@@ -27,13 +27,10 @@ export default implementRuntimeComponent({
     name: 'radioGroup',
     displayName: 'RadioGroup',
     description: 'chakra-ui radio group',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       defaultValue: 0,
       isNumerical: true,
     },
-    exampleSize: [3, 3],
     annotations: {
       category: 'Input',
     },

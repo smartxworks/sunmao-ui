@@ -28,10 +28,7 @@ export const FALLBACK_METADATA: ComponentMetadata = {
   name: '',
   description: '',
   displayName: '',
-  isDraggable: true,
-  isResizable: true,
   exampleProperties: {},
-  exampleSize: [1, 1],
 };
 
 export const getComponentProps = <
@@ -51,7 +48,6 @@ export const getComponentProps = <
     childrenMap,
     services,
     app,
-    gridCallbacks,
     customStyle,
     callbackMap,
     mergeState,

@@ -27,14 +27,11 @@ export default implementRuntimeComponent({
     name: 'checkbox_group',
     displayName: 'Checkbox Group',
     description: 'chakra-ui checkbox group',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       size: '',
       isDisabled: false,
       defaultValue: [],
     },
-    exampleSize: [3, 3],
     annotations: {
       category: 'Input',
     },
