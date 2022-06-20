@@ -1,21 +1,16 @@
 import { AppModel } from '../../../AppModel/AppModel';
-import ReactGridLayout from 'react-grid-layout';
-import produce from 'immer';
 import { ComponentId, ComponentType, SlotName } from '../../../AppModel/IAppModel';
 import {
   AdjustComponentOrderLeafOperation,
   CreateComponentLeafOperation,
-  ModifyComponentPropertiesLeafOperation,
 } from '../../leaf';
 import { BaseBranchOperation } from '../../type';
-import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 
 export type CreateComponentBranchOperationContext = {
   componentType: string;
   componentId?: string;
   slot?: string;
   parentId?: string;
-  layout?: ReactGridLayout.Layout[];
   targetId?: string;
   direction?: 'prev' | 'next';
 };
@@ -42,49 +37,6 @@ export class CreateComponentBranchOperation extends BaseBranchOperation<CreateCo
 
       if (!parentComponent) {
         console.warn("insert element has an invalid parent, it won't show in the view");
-      } else if (parentComponent.type === `${CORE_VERSION}/${CoreComponentName.GridLayout}`) {
-        this.operationStack.insert(
-          // update grid layout for the new created component, it was pushed into layout by react-grid-layout, so we need to find it and update its id
-          new ModifyComponentPropertiesLeafOperation(this.registry, {
-            componentId: parentComponent.id,
-            properties: {
-              layout: (prev: Array<ReactGridLayout.Layout>) => {
-                const newLayout = produce(prev, () => {
-                  // find dropping element
-                  if (!this.context.layout) {
-                    prev.push({
-                      i: this.context.componentId!,
-                      x: 0,
-                      y: 0,
-                      w: 0,
-                      h: 0,
-                    });
-                    return prev;
-                  }
-                  const layout = this.context.layout.find(
-                    layout => layout.i === '__dropping-elem__'
-                  );
-                  if (layout) {
-                    layout.i = this.context.componentId!;
-                  } else {
-                    console.warn('layout was not updated');
-                    this.context.layout.push({
-                      i: this.context.componentId!,
-                      x: 0,
-                      y: 0,
-                      w: 0,
-                      h: 0,
-                    });
-                  }
-                  return this.context.layout;
-                });
-                // update layout in context
-                this.context.layout = newLayout;
-                return newLayout;
-              },
-            },
-          })
-        );
       }
     }
 

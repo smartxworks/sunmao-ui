@@ -38,10 +38,7 @@ export default implementRuntimeComponent({
     name: 'list',
     description: 'chakra-ui list',
     displayName: 'List',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties,
-    exampleSize: [6, 6],
     annotations: {
       category: 'Display',
     },

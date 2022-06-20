@@ -10,15 +10,12 @@ export default implementRuntimeComponent({
     name: CoreComponentName.Iframe,
     displayName: 'Iframe',
     description: '',
-    isDraggable: false,
-    isResizable: false,
     exampleProperties: {
       src: 'https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C51.47612752641776%2C0.00030577182769775396%2C51.478569861898606&layer=mapnik',
       referrerpolicy: 'unset',
       sandbox: 'unset',
       fetchpriority: 'auto',
     },
-    exampleSize: [1, 1],
     annotations: {
       category: 'Advance',
     },

@@ -1,4 +1,3 @@
-import RGL from 'react-grid-layout';
 import { ApiService } from '../services/apiService';
 import { GlobalHandlerMap } from '../services/handler';
 import { RegistryInterface } from '../services/Registry';
@@ -13,13 +12,7 @@ export type UIServices = {
   eleMap: Map<string, HTMLElement>;
 };
 
-export type GridCallbacks = {
-  onDragStop?: (id: string, layout: RGL.Layout[]) => void;
-  onDrop?: (id: string, layout: RGL.Layout[], item: RGL.Layout, event: DragEvent) => void;
-};
-
 export type ComponentParamsFromApp = {
-  gridCallbacks?: GridCallbacks;
   hooks?: AppHooks;
 };
 

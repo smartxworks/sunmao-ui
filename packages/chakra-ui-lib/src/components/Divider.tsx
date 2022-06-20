@@ -9,10 +9,7 @@ export default implementRuntimeComponent({
     name: 'divider',
     displayName: 'Divider',
     description: 'chakra-ui divider',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {},
-    exampleSize: [4, 1],
     annotations: {
       category: 'Display',
     },

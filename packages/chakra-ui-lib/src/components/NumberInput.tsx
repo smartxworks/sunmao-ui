@@ -118,8 +118,6 @@ export default implementRuntimeComponent({
     name: 'numberInput',
     description: 'chakra_ui number input',
     displayName: 'Number Input',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       defaultValue: 0,
       min: Number.MIN_SAFE_INTEGER,
@@ -130,7 +128,6 @@ export default implementRuntimeComponent({
       allowMouseWheel: false,
       size: 'md',
     },
-    exampleSize: [4, 1],
     annotations: {
       category: 'Input',
     },

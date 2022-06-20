@@ -17,15 +17,12 @@ export default implementRuntimeComponent({
     name: CoreComponentName.Text,
     displayName: 'Text',
     description: 'support plain and markdown formats',
-    isDraggable: true,
-    isResizable: false,
     exampleProperties: {
       value: {
         raw: 'text',
         format: 'plain',
       },
     },
-    exampleSize: [4, 1],
     annotations: {
       category: 'Display',
     },
