@@ -3738,13 +3738,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-grid-layout@^1.1.2":
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/@types/react-grid-layout/-/react-grid-layout-1.3.0.tgz"
-  integrity sha512-Pytm7lvm4h91yN9CpdjV8IpU/hgVRHrUhDEIX593e4Mx9V14Pr3gWtj21WHzy5bDqU//jnGGVVSYJ3QVuI1NaQ==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-resizable@^1.7.4":
   version "1.7.4"
   resolved "https://registry.npmjs.org/@types/react-resizable/-/react-resizable-1.7.4.tgz"
@@ -4711,11 +4704,6 @@ cjs-module-lexer@^1.0.0:
   version "1.2.2"
   resolved "https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-1.2.2.tgz"
   integrity sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==
-
-classnames@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.npmjs.org/classnames/-/classnames-2.3.1.tgz"
-  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
 
 clean-stack@^2.0.0:
   version "2.2.0"
@@ -8260,11 +8248,6 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
-lodash.isequal@^4.0.0:
-  version "4.5.0"
-  resolved "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-4.5.0.tgz"
-  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
-
 lodash.ismatch@^4.4.0:
   version "4.4.0"
   resolved "https://registry.npmjs.org/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz"
@@ -9908,7 +9891,7 @@ react-dom@^17.0.0, react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-draggable@^4.0.0, react-draggable@^4.0.3:
+react-draggable@^4.0.3:
   version "4.4.4"
   resolved "https://registry.npmjs.org/react-draggable/-/react-draggable-4.4.4.tgz"
   integrity sha512-6e0WdcNLwpBx/YIDpoyd2Xb04PB0elrDrulKUgdrIlwuYvxh5Ok9M+F8cljm8kPXXs43PmMzek9RrB1b7mLMqA==
@@ -9949,17 +9932,6 @@ react-focus-lock@^2.2.1:
     react-clientside-effect "^1.2.5"
     use-callback-ref "^1.2.5"
     use-sidecar "^1.0.5"
-
-react-grid-layout@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/react-grid-layout/-/react-grid-layout-1.3.0.tgz"
-  integrity sha512-WqFwybAItXu0AaSt9YL8+9xE5YotIzMcCYE0Q9XBqSKNyShTxPbC0LjObV/tOWZoADNWJ+osseVfRoZsjzwWXg==
-  dependencies:
-    classnames "2.3.1"
-    lodash.isequal "^4.0.0"
-    prop-types "^15.0.0"
-    react-draggable "^4.0.0"
-    react-resizable "^3.0.4"
 
 react-input-autosize@^3.0.0:
   version "3.0.0"

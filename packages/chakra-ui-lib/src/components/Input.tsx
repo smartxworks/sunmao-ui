@@ -108,8 +108,6 @@ export default implementRuntimeComponent({
     name: 'input',
     displayName: 'Input',
     description: 'chakra_ui input',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       variant: 'outline',
       placeholder: 'Please input value',
@@ -119,7 +117,6 @@ export default implementRuntimeComponent({
       isRequired: false,
       defaultValue: '',
     },
-    exampleSize: [4, 1],
     annotations: {
       category: 'Input',
     },

@@ -34,12 +34,9 @@ export default implementRuntimeComponent({
     name: 'switch',
     displayName: 'Switch',
     description: 'chakra-ui switch',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       isDisabled: false,
     },
-    exampleSize: [2, 1],
     annotations: {
       category: 'Input',
     },
