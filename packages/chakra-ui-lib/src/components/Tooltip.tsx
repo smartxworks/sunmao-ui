@@ -61,8 +61,6 @@ export default implementRuntimeComponent({
     name: 'tooltip',
     description: 'chakra-ui tooltip',
     displayName: 'Tooltip',
-    isDraggable: false,
-    isResizable: false,
     exampleProperties: {
       text: 'tooltip',
       defaultIsOpen: false,
@@ -73,7 +71,6 @@ export default implementRuntimeComponent({
       hasArrow: true,
       colorScheme: 'blue',
     },
-    exampleSize: [2, 1],
     annotations: {
       category: 'Display',
     },

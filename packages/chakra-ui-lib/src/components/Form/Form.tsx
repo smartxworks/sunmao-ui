@@ -18,12 +18,9 @@ export default implementRuntimeComponent({
     name: 'form',
     displayName: 'Form',
     description: 'chakra-ui form',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       hideSubmit: false,
     },
-    exampleSize: [4, 6],
     annotations: {
       category: 'Layout',
     },

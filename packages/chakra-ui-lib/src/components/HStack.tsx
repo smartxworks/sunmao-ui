@@ -31,9 +31,6 @@ export default implementRuntimeComponent({
       justify: '',
       spacing: '24px',
     },
-    exampleSize: [6, 6],
-    isDraggable: true,
-    isResizable: true,
     annotations: {
       category: 'Layout',
     },

@@ -103,10 +103,7 @@ export default implementRuntimeComponent({
     name: 'multiSelect',
     displayName: 'MultiSelect',
     description: 'chakra-ui MultiSelect',
-    isResizable: true,
-    isDraggable: true,
     exampleProperties,
-    exampleSize: [4, 1],
     annotations: {
       category: 'Input',
     },
