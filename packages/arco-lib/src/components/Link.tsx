@@ -12,8 +12,9 @@ const exampleProperties: Static<typeof LinkPropsSpec> = {
   disabled: false,
   hoverable: true,
   status: 'default',
-  href: 'https://www.smartx.com/',
+  href: '#',
   content: 'Link',
+  target: '_self',
 };
 
 const statusMap = {
