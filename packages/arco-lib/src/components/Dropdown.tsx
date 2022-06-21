@@ -7,6 +7,7 @@ import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { DropdownPropsSpec as BaseDropdownPropsSpec } from '../generated/types/Dropdown';
+import { css } from '@emotion/css';
 
 const DropdownPropsSpec = Type.Object(BaseDropdownPropsSpec);
 const DropdownStateSpec = Type.Object({
@@ -48,11 +49,11 @@ export const Dropdown = implementRuntimeComponent({
     slots: {
       trigger: { slotProps: Type.Object({}) },
     },
-    styleSlots: [],
+    styleSlots: ['default trigger'],
     events: ['onClickMenuItem', 'onVisibleChange', 'onButtonClick'],
   },
 })(props => {
-  const { text, elementRef, slotsElements, callbackMap, mergeState } = props;
+  const { text, elementRef, slotsElements, callbackMap, mergeState, customStyle } = props;
   const cProps = getComponentProps(props);
   const { list, dropdownType, autoAlignPopupWidth, ...restProps } = cProps;
   const typeMap = {
@@ -94,7 +95,9 @@ export const Dropdown = implementRuntimeComponent({
         {slotsElements.trigger ? (
           slotsElements.trigger({})
         ) : (
-          <Button>{text || null}</Button>
+          <Button className={css(customStyle?.['default trigger'])}>
+            {text || null}
+          </Button>
         )}
       </div>
     </Dropdown>

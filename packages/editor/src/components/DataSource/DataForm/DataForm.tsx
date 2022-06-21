@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { VStack, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { VStack, FormControl, FormLabel, Input, Box } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { ObjectField, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
 import { EditorServices } from '../../../types';
@@ -46,7 +46,7 @@ export const DataForm: React.FC<Props> = props => {
     e.stopPropagation();
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     setName(datasource.id);
   }, [datasource.id]);
 
@@ -62,17 +62,26 @@ export const DataForm: React.FC<Props> = props => {
           onBlur={onNameInputBlur}
         />
       </FormControl>
-      <ObjectField
-        spec={mergeWidgetOptionsIntoSpec(traitSpec.spec.properties, {
-          ignoreKeys: ['key'],
-        })}
-        level={0}
-        path={[]}
-        component={datasource}
-        services={services}
-        value={trait.properties}
-        onChange={onChange}
-      />
+      <Box
+        w="full"
+        sx={{
+          '.chakra-stack': {
+            paddingLeft: '0',
+          },
+        }}
+      >
+        <ObjectField
+          spec={mergeWidgetOptionsIntoSpec(traitSpec.spec.properties, {
+            ignoreKeys: ['key'],
+          })}
+          level={0}
+          path={[]}
+          component={datasource}
+          services={services}
+          value={trait.properties}
+          onChange={onChange}
+        />
+      </Box>
     </VStack>
   );
 };
