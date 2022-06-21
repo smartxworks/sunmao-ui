@@ -13,6 +13,10 @@ export const LinkPropsSpec = {
     category: Category.Basic,
     weight: 1,
   }),
+  target: StringUnion(['_self', '_blank'], {
+    title: 'Target',
+    category: Category.Behavior,
+  }),
   hoverable: Type.Boolean({
     title: 'Hoverable',
     category: Category.Style,
@@ -24,6 +28,6 @@ export const LinkPropsSpec = {
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
 };
