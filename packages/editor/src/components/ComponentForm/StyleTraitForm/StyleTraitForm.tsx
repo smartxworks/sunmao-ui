@@ -152,7 +152,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
       };
 
       const changeCssProperties = (newCss: PartialCSSProperties) => {
-        const newCssProperties = Object.assign({}, style, newCss);
+        const newCssProperties = Object.assign({}, cssProperties, newCss);
         const newStyles = produce(styles, draft => {
           draft[i].cssProperties = newCssProperties;
         });
