@@ -1,4 +1,4 @@
-export * from './array';
+export * from './shallowCompare';
 export * from './number';
 export * from './spec';
 export * from './expression';
