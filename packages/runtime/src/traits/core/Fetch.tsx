@@ -36,6 +36,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
     Type.Object({
       json: Type.String(),
       formData: Type.String(),
+      raw: Type.String(),
     }),
     { title: 'Body Type' }
   ),
@@ -112,6 +113,9 @@ export default implementRuntimeTrait({
       let reqBody: string | FormData = '';
 
       switch (bodyType) {
+        case 'raw':
+          reqBody = body.value || '';
+          break;
         case 'json':
           reqBody = JSON.stringify(body);
           break;
@@ -125,7 +129,7 @@ export default implementRuntimeTrait({
 
       // fetch data
       fetch(url, {
-        method,
+        method: method.toUpperCase(),
         headers,
         body: method === 'get' ? undefined : reqBody,
       }).then(
