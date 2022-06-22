@@ -10,7 +10,6 @@ import { RecordWidget } from './RecordField';
 import { SpecWidget } from './SpecWidget';
 import { observer } from 'mobx-react-lite';
 import { CORE_VERSION, CoreWidgetName, parseTypeBox } from '@sunmao-ui/shared';
-import { Select as RcSelect } from '../Select';
 
 const EventWidgetOptions = Type.Object({});
 
@@ -153,9 +152,10 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     }, [value, updateMethods]);
 
     const onTargetComponentChange = useCallback(
-      (value: string) => {
-        updateMethods(value);
-        formik.setFieldValue('componentId', value);
+      (e: React.ChangeEvent<HTMLSelectElement>) => {
+        updateMethods(e.target.value);
+        formik.handleChange(e);
+        formik.setFieldValue('method', { name: '', parameters: {} });
       },
       [updateMethods, formik]
     );
@@ -202,21 +202,19 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         <FormLabel fontSize="14px" fontWeight="normal">
           Target Component
         </FormLabel>
-        <RcSelect
-          showSearch
+        <Select
+          name="componentId"
           onBlur={onSubmit}
-          bordered={false}
           onChange={onTargetComponentChange}
           placeholder="Select Target Component"
-          style={{ width: '100%' }}
-          value={formik.values.componentId === '' ? undefined : formik.values.componentId}
+          value={formik.values.componentId}
         >
           {[{ id: GLOBAL_UTIL_METHOD_ID }].concat(components).map(c => (
-            <RcSelect.Option key={c.id} value={c.id}>
+            <option key={c.id} value={c.id}>
               {c.id}
-            </RcSelect.Option>
+            </option>
           ))}
-        </RcSelect>
+        </Select>
       </FormControl>
     );
     const methodField = (
