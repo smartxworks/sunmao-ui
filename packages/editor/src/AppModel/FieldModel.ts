@@ -189,12 +189,17 @@ export class FieldModel implements IFieldModel {
     }
 
     if (this.spec?.isComponentId && this.value === oldId) {
+      // the normal string property but the `isComponentId` which like the event trait's `componentId` property
+      // just simply change its value
       if (this.traitModel) {
         this.traitModel._isDirty = true;
       }
       this.componentModel._isDirty = true;
       this.update(newId);
     } else if (this.refComponentInfos[oldId]) {
+      // the component vars in the expressions
+      // change the AST nodes values of the related component vars
+      // then generate the new expression
       const exps = parseExpression(this.value as string);
       const newExps = exps.map(exp => {
         const node = this.astNodes[exp.toString()];
