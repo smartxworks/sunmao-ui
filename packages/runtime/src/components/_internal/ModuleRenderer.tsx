@@ -46,7 +46,7 @@ const ModuleRendererContent = React.forwardRef<
     obj: T
   ): PropsAfterEvaled<{ obj: T }>['obj'] {
     const evalOptions = { evalListItem: true, scopeObject: evalScope };
-    return services.stateManager.mapValuesDeep(obj, ({ value }) => {
+    return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {
         return services.stateManager.maskedEval(value, evalOptions);
       }

@@ -133,14 +133,20 @@ export const SchemaFieldWidgetOptions = Type.Object({
   isHidden: Type.Optional(Type.Boolean()),
 });
 
-type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
-type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
+type SpecFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Spec}`;
+type Props = WidgetProps<SpecFieldWidgetType> & {
   children?:
     | (React.ReactNode & {
         title?: any;
       })
     | null;
 };
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/spec': Static<typeof SchemaFieldWidgetOptions>;
+  }
+}
 
 export const SpecWidget: React.FC<Props> = props => {
   const { component, spec, level, path, value, services, children, onChange } = props;
@@ -243,7 +249,7 @@ export const SpecWidget: React.FC<Props> = props => {
   );
 };
 
-export default implementWidget<SchemaFieldWidgetOptionsType>({
+export default implementWidget<SpecFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Spec,

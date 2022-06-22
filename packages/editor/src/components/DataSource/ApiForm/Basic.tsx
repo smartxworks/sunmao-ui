@@ -16,6 +16,7 @@ interface Props {
 }
 
 const DisabledSpec = Type.Boolean({
+  widget: 'core/v1/boolean',
   widgetOptions: { isShowAsideExpressionButton: true },
 });
 
@@ -79,7 +80,7 @@ export const Basic: React.FC<Props> = props => {
         <SpecWidget
           component={api}
           services={services}
-          spec={mergeWidgetOptionsIntoSpec(
+          spec={mergeWidgetOptionsIntoSpec<'core/v1/array'>(
             FetchTraitPropertiesSpec.properties.onComplete as JSONSchema7,
             {
               displayedKeys: ['componentId', 'method.name', 'method.parameters'],
@@ -96,7 +97,7 @@ export const Basic: React.FC<Props> = props => {
         <SpecWidget
           component={api}
           services={services}
-          spec={mergeWidgetOptionsIntoSpec(
+          spec={mergeWidgetOptionsIntoSpec<'core/v1/array'>(
             FetchTraitPropertiesSpec.properties.onError as JSONSchema7,
             {
               displayedKeys: ['componentId', 'method.name', 'method.parameters'],

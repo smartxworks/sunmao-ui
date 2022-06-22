@@ -3,7 +3,7 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
 
-const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}` as const;
 
 export const TreeSelectPropsSpec = {
   treeData: Type.Array(

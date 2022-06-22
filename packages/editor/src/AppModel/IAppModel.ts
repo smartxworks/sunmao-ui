@@ -4,7 +4,7 @@ import {
   MethodSchema,
   RuntimeTrait,
 } from '@sunmao-ui/core';
-import { SpecOptions } from '@sunmao-ui/shared';
+import { CustomOptions } from '@sinclair/typebox';
 import { Emitter } from 'mitt';
 import { Node } from 'acorn';
 import { JSONSchema7 } from 'json-schema';
@@ -134,7 +134,7 @@ export type RefInfo = {
 
 export interface IFieldModel {
   // value: any;
-  spec?: JSONSchema7 & SpecOptions;
+  spec?: JSONSchema7 & CustomOptions;
   isDynamic: boolean;
   rawValue: any;
   update: (value: unknown) => void;
