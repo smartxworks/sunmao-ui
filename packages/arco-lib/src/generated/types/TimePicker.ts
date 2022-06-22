@@ -3,7 +3,7 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 import { CoreWidgetName, CORE_VERSION } from '@sunmao-ui/editor-sdk';
 
-const expressionWidget = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
+const expressionWidget = `${CORE_VERSION}/${CoreWidgetName.Expression}` as const;
 const DisabledTimeSpec = {
   disabledHours: Type.Array(Type.Number(), {
     title: 'Disabled Hours',

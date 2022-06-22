@@ -36,7 +36,7 @@ export const generateCallback = (
         ? (stateManager.maskedEval(rawHandlers, evalOptions) as Static<
             typeof EventCallBackHandlerSpec
           >[])
-        : stateManager.deepEval(rawHandlers);
+        : stateManager.deepEval(rawHandlers, evalOptions);
     const evaledHandler = evaledHandlers[index];
 
     if (evaledHandler.disabled && typeof evaledHandler.disabled === 'boolean') {

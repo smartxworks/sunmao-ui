@@ -91,6 +91,7 @@ export const ColumnSpec = Type.Object(
 export const ColumnsPropertySpec = Type.Array(ColumnSpec, {
   title: 'Columns',
   category: BASIC,
+  widget: 'core/v1/array',
   widgetOptions: {
     displayedKeys: ['title'],
   },

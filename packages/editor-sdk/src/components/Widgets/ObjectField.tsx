@@ -13,15 +13,21 @@ const ObjectFieldWidgetOptions = Type.Object({
   ignoreKeys: Type.Optional(Type.Array(Type.String())),
 });
 
-type ObjectFieldWidgetOptionsType = Static<typeof ObjectFieldWidgetOptions>;
+type ObjectFieldType = `${typeof CORE_VERSION}/${CoreWidgetName.ObjectField}`;
 
-export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = props => {
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/object': Static<typeof ObjectFieldWidgetOptions>;
+  }
+}
+
+export const ObjectField: React.FC<WidgetProps<ObjectFieldType>> = props => {
   const { component, spec, value, services, path, level, onChange } = props;
   const { expressionOptions, ignoreKeys = [] } = spec.widgetOptions || {};
 
   const properties = Object.keys(spec.properties || {});
   return (
-    <VStack spacing='0' paddingLeft='3'>
+    <VStack spacing="0" paddingLeft="3">
       {properties.map(name => {
         const subSpec = (spec.properties || {})[name] as WidgetProps['spec'];
 
@@ -33,7 +39,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
           <SpecWidget
             component={component}
             key={name}
-            spec={mergeWidgetOptionsIntoSpec(
+            spec={mergeWidgetOptionsIntoSpec<'core/v1/spec'>(
               {
                 ...subSpec,
                 title: subSpec.title || name,
@@ -59,7 +65,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldWidgetOptionsType>> = 
   );
 };
 
-export default implementWidget({
+export default implementWidget<ObjectFieldType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.ObjectField,

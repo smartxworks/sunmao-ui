@@ -1,16 +1,15 @@
 import { Condition } from './condition';
 
-export type SpecOptions<WidgetOptions = Record<string, any>> = {
-  defaultValue?: any;
-  // widget
-  widget?: string;
-  widgetOptions?: WidgetOptions;
-  // category
-  category?: string;
-  weight?: number;
-  name?: string;
-  // conditional render
-  conditions?: Condition[];
-  // is a reference of component id
-  isComponentId?: boolean;
-};
+declare module '@sinclair/typebox' {
+  export interface CustomOptions {
+    defaultValue?: any;
+    // category
+    category?: string;
+    weight?: number;
+    name?: string;
+    // conditional render
+    conditions?: Condition[];
+    // is a reference of component id
+    isComponentId?: boolean;
+  }
+}
