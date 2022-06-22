@@ -1,2 +1,2 @@
 export * from './condition';
-export * from './utils';
+export * from './schema';
