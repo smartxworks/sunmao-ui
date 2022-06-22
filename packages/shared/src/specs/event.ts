@@ -4,6 +4,7 @@ import { CORE_VERSION, CoreWidgetName } from '../constants/core';
 const BaseEventSpecObject = {
   componentId: Type.String({
     title: 'Component ID',
+    isComponentId: true,
   }),
   method: Type.Object(
     {

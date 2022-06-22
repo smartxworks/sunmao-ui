@@ -11,9 +11,11 @@ import {
   SlotName,
 } from './IAppModel';
 import { genComponent } from './utils';
+import mitt from 'mitt';
 
 export class AppModel implements IAppModel {
   topComponents: IComponentModel[] = [];
+  emitter: IAppModel['emitter'] = mitt();
   // modules: IModuleModel[] = [];
   private schema: ComponentSchema[] = [];
   private componentMap: Record<ComponentId, IComponentModel> = {};
@@ -66,7 +68,7 @@ export class AppModel implements IAppModel {
 
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel {
     const component = genComponent(this.registry, type, id || this.genId(type));
-    return new ComponentModel(this, component, this.registry);
+    return new ComponentModel(component, this.registry, this);
   }
 
   getComponentById(componentId: ComponentId): IComponentModel | undefined {
@@ -109,7 +111,7 @@ export class AppModel implements IAppModel {
       if (this.componentMap[c.id as ComponentId]) {
         throw new Error(`Duplicate component id: ${c.id}`);
       } else {
-        const comp = new ComponentModel(this, c, this.registry);
+        const comp = new ComponentModel(c, this.registry, this);
         this.componentMap[c.id as ComponentId] = comp;
         return comp;
       }
