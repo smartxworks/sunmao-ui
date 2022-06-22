@@ -4,7 +4,7 @@ import { implementRuntimeTrait } from '../../utils/buildKit';
 
 const ContainerPropertySpec = Type.Object(
   {
-    id: Type.String(),
+    id: Type.String({ isComponentId: true }),
     slot: Type.String(),
   },
   // don't show this property in the editor
