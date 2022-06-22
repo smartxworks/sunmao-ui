@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImplWrapperProps } from '../../../types';
-import { shallowCompareArray } from '@sunmao-ui/shared';
+import { shallowCompare } from '@sunmao-ui/shared';
 import { UnmountImplWrapper } from './UnmountImplWrapper';
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
@@ -13,15 +13,16 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
     let isEqual = false;
 
     if (prevChildren && nextChildren) {
-      isEqual = shallowCompareArray(prevChildren, nextChildren);
+      isEqual = shallowCompare(prevChildren, nextChildren);
     } else if (prevChildren === nextChildren) {
       isEqual = true;
     }
+
     return (
       isEqual &&
       prevComponent === nextComponent &&
       // TODO: keep ImplWrapper memorized and get slot props from store
-      prevProps.slotProps === nextProps.slotProps
+      shallowCompare(prevProps.slotProps, nextProps.slotProps)
     );
   }
 );
