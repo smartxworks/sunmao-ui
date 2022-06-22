@@ -15,7 +15,9 @@ export const CheckboxOptionSpec = Type.Array(
   {
     title: 'Options',
     category: Category.Data,
-    widget: EXPRESSION_WIDGET_TYPE,
+    widgetOptions: {
+      displayedKeys: ['label'],
+    },
   }
 );
 
@@ -32,6 +34,10 @@ export const CheckboxPropsSpec = {
   }),
   showCheckAll: Type.Boolean({
     title: 'Show Check All',
+    category: Category.Basic,
+  }),
+  disabled: Type.Boolean({
+    title: 'Disabled',
     category: Category.Basic,
   }),
   checkAllText: Type.String({
