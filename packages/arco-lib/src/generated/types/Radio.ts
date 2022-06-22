@@ -14,6 +14,7 @@ export const RadioPropsSpec = {
   }),
   options: Type.Array(RadioItemSpec, {
     category: Category.Data,
+    widget: 'core/v1/array',
     widgetOptions: {
       displayedKeys: ['label'],
     },

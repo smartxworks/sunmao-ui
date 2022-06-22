@@ -1,7 +1,14 @@
 import { JSONSchema7 } from 'json-schema';
-import { CreateWidgetOptions, ImplementedWidget, WidgetProps } from '../types/widget';
+import {
+  CreateWidgetOptions,
+  ImplementedWidget,
+  WidgetProps,
+  WidgetOptionsMap,
+} from '../types/widget';
 
-export function implementWidget<T = Record<string, any>>(options: CreateWidgetOptions) {
+export function implementWidget<T extends keyof WidgetOptionsMap>(
+  options: CreateWidgetOptions
+) {
   return (impl: ImplementedWidget<T>['impl']) => ({
     ...options,
     kind: 'Widget',
@@ -9,10 +16,10 @@ export function implementWidget<T = Record<string, any>>(options: CreateWidgetOp
   });
 }
 
-export function mergeWidgetOptionsIntoSpec<T = Record<string, any>>(
-  spec: WidgetProps<T>['spec'],
-  options: Record<string, any>
-): WidgetProps['spec'] {
+export function mergeWidgetOptionsIntoSpec<T extends keyof WidgetOptionsMap>(
+  spec: WidgetProps<any>['spec'],
+  options: WidgetOptionsMap[T]
+): WidgetProps<T>['spec'] {
   return {
     ...spec,
     widgetOptions: {

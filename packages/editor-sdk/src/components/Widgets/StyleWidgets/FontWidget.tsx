@@ -28,7 +28,14 @@ const AlignOptions = [
   { value: 'right', label: 'Right' },
 ];
 
-export const FontWidget: React.FC<WidgetProps<{}, Font>> = props => {
+type FontWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Font}`;
+declare module '../../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/font': {};
+  }
+}
+
+export const FontWidget: React.FC<WidgetProps<FontWidgetType, Font>> = props => {
   const { value, onChange } = props;
 
   return (
@@ -37,7 +44,7 @@ export const FontWidget: React.FC<WidgetProps<{}, Font>> = props => {
         <Text>Size</Text>
         <ExpressionWidget
           {...props}
-          spec={mergeWidgetOptionsIntoSpec(props.spec, {
+          spec={mergeWidgetOptionsIntoSpec<'core/v1/expression'>(props.spec, {
             compactOptions: { isHiddenExpand: true, height: '32px' },
           })}
           value={value.fontSize === undefined ? '' : String(value.fontSize)}
@@ -97,7 +104,7 @@ export const FontWidget: React.FC<WidgetProps<{}, Font>> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<FontWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: StyleWidgetName.Font,

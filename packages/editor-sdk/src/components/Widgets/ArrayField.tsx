@@ -2,10 +2,7 @@ import React from 'react';
 import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
-import {
-  IconButton,
-  Flex
-} from '@chakra-ui/react';
+import { IconButton, Flex } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
@@ -18,9 +15,15 @@ const ArrayFieldWidgetOptions = Type.Object({
   displayedKeys: Type.Optional(Type.Array(Type.String())),
 });
 
-type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
+type ArrayFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.ArrayField}`;
 
-export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = props => {
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/array': Static<typeof ArrayFieldWidgetOptions>;
+  }
+}
+
+export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetType>> = props => {
   const { spec, value, path, level, onChange } = props;
   const { expressionOptions } = spec.widgetOptions || {};
   const itemSpec = Array.isArray(spec.items) ? spec.items[0] : spec.items;
@@ -49,7 +52,7 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
           <SpecWidget
             {...props}
             value={itemValue}
-            spec={mergeWidgetOptionsIntoSpec(
+            spec={mergeWidgetOptionsIntoSpec<'core/v1/spec'>(
               {
                 ...itemSpec,
                 title: isNotBaseType ? '' : itemSpec.title,
@@ -82,7 +85,7 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = pr
   );
 };
 
-export default implementWidget<ArrayFieldWidgetOptionsType>({
+export default implementWidget<ArrayFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.ArrayField,

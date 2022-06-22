@@ -10,7 +10,14 @@ type Size = {
   height?: number | string;
 };
 
-export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
+type SizeWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Size}`;
+declare module '../../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/size': {};
+  }
+}
+
+export const SizeWidget: React.FC<WidgetProps<SizeWidgetType, Size>> = props => {
   const { value, onChange } = props;
 
   return (
@@ -20,9 +27,12 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
         <Box flex={1} minW={0}>
           <ExpressionWidget
             {...props}
-            spec={mergeWidgetOptionsIntoSpec(props.spec, {
-              compactOptions: { height: '32px' },
-            })}
+            spec={mergeWidgetOptionsIntoSpec<'core/v1/expression'>(
+              { widget: 'core/v1/expression' },
+              {
+                compactOptions: { height: '32px' },
+              }
+            )}
             value={value.width === undefined ? '' : String(value.width) || ''}
             onChange={v => {
               const newSize = {
@@ -39,9 +49,12 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
         <Box flex={1} minW={0}>
           <ExpressionWidget
             {...props}
-            spec={mergeWidgetOptionsIntoSpec(props.spec, {
-              compactOptions: { height: '32px' },
-            })}
+            spec={mergeWidgetOptionsIntoSpec<'core/v1/expression'>(
+              { widget: 'core/v1/expression' },
+              {
+                compactOptions: { height: '32px' },
+              }
+            )}
             value={value.height === undefined ? '' : String(value.height) || ''}
             onChange={v => {
               const newSize = {
@@ -57,7 +70,7 @@ export const SizeWidget: React.FC<WidgetProps<{}, Size>> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<SizeWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: StyleWidgetName.Size,

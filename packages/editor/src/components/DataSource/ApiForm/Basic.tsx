@@ -10,9 +10,7 @@ import {
 import { AddIcon } from '@chakra-ui/icons';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandlerForm';
-import {
-  FetchTraitPropertiesSpec,
-} from '@sunmao-ui/runtime';
+import { FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { EventCallBackHandlerSpec } from '@sunmao-ui/shared';
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
@@ -92,6 +90,7 @@ const Handler = (props: HandlerProps) => {
 };
 
 const DisabledSpec = Type.Boolean({
+  widget: 'core/v1/boolean',
   widgetOptions: { isShowAsideExpressionButton: true },
 });
 

@@ -33,7 +33,7 @@ const TableRowStyle = css`
   }
 `;
 
-type ArrayTableProps = WidgetProps & {
+type ArrayTableProps = WidgetProps<'core/v1/array'> & {
   itemSpec: JSONSchema7;
 };
 type RowProps = ArrayTableProps & {

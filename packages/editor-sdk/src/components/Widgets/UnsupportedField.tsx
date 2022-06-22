@@ -3,7 +3,15 @@ import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
-export const UnsupportedField: React.FC<WidgetProps> = props => {
+type UnsupportedFieldType = `${typeof CORE_VERSION}/${CoreWidgetName.UnsupportedField}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/unsupported': {};
+  }
+}
+
+export const UnsupportedField: React.FC<WidgetProps<UnsupportedFieldType>> = props => {
   const { spec, value } = props;
 
   return (
@@ -21,7 +29,7 @@ export const UnsupportedField: React.FC<WidgetProps> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<UnsupportedFieldType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.UnsupportedField,

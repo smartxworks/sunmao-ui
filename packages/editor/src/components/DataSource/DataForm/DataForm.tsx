@@ -77,7 +77,7 @@ export const DataForm: React.FC<Props> = props => {
         />
       </FormControl>
       <ObjectField
-        spec={mergeWidgetOptionsIntoSpec(traitSpec.spec.properties, {
+        spec={mergeWidgetOptionsIntoSpec<'core/v1/object'>(traitSpec.spec.properties, {
           ignoreKeys: ['key'],
         })}
         level={0}
