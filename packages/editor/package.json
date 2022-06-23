@@ -36,7 +36,7 @@
     "@choc-ui/chakra-autocomplete": "^4.22.0",
     "@emotion/css": "^11.7.1",
     "@emotion/react": "^11.1.1",
-    "@sinclair/typebox": "0.21.2",
+    "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/arco-lib": "^0.3.0",
     "@sunmao-ui/chakra-ui-lib": "^0.5.0",
     "@sunmao-ui/core": "^0.7.0",
@@ -50,16 +50,15 @@
     "codemirror": "^5.63.3",
     "escodegen": "^2.0.0",
     "formik": "^2.2.9",
-    "framer-motion": "^4",
     "immer": "^9.0.6",
     "lodash": "^4.17.21",
     "mobx": "^6.3.8",
     "mobx-react-lite": "^3.2.2",
     "re-resizable": "^6.9.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-json-tree": "^0.16.1",
-    "tern": "^0.24.3"
+    "tern": "^0.24.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
@@ -92,28 +91,5 @@
       "prettier --write",
       "eslint --fix"
     ]
-  },
-  "peerDependencies": {
-    "@chakra-ui/icons": "^1.0.15",
-    "@chakra-ui/react": "^1.7.1",
-    "@emotion/css": "^11.7.1",
-    "@emotion/react": "^11.1.1",
-    "@sinclair/typebox": "0.21.2",
-    "@sunmao-ui/arco-lib": "^0.3.0",
-    "@sunmao-ui/chakra-ui-lib": "^0.5.0",
-    "@sunmao-ui/core": "^0.7.0",
-    "@sunmao-ui/editor-sdk": "^0.3.0",
-    "@sunmao-ui/runtime": "^0.7.0",
-    "@sunmao-ui/shared": "^0.2.0",
-    "mobx": "^6.3.8",
-    "mobx-react-lite": "^3.2.2",
-    "formik": "^2.2.9",
-    "immer": "^9.0.6",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2"
   }
 }
