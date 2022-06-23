@@ -1,4 +1,4 @@
-import { shallowCompare } from '../src/utils/shallowCompare';
+import { shallowCompare } from '../src/utils';
 
 describe('shallowCompare function', () => {
   it('compare values', () => {
