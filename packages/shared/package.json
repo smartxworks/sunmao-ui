@@ -24,7 +24,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@sinclair/typebox": "0.21.2",
+    "@sinclair/typebox": "^0.21.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
@@ -44,10 +44,5 @@
       "prettier --write",
       "eslint --fix"
     ]
-  },
-  "peerDependencies": {
-    "@sinclair/typebox": "0.21.2",
-    "lodash": "^4.17.21"
-  },
-  "gitHead": "c2510d776760530c15386cd45f757d7569ef0bd4"
+  }
 }

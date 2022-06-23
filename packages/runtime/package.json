@@ -30,23 +30,21 @@
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",
-    "@sinclair/typebox": "0.21.2",
+    "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.7.0",
     "@sunmao-ui/shared": "^0.2.0",
     "@vue/reactivity": "^3.1.5",
     "@vue/shared": "^3.2.20",
     "copy-to-clipboard": "^3.3.1",
-    "dayjs": "^1.10.6",
     "immer": "^9.0.12",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "path-to-regexp": "^6.2.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-markdown": "6.0.3",
     "react-resize-detector": "^6.7.6",
     "react-simple-code-editor": "^0.11.0",
     "use-deep-compare": "^1.1.0",
+    "dayjs": "^1.10.6",
     "wouter": "^2.7.4"
   },
   "devDependencies": {
@@ -76,16 +74,7 @@
     "vite": "^2.6.13"
   },
   "peerDependencies": {
-    "@emotion/css": "^11.7.1",
-    "@sinclair/typebox": "0.21.2",
-    "@sunmao-ui/core": "^0.7.0",
-    "@sunmao-ui/shared": "^0.2.0",
-    "immer": "^9.0.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2"
   }
 }
