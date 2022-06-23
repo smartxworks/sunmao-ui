@@ -44,12 +44,9 @@ export default implementRuntimeComponent({
     name: 'router',
     displayName: 'Router',
     description: 'create a router-controlled component',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       switchPolicy: [],
     },
-    exampleSize: [6, 6],
   },
   spec: {
     properties: PropsSpec,

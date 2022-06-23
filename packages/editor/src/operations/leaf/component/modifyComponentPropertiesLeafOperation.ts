@@ -1,5 +1,5 @@
 import { BaseLeafOperation } from '../../type';
-import _ from 'lodash-es';
+import _ from 'lodash';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
 export type ModifyComponentPropertiesLeafOperationContext = {

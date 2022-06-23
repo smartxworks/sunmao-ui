@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { first } from 'lodash-es';
+import { first } from 'lodash';
 import { Static, Type } from '@sinclair/typebox';
 import {
   FormControl,
@@ -42,8 +42,6 @@ export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'formControl',
-    isResizable: false,
-    isDraggable: true,
     displayName: 'Form Control',
     description: 'chakra-ui formControl',
     exampleProperties: {
@@ -52,7 +50,6 @@ export default implementRuntimeComponent({
       isRequired: false,
       helperText: '',
     },
-    exampleSize: [4, 2],
     annotations: {
       category: 'Layout',
     },

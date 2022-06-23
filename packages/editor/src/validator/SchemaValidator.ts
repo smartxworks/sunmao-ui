@@ -136,7 +136,8 @@ export class SchemaValidator implements ISchemaValidator {
       .addKeyword('category')
       .addKeyword('widgetOptions')
       .addKeyword('conditions')
-      .addKeyword('name');
+      .addKeyword('name')
+      .addKeyword('isComponentId');
 
     this.validatorMap = {
       components: {},

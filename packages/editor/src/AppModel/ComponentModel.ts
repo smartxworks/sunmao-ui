@@ -1,4 +1,4 @@
-import { merge } from 'lodash-es';
+import { merge } from 'lodash';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import { parseTypeBox, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
@@ -42,9 +42,9 @@ export class ComponentModel implements IComponentModel {
   _isDirty = false;
 
   constructor(
-    public appModel: IAppModel,
     private schema: ComponentSchema,
-    private registry: RegistryInterface
+    private registry: RegistryInterface,
+    public appModel: IAppModel
   ) {
     this.schema = schema;
 
@@ -52,11 +52,18 @@ export class ComponentModel implements IComponentModel {
     this.type = schema.type as ComponentType;
     this.spec = this.registry.getComponentByType(this.type) as any;
 
-    this.traits = schema.traits.map(t => new TraitModel(t, this, this.registry));
+    this.traits = schema.traits.map(
+      t => new TraitModel(t, this.registry, this.appModel, this)
+    );
     this.genStateExample();
     this.parentId = this._slotTrait?.rawProperties.container.id;
     this.parentSlot = this._slotTrait?.rawProperties.container.slot;
-    this.properties = new FieldModel(schema.properties);
+    this.properties = new FieldModel(
+      schema.properties,
+      this.spec.spec.properties,
+      this.appModel,
+      this
+    );
   }
 
   get slots() {
@@ -151,7 +158,7 @@ export class ComponentModel implements IComponentModel {
 
   addTrait(traitType: TraitType, properties: Record<string, unknown>): ITraitModel {
     const traitSchema = genTrait(traitType, properties);
-    const trait = new TraitModel(traitSchema, this, this.registry);
+    const trait = new TraitModel(traitSchema, this.registry, this.appModel, this);
     this.traits.push(trait);
     this._isDirty = true;
     this.genStateExample();
@@ -205,24 +212,23 @@ export class ComponentModel implements IComponentModel {
   changeId(newId: ComponentId) {
     const oldId = this.id;
     const isIdExist = !!this.appModel.getComponentById(newId);
+
     if (isIdExist) {
       throw Error(`Id ${newId} already exist`);
     }
+
     this.id = newId;
     for (const slot in this.children) {
       const slotChildren = this.children[slot as SlotName];
+
       slotChildren.forEach(child => {
         child.parentId = newId;
-        const slotTrait = child.traits.find(t => t.type === SlotTraitType);
-        if (slotTrait) {
-          slotTrait.properties.update({ container: { id: newId, slot } });
-          slotTrait._isDirty = true;
-        }
-        child._isDirty = true;
       });
     }
     this._isDirty = true;
     this.appModel.changeComponentMapId(oldId, newId);
+    this.appModel.emitter.emit('idChange', { oldId, newId });
+
     return this;
   }
 

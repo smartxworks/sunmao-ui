@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
-import { sortBy, groupBy } from 'lodash-es';
+import { sortBy, groupBy } from 'lodash';
 import {
   AccordionPanel,
   AccordionItem,
@@ -73,7 +73,7 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
 
         return (
           <AccordionItem width="full" key={category.name}>
-            <AccordionButton bg='white'>
+            <AccordionButton bg="white">
               <Box flex="1" textAlign="left">
                 {category.name}
               </Box>

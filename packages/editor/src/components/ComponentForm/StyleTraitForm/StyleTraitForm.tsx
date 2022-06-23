@@ -19,7 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
-import { FontWidget, SizeWidget, ColorWidget } from '@sunmao-ui/editor-sdk';
+import { FontWidget, SizeWidget, ColorWidget, SpaceWidget } from '@sunmao-ui/editor-sdk';
+import { capitalize } from 'lodash';
 import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
@@ -151,7 +152,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
       };
 
       const changeCssProperties = (newCss: PartialCSSProperties) => {
-        const newCssProperties = Object.assign({}, style, newCss);
+        const newCssProperties = Object.assign({}, cssProperties, newCss);
         const newStyles = produce(styles, draft => {
           draft[i].cssProperties = newCssProperties;
         });
@@ -197,6 +198,42 @@ export const StyleTraitForm: React.FC<Props> = props => {
                   {...widgetProps}
                   value={_cssProperties}
                   onChange={changeCssProperties}
+                />
+              </CollapsibleFormControl>
+              <CollapsibleFormControl label="Margin">
+                <SpaceWidget
+                  {...widgetProps}
+                  value={[
+                    _cssProperties.marginTop,
+                    _cssProperties.marginRight,
+                    _cssProperties.marginBottom,
+                    _cssProperties.marginLeft,
+                  ]}
+                  onChange={(v: string, direction: string) => {
+                    const key = `margin${capitalize(direction)}`;
+                    changeCssProperties({
+                      ..._cssProperties,
+                      [key]: v,
+                    });
+                  }}
+                />
+              </CollapsibleFormControl>
+              <CollapsibleFormControl label="Padding">
+                <SpaceWidget
+                  {...widgetProps}
+                  value={[
+                    _cssProperties.paddingTop,
+                    _cssProperties.paddingRight,
+                    _cssProperties.paddingBottom,
+                    _cssProperties.paddingLeft,
+                  ]}
+                  onChange={(v: string, direction: string) => {
+                    const key = `padding${capitalize(direction)}`;
+                    changeCssProperties({
+                      ..._cssProperties,
+                      [key]: v,
+                    });
+                  }}
                 />
               </CollapsibleFormControl>
               <CollapsibleFormControl label="Font">

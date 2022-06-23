@@ -11,7 +11,7 @@ export type WidgetProps<WidgetOptions = Record<string, any>, ValueType = any> = 
   path: string[];
   level: number;
   value: ValueType;
-  onChange: (v: ValueType) => void;
+  onChange: (v: ValueType, ...args: any[]) => void;
 };
 
 export type Widget = {

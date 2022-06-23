@@ -8,13 +8,10 @@ export default implementRuntimeComponent({
     name: CoreComponentName.ModuleContainer,
     displayName: 'ModuleContainer',
     description: 'ModuleContainer component',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       id: 'myModule',
       type: 'custom/v1/module',
     },
-    exampleSize: [6, 6],
     annotations: {
       category: 'Advance',
     },

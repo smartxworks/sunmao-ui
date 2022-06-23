@@ -7,12 +7,12 @@ module.exports = {
     '^.+\\.[jt]sx?$': [
       'babel-jest',
       {
-        configFile: path.resolve(
-          __dirname,
-          '../../config/babel.react.config.js'
-        ),
+        configFile: path.resolve(__dirname, '../../config/babel.react.config.js'),
       },
     ],
+  },
+  moduleNameMapper: {
+    '\\.(css|less)$': '<rootDir>/__tests__/styleMock.js',
   },
   testEnvironment: 'jsdom',
 };

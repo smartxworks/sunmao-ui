@@ -1,4 +1,4 @@
-import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
+import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';
@@ -25,8 +25,6 @@ type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
-  noConsoleError?: boolean;
-  // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
   ignoreEvalError?: boolean;
 };
 
@@ -49,6 +47,9 @@ export class StateManager {
   store = reactive<Record<string, any>>({});
 
   dependencies: Record<string, unknown>;
+
+  // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
+  noConsoleError = false;
 
   constructor(dependencies: Record<string, unknown> = {}) {
     this.dependencies = { ...DefaultDependencies, ...dependencies };
@@ -93,7 +94,7 @@ export class StateManager {
   };
 
   maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
-    const { evalListItem = false, fallbackWhenError, noConsoleError } = options;
+    const { evalListItem = false, fallbackWhenError } = options;
     let result: unknown[] = [];
 
     try {
@@ -122,7 +123,7 @@ export class StateManager {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
 
-        if (!noConsoleError) {
+        if (!this.noConsoleError) {
           consoleError(ConsoleType.Expression, '', expressionError.message);
         }
 

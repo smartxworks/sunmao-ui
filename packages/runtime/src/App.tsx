@@ -14,14 +14,7 @@ export function genApp(services: UIServices, hooks?: AppHooks) {
 }
 
 export const App: React.FC<AppProps> = props => {
-  const {
-    options,
-    services,
-    gridCallbacks,
-    debugStore = false,
-    debugEvent = false,
-    hooks,
-  } = props;
+  const { options, services, debugStore = false, debugEvent = false, hooks } = props;
   const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
   const app = runtimeAppSchemaManager.current.update(options);
   initStateAndMethod(services.registry, services.stateManager, app.spec.components);
@@ -49,7 +42,6 @@ export const App: React.FC<AppProps> = props => {
             services={services}
             childrenMap={childrenMap}
             app={app}
-            gridCallbacks={gridCallbacks}
             hooks={hooks}
             isInModule={false}
           />

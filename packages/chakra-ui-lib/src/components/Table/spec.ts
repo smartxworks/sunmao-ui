@@ -54,10 +54,7 @@ export const implementTable = implementRuntimeComponent({
     name: 'table',
     displayName: 'Table',
     description: 'chakra-ui table',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties,
-    exampleSize: [8, 6],
     annotations: {
       category: 'Display',
     },

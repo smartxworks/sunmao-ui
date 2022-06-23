@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { merge, mergeWith, isArray, omit } from 'lodash-es';
+import { merge, mergeWith, isArray, omit } from 'lodash';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
@@ -7,12 +7,11 @@ import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
-import { useGridLayout } from './hooks/useGridLayout';
 import { initStateAndMethod } from '../../../utils/initStateAndMethod';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function ImplWrapperMain(props, ref) {
-    const { component: c, children, slotProps, evalListItem } = props;
+    const { component: c, children, evalListItem, slotProps } = props;
     const { registry, stateManager } = props.services;
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
@@ -129,7 +128,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       setEvaledComponentProperties({ ...result });
 
       return stop;
-    }, [c.properties, stateManager, slotProps]);
+    }, [c.properties, stateManager, slotProps, evalListItem]);
 
     useEffect(() => {
       const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
@@ -161,14 +160,13 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       childrenMap: props.childrenMap,
       children: props.children,
       component: props.component,
-      gridCallbacks: props.gridCallbacks,
       services: props.services,
       hooks: props.hooks,
       isInModule: props.isInModule,
     });
-
     const C = unmount ? null : (
       <Impl
+        ref={ref}
         key={c.id}
         {...omit(props, 'slotProps')}
         {...mergedProps}
@@ -180,16 +178,12 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       />
     );
 
-    const result = (
+    return (
       <React.Fragment key={c.id}>
         {C}
         {children}
       </React.Fragment>
     );
-
-    const element = useGridLayout(props, result, ref);
-
-    return element;
   }
 );
 

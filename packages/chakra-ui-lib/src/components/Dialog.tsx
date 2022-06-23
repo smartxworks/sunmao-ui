@@ -53,15 +53,12 @@ export default implementRuntimeComponent({
     name: 'dialog',
     displayName: 'Dialog',
     description: 'chakra_ui dialog',
-    isDraggable: false,
-    isResizable: false,
     exampleProperties: {
       title: 'Dialog',
       confirmButton: 'Confirm',
       cancelButton: 'Cancel',
       disableConfirm: false,
     },
-    exampleSize: [6, 6],
     annotations: {
       category: 'Display',
     },

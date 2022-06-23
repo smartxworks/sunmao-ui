@@ -1,4 +1,4 @@
-import { isFunction, isArray } from 'lodash-es';
+import { isFunction, isArray } from 'lodash';
 import { isPromise } from './object';
 
 export function callWithErrorHandling(

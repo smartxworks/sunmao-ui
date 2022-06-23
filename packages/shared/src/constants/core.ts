@@ -4,7 +4,6 @@ export declare const STYLE_VERSION = 'style/v1';
 export enum CoreComponentName {
   Dummy = 'dummy',
   ModuleContainer = 'moduleContainer',
-  GridLayout = 'grid_layout',
   Text = 'text',
   Iframe = 'iframe',
 }
@@ -44,4 +43,5 @@ export enum StyleWidgetName {
   Size = 'size',
   Color = 'color',
   Font = 'font',
+  Space = 'space',
 }

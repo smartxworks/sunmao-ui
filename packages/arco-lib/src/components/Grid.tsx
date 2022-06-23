@@ -12,14 +12,11 @@ export const Row = implementRuntimeComponent({
     name: 'row',
     displayName: 'Row',
     description: '',
-    isDraggable: false,
-    isResizable: false,
     exampleProperties: {
       gutter: 16,
       align: 'start',
       justify: 'start',
     },
-    exampleSize: [1, 1],
     annotations: {
       category: 'Layout',
     },
@@ -55,8 +52,6 @@ export const Col = implementRuntimeComponent({
     name: 'col',
     displayName: 'Col',
     description: '',
-    isDraggable: false,
-    isResizable: false,
     exampleProperties: {
       offset: 0,
       pull: 0,
@@ -64,7 +59,6 @@ export const Col = implementRuntimeComponent({
       span: 12,
       order: 0,
     },
-    exampleSize: [1, 1],
     annotations: {
       category: 'Layout',
     },
