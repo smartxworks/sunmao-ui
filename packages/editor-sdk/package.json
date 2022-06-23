@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor-sdk",
-  "version": "0.3.0",
+  "version": "0.4.0-alpha.0",
   "description": "The SDK for SunMao Editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
@@ -24,8 +24,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@sunmao-ui/shared": "^0.2.0",
-    "@sunmao-ui/runtime": "^0.7.0",
+    "@sunmao-ui/runtime": "^0.8.0-alpha.0",
+    "@sunmao-ui/shared": "^0.3.0-alpha.0",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
