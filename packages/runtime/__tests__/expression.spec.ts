@@ -24,8 +24,9 @@ describe('evalExpression function', () => {
     },
   };
   const stateManager = new StateManager();
+  stateManager.noConsoleError = true;
   it('can eval {{}} expression', () => {
-    const evalOptions = { evalListItem: false, scopeObject: scope, noConsoleError: true };
+    const evalOptions = { evalListItem: false, scopeObject: scope };
 
     expect(stateManager.maskedEval('value', evalOptions)).toEqual('value');
     expect(stateManager.maskedEval('{{true}}', evalOptions)).toEqual(true);
@@ -80,7 +81,6 @@ describe('evalExpression function', () => {
       stateManager.maskedEval('{{value}}', {
         scopeObject: { override: 'foo' },
         overrideScope: true,
-        noConsoleError: true,
       })
     ).toBeInstanceOf(ExpressionError);
     expect(
@@ -95,7 +95,6 @@ describe('evalExpression function', () => {
     expect(
       stateManager.maskedEval('{{wrongExp}}', {
         fallbackWhenError: exp => exp,
-        noConsoleError: true,
       })
     ).toEqual('{{wrongExp}}');
   });
@@ -107,7 +106,6 @@ describe('evalExpression function', () => {
           $moduleId: 'myModule',
           text: 'hello',
         },
-        noConsoleError: true,
         ignoreEvalError: true,
       })
     ).toEqual(`hello {{myModule__state0.value}}`);
