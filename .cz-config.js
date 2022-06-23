@@ -30,7 +30,7 @@ module.exports = {
       name: '🚧 Updating grunt tasks etc; no production code change.',
     },
     {
-      value: 'pref',
+      value: 'perf',
       name: '⚡️ Improving the performance.',
     },
     {
