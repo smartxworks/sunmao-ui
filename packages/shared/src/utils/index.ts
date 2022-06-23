@@ -1,4 +1,3 @@
-export * from './array';
 export * from './number';
 export * from './spec';
 export * from './expression';
