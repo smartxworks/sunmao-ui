@@ -8,10 +8,7 @@ export default implementRuntimeComponent({
     name: CoreComponentName.Dummy,
     displayName: 'Dummy',
     description: 'Dummy Invisible component',
-    isDraggable: false,
-    isResizable: false,
     exampleProperties: {},
-    exampleSize: [1, 1],
     annotations: {
       category: 'Advance',
     },

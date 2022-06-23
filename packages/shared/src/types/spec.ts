@@ -11,4 +11,6 @@ export type SpecOptions<WidgetOptions = Record<string, any>> = {
   name?: string;
   // conditional render
   conditions?: Condition[];
+  // is a reference of component id
+  isComponentId?: boolean;
 };

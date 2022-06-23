@@ -29,8 +29,6 @@ export default implementRuntimeComponent({
     name: 'button',
     displayName: 'Button',
     description: 'chakra-ui button',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       text: {
         raw: 'text',
@@ -39,7 +37,6 @@ export default implementRuntimeComponent({
       isLoading: false,
       colorScheme: 'blue',
     },
-    exampleSize: [2, 1],
     annotations: {
       category: 'Input',
     },
