@@ -82,3 +82,15 @@ export const parseExpression = (rawExp: string, parseListItem = false): ExpChunk
 
   return result;
 };
+
+export const expChunkToString = (exps: ExpChunk[]): string => {
+  return exps
+    .map(expOrExpChunk => {
+      if (expOrExpChunk instanceof Array) {
+        return `{{${expChunkToString(expOrExpChunk)}}}`;
+      }
+
+      return expOrExpChunk;
+    })
+    .join('');
+};

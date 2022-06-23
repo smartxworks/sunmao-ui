@@ -18,15 +18,12 @@ export default implementRuntimeComponent({
     name: 'kbd',
     displayName: 'Kbd',
     description: 'chakra-ui keyboard',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       text: {
         raw: 'enter',
         format: 'plain',
       },
     },
-    exampleSize: [2, 1],
     annotations: {
       category: 'Display',
     },

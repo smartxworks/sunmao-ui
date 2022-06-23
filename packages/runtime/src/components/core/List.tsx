@@ -22,10 +22,7 @@ export default implementRuntimeComponent({
     name: 'list',
     description: 'core list',
     displayName: 'List',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties,
-    exampleSize: [6, 6],
     annotations: {
       category: 'Display',
     },

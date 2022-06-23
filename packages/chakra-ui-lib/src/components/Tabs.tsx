@@ -33,13 +33,10 @@ export default implementRuntimeComponent({
     name: 'tabs',
     displayName: 'Tabs',
     description: 'chakra-ui tabs',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       tabNames: [],
       initialSelectedTabIndex: 0,
     },
-    exampleSize: [6, 6],
     annotations: {
       category: 'Display',
     },

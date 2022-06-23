@@ -115,10 +115,7 @@ export default implementRuntimeComponent({
     name: 'select',
     displayName: 'Select',
     description: 'chakra-ui select',
-    isResizable: true,
-    isDraggable: true,
     exampleProperties,
-    exampleSize: [4, 1],
     annotations: {
       category: 'Input',
     },
