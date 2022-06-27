@@ -15,6 +15,7 @@ import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
 import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { isEqual } from 'lodash';
+import { resolveApplicationComponents } from '../utils/resolveApplicationComponents';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -110,6 +111,12 @@ export class EditorStore {
     );
 
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
+  }
+
+  get resolvedComponents() {
+    return resolveApplicationComponents(
+      this.components.filter(c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`)
+    );
   }
 
   get app() {
