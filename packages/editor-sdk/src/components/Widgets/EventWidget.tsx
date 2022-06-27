@@ -60,17 +60,16 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
     );
     const paramsSpec = useMemo(() => {
       const methodType = formik.values.method.name;
+      const componentId = formik.values.componentId;
       let spec: WidgetProps['spec'] = Type.Record(Type.String(), Type.String());
 
       if (methodType) {
-        if (value.componentId === GLOBAL_UTIL_METHOD_ID) {
+        if (componentId === GLOBAL_UTIL_METHOD_ID) {
           const targetMethod = registry.getUtilMethodByType(methodType)!;
 
           spec = targetMethod.spec.parameters;
         } else {
-          const targetComponent = appModelManager.appModel.getComponentById(
-            value.componentId
-          );
+          const targetComponent = appModelManager.appModel.getComponentById(componentId);
           const targetMethod = (findMethodsByComponent(targetComponent) ?? []).find(
             ({ name }) => name === formik.values.method.name
           );
@@ -84,9 +83,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       return spec;
     }, [
       formik.values.method.name,
+      formik.values.componentId,
       registry,
       appModelManager,
-      value.componentId,
       findMethodsByComponent,
     ]);
     const params = useMemo(() => {
@@ -140,22 +139,24 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
 
     useEffect(() => {
       formik.setValues(value);
-    }, [value]);
-
+    }, [value, formik.setValues]);
     useEffect(() => {
       formik.setFieldValue('method.parameters', params);
-    }, [params]);
-
+    }, [params, formik.setFieldValue]);
     useEffect(() => {
-      if (value.componentId) {
-        updateMethods(value.componentId);
+      if (formik.values.componentId) {
+        updateMethods(formik.values.componentId);
       }
-    }, [value, updateMethods]);
+    }, [formik.values.componentId, updateMethods]);
 
     const onTargetComponentChange = useCallback(
       (value: string) => {
+        formik.setValues({
+          ...formik.values,
+          componentId: value,
+          method: { name: '', parameters: {} },
+        });
         updateMethods(value);
-        formik.setFieldValue('componentId', value);
       },
       [updateMethods, formik]
     );
