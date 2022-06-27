@@ -5,10 +5,11 @@ import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
 import { TSchema } from '@sinclair/typebox';
+import { ArrayFieldProps } from '../Widgets/ArrayField';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
-import { WidgetProps } from '../../types';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
+import { get } from 'lodash-es';
 
 const TableWrapperStyle = css`
   border: 1px solid var(--chakra-colors-gray-200);
@@ -33,7 +34,7 @@ const TableRowStyle = css`
   }
 `;
 
-type ArrayTableProps = WidgetProps & {
+type ArrayTableProps = ArrayFieldProps & {
   itemSpec: JSONSchema7;
 };
 type RowProps = ArrayTableProps & {
@@ -86,10 +87,18 @@ const TableRow: React.FC<RowProps> = props => {
         </PopoverWidget>
       </Td>
       {keys.map((key: string) => {
-        const propertyValue =
-          key === 'index' ? itemValue[key] ?? itemIndex : itemValue[key];
+        const keyValue = get(itemValue, key);
+        const propertyValue = key === 'index' ? keyValue ?? itemIndex : keyValue;
+        const propertyValueString =
+          typeof propertyValue === 'string'
+            ? propertyValue
+            : JSON.stringify(propertyValue);
 
-        return <Td key={key}>{propertyValue}</Td>;
+        return (
+          <Td key={key} title={propertyValueString}>
+            {propertyValueString}
+          </Td>
+        );
       })}
       <Td key="button">
         <ArrayButtonGroup index={itemIndex} value={value} onChange={onChange} />
@@ -129,14 +138,22 @@ export const ArrayTable: React.FC<ArrayTableProps> = props => {
           </Tr>
         </Thead>
         <Tbody>
-          {value.map((itemValue: any, itemIndex: number) => (
-            <TableRow
-              {...props}
-              key={itemIndex}
-              itemValue={itemValue}
-              itemIndex={itemIndex}
-            />
-          ))}
+          {value && value.length ? (
+            value.map((itemValue: any, itemIndex: number) => (
+              <TableRow
+                {...props}
+                key={itemIndex}
+                itemValue={itemValue}
+                itemIndex={itemIndex}
+              />
+            ))
+          ) : (
+            <Tr span>
+              <Td colSpan={(displayedKeys.length || 1) + 2} textAlign="center">
+                No Data
+              </Td>
+            </Tr>
+          )}
         </Tbody>
       </Table>
     </div>
