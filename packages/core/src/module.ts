@@ -1,4 +1,4 @@
-import { JSONSchema7Object } from 'json-schema';
+import { JSONSchema7, JSONSchema7Object } from 'json-schema';
 import { parseVersion, Version } from './version';
 import { Metadata } from './metadata';
 import { ComponentSchema } from './application';
@@ -10,6 +10,7 @@ export type Module = {
   kind: 'Module';
   metadata: Metadata;
   spec: ModuleSpec;
+  rawSpec?: JSONSchema7;
   impl: ComponentSchema[];
 };
 
@@ -17,7 +18,6 @@ type ModuleSpec = {
   properties: JSONSchema7Object;
   events: string[];
   stateMap: Record<string, string>;
-  exampleProperties?: Record<string, string>;
 };
 
 // extended runtime
@@ -29,6 +29,7 @@ export type RuntimeModule = Module & {
 type CreateModuleOptions = {
   version: string;
   metadata: Metadata;
+  rawSpec?: JSONSchema7;
   spec?: Partial<ModuleSpec>;
   impl?: ComponentSchema[];
 };
@@ -48,6 +49,7 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
       stateMap: {},
       ...options.spec,
     },
+    rawSpec: options.rawSpec,
     impl: options.impl || [],
   };
 }

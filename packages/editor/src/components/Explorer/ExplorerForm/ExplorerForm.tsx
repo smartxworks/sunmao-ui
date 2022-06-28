@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { AppMetaDataForm, AppMetaDataFormData } from './AppMetaDataForm';
 import { ModuleMetaDataForm, ModuleMetaDataFormData } from './ModuleMetaDataForm';
 import { EditorServices } from '../../../types';
+import { Type } from '@sinclair/typebox';
 
 type Props = {
   formType: 'app' | 'module';
@@ -42,7 +43,8 @@ export const ExplorerForm: React.FC<Props> = observer(
           name,
           version,
           stateMap: moduleSpec?.spec.stateMap || {},
-          exampleProperties: moduleSpec?.spec.exampleProperties || {},
+          properties: moduleSpec?.spec.properties || {},
+          rawSpec: moduleSpec.rawSpec || Type.Object({}),
         };
         form = (
           <ModuleMetaDataForm

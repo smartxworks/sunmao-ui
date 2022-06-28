@@ -1,3 +1,4 @@
+import { Type } from '@sinclair/typebox';
 import { Application } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
@@ -36,8 +37,8 @@ export const DefaultNewModule: ImplementedRuntimeModule = {
     stateMap: {},
     events: [],
     properties: {},
-    exampleProperties: {},
   },
+  rawSpec: Type.Object({}),
   impl: [
     {
       id: 'text1',

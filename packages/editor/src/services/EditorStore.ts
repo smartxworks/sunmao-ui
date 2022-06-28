@@ -21,7 +21,7 @@ type EditingTarget = {
   version: string;
   name: string;
   spec?: {
-    exampleProperties?: Record<string, any>;
+    properties?: Record<string, any>;
   };
 };
 
@@ -93,7 +93,7 @@ export class EditorStore {
 
           this.setComponents(this.originComponents);
           this.setSelectedComponentId(this.originComponents[0]?.id || '');
-          this.setModuleDependencies(target.spec?.exampleProperties);
+          this.setModuleDependencies(target.spec?.properties);
         }
       }
     );
