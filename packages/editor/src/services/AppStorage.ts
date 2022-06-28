@@ -4,6 +4,7 @@ import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from '../constants';
 import { addModuleId, removeModuleId } from '../utils/addModuleId';
 import { StorageHandler } from '../types';
+import { JSONSchema7 } from 'json-schema';
 
 export class AppStorage {
   app: Application;
@@ -113,12 +114,14 @@ export class AppStorage {
       version,
       name,
       stateMap,
-      exampleProperties,
+      properties,
+      rawSpec,
     }: {
       version: string;
       name: string;
       stateMap: Record<string, string>;
-      exampleProperties: Record<string, string>;
+      properties: Record<string, string>;
+      rawSpec: JSONSchema7;
     }
   ) {
     const i = this.modules.findIndex(
@@ -127,7 +130,8 @@ export class AppStorage {
     const newModules = produce(toJS(this.modules), draft => {
       draft[i].metadata.name = name;
       draft[i].spec.stateMap = stateMap;
-      draft[i].spec.exampleProperties = exampleProperties;
+      draft[i].spec.properties = properties;
+      draft[i].rawSpec = rawSpec;
       draft[i].version = version;
     });
 
