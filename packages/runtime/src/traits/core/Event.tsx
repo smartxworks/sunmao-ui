@@ -7,8 +7,8 @@ import {
   EventCallBackHandlerSpec,
   CORE_VERSION,
   CoreTraitName,
-  PropsBeforeEvaled,
 } from '@sunmao-ui/shared';
+import { type PropsBeforeEvaled } from '@sunmao-ui/core';
 
 const HandlersSpec = Type.Array(EventHandlerSpec);
 const CallbackSpec = Type.Array(EventCallBackHandlerSpec);

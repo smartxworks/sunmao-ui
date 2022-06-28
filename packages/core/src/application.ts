@@ -1,6 +1,6 @@
 import { Metadata } from './metadata';
 import { parseVersion, Version } from './version';
-import { type PropsBeforeEvaled } from '@sunmao-ui/shared';
+import { type PropsBeforeEvaled } from './schema';
 // spec
 
 export type Application = {
