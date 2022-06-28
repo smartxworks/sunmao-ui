@@ -36,6 +36,7 @@
     "@choc-ui/chakra-autocomplete": "^4.22.0",
     "@emotion/css": "^11.7.1",
     "@emotion/react": "^11.1.1",
+    "@optum/json-schema-editor": "^2.1.0",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/arco-lib": "^0.3.0",
     "@sunmao-ui/chakra-ui-lib": "^0.5.0",
