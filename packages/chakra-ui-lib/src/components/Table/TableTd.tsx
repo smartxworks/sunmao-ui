@@ -1,5 +1,9 @@
 import React from 'react';
-import { RuntimeApplication, RuntimeComponentSchema } from '@sunmao-ui/core';
+import {
+  RuntimeApplication,
+  RuntimeComponentSchema,
+  PropsBeforeEvaled,
+} from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSpec, ColumnsPropertySpec } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
@@ -11,7 +15,6 @@ import {
   ExpressionError,
   ImplWrapper,
 } from '@sunmao-ui/runtime';
-import { PropsBeforeEvaled } from '@sunmao-ui/shared';
 
 export const TableTd: React.FC<{
   index: number;
