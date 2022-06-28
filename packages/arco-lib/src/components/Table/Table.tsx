@@ -312,7 +312,10 @@ export const Table = implementRuntimeComponent({
                 const rawColumns = component.properties.columns;
                 const evaledColumns =
                   typeof rawColumns === 'string'
-                    ? (services.stateManager.maskedEval(rawColumns) as ColumnProperty[])
+                    ? (services.stateManager.maskedEval(
+                        rawColumns,
+                        evalOptions
+                      ) as ColumnProperty[])
                     : services.stateManager.deepEval(rawColumns, evalOptions);
                 const evaledButtonConfig = evaledColumns[i].btnCfg;
 
