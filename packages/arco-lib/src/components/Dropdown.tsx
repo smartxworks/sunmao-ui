@@ -38,7 +38,7 @@ export const Dropdown = implementRuntimeComponent({
     displayName: 'Dropdown',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Navigation',
     },
   },
   spec: {

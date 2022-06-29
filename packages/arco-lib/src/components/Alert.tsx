@@ -25,7 +25,7 @@ export const Alert = implementRuntimeComponent({
     displayName: 'Alert',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Feedback',
     },
   },
   spec: {

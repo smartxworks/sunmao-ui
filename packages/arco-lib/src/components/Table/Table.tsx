@@ -139,7 +139,7 @@ export const Table = implementRuntimeComponent({
     ...FALLBACK_METADATA,
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
     name: 'table',
     displayName: 'Table',

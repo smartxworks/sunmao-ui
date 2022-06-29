@@ -30,7 +30,7 @@ export const Link = implementRuntimeComponent({
     name: 'link',
     displayName: 'Link',
     annotations: {
-      category: 'Input',
+      category: 'General',
     },
     exampleProperties,
   },

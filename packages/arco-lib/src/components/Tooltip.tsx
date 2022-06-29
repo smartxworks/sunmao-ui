@@ -27,6 +27,9 @@ export const Tooltip = implementRuntimeComponent({
     name: 'tooltip',
     displayName: 'Tooltip',
     exampleProperties,
+    annotations: {
+      category: 'Data Display',
+    },
   },
   spec: {
     properties: TooltipPropsSpec,
@@ -37,9 +40,6 @@ export const Tooltip = implementRuntimeComponent({
     },
     slots: {
       content: { slotProps: Type.Object({}) },
-    },
-    annotations: {
-      category: 'Display',
     },
     styleSlots: ['content'],
     events: [],

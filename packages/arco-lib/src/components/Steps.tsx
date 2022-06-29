@@ -35,7 +35,7 @@ export const Steps = implementRuntimeComponent({
     displayName: 'Steps',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Navigation',
     },
   },
   spec: {
