@@ -33,6 +33,7 @@ const exampleProperties = {
       value: 'checkbox3',
     },
   ],
+  disabled: false,
   direction: 'horizontal',
   defaultCheckedValues: ['checkbox1'],
   showCheckAll: false,
@@ -93,6 +94,14 @@ export const Checkbox = implementRuntimeComponent({
     () => checkedValues.length === options.length,
     [checkedValues, options]
   );
+
+  useEffect(() => {
+    mergeState({
+      isCheckAll: isCheckedAll,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const indeterminate = useMemo<boolean>(
     () => checkedValues.length !== 0 && !isCheckedAll,
     [isCheckedAll, checkedValues]
@@ -125,14 +134,14 @@ export const Checkbox = implementRuntimeComponent({
       checkedValues: newCheckedValues,
       isCheckAll: true,
     });
-  }, [enabledOptions, mergeState]);
+  }, [enabledOptions, mergeState, setCheckedValues]);
   const uncheckAll = useCallback(() => {
     setCheckedValues([]);
     mergeState({
       checkedValues: [],
       isCheckAll: false,
     });
-  }, [mergeState]);
+  }, [mergeState, setCheckedValues]);
   const onCheckAll = () => {
     if (checkedValues.length !== enabledOptions.length) {
       checkAll();
@@ -176,7 +185,15 @@ export const Checkbox = implementRuntimeComponent({
       checkAll,
       uncheckAll,
     });
-  }, [subscribeMethods, mergeState, checkedValues, options, checkAll, uncheckAll]);
+  }, [
+    subscribeMethods,
+    mergeState,
+    checkedValues,
+    options,
+    checkAll,
+    uncheckAll,
+    setCheckedValues,
+  ]);
 
   const CheckAll = showCheckAll ? (
     <BaseCheckbox

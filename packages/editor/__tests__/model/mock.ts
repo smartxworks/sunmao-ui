@@ -185,3 +185,128 @@ export const EventHandlerMockSchema: ComponentSchema[] = [
     ],
   },
 ];
+
+export const ChangeIdMockSchema: ComponentSchema[] = [
+  {
+    id: 'stack',
+    type: 'core/v1/stack',
+    properties: {
+      spacing: 12,
+      direction: 'horizontal',
+      align: 'auto',
+      wrap: '',
+      justify: '',
+    },
+    traits: [],
+  },
+  {
+    id: 'button',
+    type: 'chakra_ui/v1/button',
+    properties: {
+      text: {
+        raw: 'text',
+        format: 'plain',
+      },
+      isLoading: false,
+      colorScheme: 'blue',
+    },
+    traits: [
+      {
+        type: 'core/v1/event',
+        properties: {
+          handlers: [
+            {
+              type: 'onClick',
+              componentId: 'input',
+              method: {
+                name: 'setInputValue',
+                parameters: {
+                  value: 'Hello',
+                },
+              },
+              disabled: false,
+              wait: {
+                type: 'delay',
+                time: 0,
+              },
+            },
+          ],
+        },
+      },
+      {
+        type: 'core/v1/slot',
+        properties: {
+          container: {
+            id: 'stack',
+            slot: 'content',
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'text',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: "pre {{(function () {\n    const object = { value: input.value + input.notExistKey };\n    return '-' + object.value + '-';\n}());}} end",
+        format: 'plain',
+      },
+      string: 'Please input here',
+      expressionString: "{{ 'input' }}",
+      array: ['input'],
+      expressionArray: "{{['input']}}",
+      object: { input: 'input' },
+      expressionObject: "{{{'input': 'input'}}}",
+    },
+    traits: [
+      {
+        type: 'core/v1/style',
+        properties: {
+          styles: [
+            {
+              styleSlot: 'content',
+              style: '',
+              cssProperties: {
+                padding: '8px 0px 9px 0px ',
+              },
+            },
+          ],
+        },
+      },
+      {
+        type: 'core/v1/slot',
+        properties: {
+          container: {
+            id: 'stack',
+            slot: 'content',
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'input',
+    type: 'chakra_ui/v1/input',
+    properties: {
+      variant: 'outline',
+      placeholder: 'Please input value',
+      size: 'md',
+      focusBorderColor: '',
+      isDisabled: false,
+      isRequired: false,
+      defaultValue: '',
+    },
+    traits: [
+      {
+        type: 'core/v1/slot',
+        properties: {
+          container: {
+            id: 'stack',
+            slot: 'content',
+          },
+        },
+      },
+    ],
+  },
+];
