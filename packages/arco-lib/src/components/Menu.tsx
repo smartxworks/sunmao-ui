@@ -36,6 +36,9 @@ export const Menu = implementRuntimeComponent({
     name: 'menu',
     displayName: 'Menu',
     exampleProperties,
+    annotations: {
+      category: 'Navigation',
+    },
   },
   spec: {
     properties: MenuPropsSpec,

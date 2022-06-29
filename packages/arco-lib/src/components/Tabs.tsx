@@ -46,7 +46,7 @@ export const Tabs = implementRuntimeComponent({
     displayName: 'Tabs',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {

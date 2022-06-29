@@ -49,7 +49,7 @@ export const Checkbox = implementRuntimeComponent({
     displayName: 'Checkbox',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {

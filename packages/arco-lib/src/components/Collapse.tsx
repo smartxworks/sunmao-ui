@@ -44,6 +44,9 @@ export const Collapse = implementRuntimeComponent({
     name: 'collapse',
     displayName: 'Collapse',
     exampleProperties,
+    annotations: {
+      category: 'Data Display',
+    },
   },
   spec: {
     properties: CollapsePropsSpec,

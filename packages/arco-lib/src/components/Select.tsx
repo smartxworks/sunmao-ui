@@ -45,7 +45,7 @@ export const Select = implementRuntimeComponent({
     displayName: 'Select',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {

@@ -79,7 +79,7 @@ export const Tree = implementRuntimeComponent({
     name: 'tree',
     displayName: 'Tree',
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
     exampleProperties,
   },

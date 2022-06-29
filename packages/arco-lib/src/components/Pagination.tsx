@@ -33,7 +33,7 @@ export const Pagination = implementRuntimeComponent({
     displayName: 'Pagination',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Navigation',
     },
   },
   spec: {

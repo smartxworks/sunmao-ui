@@ -53,7 +53,7 @@ export const Descriptions = implementRuntimeComponent({
     displayName: 'Descriptions',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {
