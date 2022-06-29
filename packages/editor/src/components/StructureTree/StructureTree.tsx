@@ -6,7 +6,7 @@ import { DropComponentWrapper } from './DropComponentWrapper';
 import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
 import { EditorServices } from '../../types';
-import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreTraitName, CoreComponentName, memo } from '@sunmao-ui/shared';
 import {
   AutoComplete,
   AutoCompleteInput,
@@ -15,6 +15,7 @@ import {
   type Item,
 } from '@choc-ui/chakra-autocomplete';
 import { css } from '@emotion/css';
+import { isEqual } from 'lodash-es';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ComponentSchema[]>;
@@ -30,6 +31,43 @@ const AutoCompleteStyle = css`
   margin-top: 0;
   margin-bottom: 0.5rem;
 `;
+const SLOT_TYPE = `${CORE_VERSION}/${CoreTraitName.Slot}`;
+
+const memoResolveApplicationComponents = memo(
+  resolveApplicationComponents,
+  function ([preRealComponents = []] = [], [realComponents]) {
+    // if add or remove the component, the struct tree should update
+    if (preRealComponents.length !== realComponents.length) {
+      return false;
+    }
+
+    for (const i in realComponents) {
+      const preComponent = preRealComponents[i];
+      const component = realComponents[i];
+
+      if (preComponent !== component) {
+        // there are two situations would cause the ids are different
+        // 1. the component id is changed
+        // 2. the order of components is changed. example: [a, b] -> [b, a]
+        if (preComponent.id !== component.id) {
+          return false;
+        }
+
+        // should check the slot container whether is changed too because move a component to a slot may not change the order
+        const preSlotTrait = preComponent.traits.find(trait => trait.type === SLOT_TYPE);
+        const slotTrait = component.traits.find(trait => trait.type === SLOT_TYPE);
+
+        if (
+          !isEqual(preSlotTrait?.properties.container, slotTrait?.properties.container)
+        ) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+);
 
 export const StructureTree: React.FC<Props> = props => {
   const [search, setSearch] = useState('');
@@ -69,7 +107,7 @@ export const StructureTree: React.FC<Props> = props => {
 
   const componentEles = useMemo(() => {
     const { topLevelComponents, childrenMap } =
-      resolveApplicationComponents(realComponents);
+      memoResolveApplicationComponents(realComponents);
 
     return topLevelComponents.map(c => (
       <ComponentTreeWrapper

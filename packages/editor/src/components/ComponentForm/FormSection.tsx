@@ -24,7 +24,7 @@ const SectionTitleCSS = css`
   position: sticky;
   padding: 4px 0;
   top: 0;
-  z-index: 1;
+  z-index: 3;
   font-size: 18px;
   font-weight: 600;
   color: var(--chakra-colors-gray-600);

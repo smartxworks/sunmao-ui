@@ -11,7 +11,7 @@ import { initStateAndMethod } from '../../../utils/initStateAndMethod';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function ImplWrapperMain(props, ref) {
-    const { component: c, children, slotProps, evalListItem } = props;
+    const { component: c, children, evalListItem, slotProps } = props;
     const { registry, stateManager } = props.services;
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
@@ -128,7 +128,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       setEvaledComponentProperties({ ...result });
 
       return stop;
-    }, [c.properties, stateManager, slotProps]);
+    }, [c.properties, stateManager, slotProps, evalListItem]);
 
     useEffect(() => {
       const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
@@ -164,7 +164,6 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       hooks: props.hooks,
       isInModule: props.isInModule,
     });
-
     const C = unmount ? null : (
       <Impl
         ref={ref}
