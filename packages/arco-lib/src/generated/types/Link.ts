@@ -13,8 +13,8 @@ export const LinkPropsSpec = {
     category: Category.Basic,
     weight: 1,
   }),
-  target: StringUnion(['_self', '_blank'], {
-    title: 'Target',
+  openInNewPage: Type.Boolean({
+    title: 'Open In New Page',
     category: Category.Behavior,
   }),
   hoverable: Type.Boolean({
