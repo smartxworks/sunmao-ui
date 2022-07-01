@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
-import { debounce, throttle, delay } from 'lodash-es';
+import { debounce, throttle, delay } from 'lodash';
 import { CallbackMap, UIServices } from '../../types';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 import { EventHandlerSpec, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';

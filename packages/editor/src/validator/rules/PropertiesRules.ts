@@ -1,4 +1,4 @@
-import { get, has } from 'lodash-es';
+import { get, has } from 'lodash';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
