@@ -19,13 +19,7 @@ export const ArrayButtonGroup: React.FC<ArrayButtonGroupProps> = props => {
   const { index, value, onChange } = props;
 
   return (
-    <ButtonGroup
-      spacing={0}
-      size="xs"
-      variant="ghost"
-      display="flex"
-      justifyContent="end"
-    >
+    <ButtonGroup spacing={0} size="xs" variant="ghost" display="flex">
       <IconButton
         aria-label={`up-${index}`}
         icon={<ArrowUpIcon />}

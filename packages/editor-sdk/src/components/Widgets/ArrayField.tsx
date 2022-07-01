@@ -2,10 +2,7 @@ import React from 'react';
 import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
-import {
-  IconButton,
-  Flex
-} from '@chakra-ui/react';
+import { IconButton, Flex } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
@@ -18,9 +15,10 @@ const ArrayFieldWidgetOptions = Type.Object({
   displayedKeys: Type.Optional(Type.Array(Type.String())),
 });
 
-type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
+export type ArrayFieldProps = WidgetProps<ArrayFieldWidgetOptionsType>;
+export type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
 
-export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetOptionsType>> = props => {
+export const ArrayField: React.FC<ArrayFieldProps> = props => {
   const { spec, value, path, level, onChange } = props;
   const { expressionOptions } = spec.widgetOptions || {};
   const itemSpec = Array.isArray(spec.items) ? spec.items[0] : spec.items;
