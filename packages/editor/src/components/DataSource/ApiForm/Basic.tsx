@@ -1,95 +1,19 @@
 import React, { useCallback } from 'react';
-import {
-  VStack,
-  HStack,
-  FormControl,
-  FormLabel,
-  Switch,
-  IconButton,
-} from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
+import { VStack, FormControl, FormLabel, Switch } from '@chakra-ui/react';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
-import { EventHandlerForm } from '../../ComponentForm/EventTraitForm/EventHandlerForm';
-import {
-  FetchTraitPropertiesSpec,
-} from '@sunmao-ui/runtime';
-import { EventCallBackHandlerSpec } from '@sunmao-ui/shared';
+import { FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
 import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { SpecWidget } from '@sunmao-ui/editor-sdk';
+import { SpecWidget, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
+import { JSONSchema7 } from 'json-schema';
 
 type Values = Static<typeof FetchTraitPropertiesSpec>;
-type EventHandler = Static<typeof EventCallBackHandlerSpec>;
-type HandlerType = 'onComplete' | 'onError';
 interface Props {
   api: ComponentSchema;
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
   services: EditorServices;
 }
-
-type HandlerProps = Props & {
-  index: number;
-  handler: EventHandler;
-  type: HandlerType;
-};
-
-const Handler = (props: HandlerProps) => {
-  const { index: i, handler, type, api, formik, services } = props;
-  const onChange = useCallback(
-    (handler: EventHandler) => {
-      const newOnComplete = formik.values[type].map((onComplete, index) =>
-        index === i ? handler : onComplete
-      );
-      formik.setFieldValue(type, newOnComplete);
-      formik.submitForm();
-    },
-    [i, type, formik]
-  );
-  const onRemove = useCallback(() => {
-    const newOnComplete = formik.values[type].filter((_, index) => i !== index);
-    formik.setFieldValue(type, newOnComplete);
-    formik.submitForm();
-  }, [i, type, formik]);
-  const onSort = useCallback(
-    (isUp: boolean) => {
-      const newHandlers = [...formik.values[type]];
-      const switchedIndex = isUp ? i - 1 : i + 1;
-
-      if (newHandlers[switchedIndex]) {
-        const temp = newHandlers[switchedIndex];
-        newHandlers[switchedIndex] = newHandlers[i];
-        newHandlers[i] = temp;
-
-        formik.setFieldValue(type, newHandlers);
-        formik.submitForm();
-      }
-    },
-    [i, type, formik]
-  );
-  const onUp = useCallback(() => {
-    onSort(true);
-  }, [onSort]);
-  const onDown = useCallback(() => {
-    onSort(false);
-  }, [onSort]);
-
-  return (
-    <EventHandlerForm
-      key={i}
-      index={i}
-      size={(formik.values[type] ?? []).length}
-      component={api}
-      handler={handler}
-      spec={EventCallBackHandlerSpec}
-      onChange={onChange}
-      onRemove={onRemove}
-      onUp={onUp}
-      onDown={onDown}
-      services={services}
-    />
-  );
-};
 
 const DisabledSpec = Type.Boolean({
   widgetOptions: { isShowAsideExpressionButton: true },
@@ -100,23 +24,6 @@ const EmptyArray: string[] = [];
 export const Basic: React.FC<Props> = props => {
   const { formik, api, services } = props;
 
-  const onAddHandler = (type: HandlerType) => {
-    const newHandler: EventHandler = {
-      componentId: '',
-      method: {
-        name: '',
-        parameters: {},
-      },
-      disabled: false,
-      wait: {
-        type: 'delay',
-        time: 0,
-      },
-    };
-
-    formik.setFieldValue(type, [...(formik.values[type] || []), newHandler]);
-  };
-
   const onDisabledChange = useCallback(
     val => {
       formik.setFieldValue('disabled', val);
@@ -125,23 +32,19 @@ export const Basic: React.FC<Props> = props => {
     [formik]
   );
 
-  const generateHandlers = (type: HandlerType) => (
-    <FormControl>
-      <HStack width="full" alignItems="center" mb={0}>
-        <FormLabel margin={0}>{type}</FormLabel>
-        <IconButton
-          aria-label="add event"
-          size="sm"
-          variant="ghost"
-          colorScheme="blue"
-          icon={<AddIcon />}
-          onClick={() => onAddHandler(type)}
-        />
-      </HStack>
-      {(formik.values[type] ?? []).map((handler, i) => {
-        return <Handler key={i} {...props} index={i} handler={handler} type={type} />;
-      })}
-    </FormControl>
+  const onCompleteHandlersChange = useCallback(
+    newHandlers => {
+      formik.setFieldValue('onComplete', newHandlers);
+      formik.submitForm();
+    },
+    [formik]
+  );
+  const onErrorHandlersChange = useCallback(
+    newHandlers => {
+      formik.setFieldValue('onError', newHandlers);
+      formik.submitForm();
+    },
+    [formik]
   );
 
   return (
@@ -157,7 +60,6 @@ export const Basic: React.FC<Props> = props => {
           onBlur={() => formik.handleSubmit()}
         />
       </FormControl>
-
       <FormControl display="flex" alignItems="center">
         <FormLabel margin="0" marginRight="2">
           Disabled
@@ -172,8 +74,40 @@ export const Basic: React.FC<Props> = props => {
           onChange={onDisabledChange}
         />
       </FormControl>
-      {generateHandlers('onComplete')}
-      {generateHandlers('onError')}
+      <FormControl>
+        <FormLabel>OnComplete</FormLabel>
+        <SpecWidget
+          component={api}
+          services={services}
+          spec={mergeWidgetOptionsIntoSpec(
+            FetchTraitPropertiesSpec.properties.onComplete as JSONSchema7,
+            {
+              displayedKeys: ['componentId', 'method.name', 'method.parameters'],
+            }
+          )}
+          level={1}
+          path={['onComplete']}
+          value={formik.values.onComplete}
+          onChange={onCompleteHandlersChange}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel>OnError</FormLabel>
+        <SpecWidget
+          component={api}
+          services={services}
+          spec={mergeWidgetOptionsIntoSpec(
+            FetchTraitPropertiesSpec.properties.onError as JSONSchema7,
+            {
+              displayedKeys: ['componentId', 'method.name', 'method.parameters'],
+            }
+          )}
+          level={1}
+          path={['onError']}
+          value={formik.values.onError}
+          onChange={onErrorHandlersChange}
+        />
+      </FormControl>
     </VStack>
   );
 };
