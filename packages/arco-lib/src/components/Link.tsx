@@ -39,13 +39,17 @@ export const Link = implementRuntimeComponent({
     properties: LinkPropsSpec,
     state: LinkStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      content: {
+        slotProps: Type.Object({}),
+      },
+    },
     styleSlots: ['content'],
     events: [],
   },
 })(props => {
   const { content, status, openInNewPage, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle } = props;
+  const { elementRef, customStyle, slotsElements } = props;
 
   return (
     <BaseLink
@@ -55,7 +59,7 @@ export const Link = implementRuntimeComponent({
       {...cProps}
       target={openInNewPage ? '_blank' : '_self'}
     >
-      {content}
+      {slotsElements.content ? slotsElements.content({}) : content}
     </BaseLink>
   );
 });
