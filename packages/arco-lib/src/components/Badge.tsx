@@ -24,7 +24,7 @@ export const Badge = implementRuntimeComponent({
     displayName: 'Badge',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {
