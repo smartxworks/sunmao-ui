@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { Box } from '@chakra-ui/react';
@@ -66,18 +66,24 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
     );
   };
 
-  // can't capture the iframe click event
-  // use `setInterval` to check whether the iframe is selected
-  setInterval(function () {
-    if (document.activeElement?.tagName === 'IFRAME') {
-      const currentSelectedComponentId =
-        document.activeElement?.getAttribute('title') || '';
+  useEffect(() => {
+    // can't capture the iframe click event
+    // use `setInterval` to check whether the iframe is selected
+    const timer = setInterval(function () {
+      if (document.activeElement?.tagName === 'IFRAME') {
+        const currentSelectedComponentId =
+          document.activeElement?.getAttribute('title') || '';
 
-      if (selectedComponentId !== currentSelectedComponentId) {
-        setSelectedComponentId(currentSelectedComponentId);
+        if (selectedComponentId !== currentSelectedComponentId) {
+          setSelectedComponentId(currentSelectedComponentId);
+        }
       }
-    }
-  }, 1000);
+    }, 100);
+
+    return () => {
+      clearInterval(timer);
+    };
+  });
 
   const mousePositionWithOffset: [number, number] = [
     mousePosition[0] + scrollOffset[0],
