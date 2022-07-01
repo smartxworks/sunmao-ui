@@ -29,6 +29,7 @@ const { Editor, registry } = initSunmaoUIEditor({
   defaultModules: lsManager.getModulesFromLS(),
   runtimeProps: {
     libs: [sunmaoChakraUILib, ArcoDesignLib],
+    isInEditor: true,
   },
 });
 
