@@ -28,7 +28,7 @@ export const Progress = implementRuntimeComponent({
     displayName: 'Progress',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Feedback',
     },
   },
   spec: {

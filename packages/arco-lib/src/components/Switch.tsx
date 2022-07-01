@@ -30,7 +30,7 @@ export const Switch = implementRuntimeComponent({
     displayName: 'Switch',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {

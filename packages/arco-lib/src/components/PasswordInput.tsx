@@ -32,7 +32,7 @@ export const PasswordInput = implementRuntimeComponent({
     displayName: 'Password Input',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {

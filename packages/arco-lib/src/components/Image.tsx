@@ -31,7 +31,7 @@ const options = {
     displayName: 'Image',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {
@@ -92,7 +92,7 @@ export const ImageGroup = implementRuntimeComponent({
       closable: false,
     },
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {

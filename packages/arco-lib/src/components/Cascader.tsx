@@ -90,6 +90,9 @@ export const Cascader = implementRuntimeComponent({
     name: 'cascader',
     displayName: 'Cascader',
     exampleProperties,
+    annotations: {
+      category: 'Data Entry',
+    },
   },
   spec: {
     properties: CascaderPropsSpec,
