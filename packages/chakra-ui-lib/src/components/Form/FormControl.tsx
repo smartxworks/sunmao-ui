@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { first } from 'lodash-es';
+import { first } from 'lodash';
 import { Static, Type } from '@sinclair/typebox';
 import {
   FormControl,

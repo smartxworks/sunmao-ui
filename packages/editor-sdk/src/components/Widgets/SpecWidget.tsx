@@ -9,7 +9,7 @@ import {
   Button,
   Tooltip,
 } from '@chakra-ui/react';
-import { isEmpty } from 'lodash-es';
+import { isEmpty } from 'lodash';
 import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';

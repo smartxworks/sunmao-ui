@@ -1,4 +1,4 @@
-import { merge } from 'lodash-es';
+import { merge } from 'lodash';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import { parseTypeBox, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';

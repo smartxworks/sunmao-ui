@@ -14,7 +14,7 @@ import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
 import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'lodash';
 
 type EditingTarget = {
   kind: 'app' | 'module';

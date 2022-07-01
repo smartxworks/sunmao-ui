@@ -9,7 +9,7 @@ import {
   isUndefined,
   isNull,
   debounce,
-} from 'lodash-es';
+} from 'lodash';
 import { Type, Static } from '@sinclair/typebox';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
@@ -157,7 +157,9 @@ export const ExpressionWidget: React.FC<
     (code: string) => {
       try {
         const value = getParsedValue(code, type);
-        const result = isExpression(code) ? services.stateManager.maskedEval(value) : value;
+        const result = isExpression(code)
+          ? services.stateManager.maskedEval(value)
+          : value;
 
         if (result instanceof ExpressionError) {
           throw result;
@@ -175,7 +177,11 @@ export const ExpressionWidget: React.FC<
               ).toLowerCase()}`
             );
           } else if (err.keyword === 'enum') {
-            throw new TypeError(`${err.message}: ${JSON.stringify((err.params as EnumParams).allowedValues)}`);
+            throw new TypeError(
+              `${err.message}: ${JSON.stringify(
+                (err.params as EnumParams).allowedValues
+              )}`
+            );
           } else {
             throw new TypeError(err.message);
           }

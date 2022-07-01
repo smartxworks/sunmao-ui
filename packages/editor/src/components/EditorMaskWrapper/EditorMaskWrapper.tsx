@@ -3,7 +3,7 @@ import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { Box } from '@chakra-ui/react';
 import { EditorMask } from './EditorMask';
-import { throttle } from 'lodash-es';
+import { throttle } from 'lodash';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { genOperation } from '../../operations';
 
