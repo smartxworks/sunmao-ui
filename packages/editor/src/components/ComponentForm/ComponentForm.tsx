@@ -60,63 +60,87 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     e.stopPropagation();
   };
 
+  const sections = [
+    {
+      title: 'Component Type',
+      node: <Text paddingLeft="3">{selectedComponent.type}</Text>,
+    },
+    {
+      title: 'Component ID',
+      node: (
+        <Input
+          key={selectedComponent.id}
+          background="white"
+          border="1px solid"
+          borderColor="gray.400"
+          defaultValue={selectedComponent.id}
+          onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
+        />
+      ),
+    },
+    {
+      title: 'Properties',
+      node: (
+        <VStack width="full" background="white">
+          <SpecWidget
+            key={selectedComponent.id}
+            component={selectedComponent}
+            spec={cImpl.spec.properties}
+            value={properties}
+            path={[]}
+            level={0}
+            onChange={newFormData => {
+              eventBus.send(
+                'operation',
+                genOperation(registry, 'modifyComponentProperty', {
+                  componentId: selectedComponentId,
+                  properties: newFormData,
+                })
+              );
+            }}
+            services={services}
+          />
+        </VStack>
+      ),
+    },
+    {
+      title: 'Events',
+      node: <EventTraitForm component={selectedComponent} services={services} />,
+    },
+    {
+      title: 'Styles',
+      node: (
+        <StyleTraitForm
+          key={selectedComponentId}
+          component={selectedComponent}
+          services={services}
+        />
+      ),
+    },
+    {
+      title: 'Traits',
+      node: <GeneralTraitFormList component={selectedComponent} services={services} />,
+    },
+  ];
+
   return (
     <ErrorBoundary>
       <Accordion
-        defaultIndex={[0, 1, 2, 3, 4, 5]}
+        defaultIndex={sections.map((_, i) => i)}
         background="gray.50"
         paddingBottom="200px"
         allowMultiple
         onKeyDown={onKeyDown}
       >
-        <FormSection title="Component Type">
-          <Text paddingLeft="3">{selectedComponent.type}</Text>
-        </FormSection>
-        <FormSection title="Component ID">
-          <Input
-            key={selectedComponent.id}
-            background="white"
-            border="1px solid"
-            borderColor="gray.400"
-            defaultValue={selectedComponent.id}
-            onBlur={e => changeComponentId(selectedComponent?.id, e.target.value)}
-          />
-        </FormSection>
-        <FormSection title="Properties">
-          <VStack width="full" background="white">
-            <SpecWidget
-              key={selectedComponent.id}
-              component={selectedComponent}
-              spec={cImpl.spec.properties}
-              value={properties}
-              path={[]}
-              level={0}
-              onChange={newFormData => {
-                eventBus.send(
-                  'operation',
-                  genOperation(registry, 'modifyComponentProperty', {
-                    componentId: selectedComponentId,
-                    properties: newFormData,
-                  })
-                );
-              }}
-              services={services}
-            />
-          </VStack>
-        </FormSection>
-        <FormSection title="Events">
-          <EventTraitForm component={selectedComponent} services={services} />
-        </FormSection>
-        <FormSection title="Styles">
-          <StyleTraitForm
-            key={selectedComponentId}
-            component={selectedComponent}
-            services={services}
-          />
-        </FormSection>
-        <FormSection title="Traits">
-          <GeneralTraitFormList component={selectedComponent} services={services} />
-        </FormSection>
+        {sections.map((section, i) => (
+          <FormSection
+            style={{ position: 'relative', zIndex: sections.length - i }}
+            title={section.title}
+            key={section.title}
+          >
+            {section.node}
+          </FormSection>
+        ))}
       </Accordion>
     </ErrorBoundary>
   );
