@@ -56,6 +56,7 @@ export const getComponentProps = <
     elementRef,
     hooks,
     isInModule,
+    isInEditor,
     componentDidMount,
     componentDidUnmount,
     componentDidUpdate,
