@@ -36,10 +36,15 @@ export function parseTypeBox(spec: TSchema, noOptional = false): Static<typeof s
     return undefined;
   }
 
+  if (spec.default) {
+    return spec.default;
+  }
+
   switch (true) {
     case spec.type === 'string' && 'enum' in spec && spec.enum.length > 0:
       return spec.enum[0];
     case spec.kind === StringKind:
+    case spec.type === 'string':
       return '';
     case spec.kind === BooleanKind:
       return false;
@@ -47,7 +52,9 @@ export function parseTypeBox(spec: TSchema, noOptional = false): Static<typeof s
       return [];
     case spec.kind === NumberKind:
     case spec.kind === IntegerKind:
+    case spec.type === 'number':
       return 0;
+    case spec.type === 'object':
     case spec.kind === ObjectKind: {
       const obj: Static<typeof spec> = {};
       for (const key in spec.properties) {

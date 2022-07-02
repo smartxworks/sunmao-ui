@@ -58,6 +58,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-json-tree": "^0.16.1",
+    "squirrelly": "^8.0.8",
     "tern": "^0.24.3"
   },
   "devDependencies": {

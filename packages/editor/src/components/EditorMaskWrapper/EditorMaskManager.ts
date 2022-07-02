@@ -112,14 +112,18 @@ export class EditorMaskManager {
   private observeResize() {
     this.resizeObserver.disconnect();
     this.eleMap.forEach(ele => {
-      this.resizeObserver.observe(ele);
+      if (ele instanceof Element) {
+        this.resizeObserver.observe(ele);
+      }
     });
   }
 
   private observeIntersection() {
     this.intersectionObserver.disconnect();
     this.eleMap.forEach(ele => {
-      this.intersectionObserver.observe(ele);
+      if (ele instanceof Element) {
+        this.intersectionObserver.observe(ele);
+      }
     });
   }
 

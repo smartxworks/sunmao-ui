@@ -211,7 +211,9 @@ export class StateManager {
     };
   }
 
-  setDependencies(dependencies: Record<string, unknown> = {}) {
-    this.dependencies = { ...DefaultDependencies, ...dependencies };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setDependencies(_dependencies: Record<string, unknown> = {}) {
+    // this.dependencies = { ...DefaultDependencies, ...dependencies };
+    // console.log('>>set', this.dependencies);
   }
 }

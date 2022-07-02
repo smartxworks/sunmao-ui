@@ -1,6 +1,8 @@
 import React from 'react';
 import { Flex, Button, Box } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
+import SnippetsModal from '../Snippets/SnippetsModal';
+import { EditorServices } from '../../types';
 
 export const EditorHeader: React.FC<{
   scale: number;
@@ -8,10 +10,13 @@ export const EditorHeader: React.FC<{
   onPreview: () => void;
   onCodeMode: () => void;
   onRefresh: () => void;
-}> = ({ scale, setScale, onPreview, onCodeMode, onRefresh }) => {
+  services: EditorServices;
+}> = ({ scale, setScale, onPreview, onCodeMode, onRefresh, services }) => {
   return (
     <Flex p={2} borderBottomWidth="2px" borderColor="gray.200" align="center">
-      <Flex flex="1" />
+      <Flex flex="1">
+        <SnippetsModal services={services} />
+      </Flex>
       <Flex flex="1" align="center" justify="center">
         <Button size="sm" disabled={scale <= 50} onClick={() => setScale(scale - 10)}>
           <MinusIcon />
