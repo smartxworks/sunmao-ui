@@ -310,7 +310,7 @@ export class ComponentModel implements IComponentModel {
     const traitsStateSpec = this.traits.map(t => t.spec.spec.state);
     const stateSpecs = [componentStateSpec, ...traitsStateSpec];
     this.stateExample = stateSpecs.reduce((res, jsonSchema) => {
-      return merge(res, parseTypeBox(jsonSchema as any, true));
+      return merge(res, parseTypeBox(jsonSchema));
     }, {});
   }
 }

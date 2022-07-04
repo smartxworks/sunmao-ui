@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
-import { Type, Static, TSchema } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
 import { GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
@@ -11,6 +11,7 @@ import { SpecWidget } from './SpecWidget';
 import { observer } from 'mobx-react-lite';
 import { CORE_VERSION, CoreWidgetName, parseTypeBox } from '@sunmao-ui/shared';
 import { Select as RcSelect } from '../Select';
+import { JSONSchema7Object } from 'json-schema';
 
 const EventWidgetOptions = Type.Object({});
 
@@ -92,7 +93,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
       const params: Record<string, string> = {};
 
       for (const key in paramsSpec?.properties ?? {}) {
-        const spec = paramsSpec!.properties![key] as TSchema;
+        const spec = paramsSpec!.properties![key] as JSONSchema7Object;
         const defaultValue = spec.defaultValue;
 
         params[key] =

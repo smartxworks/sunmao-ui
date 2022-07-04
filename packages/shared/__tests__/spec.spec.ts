@@ -61,4 +61,26 @@ describe('parseTypeBox function', () => {
       )
     ).toEqual('column');
   });
+  it('can parse allOf', () => {
+    expect(
+      parseTypeBox(
+        Type.Intersect([
+          Type.Object({ x: Type.Number() }),
+          Type.Object({ y: Type.Number() }),
+        ])
+      )
+    ).toEqual({ x: 0, y: 0 });
+  });
+  it('can parse array type', () => {
+    expect(
+      parseTypeBox({
+        type: ['string', 'number'],
+      })
+    ).toEqual('');
+    expect(
+      parseTypeBox({
+        type: ['number', 'string'],
+      })
+    ).toEqual(0);
+  });
 });

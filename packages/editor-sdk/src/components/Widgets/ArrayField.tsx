@@ -6,7 +6,7 @@ import { IconButton, Flex } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
-import { TSchema, Type, Static } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { ArrayTable } from '../Form/ArrayTable';
 import { ArrayItemBox } from '../Form/ArrayItemBox';
 
@@ -72,7 +72,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = props => {
           icon={<AddIcon />}
           size="sm"
           onClick={() => {
-            onChange(value.concat(parseTypeBox(itemSpec as TSchema)));
+            onChange(value.concat(parseTypeBox(itemSpec)));
           }}
         />
       </Flex>
