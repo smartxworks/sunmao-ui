@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { isEmpty } from 'lodash';
-import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { isExpression as _isExpression } from '../../utils/validator';
@@ -189,12 +189,8 @@ export const SpecWidget: React.FC<Props> = props => {
     Component = NullField;
   } else if ('anyOf' in spec || 'oneOf' in spec) {
     Component = MultiSpecField;
-  } else if (
-    [AnyKind, UnknownKind].includes((spec as unknown as { kind: symbol }).kind)
-  ) {
-    Component = ExpressionWidget;
   } else {
-    console.info('Found unsupported spec', spec);
+    Component = ExpressionWidget;
   }
 
   return (

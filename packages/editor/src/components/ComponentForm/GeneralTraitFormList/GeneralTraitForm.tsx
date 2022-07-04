@@ -23,7 +23,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
 
   const tImpl = registry.getTraitByType(trait.type);
   const properties = Object.assign(
-    parseTypeBox(tImpl.spec.properties as TSchema),
+    parseTypeBox(tImpl.spec.properties)!,
     trait.properties
   );
   const fields = Object.keys(properties || []).map((key: string) => {

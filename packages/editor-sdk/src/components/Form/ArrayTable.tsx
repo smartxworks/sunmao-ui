@@ -4,7 +4,6 @@ import { IconButton, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
-import { TSchema } from '@sinclair/typebox';
 import { ArrayFieldProps } from '../Widgets/ArrayField';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
@@ -131,7 +130,7 @@ export const ArrayTable: React.FC<ArrayTableProps> = props => {
                 size="xs"
                 variant="ghost"
                 onClick={() => {
-                  onChange(value.concat(parseTypeBox(itemSpec as TSchema)));
+                  onChange(value.concat(parseTypeBox(itemSpec)));
                 }}
               />
             </Th>

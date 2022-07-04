@@ -1,19 +1,10 @@
+import { TLiteral, Type, TSchema, OptionalModifier } from '@sinclair/typebox';
 import {
-  TLiteral,
-  Type,
-  ArrayKind,
-  BooleanKind,
-  IntegerKind,
-  NumberKind,
-  ObjectKind,
-  Static,
-  StringKind,
-  TSchema,
-  OptionalModifier,
-  UnionKind,
-  AnyKind,
-} from '@sinclair/typebox';
-import { JSONSchema7Definition, JSONSchema7 } from 'json-schema';
+  JSONSchema7Definition,
+  JSONSchema7,
+  JSONSchema7Type,
+  JSONSchema7Object,
+} from 'json-schema';
 
 export type IntoStringUnion<T> = {
   [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
@@ -31,37 +22,80 @@ export function StringUnion<T extends string[]>(values: [...T], options?: any) {
   );
 }
 
-export function parseTypeBox(spec: TSchema, noOptional = false): Static<typeof spec> {
-  if (spec.modifier === OptionalModifier && !noOptional) {
-    return undefined;
+function getArray(items: JSONSchema7Definition[]): JSONSchema7Type[] {
+  return items.map(item => (isJSONSchema(item) ? parseTypeBox(item) : null));
+}
+
+function getObject(spec: JSONSchema7): JSONSchema7Object {
+  const obj: JSONSchema7Object = {};
+
+  if (spec.allOf && spec.allOf.length > 0) {
+    return (getArray(spec.allOf) as JSONSchema7Object[]).reduce((prev, cur) => {
+      prev = Object.assign(prev, cur);
+      return prev;
+    }, obj);
+  }
+
+  for (const key in spec.properties) {
+    const subSpec = spec.properties[key];
+    if (typeof subSpec === 'boolean') {
+      obj[key] = null;
+    } else {
+      obj[key] = parseTypeBox(subSpec);
+    }
+  }
+  return obj;
+}
+
+export function parseTypeBox(spec: JSONSchema7): JSONSchema7Type {
+  // compatible with typebox optional
+  if ((spec as TSchema).modifier === OptionalModifier) {
+    return undefined as unknown as JSONSchema7Type;
+  }
+
+  if (!spec.type) {
+    if ((spec.anyOf && spec.anyOf!.length > 0) || (spec.oneOf && spec.oneOf.length > 0)) {
+      const subSpec = (spec.anyOf! || spec.oneOf)[0];
+      if (typeof subSpec === 'boolean') return null;
+      return parseTypeBox(subSpec);
+    }
+    return null;
+  }
+
+  if (spec.const) {
+    return spec.const;
   }
 
   switch (true) {
-    case spec.type === 'string' && 'enum' in spec && spec.enum.length > 0:
-      return spec.enum[0];
-    case spec.kind === StringKind:
-      return '';
-    case spec.kind === BooleanKind:
-      return false;
-    case spec.kind === ArrayKind:
-      return [];
-    case spec.kind === NumberKind:
-    case spec.kind === IntegerKind:
-      return 0;
-    case spec.kind === ObjectKind: {
-      const obj: Static<typeof spec> = {};
-      for (const key in spec.properties) {
-        obj[key] = parseTypeBox(spec.properties[key], noOptional);
+    case Array.isArray(spec.type): {
+      const subSpec = {
+        type: spec.type[0],
+      } as JSONSchema7;
+      return parseTypeBox(subSpec);
+    }
+    case spec.type === 'string':
+      if (spec.enum && spec.enum.length > 0) {
+        return spec.enum[0];
+      } else {
+        return '';
       }
-      return obj;
-    }
-    case spec.kind === UnionKind && 'anyOf' in spec && spec.anyOf.length > 0:
-    case spec.kind === UnionKind && 'oneOf' in spec && spec.oneOf.length > 0: {
-      const subSpec = (spec.anyOf || spec.oneOf)[0];
-      return parseTypeBox(subSpec, noOptional);
-    }
-    case spec.kind === AnyKind:
-      return undefined;
+    case spec.type === 'boolean':
+      return false;
+    case spec.type === 'array':
+      return spec.items
+        ? Array.isArray(spec.items)
+          ? getArray(spec.items)
+          : isJSONSchema(spec.items)
+          ? []
+          : null
+        : [];
+    case spec.type === 'number':
+    case spec.type === 'integer':
+      return 0;
+    case spec.type === 'object':
+      return getObject(spec);
+    case spec.type === 'null':
+      return null;
     default:
       return {};
   }
