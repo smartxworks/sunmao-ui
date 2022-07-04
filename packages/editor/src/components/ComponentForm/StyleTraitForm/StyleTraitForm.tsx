@@ -146,7 +146,8 @@ export const StyleTraitForm: React.FC<Props> = props => {
     }
     return styles.map(({ style, styleSlot, cssProperties }, i) => {
       const _cssProperties = cssProperties || {};
-      const removeStyle = () => {
+      const removeStyle = (e: React.MouseEvent) => {
+        e.stopPropagation();
         const newStyles = styles.filter((_, j) => j !== i);
         updateStyles(newStyles);
       };
@@ -160,9 +161,19 @@ export const StyleTraitForm: React.FC<Props> = props => {
       };
       return (
         <AccordionItem width="full" key={`${styleSlot}${i}`}>
-          <AccordionButton justifyContent="space-between" bg="white">
-            {styleSlot}
-            <AccordionIcon />
+          <AccordionButton width="full" justifyContent="space-between">
+            <span>{styleSlot}</span>
+            <HStack>
+              <IconButton
+                aria-label="remove style"
+                size="sm"
+                variant="ghost"
+                colorScheme="red"
+                icon={<CloseIcon fontSize="12px" />}
+                onClick={removeStyle}
+              />
+              <AccordionIcon />
+            </HStack>
           </AccordionButton>
           <AccordionPanel bg="white" padding="0">
             <VStack
@@ -171,16 +182,6 @@ export const StyleTraitForm: React.FC<Props> = props => {
               width="full"
               spacing="2"
             >
-              <HStack width="full" justify="end">
-                <IconButton
-                  aria-label="remove style"
-                  size="sm"
-                  variant="ghost"
-                  colorScheme="red"
-                  icon={<CloseIcon fontSize="12px" />}
-                  onClick={removeStyle}
-                />
-              </HStack>
               <CollapsibleFormControl label="Style Slot">
                 <Select
                   value={styleSlot}
