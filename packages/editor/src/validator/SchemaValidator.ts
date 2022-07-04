@@ -52,8 +52,8 @@ export class SchemaValidator implements ISchemaValidator {
     });
   }
 
-  validate(components: ComponentSchema[]) {
-    const appModel = new AppModel(components, this.registry);
+  validate(components: ComponentSchema[], appModel: AppModel) {
+    console.time('validate sync');
     this.genComponentIdSpecMap(components);
     this.result = [];
     const baseContext = {
@@ -118,6 +118,7 @@ export class SchemaValidator implements ISchemaValidator {
         });
       });
     });
+    console.timeEnd('validate sync');
     return this.result;
   }
 
