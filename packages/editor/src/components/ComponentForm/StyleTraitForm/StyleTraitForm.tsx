@@ -200,35 +200,25 @@ export const StyleTraitForm: React.FC<Props> = props => {
                   onChange={changeCssProperties}
                 />
               </CollapsibleFormControl>
-              <CollapsibleFormControl label="Margin">
+              <CollapsibleFormControl label="Space">
                 <SpaceWidget
                   {...widgetProps}
-                  value={[
-                    _cssProperties.marginTop,
-                    _cssProperties.marginRight,
-                    _cssProperties.marginBottom,
-                    _cssProperties.marginLeft,
-                  ]}
-                  onChange={(v: string, direction: string) => {
-                    const key = `margin${capitalize(direction)}`;
-                    changeCssProperties({
-                      ..._cssProperties,
-                      [key]: v,
-                    });
+                  value={{
+                    margin: [
+                      _cssProperties.marginTop,
+                      _cssProperties.marginRight,
+                      _cssProperties.marginBottom,
+                      _cssProperties.marginLeft,
+                    ],
+                    padding: [
+                      _cssProperties.paddingTop,
+                      _cssProperties.paddingRight,
+                      _cssProperties.paddingBottom,
+                      _cssProperties.paddingLeft,
+                    ],
                   }}
-                />
-              </CollapsibleFormControl>
-              <CollapsibleFormControl label="Padding">
-                <SpaceWidget
-                  {...widgetProps}
-                  value={[
-                    _cssProperties.paddingTop,
-                    _cssProperties.paddingRight,
-                    _cssProperties.paddingBottom,
-                    _cssProperties.paddingLeft,
-                  ]}
-                  onChange={(v: string, direction: string) => {
-                    const key = `padding${capitalize(direction)}`;
+                  onChange={(v: string, direction: string, type: string) => {
+                    const key = `${type}${capitalize(direction)}`;
                     changeCssProperties({
                       ..._cssProperties,
                       [key]: v,
