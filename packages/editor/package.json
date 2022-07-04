@@ -55,10 +55,11 @@
     "mobx": "^6.3.8",
     "mobx-react-lite": "^3.2.2",
     "re-resizable": "^6.9.5",
-    "react-json-tree": "^0.16.1",
-    "tern": "^0.24.3",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-json-tree": "^0.16.1",
+    "scroll-into-view": "^1.16.2",
+    "tern": "^0.24.3"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
@@ -68,6 +69,7 @@
     "@types/escodegen": "^0.0.7",
     "@types/json-schema": "^7.0.7",
     "@types/lodash": "^4.14.182",
+    "@types/scroll-into-view": "^1.16.0",
     "@types/tern": "^0.23.4",
     "@vitejs/plugin-react": "^1.0.1",
     "@vitejs/plugin-react-refresh": "^1.3.6",
