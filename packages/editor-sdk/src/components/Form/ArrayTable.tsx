@@ -9,7 +9,7 @@ import { ArrayFieldProps } from '../Widgets/ArrayField';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
-import { get } from 'lodash-es';
+import { get } from 'lodash';
 
 const TableWrapperStyle = css`
   border: 1px solid var(--chakra-colors-gray-200);
