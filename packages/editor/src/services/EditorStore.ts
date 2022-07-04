@@ -89,6 +89,7 @@ export class EditorStore {
           this.setCurrentComponentsVersion(0);
           this.setLastSavedComponentsVersion(0);
           this.clearSunmaoGlobalState();
+          this.eventBus.send('stateRefresh');
           this.eventBus.send('componentsRefresh', this.originComponents);
 
           this.setComponents(this.originComponents);
