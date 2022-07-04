@@ -16,6 +16,7 @@ import {
 } from '@choc-ui/chakra-autocomplete';
 import { css } from '@emotion/css';
 import { isEqual } from 'lodash-es';
+import scrollIntoView from 'scroll-into-view';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ComponentSchema[]>;
@@ -85,10 +86,12 @@ export const StructureTree: React.FC<Props> = props => {
     if (selectedId) {
       // wait the component tree to be expanded
       setTimeout(() => {
-        wrapperRef.current?.querySelector(`#tree-item-${selectedId}`)?.scrollIntoView({
-          block: 'nearest',
-          inline: 'nearest',
-        });
+        const selectedElement: HTMLElement | undefined | null =
+          wrapperRef.current?.querySelector(`#tree-item-${selectedId}`);
+
+        if (selectedElement) {
+          scrollIntoView(selectedElement, { time: 0, align: { lockX: true } });
+        }
       });
     }
   }, []);
