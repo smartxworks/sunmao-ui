@@ -118,7 +118,14 @@ export const SpaceItem: React.FC<SpaceItemProps> = props => {
   );
 };
 
-export const SpaceWidget: React.FC<WidgetProps<{}>> = props => {
+type SpaceWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Space}`;
+declare module '../../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/space': {};
+  }
+}
+
+export const SpaceWidget: React.FC<WidgetProps<SpaceWidgetType>> = props => {
   const { value, onChange } = props;
   const paddingValue = value.padding;
   const marginValue = value.margin;
@@ -176,7 +183,7 @@ export const SpaceWidget: React.FC<WidgetProps<{}>> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<SpaceWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: StyleWidgetName.Space,

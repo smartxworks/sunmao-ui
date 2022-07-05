@@ -309,12 +309,17 @@ export const Table = implementRuntimeComponent({
           switch (evaledColumn.type) {
             case 'button':
               const handleClick = () => {
-                const rawColumn = (component.properties.columns as ColumnProperty[])[i];
-                if (!rawColumn.btnCfg) return;
-                const evaledButtonConfig = services.stateManager.deepEval(
-                  rawColumn.btnCfg,
-                  evalOptions
-                );
+                const rawColumns = component.properties.columns;
+                const evaledColumns =
+                  typeof rawColumns === 'string'
+                    ? (services.stateManager.maskedEval(
+                        rawColumns,
+                        evalOptions
+                      ) as ColumnProperty[])
+                    : services.stateManager.deepEval(rawColumns, evalOptions);
+                const evaledButtonConfig = evaledColumns[i].btnCfg;
+
+                if (!evaledButtonConfig) return;
 
                 evaledButtonConfig.handlers.forEach(handler => {
                   services.apiService.send('uiMethod', {

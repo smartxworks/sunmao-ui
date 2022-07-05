@@ -29,6 +29,7 @@ export const MenuPropsSpec = {
     {
       title: 'Items',
       category: Category.Basic,
+      widget: 'core/v1/array',
       widgetOptions: {
         displayedKeys: ['text'],
       },
