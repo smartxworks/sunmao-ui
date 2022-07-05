@@ -61,6 +61,7 @@ export interface IAppModel {
   appendChild(component: IComponentModel): void;
   changeComponentMapId(oldId: ComponentId, newId: ComponentId): void;
   _bindComponentToModel(component: IComponentModel): void;
+  traverseTree(cb: (c: IComponentModel) => void): void;
 }
 
 export interface IModuleModel {

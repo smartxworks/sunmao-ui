@@ -13,10 +13,10 @@ export const Pagination: React.FC<Props> = ({
   lastPage,
   handlePageClick,
 }) => {
-  const render = [];
+  const pages = [];
   if (currentPage - 1 >= 0) {
     const prevPage = currentPage - 1;
-    render.push(
+    pages.push(
       <IconButton
         size="xs"
         aria-label="left"
@@ -27,24 +27,24 @@ export const Pagination: React.FC<Props> = ({
       />
     );
   }
-
+  const ShowPagesNumber = 5;
   let startIdx;
   let endIdx;
   if (currentPage - 1 >= 0) {
     startIdx = currentPage - 1;
-    endIdx = startIdx + 5;
+    endIdx = startIdx + ShowPagesNumber;
   } else {
     startIdx = 0;
-    endIdx = 5;
+    endIdx = ShowPagesNumber;
   }
   if (currentPage + 3 >= lastPage) {
-    startIdx = lastPage - 5;
+    startIdx = lastPage - ShowPagesNumber;
     endIdx = lastPage;
   }
 
   for (let idx = startIdx; idx < endIdx; idx++) {
     const offset = idx + 1;
-    render.push(
+    pages.push(
       <Button
         size="xs"
         key={`page-${offset}`}
@@ -59,7 +59,7 @@ export const Pagination: React.FC<Props> = ({
 
   if (endIdx < lastPage) {
     const offset = lastPage - 1;
-    render.push(
+    pages.push(
       <React.Fragment key={`last-page-${lastPage}`}>
         <Button size="xs" value={offset}>
           ...
@@ -73,7 +73,7 @@ export const Pagination: React.FC<Props> = ({
 
   if (currentPage + 1 < lastPage) {
     const nextPage = currentPage + 1;
-    render.push(
+    pages.push(
       <IconButton
         size="xs"
         aria-label="right"
@@ -84,5 +84,5 @@ export const Pagination: React.FC<Props> = ({
       />
     );
   }
-  return <HStack>{render}</HStack>;
+  return <HStack>{pages}</HStack>;
 };
