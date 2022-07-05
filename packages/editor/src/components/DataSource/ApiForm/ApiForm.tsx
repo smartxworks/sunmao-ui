@@ -58,7 +58,10 @@ export const ApiForm: React.FC<Props> = props => {
     return reactiveStore[api.id]?.fetch ?? {};
   }, [api.id, reactiveStore]);
   const traitIndex = useMemo(
-    () => api.traits.findIndex(({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`),
+    () =>
+      api.traits.findIndex(
+        ({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`
+      ),
     [api.traits]
   );
   const trait = useMemo(() => api.traits[traitIndex], [api.traits, traitIndex]);
@@ -85,7 +88,10 @@ export const ApiForm: React.FC<Props> = props => {
     },
   });
   const { values } = formik;
-  const URLSpec = Type.String({ widgetOptions: { compactOptions } });
+  const URLSpec = Type.String({
+    widget: 'core/v1/expression',
+    widgetOptions: { compactOptions },
+  });
 
   const onFetch = useCallback(async () => {
     services.apiService.send('uiMethod', {

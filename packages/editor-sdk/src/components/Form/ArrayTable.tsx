@@ -5,10 +5,10 @@ import { AddIcon } from '@chakra-ui/icons';
 import { parseTypeBox, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
 import { TSchema } from '@sinclair/typebox';
-import { ArrayFieldProps } from '../Widgets/ArrayField';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
+import { WidgetProps } from '../../types/widget';
 import { get } from 'lodash';
 
 const TableWrapperStyle = css`
@@ -34,7 +34,7 @@ const TableRowStyle = css`
   }
 `;
 
-type ArrayTableProps = ArrayFieldProps & {
+type ArrayTableProps = WidgetProps<'core/v1/array'> & {
   itemSpec: JSONSchema7;
 };
 type RowProps = ArrayTableProps & {

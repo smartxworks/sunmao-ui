@@ -46,7 +46,15 @@ type Category = {
   specs: WidgetProps['spec'][];
 };
 
-export const CategoryWidget: React.FC<WidgetProps> = props => {
+type CategoryWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Category}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/category': {};
+  }
+}
+
+export const CategoryWidget: React.FC<WidgetProps<CategoryWidgetType>> = props => {
   const { component, spec, value, path, level, services, onChange } = props;
 
   const categories = useMemo<Category[]>(() => {
@@ -115,7 +123,7 @@ export const CategoryWidget: React.FC<WidgetProps> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<CategoryWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Category,
