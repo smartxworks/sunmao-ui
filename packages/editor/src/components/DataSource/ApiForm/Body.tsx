@@ -26,7 +26,7 @@ export const Body: React.FC<Props> = props => {
   const { values } = formik;
   const specWithWidgetOptions = useMemo(
     () =>
-      mergeWidgetOptionsIntoSpec(spec, {
+      mergeWidgetOptionsIntoSpec<'core/v1/spec' | 'core/v1/record' | any>(spec, {
         minNum: 1,
         isShowHeader: true,
       }),

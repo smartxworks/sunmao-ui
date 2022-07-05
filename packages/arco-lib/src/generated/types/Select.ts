@@ -24,6 +24,7 @@ export const SelectPropsSpec = {
     {
       title: 'Options',
       category: Category.Data,
+      widget: 'core/v1/array',
       widgetOptions: {
         displayedKeys: ['value'],
       },

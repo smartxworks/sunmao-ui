@@ -295,6 +295,7 @@ export const TablePropsSpec = Type.Object({
     title: 'Columns',
     description: '',
     category: Category.Columns,
+    widget: 'core/v1/array',
     widgetOptions: {
       displayedKeys: ['title'],
     },

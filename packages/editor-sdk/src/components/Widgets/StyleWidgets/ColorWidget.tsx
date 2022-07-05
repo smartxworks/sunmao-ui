@@ -16,7 +16,15 @@ import {
 } from '@chakra-ui/react';
 import { SketchPicker } from 'react-color';
 
-export const ColorWidget: React.FC<WidgetProps<{}, string>> = props => {
+type ColorWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Color}`;
+
+declare module '../../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/color': {};
+  }
+}
+
+export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props => {
   const { value, onChange } = props;
   const onColorChange = ({ rgb }: any) => {
     onChange(`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`);
@@ -29,7 +37,7 @@ export const ColorWidget: React.FC<WidgetProps<{}, string>> = props => {
     <InputGroup>
       <ExpressionWidget
         {...props}
-        spec={mergeWidgetOptionsIntoSpec(props.spec, {
+        spec={mergeWidgetOptionsIntoSpec<'core/v1/expression'>(props.spec, {
           compactOptions: { isHiddenExpand: true, height: '32px' },
         })}
         value={value}
@@ -66,7 +74,7 @@ export const ColorWidget: React.FC<WidgetProps<{}, string>> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<ColorWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: StyleWidgetName.Color,

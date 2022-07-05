@@ -18,10 +18,14 @@ const EMPTY_ARRAY: string[] = [];
 
 export const Params: React.FC<Props> = props => {
   const { api, formik, services } = props;
-  const url: string = useMemo(()=> formik.values.url ?? '', [formik.values.url]) ;
-  const index = useMemo(()=> url.indexOf('?'), [url]);
+  const url: string = useMemo(() => formik.values.url ?? '', [formik.values.url]);
+  const index = useMemo(() => url.indexOf('?'), [url]);
   const specWithWidgetOptions = useMemo(
-    ()=> mergeWidgetOptionsIntoSpec(Type.Record(Type.String(), Type.String()), { minNum: 1, isShowHeader: true }),
+    () =>
+      mergeWidgetOptionsIntoSpec<'core/v1/spec' | 'core/v1/record' | any>(
+        Type.Record(Type.String(), Type.String()),
+        { minNum: 1, isShowHeader: true }
+      ),
     []
   );
   const params = useMemo(() => {
