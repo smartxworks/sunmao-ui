@@ -1,6 +1,6 @@
 import { Metadata } from './metadata';
 import { parseVersion, Version } from './version';
-
+import { type PropsBeforeEvaled } from './schema';
 // spec
 
 export type Application = {
@@ -12,31 +12,35 @@ export type Application = {
   };
 };
 
-export type ComponentSchema = {
+export type ComponentSchema<CProperties = Record<string, unknown>> = {
   id: string;
   type: string;
   // do runtime type check
-  properties: Record<string, unknown>;
+  properties: PropsBeforeEvaled<CProperties>;
   traits: TraitSchema[];
   // scopes TBD
 };
 
-export type TraitSchema = {
+export type TraitSchema<TProperties = Record<string, unknown>> = {
   type: string;
   // do runtime type check
-  properties: Record<string, unknown>;
+  properties: PropsBeforeEvaled<TProperties>;
 };
 
-export type RuntimeTraitSchema = TraitSchema & {
-  parsedType: VersionAndName;
-}
+export type RuntimeTraitSchema<TProperties = Record<string, unknown>> =
+  TraitSchema<TProperties> & {
+    parsedType: VersionAndName;
+  };
 
 type VersionAndName = {
   version: string;
   name: string;
 };
 
-export type RuntimeComponentSchema = Omit<ComponentSchema, 'traits'> & {
+export type RuntimeComponentSchema<CProperties = Record<string, unknown>> = Omit<
+  ComponentSchema<CProperties>,
+  'traits'
+> & {
   parsedType: VersionAndName;
   traits: RuntimeTraitSchema[];
 };

@@ -10,7 +10,13 @@ const StringFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
 });
 
-type StringFieldWidgetOptionsType = Static<typeof StringFieldWidgetOptions>;
+type StringFieldType = `${typeof CORE_VERSION}/${CoreWidgetName.StringField}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/string': Static<typeof StringFieldWidgetOptions>;
+  }
+}
 
 const EnumField: React.FC<WidgetProps> = props => {
   const { spec, value, onChange } = props;
@@ -25,7 +31,7 @@ const EnumField: React.FC<WidgetProps> = props => {
   );
 };
 
-export const StringField: React.FC<WidgetProps<StringFieldWidgetOptionsType>> = props => {
+export const StringField: React.FC<WidgetProps<StringFieldType>> = props => {
   const { spec, value } = props;
   const { expressionOptions } = spec.widgetOptions || {};
   const [, setValue] = useState(value);
@@ -42,14 +48,14 @@ export const StringField: React.FC<WidgetProps<StringFieldWidgetOptionsType>> = 
   return (
     <ExpressionWidget
       {...props}
-      spec={mergeWidgetOptionsIntoSpec(spec, {
+      spec={mergeWidgetOptionsIntoSpec<'core/v1/expression'>(spec, {
         compactOptions: expressionOptions?.compactOptions,
       })}
     />
   );
 };
 
-export default implementWidget<StringFieldWidgetOptionsType>({
+export default implementWidget<StringFieldType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.StringField,

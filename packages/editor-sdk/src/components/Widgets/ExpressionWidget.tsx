@@ -133,15 +133,21 @@ export const ExpressionWidgetOptionsSpec = Type.Object({
     Type.Object({
       height: Type.Optional(Type.String()),
       paddingY: Type.Optional(Type.String()),
+      isHiddenExpand: Type.Optional(Type.Boolean()),
     })
   ),
 });
 
 const ajv = new Ajv();
 
-export const ExpressionWidget: React.FC<
-  WidgetProps<Static<typeof ExpressionWidgetOptionsSpec>>
-> = props => {
+type ExpressionWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Expression}`;
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/expression': Static<typeof ExpressionWidgetOptionsSpec>;
+  }
+}
+
+export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = props => {
   const { value, services, spec, onChange } = props;
   const { widgetOptions } = spec;
   const { stateManager } = services;
@@ -233,7 +239,7 @@ export const ExpressionWidget: React.FC<
   );
 };
 
-export default implementWidget<Static<typeof ExpressionWidgetOptionsSpec>>({
+export default implementWidget<ExpressionWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Expression,
