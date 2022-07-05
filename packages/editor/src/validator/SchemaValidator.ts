@@ -1,8 +1,8 @@
-import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
+import { RuntimeComponent } from '@sunmao-ui/core';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
 import { PropertiesValidatorRule } from '.';
-import { AppModel } from '../AppModel/AppModel';
+import { IAppModel } from '../AppModel/IAppModel';
 import {
   ISchemaValidator,
   ComponentValidatorRule,
@@ -52,10 +52,10 @@ export class SchemaValidator implements ISchemaValidator {
     });
   }
 
-  validate(components: ComponentSchema[]) {
-    const appModel = new AppModel(components, this.registry);
-    this.genComponentIdSpecMap(components);
+  validate(appModel: IAppModel) {
+    this.genComponentIdSpecMap(appModel);
     this.result = [];
+    const components = appModel.toSchema();
     const baseContext = {
       components,
       validators: this.validatorMap,
@@ -121,8 +121,8 @@ export class SchemaValidator implements ISchemaValidator {
     return this.result;
   }
 
-  genComponentIdSpecMap(components: ComponentSchema[]) {
-    components.forEach(c => {
+  genComponentIdSpecMap(appModel: IAppModel) {
+    appModel.traverseTree(c => {
       this.componentIdSpecMap[c.id] = this.registry.getComponentByType(c.type);
     });
   }
