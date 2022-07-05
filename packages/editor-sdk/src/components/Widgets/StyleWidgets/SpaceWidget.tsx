@@ -76,6 +76,7 @@ const textStyle = css`
   transform: scale(0.8);
   padding: 4px 0 0 4px;
   -webkit-transform-origin-x: 0;
+  pointer-events: none;
 `;
 
 type SpaceItemProps = {
@@ -111,8 +112,8 @@ export const SpaceItem: React.FC<SpaceItemProps> = props => {
           onChange(newValue, direction, type);
         }}
       >
-        <EditablePreview />
-        <Input as={EditableInput} />
+        <EditablePreview width="full" />
+        <Input paddingInlineStart={0} paddingInlineEnd={0} as={EditableInput} />
       </Editable>
     </GridItem>
   );
