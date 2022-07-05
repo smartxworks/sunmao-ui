@@ -32,8 +32,7 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
     if (isCollapsed) {
       return null;
     }
-    console.time('render errors');
-    const trs = validateResult
+    return validateResult
       .slice(currPage * PageSize, currPage * PageSize + PageSize)
       .map((result, i) => {
         return (
@@ -51,8 +50,6 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
           </Tr>
         );
       });
-    console.timeEnd('render errors');
-    return trs;
   }, [currPage, isCollapsed, setSelectedComponentId, validateResult]);
 
   const savedBadge = useMemo(() => {

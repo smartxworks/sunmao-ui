@@ -77,7 +77,7 @@ export type ValidatorRule =
 
 export interface ISchemaValidator {
   addRules: (rule: ValidatorRule[]) => void;
-  validate: (components: ComponentSchema[], appModel: AppModel) => ValidateErrorResult[];
+  validate: (appModel: AppModel) => ValidateErrorResult[];
   fix?: () => void;
 }
 

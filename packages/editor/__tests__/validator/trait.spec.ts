@@ -5,12 +5,13 @@ import {
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
 import { registry } from '../services';
+import { AppModel } from '../../src/AppModel/AppModel';
 
 const schemaValidator = new SchemaValidator(registry);
 
 describe('Validate trait', () => {
   describe('validate trait properties', () => {
-    const result = schemaValidator.validate(TraitInvalidSchema);
+    const result = schemaValidator.validate(new AppModel(TraitInvalidSchema, registry));
     it('detect missing field', () => {
       expect(result[0].message).toBe(`must have required property 'key'`);
     });
@@ -20,7 +21,7 @@ describe('Validate trait', () => {
   });
 
   describe('validate event trait', () => {
-    const result = schemaValidator.validate(EventTraitSchema);
+    const result = schemaValidator.validate(new AppModel(EventTraitSchema, registry));
     it('detect wrong event', () => {
       expect(result[0].message).toBe(`Component does not have event: change.`);
     });
@@ -36,7 +37,9 @@ describe('Validate trait', () => {
       expect(result[3].message).toBe(`must be string`);
     });
     it('detect method on trait', () => {
-      const result = schemaValidator.validate(EventTraitTraitMethodSchema);
+      const result = schemaValidator.validate(
+        new AppModel(EventTraitTraitMethodSchema, registry)
+      );
       expect(result.length).toBe(0);
     });
   });

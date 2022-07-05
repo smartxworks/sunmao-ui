@@ -117,7 +117,7 @@ export class EditorStore {
       () => this.components,
       () => {
         this.setValidateResult(
-          this.schemaValidator.validate(this.components, this.appModelManager.appModel)
+          this.schemaValidator.validate(this.appModelManager.appModel)
         );
       }
     );
