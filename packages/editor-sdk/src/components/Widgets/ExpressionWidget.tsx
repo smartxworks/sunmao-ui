@@ -155,7 +155,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
     return getCode(value);
   }, [value]);
   const [defs, setDefs] = useState<any>();
-  const [evaledValue, setEvaledValue] = useState<any>(null);
+  const [evaledValue, setEvaledValue] = useState<any>({ value: null });
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
   const validate = useMemo(() => ajv.compile(spec), [spec]);
@@ -193,7 +193,9 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
           }
         }
 
-        setEvaledValue(result);
+        setEvaledValue({
+          value: result,
+        });
         setError(null);
       } catch (err) {
         setError(String(err));
