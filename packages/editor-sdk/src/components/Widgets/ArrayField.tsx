@@ -4,9 +4,13 @@ import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { IconButton, Flex } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseTypeBox, CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
+import {
+  generateDefaultValueFromSpec,
+  CORE_VERSION,
+  CoreWidgetName,
+} from '@sunmao-ui/shared';
 import { ExpressionWidgetOptionsSpec } from './ExpressionWidget';
-import { TSchema, Type, Static } from '@sinclair/typebox';
+import { Type, Static } from '@sinclair/typebox';
 import { ArrayTable } from '../Form/ArrayTable';
 import { ArrayItemBox } from '../Form/ArrayItemBox';
 
@@ -77,7 +81,7 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetType>> = props => 
           icon={<AddIcon />}
           size="sm"
           onClick={() => {
-            onChange(value.concat(parseTypeBox(itemSpec as TSchema)));
+            onChange(value.concat(generateDefaultValueFromSpec(itemSpec)));
           }}
         />
       </Flex>
