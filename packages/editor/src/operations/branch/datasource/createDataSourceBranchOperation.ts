@@ -3,7 +3,11 @@ import { BaseBranchOperation } from '../../type';
 import { CreateComponentBranchOperation } from '../index';
 import { CreateTraitLeafOperation } from '../../leaf';
 import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../../../constants/dataSource';
-import { parseTypeBox, CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
+import {
+  generateDefaultValueFromSpec,
+  CORE_VERSION,
+  CoreComponentName,
+} from '@sunmao-ui/shared';
 import { JSONSchema7Object } from 'json-schema';
 
 export type CreateDataSourceBranchOperationContext = {
@@ -17,7 +21,9 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
     const { id, type, defaultProperties = {} } = this.context;
     const traitType = DATASOURCE_TRAIT_TYPE_MAP[type];
     const traitSpec = this.registry.getTraitByType(traitType).spec;
-    const initProperties = parseTypeBox(traitSpec.properties) as JSONSchema7Object;
+    const initProperties = generateDefaultValueFromSpec(
+      traitSpec.properties
+    ) as JSONSchema7Object;
 
     this.operationStack.insert(
       new CreateComponentBranchOperation(this.registry, {

@@ -4,7 +4,7 @@ import { RegistryInterface } from '../services/Registry';
 import { StateManagerInterface } from '../services/StateManager';
 import {
   ModuleRenderSpec,
-  parseTypeBox,
+  generateDefaultValueFromSpec,
   CORE_VERSION,
   CoreComponentName,
 } from '@sunmao-ui/shared';
@@ -29,10 +29,16 @@ export function initSingleComponentState(
   let state = {};
   c.traits.forEach(t => {
     const tSpec = registry.getTrait(t.parsedType.version, t.parsedType.name).spec;
-    state = { ...state, ...(parseTypeBox(tSpec.state) as JSONSchema7Object) };
+    state = {
+      ...state,
+      ...(generateDefaultValueFromSpec(tSpec.state) as JSONSchema7Object),
+    };
   });
   const cSpec = registry.getComponent(c.parsedType.version, c.parsedType.name).spec;
-  state = { ...state, ...(parseTypeBox(cSpec.state) as JSONSchema7Object) };
+  state = {
+    ...state,
+    ...(generateDefaultValueFromSpec(cSpec.state) as JSONSchema7Object),
+  };
 
   stateManager.store[c.id] = state;
 

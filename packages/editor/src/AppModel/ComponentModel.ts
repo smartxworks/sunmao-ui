@@ -1,6 +1,10 @@
 import { merge } from 'lodash';
 import { RegistryInterface } from '@sunmao-ui/runtime';
-import { parseTypeBox, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import {
+  generateDefaultValueFromSpec,
+  CORE_VERSION,
+  CoreTraitName,
+} from '@sunmao-ui/shared';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { genComponent, genTrait } from './utils';
 import {
@@ -310,7 +314,7 @@ export class ComponentModel implements IComponentModel {
     const traitsStateSpec = this.traits.map(t => t.spec.spec.state);
     const stateSpecs = [componentStateSpec, ...traitsStateSpec];
     this.stateExample = stateSpecs.reduce((res, jsonSchema) => {
-      return merge(res, parseTypeBox(jsonSchema));
+      return merge(res, generateDefaultValueFromSpec(jsonSchema));
     }, {});
   }
 }
