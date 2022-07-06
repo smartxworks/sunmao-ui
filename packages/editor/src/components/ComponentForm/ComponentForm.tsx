@@ -2,9 +2,8 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Accordion, Input, Text, VStack } from '@chakra-ui/react';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
-import { TSchema } from '@sinclair/typebox';
 import { parseType } from '@sunmao-ui/core';
-import { parseTypeBox } from '@sunmao-ui/shared';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
@@ -40,7 +39,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
   const properties = Object.assign(
-    parseTypeBox(cImpl.spec.properties as TSchema),
+    generateDefaultValueFromSpec(cImpl.spec.properties)!,
     selectedComponent.properties
   );
 

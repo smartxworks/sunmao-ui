@@ -2,9 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 import { css } from '@emotion/css';
 import { IconButton, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { parseTypeBox, isJSONSchema } from '@sunmao-ui/shared';
+import { generateDefaultValueFromSpec, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
-import { TSchema } from '@sinclair/typebox';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
@@ -131,7 +130,7 @@ export const ArrayTable: React.FC<ArrayTableProps> = props => {
                 size="xs"
                 variant="ghost"
                 onClick={() => {
-                  onChange(value.concat(parseTypeBox(itemSpec as TSchema)));
+                  onChange(value.concat(generateDefaultValueFromSpec(itemSpec)));
                 }}
               />
             </Th>
