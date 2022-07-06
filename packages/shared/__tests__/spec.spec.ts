@@ -1,30 +1,35 @@
 import { Type } from '@sinclair/typebox';
-import { parseTypeBox } from '../src/utils/spec';
+import { generateDefaultValueFromSpec } from '../src/utils/spec';
 
-describe('parseTypeBox function', () => {
+describe('generateDefaultValueFromSpec function', () => {
   it('can parse array', () => {
     const type = Type.Array(Type.Object({}));
-    expect(parseTypeBox(type)).toMatchObject([]);
+    expect(generateDefaultValueFromSpec(type)).toMatchObject([]);
   });
   it('can parse number', () => {
     const type = Type.Number();
-    expect(parseTypeBox(type)).toEqual(0);
+    expect(generateDefaultValueFromSpec(type)).toEqual(0);
   });
+  // Type.Optional can only be judged by the modifier feature provided by the typebox,
+  // but this would break the consistency of the function,
+  // and it doesn't seem to make much sense to deal with non-object optional alone like Type.Optional(Type.String())
+  // Therefore it is possible to determine whether an object's property is optional using spec.required,
+  // and if the property is within Type.Object is optional then it is not required.
   it('can parse optional', () => {
-    const type = Type.Optional(Type.String());
-    expect(parseTypeBox(type)).toEqual(undefined);
+    const type = Type.Optional(Type.Object({ str: Type.Optional(Type.String()) }));
+    expect(generateDefaultValueFromSpec(type)).toEqual({ str: undefined });
   });
   it('can parse object', () => {
     const type = Type.Object({
       key: Type.String(),
       value: Type.Array(Type.String()),
     });
-    expect(parseTypeBox(type)).toMatchObject({ key: '', value: [] });
+    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [] });
   });
 
   it('can parse enum', () => {
     expect(
-      parseTypeBox(
+      generateDefaultValueFromSpec(
         Type.KeyOf(
           Type.Object({
             foo: Type.String(),
@@ -37,7 +42,7 @@ describe('parseTypeBox function', () => {
 
   it('can parse anyOf', () => {
     expect(
-      parseTypeBox(
+      generateDefaultValueFromSpec(
         Type.Union([
           Type.KeyOf(
             Type.Object({
@@ -63,7 +68,7 @@ describe('parseTypeBox function', () => {
   });
   it('can parse allOf', () => {
     expect(
-      parseTypeBox(
+      generateDefaultValueFromSpec(
         Type.Intersect([
           Type.Object({ x: Type.Number() }),
           Type.Object({ y: Type.Number() }),
@@ -73,12 +78,12 @@ describe('parseTypeBox function', () => {
   });
   it('can parse array type', () => {
     expect(
-      parseTypeBox({
+      generateDefaultValueFromSpec({
         type: ['string', 'number'],
       })
     ).toEqual('');
     expect(
-      parseTypeBox({
+      generateDefaultValueFromSpec({
         type: ['number', 'string'],
       })
     ).toEqual(0);

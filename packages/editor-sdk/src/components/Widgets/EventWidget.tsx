@@ -9,7 +9,11 @@ import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget'
 import { RecordWidget } from './RecordField';
 import { SpecWidget } from './SpecWidget';
 import { observer } from 'mobx-react-lite';
-import { CORE_VERSION, CoreWidgetName, parseTypeBox } from '@sunmao-ui/shared';
+import {
+  CORE_VERSION,
+  CoreWidgetName,
+  generateDefaultValueFromSpec,
+} from '@sunmao-ui/shared';
 import { Select as RcSelect } from '../Select';
 import { JSONSchema7Object } from 'json-schema';
 
@@ -97,7 +101,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetOptionsType>> = observ
         const defaultValue = spec.defaultValue;
 
         params[key] =
-          formik.values.method.parameters?.[key] ?? defaultValue ?? parseTypeBox(spec);
+          formik.values.method.parameters?.[key] ??
+          defaultValue ??
+          generateDefaultValueFromSpec(spec);
       }
 
       return params;

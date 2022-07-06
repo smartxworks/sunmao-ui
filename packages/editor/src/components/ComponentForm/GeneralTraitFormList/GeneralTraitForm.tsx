@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
-import { parseTypeBox } from '@sunmao-ui/shared';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { CloseIcon } from '@chakra-ui/icons';
 import { TSchema } from '@sinclair/typebox';
 import { formWrapperCSS } from '../style';
@@ -23,7 +23,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
 
   const tImpl = registry.getTraitByType(trait.type);
   const properties = Object.assign(
-    parseTypeBox(tImpl.spec.properties)!,
+    generateDefaultValueFromSpec(tImpl.spec.properties)!,
     trait.properties
   );
   const fields = Object.keys(properties || []).map((key: string) => {
