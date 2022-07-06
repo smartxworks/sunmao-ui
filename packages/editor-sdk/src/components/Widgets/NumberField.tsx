@@ -10,7 +10,15 @@ import {
 } from '@chakra-ui/react';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
-export const NumberField: React.FC<WidgetProps> = props => {
+type NumberFieldType = `${typeof CORE_VERSION}/${CoreWidgetName.NumberField}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/number': {};
+  }
+}
+
+export const NumberField: React.FC<WidgetProps<NumberFieldType>> = props => {
   const { value, onChange } = props;
   const [stringValue, setStringValue] = React.useState(String(value));
 
@@ -35,7 +43,7 @@ export const NumberField: React.FC<WidgetProps> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<NumberFieldType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.NumberField,

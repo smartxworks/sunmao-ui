@@ -76,6 +76,7 @@ const textStyle = css`
   transform: scale(0.8);
   padding: 4px 0 0 4px;
   -webkit-transform-origin-x: 0;
+  pointer-events: none;
 `;
 
 type SpaceItemProps = {
@@ -111,14 +112,21 @@ export const SpaceItem: React.FC<SpaceItemProps> = props => {
           onChange(newValue, direction, type);
         }}
       >
-        <EditablePreview />
-        <Input as={EditableInput} />
+        <EditablePreview width="full" />
+        <Input paddingInlineStart={0} paddingInlineEnd={0} as={EditableInput} />
       </Editable>
     </GridItem>
   );
 };
 
-export const SpaceWidget: React.FC<WidgetProps<{}>> = props => {
+type SpaceWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Space}`;
+declare module '../../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/space': {};
+  }
+}
+
+export const SpaceWidget: React.FC<WidgetProps<SpaceWidgetType>> = props => {
   const { value, onChange } = props;
   const paddingValue = value.padding;
   const marginValue = value.margin;
@@ -176,7 +184,7 @@ export const SpaceWidget: React.FC<WidgetProps<{}>> = props => {
   );
 };
 
-export default implementWidget({
+export default implementWidget<SpaceWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: StyleWidgetName.Space,

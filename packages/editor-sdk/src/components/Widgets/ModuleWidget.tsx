@@ -28,7 +28,7 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
     <Box p="2" border="1px solid" borderColor="gray.200" borderRadius="4">
       <SpecWidget
         component={component}
-        spec={spec.properties!.id! as WidgetProps['spec']}
+        spec={spec.properties!.id! as WidgetProps<'core/v1/spec'>['spec']}
         value={value?.id}
         path={path.concat('id')}
         level={level + 1}

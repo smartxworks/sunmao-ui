@@ -1,7 +1,13 @@
 import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
-import { IAppModel, IComponentModel, IFieldModel, ITraitModel } from '../AppModel/IAppModel';
+import { AppModel } from '../AppModel/AppModel';
+import {
+  IAppModel,
+  IComponentModel,
+  IFieldModel,
+  ITraitModel,
+} from '../AppModel/IAppModel';
 
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
@@ -14,10 +20,7 @@ interface BaseValidateContext {
   registry: RegistryInterface;
   appModel: IAppModel;
   ajv: Ajv;
-  componentIdSpecMap: Record<
-    string,
-    RuntimeComponent<string, string, string, string>
-  >;
+  componentIdSpecMap: Record<string, RuntimeComponent<string, string, string, string>>;
 }
 
 export interface ComponentValidateContext extends BaseValidateContext {
@@ -74,7 +77,7 @@ export type ValidatorRule =
 
 export interface ISchemaValidator {
   addRules: (rule: ValidatorRule[]) => void;
-  validate: (components: ComponentSchema[]) => ValidateErrorResult[];
+  validate: (appModel: AppModel) => ValidateErrorResult[];
   fix?: () => void;
 }
 

@@ -10,8 +10,11 @@ import { UIServices, ComponentParamsFromApp } from './application';
 import { TraitResult } from './trait';
 
 // TODO: (type-safe), remove fallback type
-export type ImplWrapperProps<KSlot extends string = string> = {
-  component: RuntimeComponentSchema;
+export type ImplWrapperProps<
+  TProps extends Record<string, unknown> = Record<string, unknown>,
+  KSlot extends string = string
+> = {
+  component: RuntimeComponentSchema<TProps>;
   childrenMap: ChildrenMap<KSlot>;
   services: UIServices;
   isInModule: boolean;
@@ -21,12 +24,13 @@ export type ImplWrapperProps<KSlot extends string = string> = {
 } & ComponentParamsFromApp;
 
 export type ComponentImplProps<
+  TProps extends Record<string, unknown>,
   TState,
   TMethods,
   TSlots extends Record<string, SlotSpec>,
   KStyleSlot extends string,
   KEvent extends string
-> = ImplWrapperProps &
+> = ImplWrapperProps<TProps, string> &
   TraitResult<KStyleSlot, KEvent>['props'] &
   RuntimeFunctions<TState, TMethods, TSlots> & {
     elementRef?: React.MutableRefObject<any>;
@@ -34,13 +38,15 @@ export type ComponentImplProps<
   };
 
 export type ComponentImpl<
-  TProps = any,
+  TProps extends Record<string, unknown> = Record<string, unknown>,
   TState = any,
   TMethods = Record<string, any>,
   TSlots extends Record<string, SlotSpec> = Record<string, any>,
   KStyleSlot extends string = string,
   KEvent extends string = string
-> = React.FC<TProps & ComponentImplProps<TState, TMethods, TSlots, KStyleSlot, KEvent>>;
+> = React.FC<
+  TProps & ComponentImplProps<TProps, TState, TMethods, TSlots, KStyleSlot, KEvent>
+>;
 
 export type ImplementedRuntimeComponent<
   KMethodName extends string,
@@ -48,7 +54,7 @@ export type ImplementedRuntimeComponent<
   KSlot extends string,
   KEvent extends string
 > = RuntimeComponent<KMethodName, KStyleSlot, KSlot, KEvent> & {
-  impl: ComponentImpl;
+  impl: ComponentImpl<any>;
 };
 
 export type ChildrenMap<KSlot extends string> = Record<

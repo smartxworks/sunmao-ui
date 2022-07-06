@@ -19,10 +19,15 @@ const ArrayFieldWidgetOptions = Type.Object({
   displayedKeys: Type.Optional(Type.Array(Type.String())),
 });
 
-export type ArrayFieldProps = WidgetProps<ArrayFieldWidgetOptionsType>;
-export type ArrayFieldWidgetOptionsType = Static<typeof ArrayFieldWidgetOptions>;
+type ArrayFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.ArrayField}`;
 
-export const ArrayField: React.FC<ArrayFieldProps> = props => {
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/array': Static<typeof ArrayFieldWidgetOptions>;
+  }
+}
+
+export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetType>> = props => {
   const { spec, value, path, level, onChange } = props;
   const { expressionOptions } = spec.widgetOptions || {};
   const itemSpec = Array.isArray(spec.items) ? spec.items[0] : spec.items;
@@ -51,7 +56,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = props => {
           <SpecWidget
             {...props}
             value={itemValue}
-            spec={mergeWidgetOptionsIntoSpec(
+            spec={mergeWidgetOptionsIntoSpec<'core/v1/spec'>(
               {
                 ...itemSpec,
                 title: isNotBaseType ? '' : itemSpec.title,
@@ -84,7 +89,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = props => {
   );
 };
 
-export default implementWidget<ArrayFieldWidgetOptionsType>({
+export default implementWidget<ArrayFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.ArrayField,

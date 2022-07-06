@@ -4,11 +4,11 @@ import { IconButton, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { generateDefaultValueFromSpec, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
-import { ArrayFieldProps } from '../Widgets/ArrayField';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
 import { PopoverWidget } from '../Widgets/PopoverWidget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
-import { get } from 'lodash-es';
+import { WidgetProps } from '../../types/widget';
+import { get } from 'lodash';
 
 const TableWrapperStyle = css`
   border: 1px solid var(--chakra-colors-gray-200);
@@ -33,7 +33,7 @@ const TableRowStyle = css`
   }
 `;
 
-type ArrayTableProps = ArrayFieldProps & {
+type ArrayTableProps = WidgetProps<'core/v1/array'> & {
   itemSpec: JSONSchema7;
 };
 type RowProps = ArrayTableProps & {

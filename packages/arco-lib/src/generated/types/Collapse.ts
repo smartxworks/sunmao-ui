@@ -48,6 +48,7 @@ export const CollapsePropsSpec = {
   options: Type.Array(Type.Object(CollapseItemPropsSpec), {
     title: 'Options',
     category: Category.Basic,
+    widget: 'core/v1/array',
     widgetOptions: {
       displayedKeys: ['header'],
     },
