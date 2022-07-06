@@ -67,7 +67,7 @@ export const EventTraitForm: React.FC<Props> = props => {
         <ArrayField
           component={component}
           services={services}
-          spec={mergeWidgetOptionsIntoSpec(
+          spec={mergeWidgetOptionsIntoSpec<'core/v1/array'>(
             spec.spec.properties.properties!.handlers as any,
             {
               displayedKeys: ['componentId'],

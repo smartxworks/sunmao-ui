@@ -133,15 +133,21 @@ export const ExpressionWidgetOptionsSpec = Type.Object({
     Type.Object({
       height: Type.Optional(Type.String()),
       paddingY: Type.Optional(Type.String()),
+      isHiddenExpand: Type.Optional(Type.Boolean()),
     })
   ),
 });
 
 const ajv = new Ajv();
 
-export const ExpressionWidget: React.FC<
-  WidgetProps<Static<typeof ExpressionWidgetOptionsSpec>>
-> = props => {
+type ExpressionWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Expression}`;
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/expression': Static<typeof ExpressionWidgetOptionsSpec>;
+  }
+}
+
+export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = props => {
   const { value, services, spec, onChange } = props;
   const { widgetOptions } = spec;
   const { stateManager } = services;
@@ -149,7 +155,7 @@ export const ExpressionWidget: React.FC<
     return getCode(value);
   }, [value]);
   const [defs, setDefs] = useState<any>();
-  const [evaledValue, setEvaledValue] = useState<any>(null);
+  const [evaledValue, setEvaledValue] = useState<any>({ value: null });
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
   const validate = useMemo(() => ajv.compile(spec), [spec]);
@@ -187,7 +193,9 @@ export const ExpressionWidget: React.FC<
           }
         }
 
-        setEvaledValue(result);
+        setEvaledValue({
+          value: result,
+        });
         setError(null);
       } catch (err) {
         setError(String(err));
@@ -233,7 +241,7 @@ export const ExpressionWidget: React.FC<
   );
 };
 
-export default implementWidget<Static<typeof ExpressionWidgetOptionsSpec>>({
+export default implementWidget<ExpressionWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Expression,
