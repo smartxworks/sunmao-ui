@@ -2,6 +2,7 @@ import {
   TraitInvalidSchema,
   EventTraitSchema,
   EventTraitTraitMethodSchema,
+  DynamicStateTraitSchema,
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
 import { registry } from '../services';
@@ -39,6 +40,12 @@ describe('Validate trait', () => {
     it('detect method on trait', () => {
       const result = schemaValidator.validate(
         new AppModel(EventTraitTraitMethodSchema, registry)
+      );
+      expect(result.length).toBe(0);
+    });
+    it('detect dynamic state on trait', () => {
+      const result = schemaValidator.validate(
+        new AppModel(DynamicStateTraitSchema, registry)
       );
       expect(result.length).toBe(0);
     });
