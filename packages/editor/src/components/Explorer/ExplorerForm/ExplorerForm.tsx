@@ -43,8 +43,8 @@ export const ExplorerForm: React.FC<Props> = observer(
           name,
           version,
           stateMap: moduleSpec?.spec.stateMap || {},
-          properties: moduleSpec?.spec.properties || {},
-          rawSpec: moduleSpec.rawSpec || Type.Object({}),
+          properties: moduleSpec?.spec.properties || Type.Object({}),
+          exampleProperties: moduleSpec?.spec.exampleProperties || {},
         };
         form = (
           <ModuleMetaDataForm

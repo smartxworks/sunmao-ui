@@ -10,12 +10,12 @@ export type Module = {
   kind: 'Module';
   metadata: Metadata;
   spec: ModuleSpec;
-  rawSpec?: JSONSchema7;
   impl: ComponentSchema[];
 };
 
 type ModuleSpec = {
-  properties: JSONSchema7Object;
+  properties: JSONSchema7;
+  exampleProperties?: JSONSchema7Object;
   events: string[];
   stateMap: Record<string, string>;
 };
@@ -29,7 +29,6 @@ export type RuntimeModule = Module & {
 type CreateModuleOptions = {
   version: string;
   metadata: Metadata;
-  rawSpec?: JSONSchema7;
   spec?: Partial<ModuleSpec>;
   impl?: ComponentSchema[];
 };
@@ -44,12 +43,11 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
       description: options.metadata.description || '',
     },
     spec: {
-      properties: {},
+      properties: { type: 'object' },
       events: [],
       stateMap: {},
       ...options.spec,
     },
-    rawSpec: options.rawSpec,
     impl: options.impl || [],
   };
 }
