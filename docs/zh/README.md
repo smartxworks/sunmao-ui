@@ -2,7 +2,7 @@
   <img src="../images/logo.png" alt="logo" width="200"  />
 </div>
 <div align="center">
-  <h1>Sunmao-UI</h1>
+  <h1>Sunmao</h1>
 </div>
 
 <p align="center">
@@ -32,6 +32,8 @@ Sunmao 内置了低代码工具的 GUI 编辑器，几乎囊括了一个完整�
 ### 类型安全
 
 无论是在开发 Sunmao 组件时，还是在使用 Sunmao 编辑器时，你都处于类型安全之中。Sunmao 重度使用 Typescript 与 JSON schema 来实现极佳的类型系统。
+
+更多详情，请见 [Sunmao：一个真正可扩展的低代码 UI 框架](./what-is-sunmao.md)
 
 ## 目录结构
 

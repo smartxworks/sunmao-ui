@@ -1,6 +1,6 @@
 # Sunmao 开发者教程
 
-### 安装 Sunmao
+### [安装 Sunmao](./install.md)
 
 ### [Component 开发](./component.md)
 
@@ -8,5 +8,6 @@
 
 ### 进阶（TODO）
 
-- Property 的 ExpressionOption
+- [表达式](./expression)
+- Property 的 `ExpressionOption`
 - 生命周期
