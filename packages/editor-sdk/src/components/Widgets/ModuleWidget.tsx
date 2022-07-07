@@ -49,10 +49,10 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
   const handleModuleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const moduleType = e.target.value;
     let initProperties = {};
-    if (e.target.value) {
+    if (moduleType) {
       try {
         const module = registry.getModuleByType(moduleType);
-        initProperties = module.spec.properties;
+        initProperties = module.spec.exampleProperties || {};
       } catch {
         initProperties = {};
       }
@@ -99,7 +99,7 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
         <SpecWidget
           component={component}
           spec={{
-            ...module.rawSpec,
+            ...module.spec.properties,
             title: 'Module Properties',
           }}
           path={[]}

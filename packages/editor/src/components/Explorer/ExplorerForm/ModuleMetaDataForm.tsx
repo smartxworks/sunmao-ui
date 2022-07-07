@@ -27,8 +27,8 @@ export type ModuleMetaDataFormData = {
   name: string;
   version: string;
   stateMap: Record<string, string>;
-  properties: Record<string, any>;
-  rawSpec: JSONSchema7;
+  properties: JSONSchema7;
+  exampleProperties: JSONSchema7Object;
 };
 
 type ModuleMetaDataFormProps = {
@@ -47,7 +47,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
         { originName: initData.name, originVersion: initData.version },
         value
       );
-      editorStore.setModuleDependencies(value.properties);
+      editorStore.setModuleDependencies(value.exampleProperties);
       onSubmitForm?.(value);
     };
 
@@ -56,14 +56,14 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
       onSubmit,
     });
 
-    const moduleRawSpec = formik.values.rawSpec || {};
+    const moduleSpec = formik.values.properties;
 
     const moduleProperties = {
-      ...(generateDefaultValueFromSpec(moduleRawSpec) as JSONSchema7Object),
-      ...formik.values.properties,
+      ...(generateDefaultValueFromSpec(moduleSpec) as JSONSchema7Object),
+      ...formik.values.exampleProperties,
     };
 
-    const moduleSpecs = (moduleRawSpec.properties || {}) as Record<string, JSONSchema7>;
+    const moduleSpecs = (moduleSpec.properties || {}) as Record<string, JSONSchema7>;
 
     return (
       <VStack>
@@ -113,16 +113,13 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
                 {isOpen && (
                   <Box>
                     <JsonSchemaEditor
-                      data={moduleRawSpec}
+                      data={moduleSpec}
                       onSchemaChange={s => {
                         const curSpec = JSON.parse(s);
-                        if (
-                          s === JSON.stringify(moduleRawSpec) ||
-                          curSpec.type === 'array'
-                        )
+                        if (s === JSON.stringify(moduleSpec) || curSpec.type === 'array')
                           return;
 
-                        formik.setFieldValue('rawSpec', curSpec);
+                        formik.setFieldValue('properties', curSpec);
                       }}
                     />
                   </Box>
@@ -155,7 +152,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
                 level={1}
                 services={services}
                 onChange={newFormData => {
-                  formik.setFieldValue('properties', {
+                  formik.setFieldValue('exampleProperties', {
                     ...moduleProperties,
                     [key]: newFormData,
                   });
