@@ -81,8 +81,8 @@ export default implementRuntimeComponent({
       spacing: 12,
       direction: 'horizontal',
       align: 'auto',
-      wrap: '',
-      justify: '',
+      wrap: false,
+      justify: 'flex-start',
     },
     annotations: {
       category: 'Layout',
