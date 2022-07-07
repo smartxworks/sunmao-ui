@@ -20,44 +20,8 @@ import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
 import JsonSchemaEditor from '@optum/json-schema-editor';
-import { JSONSchema7, JSONSchema7Object, JSONSchema7Type } from 'json-schema';
-
-function parseSpec(spec: JSONSchema7): JSONSchema7Type {
-  switch (true) {
-    case spec.type === 'string':
-      if (spec.enum && spec.enum.length > 0) {
-        return spec.enum[0];
-      } else {
-        return '';
-      }
-    case spec.type === 'boolean':
-      return false;
-    case spec.type === 'array':
-      return [];
-    case spec.type === 'number':
-    case spec.type === 'integer':
-      return 0;
-    case spec.type === 'object': {
-      const obj: JSONSchema7Type = {};
-      for (const key in spec.properties) {
-        const subSpec = spec.properties[key];
-        if (typeof subSpec === 'boolean') return null;
-        obj[key] = parseSpec(subSpec);
-      }
-      return obj;
-    }
-    case spec.anyOf && spec.anyOf!.length > 0:
-    case spec.oneOf && spec.oneOf.length > 0: {
-      const subSpec = (spec.anyOf! || spec.oneOf)[0];
-      if (typeof subSpec === 'boolean') return null;
-      return parseSpec(subSpec);
-    }
-    case !spec.type:
-      return undefined as unknown as JSONSchema7Type;
-    default:
-      return {};
-  }
-}
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
+import { JSONSchema7, JSONSchema7Object } from 'json-schema';
 
 export type ModuleMetaDataFormData = {
   name: string;
@@ -95,7 +59,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
     const moduleRawSpec = formik.values.rawSpec || {};
 
     const moduleProperties = {
-      ...(parseSpec(moduleRawSpec) as JSONSchema7Object),
+      ...(generateDefaultValueFromSpec(moduleRawSpec) as JSONSchema7Object),
       ...formik.values.properties,
     };
 
