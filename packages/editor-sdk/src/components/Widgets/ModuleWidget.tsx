@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { SpecWidget } from './SpecWidget';
-import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreWidgetName, isJSONSchema } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
 
 const LabelStyle = css`
@@ -11,7 +11,15 @@ const LabelStyle = css`
   font-size: 14px;
 `;
 
-export const ModuleWidget: React.FC<WidgetProps> = props => {
+type ModuleWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Module}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/module': {};
+  }
+}
+
+export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
   const { component, value, spec, services, path, level, onChange } = props;
   const { registry } = services;
 
@@ -106,10 +114,10 @@ export const ModuleWidget: React.FC<WidgetProps> = props => {
           }}
         />
       )}
-      {spec.properties!.handlers && (
+      {spec.properties!.handlers && isJSONSchema(spec.properties!.handlers) && (
         <SpecWidget
           component={component}
-          spec={spec.properties!.handlers as WidgetProps['spec']}
+          spec={spec.properties!.handlers}
           value={value?.handlers}
           path={path.concat('handlers')}
           level={level + 1}
