@@ -99,7 +99,7 @@ describe('append to another component', () => {
     });
   });
   it('is in right place in allComponents', () => {
-    expect(appModel.allComponents[4]).toBe(newComponent);
+    expect(appModel.allComponents[2]).toBe(newComponent);
   });
   it('keep immutable after create component', () => {
     const newSchema = appModel.toSchema();
@@ -107,7 +107,7 @@ describe('append to another component', () => {
     expect(origin.length).toBe(newSchema.length - 1);
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
-    const newComponentSchema = newSchema[4];
+    const newComponentSchema = newSchema[2];
     expect(newComponentSchema.id).toBe('text10');
     expect(newComponentSchema.traits[0].properties).toEqual({
       container: { id: 'vstack1', slot: 'content' },

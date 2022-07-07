@@ -183,7 +183,7 @@ export class ComponentModel implements IComponentModel {
       parent.children[slot] = [];
     }
 
-    parent.children[slot].push(this);
+    parent.children[slot].unshift(this);
     parent.appModel._bindComponentToModel(this);
     this.parent = parent;
     this.parentSlot = slot;
