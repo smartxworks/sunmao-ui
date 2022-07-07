@@ -126,6 +126,20 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
   },
 ];
 
+export const UseDependencyInExpressionSchema: ComponentSchema[] = [
+  {
+    id: 'text1',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{foo}}',
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+];
+
 export const TraitInvalidSchema: ComponentSchema[] = [
   {
     id: 'text1',
