@@ -2,7 +2,7 @@
   <img src="./docs/images/logo.png" alt="logo" width="200"  />
 </div>
 <div align="center">
-  <h1>Sunmao-UI</h1>
+  <h1>Sunmao</h1>
 </div>
 
 <p align="center">
@@ -33,6 +33,8 @@ Both the UI component library itself and the low-code editor support custom exte
 ### Type Safety
 
 You are in type safety both when developing Sunmao components and when using the Sunmao editor. Sunmao heavily uses Typescript and JSON schema for a great type system.
+
+For more details, read [Sunmao: A truly extensible low-code UI framework](./docs/en/what-is-sunmao.md).
 
 ## Directory Structure
 
@@ -84,8 +86,8 @@ The user's responsibility is to use the Sunmao components encapsulated by develo
 
 We have prepared two tutorials for different roles. The user only needs to read the user's tutorial, but the developer has to read both.
 
-- [User's Tutorial](./docs/zh/user.md)
-- [Developer's Tutorial](./docs/zh/developer.md)
+- [User's Tutorial](./docs/en/user.md)
+- [Developer's Tutorial](./docs/en/developer.md)
 
 ## Online Demo
 
