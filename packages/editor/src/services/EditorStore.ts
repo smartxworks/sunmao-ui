@@ -63,7 +63,8 @@ export class EditorStore {
     private appModelManager: AppModelManager
   ) {
     this.globalDependencies = this.stateManager.dependencies;
-    this.schemaValidator = new SchemaValidator(this.registry);
+    const dependencyNames = Object.keys(this.globalDependencies);
+    this.schemaValidator = new SchemaValidator(this.registry, dependencyNames);
     makeAutoObservable(this, {
       eleMap: false,
       components: observable.shallow,
