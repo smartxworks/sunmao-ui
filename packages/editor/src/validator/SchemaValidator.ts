@@ -28,7 +28,7 @@ export class SchemaValidator implements ISchemaValidator {
   private ajv!: Ajv;
   private validatorMap!: ValidatorMap;
 
-  constructor(private registry: RegistryInterface) {
+  constructor(private registry: RegistryInterface, private dependencyNames?: string[]) {
     this.initAjv();
     this.addRules(rules);
   }
@@ -63,6 +63,7 @@ export class SchemaValidator implements ISchemaValidator {
       appModel,
       componentIdSpecMap: this.componentIdSpecMap,
       ajv: this.ajv,
+      dependencyNames: this.dependencyNames || [],
     };
     this.allComponentsRules.forEach(rule => {
       const r = rule.validate(baseContext);

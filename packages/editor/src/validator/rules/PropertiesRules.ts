@@ -62,6 +62,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
     component,
     trait,
     appModel,
+    dependencyNames,
   }: PropertiesValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
 
@@ -100,8 +101,11 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         } else if (appModel.moduleIds.includes(id as ModuleId)) {
           // case 3: id is a module
           // TODO: check module stateMap
+        } else if (dependencyNames.includes(id)) {
+          // case 4: id is from dependency
+          // do nothing
         } else {
-          // case 4: id doesn't exist
+          // case 5: id doesn't exist
           results.push({
             message: `Cannot find '${id}' in store or window.`,
             componentId: component.id,
