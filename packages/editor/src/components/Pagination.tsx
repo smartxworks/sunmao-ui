@@ -38,7 +38,7 @@ export const Pagination: React.FC<Props> = ({
     endIdx = ShowPagesNumber;
   }
   if (currentPage + 3 >= lastPage) {
-    startIdx = lastPage - ShowPagesNumber;
+    startIdx = Math.max(0, lastPage - ShowPagesNumber);
     endIdx = lastPage;
   }
 
