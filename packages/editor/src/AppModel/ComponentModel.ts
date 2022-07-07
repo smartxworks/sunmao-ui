@@ -25,6 +25,10 @@ import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
 
 const SlotTraitType: TraitType = `${CORE_VERSION}/${CoreTraitName.Slot}` as TraitType;
+const DynamicStateTrait = [
+  `${CORE_VERSION}/${CoreTraitName.State}`,
+  `${CORE_VERSION}/${CoreTraitName.LocalStorage}`,
+];
 
 type ComponentSpecModel = RuntimeComponent<
   MethodName,
@@ -311,10 +315,19 @@ export class ComponentModel implements IComponentModel {
   private genStateExample() {
     if (!this.spec) return [];
     const componentStateSpec = this.spec.spec.state;
-    const traitsStateSpec = this.traits.map(t => t.spec.spec.state);
-    const stateSpecs = [componentStateSpec, ...traitsStateSpec];
-    this.stateExample = stateSpecs.reduce((res, jsonSchema) => {
-      return merge(res, generateDefaultValueFromSpec(jsonSchema));
-    }, {});
+    let _temp = generateDefaultValueFromSpec(componentStateSpec) as Record<string, any>;
+
+    this.traits.forEach(t => {
+      // if component has state trait, read state trait key and add it in
+      if (DynamicStateTrait.includes(t.type)) {
+        const key = t.properties.rawValue.key;
+        if (typeof key === 'string') {
+          _temp[key] = '';
+        }
+      } else {
+        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state));
+      }
+    });
+    this.stateExample = _temp;
   }
 }
