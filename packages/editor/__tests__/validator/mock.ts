@@ -303,3 +303,64 @@ export const EventTraitTraitMethodSchema: ComponentSchema[] = [
     ],
   },
 ];
+
+export const DynamicStateTraitSchema: ComponentSchema[] = [
+  {
+    id: 'localStorage0',
+    type: 'core/v1/dummy',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/localStorage',
+        properties: {
+          key: 'value',
+          initialValue: {},
+        },
+      },
+    ],
+  },
+  {
+    id: 'text3',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{localStorage0.value}}',
+        format: 'plain',
+      },
+    },
+    traits: [
+      {
+        type: 'core/v1/state',
+        properties: {
+          key: 'foo',
+          initialValue: {},
+        },
+      },
+    ],
+  },
+  {
+    id: 'state0',
+    type: 'core/v1/dummy',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/state',
+        properties: {
+          key: 'value',
+          initialValue: 123,
+        },
+      },
+    ],
+  },
+  {
+    id: 'text4',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{state0.value}}{{text3.foo}}',
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+];
