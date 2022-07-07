@@ -7,3 +7,4 @@ export * from './module';
 export * from './version';
 export * from './slot';
 export * from './utilMethod';
+export * from './schema';

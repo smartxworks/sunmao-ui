@@ -29,7 +29,7 @@ export const Button = implementRuntimeComponent({
     displayName: 'Button',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'General',
     },
   },
   spec: {

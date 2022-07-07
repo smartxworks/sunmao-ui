@@ -29,23 +29,14 @@
   },
   "dependencies": {
     "@arco-design/web-react": "^2.34.0",
-    "@emotion/css": "^11.7.1",
-    "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/core": "^0.7.0",
-    "@sunmao-ui/editor-sdk": "^0.3.0",
-    "@sunmao-ui/runtime": "^0.7.0",
+    "react-resizable": "^3.0.4",
     "@sunmao-ui/shared": "^0.2.0",
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "lodash-es": "^4.17.21",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-resizable": "^3.0.4"
+    "@sunmao-ui/editor-sdk": "^0.3.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.170",
-    "@types/lodash-es": "^4.17.5",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/lodash": "^4.14.182",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
     "@types/react-resizable": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
@@ -53,6 +44,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "postcss": "^8.4.5",
@@ -73,7 +65,12 @@
     ]
   },
   "peerDependencies": {
-    "@sunmao-ui/core": "^0.4.1",
-    "@sunmao-ui/runtime": "^0.4.1"
+    "@sinclair/typebox": "^0.21.2",
+    "@emotion/css": "^11.7.1",
+    "@sunmao-ui/core": "^0.7.0",
+    "@sunmao-ui/runtime": "^0.7.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "lodash": "^4.17.21"
   }
 }

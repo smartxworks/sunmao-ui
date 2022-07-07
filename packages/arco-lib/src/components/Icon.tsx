@@ -24,7 +24,7 @@ export const Icon = implementRuntimeComponent({
       spin: false,
     },
     annotations: {
-      category: 'Display',
+      category: 'General',
     },
   },
   spec: {

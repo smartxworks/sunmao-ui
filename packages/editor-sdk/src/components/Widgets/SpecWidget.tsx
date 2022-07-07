@@ -9,8 +9,8 @@ import {
   Button,
   Tooltip,
 } from '@chakra-ui/react';
-import { isEmpty } from 'lodash-es';
-import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
+import { isEmpty } from 'lodash';
+import { Type, Static } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { isExpression as _isExpression } from '../../utils/validator';
@@ -133,14 +133,20 @@ export const SchemaFieldWidgetOptions = Type.Object({
   isHidden: Type.Optional(Type.Boolean()),
 });
 
-type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
-type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
+type SpecFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Spec}`;
+type Props = WidgetProps<SpecFieldWidgetType> & {
   children?:
     | (React.ReactNode & {
         title?: any;
       })
     | null;
 };
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/spec': Static<typeof SchemaFieldWidgetOptions>;
+  }
+}
 
 export const SpecWidget: React.FC<Props> = props => {
   const { component, spec, level, path, value, services, children, onChange } = props;
@@ -189,12 +195,8 @@ export const SpecWidget: React.FC<Props> = props => {
     Component = NullField;
   } else if ('anyOf' in spec || 'oneOf' in spec) {
     Component = MultiSpecField;
-  } else if (
-    [AnyKind, UnknownKind].includes((spec as unknown as { kind: symbol }).kind)
-  ) {
-    Component = ExpressionWidget;
   } else {
-    console.info('Found unsupported spec', spec);
+    Component = ExpressionWidget;
   }
 
   return (
@@ -243,7 +245,7 @@ export const SpecWidget: React.FC<Props> = props => {
   );
 };
 
-export default implementWidget<SchemaFieldWidgetOptionsType>({
+export default implementWidget<SpecFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Spec,

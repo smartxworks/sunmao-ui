@@ -23,7 +23,7 @@ export const Skeleton = implementRuntimeComponent({
     displayName: 'Skeleton',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Feedback',
     },
   },
   spec: {

@@ -32,6 +32,9 @@ export const Mentions = implementRuntimeComponent({
     name: 'mentions',
     displayName: 'Mentions',
     exampleProperties,
+    annotations: {
+      category: 'Data Entry',
+    },
   },
   spec: {
     properties: MentionsPropsSpec,

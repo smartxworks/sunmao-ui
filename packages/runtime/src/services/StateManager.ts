@@ -1,4 +1,4 @@
-import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash-es';
+import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';
@@ -14,6 +14,7 @@ import {
   ConsoleType,
   ExpChunk,
 } from '@sunmao-ui/shared';
+import { type PropsAfterEvaled } from '@sunmao-ui/core';
 
 dayjs.extend(relativeTime);
 dayjs.extend(isLeapYear);
@@ -142,7 +143,7 @@ export class StateManager {
       path: Array<string | number>;
     }) => void,
     path: Array<string | number> = []
-  ): T {
+  ): PropsAfterEvaled<T> {
     return mapValues(obj, (val, key: string | number) => {
       return isArray(val)
         ? val.map((innerVal, idx) => {
@@ -153,10 +154,13 @@ export class StateManager {
         : isPlainObject(val)
         ? this.mapValuesDeep(val as unknown as T, fn, path.concat(key))
         : fn({ value: val, key, obj, path: path.concat(key) });
-    }) as T;
+    }) as PropsAfterEvaled<T>;
   }
 
-  deepEval<T extends Record<string, unknown>>(obj: T, options: EvalOptions = {}): T {
+  deepEval<T extends Record<string, unknown> | any[]>(
+    obj: T,
+    options: EvalOptions = {}
+  ): PropsAfterEvaled<T> {
     // just eval
     const evaluated = this.mapValuesDeep(obj, ({ value }) => {
       if (typeof value !== 'string') {
@@ -168,9 +172,9 @@ export class StateManager {
     return evaluated;
   }
 
-  deepEvalAndWatch<T extends Record<string, unknown>>(
+  deepEvalAndWatch<T extends Record<string, unknown> | any[]>(
     obj: T,
-    watcher: (params: { result: T }) => void,
+    watcher: (params: { result: PropsAfterEvaled<T> }) => void,
     options: EvalOptions = {}
   ) {
     const stops: ReturnType<typeof watch>[] = [];
@@ -179,7 +183,7 @@ export class StateManager {
     const evaluated = this.deepEval(obj, options);
 
     // watch change
-    let resultCache: T = evaluated;
+    let resultCache: PropsAfterEvaled<T> = evaluated;
     this.mapValuesDeep(obj, ({ value, path }) => {
       const isDynamicExpression =
         typeof value === 'string' &&

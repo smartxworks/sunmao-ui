@@ -51,15 +51,15 @@
     "codemirror": "^5.63.3",
     "escodegen": "^2.0.0",
     "formik": "^2.2.9",
-    "framer-motion": "^4",
     "immer": "^9.0.6",
-    "lodash-es": "^4.17.21",
+    "lodash": "^4.17.21",
     "mobx": "^6.3.8",
     "mobx-react-lite": "^3.2.2",
     "re-resizable": "^6.9.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-json-tree": "^0.16.1",
+    "scroll-into-view": "^1.16.2",
     "tern": "^0.24.3"
   },
   "devDependencies": {
@@ -69,7 +69,8 @@
     "@types/codemirror": "^5.60.5",
     "@types/escodegen": "^0.0.7",
     "@types/json-schema": "^7.0.7",
-    "@types/lodash-es": "^4.17.5",
+    "@types/lodash": "^4.14.182",
+    "@types/scroll-into-view": "^1.16.0",
     "@types/tern": "^0.23.4",
     "@vitejs/plugin-react": "^1.0.1",
     "@vitejs/plugin-react-refresh": "^1.3.6",
@@ -93,22 +94,5 @@
       "prettier --write",
       "eslint --fix"
     ]
-  },
-  "peerDependencies": {
-    "@chakra-ui/icons": "^1.0.15",
-    "@chakra-ui/react": "^1.7.1",
-    "@emotion/css": "^11.7.1",
-    "@emotion/react": "^11.1.1",
-    "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/arco-lib": "^0.0.7",
-    "@sunmao-ui/chakra-ui-lib": "^0.2.0",
-    "@sunmao-ui/core": "^0.4.1",
-    "@sunmao-ui/editor-sdk": "^0.0.0",
-    "@sunmao-ui/runtime": "^0.4.1",
-    "formik": "^2.2.9",
-    "immer": "^9.0.6",
-    "lodash-es": "^4.17.21",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
   }
 }

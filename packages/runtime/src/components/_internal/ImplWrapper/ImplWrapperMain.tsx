@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { merge, mergeWith, isArray, omit } from 'lodash-es';
+import { merge, mergeWith, isArray, omit } from 'lodash';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { watch } from '../../../utils/watchReactivity';
 import { ImplWrapperProps, TraitResult } from '../../../types';
@@ -155,15 +155,8 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     const unmount = traitResults.some(result => result.unmount);
-    const slotElements = getSlotElements({
-      app: props.app,
-      childrenMap: props.childrenMap,
-      children: props.children,
-      component: props.component,
-      services: props.services,
-      hooks: props.hooks,
-      isInModule: props.isInModule,
-    });
+    const slotElements = getSlotElements(props);
+
     const C = unmount ? null : (
       <Impl
         ref={ref}

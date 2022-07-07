@@ -27,7 +27,7 @@ export const Popover = implementRuntimeComponent({
     displayName: 'Popover',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {

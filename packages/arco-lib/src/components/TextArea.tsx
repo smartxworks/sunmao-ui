@@ -36,7 +36,7 @@ export const TextArea = implementRuntimeComponent({
     displayName: 'TextArea',
     exampleProperties,
     annotations: {
-      category: 'TextArea',
+      category: 'Data Entry',
     },
   },
   spec: {

@@ -53,7 +53,7 @@ export const FormControl = implementRuntimeComponent({
     displayName: 'Form Control',
     exampleProperties: exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Entry',
     },
   },
   spec: {

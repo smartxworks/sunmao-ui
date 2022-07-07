@@ -30,7 +30,7 @@ export const Slider = implementRuntimeComponent({
     displayName: 'Slider',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Entry',
     },
   },
   spec: {

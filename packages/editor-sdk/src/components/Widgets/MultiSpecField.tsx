@@ -11,10 +11,16 @@ const MultiSpecFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
 });
 
-type MultiSpecFieldWidgetOptionsType = Static<typeof MultiSpecFieldWidgetOptions>;
+type MultiSpecFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.MultiField}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/multi': Static<typeof MultiSpecFieldWidgetOptions>;
+  }
+}
 
 const _Field: React.FC<
-  Omit<WidgetProps<MultiSpecFieldWidgetOptionsType>, 'spec'> & {
+  Omit<WidgetProps<MultiSpecFieldWidgetType>, 'spec'> & {
     specs: NonNullable<WidgetProps['spec']['anyOf']>;
   }
 > = props => {
@@ -26,7 +32,10 @@ const _Field: React.FC<
     return null;
   }
 
-  const { expressionOptions } = subSpec.widgetOptions || {};
+  const expressionOptions =
+    subSpec.widgetOptions && 'expressionOptions' in subSpec.widgetOptions
+      ? subSpec.widgetOptions.expressionOptions
+      : {};
 
   return (
     <Box>
@@ -46,7 +55,7 @@ const _Field: React.FC<
       </RadioGroup>
       <SpecWidget
         component={component}
-        spec={mergeWidgetOptionsIntoSpec(subSpec, { expressionOptions })}
+        spec={mergeWidgetOptionsIntoSpec<'core/v1/spec'>(subSpec, { expressionOptions })}
         path={path}
         level={level}
         value={value}
@@ -57,42 +66,41 @@ const _Field: React.FC<
   );
 };
 
-export const MultiSpecField: React.FC<WidgetProps<MultiSpecFieldWidgetOptionsType>> =
-  props => {
-    const { component, spec, value, services, path, level, onChange } = props;
+export const MultiSpecField: React.FC<WidgetProps<MultiSpecFieldWidgetType>> = props => {
+  const { component, spec, value, services, path, level, onChange } = props;
 
-    if (spec.anyOf) {
-      return (
-        <_Field
-          component={component}
-          value={value}
-          path={path}
-          level={level}
-          specs={spec.anyOf}
-          services={services}
-          onChange={onChange}
-        />
-      );
-    }
+  if (spec.anyOf) {
+    return (
+      <_Field
+        component={component}
+        value={value}
+        path={path}
+        level={level}
+        specs={spec.anyOf}
+        services={services}
+        onChange={onChange}
+      />
+    );
+  }
 
-    if (spec.oneOf) {
-      return (
-        <_Field
-          component={component}
-          value={value}
-          path={path}
-          level={level}
-          specs={spec.oneOf}
-          services={services}
-          onChange={onChange}
-        />
-      );
-    }
+  if (spec.oneOf) {
+    return (
+      <_Field
+        component={component}
+        value={value}
+        path={path}
+        level={level}
+        specs={spec.oneOf}
+        services={services}
+        onChange={onChange}
+      />
+    );
+  }
 
-    return null;
-  };
+  return null;
+};
 
-export default implementWidget({
+export default implementWidget<MultiSpecFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.MultiField,

@@ -24,15 +24,22 @@ const EMPTY_ARRAY: string[] = [];
 export const Headers: React.FC<Props> = props => {
   const { api, spec, formik, services } = props;
   const { values } = formik;
-  const specWithWidgetOptions = useMemo(()=> mergeWidgetOptionsIntoSpec(spec, {
-    minNum: 1,
-    isShowHeader: true,
-  }), [spec]);
+  const specWithWidgetOptions = useMemo(
+    () =>
+      mergeWidgetOptionsIntoSpec<'core/v1/spec' | 'core/v1/record' | any>(spec, {
+        minNum: 1,
+        isShowHeader: true,
+      }),
+    [spec]
+  );
 
-  const onChange = useCallback((value: Record<string, unknown>) => {
-    formik.setFieldValue('headers', value);
-    formik.submitForm();
-  }, [formik]);
+  const onChange = useCallback(
+    (value: Record<string, unknown>) => {
+      formik.setFieldValue('headers', value);
+      formik.submitForm();
+    },
+    [formik]
+  );
 
   return (
     <Box>

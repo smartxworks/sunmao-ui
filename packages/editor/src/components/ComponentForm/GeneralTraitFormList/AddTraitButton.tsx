@@ -1,5 +1,13 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+} from '@chakra-ui/react';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import React, { useMemo } from 'react';
 import { ignoreTraitsList } from '../../../constants';
@@ -49,7 +57,9 @@ export const AddTraitButton: React.FC<Props> = props => {
         >
           Add Trait
         </MenuButton>
-        <MenuList zIndex={100}>{menuItems}</MenuList>
+        <Portal>
+          <MenuList>{menuItems}</MenuList>
+        </Portal>
       </Menu>
     </Box>
   );

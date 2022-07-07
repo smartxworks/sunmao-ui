@@ -1,5 +1,9 @@
 import React from 'react';
-import { RuntimeApplication, RuntimeComponentSchema } from '@sunmao-ui/core';
+import {
+  RuntimeApplication,
+  RuntimeComponentSchema,
+  PropsBeforeEvaled,
+} from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
 import { ColumnSpec, ColumnsPropertySpec } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
@@ -16,13 +20,14 @@ export const TableTd: React.FC<{
   index: number;
   item: any;
   column: Static<typeof ColumnSpec>;
-  rawColumn: Static<typeof ColumnsPropertySpec>[0];
+  rawColumns: string | PropsBeforeEvaled<Static<typeof ColumnsPropertySpec>>;
   onClickItem: () => void;
   services: UIServices;
   component: RuntimeComponentSchema;
   app: RuntimeApplication;
 }> = props => {
-  const { item, index, component, column, rawColumn, onClickItem, services, app } = props;
+  const { item, index, component, column, rawColumns, onClickItem, services, app } =
+    props;
   const evalOptions = {
     evalListItem: true,
     scopeObject: {
@@ -61,8 +66,14 @@ export const TableTd: React.FC<{
     case 'button':
       const onClick = () => {
         onClickItem();
-        rawColumn.buttonConfig.handlers.forEach(handler => {
-          const evaledHandler = services.stateManager.deepEval(handler, evalOptions);
+        const evaledColumns =
+          typeof rawColumns === 'string'
+            ? (services.stateManager.maskedEval(rawColumns, evalOptions) as Static<
+                typeof ColumnsPropertySpec
+              >)
+            : services.stateManager.deepEval(rawColumns, evalOptions);
+
+        evaledColumns[index].buttonConfig.handlers.forEach(evaledHandler => {
           services.apiService.send('uiMethod', {
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,

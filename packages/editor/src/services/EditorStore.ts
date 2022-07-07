@@ -4,7 +4,7 @@ import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
-import { SchemaValidator } from '../validator';
+import { SchemaValidator, ValidateErrorResult } from '../validator';
 import {
   DataSourceType,
   DATASOURCE_NAME_MAP,
@@ -14,7 +14,9 @@ import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
 import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'lodash';
+import { resolveApplicationComponents } from '../utils/resolveApplicationComponents';
+import { AppModelManager } from '../operations/AppModelManager';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -33,6 +35,7 @@ export class EditorStore {
   _dragOverComponentId = '';
   explorerMenuTab = ExplorerMenuTabs.UI_TREE;
   toolMenuTab = ToolMenuTabs.INSERT;
+  validateResult: ValidateErrorResult[] = [];
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -56,7 +59,8 @@ export class EditorStore {
     private eventBus: EventBusType,
     private registry: RegistryInterface,
     private stateManager: StateManagerInterface,
-    public appStorage: AppStorage
+    public appStorage: AppStorage,
+    private appModelManager: AppModelManager
   ) {
     this.globalDependencies = this.stateManager.dependencies;
     this.schemaValidator = new SchemaValidator(this.registry);
@@ -89,6 +93,7 @@ export class EditorStore {
           this.setCurrentComponentsVersion(0);
           this.setLastSavedComponentsVersion(0);
           this.clearSunmaoGlobalState();
+          this.eventBus.send('stateRefresh');
           this.eventBus.send('componentsRefresh', this.originComponents);
 
           this.setComponents(this.originComponents);
@@ -108,7 +113,22 @@ export class EditorStore {
       }
     );
 
+    reaction(
+      () => this.components,
+      () => {
+        this.setValidateResult(
+          this.schemaValidator.validate(this.appModelManager.appModel)
+        );
+      }
+    );
+
     this.updateCurrentEditingTarget('app', this.app.version, this.app.metadata.name);
+  }
+
+  get resolvedComponents() {
+    return resolveApplicationComponents(
+      this.components.filter(c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`)
+    );
   }
 
   get app() {
@@ -133,10 +153,6 @@ export class EditorStore {
 
   get dragOverComponentId() {
     return this._dragOverComponentId;
-  }
-
-  get validateResult() {
-    return this.schemaValidator.validate(this.components);
   }
 
   get isSaved() {
@@ -261,6 +277,10 @@ export class EditorStore {
 
   setActiveDataSourceId = (dataSourceId: string | null) => {
     this.activeDataSourceId = dataSourceId;
+  };
+
+  setValidateResult = (validateResult: ValidateErrorResult[]) => {
+    this.validateResult = validateResult;
   };
 
   createDataSource = (

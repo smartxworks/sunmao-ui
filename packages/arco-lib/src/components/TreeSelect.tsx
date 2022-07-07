@@ -63,7 +63,7 @@ export const TreeSelect = implementRuntimeComponent({
     name: 'treeSelect',
     displayName: 'TreeSelect',
     annotations: {
-      category: 'Display',
+      category: 'Data Entry',
     },
     exampleProperties,
   },

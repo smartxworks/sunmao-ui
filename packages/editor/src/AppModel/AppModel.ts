@@ -134,7 +134,7 @@ export class AppModel implements IAppModel {
     });
   }
 
-  private traverseTree(cb: (c: IComponentModel) => void) {
+  traverseTree(cb: (c: IComponentModel) => void) {
     function traverse(root: IComponentModel) {
       cb(root);
       for (const slot in root.children) {
