@@ -12,8 +12,9 @@ const exampleProperties: Static<typeof LinkPropsSpec> = {
   disabled: false,
   hoverable: true,
   status: 'default',
-  href: 'https://www.smartx.com/',
+  href: '#',
   content: 'Link',
+  openInNewPage: false,
 };
 
 const statusMap = {
@@ -30,7 +31,7 @@ export const Link = implementRuntimeComponent({
     name: 'link',
     displayName: 'Link',
     annotations: {
-      category: 'Input',
+      category: 'General',
     },
     exampleProperties,
   },
@@ -38,13 +39,17 @@ export const Link = implementRuntimeComponent({
     properties: LinkPropsSpec,
     state: LinkStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      content: {
+        slotProps: Type.Object({}),
+      },
+    },
     styleSlots: ['content'],
     events: [],
   },
 })(props => {
-  const { content, status, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle } = props;
+  const { content, status, openInNewPage, ...cProps } = getComponentProps(props);
+  const { elementRef, customStyle, slotsElements } = props;
 
   return (
     <BaseLink
@@ -52,8 +57,9 @@ export const Link = implementRuntimeComponent({
       status={statusMap[status]}
       className={css(customStyle?.content)}
       {...cProps}
+      target={openInNewPage ? '_blank' : '_self'}
     >
-      {content}
+      {slotsElements.content ? slotsElements.content({}) : content}
     </BaseLink>
   );
 });

@@ -36,18 +36,15 @@
     "@vue/reactivity": "^3.1.5",
     "@vue/shared": "^3.2.20",
     "copy-to-clipboard": "^3.3.1",
-    "dayjs": "^1.10.6",
     "immer": "^9.0.12",
-    "lodash-es": "^4.17.21",
+    "lodash": "^4.17.21",
     "mitt": "^3.0.0",
-    "nanoid": "^3.1.23",
     "path-to-regexp": "^6.2.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0",
-    "react-markdown": "^7.1.0",
+    "react-markdown": "6.0.3",
     "react-resize-detector": "^6.7.6",
     "react-simple-code-editor": "^0.11.0",
     "use-deep-compare": "^1.1.0",
+    "dayjs": "^1.10.6",
     "wouter": "^2.7.4"
   },
   "devDependencies": {
@@ -60,11 +57,12 @@
     "@sunmao-ui/vite-plugins": "^1.0.2",
     "@swc/core": "^1.2.121",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "12.1.5",
-    "@types/lodash": "^4.14.170",
     "@types/lodash-es": "^4.17.5",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@testing-library/react": "^12.1.0",
+    "@types/lodash": "^4.14.182",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
+    "@types/react-grid-layout": "^1.1.2",
     "@vitejs/plugin-react": "^1.0.1",
     "babel-jest": "^27.1.0",
     "eslint-plugin-react-hooks": "^4.3.0",
@@ -76,12 +74,7 @@
     "vite": "^2.6.13"
   },
   "peerDependencies": {
-    "@emotion/css": "^11.7.1",
-    "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/core": "^0.4.1",
-    "immer": "^9.0.12",
-    "lodash-es": "^4.17.21",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }

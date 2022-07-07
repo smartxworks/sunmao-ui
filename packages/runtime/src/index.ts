@@ -17,6 +17,7 @@ export type SunmaoUIRuntimeProps = {
   libs?: SunmaoLib[];
   dependencies?: Record<string, any>;
   hooks?: AppHooks;
+  isInEditor?: boolean;
 };
 
 export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
@@ -34,7 +35,6 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
     },
     utilMethodManager
   );
-  const hooks = props.hooks;
 
   props.libs?.forEach(lib => {
     registry.installLib(lib);
@@ -49,7 +49,8 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
         apiService,
         eleMap,
       },
-      hooks
+      props.hooks,
+      props.isInEditor
     ),
     stateManager,
     registry,

@@ -14,6 +14,7 @@ export type UIServices = {
 
 export type ComponentParamsFromApp = {
   hooks?: AppHooks;
+  isInEditor?: boolean;
 };
 
 export type AppProps = {

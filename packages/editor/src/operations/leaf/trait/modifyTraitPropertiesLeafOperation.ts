@@ -1,4 +1,4 @@
-import _ from 'lodash-es';
+import _ from 'lodash';
 import { BaseLeafOperation } from '../../type';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';

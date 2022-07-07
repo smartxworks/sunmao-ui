@@ -34,7 +34,7 @@ const options = {
     displayName: 'Input',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {

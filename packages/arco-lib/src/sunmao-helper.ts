@@ -32,14 +32,14 @@ export const FALLBACK_METADATA: ComponentMetadata = {
 };
 
 export const getComponentProps = <
-  T,
+  T extends Record<string, unknown>,
   TState,
   TMethods,
   TSlots extends Record<string, SlotSpec>,
   KStyleSlot extends string,
   KEvent extends string
 >(
-  props: T & ComponentImplProps<TState, TMethods, TSlots, KStyleSlot, KEvent>
+  props: T & ComponentImplProps<T, TState, TMethods, TSlots, KStyleSlot, KEvent>
 ) => {
   const {
     /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -56,6 +56,7 @@ export const getComponentProps = <
     elementRef,
     hooks,
     isInModule,
+    isInEditor,
     componentDidMount,
     componentDidUnmount,
     componentDidUpdate,

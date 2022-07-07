@@ -3,16 +3,15 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
-import { ChildrenMap } from './StructureTree';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
+import { isEqual } from 'lodash';
 
 type Props = {
   component: ComponentSchema;
   parentId: string | undefined;
   slot: string | undefined;
-  childrenMap: ChildrenMap;
   onSelectComponent: (id: string) => void;
   onSelected?: (id: string) => void;
   services: EditorServices;
@@ -20,31 +19,14 @@ type Props = {
   depth: number;
 };
 type ComponentTreeProps = Props & {
+  slotMap: Map<string, ComponentSchema[]>;
   isSelected: boolean;
-};
-
-const observeSelected = (Component: React.FC<ComponentTreeProps>) => {
-  const ObserveActive: React.FC<Props> = props => {
-    const { services, component, onSelected } = props;
-    const { editorStore } = services;
-    const { selectedComponentId } = editorStore;
-
-    useEffect(() => {
-      if (selectedComponentId === component.id) {
-        onSelected?.(selectedComponentId);
-      }
-    }, [selectedComponentId, component.id, onSelected]);
-
-    return <Component {...props} isSelected={selectedComponentId === component.id} />;
-  };
-
-  return observer(ObserveActive);
 };
 
 const ComponentTree = (props: ComponentTreeProps) => {
   const {
     component,
-    childrenMap,
+    slotMap,
     parentId,
     slot,
     isSelected,
@@ -71,10 +53,10 @@ const ComponentTree = (props: ComponentTreeProps) => {
     if (slots.length === 0) {
       return undefined;
     }
-    const children = childrenMap.get(component.id);
+
     return slots.map(_slot => {
       let slotContent;
-      const slotChildren = children?.get(_slot);
+      const slotChildren = slotMap.get(_slot);
       if (slotChildren && slotChildren.length > 0) {
         slotContent = slotChildren.map(c => {
           return (
@@ -83,7 +65,6 @@ const ComponentTree = (props: ComponentTreeProps) => {
               component={c}
               parentId={component.id}
               slot={_slot}
-              childrenMap={childrenMap}
               onSelectComponent={onSelectComponent}
               onSelected={onChildSelected}
               services={services}
@@ -130,7 +111,7 @@ const ComponentTree = (props: ComponentTreeProps) => {
     });
   }, [
     slots,
-    childrenMap,
+    slotMap,
     component.id,
     onSelectComponent,
     onChildSelected,
@@ -193,6 +174,51 @@ const ComponentTree = (props: ComponentTreeProps) => {
   );
 };
 
-export const ComponentTreeWrapper: React.FC<Props> = observeSelected(
-  React.memo(ComponentTree)
+const MemoComponentTree: React.FC<ComponentTreeProps> = React.memo(
+  ComponentTree,
+  (oldProps, props) => {
+    const { slotMap: oldSlotMap, ...oldRest } = oldProps;
+    const { slotMap, ...rest } = props;
+    const oldKeys = [...oldSlotMap.keys()];
+    const keys = [...slotMap.keys()];
+    // check whether adding or removing the components
+    const isHasSameSlots = oldKeys.length === keys.length;
+    // check whether the properties of the child components have changed
+    // if the properties aren't changed, then it must have the same object reference
+    const isSameSlotMap =
+      isHasSameSlots &&
+      oldKeys.every(key => {
+        const oldChildren = oldSlotMap.get(key) || [];
+        const children = slotMap.get(key) || [];
+
+        return (
+          oldChildren.length === children.length &&
+          oldChildren.every((oldComponent, i) => oldComponent === children[i])
+        );
+      });
+
+    return isSameSlotMap && isEqual(oldRest, rest);
+  }
 );
+
+export const ComponentTreeWrapper: React.FC<Props> = observer(props => {
+  const { services, component, onSelected } = props;
+  const { editorStore } = services;
+  const { selectedComponentId, resolvedComponents } = editorStore;
+  const { childrenMap } = resolvedComponents;
+  const slotMap = childrenMap.get(component.id);
+
+  useEffect(() => {
+    if (selectedComponentId === component.id) {
+      onSelected?.(selectedComponentId);
+    }
+  }, [selectedComponentId, component.id, onSelected]);
+
+  return (
+    <MemoComponentTree
+      {...props}
+      isSelected={selectedComponentId === component.id}
+      slotMap={slotMap || new Map()}
+    />
+  );
+});
