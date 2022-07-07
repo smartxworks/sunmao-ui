@@ -2,12 +2,13 @@ import {
   ComponentInvalidSchema,
   ComponentPropertyExpressionSchema,
   ComponentWrongPropertyExpressionSchema,
+  UseDependencyInExpressionSchema,
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
 import { registry } from '../services';
 import { AppModel } from '../../src/AppModel/AppModel';
 
-const schemaValidator = new SchemaValidator(registry);
+const schemaValidator = new SchemaValidator(registry, ['foo']);
 
 describe('Validate component', () => {
   describe('validate component properties', () => {
@@ -46,6 +47,12 @@ describe('Validate component', () => {
       expect(result[3].message).toBe(
         `Window object 'Math' does not have property 'random2'.`
       );
+    });
+    it('allow using dependency in expression', () => {
+      const result2 = schemaValidator.validate(
+        new AppModel(UseDependencyInExpressionSchema, registry)
+      );
+      expect(result2.length).toBe(0);
     });
   });
 });

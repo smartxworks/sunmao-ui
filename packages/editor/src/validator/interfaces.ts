@@ -20,6 +20,7 @@ interface BaseValidateContext {
   registry: RegistryInterface;
   appModel: IAppModel;
   ajv: Ajv;
+  dependencyNames: string[];
   componentIdSpecMap: Record<string, RuntimeComponent<string, string, string, string>>;
 }
 
