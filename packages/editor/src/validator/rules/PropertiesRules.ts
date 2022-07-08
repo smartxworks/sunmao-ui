@@ -1,4 +1,5 @@
 import { get, has } from 'lodash';
+import { ExpressionKeywords } from '@sunmao-ui/shared';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
@@ -104,8 +105,11 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         } else if (dependencyNames.includes(id)) {
           // case 4: id is from dependency
           // do nothing
+        } else if (ExpressionKeywords.includes(id)) {
+          // case 5: id is from expression keywords
+          // do nothing
         } else {
-          // case 5: id doesn't exist
+          // case 6: id doesn't exist
           results.push({
             message: `Cannot find '${id}' in store or window.`,
             componentId: component.id,
