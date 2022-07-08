@@ -57,9 +57,12 @@ export const Menu = implementRuntimeComponent({
   const {
     items = [],
     defaultActiveKey,
+    collapse,
+    hasCollapseButton,
     updateWhenDefaultValueChanges,
     ...cProps
   } = getComponentProps(props);
+
   const [activeKey, setActiveKey] = useStateValue(
     defaultActiveKey ?? 0,
     mergeState,
@@ -88,6 +91,8 @@ export const Menu = implementRuntimeComponent({
         });
         callbackMap?.onClick?.();
       }}
+      collapse={hasCollapseButton ? undefined : collapse}
+      hasCollapseButton={hasCollapseButton}
       {...cProps}
     >
       {items.map(item => (
