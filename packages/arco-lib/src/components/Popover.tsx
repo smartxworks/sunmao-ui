@@ -34,8 +34,8 @@ export const Popover = implementRuntimeComponent({
     properties: PopoverPropsSpec,
     state: PopoverStateSpec,
     methods: {
-      openPopover: Type.String(),
-      closePopover: Type.String(),
+      openPopover: Type.Object({}),
+      closePopover: Type.Object({}),
     },
     slots: {
       popupContent: { slotProps: Type.Object({}) },

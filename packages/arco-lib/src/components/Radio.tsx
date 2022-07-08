@@ -76,7 +76,7 @@ export const Radio = implementRuntimeComponent({
         });
       },
     });
-  }, [mergeState, subscribeMethods]);
+  }, [mergeState, setCheckedValue, subscribeMethods]);
 
   return (
     <div ref={elementRef}>

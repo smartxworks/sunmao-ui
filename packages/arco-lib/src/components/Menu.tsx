@@ -74,7 +74,7 @@ export const Menu = implementRuntimeComponent({
         mergeState({ activeKey: active });
       },
     });
-  }, [subscribeMethods]);
+  }, [mergeState, setActiveKey, subscribeMethods]);
 
   return (
     <BaseMenu

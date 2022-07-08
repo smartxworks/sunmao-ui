@@ -26,7 +26,7 @@ const exampleProperties: Static<typeof InputPropsSpec> = {
   size: 'default',
 };
 
-const options = {
+export const Input = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -54,9 +54,7 @@ const options = {
     styleSlots: ['input'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
-};
-
-export const Input = implementRuntimeComponent(options)(props => {
+})(props => {
   const {
     getElement,
     slotsElements,
