@@ -3,13 +3,13 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
 export const ProgressPropsSpec = {
+  type: StringUnion(['line', 'circle'], {
+    title: 'Type',
+    category: Category.Basic,
+  }),
   percent: Type.Number({
     title: 'Percent',
     category: Category.Basic,
-  }),
-  type: StringUnion(['line', 'circle'], {
-    title: 'Type',
-    category: Category.Style,
   }),
   status: StringUnion(['success', 'error', 'normal', 'warning'], {
     title: 'Status',
@@ -18,7 +18,9 @@ export const ProgressPropsSpec = {
   color: Type.String({
     title: 'Color',
     category: Category.Style,
-    description: "Please input a color name such as 'red' or a color code such as '#c10'",
+    description:
+      'Please pick a color from the palette, or enter a color value such as #c10',
+    widget: 'core/v1/color',
     conditions: [
       {
         key: 'status',
@@ -29,6 +31,7 @@ export const ProgressPropsSpec = {
   trailColor: Type.String({
     title: 'Trail Color',
     category: Category.Style,
+    widget: 'core/v1/color',
   }),
   showText: Type.Boolean({
     title: 'Show Text',
@@ -42,14 +45,14 @@ export const ProgressPropsSpec = {
     title: 'Size',
     category: Category.Style,
   }),
-  animation:Type.Boolean({
-    title:'Animation',
-    category:Category.Behavior,
+  animation: Type.Boolean({
+    title: 'Animation',
+    category: Category.Behavior,
     conditions: [
       {
         key: 'type',
         value: 'line',
       },
     ],
-  })
+  }),
 };

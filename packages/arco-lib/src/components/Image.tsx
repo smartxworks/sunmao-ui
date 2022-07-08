@@ -16,7 +16,6 @@ const exampleProperties: Static<typeof ImagePropsSpec> = {
   title: '',
   description: '',
   footerPosition: 'inner',
-  simple: false,
   preview: false,
   width: 200,
   height: 200,

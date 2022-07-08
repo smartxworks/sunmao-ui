@@ -37,12 +37,13 @@ export const CheckboxPropsSpec = {
     title: 'Show Check All',
     category: Category.Basic,
   }),
-  disabled: Type.Boolean({
-    title: 'Disabled',
-    category: Category.Basic,
-  }),
   checkAllText: Type.String({
     title: 'Check All Text',
+    category: Category.Basic,
+    conditions: [{ key: 'showCheckAll', value: true }],
+  }),
+  disabled: Type.Boolean({
+    title: 'Disabled',
     category: Category.Basic,
   }),
   updateWhenDefaultValueChanges: Type.Boolean({
