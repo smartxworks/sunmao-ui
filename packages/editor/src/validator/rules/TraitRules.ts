@@ -31,7 +31,16 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         method: { name: methodName, parameters },
       } = handler;
 
-      if (!component.events.includes(eventName as EventName)) {
+      if (!eventName) {
+        results.push({
+          message: `Event is empty.`,
+          componentId: component.id,
+          traitType: trait.type,
+          property: `/handlers/${i}/type`,
+        });
+      }
+
+      if (eventName && !component.events.includes(eventName as EventName)) {
         results.push({
           message: `Component does not have event: ${eventName}.`,
           componentId: component.id,
@@ -40,12 +49,23 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         });
       }
 
-      // TODO: util methods has no method schema to check the parameters, so now temporally skip validation
-      if (isExpression(targetId) || targetId === GLOBAL_UTIL_METHOD_ID) {
-        return;
+      if (!targetId) {
+        results.push({
+          message: `Target component Id is empty.`,
+          componentId: component.id,
+          traitType: trait.type,
+          property: `/handlers/${i}/componentId`,
+        });
+        return results;
+      }
+
+      if (targetId === GLOBAL_UTIL_METHOD_ID) {
+        // TODO: util methods has no method schema to check the parameters, so now temporally skip validation
+        return results;
       }
 
       const targetComponent = appModel.getComponentById(targetId as ComponentId);
+
       if (!targetComponent) {
         results.push({
           message: `Event target component is not exist: ${targetId}.`,
@@ -53,7 +73,17 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
           traitType: trait.type,
           property: `/handlers/${i}/componentId`,
         });
-        return;
+        return results;
+      }
+
+      if (!methodName) {
+        results.push({
+          message: `Method is empty.`,
+          componentId: component.id,
+          traitType: trait.type,
+          property: `/handlers/${i}/method/name`,
+        });
+        return results;
       }
 
       const method = targetComponent.methods.find(m => m.name === methodName);
@@ -93,6 +123,4 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
   }
 }
 
-export const TraitRules = [
-  new EventHandlerValidatorRule(),
-];
+export const TraitRules = [new EventHandlerValidatorRule()];
