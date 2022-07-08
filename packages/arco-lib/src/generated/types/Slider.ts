@@ -14,7 +14,7 @@ export const SliderPropsSpec = {
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   toolTipPosition: Type.Optional(
     StringUnion(
@@ -44,7 +44,9 @@ export const SliderPropsSpec = {
   showTicks: Type.Boolean({
     title: 'Show Ticks',
     category: Category.Behavior,
+    description: 'Whether to display step tick marks',
   }),
+  // TODO Perhaps a custom widget could be used
   marks: Type.Object(
     {},
     {
@@ -56,6 +58,7 @@ export const SliderPropsSpec = {
   onlyMarkValue: Type.Boolean({
     title: 'Only Mark Value',
     category: Category.Behavior,
+    description: 'Whether only the mark value can be selected',
   }),
   reverse: Type.Boolean({
     title: 'Reverse',

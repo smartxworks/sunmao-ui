@@ -16,12 +16,12 @@ export const TextAreaPropsSpec = {
     category: Category.Basic,
   }),
   autoSize: Type.Boolean({
-    category: Category.Basic,
+    category: Category.Behavior,
     title: 'Auto Size',
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {
     title: 'Size',
@@ -29,10 +29,10 @@ export const TextAreaPropsSpec = {
   }),
   allowClear: Type.Boolean({
     title: 'Allow Clear',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   error: Type.Boolean({
     title: 'Error',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
 };

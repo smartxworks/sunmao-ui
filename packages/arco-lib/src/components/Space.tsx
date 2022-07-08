@@ -4,6 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SpacePropsSpec as BaseSpacePropsSpec } from '../generated/types/Space';
+import { EmptyPlaceholder } from './_internal/EmptyPlaceholder';
 
 const SpacePropsSpec = Type.Object({
   ...BaseSpacePropsSpec,
@@ -14,7 +15,7 @@ const exampleProperties: Static<typeof SpacePropsSpec> = {
   align: 'center',
   direction: 'vertical',
   wrap: false,
-  size: 'large',
+  size: 24,
 };
 export const Space = implementRuntimeComponent({
   version: 'arco/v1',
@@ -43,7 +44,11 @@ export const Space = implementRuntimeComponent({
 
   return (
     <BaseSpace ref={elementRef} className={css(customStyle?.content)} {...cProps}>
-      {slotsElements.content ? slotsElements.content({}) : null}
+      {slotsElements.content ? (
+        slotsElements.content({})
+      ) : (
+        <EmptyPlaceholder componentName="" />
+      )}
     </BaseSpace>
   );
 });
