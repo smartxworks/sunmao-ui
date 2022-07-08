@@ -140,6 +140,19 @@ export const UseDependencyInExpressionSchema: ComponentSchema[] = [
   },
 ];
 
+export const LocalVariableInIIFEExpressionSchema: ComponentSchema[] = [
+  {
+    id: 'text1',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{(function(foo) {return foo})("bar") }}',
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+];
 export const TraitInvalidSchema: ComponentSchema[] = [
   {
     id: 'text1',

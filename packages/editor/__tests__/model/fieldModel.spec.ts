@@ -65,6 +65,12 @@ describe('Field test', () => {
     ).toEqual(['data']);
   });
 
+  it('parse iife expression', () => {
+    const field = new FieldModel('{{(function(foo) {return foo})("bar") }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos).toEqual({});
+  });
+
   it('update array property', () => {
     const field = new FieldModel({ data: ['A', 'B'] });
 
