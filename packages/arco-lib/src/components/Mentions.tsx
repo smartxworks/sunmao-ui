@@ -61,7 +61,7 @@ export const Mentions = implementRuntimeComponent({
       mergeState({ value });
       callbackMap?.onChange?.();
     },
-    [callbackMap, mergeState]
+    [callbackMap, mergeState, setValue]
   );
 
   return (
