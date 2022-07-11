@@ -95,36 +95,41 @@ const customTreeTypeDefCreator = (dataTree: Record<string, Record<string, unknow
   return { ...def };
 };
 
-const getCode = (value: unknown): { code: string; type: string } => {
+const getCode = (value: unknown): string => {
   const type = typeof value;
-  if (type === 'object' || type === 'boolean') {
-    value = JSON.stringify(value, null, 2);
-  } else if (value === undefined) {
-    value = '';
+  let code = '';
+
+  if (value === undefined || value === null) {
+    code = '';
+  } else if (type === 'object' || type === 'boolean') {
+    code = `{{${JSON.stringify(value, null, 2)}}}`;
+  } else if (type === 'number') {
+    code = `{{${value}}}`;
   } else {
-    value = String(value);
+    code = String(value);
   }
-  return {
-    code: value as string,
-    type,
-  };
+
+  return code;
 };
 
 const getParsedValue = (raw: string, type: string) => {
   if (isExpression(raw)) {
     return raw;
   }
-  if (type === 'object' || type === 'boolean') {
+
+  if (type === 'object' || type === 'array' || type === 'boolean') {
     try {
       return JSON.parse(raw);
     } catch (error) {
       // TODO: handle error
-      return {};
+      return raw;
     }
   }
+
   if (type === 'number') {
     return toNumber(raw);
   }
+
   return raw;
 };
 
@@ -151,9 +156,10 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const { value, services, spec, onChange } = props;
   const { widgetOptions } = spec;
   const { stateManager } = services;
-  const { code, type } = useMemo(() => {
-    return getCode(value);
-  }, [value]);
+  const code = useMemo(() => getCode(value), [value]);
+  // if the spec has the only one type, then use its type
+  // otherwise, keep the expression as the string type
+  const type = typeof spec.type === 'string' ? spec.type : 'string';
   const [defs, setDefs] = useState<any>();
   const [evaledValue, setEvaledValue] = useState<any>({ value: null });
   const [error, setError] = useState<string | null>(null);
@@ -163,7 +169,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
     (code: string) => {
       try {
         const value = getParsedValue(code, type);
-        const result = isExpression(code)
+        const result = isExpression(value)
           ? services.stateManager.maskedEval(value)
           : value;
 
