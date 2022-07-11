@@ -6,6 +6,7 @@ import { widgets as chakraWidgets } from '@sunmao-ui/chakra-ui-lib/dist/esm/widg
 import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
 import { initSunmaoUIEditor } from './init';
 import { LocalStorageManager } from './LocalStorageManager';
+import '@sunmao-ui/arco-lib/dist/index.css';
 
 type Options = Partial<{
   components: Parameters<RegistryInterface['registerComponent']>[0][];
