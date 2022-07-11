@@ -129,9 +129,9 @@ export class AppStorage {
     );
     const newModules = produce(toJS(this.modules), draft => {
       draft[i].metadata.name = name;
+      draft[i].metadata.exampleProperties = exampleProperties;
       draft[i].spec.stateMap = stateMap;
       draft[i].spec.properties = properties;
-      draft[i].spec.exampleProperties = exampleProperties;
       draft[i].version = version;
     });
 

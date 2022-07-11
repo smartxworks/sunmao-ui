@@ -52,7 +52,7 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
     if (moduleType) {
       try {
         const module = registry.getModuleByType(moduleType);
-        initProperties = module.spec.exampleProperties || {};
+        initProperties = module.metadata.exampleProperties || {};
       } catch {
         initProperties = {};
       }
@@ -103,7 +103,7 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
             title: 'Module Properties',
           }}
           path={[]}
-          value={{ ...module.spec.properties, ...value?.properties }}
+          value={{ ...module.metadata.exampleProperties, ...value?.properties }}
           level={1}
           services={services}
           onChange={v => {

@@ -1,4 +1,4 @@
-import { JSONSchema7, JSONSchema7Object } from 'json-schema';
+import { JSONSchema7 } from 'json-schema';
 import { parseVersion, Version } from './version';
 import { Metadata } from './metadata';
 import { ComponentSchema } from './application';
@@ -15,7 +15,6 @@ export type Module = {
 
 type ModuleSpec = {
   properties: JSONSchema7;
-  exampleProperties?: JSONSchema7Object;
   events: string[];
   stateMap: Record<string, string>;
 };
@@ -41,6 +40,7 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
     metadata: {
       name: options.metadata.name,
       description: options.metadata.description || '',
+      exampleProperties: options.metadata.exampleProperties || {},
     },
     spec: {
       properties: { type: 'object' },
