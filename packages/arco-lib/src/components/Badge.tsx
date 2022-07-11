@@ -10,7 +10,7 @@ const BadgeStateSpec = Type.Object({});
 
 const exampleProperties: Static<typeof BadgePropsSpec> = {
   text: '',
-  dot: true,
+  dot: false,
   count: 1,
   maxCount: 99,
   offset: [6, -2],

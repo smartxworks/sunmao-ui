@@ -6,6 +6,7 @@ export const TooltipPropsSpec = {
   color: Type.String({
     title: 'Color',
     category: Category.Style,
+    widget: 'core/v1/color',
   }),
   position: StringUnion(
     ['top', 'tl', 'tr', 'bottom', 'bl', 'br', 'left', 'lt', 'lb', 'right', 'rt', 'rb'],
@@ -36,8 +37,8 @@ export const TooltipPropsSpec = {
     category: Category.Basic,
     weight: 3,
   }),
-  unmountOnExit:Type.Boolean({
-    title:'Destroy On Hide',
+  unmountOnExit: Type.Boolean({
+    title: 'Destroy On Hide',
     category: Category.Behavior,
-  })
+  }),
 };

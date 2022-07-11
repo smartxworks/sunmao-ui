@@ -9,13 +9,13 @@ export const MentionsPropsSpec = {
   options: Type.Array(Type.String(), {
     title: 'Options',
     weight: 3,
-    category: Category.Data,
+    category: Category.Basic,
     widget: EXPRESSION_WIDGET_TYPE,
   }),
   defaultValue: Type.String({
     title: 'Default Value',
     weight: 2,
-    category: Category.Data,
+    category: Category.Basic,
   }),
   updateWhenDefaultValueChanges: Type.Boolean({
     title: 'Update When Default Value Changes',
@@ -23,7 +23,7 @@ export const MentionsPropsSpec = {
   }),
   prefix: Type.String({
     title: 'Prefix',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   placeholder: Type.String({
     title: 'Placeholder',
@@ -31,19 +31,19 @@ export const MentionsPropsSpec = {
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   error: Type.Boolean({
     title: 'Error',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   allowClear: Type.Boolean({
     title: 'Allow Clear',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   split: Type.String({
     title: 'Split',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br'], {
     title: 'Position',

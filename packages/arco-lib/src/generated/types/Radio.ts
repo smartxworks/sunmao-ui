@@ -9,24 +9,28 @@ const RadioItemSpec = Type.Object({
 });
 
 export const RadioPropsSpec = {
-  defaultCheckedValue: Type.String({
-    category: Category.Data,
-  }),
   options: Type.Array(RadioItemSpec, {
-    category: Category.Data,
+    title: 'Options',
+    category: Category.Basic,
     widget: 'core/v1/array',
     widgetOptions: {
       displayedKeys: ['label'],
     },
   }),
+  defaultCheckedValue: Type.String({
+    title: 'Default Value',
+    category: Category.Basic,
+  }),
+  type: StringUnion(['radio', 'button'], {
+    title: 'Type',
+    category: Category.Basic,
+  }),
   updateWhenDefaultValueChanges: Type.Boolean({
     title: 'Update When Default Value Changes',
     category: Category.Basic,
   }),
-  type: StringUnion(['radio', 'button'], {
-    category: Category.Style,
-  }),
   direction: StringUnion(['horizontal', 'vertical'], {
+    title: 'Direction',
     category: Category.Style,
     conditions: [
       {
@@ -36,6 +40,7 @@ export const RadioPropsSpec = {
     ],
   }),
   size: StringUnion(['small', 'default', 'large', 'mini'], {
+    title: 'Size',
     category: Category.Style,
   }),
 };

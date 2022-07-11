@@ -4,7 +4,7 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const ImagePropsSpec = {
   src: Type.String({
-    title: 'Src',
+    title: 'Image URL',
     category: Category.Basic,
   }),
   title: Type.String({
@@ -32,10 +32,6 @@ export const ImagePropsSpec = {
     title: 'Footer Position',
     category: Category.Layout,
   }),
-  simple: Type.Boolean({
-    title: 'Simple',
-    category: Category.Style,
-  }),
   preview: Type.Boolean({
     title: 'Preview',
     category: Category.Basic,
@@ -44,13 +40,13 @@ export const ImagePropsSpec = {
 
 const ImageItemsPropsSpec = Type.Object({
   src: Type.String({
-    title: 'Src'
+    title: 'Src',
   }),
   width: Type.Number({
-    title: 'Width'
+    title: 'Width',
   }),
   height: Type.Number({
-    title: 'Height'
+    title: 'Height',
   }),
 });
 export const ImageGroupPropsSpec = {
@@ -72,6 +68,5 @@ export const ImageGroupPropsSpec = {
     title: 'Closable',
     description: 'Whether display close button',
     category: Category.Basic,
-  })
-}
-
+  }),
+};

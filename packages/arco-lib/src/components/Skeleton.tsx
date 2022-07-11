@@ -12,7 +12,13 @@ const exampleProperties: Static<typeof SkeletonPropsSpec> = {
   animation: true,
   loading: true,
   image: false,
-  text: { rows: 3, width: ['100%', 600, 400] },
+  imageProps: {
+    shape: 'square',
+    size: 'default',
+    position: 'left',
+  },
+  text: true,
+  textProps: { rows: 3, width: ['100%', 600, 400] },
 };
 
 export const Skeleton = implementRuntimeComponent({
@@ -37,11 +43,17 @@ export const Skeleton = implementRuntimeComponent({
     events: [],
   },
 })(props => {
-  const { ...cProps } = getComponentProps(props);
+  const { image, imageProps, text, textProps, ...cProps } = getComponentProps(props);
   const { elementRef, customStyle, slotsElements } = props;
 
   return (
-    <BaseSkeleton ref={elementRef} className={css(customStyle?.content)} {...cProps}>
+    <BaseSkeleton
+      image={image && imageProps}
+      text={text && textProps}
+      ref={elementRef}
+      className={css(customStyle?.content)}
+      {...cProps}
+    >
       {slotsElements.content ? slotsElements.content({}) : null}
     </BaseSkeleton>
   );

@@ -4,11 +4,11 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const StepItemSpec = Type.Object({
   title: Type.String({
-    title:'Title'
+    title: 'Title',
   }),
   description: Type.String({
-    title:'Description'
-  })
+    title: 'Description',
+  }),
 });
 
 export const StepsPropsSpec = {
@@ -32,15 +32,15 @@ export const StepsPropsSpec = {
         or: [
           {
             key: 'type',
-            value: 'default'
+            value: 'default',
           },
           {
             key: 'type',
-            value: 'dot'
-          }
-        ]
-      }
-    ]
+            value: 'dot',
+          },
+        ],
+      },
+    ],
   }),
   status: StringUnion(['wait', 'process', 'finish', 'error'], {
     title: 'Status',
@@ -54,5 +54,9 @@ export const StepsPropsSpec = {
     title: 'Items',
     category: Category.Basic,
     weight: 10,
+    widget: 'core/v1/array',
+    widgetOptions: {
+      displayedKeys: ['title'],
+    },
   }),
 };
