@@ -8,13 +8,16 @@ export const TreeNodeSpec = Type.Object({
   children: Type.Optional(Type.Array(Type.Any())),
   selectable: Type.Optional(Type.Boolean()),
   checkable: Type.Optional(Type.Boolean()),
-  path: Type.Optional(Type.Array(Type.String())),
 });
 
 export const TreePropsSpec = Type.Object({
   data: Type.Array(TreeNodeSpec, {
     category: Category.Data,
     title: 'Tree Data',
+    widget: 'core/v1/array',
+    widgetOptions: {
+      displayedKeys: ['title'],
+    },
   }),
   size: StringUnion(['mini', 'small', 'medium', 'large'], {
     category: Category.Style,

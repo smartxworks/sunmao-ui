@@ -12,7 +12,9 @@ const TreeStateSpec = Type.Object({
   selectedNodes: Type.Array(TreeNodeSpec),
 });
 
-function formatNode(node: NodeInstance): Static<typeof TreeNodeSpec> {
+function formatNode(
+  node: NodeInstance
+): Static<typeof TreeNodeSpec> & { path: string[] } {
   return {
     title: node.props.title as string,
     key: node.props._key!,
