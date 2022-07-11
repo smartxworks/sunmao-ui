@@ -27,7 +27,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldType>> = props => {
 
   const properties = Object.keys(spec.properties || {});
   return (
-    <VStack spacing="0" paddingLeft="3">
+    <VStack spacing="0" paddingLeft={level > 0 ? 3 : 0}>
       {properties.map(name => {
         const subSpec = (spec.properties || {})[name] as WidgetProps['spec'];
 
