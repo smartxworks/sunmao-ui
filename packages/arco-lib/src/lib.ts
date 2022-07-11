@@ -31,6 +31,7 @@ import { Alert } from './components/Alert';
 import { Link } from './components/Link';
 import { Switch } from './components/Switch';
 import { PasswordInput } from './components/PasswordInput';
+import { NumberInput } from './components/NumberInput';
 import { TextArea } from './components/TextArea';
 import { Tabs } from './components/Tabs';
 import { FormControl } from './components/Form/FormControl';
@@ -39,11 +40,14 @@ import { Row, Col } from './components/Grid';
 import { Slider } from './components/Slider';
 import { DatePicker } from './components/DatePicker';
 import { TimePicker } from './components/TimePicker';
+import { Carousel } from './components/Carousel';
+import { Tag } from './components/Tag';
 
 import './style.css';
 import { MessageUtilMethodFactory } from './methods/Message';
 
 export const components: SunmaoLib['components'] = [
+  Tag,
   Table,
   Pagination,
   Steps,
@@ -86,6 +90,8 @@ export const components: SunmaoLib['components'] = [
   Slider,
   DatePicker,
   TimePicker,
+  NumberInput,
+  Carousel,
 ];
 export const traits: SunmaoLib['traits'] = [];
 export const modules: SunmaoLib['modules'] = [];
