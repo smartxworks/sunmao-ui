@@ -6,7 +6,7 @@
 </div>
 
 <p align="center">
-  <img alt="MIT License" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
+  <img alt="Apache-2.0 License" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
   <a href="https://github.com/webzard-io/sunmao-ui/issues">
     <img src="https://img.shields.io/github/issues/webzard-io/sunmao-ui" alt="GitHub issues">
   </a>
@@ -78,4 +78,4 @@ Sunmao 的用户分为两种角色，一种是开发者，一种是使用者。
 
 ## 许可证
 
-MIT
+Apache-2.0

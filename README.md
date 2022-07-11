@@ -6,7 +6,7 @@
 </div>
 
 <p align="center">
-  <img alt="MIT License" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
+  <img alt="Apache-2.0" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
   <a href="https://github.com/webzard-io/sunmao-ui/issues">
     <img src="https://img.shields.io/github/issues/webzard-io/sunmao-ui" alt="GitHub issues">
   </a>
@@ -79,4 +79,4 @@ We have prepared two tutorials for different roles. The user only needs to read 
 
 ## License
 
-MIT
+Apache-2.0

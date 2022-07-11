@@ -139,7 +139,7 @@ If some of the form widgets require extensive customization, component developer
 
 ## Sunmao is open
 
-Sunmao is an open-source project from day 1. But when we say 'open,' we don't just mean open-sourcing the code under the MIT license.
+Sunmao is an open-source project from day 1. But when we say 'open,' we don't just mean open-sourcing the code under the Apache-2.0 license.
 
 Although Sunmao starts as an internal project from SmartX, we chose to place all the proposals, discussions, and design decisions into our public repo rather than any internal channels. Because we believe that 'be open' is the cornerstone of Sunmao, and that this project will shine as more developers construct their own low-code solution on top of Sunmao.
 
