@@ -31,12 +31,11 @@ export const DefaultNewModule: ImplementedRuntimeModule = {
   kind: 'Module',
   parsedVersion: { category: 'custom/v1', value: 'myModule' },
   version: 'custom/v1',
-  metadata: { name: 'myModule', description: 'my module' },
+  metadata: { name: 'myModule', description: 'my module', exampleProperties: {} },
   spec: {
     stateMap: {},
     events: [],
     properties: { type: 'object', properties: {} },
-    exampleProperties: {},
   },
   impl: [
     {
