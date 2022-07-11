@@ -4,7 +4,7 @@
   "description": "sunmao-ui editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/iife/index.js",
