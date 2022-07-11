@@ -24,11 +24,11 @@ export class CreateComponentLeafOperation extends BaseLeafOperation<CreateCompon
     );
     if (this.context.parentId) {
       const parent = prev.getComponentById(this.context.parentId);
-      if (parent) {
-        component.appendTo(parent, this.context.slot);
+      if (parent && this.context.slot) {
+        component.appendToSlotFront(parent, this.context.slot);
       }
     } else {
-      component.appendTo();
+      component.appendToRoot();
     }
     this.component = component;
     return prev;
