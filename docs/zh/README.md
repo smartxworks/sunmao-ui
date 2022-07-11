@@ -35,22 +35,6 @@ Sunmao 内置了低代码工具的 GUI 编辑器，几乎囊括了一个完整�
 
 更多详情，请见 [Sunmao：一个真正可扩展的低代码 UI 框架](./what-is-sunmao.md)
 
-## 目录结构
-
-Sunmao 是一个 monorepo 项目，其中分别包含下面这些包：
-
-| 名称          | 说明                                                                 |
-| ------------- | -------------------------------------------------------------------- |
-| core          | Sunmao 的 Spec 类型定义                                              |
-| runtime       | Sunmao 的运行时                                                      |
-| editor        | Sunmao 的 GUI 编辑器                                                 |
-| editor-sdk    | Sunmao Editor 的 sdk                                                 |
-| shared        | Sunmao 项目各个包共用的类型和工具函数                                |
-| chakra-ui-lib | Sunmao 封装的 [chakra-ui](https://chakra-ui.com/) 组件库             |
-| arco-lib      | Sunmao 封装的 [arco-design](https://arco.design/) 组件库（推荐使用） |
-
-![depend-graph](../images/dependGraph.png)
-
 ## 本地开发
 
 ### 启动项目
