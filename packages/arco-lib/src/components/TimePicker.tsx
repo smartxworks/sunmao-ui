@@ -53,7 +53,7 @@ export const TimePicker = implementRuntimeComponent({
     displayName: 'TimePicker',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Entry',
     },
   },
   spec: {

@@ -73,8 +73,6 @@ export default implementRuntimeComponent({
     name: 'checkbox',
     description: 'chakra-ui checkbox',
     displayName: 'Checkbox',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       text: {
         raw: 'Checkbox',
@@ -91,7 +89,6 @@ export default implementRuntimeComponent({
       spacing: '',
       colorScheme: 'blue',
     },
-    exampleSize: [3, 1],
     annotations: {
       category: 'Input',
     },

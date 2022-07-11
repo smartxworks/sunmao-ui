@@ -35,7 +35,7 @@ export const Radio = implementRuntimeComponent({
     displayName: 'Radio',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {
@@ -76,7 +76,7 @@ export const Radio = implementRuntimeComponent({
         });
       },
     });
-  }, [mergeState, subscribeMethods]);
+  }, [mergeState, setCheckedValue, subscribeMethods]);
 
   return (
     <div ref={elementRef}>

@@ -29,15 +29,15 @@ export const Modal = implementRuntimeComponent({
     name: 'modal',
     displayName: 'Modal',
     annotations: {
-      category: 'Display',
+      category: 'Feedback',
     },
   },
   spec: {
     properties: ModalPropsSpec,
     state: ModalStateSpec,
     methods: {
-      openModal: Type.String(),
-      closeModal: Type.String(),
+      openModal: Type.Object({}),
+      closeModal: Type.Object({}),
     },
     slots: {
       content: { slotProps: Type.Object({}) },

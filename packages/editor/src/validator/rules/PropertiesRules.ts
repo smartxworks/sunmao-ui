@@ -1,4 +1,4 @@
-import { get, has } from 'lodash-es';
+import { get, has } from 'lodash';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
@@ -62,14 +62,15 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
     component,
     trait,
     appModel,
+    dependencyNames,
   }: PropertiesValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
 
     // validate expression
     properties.traverse((fieldModel, key) => {
-      Object.keys(fieldModel.refs).forEach((id: string) => {
+      Object.keys(fieldModel.refComponentInfos).forEach((id: string) => {
         const targetComponent = appModel.getComponentById(id as ComponentId);
-        const paths = fieldModel.refs[id as ComponentId];
+        const paths = fieldModel.refComponentInfos[id as ComponentId].refProperties;
 
         if (targetComponent) {
           // case 1: id is a component
@@ -100,8 +101,11 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         } else if (appModel.moduleIds.includes(id as ModuleId)) {
           // case 3: id is a module
           // TODO: check module stateMap
+        } else if (dependencyNames.includes(id)) {
+          // case 4: id is from dependency
+          // do nothing
         } else {
-          // case 4: id doesn't exist
+          // case 5: id doesn't exist
           results.push({
             message: `Cannot find '${id}' in store or window.`,
             componentId: component.id,

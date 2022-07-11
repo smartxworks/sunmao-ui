@@ -24,8 +24,6 @@ export default implementRuntimeComponent({
     name: 'link',
     displayName: 'Link',
     description: 'chakra-ui link',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       text: {
         raw: 'link',
@@ -34,7 +32,6 @@ export default implementRuntimeComponent({
       href: 'https://www.google.com',
       isExternal: false,
     },
-    exampleSize: [2, 1],
     annotations: {
       category: 'Input',
     },

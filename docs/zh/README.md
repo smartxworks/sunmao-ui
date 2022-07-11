@@ -2,11 +2,11 @@
   <img src="../images/logo.png" alt="logo" width="200"  />
 </div>
 <div align="center">
-  <h1>Sunmao-UI</h1>
+  <h1>Sunmao</h1>
 </div>
 
 <p align="center">
-  <img alt="MIT License" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
+  <img alt="Apache-2.0 License" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
   <a href="https://github.com/webzard-io/sunmao-ui/issues">
     <img src="https://img.shields.io/github/issues/webzard-io/sunmao-ui" alt="GitHub issues">
   </a>
@@ -33,21 +33,7 @@ Sunmao 内置了低代码工具的 GUI 编辑器，几乎囊括了一个完整�
 
 无论是在开发 Sunmao 组件时，还是在使用 Sunmao 编辑器时，你都处于类型安全之中。Sunmao 重度使用 Typescript 与 JSON schema 来实现极佳的类型系统。
 
-## 目录结构
-
-Sunmao 是一个 monorepo 项目，其中分别包含下面这些包：
-
-| 名称          | 说明                                                                 |
-| ------------- | -------------------------------------------------------------------- |
-| core          | Sunmao 的 Spec 类型定义                                              |
-| runtime       | Sunmao 的运行时                                                      |
-| editor        | Sunmao 的 GUI 编辑器                                                 |
-| editor-sdk    | Sunmao Editor 的 sdk                                                 |
-| shared        | Sunmao 项目各个包共用的类型和工具函数                                |
-| chakra-ui-lib | Sunmao 封装的 [chakra-ui](https://chakra-ui.com/) 组件库             |
-| arco-lib      | Sunmao 封装的 [arco-design](https://arco.design/) 组件库（推荐使用） |
-
-![depend-graph](../images/dependGraph.png)
+更多详情，请见 [Sunmao：一个真正可扩展的低代码 UI 框架](./what-is-sunmao.md)
 
 ## 本地开发
 
@@ -92,4 +78,4 @@ Sunmao 的用户分为两种角色，一种是开发者，一种是使用者。
 
 ## 许可证
 
-MIT
+Apache-2.0

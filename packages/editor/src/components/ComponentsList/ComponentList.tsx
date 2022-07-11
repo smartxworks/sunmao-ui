@@ -12,13 +12,8 @@ import {
   InputRightElement,
   Tag,
 } from '@chakra-ui/react';
-import { DROP_EXAMPLE_SIZE_PREFIX } from '@sunmao-ui/runtime';
-import {
-  encodeDragDataTransfer,
-  CoreComponentName,
-  CORE_VERSION,
-} from '@sunmao-ui/shared';
-import { groupBy, sortBy } from 'lodash-es';
+import { CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
+import { groupBy, sortBy } from 'lodash';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { RuntimeComponent } from '@sunmao-ui/core';
@@ -63,10 +58,7 @@ const tagStyle = css`
   white-space: nowrap;
 `;
 
-const IGNORE_COMPONENTS: string[] = [
-  CoreComponentName.Dummy,
-  CoreComponentName.GridLayout,
-];
+const IGNORE_COMPONENTS: string[] = [CoreComponentName.Dummy];
 
 export const ComponentList: React.FC<Props> = ({ services }) => {
   const { registry, editorStore } = services;
@@ -138,16 +130,6 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
                       'component',
                       `${c.version}/${c.metadata.name}`
                     );
-                    // pass the exampleSize to gridlayout to render placeholder
-                    e.dataTransfer.setData(
-                      encodeDragDataTransfer(
-                        `${DROP_EXAMPLE_SIZE_PREFIX}${JSON.stringify(
-                          c.metadata.exampleSize
-                        )}`
-                      ),
-                      ''
-                    );
-
                     editorStore.setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
                     editorStore.setIsDraggingNewComponent(true);
                   };

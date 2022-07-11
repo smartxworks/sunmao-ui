@@ -6,12 +6,9 @@ describe('component', () => {
     const c = createComponent({
       version: 'core/v1',
       metadata: {
-        isDraggable: true,
-        isResizable: true,
         displayName: 'test_component',
         name: 'test_component',
         exampleProperties: {},
-        exampleSize: [1, 1],
       },
       spec: {
         properties: Type.Object({

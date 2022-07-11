@@ -4,6 +4,10 @@ import {
   MethodSchema,
   RuntimeTrait,
 } from '@sunmao-ui/core';
+import { CustomOptions } from '@sinclair/typebox';
+import { Emitter } from 'mitt';
+import { Node } from 'acorn';
+import { JSONSchema7 } from 'json-schema';
 
 export type ComponentId = string & {
   kind: 'componentId';
@@ -36,7 +40,12 @@ export type EventName = string & {
   kind: 'eventName';
 };
 
+export type AppModelEventType = {
+  idChange: { oldId: ComponentId; newId: ComponentId };
+};
+
 export interface IAppModel {
+  emitter: Emitter<AppModelEventType>;
   topComponents: IComponentModel[];
   // modules: IModuleModel[];
   moduleIds: ModuleId[];
@@ -52,6 +61,7 @@ export interface IAppModel {
   appendChild(component: IComponentModel): void;
   changeComponentMapId(oldId: ComponentId, newId: ComponentId): void;
   _bindComponentToModel(component: IComponentModel): void;
+  traverseTree(cb: (c: IComponentModel) => void): void;
 }
 
 export interface IModuleModel {
@@ -116,14 +126,22 @@ export interface ITraitModel {
   updateProperty: (key: string, value: any) => void;
 }
 
+export type ASTNode = Node & { name: string };
+
+export type RefInfo = {
+  componentIdASTNodes: ASTNode[];
+  refProperties: string[];
+};
+
 export interface IFieldModel {
   // value: any;
+  spec?: JSONSchema7 & CustomOptions;
   isDynamic: boolean;
+  rawValue: any;
   update: (value: unknown) => void;
   getProperty: (key: string) => IFieldModel | void;
   getValue: () => unknown | void | IFieldModel;
   traverse: (cb: (f: IFieldModel, key: string) => void) => void;
-  rawValue: any;
   // ids of used components in the expression
-  refs: Record<ComponentId | ModuleId, string[]>;
+  refComponentInfos: Record<ComponentId | ModuleId, RefInfo>;
 }

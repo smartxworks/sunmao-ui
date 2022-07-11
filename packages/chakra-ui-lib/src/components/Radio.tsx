@@ -67,8 +67,6 @@ export default implementRuntimeComponent({
     name: 'radio',
     displayName: 'Radio',
     description: 'chakra-ui radio',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       text: {
         raw: 'Radio',
@@ -78,7 +76,6 @@ export default implementRuntimeComponent({
       isDisabled: false,
       size: 'md',
     },
-    exampleSize: [3, 1],
     annotations: {
       category: 'Input',
     },

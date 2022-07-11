@@ -7,10 +7,13 @@ import {
   FormHelperText,
   FormErrorMessage,
   Button,
-  Tooltip,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Portal,
 } from '@chakra-ui/react';
-import { isEmpty } from 'lodash-es';
-import { AnyKind, UnknownKind, Type, Static } from '@sinclair/typebox';
+import { isEmpty } from 'lodash';
+import { Type, Static } from '@sinclair/typebox';
 import { css } from '@emotion/css';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 import { isExpression as _isExpression } from '../../utils/validator';
@@ -31,6 +34,7 @@ import { NullField } from './NullField';
 import { MultiSpecField } from './MultiSpecField';
 import { CategoryWidget } from './CategoryWidget';
 import { UnsupportedField } from './UnsupportedField';
+import ReactMarkdown from 'react-markdown';
 
 type ExpressionButtonProps = {
   isExpression?: boolean;
@@ -84,6 +88,29 @@ const LabelStyle = css`
   font-size: 14px;
 `;
 
+const descriptionStyle = css`
+  color: #fff;
+  a {
+    background-color: transparent;
+    color: #58a6ff;
+    text-decoration: none;
+  }
+
+  a:active,
+  a:hover {
+    outline-width: 0;
+  }
+
+  code,
+  tt {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(110, 118, 129, 0.6);
+    border-radius: 6px;
+  }
+`;
+
 const DefaultTemplate: React.FC<TemplateProps> = props => {
   const {
     id,
@@ -107,17 +134,40 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
   return (
     <FormControl className={FormControlStyle} isRequired={required} id={id}>
       {displayLabel && (
-        <Tooltip label={description} placement="auto-start">
-          <FormLabel display="flex" alignItems="center">
-            <span className={LabelStyle}>{children.title || label}</span>
-            {codeMode && (
-              <ExpressionButton
-                isExpression={isExpression}
-                setIsExpression={setIsExpression}
-              />
-            )}
-          </FormLabel>
-        </Tooltip>
+        <Popover trigger="hover" closeOnBlur placement="left">
+          <PopoverTrigger>
+            <FormLabel display="flex" alignItems="center">
+              <span className={LabelStyle}>{children.title || label}</span>
+              {codeMode && (
+                <ExpressionButton
+                  isExpression={isExpression}
+                  setIsExpression={setIsExpression}
+                />
+              )}
+            </FormLabel>
+          </PopoverTrigger>
+          <Portal>
+            {description ? (
+              <PopoverContent
+                mt="1"
+                p="2"
+                opacity="0"
+                rounded="md"
+                maxH="350px"
+                shadow="base"
+                zIndex="popover"
+                overflowY="auto"
+                width="200px"
+                bg="blackAlpha.700"
+                _focus={{ boxShadow: 'none' }}
+              >
+                <ReactMarkdown className={css(descriptionStyle)}>
+                  {description}
+                </ReactMarkdown>
+              </PopoverContent>
+            ) : null}
+          </Portal>
+        </Popover>
       )}
       {children.content}
       {errors && <FormErrorMessage>{errors}</FormErrorMessage>}
@@ -133,14 +183,20 @@ export const SchemaFieldWidgetOptions = Type.Object({
   isHidden: Type.Optional(Type.Boolean()),
 });
 
-type SchemaFieldWidgetOptionsType = Static<typeof SchemaFieldWidgetOptions>;
-type Props = WidgetProps<SchemaFieldWidgetOptionsType> & {
+type SpecFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Spec}`;
+type Props = WidgetProps<SpecFieldWidgetType> & {
   children?:
     | (React.ReactNode & {
         title?: any;
       })
     | null;
 };
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/spec': Static<typeof SchemaFieldWidgetOptions>;
+  }
+}
 
 export const SpecWidget: React.FC<Props> = props => {
   const { component, spec, level, path, value, services, children, onChange } = props;
@@ -189,12 +245,8 @@ export const SpecWidget: React.FC<Props> = props => {
     Component = NullField;
   } else if ('anyOf' in spec || 'oneOf' in spec) {
     Component = MultiSpecField;
-  } else if (
-    [AnyKind, UnknownKind].includes((spec as unknown as { kind: symbol }).kind)
-  ) {
-    Component = ExpressionWidget;
   } else {
-    console.info('Found unsupported spec', spec);
+    Component = ExpressionWidget;
   }
 
   return (
@@ -243,7 +295,7 @@ export const SpecWidget: React.FC<Props> = props => {
   );
 };
 
-export default implementWidget<SchemaFieldWidgetOptionsType>({
+export default implementWidget<SpecFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Spec,

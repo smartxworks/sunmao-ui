@@ -136,8 +136,6 @@ export default implementRuntimeComponent({
     name: 'image',
     displayName: 'Image',
     description: 'chakra_ui image',
-    isDraggable: true,
-    isResizable: true,
     exampleProperties: {
       src: 'https://bit.ly/dan-abramov',
       fallbackSrc: 'https://via.placeholder.com/150',
@@ -150,7 +148,6 @@ export default implementRuntimeComponent({
       htmlWidth: '',
       borderRadius: 5,
     },
-    exampleSize: [6, 6],
     annotations: {
       category: 'Display',
     },

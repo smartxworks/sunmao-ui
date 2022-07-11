@@ -1,4 +1,4 @@
-import { isFunction, isArray } from 'lodash-es';
+import { isFunction, isArray } from 'lodash';
 import { isPromise } from './object';
 
 export function callWithErrorHandling(
@@ -47,4 +47,21 @@ export function callWithAsyncErrorHandling(
   }
 
   return [];
+}
+
+export function memo<T, P extends any[]>(
+  fn: (...params: P) => T,
+  compare: (preParams: P | [], newParams: P) => boolean
+): (...params: P) => T {
+  let result: T | null = null;
+  let preParams: P | [] = [];
+
+  return function (...params) {
+    if (result !== null && compare(preParams, params)) {
+      return result;
+    } else {
+      preParams = params;
+      return (result = fn(...params));
+    }
+  };
 }

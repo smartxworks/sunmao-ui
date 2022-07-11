@@ -4,18 +4,19 @@ import { StringUnion } from '../../sunmao-helper';
 
 export const SpacePropsSpec = {
   align: StringUnion(['start', 'end', 'center', 'baseline'], {
+    title: 'Align',
     category: Category.Layout,
   }),
   direction: StringUnion(['vertical', 'horizontal'], {
+    title: 'Direction',
     category: Category.Layout,
   }),
   wrap: Type.Boolean({
+    title: 'Wrap',
     category: Category.Layout,
   }),
-  size: Type.Union(
-    [Type.Optional(StringUnion(['mini', 'small', 'medium', 'large'])), Type.Number()],
-    {
-      category: Category.Style,
-    }
-  ),
+  size: Type.Number({
+    title: 'Size',
+    category: Category.Layout,
+  }),
 };

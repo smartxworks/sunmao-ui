@@ -11,13 +11,19 @@ const KeyValueWidgetOptions = Type.Object({
   onlySetValue: Type.Optional(Type.Boolean()),
 });
 
-type RecordFieldOptionsType = Static<typeof KeyValueWidgetOptions>;
+type RecordFieldType = `${typeof CORE_VERSION}/${CoreWidgetName.RecordField}`;
 
-export const RecordWidget: React.FC<WidgetProps<RecordFieldOptionsType>> = props => {
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/record': Static<typeof KeyValueWidgetOptions>;
+  }
+}
+
+export const RecordWidget: React.FC<WidgetProps<RecordFieldType>> = props => {
   return <RecordEditor {...props} />;
 };
 
-export default implementWidget<RecordFieldOptionsType>({
+export default implementWidget<RecordFieldType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.RecordField,

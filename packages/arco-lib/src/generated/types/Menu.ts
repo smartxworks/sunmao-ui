@@ -29,6 +29,7 @@ export const MenuPropsSpec = {
     {
       title: 'Items',
       category: Category.Basic,
+      widget: 'core/v1/array',
       widgetOptions: {
         displayedKeys: ['text'],
       },
@@ -45,11 +46,24 @@ export const MenuPropsSpec = {
   autoOpen: Type.Boolean({
     title: 'Auto Open',
     description: 'Whether to expand all multi-level menus by default',
-    category: Category.Basic,
+    category: Category.Behavior,
+  }),
+  hasCollapseButton: Type.Boolean({
+    title: 'Collapse Button',
+    category: Category.Behavior,
+    conditions: [{ key: 'mode', value: 'vertical' }],
   }),
   collapse: Type.Boolean({
     title: 'Collapse',
-    category: Category.Style,
+    category: Category.Behavior,
+    conditions: [
+      {
+        and: [
+          { key: 'mode', value: 'vertical' },
+          { key: 'hasCollapseButton', value: false },
+        ],
+      },
+    ],
   }),
   // accordion: Type.Boolean({
   //   category: Category.Style,
@@ -57,14 +71,11 @@ export const MenuPropsSpec = {
   ellipsis: Type.Boolean({
     title: 'Ellipsis',
     description: 'Whether the horizontal menu automatically collapses when it overflows',
-    category: Category.Basic,
+    category: Category.Behavior,
+    conditions: [{ key: 'mode', value: 'vertical' }],
   }),
   autoScrollIntoView: Type.Boolean({
     title: 'Auto Scroll Into View',
-    category: Category.Basic,
-  }),
-  hasCollapseButton: Type.Boolean({
-    title: 'Collapse Button',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
 };

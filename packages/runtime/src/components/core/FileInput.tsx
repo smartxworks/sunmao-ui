@@ -39,14 +39,11 @@ export default implementRuntimeComponent({
     name: 'fileInput',
     displayName: 'File Input',
     description: 'Select file',
-    isDraggable: true,
-    isResizable: false,
     exampleProperties: {
       multiple: false,
       hideDefaultInput: false,
       fileTypes: [],
     },
-    exampleSize: [1, 1],
     annotations: {
       category: 'Input',
     },

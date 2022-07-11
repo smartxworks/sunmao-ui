@@ -19,19 +19,19 @@ export const InputPropsSpec = {
   }),
   allowClear: Type.Boolean({
     title: 'Allow Clear',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   readOnly: Type.Boolean({
     title: 'Read Only',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   error: Type.Boolean({
     title: 'Error',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   size: StringUnion(['default', 'mini', 'small', 'large'], {
     title: 'Size',

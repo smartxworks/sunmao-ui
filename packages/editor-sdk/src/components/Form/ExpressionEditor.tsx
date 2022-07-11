@@ -304,7 +304,7 @@ export const BaseExpressionEditor = React.forwardRef<
 
 export type ExpressionEditorProps = BaseExpressionEditorProps & {
   compactOptions?: ExpressionEditorStyleProps;
-  evaledValue?: any;
+  evaledValue?: { value: any };
   error?: string | null;
 };
 export type ExpressionEditorHandle = BaseExpressionEditorHandle;
@@ -403,7 +403,7 @@ export const ExpressionEditor = React.forwardRef<
           overflow="auto"
           position="absolute"
           bottom="0"
-          zIndex={3}
+          zIndex={4}
           transform="translateY(100%)"
           background={error ? '#fef1f0' : '#d4eadd'}
           color={error ? '#c04035' : '#3b734f'}
@@ -414,9 +414,9 @@ export const ExpressionEditor = React.forwardRef<
           whiteSpace="pre-wrap"
         >
           <Box fontWeight="bold" marginBottom="4px">
-            {error ? 'Error' : getTypeString(evaledValue)}
+            {error ? 'Error' : getTypeString(evaledValue?.value)}
           </Box>
-          {error || JSON.stringify(evaledValue, null, 2)}
+          {error || JSON.stringify(evaledValue?.value, null, 2)}
         </Box>
       ) : null}
       {showModal && (

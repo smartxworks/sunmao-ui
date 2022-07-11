@@ -73,16 +73,16 @@ Spec 本质上是一个 JSON，它的作用是描述组件的参数、行为等�
 
 `properties` 描述了 Component 能够接受的参数名称和类型。这里定义了两个参数，`placeholder`和`disabled` ，类型分别是 String 和 Boolean。
 
-你可能对这种声明类型的方法感到陌生。前文已经说过，Spec 本质是一个 JSON，但 JSON 不像 Typescript 可以声明类型，所以当我们要在 Spec 中声明类型时，我们使用 [JSONSchema](https://json-schema.org/)。JSONSchema 本身也是 JSON，但是可以用来声明一个 JSON 数据结构的类型。
-
-但手写 JSONSchema 比较困难，所以我们推荐使用 [TypeBox](https://github.com/sinclairzx81/typebox) 库来辅助生成 JSONSchema。示例中的写法就是调用了 TypeBox。
-
-```
+````
 properties: Type.Object({
   placeholder: Type.String(),
   disabled: Type.Boolean(),
 })
-```
+````
+
+你可能对这种声明类型的方法感到陌生。前文已经说过，Spec 本质是一个 JSON，但 JSON 不像 Typescript 可以声明类型，所以当我们要在 Spec 中声明类型时，我们使用 [JSONSchema](https://json-schema.org/)。JSONSchema 本身也是 JSON，但是可以用来声明一个 JSON 数据结构的类型。
+
+但手写 JSONSchema 比较困难，所以我们推荐使用 [TypeBox](https://github.com/sinclairzx81/typebox) 库来辅助生成 JSONSchema。示例中的写法就是调用了 TypeBox。
 
 #### Component Spec State
 
@@ -464,13 +464,13 @@ Component Implementation 的参数本质上一个 object，但是其实是由好
 
 Services 是 Sunmao 的各种服务的实例，包括状态管理、事件监听、组件注册等等。这些 Service 都是全局唯一的实例。
 
-| 参数名           | 类型                     | 备注                                                                                                 |
-| ---------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| registry         | Registry                 | Registry 上注册了 Sunmao 所有的 Component、Trait、Module，您可以在其中它们所对应的 Spec 和渲染组件。 |
-| stateManager     | StateManager             | StateManager 管理着 Sunmao 的全局状态 Store，而且还具 eval 表达式的功能。                            |
-| globalHandlerMap | GlobalHandlerMap         | GlobalHandlerMap 管理着所有 Component 的 Method 实例。                                               |
-| apiService       | ApiService               | ApiService 是全局事件总线。                                                                          |
-| eleMap           | Map<string, HTMLElement> | eleMap 存放所有 Component 的 DOM 元素。                                                              |
+| 参数名           | 类型                     | 备注                                                         |
+| ---------------- | ------------------------ | ------------------------------------------------------------ |
+| registry         | Registry                 | Registry 上注册了 Sunmao 所有的 Component、Trait、Module，您可以在其中找到它们所对应的 Spec 和 Implementation。 |
+| stateManager     | StateManager             | StateManager 管理着 Sunmao 的全局状态 Store，而且还具 eval 表达式的功能。 |
+| globalHandlerMap | GlobalHandlerMap         | GlobalHandlerMap 管理着所有 Component 的 Method 实例。       |
+| apiService       | ApiService               | ApiService 是全局事件总线。                                  |
+| eleMap           | Map<string, HTMLElement> | eleMap 存放所有 Component 的 DOM 元素。                      |
 
 > ⚠️ 一般情况下，您不需要使用这些服务。只有在实现一些特殊需求时，才可能会用到它们。
 

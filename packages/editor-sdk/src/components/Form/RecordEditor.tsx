@@ -1,7 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import produce from 'immer';
-import { fromPairs, toPairs } from 'lodash-es';
+import { fromPairs, toPairs } from 'lodash';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Type } from '@sinclair/typebox';
 import { SpecWidget } from '../Widgets/SpecWidget';
@@ -13,11 +13,16 @@ import { ExpressionEditorProps } from './ExpressionEditor';
 
 const IGNORE_SPEC_TYPES = ['array', 'object'];
 
-type RecordEditorProps = Omit<WidgetProps, 'component' | 'spec' | 'level' | 'path'> & {
-  component?: WidgetProps['component'];
-  spec?: WidgetProps['spec'];
-  path?: WidgetProps['path'];
-  level?: WidgetProps['level'];
+type RecordFieldProps = WidgetProps<'core/v1/record'>;
+
+type RecordEditorProps = Omit<
+  RecordFieldProps,
+  'component' | 'spec' | 'level' | 'path'
+> & {
+  component?: RecordFieldProps['component'];
+  spec?: RecordFieldProps['spec'];
+  path?: RecordFieldProps['path'];
+  level?: RecordFieldProps['level'];
 };
 type RowItemProps = RecordEditorProps & {
   index: number;
@@ -66,6 +71,7 @@ const RowItem = (props: RowItemProps) => {
             },
           }
         : Type.Any({
+            widget: 'core/v1/expression',
             widgetOptions: {
               compactOptions: expressionOptions.compactOptions,
             },
@@ -75,7 +81,7 @@ const RowItem = (props: RowItemProps) => {
   const valueSpecWithOptions = useMemo(
     () =>
       valueSpec && typeof valueSpec !== 'boolean'
-        ? mergeWidgetOptionsIntoSpec(valueSpec, {
+        ? mergeWidgetOptionsIntoSpec<'core/v1/spec'>(valueSpec, {
             isShowAsideExpressionButton: true,
             expressionOptions,
           })

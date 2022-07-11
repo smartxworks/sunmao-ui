@@ -3,7 +3,7 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
 
-const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}` as const;
 
 export const CheckboxOptionSpec = Type.Array(
   Type.Object({
@@ -15,7 +15,10 @@ export const CheckboxOptionSpec = Type.Array(
   {
     title: 'Options',
     category: Category.Data,
-    widget: EXPRESSION_WIDGET_TYPE,
+    widget: 'core/v1/array',
+    widgetOptions: {
+      displayedKeys: ['label'],
+    },
   }
 );
 
@@ -36,6 +39,11 @@ export const CheckboxPropsSpec = {
   }),
   checkAllText: Type.String({
     title: 'Check All Text',
+    category: Category.Basic,
+    conditions: [{ key: 'showCheckAll', value: true }],
+  }),
+  disabled: Type.Boolean({
+    title: 'Disabled',
     category: Category.Basic,
   }),
   updateWhenDefaultValueChanges: Type.Boolean({

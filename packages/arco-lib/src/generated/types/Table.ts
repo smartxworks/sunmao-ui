@@ -9,9 +9,9 @@ const PaginationSpec = Type.Object(
       title: 'Enable Pagination',
     }),
     useCustomPagination: Type.Boolean({
-      title: 'Custom Pagination',
-      description:
-        'If true, there will be no automatic pagination. You can customize pagination with Pagination config and onPageChange events',
+      title: 'Enable Server Side Pagination',
+      description: `If true, there will be no automatic pagination.    
+        You can customize pagination with Pagination config and onPageChange events`,
       conditions: [
         {
           key: 'enablePagination',
@@ -231,8 +231,8 @@ export const ColumnSpec = Type.Object({
   ellipsis: Type.Optional(
     Type.Boolean({
       title: 'Ellipsis',
-      description:
-        'If the cell content exceeds the length, whether it is automatically omitted and displays ...,After setting this property, the table-layout of the table will automatically become fixed.',
+      description: `If the cell content exceeds the length, whether it is automatically omitted and displays ...,        
+        After setting this property, the table-layout of the table will automatically become fixed.`,
     })
   ),
   sorter: Type.Optional(
@@ -295,6 +295,7 @@ export const TablePropsSpec = Type.Object({
     title: 'Columns',
     description: '',
     category: Category.Columns,
+    widget: 'core/v1/array',
     widgetOptions: {
       displayedKeys: ['title'],
     },

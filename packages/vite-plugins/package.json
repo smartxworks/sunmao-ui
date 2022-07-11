@@ -4,7 +4,7 @@
   "description": "vite plugins for sunmao-ui",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },

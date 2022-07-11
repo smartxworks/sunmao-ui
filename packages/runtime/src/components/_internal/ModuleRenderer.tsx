@@ -1,12 +1,13 @@
 import { Static } from '@sinclair/typebox';
 import React, { useEffect, useMemo } from 'react';
-import { get } from 'lodash-es';
+import { get } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   Application,
   parseType,
   RuntimeApplication,
   RuntimeComponentSchema,
+  PropsAfterEvaled,
 } from '@sunmao-ui/core';
 import { ImplWrapper } from './ImplWrapper';
 import { watch } from '../../utils/watchReactivity';
@@ -42,7 +43,9 @@ const ModuleRendererContent = React.forwardRef<
     scopeObject: evalScope,
   }) as string | ExpressionError;
 
-  function evalObject<T extends Record<string, any>>(obj: T): T {
+  function evalObject<T extends Record<string, any> = Record<string, any>>(
+    obj: T
+  ): PropsAfterEvaled<{ obj: T }>['obj'] {
     const evalOptions = { evalListItem: true, scopeObject: evalScope };
     return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
       if (typeof value === 'string') {

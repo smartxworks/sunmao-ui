@@ -9,6 +9,7 @@ export type EventNames = {
   // when switch app or module, current components refresh
   componentsRefresh: ComponentSchema[];
   // components change by operation
+  stateRefresh: undefined;
   componentsChange: ComponentSchema[];
   // it is only used for some operations' side effect
   selectComponent: string;

@@ -4,7 +4,7 @@
   "description": "The Sunmao shared lib",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
@@ -25,10 +25,11 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.21.2",
-    "lodash-es": "^4.17.21"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.7",
+    "@types/lodash": "^4.14.182",
     "jest": "^27.1.0",
     "tsup": "^5.11.0"
   },
@@ -43,10 +44,5 @@
       "prettier --write",
       "eslint --fix"
     ]
-  },
-  "peerDependencies": {
-    "@sinclair/typebox": "^0.21.2",
-    "lodash-es": "^4.17.21"
-  },
-  "gitHead": "c2510d776760530c15386cd45f757d7569ef0bd4"
+  }
 }

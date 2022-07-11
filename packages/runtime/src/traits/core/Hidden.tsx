@@ -27,7 +27,7 @@ export default implementRuntimeTrait({
       return {
         props: {
           customStyle: {
-            content: hidden ? 'display: none' : '',
+            content: hidden ? '&&&& { display: none }' : '',
           },
         },
       };
