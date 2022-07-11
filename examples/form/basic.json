@@ -139,10 +139,29 @@
             {
               "type": "core/v1/validation",
               "properties": {
-                "value": "{{ phoneInput.value || \"\" }}",
-                "maxLength": 100,
-                "minLength": 0,
-                "rule": "phoneNumber"
+                "validators": [
+                  {
+                    "name": "phone",
+                    "value": "{{ phoneInput.value || \"\" }}",
+                    "rules": [
+                      {
+                        "type": "regex",
+                        "regex": "^1[3456789]\\d{9}$",
+                        "error": {
+                          "message": "Please input the correct phone number."
+                        }
+                      },
+                      {
+                        "type": "length",
+                        "minLength": 0,
+                        "maxLength": 100,
+                        "error": {
+                          "message": "Please input the length between 0 and 100."
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]
