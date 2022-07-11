@@ -36,8 +36,8 @@ export const Modal = implementRuntimeComponent({
     properties: ModalPropsSpec,
     state: ModalStateSpec,
     methods: {
-      openModal: Type.String(),
-      closeModal: Type.String(),
+      openModal: Type.Object({}),
+      closeModal: Type.Object({}),
     },
     slots: {
       content: { slotProps: Type.Object({}) },

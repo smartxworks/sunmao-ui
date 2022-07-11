@@ -35,8 +35,8 @@ export const Tooltip = implementRuntimeComponent({
     properties: TooltipPropsSpec,
     state: TooltipStateSpec,
     methods: {
-      openTooltip: Type.String(),
-      closeTooltip: Type.String(),
+      openTooltip: Type.Object({}),
+      closeTooltip: Type.Object({}),
     },
     slots: {
       content: { slotProps: Type.Object({}) },
