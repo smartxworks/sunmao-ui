@@ -1,19 +1,6 @@
-import { createTrait } from '@sunmao-ui/core';
-import { Static, Type } from '@sinclair/typebox';
-import { TraitImplFactory } from '../../types';
+import { Type } from '@sinclair/typebox';
+import { implementRuntimeTrait } from '../../utils/buildKit';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
-
-const TransformTraitFactory: TraitImplFactory<
-  Static<typeof TransformerTraitPropertiesSpec>
-> = () => {
-  return ({ value, mergeState }) => {
-    mergeState({ value });
-
-    return {
-      props: {},
-    };
-  };
-};
 
 const TransformerTraitPropertiesSpec = Type.Object({
   value: Type.Any({
@@ -24,18 +11,23 @@ const TransformerTraitStateSpec = Type.Object({
   value: Type.Any(),
 });
 
-export default {
-  ...createTrait({
-    version: CORE_VERSION,
-    metadata: {
-      name: CoreTraitName.Transformer,
-      description: 'transform the value',
-    },
-    spec: {
-      properties: TransformerTraitPropertiesSpec,
-      methods: [],
-      state: TransformerTraitStateSpec,
-    },
-  }),
-  factory: TransformTraitFactory,
-};
+export default implementRuntimeTrait({
+  version: CORE_VERSION,
+  metadata: {
+    name: CoreTraitName.Transformer,
+    description: 'transform the value',
+  },
+  spec: {
+    properties: TransformerTraitPropertiesSpec,
+    methods: [],
+    state: TransformerTraitStateSpec,
+  },
+})(() => {
+  return ({ value, mergeState }) => {
+    mergeState({ value });
+
+    return {
+      props: {},
+    };
+  };
+});

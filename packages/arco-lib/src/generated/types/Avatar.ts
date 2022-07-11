@@ -54,6 +54,7 @@ export const AvatarPropsSpec = {
   triggerType: StringUnion(['button', 'mask'], {
     title: 'Trigger Type',
     category: Category.Basic,
-    description: 'Clickable avatar interaction type',
+    description:
+      'This option allows you to customize the style of the trigger icon after inserting the `triggerIcon` slot',
   }),
 };

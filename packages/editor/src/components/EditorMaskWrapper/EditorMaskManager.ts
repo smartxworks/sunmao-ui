@@ -142,8 +142,16 @@ export class EditorMaskManager {
     return {
       id,
       style: {
-        top: rect.top - this.maskContainerRect.top - this.MaskPadding,
-        left: rect.left - this.maskContainerRect.left - this.MaskPadding,
+        top:
+          rect.top -
+          this.maskContainerRect.top -
+          this.MaskPadding +
+          this.wrapperScrollTop,
+        left:
+          rect.left -
+          this.maskContainerRect.left -
+          this.MaskPadding +
+          this.wrapperScrollLeft,
         height: rect.height + this.MaskPadding * 2,
         width: rect.width + this.MaskPadding * 2,
       },
@@ -161,7 +169,10 @@ export class EditorMaskManager {
   }
 
   private refreshHoverElement() {
-    const hoverElement = document.elementFromPoint(...this.mousePosition);
+    const hoverElement = document.elementFromPoint(
+      this.mousePosition[0] - this.wrapperScrollLeft,
+      this.mousePosition[1] - this.wrapperScrollTop
+    );
     if (!hoverElement) return;
     if (hoverElement === this.lastHoverElement) return;
     const root = this.wrapperRef.current;
@@ -209,6 +220,14 @@ export class EditorMaskManager {
 
   private get eleMap() {
     return this.services.editorStore.eleMap;
+  }
+
+  private get wrapperScrollTop() {
+    return this.wrapperRef.current?.scrollTop || 0;
+  }
+
+  private get wrapperScrollLeft() {
+    return this.wrapperRef.current?.scrollLeft || 0;
   }
 }
 

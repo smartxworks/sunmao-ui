@@ -3,7 +3,6 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentTreeWrapper } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
-import { resolveApplicationComponents } from '../../utils/resolveApplicationComponents';
 import ErrorBoundary from '../ErrorBoundary';
 import { EditorServices } from '../../types';
 import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
@@ -15,6 +14,7 @@ import {
   type Item,
 } from '@choc-ui/chakra-autocomplete';
 import { css } from '@emotion/css';
+import scrollIntoView from 'scroll-into-view';
 
 export type ChildrenMap = Map<string, SlotsMap>;
 type SlotsMap = Map<string, ComponentSchema[]>;
@@ -34,6 +34,7 @@ const AutoCompleteStyle = css`
 export const StructureTree: React.FC<Props> = props => {
   const [search, setSearch] = useState('');
   const { components, onSelectComponent, services } = props;
+  const { editorStore } = services;
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const onSelectOption = useCallback(
@@ -47,10 +48,12 @@ export const StructureTree: React.FC<Props> = props => {
     if (selectedId) {
       // wait the component tree to be expanded
       setTimeout(() => {
-        wrapperRef.current?.querySelector(`#tree-item-${selectedId}`)?.scrollIntoView({
-          block: 'nearest',
-          inline: 'nearest',
-        });
+        const selectedElement: HTMLElement | undefined | null =
+          wrapperRef.current?.querySelector(`#tree-item-${selectedId}`);
+
+        if (selectedElement) {
+          scrollIntoView(selectedElement, { time: 0, align: { lockX: true } });
+        }
       });
     }
   }, []);
@@ -68,8 +71,7 @@ export const StructureTree: React.FC<Props> = props => {
   }, [components]);
 
   const componentEles = useMemo(() => {
-    const { topLevelComponents, childrenMap } =
-      resolveApplicationComponents(realComponents);
+    const { topLevelComponents } = editorStore.resolvedComponents;
 
     return topLevelComponents.map(c => (
       <ComponentTreeWrapper
@@ -77,7 +79,6 @@ export const StructureTree: React.FC<Props> = props => {
         component={c}
         parentId={undefined}
         slot={undefined}
-        childrenMap={childrenMap}
         onSelectComponent={onSelectComponent}
         onSelected={onSelected}
         services={services}
@@ -85,7 +86,7 @@ export const StructureTree: React.FC<Props> = props => {
         depth={0}
       />
     ));
-  }, [realComponents, onSelectComponent, onSelected, services]);
+  }, [onSelectComponent, onSelected, services, editorStore.resolvedComponents]);
 
   return (
     <VStack

@@ -9,14 +9,14 @@ export const PopoverPropsSpec = {
   }),
   trigger: StringUnion(['click', 'hover', 'focus', 'contextMenu'], {
     title: 'Trigger',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   color: Type.String({
-    title: 'Color',
+    title: 'Background',
     category: Category.Style,
   }),
   position: StringUnion(
@@ -28,7 +28,7 @@ export const PopoverPropsSpec = {
   ),
   controlled: Type.Boolean({
     title: 'Controlled',
-    category: Category.Basic,
+    category: Category.Behavior,
     description:
       'Control the opening and closing of popups via openPopupover and closePopupover events',
   }),

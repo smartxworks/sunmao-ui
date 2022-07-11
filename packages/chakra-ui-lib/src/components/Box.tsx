@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { Box as BaseBox } from '@chakra-ui/react';
-import { implementRuntimeComponent, GRID_HEIGHT } from '@sunmao-ui/runtime';
-import { pick } from 'lodash-es';
+import { implementRuntimeComponent } from '@sunmao-ui/runtime';
+import { pick } from 'lodash';
 import { css } from '@emotion/css';
 import { LAYOUT, BACKGROUND, BORDER } from './constants/category';
 
@@ -108,12 +108,10 @@ export default implementRuntimeComponent({
   metadata: {
     name: 'box',
     displayName: 'Box',
-    isDraggable: true,
-    isResizable: true,
     description: 'chakra-ui box',
     exampleProperties: {
-      w: GRID_HEIGHT,
-      h: GRID_HEIGHT,
+      w: 0,
+      h: 0,
       minW: '',
       maxW: '',
       minH: '',
@@ -135,7 +133,6 @@ export default implementRuntimeComponent({
       border: '1px solid black',
       borderRadius: '',
     },
-    exampleSize: [6, 6],
     annotations: {
       category: LAYOUT,
     },

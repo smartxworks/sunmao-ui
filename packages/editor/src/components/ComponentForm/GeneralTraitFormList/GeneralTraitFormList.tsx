@@ -1,7 +1,6 @@
 import React from 'react';
-import { TSchema } from '@sinclair/typebox';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { parseTypeBox } from '@sunmao-ui/shared';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { VStack } from '@chakra-ui/react';
 
 import { AddTraitButton } from './AddTraitButton';
@@ -9,6 +8,7 @@ import { GeneralTraitForm } from './GeneralTraitForm';
 import { hasSpecialFormTraitList, unremovableTraits } from '../../../constants';
 import { genOperation } from '../../../operations';
 import { EditorServices } from '../../../types';
+import { JSONSchema7Object } from 'json-schema';
 
 type Props = {
   component: ComponentSchema;
@@ -21,7 +21,9 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
 
   const onAddTrait = (type: string) => {
     const traitSpec = registry.getTraitByType(type).spec;
-    const initProperties = parseTypeBox(traitSpec.properties as TSchema);
+    const initProperties = generateDefaultValueFromSpec(
+      traitSpec.properties
+    ) as JSONSchema7Object;
     eventBus.send(
       'operation',
       genOperation(registry, 'createTrait', {

@@ -1,11 +1,6 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Application } from '@sunmao-ui/core';
-import {
-  GridCallbacks,
-  DIALOG_CONTAINER_ID,
-  initSunmaoUI,
-  SunmaoLib,
-} from '@sunmao-ui/runtime';
+import { DIALOG_CONTAINER_ID, initSunmaoUI, SunmaoLib } from '@sunmao-ui/runtime';
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Flex } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import { StructureTree } from './StructureTree';
@@ -16,7 +11,6 @@ import { StateViewer } from './CodeEditor';
 import { DataSource } from './DataSource';
 import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
 import { ApiForm } from './DataSource/ApiForm';
-import { genOperation } from '../operations';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
@@ -51,8 +45,8 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, registry, stateStore, services, libs, onRefresh: onRefreshApp }) => {
-    const { eventBus, editorStore } = services;
+  ({ App, stateStore, services, libs, onRefresh: onRefreshApp }) => {
+    const { editorStore } = services;
     const {
       components,
       selectedComponentId,
@@ -70,34 +64,6 @@ export const Editor: React.FC<Props> = observer(
     const [codeMode, setCodeMode] = useState(false);
     const [isDisplayApp, setIsDisplayApp] = useState(true);
 
-    const gridCallbacks: GridCallbacks = useMemo(() => {
-      return {
-        // drag an existing component
-        onDragStop(id, layout) {
-          eventBus.send(
-            'operation',
-            genOperation(registry, 'modifyComponentProperty', {
-              componentId: id,
-              properties: { layout },
-            })
-          );
-        },
-        // drag a new component from tool box
-        onDrop(id, layout, _, e) {
-          const component = e.dataTransfer?.getData('component') || '';
-          eventBus.send(
-            'operation',
-            genOperation(registry, 'createComponent', {
-              componentType: component,
-              parentId: id,
-              slot: 'content',
-              layout,
-            })
-          );
-        },
-      };
-    }, [eventBus, registry]);
-
     const app = useMemo<Application>(() => {
       return {
         version: 'sunmao/v1',
@@ -114,10 +80,10 @@ export const Editor: React.FC<Props> = observer(
     const appComponent = useMemo(() => {
       return isDisplayApp ? (
         <ErrorBoundary>
-          <App options={app} gridCallbacks={gridCallbacks} />
+          <App options={app} />
         </ErrorBoundary>
       ) : null;
-    }, [App, app, gridCallbacks, isDisplayApp]);
+    }, [App, app, isDisplayApp]);
 
     const inspectForm = useMemo(() => {
       if (activeDataSource && activeDataSourceType) {

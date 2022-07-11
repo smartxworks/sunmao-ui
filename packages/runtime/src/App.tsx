@@ -7,9 +7,9 @@ import { RuntimeAppSchemaManager } from './services/RuntimeAppSchemaManager';
 import { resolveChildrenMap } from './utils/resolveChildrenMap';
 
 // inject modules to App
-export function genApp(services: UIServices, hooks?: AppHooks) {
+export function genApp(services: UIServices, hooks?: AppHooks, isInEditor?: boolean) {
   return (props: Omit<AppProps, 'services'>) => {
-    return <App {...props} services={services} hooks={hooks} />;
+    return <App {...props} services={services} hooks={hooks} isInEditor={isInEditor} />;
   };
 }
 
@@ -17,10 +17,10 @@ export const App: React.FC<AppProps> = props => {
   const {
     options,
     services,
-    gridCallbacks,
     debugStore = false,
     debugEvent = false,
     hooks,
+    isInEditor = false,
   } = props;
   const runtimeAppSchemaManager = useRef(new RuntimeAppSchemaManager());
   const app = runtimeAppSchemaManager.current.update(options);
@@ -49,9 +49,9 @@ export const App: React.FC<AppProps> = props => {
             services={services}
             childrenMap={childrenMap}
             app={app}
-            gridCallbacks={gridCallbacks}
             hooks={hooks}
             isInModule={false}
+            isInEditor={isInEditor}
           />
         );
       })}

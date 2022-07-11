@@ -56,6 +56,9 @@ export const Timeline = implementRuntimeComponent({
     name: 'timeline',
     displayName: 'Timeline',
     exampleProperties,
+    annotations: {
+      category: 'Data Display',
+    },
   },
   spec: {
     properties: TimelinePropsSpec,

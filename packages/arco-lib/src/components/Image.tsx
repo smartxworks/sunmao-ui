@@ -13,10 +13,9 @@ const ImageStateSpec = Type.Object({});
 
 const exampleProperties: Static<typeof ImagePropsSpec> = {
   src: 'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp',
-  title: 'A user’s avatar',
-  description: 'Present by Arco Design',
+  title: '',
+  description: '',
   footerPosition: 'inner',
-  simple: false,
   preview: false,
   width: 200,
   height: 200,
@@ -31,7 +30,7 @@ const options = {
     displayName: 'Image',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {
@@ -92,7 +91,7 @@ export const ImageGroup = implementRuntimeComponent({
       closable: false,
     },
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {

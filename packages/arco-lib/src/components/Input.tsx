@@ -4,8 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { InputPropsSpec as BaseInputPropsSpec } from '../generated/types/Input';
-import { useEffect, useRef, useCallback } from 'react';
-import { RefInputType } from '@arco-design/web-react/es/Input/interface';
+import { useEffect, useCallback } from 'react';
 import { useStateValue } from '../hooks/useStateValue';
 
 const InputPropsSpec = Type.Object({
@@ -26,7 +25,7 @@ const exampleProperties: Static<typeof InputPropsSpec> = {
   size: 'default',
 };
 
-const options = {
+export const Input = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
@@ -34,7 +33,7 @@ const options = {
     displayName: 'Input',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {
@@ -54,11 +53,9 @@ const options = {
     styleSlots: ['input'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
   },
-};
-
-export const Input = implementRuntimeComponent(options)(props => {
+})(props => {
   const {
-    getElement,
+    elementRef,
     slotsElements,
     customStyle,
     callbackMap,
@@ -68,19 +65,11 @@ export const Input = implementRuntimeComponent(options)(props => {
 
   const { updateWhenDefaultValueChanges, defaultValue, ...cProps } =
     getComponentProps(props);
-  const ref = useRef<RefInputType | null>(null);
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
     updateWhenDefaultValueChanges
   );
-
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
 
   const onChange = useCallback(
     value => {
@@ -102,28 +91,29 @@ export const Input = implementRuntimeComponent(options)(props => {
   }, [setValue, mergeState, callbackMap, subscribeMethods]);
 
   return (
-    <BaseInput
-      className={css(customStyle?.input)}
-      ref={ref}
-      addAfter={slotsElements.addAfter ? slotsElements.addAfter({}) : null}
-      addBefore={slotsElements.addBefore ? slotsElements.addBefore({}) : null}
-      prefix={slotsElements.prefix ? slotsElements.prefix({}) : null}
-      suffix={slotsElements.suffix ? slotsElements.suffix({}) : null}
-      value={value}
-      onChange={onChange}
-      onClear={() => {
-        callbackMap?.onClear?.();
-      }}
-      onPressEnter={() => {
-        callbackMap?.onPressEnter?.();
-      }}
-      onBlur={() => {
-        callbackMap?.onBlur?.();
-      }}
-      onFocus={() => {
-        callbackMap?.onFocus?.();
-      }}
-      {...cProps}
-    />
+    <div ref={elementRef}>
+      <BaseInput
+        className={css(customStyle?.input)}
+        addAfter={slotsElements.addAfter ? slotsElements.addAfter({}) : null}
+        addBefore={slotsElements.addBefore ? slotsElements.addBefore({}) : null}
+        prefix={slotsElements.prefix ? slotsElements.prefix({}) : null}
+        suffix={slotsElements.suffix ? slotsElements.suffix({}) : null}
+        value={value}
+        onChange={onChange}
+        onClear={() => {
+          callbackMap?.onClear?.();
+        }}
+        onPressEnter={() => {
+          callbackMap?.onPressEnter?.();
+        }}
+        onBlur={() => {
+          callbackMap?.onBlur?.();
+        }}
+        onFocus={() => {
+          callbackMap?.onFocus?.();
+        }}
+        {...cProps}
+      />
+    </div>
   );
 });

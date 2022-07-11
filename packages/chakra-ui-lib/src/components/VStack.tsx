@@ -27,9 +27,6 @@ export default implementRuntimeComponent({
     exampleProperties: {
       spacing: '24px',
     },
-    exampleSize: [6, 6],
-    isDraggable: true,
-    isResizable: true,
     annotations: {
       direction: 'column',
       wrap: 'wrap',

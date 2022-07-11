@@ -32,6 +32,7 @@ export const CollapsePropsSpec = {
   defaultActiveKey: Type.Array(Type.String(), {
     title: 'Default Active Key',
     category: Category.Basic,
+    widget: 'core/v1/expression',
   }),
   accordion: Type.Boolean({
     title: 'Accordion',
@@ -48,6 +49,7 @@ export const CollapsePropsSpec = {
   options: Type.Array(Type.Object(CollapseItemPropsSpec), {
     title: 'Options',
     category: Category.Basic,
+    widget: 'core/v1/array',
     widgetOptions: {
       displayedKeys: ['header'],
     },
@@ -59,8 +61,10 @@ export const CollapsePropsSpec = {
   lazyLoad: Type.Boolean({
     title: 'Lazy Load',
     description: 'If true, invisible panels will not be rendered on mount',
+    category: Category.Behavior,
   }),
   destroyOnHide: Type.Boolean({
     title: 'Destroy On Hide',
+    category: Category.Behavior,
   }),
 };

@@ -44,13 +44,14 @@ export const Collapse = implementRuntimeComponent({
     name: 'collapse',
     displayName: 'Collapse',
     exampleProperties,
+    annotations: {
+      category: 'Data Display',
+    },
   },
   spec: {
     properties: CollapsePropsSpec,
     state: CollapseStateSpec,
-    methods: {
-      setActiveKey: Type.String(),
-    },
+    methods: {},
     slots: {
       content: {
         slotProps: Type.Object({
@@ -80,7 +81,7 @@ export const Collapse = implementRuntimeComponent({
       mergeState({ activeKey });
       callbackMap?.onChange?.();
     },
-    [callbackMap, mergeState]
+    [callbackMap, mergeState, setActiveKey]
   );
 
   return (

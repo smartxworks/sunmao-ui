@@ -3,7 +3,7 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
 
-const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}`;
+const EXPRESSION_WIDGET_TYPE = `${CORE_VERSION}/${CoreWidgetName.Expression}` as const;
 
 export const TreeSelectPropsSpec = {
   treeData: Type.Array(
@@ -16,7 +16,10 @@ export const TreeSelectPropsSpec = {
     {
       title: 'Options',
       category: Category.Data,
-      widget: EXPRESSION_WIDGET_TYPE,
+      widget: 'core/v1/array',
+      widgetOptions: {
+        displayedKeys: ['title'],
+      },
     }
   ),
   defaultValue: Type.Array(Type.String(), {
@@ -26,7 +29,7 @@ export const TreeSelectPropsSpec = {
   }),
   updateWhenDefaultValueChanges: Type.Boolean({
     title: 'Update When Default Value Changes',
-    category: Category.Basic,
+    category: Category.Data,
   }),
   multiple: Type.Boolean({
     title: 'Multiple',

@@ -36,11 +36,19 @@ type Children = {
   body?: React.ReactElement;
 };
 
+type PopoverWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Popover}`;
+
+declare module '../../types/widget' {
+  interface WidgetOptionsMap {
+    'core/v1/popover': {};
+  }
+}
+
 const emitter = mitt<EvenType>();
 
 export const PopoverWidget = React.forwardRef<
   PopoverWidgetHandler,
-  React.ComponentPropsWithoutRef<React.ComponentType> & WidgetProps
+  React.ComponentPropsWithoutRef<React.ComponentType> & WidgetProps<PopoverWidgetType>
 >((props, ref) => {
   const { spec, path, children } = props;
   const isObjectChildren = children && typeof children === 'object';
@@ -50,7 +58,9 @@ export const PopoverWidget = React.forwardRef<
     () => ({
       ...spec,
       widget:
-        spec.widget === `${CORE_VERSION}/${CoreWidgetName.Popover}` ? '' : spec.widget,
+        spec.widget === `${CORE_VERSION}/${CoreWidgetName.Popover}`
+          ? undefined
+          : spec.widget,
     }),
     [spec]
   );
@@ -162,7 +172,7 @@ export const PopoverWidget = React.forwardRef<
   );
 });
 
-export default implementWidget({
+export default implementWidget<PopoverWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.Popover,

@@ -27,19 +27,19 @@ export const Tooltip = implementRuntimeComponent({
     name: 'tooltip',
     displayName: 'Tooltip',
     exampleProperties,
+    annotations: {
+      category: 'Data Display',
+    },
   },
   spec: {
     properties: TooltipPropsSpec,
     state: TooltipStateSpec,
     methods: {
-      openTooltip: Type.String(),
-      closeTooltip: Type.String(),
+      openTooltip: Type.Object({}),
+      closeTooltip: Type.Object({}),
     },
     slots: {
       content: { slotProps: Type.Object({}) },
-    },
-    annotations: {
-      category: 'Display',
     },
     styleSlots: ['content'],
     events: [],

@@ -4,13 +4,13 @@ import { Category } from '../../constants/category';
 
 export const SkeletonTextPropsSpec = {
   rows: Type.Number(),
-  width: Type.Optional(
-    Type.Union([
-      Type.Number(),
-      Type.String(),
-      Type.Array(Type.Union([Type.Union([Type.Number()]), Type.Union([Type.String()])])),
-    ])
-  ),
+  width: Type.Array(Type.Any(), {
+    widget: 'core/v1/expression',
+    description:
+      `Enter an array, each element of which represents the width of each row from top to bottom.     
+    ` +
+      'For example, if we now have 3 rows, we can use the `[100,200,300]` to represent the width of each row',
+  }),
 };
 
 export const SkeletonImagePropsSpec = {
@@ -28,15 +28,24 @@ export const SkeletonPropsSpec = {
     title: 'Loading',
     category: Category.Basic,
   }),
-  // TODO remove union type
-  image: Type.Union([Type.Boolean(), Type.Object(SkeletonImagePropsSpec)], {
+  image: Type.Boolean({
     title: 'Image Placeholder',
     description: 'Whether to show the picture placeholder',
     category: Category.Basic,
   }),
-  text: Type.Union([Type.Boolean(), Type.Object(SkeletonTextPropsSpec)], {
+  imageProps: Type.Object(SkeletonImagePropsSpec, {
+    title: 'Image Config',
+    category: Category.Basic,
+    conditions: [{ key: 'image', value: true }],
+  }),
+  text: Type.Boolean({
     title: 'Text Placeholder',
     description: 'Whether to show text placeholder',
     category: Category.Basic,
+  }),
+  textProps: Type.Object(SkeletonTextPropsSpec, {
+    title: 'Text Config',
+    category: Category.Basic,
+    conditions: [{ key: 'text', value: true }],
   }),
 };

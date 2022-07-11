@@ -4,8 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PasswordInputPropsSpec as BasePasswordInputPropsSpec } from '../generated/types/PasswordInput';
-import { useEffect, useState, useRef } from 'react';
-import { RefInputType } from '@arco-design/web-react/es/Input/interface';
+import { useStateValue } from 'src/hooks/useStateValue';
 
 const InputPropsSpec = Type.Object({
   ...BasePasswordInputPropsSpec,
@@ -22,6 +21,8 @@ const exampleProperties: Static<typeof InputPropsSpec> = {
   error: false,
   size: 'default',
   visibilityToggle: true,
+  updateWhenDefaultValueChanges: false,
+  defaultValue: '',
 };
 
 export const PasswordInput = implementRuntimeComponent({
@@ -32,7 +33,7 @@ export const PasswordInput = implementRuntimeComponent({
     displayName: 'Password Input',
     exampleProperties,
     annotations: {
-      category: 'Input',
+      category: 'Data Entry',
     },
   },
   spec: {
@@ -44,40 +45,38 @@ export const PasswordInput = implementRuntimeComponent({
     events: ['onChange', 'onBlur', 'onFocus', 'onPressEnter'],
   },
 })(props => {
-  const { getElement, customStyle, callbackMap, mergeState } = props;
-  const { ...cProps } = getComponentProps(props);
-  const [value, setValue] = useState('');
-  const ref = useRef<RefInputType | null>(null);
-
-  useEffect(() => {
-    const ele = ref.current?.dom;
-    if (getElement && ele) {
-      getElement(ele);
-    }
-  }, [getElement, ref]);
+  const { elementRef, customStyle, callbackMap, mergeState } = props;
+  const { defaultValue, updateWhenDefaultValueChanges, ...cProps } =
+    getComponentProps(props);
+  const [value, setValue] = useStateValue(
+    defaultValue,
+    mergeState,
+    updateWhenDefaultValueChanges
+  );
 
   return (
-    <BasePasswordInput
-      ref={ref}
-      className={css(customStyle?.input)}
-      value={value}
-      onChange={value => {
-        setValue(value);
-        mergeState({
-          value,
-        });
-        callbackMap?.onChange?.();
-      }}
-      onBlur={() => {
-        callbackMap?.onBlur?.();
-      }}
-      onFocus={() => {
-        callbackMap?.onFocus?.();
-      }}
-      onPressEnter={() => {
-        callbackMap?.onPressEnter?.();
-      }}
-      {...cProps}
-    />
+    <div ref={elementRef}>
+      <BasePasswordInput
+        className={css(customStyle?.input)}
+        value={value}
+        onChange={value => {
+          setValue(value);
+          mergeState({
+            value,
+          });
+          callbackMap?.onChange?.();
+        }}
+        onBlur={() => {
+          callbackMap?.onBlur?.();
+        }}
+        onFocus={() => {
+          callbackMap?.onFocus?.();
+        }}
+        onPressEnter={() => {
+          callbackMap?.onPressEnter?.();
+        }}
+        {...cProps}
+      />
+    </div>
   );
 });

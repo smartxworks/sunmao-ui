@@ -23,6 +23,7 @@ export const TabsPropsSpec = {
     {
       title: 'Tabs',
       category: Category.Basic,
+      widget: 'core/v1/array',
       widgetOptions: {
         displayedKeys: ['title'],
       },

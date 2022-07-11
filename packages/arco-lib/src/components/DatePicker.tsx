@@ -74,7 +74,7 @@ export const DatePicker = implementRuntimeComponent({
     displayName: 'DatePicker',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Entry',
     },
   },
   spec: {

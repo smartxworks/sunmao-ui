@@ -27,7 +27,7 @@ export const Avatar = implementRuntimeComponent({
     displayName: 'Avatar',
     exampleProperties,
     annotations: {
-      category: 'Display',
+      category: 'Data Display',
     },
   },
   spec: {

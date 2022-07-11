@@ -1,7 +1,4 @@
-@import 'react-grid-layout/css/styles.css';
 @import 'react-resizable/css/styles.css';
-
-@import '@sunmao-ui/arco-lib/dist/index.css';
 
 @import 'codemirror/addon/fold/foldgutter.css';
 @import 'codemirror/lib/codemirror.css';

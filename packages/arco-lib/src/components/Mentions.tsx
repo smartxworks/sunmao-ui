@@ -32,6 +32,9 @@ export const Mentions = implementRuntimeComponent({
     name: 'mentions',
     displayName: 'Mentions',
     exampleProperties,
+    annotations: {
+      category: 'Data Entry',
+    },
   },
   spec: {
     properties: MentionsPropsSpec,
@@ -58,7 +61,7 @@ export const Mentions = implementRuntimeComponent({
       mergeState({ value });
       callbackMap?.onChange?.();
     },
-    [callbackMap, mergeState]
+    [callbackMap, mergeState, setValue]
   );
 
   return (

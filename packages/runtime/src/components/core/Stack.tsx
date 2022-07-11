@@ -77,16 +77,13 @@ export default implementRuntimeComponent({
     name: 'stack',
     displayName: 'Stack',
     description: '',
-    isDraggable: true,
-    isResizable: false,
     exampleProperties: {
       spacing: 12,
       direction: 'horizontal',
       align: 'auto',
-      wrap: '',
-      justify: '',
+      wrap: false,
+      justify: 'flex-start',
     },
-    exampleSize: [4, 1],
     annotations: {
       category: 'Layout',
     },

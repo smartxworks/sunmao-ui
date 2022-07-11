@@ -5,7 +5,8 @@ import { Category } from '../../constants/category';
 export const SelectPropsSpec = {
   defaultValue: Type.String({
     title: 'Default Value',
-    category: Category.Data,
+    category: Category.Basic,
+    weight: 7,
   }),
   options: Type.Array(
     Type.Object({
@@ -23,10 +24,12 @@ export const SelectPropsSpec = {
     }),
     {
       title: 'Options',
-      category: Category.Data,
+      category: Category.Basic,
+      widget: 'core/v1/array',
       widgetOptions: {
         displayedKeys: ['value'],
       },
+      weight: 8,
     }
   ),
   updateWhenDefaultValueChanges: Type.Boolean({
@@ -36,7 +39,7 @@ export const SelectPropsSpec = {
   }),
   multiple: Type.Boolean({
     title: 'Multiple',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   labelInValue: Type.Boolean({
     title: 'Label In Value',
@@ -46,7 +49,6 @@ export const SelectPropsSpec = {
   placeholder: Type.String({
     title: 'Placeholder',
     category: Category.Basic,
-    weight: 5,
   }),
   bordered: Type.Boolean({
     title: 'Bordered',
@@ -58,12 +60,12 @@ export const SelectPropsSpec = {
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
     weight: 4,
   }),
   loading: Type.Boolean({
     title: 'Loading',
-    category: Category.Basic,
+    category: Category.Behavior,
     weight: 3,
   }),
   showSearch: Type.Boolean({

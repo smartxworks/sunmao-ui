@@ -1,4 +1,4 @@
-import { isObject, isArray } from 'lodash-es';
+import { isObject, isArray } from 'lodash';
 
 export function traverse(value: unknown, seen: Set<unknown> = new Set()) {
   if (!isObject(value) || seen.has(value)) return value;
@@ -26,4 +26,19 @@ export function traverse(value: unknown, seen: Set<unknown> = new Set()) {
 
 export function isPromise(value: object): value is Promise<unknown> {
   return value instanceof Promise;
+}
+
+export function shallowCompare(obj1: any, obj2: any) {
+  if (typeof obj1 === 'object' && typeof obj2 === 'object') {
+    if (Object.keys(obj1).length !== Object.keys(obj2).length) return false;
+    for (const key in obj1) {
+      if (key in obj2 && obj1[key] === obj2[key]) {
+        continue;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
+  return obj1 === obj2;
 }

@@ -7,8 +7,8 @@ export const ModalPropsSpec = {
     category: Category.Basic,
     weight: 10,
   }),
-  defaultOpen:Type.Boolean({
-    title:'Default Open',
+  defaultOpen: Type.Boolean({
+    title: 'Default Open',
     category: Category.Behavior,
   }),
   mask: Type.Boolean({
@@ -31,19 +31,19 @@ export const ModalPropsSpec = {
   }),
   closable: Type.Boolean({
     title: 'Closable',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   maskClosable: Type.Boolean({
     title: 'Mask Closable',
     description: 'Whether enable click mask to close Modal',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   confirmLoading: Type.Boolean({
     title: 'Confirm Loading',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
-  unmountOnExit:Type.Boolean({
-    title:'Destroy On Hide',
-    category: Category.Behavior
+  unmountOnExit: Type.Boolean({
+    title: 'Destroy On Hide',
+    category: Category.Behavior,
   }),
 };

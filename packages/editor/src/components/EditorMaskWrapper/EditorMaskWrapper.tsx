@@ -1,9 +1,9 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { EditorServices } from '../../types';
 import { observer } from 'mobx-react-lite';
 import { Box } from '@chakra-ui/react';
 import { EditorMask } from './EditorMask';
-import { throttle } from 'lodash-es';
+import { throttle } from 'lodash';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { genOperation } from '../../operations';
 
@@ -14,7 +14,7 @@ type Props = {
 export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const { children, services } = props;
   const { editorStore, eventBus, registry } = services;
-  const { setSelectedComponentId, setExplorerMenuTab } = editorStore;
+  const { setSelectedComponentId, setExplorerMenuTab, selectedComponentId } = editorStore;
   const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
   const [scrollOffset, setScrollOffset] = useState<[number, number]>([0, 0]);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -66,25 +66,24 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
     );
   };
 
-  const onClickIframe = useCallback(() => {
-    if (document.activeElement?.tagName === 'IFRAME') {
-      setSelectedComponentId(document.activeElement?.getAttribute('title') || '');
-      setTimeout(() => {
-        window.focus();
-      });
-    }
-  }, [setSelectedComponentId]);
-
-  // can't capture the iframe click event
-  // use window's blur event to detect whether clicking the iframes
   useEffect(() => {
-    window.focus();
-    window.addEventListener('blur', onClickIframe);
+    // can't capture the iframe click event
+    // use `setInterval` to check whether the iframe is selected
+    const timer = setInterval(function () {
+      if (document.activeElement?.tagName === 'IFRAME') {
+        const currentSelectedComponentId =
+          document.activeElement?.getAttribute('title') || '';
+
+        if (selectedComponentId !== currentSelectedComponentId) {
+          setSelectedComponentId(currentSelectedComponentId);
+        }
+      }
+    }, 100);
 
     return () => {
-      window.removeEventListener('blur', onClickIframe);
+      clearInterval(timer);
     };
-  }, [onClickIframe]);
+  });
 
   const mousePositionWithOffset: [number, number] = [
     mousePosition[0] + scrollOffset[0],

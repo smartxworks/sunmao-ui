@@ -3,12 +3,12 @@ import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
 
 export const DropdownPropsSpec = {
-  dropdownType: StringUnion(['default', 'button'], {
-    title: 'Type',
-    category: Category.Basic,
-  }),
   text: Type.String({
     title: 'Text',
+    category: Category.Basic,
+  }),
+  dropdownType: StringUnion(['default', 'button'], {
+    title: 'Type',
     category: Category.Basic,
   }),
   position: StringUnion(['top', 'tl', 'tr', 'bottom', 'bl', 'br'], {
@@ -17,19 +17,19 @@ export const DropdownPropsSpec = {
   }),
   trigger: StringUnion(['hover', 'click'], {
     title: 'Trigger',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   defaultPopupVisible: Type.Boolean({
     title: 'Default Visible',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   autoAlignPopupWidth: Type.Boolean({
     title: 'Auto Align Popup Width',
-    category: Category.Basic,
+    category: Category.Behavior,
   }),
   unmountOnExit: Type.Boolean({
     title: 'Destroy On Hide',
@@ -47,7 +47,10 @@ export const DropdownPropsSpec = {
     {
       title: 'List',
       category: Category.Basic,
-      widget: 'core/v1/expression',
+      widget: 'core/v1/array',
+      widgetOptions: {
+        displayedKeys: ['label'],
+      },
       weight: 10,
     }
   ),

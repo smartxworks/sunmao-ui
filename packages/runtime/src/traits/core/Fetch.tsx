@@ -1,8 +1,7 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import {
   consoleWarn,
   ConsoleType,
-  EventHandlerSpec,
   EventCallBackHandlerSpec,
   CoreTraitName,
   CORE_VERSION,
@@ -36,6 +35,7 @@ export const FetchTraitPropertiesSpec = Type.Object({
     Type.Object({
       json: Type.String(),
       formData: Type.String(),
+      raw: Type.String(),
     }),
     { title: 'Body Type' }
   ),
@@ -112,6 +112,9 @@ export default implementRuntimeTrait({
       let reqBody: string | FormData = '';
 
       switch (bodyType) {
+        case 'raw':
+          reqBody = body.value || '';
+          break;
         case 'json':
           reqBody = JSON.stringify(body);
           break;
@@ -125,7 +128,7 @@ export default implementRuntimeTrait({
 
       // fetch data
       fetch(url, {
-        method,
+        method: method.toUpperCase(),
         headers,
         body: method === 'get' ? undefined : reqBody,
       }).then(
@@ -151,15 +154,10 @@ export default implementRuntimeTrait({
                 error: undefined,
               },
             });
-            const rawOnComplete = trait.properties.onComplete as Static<
-              typeof FetchTraitPropertiesSpec
-            >['onComplete'];
-            rawOnComplete?.forEach((rawHandler, index) => {
-              generateCallback(
-                onComplete![index],
-                rawHandler as Static<typeof EventHandlerSpec>,
-                services
-              )();
+            const rawOnComplete = trait.properties.onComplete;
+
+            onComplete?.forEach((_, index) => {
+              generateCallback(onComplete[index], rawOnComplete, index, services)();
             });
           } else {
             // TODO: Add FetchError class and remove console info
@@ -173,15 +171,10 @@ export default implementRuntimeTrait({
                 error,
               },
             });
-            const rawOnError = trait.properties.onError as Static<
-              typeof FetchTraitPropertiesSpec
-            >['onError'];
-            rawOnError?.forEach((rawHandler, index) => {
-              generateCallback(
-                onError![index],
-                rawHandler as Static<typeof EventHandlerSpec>,
-                services
-              )();
+            const rawOnError = trait.properties.onError;
+
+            onError?.forEach((_, index) => {
+              generateCallback(onError[index], rawOnError, index, services)();
             });
           }
         },
@@ -197,15 +190,10 @@ export default implementRuntimeTrait({
               error: error.toString(),
             },
           });
-          const rawOnError = trait.properties.onError as Static<
-            typeof FetchTraitPropertiesSpec
-          >['onError'];
-          rawOnError?.forEach((rawHandler, index) => {
-            generateCallback(
-              onError![index],
-              rawHandler as Static<typeof EventHandlerSpec>,
-              services
-            )();
+          const rawOnError = trait.properties.onError;
+
+          onError?.forEach((_, index) => {
+            generateCallback(onError[index], rawOnError, index, services)();
           });
         }
       );
