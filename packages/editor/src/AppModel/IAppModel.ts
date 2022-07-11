@@ -99,7 +99,8 @@ export interface IComponentModel {
   toSchema(): ComponentSchema;
   updateComponentProperty: (property: string, value: unknown) => void;
   // move component from old parent to new parent(or top level if parent is undefined).
-  appendTo: (parent?: IComponentModel, slot?: SlotName) => void;
+  appendToSlotFront: (parent: IComponentModel, slot: SlotName) => void;
+  appendToRoot: () => void;
   // move component to the behind of another component in same level
   moveAfter: (after: IComponentModel | null) => IComponentModel;
   // append other component as child of this component

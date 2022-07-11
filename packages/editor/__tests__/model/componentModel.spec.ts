@@ -79,7 +79,7 @@ describe('append to another component', () => {
   const origin = appModel.toSchema();
   const newComponent = appModel.createComponent('core/v1/text' as ComponentType);
   const parent = appModel.getComponentById('vstack1' as any)!;
-  newComponent.appendTo(parent, 'content' as SlotName);
+  newComponent.appendToSlotFront(parent, 'content' as SlotName);
   expect(newComponent.parent).toBe(parent);
   expect(newComponent.parentId).toEqual('vstack1');
   expect(newComponent.parentSlot).toEqual('content');
@@ -120,7 +120,7 @@ describe('append to another component', () => {
     const origin = appModel.toSchema();
     const text1 = appModel.getComponentById('text1' as any)!;
     it('append component to top level', () => {
-      text1.appendTo();
+      text1.appendToRoot();
       const newSchema = appModel.toSchema();
       expect(newSchema[newSchema.length - 1].id).toBe('text1');
       expect(newSchema.length).toBe(origin.length);
