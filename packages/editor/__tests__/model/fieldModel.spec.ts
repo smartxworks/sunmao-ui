@@ -71,6 +71,11 @@ describe('Field test', () => {
     expect(field.refComponentInfos).toEqual({});
   });
 
+  it('get value by path', () => {
+    const field = new FieldModel({ foo: [{}, { bar: { baz: 'Hello, world!' } }] });
+    expect(field.getPropertyByPath('foo.1.bar.baz')?.getValue()).toEqual('Hello, world!');
+  });
+
   it('update array property', () => {
     const field = new FieldModel({ data: ['A', 'B'] });
 

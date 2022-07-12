@@ -112,6 +112,19 @@ export class FieldModel implements IFieldModel {
     return undefined;
   }
 
+  // path is like the param of lodash.get, eg: 'foo.bar.0.value'
+  getPropertyByPath(path: string): FieldModel | undefined {
+    const arr = path.split('.');
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let res: FieldModel | undefined = this;
+    arr.forEach(key => {
+      if (res) {
+        res = res.getProperty(key);
+      }
+    });
+    return res;
+  }
+
   getValue() {
     return this.value;
   }

@@ -140,6 +140,7 @@ export interface IFieldModel {
   rawValue: any;
   update: (value: unknown) => void;
   getProperty: (key: string) => IFieldModel | void;
+  getPropertyByPath: (path: string) => IFieldModel | void;
   getValue: () => unknown | void | IFieldModel;
   traverse: (cb: (f: IFieldModel, key: string) => void) => void;
   // ids of used components in the expression

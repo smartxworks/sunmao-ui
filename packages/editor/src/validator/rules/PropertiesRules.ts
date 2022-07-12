@@ -34,13 +34,13 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     validate.errors!.forEach(error => {
       // todo: detect deep error
       const { instancePath, params } = error;
-      let key = '';
+      let path = '';
       if (instancePath) {
-        key = instancePath.split('/')[1];
+        path = instancePath.split('/').slice(1).join('.');
       } else {
-        key = params.missingProperty;
+        path = params.missingProperty;
       }
-      const fieldModel = properties.getProperty(key);
+      const fieldModel = properties.getPropertyByPath(path);
       // if field is expression, ignore type error
       // fieldModel could be undefiend. if is undefined, still throw error.
       if (get(fieldModel, 'isDynamic') !== true) {
