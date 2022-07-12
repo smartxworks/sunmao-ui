@@ -1,5 +1,5 @@
-import { get, has } from 'lodash';
-import { ExpressionKeywords } from '@sunmao-ui/shared';
+import { cloneDeep, get, has, set } from 'lodash';
+import { ExpressionKeywords, generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
@@ -15,6 +15,8 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     component,
     trait,
     validators,
+    traitIndex,
+    componentIdSpecMap,
   }: PropertiesValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     let validate;
@@ -47,6 +49,17 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
           componentId: component.id,
           property: error.instancePath,
           traitType: trait?.type,
+          traitIndex,
+          fix: () => {
+            const defaultValue = generateDefaultValueFromSpec(
+              componentIdSpecMap[component.id].spec.properties
+            ) as Object;
+            const path = instancePath.split('/').slice(1).join('.');
+
+            const newProperties = cloneDeep(properties.rawValue);
+            set(newProperties, path, get(defaultValue, path));
+            return newProperties;
+          },
         });
       }
     });

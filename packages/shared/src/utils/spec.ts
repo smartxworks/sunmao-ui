@@ -85,7 +85,7 @@ export function generateDefaultValueFromSpec(spec: JSONSchema7): JSONSchema7Type
         ? Array.isArray(spec.items)
           ? getArray(spec.items)
           : isJSONSchema(spec.items)
-          ? []
+          ? [generateDefaultValueFromSpec(spec.items)]
           : null
         : [];
     case spec.type === 'number':
