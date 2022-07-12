@@ -95,10 +95,11 @@ export class SchemaValidator implements ISchemaValidator {
       });
 
       this.traitRules.forEach(rule => {
-        component.traits.forEach(trait => {
+        component.traits.forEach((trait, i) => {
           const r = rule.validate({
             trait,
             component,
+            traitIndex: i,
             ...baseContext,
           });
           if (r.length > 0) {
@@ -125,6 +126,12 @@ export class SchemaValidator implements ISchemaValidator {
   genComponentIdSpecMap(appModel: IAppModel) {
     appModel.traverseTree(c => {
       this.componentIdSpecMap[c.id] = this.registry.getComponentByType(c.type);
+    });
+  }
+
+  fix() {
+    this.result.forEach(r => {
+      r.fix?.();
     });
   }
 
