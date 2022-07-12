@@ -8,7 +8,7 @@ import { watch } from '../../..';
 
 export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function UnmountImplWrapper(props, ref) {
-    const { component: c, services } = props;
+    const { component: c, services, slotFallback } = props;
     const { stateManager, registry } = services;
     const { executeTrait } = useRuntimeFunctions(props);
 
@@ -76,6 +76,10 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
       initSingleComponentState(registry, stateManager, c);
     }
 
-    return !isHidden ? <ImplWrapperMain {...props} ref={ref} /> : null;
+    return !isHidden ? (
+      <ImplWrapperMain {...props} ref={ref} />
+    ) : slotFallback ? (
+      <>{slotFallback}</>
+    ) : null;
   }
 );

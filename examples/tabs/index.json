@@ -70,7 +70,8 @@
                 "container": {
                   "id": "nested_tabs",
                   "slot": "content"
-                }
+                },
+                "ifCondition": "{{ $slot.tabIndex === 0 }}"
               }
             }
           ]
