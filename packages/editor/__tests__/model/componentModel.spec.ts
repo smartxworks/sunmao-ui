@@ -79,7 +79,7 @@ describe('append to another component', () => {
   const origin = appModel.toSchema();
   const newComponent = appModel.createComponent('core/v1/text' as ComponentType);
   const parent = appModel.getComponentById('vstack1' as any)!;
-  newComponent.appendToSlotFront(parent, 'content' as SlotName);
+  newComponent.appendTo(parent, 'content' as SlotName);
   expect(newComponent.parent).toBe(parent);
   expect(newComponent.parentId).toEqual('vstack1');
   expect(newComponent.parentSlot).toEqual('content');
@@ -99,7 +99,7 @@ describe('append to another component', () => {
     });
   });
   it('is in right place in allComponents', () => {
-    expect(appModel.allComponents[2]).toBe(newComponent);
+    expect(appModel.allComponents[4]).toBe(newComponent);
   });
   it('keep immutable after create component', () => {
     const newSchema = appModel.toSchema();
@@ -107,7 +107,7 @@ describe('append to another component', () => {
     expect(origin.length).toBe(newSchema.length - 1);
     expect(origin[0]).toBe(newSchema[0]);
     expect(origin[1]).toBe(newSchema[1]);
-    const newComponentSchema = newSchema[2];
+    const newComponentSchema = newSchema[4];
     expect(newComponentSchema.id).toBe('text10');
     expect(newComponentSchema.traits[0].properties).toEqual({
       container: { id: 'vstack1', slot: 'content' },
@@ -120,7 +120,7 @@ describe('append to another component', () => {
     const origin = appModel.toSchema();
     const text1 = appModel.getComponentById('text1' as any)!;
     it('append component to top level', () => {
-      text1.appendToRoot();
+      text1.appendTo();
       const newSchema = appModel.toSchema();
       expect(newSchema[newSchema.length - 1].id).toBe('text1');
       expect(newSchema.length).toBe(origin.length);

@@ -169,18 +169,21 @@ export class ComponentModel implements IComponentModel {
     return trait;
   }
 
-  appendToSlotFront = (parent: IComponentModel, slot: SlotName) => {
+  appendTo = (parent?: IComponentModel, slot?: SlotName) => {
     // remove from current position
     if (this.parent) {
       this.parent.removeChild(this);
     }
-
+    if (!parent || !slot) {
+      this.appModel.appendChild(this);
+      return;
+    }
     // update parent
     if (!parent.children[slot]) {
       parent.children[slot] = [];
     }
 
-    parent.children[slot].unshift(this);
+    parent.children[slot].push(this);
     parent.appModel._bindComponentToModel(this);
     this.parent = parent;
     this.parentSlot = slot;
@@ -188,10 +191,6 @@ export class ComponentModel implements IComponentModel {
     // update trait
     this.updateSlotTrait(parent.id, slot);
     this._isDirty = true;
-  };
-
-  appendToRoot = () => {
-    this.appModel.appendChild(this);
   };
 
   removeChild(child: IComponentModel) {
