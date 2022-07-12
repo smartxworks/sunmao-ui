@@ -161,7 +161,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       <Impl
         ref={ref}
         key={c.id}
-        {...omit(props, 'slotProps')}
+        {...omit(props, ['slotProps', 'slotFallback'])}
         {...mergedProps}
         slotsElements={slotElements}
         mergeState={mergeState}
