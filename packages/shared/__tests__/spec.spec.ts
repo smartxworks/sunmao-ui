@@ -1,4 +1,5 @@
 import { Type } from '@sinclair/typebox';
+import { AnyTypePlaceholder } from '../src';
 import { generateDefaultValueFromSpec } from '../src/utils/spec';
 
 describe('generateDefaultValueFromSpec function', () => {
@@ -93,5 +94,9 @@ describe('generateDefaultValueFromSpec function', () => {
         type: ['number', 'string'],
       })
     ).toEqual(0);
+  });
+  it('can parse any type', () => {
+    expect(generateDefaultValueFromSpec({})).toEqual('');
+    expect(generateDefaultValueFromSpec({}, true)).toEqual(AnyTypePlaceholder);
   });
 });

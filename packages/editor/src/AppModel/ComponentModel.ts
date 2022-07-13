@@ -4,6 +4,7 @@ import {
   generateDefaultValueFromSpec,
   CORE_VERSION,
   CoreTraitName,
+  AnyTypePlaceholder,
 } from '@sunmao-ui/shared';
 import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
 import { genComponent, genTrait } from './utils';
@@ -315,17 +316,20 @@ export class ComponentModel implements IComponentModel {
   private genStateExample() {
     if (!this.spec) return [];
     const componentStateSpec = this.spec.spec.state;
-    let _temp = generateDefaultValueFromSpec(componentStateSpec) as Record<string, any>;
+    let _temp = generateDefaultValueFromSpec(componentStateSpec, true) as Record<
+      string,
+      any
+    >;
 
     this.traits.forEach(t => {
       // if component has state trait, read state trait key and add it in
       if (DynamicStateTrait.includes(t.type)) {
         const key = t.properties.rawValue.key;
         if (typeof key === 'string') {
-          _temp[key] = '';
+          _temp[key] = AnyTypePlaceholder;
         }
       } else {
-        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state));
+        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state, true));
       }
     });
     this.stateExample = _temp;

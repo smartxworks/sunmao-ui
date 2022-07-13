@@ -15,3 +15,5 @@ export const ExpressionKeywords = [
   GLOBAL_UTIL_METHOD_ID,
   GLOBAL_MODULE_ID,
 ];
+
+export const AnyTypePlaceholder = '__any__';
