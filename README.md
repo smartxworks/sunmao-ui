@@ -6,11 +6,11 @@
 </div>
 
 <p align="center">
-  <img alt="Apache-2.0" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
-  <a href="https://github.com/webzard-io/sunmao-ui/issues">
-    <img src="https://img.shields.io/github/issues/webzard-io/sunmao-ui" alt="GitHub issues">
+  <img alt="Apache-2.0" src="https://img.shields.io/github/license/smartxworks/sunmao-ui"/>
+  <a href="https://github.com/smartxworks/sunmao-ui/issues">
+    <img src="https://img.shields.io/github/issues/smartxworks/sunmao-ui" alt="GitHub issues">
   </a>
-  <img alt="Github Stars" src="https://badgen.net/github/stars/webzard-io/sunmao-ui" />
+  <img alt="Github Stars" src="https://badgen.net/github/stars/smartxworks/sunmao-ui" />
 </p>
 Sunmao is a front-end low-code framework. Through Sunmao, you can easily encapsulate any front-end UI components into low-code component libraries, so as to build your own low-code UI development platform, making front-end development as tight as Sunmao.
 
