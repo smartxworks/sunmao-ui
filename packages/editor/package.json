@@ -3,7 +3,7 @@
   "version": "0.7.1",
   "description": "sunmao-ui editor",
   "author": "sunmao-ui developers",
-  "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
+  "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -25,10 +25,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webzard-io/sunmao-ui.git"
+    "url": "git+https://github.com/smartxworks/sunmao-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/webzard-io/sunmao-ui/issues"
+    "url": "https://github.com/smartxworks/sunmao-ui/issues"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",

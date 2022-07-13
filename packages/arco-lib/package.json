@@ -1,14 +1,14 @@
 {
   "name": "@sunmao-ui/arco-lib",
   "version": "0.3.1",
-  "homepage": "https://github.com/webzard-io/sunmao-ui-arco-lib",
+  "homepage": "https://github.com/smartxworks/sunmao-ui-arco-lib",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webzard-io/sunmao-ui-arco-lib.git"
+    "url": "git+https://github.com/smartxworks/sunmao-ui-arco-lib.git"
   },
   "main": "dist/index.js",
   "module": "dist/esm/index.js",

@@ -6,11 +6,11 @@
 </div>
 
 <p align="center">
-  <img alt="Apache-2.0 License" src="https://img.shields.io/github/license/webzard-io/sunmao-ui"/>
-  <a href="https://github.com/webzard-io/sunmao-ui/issues">
-    <img src="https://img.shields.io/github/issues/webzard-io/sunmao-ui" alt="GitHub issues">
+  <img alt="Apache-2.0 License" src="https://img.shields.io/github/license/smartxworks/sunmao-ui"/>
+  <a href="https://github.com/smartxworks/sunmao-ui/issues">
+    <img src="https://img.shields.io/github/issues/smartxworks/sunmao-ui" alt="GitHub issues">
   </a>
-  <img alt="Github Stars" src="https://badgen.net/github/stars/webzard-io/sunmao-ui" />
+  <img alt="Github Stars" src="https://badgen.net/github/stars/smartxworks/sunmao-ui" />
 </p>
 
 Sunmao 是一个前端低代码框架。通过 Sunmao，您可以轻松将各种前端 UI 组件库和自己开发的前端组件，封装成低代码组件库，从而搭建您自己的低代码 UI 开发工具，使前端开发变得如榫卯般严丝合缝。
