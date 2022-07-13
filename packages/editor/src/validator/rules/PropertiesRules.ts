@@ -1,5 +1,9 @@
 import { cloneDeep, get, has, set } from 'lodash';
-import { ExpressionKeywords, generateDefaultValueFromSpec } from '@sunmao-ui/shared';
+import {
+  ExpressionKeywords,
+  generateDefaultValueFromSpec,
+  AnyTypePlaceholder,
+} from '@sunmao-ui/shared';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
@@ -71,6 +75,21 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
 class ExpressionValidatorRule implements PropertiesValidatorRule {
   kind: 'properties' = 'properties';
 
+  private checkObjHasPath(obj: Record<string, any>, path: string) {
+    const arr = path.split('.');
+    const curr = obj;
+    for (const key of arr) {
+      const value = curr[key];
+      if (value === undefined) {
+        return false;
+      } else if (value === AnyTypePlaceholder) {
+        // if meet AnyTypePlaceholder, return true and skip
+        return true;
+      }
+    }
+    return true;
+  }
+
   validate({
     properties,
     component,
@@ -89,7 +108,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         if (targetComponent) {
           // case 1: id is a component
           for (const path of paths) {
-            if (!has(targetComponent.stateExample, path)) {
+            if (!this.checkObjHasPath(targetComponent.stateExample, path)) {
               results.push({
                 message: `Component '${id}' does not have property '${path}'.`,
                 componentId: component.id,

@@ -5,6 +5,7 @@ import {
   JSONSchema7Type,
   JSONSchema7Object,
 } from 'json-schema';
+import { AnyTypePlaceholder } from '../constants';
 
 export type IntoStringUnion<T> = {
   [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never;
@@ -51,14 +52,22 @@ function getObject(spec: JSONSchema7): JSONSchema7Object {
   return obj;
 }
 
-export function generateDefaultValueFromSpec(spec: JSONSchema7): JSONSchema7Type {
+export function generateDefaultValueFromSpec(
+  spec: JSONSchema7,
+  returnPlaceholderForAny = false
+): JSONSchema7Type {
   if (!spec.type) {
     if ((spec.anyOf && spec.anyOf!.length > 0) || (spec.oneOf && spec.oneOf.length > 0)) {
       const subSpec = (spec.anyOf! || spec.oneOf)[0];
       if (typeof subSpec === 'boolean') return null;
       return generateDefaultValueFromSpec(subSpec);
     }
-    return null;
+
+    // It is any type
+    if (returnPlaceholderForAny) {
+      return AnyTypePlaceholder;
+    }
+    return '';
   }
 
   if (spec.const) {
