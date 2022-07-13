@@ -21,7 +21,7 @@ export type ImplWrapperProps<
   app: RuntimeApplication;
   evalListItem?: boolean;
   slotProps?: unknown;
-  slotFallback?: React.ReactNode;
+  slotContext?: { renderSet: Set<string>; fallback?: React.ReactNode };
 } & ComponentParamsFromApp;
 
 export type ComponentImplProps<

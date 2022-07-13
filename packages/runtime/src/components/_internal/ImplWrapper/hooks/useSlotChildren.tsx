@@ -18,9 +18,19 @@ export function getSlotElements(
     });
 
     slotElements[slot] = function getSlot(slotProps, slotFallback) {
-      return slotChildren.map(child =>
-        React.cloneElement(child, { slotProps, slotFallback })
+      const slotContext = {
+        renderSet: new Set(childrenMap[c.id][slot].map(child => child.id)),
+        parentId: c.id,
+        slotProps: JSON.stringify(slotProps),
+        fallback: slotFallback,
+      };
+      const children = slotChildren.map(child =>
+        React.cloneElement(child, {
+          slotProps,
+          slotContext,
+        })
       );
+      return children;
     };
   }
   return slotElements;
