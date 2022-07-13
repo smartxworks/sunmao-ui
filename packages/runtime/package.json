@@ -41,7 +41,6 @@
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "path-to-regexp": "^6.2.0",
-    "react-markdown": "6.0.3",
     "react-resize-detector": "^6.7.6",
     "react-simple-code-editor": "^0.11.0",
     "use-deep-compare": "^1.1.0",
