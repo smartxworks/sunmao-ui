@@ -23,7 +23,7 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
       prevComponent === nextComponent &&
       // TODO: keep ImplWrapper memorized and get slot props from store
       shallowCompare(prevProps.slotProps, nextProps.slotProps) &&
-      shallowCompare(prevProps.slotFallback, nextProps.slotFallback)
+      shallowCompare(prevProps.slotContext, nextProps.slotContext)
     );
   }
 );

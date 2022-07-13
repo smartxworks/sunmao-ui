@@ -77,6 +77,28 @@
           ]
         },
         {
+          "id": "text_2",
+          "type": "core/v1/text",
+          "properties": {
+            "value": {
+              "raw": "also in tab3",
+              "format": "plain"
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "nested_tabs",
+                  "slot": "content"
+                },
+                "ifCondition": "{{ $slot.tabIndex === 0 }}"
+              }
+            }
+          ]
+        },
+        {
           "id": "nested_tabs",
           "type": "chakra_ui/v1/tabs",
           "properties": {
