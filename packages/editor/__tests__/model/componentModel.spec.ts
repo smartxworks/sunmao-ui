@@ -35,12 +35,12 @@ describe('update component property', () => {
   const appModel = new AppModel(AppSchema.spec.components, registry);
   const origin = appModel.toSchema();
   const text1 = appModel.getComponentById('text1' as any);
-  text1!.updateComponentProperty('value', { raw: 'hello', format: 'md' });
+  text1!.updateComponentProperty('value', { raw: 'hello', format: 'plain' });
   text1!.updateComponentProperty('newProperty', "a property that didn't exist before");
   const newSchema = appModel.toSchema();
 
   it('update component properties', () => {
-    expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'md' });
+    expect(newSchema[5].properties.value).toEqual({ raw: 'hello', format: 'plain' });
   });
 
   it("update a new property that component don't have", () => {

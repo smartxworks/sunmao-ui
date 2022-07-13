@@ -48,7 +48,7 @@ export const ComponentInvalidSchema: ComponentSchema[] = [
     properties: {
       value: {
         raw: false,
-        format: 'md',
+        format: 'plain',
       },
     },
     traits: [],
@@ -88,7 +88,7 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
     properties: {
       text: {
         raw: '{{fetch.data.value}}',
-        format: 'md',
+        format: 'plain',
       },
       isLoading: false,
       colorScheme: 'blue',
@@ -119,7 +119,7 @@ export const ComponentWrongPropertyExpressionSchema: ComponentSchema[] = [
     properties: {
       value: {
         raw: '{{ Math.random2() }}',
-        format: 'md',
+        format: 'plain',
       },
     },
     traits: [],
@@ -147,7 +147,7 @@ export const TraitInvalidSchema: ComponentSchema[] = [
     properties: {
       value: {
         raw: 'hello',
-        format: 'md',
+        format: 'plain',
       },
     },
     traits: [
@@ -163,7 +163,7 @@ export const TraitInvalidSchema: ComponentSchema[] = [
     properties: {
       value: {
         raw: 'hello',
-        format: 'md',
+        format: 'plain',
       },
     },
     traits: [
@@ -196,7 +196,7 @@ export const EventTraitSchema: ComponentSchema[] = [
     properties: {
       text: {
         raw: 'hello',
-        format: 'md',
+        format: 'plain',
       },
       isLoading: false,
       colorScheme: 'blue',
@@ -260,7 +260,7 @@ export const EventTraitTraitMethodSchema: ComponentSchema[] = [
     properties: {
       value: {
         raw: 'hello',
-        format: 'md',
+        format: 'plain',
       },
     },
     traits: [
@@ -276,7 +276,7 @@ export const EventTraitTraitMethodSchema: ComponentSchema[] = [
     properties: {
       text: {
         raw: 'hello',
-        format: 'md',
+        format: 'plain',
       },
       isLoading: false,
       colorScheme: 'blue',
