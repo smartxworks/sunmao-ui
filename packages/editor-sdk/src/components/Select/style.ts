@@ -1,4 +1,54 @@
-import { css } from '@emotion/css';
+import { css, keyframes } from '@emotion/react';
+
+const rcSelectSlideUpIn = keyframes`
+	0% {
+		opacity: 0;
+		transform-origin: 0% 0%;
+	}
+	100% {
+		opacity: 1;
+		transform-origin: 0% 0%;
+	}
+`;
+
+const rcSelectSlideUpOut = keyframes`
+  0% {
+    transform: scaleY(1);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0.8);
+    transform-origin: 0% 0%;
+    opacity: 0;
+  }
+`;
+
+const rcSelectSlideDownIn = keyframes`
+  0% {
+    transform: scaleY(0.8);
+    transform-origin: 100% 100%;
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: 100% 100%;
+    opacity: 1;
+  }
+}`;
+const rcSelectSlideDownOut = keyframes`
+  0% {
+    transform: scaleY(1);
+    transform-origin: 100% 100%;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0.8);
+    transform-origin: 100% 100%;
+    opacity: 0;
+  }
+}`;
+
 export const rcSelectStyle = css`
   .sunmao-select-single .sunmao-select-selector {
     display: flex;
@@ -248,9 +298,6 @@ export const rcSelectStyle = css`
     .sunmao-select-selection-item-remove-icon {
     display: block;
   }
-  .sunmao-select-multiple .sunmao-select-selection-item-remove > .anticon {
-    vertical-align: middle;
-  }
   .sunmao-select-multiple .sunmao-select-selection-item-remove:hover {
     color: rgba(0, 0, 0, 0.75);
   }
@@ -473,16 +520,6 @@ export const rcSelectStyle = css`
   .sunmao-select-arrow .sunmao-select-arrow-icon {
     display: block;
   }
-  .sunmao-select-arrow .anticon {
-    vertical-align: top;
-    transition: transform 0.3s;
-  }
-  .sunmao-select-arrow .anticon > svg {
-    vertical-align: top;
-  }
-  .sunmao-select-arrow .anticon:not(.sunmao-select-suffix) {
-    pointer-events: auto;
-  }
   .sunmao-select-disabled .sunmao-select-arrow {
     cursor: not-allowed;
   }
@@ -548,19 +585,26 @@ export const rcSelectStyle = css`
     padding-top: var(--chakra-space-4);
     padding-bottom: var(--chakra-space-4);
   }
-  .sunmao-select-dropdown.'sunmao'-slide-up-enter.'sunmao'-slide-up-enter-active.sunmao-select-dropdown-placement-bottomLeft,
-  .sunmao-select-dropdown.'sunmao'-slide-up-appear.'sunmao'-slide-up-appear-active.sunmao-select-dropdown-placement-bottomLeft {
-    animation-name: antSlideUpIn;
+
+  .sunmao-select-dropdown.sunmao-slide-up-enter.sunmao-select-dropdown-placement-topLeft,
+  .sunmao-select-dropdown.sunmao-slide-up-enter.sunmao-select-dropdown-placement-topRight,
+  .sunmao-select-dropdown.sunmao-slide-up-appear.sunmao-select-dropdown-placement-topLeft,
+  .sunmao-select-dropdown.sunmao-slide-up-appear.sunmao-select-dropdown-placement-topRight {
+    animation-name: ${rcSelectSlideDownIn};
   }
-  .sunmao-select-dropdown.'sunmao'-slide-up-enter.'sunmao'-slide-up-enter-active.sunmao-select-dropdown-placement-topLeft,
-  .sunmao-select-dropdown.'sunmao'-slide-up-appear.'sunmao'-slide-up-appear-active.sunmao-select-dropdown-placement-topLeft {
-    animation-name: antSlideDownIn;
+  .sunmao-select-dropdown.sunmao-slide-up-enter.sunmao-select-dropdown-placement-bottomLeft,
+  .sunmao-select-dropdown.sunmao-slide-up-enter.sunmao-select-dropdown-placement-bottomRight,
+  .sunmao-select-dropdown.sunmao-slide-up-appear.sunmao-select-dropdown-placement-bottomLeft,
+  .sunmao-select-dropdown.sunmao-slide-up-appear.sunmao-select-dropdown-placement-bottomRight {
+    animation-name: ${rcSelectSlideUpIn};
   }
-  .sunmao-select-dropdown.'sunmao'-slide-up-leave.'sunmao'-slide-up-leave-active.sunmao-select-dropdown-placement-bottomLeft {
-    animation-name: antSlideUpOut;
+  .sunmao-select-dropdown.sunmao-slide-up-leave.sunmao-select-dropdown-placement-topLeft,
+  .sunmao-select-dropdown.sunmao-slide-up-leave.sunmao-select-dropdown-placement-topRight {
+    animation-name: ${rcSelectSlideDownOut};
   }
-  .sunmao-select-dropdown.'sunmao'-slide-up-leave.'sunmao'-slide-up-leave-active.sunmao-select-dropdown-placement-topLeft {
-    animation-name: antSlideDownOut;
+  .sunmao-select-dropdown.sunmao-slide-up-leave.sunmao-select-dropdown-placement-bottomLeft,
+  .sunmao-select-dropdown.sunmao-slide-up-leave.sunmao-select-dropdown-placement-bottomRight {
+    animation-name: ${rcSelectSlideUpOut};
   }
   .sunmao-select-dropdown-hidden {
     display: none;

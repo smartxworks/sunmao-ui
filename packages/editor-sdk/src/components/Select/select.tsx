@@ -8,12 +8,14 @@ import RcSelect, {
 import getIcons from './utils';
 import { rcSelectStyle } from './style';
 import { BaseOptionType, DefaultOptionType } from 'rc-select/lib/Select';
-import { RenderDOMFunc } from 'rc-select/lib/BaseSelect';
+import { Placement, RenderDOMFunc } from 'rc-select/lib/BaseSelect';
 import { cx } from '@emotion/css';
+import { Global } from '@emotion/react';
 
 const prefixCls = 'sunmao-select';
 const defaultRenderEmpty = 'Not Found';
-const defaultGetPopupContainer: RenderDOMFunc = triggerNode => triggerNode;
+const defaultGetPopupContainer: RenderDOMFunc = triggerNode =>
+  document.body || triggerNode.parentElement;
 
 type RawValue = string | number;
 
@@ -46,6 +48,7 @@ export interface SelectMainProps<
   disabled?: boolean;
   mode?: 'multiple' | 'tags';
   bordered?: boolean;
+  placement?: Placement;
 }
 
 const SelectMain = <
@@ -60,6 +63,7 @@ const SelectMain = <
     listHeight = 256,
     listItemHeight = 24,
     showArrow,
+    placement = 'bottomLeft',
     notFoundContent,
     dropdownMatchSelectWidth = true,
     loading,
@@ -84,7 +88,8 @@ const SelectMain = <
   const notFound: React.ReactNode = notFoundContent || defaultRenderEmpty;
 
   return (
-    <div className={rcSelectStyle}>
+    <>
+      <Global styles={rcSelectStyle} />
       <RcSelect
         ref={ref}
         className={cx(className, borderLessCls)}
@@ -92,7 +97,7 @@ const SelectMain = <
         dropdownMatchSelectWidth={dropdownMatchSelectWidth}
         listItemHeight={listItemHeight}
         listHeight={listHeight}
-        direction="ltr"
+        placement={placement}
         inputIcon={suffixIcon}
         clearIcon={clearIcon}
         mode={isMultiple ? mode : undefined}
@@ -103,7 +108,7 @@ const SelectMain = <
         notFoundContent={notFound}
         dropdownClassName={dropdownClassName}
       />
-    </div>
+    </>
   );
 };
 
