@@ -62,7 +62,9 @@ export default implementRuntimeComponent({
     description: 'chakra-ui tooltip',
     displayName: 'Tooltip',
     exampleProperties: {
-      text: 'tooltip',
+      text: {
+        raw: 'tooltip',
+      },
       defaultIsOpen: false,
       placement: 'top',
       shouldWrapChildren: false,
