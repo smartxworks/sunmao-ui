@@ -55,8 +55,12 @@ export default implementRuntimeComponent({
     description: 'chakra_ui dialog',
     exampleProperties: {
       title: 'Dialog',
-      confirmButton: 'Confirm',
-      cancelButton: 'Cancel',
+      confirmButton: {
+        text: 'Confirm',
+      },
+      cancelButton: {
+        text: 'Cancel',
+      },
       disableConfirm: false,
     },
     annotations: {

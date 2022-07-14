@@ -23,30 +23,6 @@ const PropsSpec = Type.Object({
   size: TableSizePropertySpec,
 });
 
-const exampleProperties = {
-  data: [
-    {
-      id: '1',
-      name: 'Bowen Tan',
-    },
-  ],
-  columns: [
-    {
-      key: 'name',
-      title: 'Name',
-      type: 'text',
-      displayValue: '',
-      buttonConfig: {
-        handlers: [],
-      },
-    },
-  ],
-  majorKey: 'id',
-  rowsPerPage: 5,
-  isMultiSelect: false,
-  size: 'md',
-};
-
 export const implementTable = implementRuntimeComponent({
   kind: 'Component',
   version: 'chakra_ui/v1',
@@ -54,7 +30,29 @@ export const implementTable = implementRuntimeComponent({
     name: 'table',
     displayName: 'Table',
     description: 'chakra-ui table',
-    exampleProperties,
+    exampleProperties: {
+      data: [
+        {
+          id: '1',
+          name: 'Bowen Tan',
+        },
+      ],
+      columns: [
+        {
+          key: 'name',
+          title: 'Name',
+          type: 'text',
+          displayValue: '',
+          buttonConfig: {
+            handlers: [],
+          },
+        },
+      ],
+      majorKey: 'id',
+      rowsPerPage: 5,
+      isMultiSelect: false,
+      size: 'md',
+    },
     annotations: {
       category: 'Display',
     },
