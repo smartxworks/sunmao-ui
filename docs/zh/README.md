@@ -72,6 +72,10 @@ Sunmao 的用户分为两种角色，一种是开发者，一种是使用者。
 - [使用者的教程](./user.md)
 - [开发者的教程](./developer.md)
 
+我们还提供了一个项目模板，开箱即用。
+
+- [Sunmao Starter Kit](https://github.com/webzard-io/sunmao-start)
+
 ## 在线 DEMO
 
 [Sunmao Playground](https://sunmao-ui-cloud.vercel.app)
