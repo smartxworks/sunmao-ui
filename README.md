@@ -73,6 +73,10 @@ We have prepared two tutorials for different roles. The user only needs to read 
 - [User's Tutorial](./docs/en/user.md)
 - [Developer's Tutorial](./docs/en/developer.md)
 
+We also provide a project template which is open to use.
+
+- [Sunmao Starter Kit](https://github.com/webzard-io/sunmao-start)
+
 ## Online Demo
 
 [Sunmao Playground](https://sunmao-ui-cloud.vercel.app)
