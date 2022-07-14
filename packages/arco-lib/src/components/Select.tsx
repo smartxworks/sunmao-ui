@@ -57,9 +57,15 @@ export const Select = implementRuntimeComponent({
     },
     styleSlots: ['content', 'dropdownRenderWrap'],
     events: ['onChange', 'onClear', 'onBlur', 'onFocus'],
+    model: {
+      prop: '__value__',
+      events: ['onChange'],
+      state: 'value',
+    },
   },
 })(props => {
   const {
+    __value__,
     getElement,
     slotsElements,
     customStyle,
@@ -76,7 +82,9 @@ export const Select = implementRuntimeComponent({
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    'value',
+    __value__
   );
   const ref = useRef<SelectHandle | null>(null);
 

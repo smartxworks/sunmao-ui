@@ -1,4 +1,8 @@
-import { RuntimeTrait, RuntimeTraitSchema } from '@sunmao-ui/core';
+import {
+  RuntimeTrait,
+  RuntimeTraitSchema,
+  RuntimeComponentSchema,
+} from '@sunmao-ui/core';
 import { UIServices } from './application';
 import { RuntimeFunctions } from './component';
 
@@ -18,6 +22,7 @@ export type TraitImpl<TProperties = any> = (
   props: TProperties &
     RuntimeFunctions<unknown, unknown, any> & {
       trait: RuntimeTraitSchema<TProperties>;
+      component: RuntimeComponentSchema;
       componentId: string;
       services: UIServices;
       evalListItem?: boolean;

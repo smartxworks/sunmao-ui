@@ -21,6 +21,7 @@ import CoreFetch from '../traits/core/Fetch';
 import CoreValidation from '../traits/core/Validation';
 import CoreLocalStorage from '../traits/core/LocalStorage';
 import CoreTransformer from '../traits/core/Transformer';
+import CoreModel from '../traits/core/Model';
 // utilMethods
 import ScrollIntoComponentUtilMethod from '../utilMethods/ScrollIntoComponent';
 
@@ -255,6 +256,7 @@ export function initRegistry(
   registry.registerTrait(CoreValidation);
   registry.registerTrait(CoreLocalStorage);
   registry.registerTrait(CoreTransformer);
+  registry.registerTrait(CoreModel);
 
   registry.registerUtilMethod(ScrollIntoComponentUtilMethod);
 

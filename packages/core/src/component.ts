@@ -16,6 +16,7 @@ type ComponentSpec<
   styleSlots: ReadonlyArray<KStyleSlot>;
   slots: Record<KSlot, SlotSpec>;
   events: ReadonlyArray<KEvent>;
+  model?: { prop: string; events: string[]; state: string };
 };
 
 export type Component<

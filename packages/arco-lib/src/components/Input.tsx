@@ -52,9 +52,15 @@ export const Input = implementRuntimeComponent({
     },
     styleSlots: ['input'],
     events: ['onChange', 'onBlur', 'onFocus', 'onClear', 'onPressEnter'],
+    model: {
+      prop: '__value__',
+      events: ['onChange'],
+      state: 'value',
+    },
   },
 })(props => {
   const {
+    __value__,
     elementRef,
     slotsElements,
     customStyle,
@@ -68,7 +74,9 @@ export const Input = implementRuntimeComponent({
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    'value',
+    __value__
   );
 
   const onChange = useCallback(

@@ -31,6 +31,7 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
       return tImpl({
         ...traitProperty,
         trait,
+        component: c,
         componentId: c.id,
         mergeState,
         subscribeMethods,
@@ -39,7 +40,7 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
         evalListItem,
       });
     },
-    [c.id, evalListItem, mergeState, registry, services, slotProps, subscribeMethods]
+    [c, evalListItem, mergeState, registry, services, slotProps, subscribeMethods]
   );
   return {
     mergeState,
