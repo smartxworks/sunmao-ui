@@ -15,10 +15,6 @@ import {
 } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { useMemo } from 'react';
-import {
-  ModifyComponentPropertiesLeafOperation,
-  ModifyTraitPropertiesLeafOperation,
-} from '../operations/leaf';
 import { EditorServices } from '../types';
 import { Pagination } from './Pagination';
 
@@ -39,25 +35,6 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
     return validateResult
       .slice(currPage * PageSize, currPage * PageSize + PageSize)
       .map((result, i) => {
-        const onFix = (newProperties: any) => {
-          if (result.traitType && result.traitIndex) {
-            const operation = new ModifyTraitPropertiesLeafOperation(services.registry, {
-              componentId: result.componentId,
-              traitIndex: result.traitIndex,
-              properties: newProperties,
-            });
-            services.appModelManager.do(operation);
-          } else {
-            const operation = new ModifyComponentPropertiesLeafOperation(
-              services.registry,
-              {
-                componentId: result.componentId,
-                properties: newProperties,
-              }
-            );
-            services.appModelManager.do(operation);
-          }
-        };
         return (
           <Tr key={i}>
             <Td
@@ -70,22 +47,10 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
             <Td>{result.traitType || '-'}</Td>
             <Td>{result.property || '-'}</Td>
             <Td>{result.message}</Td>
-            <Td>
-              {result.fix ? (
-                <button onClick={() => onFix(result.fix?.())}>fix</button>
-              ) : undefined}
-            </Td>
           </Tr>
         );
       });
-  }, [
-    currPage,
-    isCollapsed,
-    services.appModelManager,
-    services.registry,
-    setSelectedComponentId,
-    validateResult,
-  ]);
+  }, [currPage, isCollapsed, setSelectedComponentId, validateResult]);
 
   const savedBadge = useMemo(() => {
     return <Badge colorScheme="green">Saved</Badge>;
@@ -149,7 +114,6 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
               <Th>Trait Type</Th>
               <Th>Property</Th>
               <Th>Message</Th>
-              <Th>Fix</Th>
             </Tr>
           </Thead>
           <Tbody>{errorItems}</Tbody>
