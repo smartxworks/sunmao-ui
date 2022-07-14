@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="./docs/images/logo.png" alt="logo" width="200"  />
+  <a href='https://sunmao-ui.com' target='_blank'>
+    <img src="./docs/images/logo.png" alt="logo" width="200"  />
+  </a>
 </div>
 <div align="center">
   <h1>Sunmao</h1>
@@ -11,10 +13,20 @@
     <img src="https://img.shields.io/github/issues/smartxworks/sunmao-ui" alt="GitHub issues">
   </a>
   <img alt="Github Stars" src="https://badgen.net/github/stars/smartxworks/sunmao-ui" />
+  <a href="https://join.slack.com/t/sunmao/shared_invite/zt-1cgk81ebm-DyG9p2D5GNFS6vtbQwWj7A">
+    <img src="https://img.shields.io/badge/slack-@sunmao-purple.svg?logo=slack" alt="Join the chat at Slack">
+  </a>
 </p>
-Sunmao is a front-end low-code framework. Through Sunmao, you can easily encapsulate any front-end UI components into low-code component libraries, so as to build your own low-code UI development platform, making front-end development as tight as Sunmao.
+
+Sunmao(榫卯 /suən mɑʊ/) is a front-end low-code framework. Through Sunmao, you can easily encapsulate any front-end UI components into low-code component libraries, so as to build your own low-code UI development platform, making front-end development as tight as Sunmao.
 
 [中文](./docs/zh/README.md)
+
+## DEMO
+
+Sunmao‘s website is developed with Sunmao，look here：[Sunmao 官网](https://sunmao-ui.com/dev.html)
+
+We also provide an open-to-use template：[Sunmao Starter Kit](https://github.com/webzard-io/sunmao-start)
 
 ## Why Sunmao?
 
@@ -35,6 +47,19 @@ Both the UI component library itself and the low-code editor support custom exte
 You are in type safety both when developing Sunmao components and when using the Sunmao editor. Sunmao heavily uses Typescript and JSON schema for a great type system.
 
 For more details, read [Sunmao: A truly extensible low-code UI framework](./docs/en/what-is-sunmao.md).
+
+## Tutorial
+
+Sunmao users are divided into two roles, one is a developer and the other is a user.
+
+The responsibilities of developers are similar to those of common front-end developers. They are responsible for developing UI components and encapsulating common UI components to Sunmao components. Developers need to write code to implement the logic of the component.
+
+The user's responsibility is to use the Sunmao components encapsulated by developers to build front-end applications in the Sunmao low-code editor. Users do not need front-end knowledge and programming skills. They can complete application construction only through UI interaction.
+
+We have prepared two tutorials for different roles. The user only needs to read the user's tutorial, but the developer has to read both.
+
+- [User's Tutorial](./docs/en/user.md)
+- [Developer's Tutorial](./docs/en/developer.md)
 
 ## local development
 
@@ -59,23 +84,6 @@ yarn
 ```
 
 > When you run the runtime or editor locally, if you modify the code of other packages, you must rebuild the modified package, otherwise, the runtime and editor will still run the old code.
-
-## Tutorial
-
-Sunmao users are divided into two roles, one is a developer and the other is a user.
-
-The responsibilities of developers are similar to those of common front-end developers. They are responsible for developing UI components and encapsulating common UI components to Sunmao components. Developers need to write code to implement the logic of the component.
-
-The user's responsibility is to use the Sunmao components encapsulated by developers to build front-end applications in the Sunmao low-code editor. Users do not need front-end knowledge and programming skills. They can complete application construction only through UI interaction.
-
-We have prepared two tutorials for different roles. The user only needs to read the user's tutorial, but the developer has to read both.
-
-- [User's Tutorial](./docs/en/user.md)
-- [Developer's Tutorial](./docs/en/developer.md)
-
-## Online Demo
-
-[Sunmao Playground](https://sunmao-ui-cloud.vercel.app)
 
 ## License
 
