@@ -17,8 +17,20 @@ export function getSlotElements(
       return <ImplWrapper key={child.id} {...props} component={child} />;
     });
 
-    slotElements[slot] = function getSlot(slotProps) {
-      return slotChildren.map(child => React.cloneElement(child, { slotProps }));
+    slotElements[slot] = function getSlot(slotProps, slotFallback) {
+      const slotContext = {
+        renderSet: new Set(childrenMap[c.id][slot].map(child => child.id)),
+        parentId: c.id,
+        slotProps: JSON.stringify(slotProps),
+        fallback: slotFallback,
+      };
+      const children = slotChildren.map(child =>
+        React.cloneElement(child, {
+          slotProps,
+          slotContext,
+        })
+      );
+      return children;
     };
   }
   return slotElements;
