@@ -1,7 +1,7 @@
 import {
   TraitInvalidSchema,
   EventTraitSchema,
-  EventTraitTraitMethodSchema,
+  EventTraitMethodSchema,
   DynamicStateTraitSchema,
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
@@ -19,6 +19,18 @@ describe('Validate trait', () => {
     it('detect wrong type', () => {
       expect(result[1].message).toBe(`must be string`);
     });
+    it('detect method on trait', () => {
+      const result = schemaValidator.validate(
+        new AppModel(EventTraitMethodSchema, registry)
+      );
+      expect(result.length).toBe(0);
+    });
+    it('detect dynamic state on trait', () => {
+      const result = schemaValidator.validate(
+        new AppModel(DynamicStateTraitSchema, registry)
+      );
+      expect(result.length).toBe(0);
+    });
   });
 
   describe('validate event trait', () => {
@@ -27,7 +39,7 @@ describe('Validate trait', () => {
       expect(result[0].message).toBe(`Component does not have event: change.`);
     });
     it('detect missing target', () => {
-      expect(result[1].message).toBe(`Event target component is not exist: dialog1.`);
+      expect(result[1].message).toBe(`Event target component does not exist: dialog1.`);
     });
     it('detect missing method', () => {
       expect(result[2].message).toBe(
@@ -37,17 +49,8 @@ describe('Validate trait', () => {
     it('detect wrong method parameters', () => {
       expect(result[3].message).toBe(`must be string`);
     });
-    it('detect method on trait', () => {
-      const result = schemaValidator.validate(
-        new AppModel(EventTraitTraitMethodSchema, registry)
-      );
-      expect(result.length).toBe(0);
-    });
-    it('detect dynamic state on trait', () => {
-      const result = schemaValidator.validate(
-        new AppModel(DynamicStateTraitSchema, registry)
-      );
-      expect(result.length).toBe(0);
+    it('detect wrong method parameters of util methods', () => {
+      expect(result[4].message).toBe(`must have required property 'componentId'`);
     });
   });
 });

@@ -12,6 +12,7 @@ import {
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
   traits: Record<string, ValidateFunction>;
+  utilMethods: Record<string, ValidateFunction>;
 }
 
 interface BaseValidateContext {
