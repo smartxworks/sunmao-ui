@@ -95,10 +95,11 @@ export class SchemaValidator implements ISchemaValidator {
       });
 
       this.traitRules.forEach(rule => {
-        component.traits.forEach(trait => {
+        component.traits.forEach((trait, i) => {
           const r = rule.validate({
             trait,
             component,
+            traitIndex: i,
             ...baseContext,
           });
           if (r.length > 0) {
@@ -128,6 +129,12 @@ export class SchemaValidator implements ISchemaValidator {
     });
   }
 
+  fix() {
+    this.result.forEach(r => {
+      r.fix?.();
+    });
+  }
+
   private initAjv() {
     this.ajv = new Ajv({})
       .addKeyword('kind')
@@ -138,11 +145,13 @@ export class SchemaValidator implements ISchemaValidator {
       .addKeyword('widgetOptions')
       .addKeyword('conditions')
       .addKeyword('name')
-      .addKeyword('isComponentId');
+      .addKeyword('isComponentId')
+      .addKeyword('defaultValue');
 
     this.validatorMap = {
       components: {},
       traits: {},
+      utilMethods: {},
     };
     this.registry.getAllComponents().forEach(c => {
       this.validatorMap.components[`${c.version}/${c.metadata.name}`] = this.ajv.compile(
@@ -152,6 +161,11 @@ export class SchemaValidator implements ISchemaValidator {
     this.registry.getAllTraits().forEach(t => {
       this.validatorMap.traits[`${t.version}/${t.metadata.name}`] = this.ajv.compile(
         t.spec.properties
+      );
+    });
+    this.registry.getAllUtilMethods().forEach(t => {
+      this.validatorMap.utilMethods[`${t.version}/${t.metadata.name}`] = this.ajv.compile(
+        t.spec.parameters
       );
     });
   }

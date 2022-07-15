@@ -18,6 +18,8 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
     trait,
     component,
     ajv,
+    validators,
+    traitIndex,
   }: TraitValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     if (trait.type !== `${CORE_VERSION}/${CoreTraitName.Event}`) {
@@ -31,7 +33,16 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         method: { name: methodName, parameters },
       } = handler;
 
-      if (!component.events.includes(eventName as EventName)) {
+      if (!eventName) {
+        results.push({
+          message: `Event is empty.`,
+          componentId: component.id,
+          traitType: trait.type,
+          property: `/handlers/${i}/type`,
+        });
+      }
+
+      if (eventName && !component.events.includes(eventName as EventName)) {
         results.push({
           message: `Component does not have event: ${eventName}.`,
           componentId: component.id,
@@ -40,52 +51,98 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         });
       }
 
-      // TODO: util methods has no method schema to check the parameters, so now temporally skip validation
-      if (isExpression(targetId) || targetId === GLOBAL_UTIL_METHOD_ID) {
-        return;
-      }
-
-      const targetComponent = appModel.getComponentById(targetId as ComponentId);
-      if (!targetComponent) {
+      if (!targetId) {
         results.push({
-          message: `Event target component is not exist: ${targetId}.`,
+          message: `Target component Id is empty.`,
           componentId: component.id,
           traitType: trait.type,
           property: `/handlers/${i}/componentId`,
         });
-        return;
+        return results;
       }
 
-      const method = targetComponent.methods.find(m => m.name === methodName);
-      if (!method) {
+      if (!methodName) {
         results.push({
-          message: `Event target component does not have method: ${methodName}.`,
+          message: `Method is empty.`,
           componentId: component.id,
           traitType: trait.type,
           property: `/handlers/${i}/method/name`,
         });
-        return;
+        return results;
       }
 
-      if (method.parameters && !ajv.validate(method.parameters, parameters)) {
-        ajv.errors!.forEach(error => {
-          if (error.keyword === 'type') {
-            const { instancePath } = error;
-            const path = instancePath.split('/')[1];
-            const value = trait.rawProperties[path];
-
-            // if value is an expression, skip it
-            if (isExpression(value)) {
-              return;
-            }
-          }
+      if (targetId === GLOBAL_UTIL_METHOD_ID) {
+        // case 1 : validate UtilMethod
+        const validate = validators.utilMethods[methodName];
+        // check whether util method exists
+        if (!validate) {
           results.push({
-            message: error.message || '',
+            message: `$utils does not have method: ${methodName}.`,
             componentId: component.id,
             traitType: trait.type,
-            property: `/handlers/${i}/method/parameters${error.instancePath}`,
+            property: `/handlers/${i}/method/name`,
           });
-        });
+        }
+        // check whether util method properties type
+        const valid = validate(parameters);
+        if (!valid) {
+          validate.errors!.forEach(error => {
+            results.push({
+              message: error.message || '',
+              componentId: component.id,
+              property: error.instancePath,
+              traitType: trait?.type,
+              traitIndex,
+            });
+          });
+        }
+      } else {
+        // case 2 : validate component method
+        const targetComponent = appModel.getComponentById(targetId as ComponentId);
+
+        // check whether component exists
+        if (!targetComponent) {
+          results.push({
+            message: `Event target component does not exist: ${targetId}.`,
+            componentId: component.id,
+            traitType: trait.type,
+            property: `/handlers/${i}/componentId`,
+          });
+          return results;
+        }
+
+        // check whether component method exists
+        const method = targetComponent.methods.find(m => m.name === methodName);
+        if (!method) {
+          results.push({
+            message: `Event target component does not have method: ${methodName}.`,
+            componentId: component.id,
+            traitType: trait.type,
+            property: `/handlers/${i}/method/name`,
+          });
+          return results;
+        }
+        // check component method properties type
+        if (method.parameters && !ajv.validate(method.parameters, parameters)) {
+          ajv.errors!.forEach(error => {
+            if (error.keyword === 'type') {
+              const { instancePath } = error;
+              const path = instancePath.split('/')[1];
+              const value = trait.rawProperties[path];
+
+              // if value is an expression, skip it
+              if (isExpression(value)) {
+                return;
+              }
+            }
+            results.push({
+              message: error.message || '',
+              componentId: component.id,
+              traitType: trait.type,
+              property: `/handlers/${i}/method/parameters${error.instancePath}`,
+            });
+          });
+        }
       }
     });
 
@@ -93,6 +150,4 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
   }
 }
 
-export const TraitRules = [
-  new EventHandlerValidatorRule(),
-];
+export const TraitRules = [new EventHandlerValidatorRule()];

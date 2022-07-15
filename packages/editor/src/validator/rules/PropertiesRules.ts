@@ -1,4 +1,9 @@
-import { get, has } from 'lodash';
+import { cloneDeep, get, has, set } from 'lodash';
+import {
+  ExpressionKeywords,
+  generateDefaultValueFromSpec,
+  AnyTypePlaceholder,
+} from '@sunmao-ui/shared';
 import { ComponentId, ModuleId } from '../../AppModel/IAppModel';
 import {
   PropertiesValidatorRule,
@@ -14,6 +19,8 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     component,
     trait,
     validators,
+    traitIndex,
+    componentIdSpecMap,
   }: PropertiesValidateContext): ValidateErrorResult[] {
     const results: ValidateErrorResult[] = [];
     let validate;
@@ -31,13 +38,13 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
     validate.errors!.forEach(error => {
       // todo: detect deep error
       const { instancePath, params } = error;
-      let key = '';
+      let path = '';
       if (instancePath) {
-        key = instancePath.split('/')[1];
+        path = instancePath.split('/').slice(1).join('.');
       } else {
-        key = params.missingProperty;
+        path = params.missingProperty;
       }
-      const fieldModel = properties.getProperty(key);
+      const fieldModel = properties.getPropertyByPath(path);
       // if field is expression, ignore type error
       // fieldModel could be undefiend. if is undefined, still throw error.
       if (get(fieldModel, 'isDynamic') !== true) {
@@ -46,6 +53,17 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
           componentId: component.id,
           property: error.instancePath,
           traitType: trait?.type,
+          traitIndex,
+          fix: () => {
+            const defaultValue = generateDefaultValueFromSpec(
+              componentIdSpecMap[component.id].spec.properties
+            ) as Object;
+            const path = instancePath.split('/').slice(1).join('.');
+
+            const newProperties = cloneDeep(properties.rawValue);
+            set(newProperties, path, get(defaultValue, path));
+            return newProperties;
+          },
         });
       }
     });
@@ -56,6 +74,21 @@ class PropertySchemaValidatorRule implements PropertiesValidatorRule {
 
 class ExpressionValidatorRule implements PropertiesValidatorRule {
   kind: 'properties' = 'properties';
+
+  private checkObjHasPath(obj: Record<string, any>, path: string) {
+    const arr = path.split('.');
+    const curr = obj;
+    for (const key of arr) {
+      const value = curr[key];
+      if (value === undefined) {
+        return false;
+      } else if (value === AnyTypePlaceholder) {
+        // if meet AnyTypePlaceholder, return true and skip
+        return true;
+      }
+    }
+    return true;
+  }
 
   validate({
     properties,
@@ -75,7 +108,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         if (targetComponent) {
           // case 1: id is a component
           for (const path of paths) {
-            if (!has(targetComponent.stateExample, path)) {
+            if (!this.checkObjHasPath(targetComponent.stateExample, path)) {
               results.push({
                 message: `Component '${id}' does not have property '${path}'.`,
                 componentId: component.id,
@@ -104,8 +137,11 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         } else if (dependencyNames.includes(id)) {
           // case 4: id is from dependency
           // do nothing
+        } else if (ExpressionKeywords.includes(id)) {
+          // case 5: id is from expression keywords
+          // do nothing
         } else {
-          // case 5: id doesn't exist
+          // case 6: id doesn't exist
           results.push({
             message: `Cannot find '${id}' in store or window.`,
             componentId: component.id,
