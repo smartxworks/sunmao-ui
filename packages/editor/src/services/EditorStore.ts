@@ -17,14 +17,14 @@ import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { isEqual } from 'lodash';
 import { resolveApplicationComponents } from '../utils/resolveApplicationComponents';
 import { AppModelManager } from '../operations/AppModelManager';
+import type { Metadata } from '@sunmao-ui/core/lib/metadata';
 
 type EditingTarget = {
   kind: 'app' | 'module';
   version: string;
   name: string;
-  spec?: {
-    exampleProperties?: Record<string, any>;
-  };
+  spec?: {};
+  metadata?: Metadata;
 };
 
 export class EditorStore {
@@ -99,7 +99,7 @@ export class EditorStore {
 
           this.setComponents(this.originComponents);
           this.setSelectedComponentId(this.originComponents[0]?.id || '');
-          this.setModuleDependencies(target.spec?.exampleProperties);
+          this.setModuleDependencies(target.metadata?.exampleProperties);
         }
       }
     );
@@ -246,13 +246,15 @@ export class EditorStore {
     kind: 'app' | 'module',
     version: string,
     name: string,
-    spec?: EditingTarget['spec']
+    spec?: EditingTarget['spec'],
+    metadata?: EditingTarget['metadata']
   ) => {
     this.currentEditingTarget = {
       kind,
       name,
       version,
       spec,
+      metadata,
     };
   };
 

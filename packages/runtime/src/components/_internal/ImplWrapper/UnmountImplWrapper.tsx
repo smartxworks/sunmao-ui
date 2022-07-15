@@ -8,7 +8,7 @@ import { watch } from '../../..';
 
 export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function UnmountImplWrapper(props, ref) {
-    const { component: c, services } = props;
+    const { component: c, services, slotContext } = props;
     const { stateManager, registry } = services;
     const { executeTrait } = useRuntimeFunctions(props);
 
@@ -76,6 +76,12 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
       initSingleComponentState(registry, stateManager, c);
     }
 
+    if (isHidden && slotContext) {
+      slotContext.renderSet.delete(c.id);
+      if (slotContext.renderSet.size === 0) {
+        return <>{slotContext.fallback}</>;
+      }
+    }
     return !isHidden ? <ImplWrapperMain {...props} ref={ref} /> : null;
   }
 );

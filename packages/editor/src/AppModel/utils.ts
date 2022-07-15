@@ -6,10 +6,10 @@ export function genComponent(
   type: string,
   id: string,
   properties?: Record<string, unknown>,
-  traits: TraitSchema[] = [],
+  traits: TraitSchema[] = []
 ): ComponentSchema {
   const cImpl = registry.getComponentByType(type);
-  const initProperties = properties || cImpl.metadata.exampleProperties;
+  const initProperties = properties || cImpl.metadata.exampleProperties || {};
   return {
     id,
     type: type,

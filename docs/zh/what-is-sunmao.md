@@ -133,7 +133,7 @@ Web UI 开发已经相当成熟，所以 Sunmao 只是在此基础之上增加�
 
 Sunmao 的可视化编辑器读取所有组件的规范并基于其定义的 JSON schema 自动生成表单。
 
-如果一部分表单需要定制，组件开发者可以实现自定义的编辑器 widget。关于扩展可视化编辑器的设计可以进一步阅读这一[设计文档](https://github.com/webzard-io/Sunmao/issues/313)。
+如果一部分表单需要定制，组件开发者可以实现自定义的编辑器 widget。关于扩展可视化编辑器的设计可以进一步阅读这一[设计文档](https://github.com/smartxworks/sunmao-ui/issues/313)。
 
 ## 保持开放
 

@@ -1,4 +1,4 @@
-import { JSONSchema7Object } from 'json-schema';
+import { JSONSchema7 } from 'json-schema';
 import { parseVersion, Version } from './version';
 import { Metadata } from './metadata';
 import { ComponentSchema } from './application';
@@ -14,10 +14,9 @@ export type Module = {
 };
 
 type ModuleSpec = {
-  properties: JSONSchema7Object;
+  properties: JSONSchema7;
   events: string[];
   stateMap: Record<string, string>;
-  exampleProperties?: Record<string, string>;
 };
 
 // extended runtime
@@ -41,9 +40,16 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
     metadata: {
       name: options.metadata.name,
       description: options.metadata.description || '',
+      exampleProperties: options.metadata.exampleProperties || {},
     },
     spec: {
-      properties: {},
+      // `json-schema-editor` has a readonly root object by default,
+      // it provides two schema formats,array({type:'array'}) and object({type:'object'}).
+      // In sunmao, we only use the object schema, so we need to specify a default value here
+      // and silently fail when root selects array.
+      // This is a bit obscure, so should remove the array type of root from the json-schema-editor later
+      // TODO remove the array type of root from the json-schema-editor
+      properties: { type: 'object' },
       events: [],
       stateMap: {},
       ...options.spec,

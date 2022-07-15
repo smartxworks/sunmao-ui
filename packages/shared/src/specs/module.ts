@@ -24,5 +24,6 @@ export const ModuleRenderSpec = Type.Object(
   },
   {
     category: 'Basic',
+    widget: 'core/v1/module',
   }
 );

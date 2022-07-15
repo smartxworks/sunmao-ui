@@ -59,7 +59,8 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(
           'module',
           module.version,
           module.metadata.name,
-          module.spec
+          module.spec,
+          module.metadata
         );
       };
       const onEditModule = () => {

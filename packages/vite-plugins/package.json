@@ -1,9 +1,9 @@
 {
   "name": "@sunmao-ui/vite-plugins",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "vite plugins for sunmao-ui",
   "author": "sunmao-ui developers",
-  "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
+  "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webzard-io/sunmao-ui.git"
+    "url": "git+https://github.com/smartxworks/sunmao-ui.git"
   },
   "scripts": {}
 }

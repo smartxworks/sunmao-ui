@@ -1,9 +1,9 @@
 {
   "name": "@sunmao-ui/shared",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The Sunmao shared lib",
   "author": "sunmao-ui developers",
-  "homepage": "https://github.com/webzard-io/sunmao-ui#readme",
+  "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
