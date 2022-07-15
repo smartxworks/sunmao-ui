@@ -24,9 +24,9 @@ Sunmao(榫卯 /suən mɑʊ/) is a front-end low-code framework. Through Sunmao, 
 
 ## DEMO
 
-Sunmao‘s website is developed with Sunmao，look here：[Sunmao website editor](https://sunmao-ui.com/dev.html)
+Sunmao‘s website is developed with Sunmao, look here: [Sunmao website editor](https://sunmao-ui.com/dev.html)
 
-We also provide an open-to-use template：[Sunmao Starter Kit](https://github.com/webzard-io/sunmao-start)
+We also provide an open-to-use template: [Sunmao Starter Kit](https://github.com/webzard-io/sunmao-start)
 
 ## Why Sunmao?
 
