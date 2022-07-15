@@ -12,6 +12,7 @@ import {
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
   traits: Record<string, ValidateFunction>;
+  utilMethods: Record<string, ValidateFunction>;
 }
 
 interface BaseValidateContext {
@@ -30,12 +31,14 @@ export interface ComponentValidateContext extends BaseValidateContext {
 
 export interface TraitValidateContext extends BaseValidateContext {
   trait: ITraitModel;
+  traitIndex: number;
   component: IComponentModel;
 }
 
 export interface PropertiesValidateContext extends BaseValidateContext {
   properties: IFieldModel;
   trait?: ITraitModel;
+  traitIndex?: number;
   component: IComponentModel;
 }
 
@@ -85,7 +88,8 @@ export interface ISchemaValidator {
 export interface ValidateErrorResult {
   componentId: string;
   traitType?: string;
+  traitIndex?: number;
   property?: string;
   message: string;
-  fix?: () => void;
+  fix?: () => any;
 }

@@ -140,6 +140,48 @@ export const UseDependencyInExpressionSchema: ComponentSchema[] = [
   },
 ];
 
+export const LocalVariableInIIFEExpressionSchema: ComponentSchema[] = [
+  {
+    id: 'text1',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{(function(foo) {return foo})("bar") }}',
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+];
+
+export const DynamicStateTraitAnyTypeSchema: ComponentSchema[] = [
+  {
+    id: 'state0',
+    type: 'core/v1/dummy',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/state',
+        properties: {
+          key: 'value',
+          initialValue: '{{ { foo: "bar" } }}',
+        },
+      },
+    ],
+  },
+  {
+    id: 'text4',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{state0.value.foo}}',
+        format: 'plain',
+      },
+    },
+    traits: [],
+  },
+];
+
 export const TraitInvalidSchema: ComponentSchema[] = [
   {
     id: 'text1',
@@ -246,6 +288,14 @@ export const EventTraitSchema: ComponentSchema[] = [
                 },
               },
             },
+            {
+              type: 'onClick',
+              componentId: '$utils',
+              method: {
+                name: 'core/v1/scrollToComponent',
+                parameters: {},
+              },
+            },
           ],
         },
       },
@@ -253,7 +303,7 @@ export const EventTraitSchema: ComponentSchema[] = [
   },
 ];
 
-export const EventTraitTraitMethodSchema: ComponentSchema[] = [
+export const EventTraitMethodSchema: ComponentSchema[] = [
   {
     id: 'text1',
     type: 'core/v1/text',
@@ -301,5 +351,66 @@ export const EventTraitTraitMethodSchema: ComponentSchema[] = [
         },
       },
     ],
+  },
+];
+
+export const DynamicStateTraitSchema: ComponentSchema[] = [
+  {
+    id: 'localStorage0',
+    type: 'core/v1/dummy',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/localStorage',
+        properties: {
+          key: 'value',
+          initialValue: {},
+        },
+      },
+    ],
+  },
+  {
+    id: 'text3',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{localStorage0.value}}',
+        format: 'plain',
+      },
+    },
+    traits: [
+      {
+        type: 'core/v1/state',
+        properties: {
+          key: 'foo',
+          initialValue: {},
+        },
+      },
+    ],
+  },
+  {
+    id: 'state0',
+    type: 'core/v1/dummy',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/state',
+        properties: {
+          key: 'value',
+          initialValue: 123,
+        },
+      },
+    ],
+  },
+  {
+    id: 'text4',
+    type: 'core/v1/text',
+    properties: {
+      value: {
+        raw: '{{state0.value}}{{text3.foo}}',
+        format: 'plain',
+      },
+    },
+    traits: [],
   },
 ];

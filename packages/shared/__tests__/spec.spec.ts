@@ -1,10 +1,17 @@
 import { Type } from '@sinclair/typebox';
+import { AnyTypePlaceholder } from '../src';
 import { generateDefaultValueFromSpec } from '../src/utils/spec';
 
 describe('generateDefaultValueFromSpec function', () => {
   it('can parse array', () => {
-    const type = Type.Array(Type.Object({}));
-    expect(generateDefaultValueFromSpec(type)).toMatchObject([]);
+    const type = Type.Array(
+      Type.Object({
+        foo: Type.Number(),
+      })
+    );
+    expect(generateDefaultValueFromSpec(type)).toEqual([{ foo: 0 }]);
+    const type2 = Type.Array(Type.String());
+    expect(generateDefaultValueFromSpec(type2)).toEqual(['']);
   });
   it('can parse number', () => {
     const type = Type.Number();
@@ -24,7 +31,7 @@ describe('generateDefaultValueFromSpec function', () => {
       key: Type.String(),
       value: Type.Array(Type.String()),
     });
-    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [] });
+    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [''] });
   });
 
   it('can parse enum', () => {
@@ -87,5 +94,9 @@ describe('generateDefaultValueFromSpec function', () => {
         type: ['number', 'string'],
       })
     ).toEqual(0);
+  });
+  it('can parse any type', () => {
+    expect(generateDefaultValueFromSpec({})).toEqual('');
+    expect(generateDefaultValueFromSpec({}, true)).toEqual(AnyTypePlaceholder);
   });
 });
