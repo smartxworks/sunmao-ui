@@ -288,6 +288,14 @@ export const EventTraitSchema: ComponentSchema[] = [
                 },
               },
             },
+            {
+              type: 'onClick',
+              componentId: '$utils',
+              method: {
+                name: 'core/v1/scrollToComponent',
+                parameters: {},
+              },
+            },
           ],
         },
       },
@@ -295,7 +303,7 @@ export const EventTraitSchema: ComponentSchema[] = [
   },
 ];
 
-export const EventTraitTraitMethodSchema: ComponentSchema[] = [
+export const EventTraitMethodSchema: ComponentSchema[] = [
   {
     id: 'text1',
     type: 'core/v1/text',
