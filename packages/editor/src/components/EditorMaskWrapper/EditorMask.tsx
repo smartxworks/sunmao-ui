@@ -46,7 +46,7 @@ type Props = {
 };
 
 // Read this pr to understand the coordinates system before you modify this component.
-// https://github.com/webzard-io/sunmao-ui/pull/286
+// https://github.com/smartxworks/sunmao-ui/pull/286
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const { services, mousePosition, wrapperRef, hoverComponentIdRef, dragOverSlotRef } =
     props;

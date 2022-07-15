@@ -135,7 +135,7 @@ We believe that providing props like `dataUrl`, `hidden`, or `handlers` to every
 
 Sunmao's GUI editor will read all of the components' specs and generate a form based on its JSON schema description.
 
-If some of the form widgets require extensive customization, component developers can implement their own widgets and allow specific components to use them. A detailed design of the customized widgets can be found [here](https://github.com/webzard-io/Sunmao/issues/313).
+If some of the form widgets require extensive customization, component developers can implement their own widgets and allow specific components to use them. A detailed design of the customized widgets can be found [here](https://github.com/smartxworks/sunmao-ui/issues/313).
 
 ## Sunmao is open
 

@@ -169,6 +169,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
                 size="sm"
                 variant="ghost"
                 colorScheme="red"
+                as="div"
                 icon={<CloseIcon fontSize="12px" />}
                 onClick={removeStyle}
               />
