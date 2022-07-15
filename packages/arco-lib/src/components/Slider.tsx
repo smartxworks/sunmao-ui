@@ -37,13 +37,19 @@ export const Slider = implementRuntimeComponent({
     properties: SliderPropsSpec,
     state: SliderStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      tooltip: {
+        slotProps: Type.Object({
+          value: Type.Number(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: ['onChange', 'onAfterChange'],
   },
 })(props => {
   const { ...cProps } = getComponentProps(props);
-  const { customStyle, elementRef, callbackMap, mergeState } = props;
+  const { customStyle, slotsElements, elementRef, callbackMap, mergeState } = props;
 
   return (
     <BaseSlider
@@ -56,6 +62,9 @@ export const Slider = implementRuntimeComponent({
         mergeState({ value: val });
         callbackMap?.onAfterChange?.();
       }}
+      formatTooltip={val =>
+        slotsElements.tooltip ? slotsElements.tooltip({ value: val }) : <span>{val}</span>
+      }
       className={css(customStyle?.content)}
       {...cProps}
     />

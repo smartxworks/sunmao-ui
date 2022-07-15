@@ -3,6 +3,8 @@ import {
   ComponentPropertyExpressionSchema,
   ComponentWrongPropertyExpressionSchema,
   UseDependencyInExpressionSchema,
+  LocalVariableInIIFEExpressionSchema,
+  DynamicStateTraitAnyTypeSchema,
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
 import { registry } from '../services';
@@ -49,10 +51,22 @@ describe('Validate component', () => {
       );
     });
     it('allow using dependency in expression', () => {
-      const result2 = schemaValidator.validate(
+      const _result = schemaValidator.validate(
         new AppModel(UseDependencyInExpressionSchema, registry)
       );
-      expect(result2.length).toBe(0);
+      expect(_result.length).toBe(0);
+    });
+    it('will not warn local variable in iife', () => {
+      const _result = schemaValidator.validate(
+        new AppModel(LocalVariableInIIFEExpressionSchema, registry)
+      );
+      expect(_result.length).toBe(0);
+    });
+    it('will treat dynamic state from trait as any type', () => {
+      const _result = schemaValidator.validate(
+        new AppModel(DynamicStateTraitAnyTypeSchema, registry)
+      );
+      expect(_result.length).toBe(0);
     });
   });
 });

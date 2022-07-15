@@ -1,6 +1,5 @@
 import React from 'react';
 import { css } from '@emotion/css';
-import ReactMarkdown from 'react-markdown';
 import { Static, Type } from '@sinclair/typebox';
 
 export const TextPropertySpec = Type.Object(
@@ -11,7 +10,6 @@ export const TextPropertySpec = Type.Object(
     format: Type.KeyOf(
       Type.Object({
         plain: Type.String(),
-        md: Type.String(),
       }),
       {
         title: 'Format',
@@ -31,18 +29,6 @@ export type TextProps = {
 
 const Text = React.forwardRef<HTMLDivElement, TextProps>(({ value, cssStyle }, ref) => {
   const text = typeof value.raw === 'string' ? value.raw : `${value.raw}`;
-  if (value.format === 'md') {
-    return (
-      <div
-        className={css`
-          ${cssStyle}
-        `}
-        ref={ref}
-      >
-        <ReactMarkdown>{text}</ReactMarkdown>
-      </div>
-    );
-  }
 
   return (
     <span

@@ -57,6 +57,23 @@ const ComponentTree = (props: ComponentTreeProps) => {
     return slots.map(_slot => {
       let slotContent;
       const slotChildren = slotMap.get(_slot);
+      const slotName = (
+        <DropComponentWrapper
+          componentId={undefined}
+          parentId={component.id}
+          parentSlot={_slot}
+          services={services}
+          isExpanded={isExpanded}
+          isDropInOnly
+          droppable={!isAncestorDragging && !isDragging}
+          hasSlot={true}
+        >
+          <Text fontSize={12} color="gray.500" paddingLeft="3" paddingY={1}>
+            Slot: {_slot}
+          </Text>
+        </DropComponentWrapper>
+      );
+
       if (slotChildren && slotChildren.length > 0) {
         slotContent = slotChildren.map(c => {
           return (
@@ -74,35 +91,14 @@ const ComponentTree = (props: ComponentTreeProps) => {
           );
         });
       } else {
-        slotContent = (
-          <DropComponentWrapper
-            componentId={undefined}
-            parentId={component.id}
-            parentSlot={_slot}
-            services={services}
-            isExpanded={isExpanded}
-            isDropInOnly
-            droppable={!isAncestorDragging && !isDragging}
-            hasSlot={true}
-          >
-            <Text fontSize="sm" color="gray.500" paddingLeft="6" paddingY={1}>
-              Empty
-            </Text>
-          </DropComponentWrapper>
-        );
+        slotContent = slotName;
       }
-
-      const slotName = (
-        <Text color="gray.500" fontSize={12} fontWeight="medium" paddingLeft="3">
-          Slot: {_slot}
-        </Text>
-      );
 
       return (
         <Box key={_slot} paddingLeft="3" width="full" display={isExpanded ? '' : 'none'}>
           {/* although component can have multiple slots, but for now, most components have only one slot
         so we hide slot name to save more view area */}
-          {slots.length > 1 ? slotName : undefined}
+          {(slotChildren || []).length ? slotName : undefined}
           <VStack spacing="0" width="full" alignItems="start">
             {slotContent}
           </VStack>
