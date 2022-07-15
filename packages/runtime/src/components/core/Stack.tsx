@@ -47,14 +47,35 @@ const Stack = React.forwardRef<HTMLDivElement, StackProps & { children: ReactNod
     { cssStyle, align, direction = 'horizontal', spacing = 12, children, wrap, justify },
     ref
   ) => {
+    const childs = React.Children.toArray(children);
+
     const style: CSSObject = {
       alignItems: align,
       justifyContent: justify,
       flexDirection: direction === 'vertical' ? 'column' : 'row',
       display: 'inline-flex',
-      columnGap: spacing,
-      rowGap: spacing,
       flexWrap: wrap ? 'wrap' : 'nowrap',
+    };
+
+    const getMargin = (index: number) => {
+      const isLastOne = childs.length === index + 1;
+
+      if (wrap) {
+        return isLastOne
+          ? {
+              marginBottom: spacing,
+            }
+          : {
+              marginRight: spacing,
+              marginBottom: spacing,
+            };
+      }
+
+      return isLastOne
+        ? {}
+        : {
+            [direction === 'vertical' ? 'marginBottom' : 'marginRight']: spacing,
+          };
     };
 
     return (
@@ -65,7 +86,18 @@ const Stack = React.forwardRef<HTMLDivElement, StackProps & { children: ReactNod
           ${cssStyle}
         `}
       >
-        {children}
+        {childs.map((child, idx) => {
+          return (
+            <div
+              key={idx}
+              className={css`
+                ${getMargin(idx)}
+              `}
+            >
+              {child}
+            </div>
+          );
+        })}
       </div>
     );
   }
