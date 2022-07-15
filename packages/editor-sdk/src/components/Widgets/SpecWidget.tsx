@@ -34,7 +34,6 @@ import { NullField } from './NullField';
 import { MultiSpecField } from './MultiSpecField';
 import { CategoryWidget } from './CategoryWidget';
 import { UnsupportedField } from './UnsupportedField';
-import ReactMarkdown from 'react-markdown';
 
 type ExpressionButtonProps = {
   isExpression?: boolean;
@@ -161,9 +160,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
                 bg="blackAlpha.700"
                 _focus={{ boxShadow: 'none' }}
               >
-                <ReactMarkdown className={css(descriptionStyle)}>
-                  {description}
-                </ReactMarkdown>
+                <p className={css(descriptionStyle)}>{description}</p>
               </PopoverContent>
             ) : null}
           </Portal>
