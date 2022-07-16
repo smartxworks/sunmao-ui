@@ -74,36 +74,34 @@ const PropsSpec = Type.Object({
   ),
 });
 
-const exampleProperties = {
-  options: [
-    {
-      label: 'value1',
-      value: 'value1',
-    },
-    {
-      label: 'value2',
-      value: 'value2',
-    },
-    {
-      label: 'value3',
-      value: 'value3',
-    },
-  ],
-  placeholder: '',
-  defaultValue: [],
-  isDisabled: false,
-  isRequired: false,
-  size: 'md',
-  variant: 'outline',
-};
-
 export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'multiSelect',
     displayName: 'MultiSelect',
     description: 'chakra-ui MultiSelect',
-    exampleProperties,
+    exampleProperties: {
+      options: [
+        {
+          label: 'value1',
+          value: 'value1',
+        },
+        {
+          label: 'value2',
+          value: 'value2',
+        },
+        {
+          label: 'value3',
+          value: 'value3',
+        },
+      ],
+      placeholder: '',
+      defaultValue: [],
+      isDisabled: false,
+      isRequired: false,
+      size: 'md',
+      variant: 'outline',
+    },
     annotations: {
       category: 'Input',
     },

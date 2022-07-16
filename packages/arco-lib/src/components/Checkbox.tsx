@@ -18,36 +18,34 @@ const CheckboxStateSpec = Type.Object({
   isCheckAll: Type.Boolean(),
 });
 
-const exampleProperties = {
-  options: [
-    {
-      label: 'checkbox1',
-      value: 'checkbox1',
-    },
-    {
-      label: 'checkbox2',
-      value: 'checkbox2',
-    },
-    {
-      label: 'checkbox3',
-      value: 'checkbox3',
-    },
-  ],
-  disabled: false,
-  direction: 'horizontal',
-  defaultCheckedValues: ['checkbox1'],
-  showCheckAll: false,
-  checkAllText: 'Check all',
-  updateWhenDefaultValueChanges: false,
-};
-
 export const Checkbox = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
     name: 'checkbox',
     displayName: 'Checkbox',
-    exampleProperties,
+    exampleProperties: {
+      options: [
+        {
+          label: 'checkbox1',
+          value: 'checkbox1',
+        },
+        {
+          label: 'checkbox2',
+          value: 'checkbox2',
+        },
+        {
+          label: 'checkbox3',
+          value: 'checkbox3',
+        },
+      ],
+      disabled: false,
+      direction: 'horizontal',
+      defaultCheckedValues: ['checkbox1'],
+      showCheckAll: false,
+      checkAllText: 'Check all',
+      updateWhenDefaultValueChanges: false,
+    },
     annotations: {
       category: 'Data Entry',
     },

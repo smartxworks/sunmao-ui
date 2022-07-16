@@ -1,7 +1,7 @@
 import { Select as BaseSelect } from '@arco-design/web-react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
-import { Type, Static } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SelectPropsSpec as BaseSelectPropsSpec } from '../generated/types/Select';
 import { useEffect, useRef } from 'react';
@@ -15,35 +15,33 @@ const SelectStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const exampleProperties: Static<typeof SelectPropsSpec> = {
-  allowClear: false,
-  multiple: false,
-  allowCreate: false,
-  bordered: true,
-  defaultValue: 'Beijing',
-  disabled: false,
-  labelInValue: false,
-  loading: false,
-  showSearch: false,
-  unmountOnExit: false,
-  options: [
-    { value: 'Beijing', text: 'Beijing' },
-    { value: 'London', text: 'London' },
-    { value: 'NewYork', text: 'NewYork' },
-  ],
-  placeholder: 'Select city',
-  size: 'default',
-  error: false,
-  updateWhenDefaultValueChanges: false,
-};
-
 export const Select = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
     name: 'select',
     displayName: 'Select',
-    exampleProperties,
+    exampleProperties: {
+      allowClear: false,
+      multiple: false,
+      allowCreate: false,
+      bordered: true,
+      defaultValue: 'Beijing',
+      disabled: false,
+      labelInValue: false,
+      loading: false,
+      showSearch: false,
+      unmountOnExit: false,
+      options: [
+        { value: 'Beijing', text: 'Beijing' },
+        { value: 'London', text: 'London' },
+        { value: 'NewYork', text: 'NewYork' },
+      ],
+      placeholder: 'Select city',
+      size: 'default',
+      error: false,
+      updateWhenDefaultValueChanges: false,
+    },
     annotations: {
       category: 'Data Entry',
     },
