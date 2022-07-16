@@ -8,6 +8,7 @@ import {
   createUtilMethod,
   CreateUtilMethodOptions,
 } from '@sunmao-ui/core';
+import { type DeepPartial } from '@sunmao-ui/shared';
 import {
   ComponentImpl,
   ImplementedRuntimeComponent,
@@ -30,7 +31,9 @@ export function implementRuntimeComponent<
   KEvent extends string,
   T extends CreateComponentOptions<KMethodName, KStyleSlot, KSlot, KEvent>
 >(
-  options: T
+  options: T & {
+    metadata: { exampleProperties: DeepPartial<Static<T['spec']['properties']>> };
+  }
 ): (
   impl: ComponentImpl<
     Static<T['spec']['properties']> extends Record<string, unknown>

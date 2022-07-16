@@ -82,40 +82,38 @@ const PropsSpec = Type.Object({
   }),
 });
 
-const exampleProperties = {
-  options: [
-    {
-      label: 'value1',
-      value: 'value1',
-    },
-    {
-      label: 'value2',
-      value: 'value2',
-    },
-    {
-      label: 'value3',
-      value: 'value3',
-    },
-  ],
-  placeholder: 'Select an option',
-  defaultValue: '',
-  isDisabled: false,
-  isInvalid: false,
-  isReadOnly: false,
-  isRequired: false,
-  size: 'md',
-  variant: 'outline',
-  errorBorderColor: 'red',
-  focusBorderColor: 'blue',
-};
-
 export default implementRuntimeComponent({
   version: 'chakra_ui/v1',
   metadata: {
     name: 'select',
     displayName: 'Select',
     description: 'chakra-ui select',
-    exampleProperties,
+    exampleProperties: {
+      options: [
+        {
+          label: 'value1',
+          value: 'value1',
+        },
+        {
+          label: 'value2',
+          value: 'value2',
+        },
+        {
+          label: 'value3',
+          value: 'value3',
+        },
+      ],
+      placeholder: 'Select an option',
+      defaultValue: '',
+      isDisabled: false,
+      isInvalid: false,
+      isReadOnly: false,
+      isRequired: false,
+      size: 'md',
+      variant: 'outline',
+      errorBorderColor: 'red',
+      focusBorderColor: 'blue',
+    },
     annotations: {
       category: 'Input',
     },
