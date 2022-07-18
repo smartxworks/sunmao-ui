@@ -4,6 +4,7 @@ import { Accordion, Input, Text, VStack } from '@chakra-ui/react';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { parseType } from '@sunmao-ui/core';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
+import { css } from '@emotion/css';
 
 import { EventTraitForm } from './EventTraitForm';
 import { GeneralTraitFormList } from './GeneralTraitFormList';
@@ -12,6 +13,13 @@ import ErrorBoundary from '../ErrorBoundary';
 import { StyleTraitForm } from './StyleTraitForm';
 import { EditorServices } from '../../types';
 import { FormSection } from './FormSection';
+
+// avoid the expression tip would be covered
+const ComponentFormStyle = css`
+  .chakra-collapse {
+    overflow: initial !important;
+  }
+`;
 
 type Props = {
   services: EditorServices;
@@ -125,6 +133,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   return (
     <ErrorBoundary>
       <Accordion
+        className={ComponentFormStyle}
         defaultIndex={sections.map((_, i) => i)}
         background="gray.50"
         paddingBottom="200px"
