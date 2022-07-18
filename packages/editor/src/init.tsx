@@ -132,6 +132,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
           services={services}
           libs={props.runtimeProps?.libs || []}
           onRefresh={onRefresh}
+          dependencies={props.runtimeProps?.dependencies || {}}
         />
       </ChakraProvider>
     );
