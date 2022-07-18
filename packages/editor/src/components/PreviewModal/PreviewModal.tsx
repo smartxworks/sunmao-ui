@@ -9,11 +9,18 @@ type Props = {
   app: Application;
   modules: Module[];
   libs: SunmaoLib[];
+  dependencies: Record<string, any>;
   onClose: () => void;
 };
 
-export const PreviewModal: React.FC<Props> = ({ app, modules, libs, onClose }) => {
-  const { App, registry } = initSunmaoUI({libs});
+export const PreviewModal: React.FC<Props> = ({
+  app,
+  modules,
+  libs,
+  dependencies,
+  onClose,
+}) => {
+  const { App, registry } = initSunmaoUI({ libs, dependencies });
   modules.forEach(m => registry.registerModule(createModule(m)));
 
   return (
