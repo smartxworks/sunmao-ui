@@ -29,6 +29,15 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
     }
   `;
 
+  function getComponentFirstSlot(componentId: string) {
+    const component = components.find(c => c.id === componentId);
+    if (component) {
+      const spec = registry.getComponentByType(component?.type);
+      return Object.keys(spec.spec.slots)[0] || '';
+    }
+    return '';
+  }
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case 'Delete':
@@ -103,7 +112,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
               'operation',
               genOperation(registry, 'pasteComponent', {
                 parentId: selectedComponentId || RootId,
-                slot: 'content',
+                slot: getComponentFirstSlot(selectedComponentId),
                 component: clonedComponent!,
                 copyTimes: pasteManager.current.copyTimes,
               })
