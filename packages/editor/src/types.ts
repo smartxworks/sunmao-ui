@@ -1,9 +1,14 @@
 import { Application, Module } from '@sunmao-ui/core';
-import { initSunmaoUI, RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
+import {
+  initSunmaoUI,
+  RegistryInterface,
+  StateManagerInterface,
+} from '@sunmao-ui/runtime';
 import { WidgetManager } from '@sunmao-ui/editor-sdk';
 import { EditorStore } from './services/EditorStore';
 import { EventBusType } from './services/eventBus';
 import { AppModelManager } from './operations/AppModelManager';
+import { type BatchBranchOperationContext } from './operations/branch/batch';
 
 type ReturnOfInit = ReturnType<typeof initSunmaoUI>;
 
@@ -16,6 +21,7 @@ export type EditorServices = {
   widgetManager: WidgetManager;
   eventBus: EventBusType;
   editorStore: EditorStore;
+  doOperations: (operations: BatchBranchOperationContext['operations']) => void;
 };
 
 export type StorageHandler = {
