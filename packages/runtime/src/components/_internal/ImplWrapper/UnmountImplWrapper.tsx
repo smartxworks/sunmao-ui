@@ -33,14 +33,18 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const traitChangeCallback = useCallback(
       (trait: RuntimeTraitSchema, properties: Record<string, unknown>) => {
         const result = executeTrait(trait, properties);
+        const prevIsHidden = isHidden;
         setIsHidden(!!result.unmount);
         if (result.unmount) {
           // Every component's state is initialized in initStateAnd Method.
           // So if if it should not render, we should remove it from store.
-          delete stateManager.store[c.id];
+          // Only clear the store when the component is not hidden before this check.
+          if (!prevIsHidden) {
+            delete stateManager.store[c.id];
+          }
         }
       },
-      [c.id, executeTrait, stateManager]
+      [c.id, executeTrait, stateManager, isHidden]
     );
 
     useEffect(() => {
