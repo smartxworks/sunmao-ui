@@ -173,3 +173,47 @@ export const AsyncMergeStateSchema: Application = {
     ],
   },
 };
+
+export const TabsWithSlotsSchema: Application = {
+  kind: 'Application',
+  version: 'example/v1',
+  metadata: {
+    name: 'nested_components',
+    description: 'nested components example',
+  },
+  spec: {
+    components: [
+      {
+        id: 'tabs',
+        type: 'test/v1/tabs',
+        properties: {
+          tabNames: ['Tab One', 'Tab Two'],
+          initialSelectedTabIndex: 0,
+        },
+        traits: [],
+      },
+      {
+        id: 'input',
+        type: 'test/v1/input',
+        properties: {
+          text: {
+            raw: 'only in tab {{ $slot.tabIndex + 1 }}',
+            format: 'plain',
+          },
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: 'tabs',
+                slot: 'content',
+              },
+              ifCondition: '{{ $slot.tabIndex === 0 }}',
+            },
+          },
+        ],
+      },
+    ],
+  },
+};

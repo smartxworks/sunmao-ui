@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { ImplWrapperMain } from './ImplWrapperMain';
 import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
@@ -11,6 +11,8 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const { component: c, services, slotContext } = props;
     const { stateManager, registry } = services;
     const { executeTrait } = useRuntimeFunctions(props);
+    const renderCount = useRef(0);
+    renderCount.current++;
 
     const unmountTraits = useMemo(
       () =>
@@ -33,14 +35,29 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const traitChangeCallback = useCallback(
       (trait: RuntimeTraitSchema, properties: Record<string, unknown>) => {
         const result = executeTrait(trait, properties);
+        const prevIsHidden = isHidden;
         setIsHidden(!!result.unmount);
         if (result.unmount) {
           // Every component's state is initialized in initStateAnd Method.
           // So if if it should not render, we should remove it from store.
-          delete stateManager.store[c.id];
+
+          /**
+           * prevIsHidden: Only clear the store when the component is not
+           * hidden before this check.
+           *
+           * renderCount: Currently we call initStateAndMethod to setup the
+           * state store, and let here to teardown the hidden components'
+           * state. If a component is hidden forever, it still need to teardown
+           * at the first time it rendered.
+           * Not a perfect solution, and we should have better lifecycle
+           * management for the state store.
+           */
+          if (!prevIsHidden || renderCount.current === 1) {
+            delete stateManager.store[c.id];
+          }
         }
       },
-      [c.id, executeTrait, stateManager]
+      [c.id, executeTrait, stateManager, isHidden]
     );
 
     useEffect(() => {
