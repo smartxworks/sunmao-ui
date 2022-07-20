@@ -18,10 +18,6 @@ import { EditorStore } from './services/EditorStore';
 import { StorageHandler } from './types';
 import { AppStorage } from './services/AppStorage';
 import { Application, Module } from '@sunmao-ui/core';
-import {
-  BatchBranchOperation,
-  type BatchBranchOperationContext,
-} from './operations/branch/batch';
 import './styles.css';
 
 type SunmaoUIEditorProps = {
@@ -65,15 +61,6 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     if (props.runtimeProps?.hooks?.didDomUpdate) props.runtimeProps.hooks.didDomUpdate();
   };
 
-  const doOperations = (operations: BatchBranchOperationContext['operations']) => {
-    const context = {
-      operations,
-    };
-    const operation = new BatchBranchOperation(registry, context);
-
-    eventBus.send('operation', operation);
-  };
-
   const ui = initSunmaoUI({
     ...props.runtimeProps,
     hooks: { didMount, didUpdate, didDomUpdate },
@@ -113,7 +100,6 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     widgetManager,
     eventBus,
     editorStore,
-    doOperations,
   };
 
   const Editor: React.FC = () => {

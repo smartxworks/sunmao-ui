@@ -10,11 +10,11 @@ export interface EditorServices {
   };
   appModelManager: {
     appModel: any;
+    doOperations: (operations: Operations) => void;
   };
   stateManager: {
     store: Record<string, any>;
     maskedEval: Function;
   };
   widgetManager: WidgetManager;
-  doOperations: (operations: Operations) => void;
 }

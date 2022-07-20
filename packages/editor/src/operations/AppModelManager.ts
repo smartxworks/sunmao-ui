@@ -3,6 +3,7 @@ import { RegistryInterface } from '@sunmao-ui/runtime';
 import { EventBusType } from '../services/eventBus';
 import { AppModel } from '../AppModel/AppModel';
 import { IUndoRedoManager, IOperation, OperationList } from './type';
+import { BatchBranchOperation, type BatchBranchOperationContext } from './branch/batch';
 
 export class AppModelManager implements IUndoRedoManager {
   appModel: AppModel;
@@ -77,5 +78,14 @@ export class AppModelManager implements IUndoRedoManager {
       this.operationStack.moveNext();
       console.warn('cannot undo as cursor has no operation', this.operationStack);
     }
+  }
+
+  doOperations(operations: BatchBranchOperationContext['operations']) {
+    const context = {
+      operations,
+    };
+    const operation = new BatchBranchOperation(this.registry, context);
+
+    this.do(operation);
   }
 }
