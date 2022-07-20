@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import produce from 'immer';
 import { initSunmaoUI } from '../../src';
 import { TestLib } from '../testLib';
@@ -10,6 +10,7 @@ import {
   HiddenTraitSchema,
   MergeStateSchema,
   AsyncMergeStateSchema,
+  TabsWithSlotsSchema,
 } from './mockSchema';
 
 // A pure single sunmao component will render twice when it mount.
@@ -127,6 +128,49 @@ describe('when component merge state asynchronously', () => {
     await waitFor(timeoutPromise);
     // 5 = 2 default render times + timeout trait run twice causing another 2 renders + order causing change
     expect(await screen.findByTestId('tester')).toHaveTextContent('5');
+
+    unmount();
+    clearTesterMap();
+  });
+});
+
+describe('slot trait if condition', () => {
+  it('only teardown component state when it is not hidden before the check', () => {
+    const { App, stateManager, apiService } = initSunmaoUI({ libs: [TestLib] });
+    stateManager.noConsoleError = true;
+    const { unmount } = render(<App options={TabsWithSlotsSchema} />);
+    expect(screen.getByTestId('tabs')).toHaveTextContent(`Tab OneTab Two`);
+
+    act(() => {
+      apiService.send('uiMethod', {
+        componentId: 'input',
+        name: 'setValue',
+        parameters: 'new-value',
+      });
+    });
+    expect(stateManager.store).toMatchInlineSnapshot(`
+      Object {
+        "input": Object {
+          "value": "new-value",
+        },
+        "tabs": Object {
+          "selectedTabIndex": 0,
+        },
+      }
+    `);
+    act(() => {
+      screen.getByTestId('tabs-tab-1').click();
+    });
+    expect(stateManager.store).toMatchInlineSnapshot(`
+      Object {
+        "input": Object {
+          "value": "new-value",
+        },
+        "tabs": Object {
+          "selectedTabIndex": 1,
+        },
+      }
+    `);
 
     unmount();
     clearTesterMap();
