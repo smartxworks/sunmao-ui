@@ -103,7 +103,7 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
             title: 'Module Properties',
           }}
           path={[]}
-          value={{ ...module.metadata.exampleProperties, ...value?.properties }}
+          value={value?.properties}
           level={1}
           services={services}
           onChange={v => {
