@@ -18,21 +18,21 @@
   </a>
 </p>
 
-Sunmao(榫卯 /suən mɑʊ/) is a front-end low-code framework. Through Sunmao, you can easily encapsulate any front-end UI components into low-code component libraries, so as to build your own low-code UI development platform, making front-end development as tight as Sunmao.
+Sunmao(榫卯 /suən mɑʊ/) is a front-end low-code framework. Through Sunmao, you can easily encapsulate any front-end UI components into low-code component libraries to build your own low-code UI development platform, making front-end development as tight as Sunmao("mortise and tenon" in Chinese).
 
 [中文](./docs/zh/README.md)
 
 ## DEMO
 
-Sunmao‘s website is developed with Sunmao, look here: [Sunmao website editor](https://sunmao-ui.com/dev.html)
+The offcial website of Sunmao is developed by Sunmao, try it from here: [Sunmao website editor](https://sunmao-ui.com/dev.html)
 
 We also provide an open-to-use template: [Sunmao Starter Kit](https://github.com/webzard-io/sunmao-start)
 
 ## Why Sunmao?
 
-### Reactive low-code framework
+### Responsive low-code framework
 
-Sunmao chooses a reactive solution that is easy to understand and has excellent performance, making Sunmao intuitive and quick to use.
+Sunmao chooses a responsive solution that is easy to understand and has excellent performance, making Sunmao intuitive and quick to start.
 
 ### Powerful low-code GUI editor
 
@@ -40,7 +40,7 @@ Sunmao has a built-in GUI editor, which almost includes all the capabilities tha
 
 ### Extremely Extensible
 
-Both the UI component library itself and the low-code editor support custom extensions. Developers can register various components to cover application requirements and continue to use the existing visual design system.
+Both the UI component library itself and the low-code editor support custom extensions. Developers can register various components to meet the needs of application and continue to use the existing visual design system.
 
 ### Type Safety
 
@@ -50,13 +50,13 @@ For more details, read [Sunmao: A truly extensible low-code UI framework](./docs
 
 ## Tutorial
 
-Sunmao users are divided into two roles, one is a developer and the other is a user.
+Sunmao users are divided into two roles, one is developer and the other is user.
 
-The responsibilities of developers are similar to those of common front-end developers. They are responsible for developing UI components and encapsulating common UI components to Sunmao components. Developers need to write code to implement the logic of the component.
+The responsibilities of developers are similar to those of common front-end developers. They are responsible for developing UI components and encapsulating common UI components to Sunmao components. Developers need to write code to implement the logic of components.
 
-The user's responsibility is to use the Sunmao components encapsulated by developers to build front-end applications in the Sunmao low-code editor. Users do not need front-end knowledge and programming skills. They can complete application construction only through UI interaction.
+The user's responsibility is to use the Sunmao components encapsulated by developers to build front-end applications in the Sunmao low-code editor. Users do not need front-end knowledge and programming skills. They can finish building the application through UI interaction only.
 
-We have prepared two tutorials for different roles. The user only needs to read the user's tutorial, but the developer has to read both.
+We have prepared two tutorials for user and developer. The user only needs to read the user's tutorial, while the developer must read both.
 
 - [User's Tutorial](./docs/en/user.md)
 - [Developer's Tutorial](./docs/en/developer.md)
