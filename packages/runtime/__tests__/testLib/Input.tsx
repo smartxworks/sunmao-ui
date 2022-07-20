@@ -23,16 +23,25 @@ export default implementRuntimeComponent({
     state: Type.Object({
       value: Type.String(),
     }),
-    methods: {},
+    methods: {
+      setValue: Type.String(),
+    },
     slots: {},
     styleSlots: [],
     events: [],
   },
-})(({ component, defaultValue, mergeState, elementRef }) => {
+})(({ component, defaultValue, mergeState, elementRef, subscribeMethods }) => {
   const [value, setValue] = useState(defaultValue || '');
   useEffect(() => {
     mergeState({ value });
   }, [mergeState, value]);
+
+  useEffect(() => {
+    subscribeMethods({
+      setValue,
+    });
+  }, [subscribeMethods]);
+
   return (
     <input
       ref={elementRef}
