@@ -32,7 +32,7 @@ We also provide an open-to-use template: [Sunmao Starter Kit](https://github.com
 
 ### Reactive low-code framework
 
-Sunmao chooses a responsive solution that is easy to understand and has excellent performance, making Sunmao intuitive and quick to use.
+Sunmao chooses a reactive solution that is easy to understand and has excellent performance, making Sunmao intuitive and quick to use.
 
 ### Powerful low-code GUI editor
 
