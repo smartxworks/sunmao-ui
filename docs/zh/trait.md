@@ -242,8 +242,8 @@ TraitResult 是 Trait 最重要的部分，它是 Trait 函数的返回结果，
 
 TraitResult 是一个 object，属性如下：
 
-| 参数名              | 类型                     | 是否必须 | 说明                                                             |
-| ------------------- | ------------------------ | -------- | ---------------------------------------------------------------- |
+| 参数名              | 类型              | 是否必须 | 说明        |
+| ------------------- | ------------------------ | -------- | ----- |
 | customStyle         | Record<string, string>   | 否       | 传递给 Component 的样式 Map。object 的 value 应该是 CSS 字符串。 |
 | callbackMap         | Record<string, Function> | 否       | Component 的回调函数 Map。主要用于 Event Trait。                 |
 | componentDidUnmount | Function[]               | 否       | 生命周期钩子。将会在 Component 卸载后执行。                      |

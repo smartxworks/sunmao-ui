@@ -32,6 +32,7 @@ type Props = {
   stateStore: ReturnOfInit['stateManager']['store'];
   services: EditorServices;
   libs: SunmaoLib[];
+  dependencies: Record<string, any>;
   onRefresh: () => void;
 };
 
@@ -45,7 +46,7 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, stateStore, services, libs, onRefresh: onRefreshApp }) => {
+  ({ App, stateStore, services, libs, dependencies, onRefresh: onRefreshApp }) => {
     const { editorStore } = services;
     const {
       components,
@@ -282,6 +283,7 @@ export const Editor: React.FC<Props> = observer(
             app={app}
             modules={modules}
             libs={libs}
+            dependencies={dependencies}
           />
         )}
         {codeMode && (
