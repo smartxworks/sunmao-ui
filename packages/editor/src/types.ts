@@ -1,5 +1,9 @@
 import { Application, Module } from '@sunmao-ui/core';
-import { initSunmaoUI, RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
+import {
+  initSunmaoUI,
+  RegistryInterface,
+  StateManagerInterface,
+} from '@sunmao-ui/runtime';
 import { WidgetManager } from '@sunmao-ui/editor-sdk';
 import { EditorStore } from './services/EditorStore';
 import { EventBusType } from './services/eventBus';
