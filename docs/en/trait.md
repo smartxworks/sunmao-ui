@@ -243,7 +243,7 @@ TraitResult is the most important part of Trait. It is the return result of the 
 TraitResult is an object with the following properties:
 
 | Parameter name | Type | Required | Description |
-| ------------------- | ------------------------ | ---- ---- | --------------------------------------------- ------------------- |
+| ------------------- | ------------------------ | ------- | ---------- |
 | customStyle | Record<string, string> | No | Style map passed to the Component. The value of the object should be a CSS string. |
 | callbackMap | Record<string, Function> | No | Map of callback functions for Component. Mainly used for Event Trait. |
 | componentDidUnmount | Function[] | No | Lifecycle hook. Will be executed after the Component is unloaded. |
