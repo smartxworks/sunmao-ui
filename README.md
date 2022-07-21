@@ -30,9 +30,9 @@ We also provide an open-to-use template: [Sunmao Starter Kit](https://github.com
 
 ## Why Sunmao?
 
-### Responsive low-code framework
+### Reactive rendering low-code framework
 
-Sunmao chooses a responsive solution that is easy to understand and has excellent performance, making Sunmao intuitive and quick to start.
+Sunmao chooses a reactive rendering solution that is easy to understand and has excellent performance, making Sunmao intuitive and quick to start.
 
 ### Powerful low-code GUI editor
 
