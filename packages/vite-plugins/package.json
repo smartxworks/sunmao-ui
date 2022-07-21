@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/vite-plugins",
-  "version": "1.0.5",
+  "version": "1.0.6-alpha.0",
   "description": "vite plugins for sunmao-ui",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
