@@ -1,0 +1,855 @@
+{
+  "app": {
+    "version": "sunmao/v1",
+    "kind": "Application",
+    "metadata": {
+      "name": "some App"
+    },
+    "spec": {
+      "components": [
+        {
+          "id": "name_form",
+          "type": "arco/v1/formControl",
+          "properties": {
+            "label": {
+              "format": "plain",
+              "raw": "name"
+            },
+            "layout": "horizontal",
+            "required": true,
+            "hidden": false,
+            "extra": "",
+            "errorMsg": "{{name_form.validatedResult.name?.errors[0]?.message || '';}}",
+            "labelAlign": "left",
+            "colon": false,
+            "help": "",
+            "labelCol": {
+              "span": 3,
+              "offset": 0
+            },
+            "wrapperCol": {
+              "span": 21,
+              "offset": 0
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "validators": [
+                  {
+                    "name": "name",
+                    "value": "{{name_input.value;}}",
+                    "rules": [
+                      {
+                        "type": "required",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the name."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      },
+                      {
+                        "type": "length",
+                        "validate": null,
+                        "error": {
+                          "message": "The name is limited in length to between 1 and 10."
+                        },
+                        "minLength": 1,
+                        "maxLength": 10,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "name_input",
+          "type": "arco/v1/input",
+          "properties": {
+            "allowClear": false,
+            "disabled": false,
+            "readOnly": false,
+            "defaultValue": "",
+            "updateWhenDefaultValueChanges": false,
+            "placeholder": "please input the name.",
+            "error": "{{name_form.validatedResult.name.isInvalid}}",
+            "size": "default"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "name_form",
+                  "slot": "content"
+                },
+                "ifCondition": true
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onChange",
+                    "componentId": "name_form",
+                    "method": {
+                      "name": "validateFields",
+                      "parameters": {
+                        "names": "{{['name']}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "onBlur",
+                    "componentId": "name_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onChange",
+                    "componentId": "check_name",
+                    "method": {
+                      "name": "triggerFetch",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onBlur",
+                    "componentId": "check_name",
+                    "method": {
+                      "name": "triggerFetch",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "email_form",
+          "type": "arco/v1/formControl",
+          "properties": {
+            "label": {
+              "format": "plain",
+              "raw": "email"
+            },
+            "layout": "horizontal",
+            "required": true,
+            "hidden": false,
+            "extra": "",
+            "errorMsg": "{{email_form.validatedResult.email?.errors[0]?.message;}}",
+            "labelAlign": "left",
+            "colon": false,
+            "help": "",
+            "labelCol": {
+              "span": 3,
+              "offset": 0
+            },
+            "wrapperCol": {
+              "span": 21,
+              "offset": 0
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "validators": [
+                  {
+                    "name": "email",
+                    "value": "{{email_input.value;}}",
+                    "rules": [
+                      {
+                        "type": "required",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the email."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      },
+                      {
+                        "type": "email",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the correct email."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "email_input",
+          "type": "arco/v1/input",
+          "properties": {
+            "allowClear": false,
+            "disabled": false,
+            "readOnly": false,
+            "defaultValue": "",
+            "updateWhenDefaultValueChanges": false,
+            "placeholder": "please input the email.",
+            "error": "{{email_form.validatedResult.email.isInvalid}}",
+            "size": "default"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "email_form",
+                  "slot": "content"
+                },
+                "ifCondition": true
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onChange",
+                    "componentId": "email_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onBlur",
+                    "componentId": "email_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "url_form",
+          "type": "arco/v1/formControl",
+          "properties": {
+            "label": {
+              "format": "plain",
+              "raw": "URL"
+            },
+            "layout": "horizontal",
+            "required": true,
+            "hidden": false,
+            "extra": "",
+            "errorMsg": "{{url_form.validatedResult.url?.errors[0]?.message}}",
+            "labelAlign": "left",
+            "colon": false,
+            "help": "",
+            "labelCol": {
+              "span": 3,
+              "offset": 0
+            },
+            "wrapperCol": {
+              "span": 21,
+              "offset": 0
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "validators": [
+                  {
+                    "name": "url",
+                    "value": "{{url_input.value}}",
+                    "rules": [
+                      {
+                        "type": "required",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the URL. "
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      },
+                      {
+                        "type": "url",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the correct URL."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "url_input",
+          "type": "arco/v1/input",
+          "properties": {
+            "allowClear": false,
+            "disabled": false,
+            "readOnly": false,
+            "defaultValue": "",
+            "updateWhenDefaultValueChanges": false,
+            "placeholder": "please input the URL.",
+            "error": "{{url_form.validatedResult.url.isInvalid}}",
+            "size": "default"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "url_form",
+                  "slot": "content"
+                },
+                "ifCondition": true
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onChange",
+                    "componentId": "url_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onBlur",
+                    "componentId": "url_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "ip_form",
+          "type": "arco/v1/formControl",
+          "properties": {
+            "label": {
+              "format": "plain",
+              "raw": "IP"
+            },
+            "layout": "horizontal",
+            "required": true,
+            "hidden": false,
+            "extra": "",
+            "errorMsg": "{{ip_form.validatedResult.ip?.errors[0]?.message}}",
+            "labelAlign": "left",
+            "colon": false,
+            "help": "",
+            "labelCol": {
+              "span": 3,
+              "offset": 0
+            },
+            "wrapperCol": {
+              "span": 21,
+              "offset": 0
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "validators": [
+                  {
+                    "name": "ip",
+                    "value": "{{ip_input.value}}",
+                    "rules": [
+                      {
+                        "type": "required",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the IP."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      },
+                      {
+                        "type": "ipv4",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the correct IP."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "ip_input",
+          "type": "arco/v1/input",
+          "properties": {
+            "allowClear": false,
+            "disabled": false,
+            "readOnly": false,
+            "defaultValue": "",
+            "updateWhenDefaultValueChanges": false,
+            "placeholder": "please input the IP.",
+            "error": "{{ip_form.validatedResult.ip.isInvalid}}",
+            "size": "default"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "ip_form",
+                  "slot": "content"
+                },
+                "ifCondition": true
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onChange",
+                    "componentId": "ip_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onBlur",
+                    "componentId": "ip_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "phone_form",
+          "type": "arco/v1/formControl",
+          "properties": {
+            "label": {
+              "format": "plain",
+              "raw": "phone"
+            },
+            "layout": "horizontal",
+            "required": true,
+            "hidden": false,
+            "extra": "",
+            "errorMsg": "{{phone_form.validatedResult.phone.errors[0]?.message}}",
+            "labelAlign": "left",
+            "colon": false,
+            "help": "",
+            "labelCol": {
+              "span": 3,
+              "offset": 0
+            },
+            "wrapperCol": {
+              "span": 21,
+              "offset": 0
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "validators": [
+                  {
+                    "name": "phone",
+                    "value": "{{phone_input.value}}",
+                    "rules": [
+                      {
+                        "type": "required",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the phone number."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      },
+                      {
+                        "type": "regex",
+                        "validate": null,
+                        "error": {
+                          "message": "Please input the correct phone number."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "list": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "^1[3456789]\\d{9}$",
+                        "flags": "",
+                        "customOptions": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "phone_input",
+          "type": "arco/v1/input",
+          "properties": {
+            "allowClear": false,
+            "disabled": false,
+            "readOnly": false,
+            "defaultValue": "",
+            "updateWhenDefaultValueChanges": false,
+            "placeholder": "please input the phone number.",
+            "error": "{{phone_form.validatedResult.phone.isInvalid}}",
+            "size": "default"
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "phone_form",
+                  "slot": "content"
+                },
+                "ifCondition": true
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onChange",
+                    "componentId": "phone_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onBlur",
+                    "componentId": "phone_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "city_form",
+          "type": "arco/v1/formControl",
+          "properties": {
+            "label": {
+              "format": "plain",
+              "raw": "city"
+            },
+            "layout": "horizontal",
+            "required": false,
+            "hidden": false,
+            "extra": "",
+            "errorMsg": "{{city_form.validatedResult.city.errors[0]?.message}}",
+            "labelAlign": "left",
+            "colon": false,
+            "help": "",
+            "labelCol": {
+              "span": 3,
+              "offset": 0
+            },
+            "wrapperCol": {
+              "span": 21,
+              "offset": 0
+            }
+          },
+          "traits": [
+            {
+              "type": "core/v1/validation",
+              "properties": {
+                "validators": [
+                  {
+                    "name": "city",
+                    "value": "{{city_select.value}}",
+                    "rules": [
+                      {
+                        "type": "include",
+                        "validate": null,
+                        "error": {
+                          "message": "Please select \"Beijing\"."
+                        },
+                        "minLength": 0,
+                        "maxLength": 0,
+                        "includeList": ["Beijing"],
+                        "excludeList": [],
+                        "min": 0,
+                        "max": 0,
+                        "regex": "",
+                        "flags": "",
+                        "customOptions": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "city_select",
+          "type": "arco/v1/select",
+          "properties": {
+            "allowClear": false,
+            "multiple": false,
+            "allowCreate": false,
+            "bordered": true,
+            "defaultValue": "Beijing",
+            "disabled": false,
+            "labelInValue": false,
+            "loading": false,
+            "showSearch": false,
+            "unmountOnExit": false,
+            "options": [
+              {
+                "value": "Beijing",
+                "text": "Beijing"
+              },
+              {
+                "value": "London",
+                "text": "London"
+              },
+              {
+                "value": "NewYork",
+                "text": "NewYork"
+              }
+            ],
+            "placeholder": "Select city",
+            "size": "default",
+            "error": false,
+            "updateWhenDefaultValueChanges": false
+          },
+          "traits": [
+            {
+              "type": "core/v1/slot",
+              "properties": {
+                "container": {
+                  "id": "city_form",
+                  "slot": "content"
+                },
+                "ifCondition": true
+              }
+            },
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onChange",
+                    "componentId": "city_form",
+                    "method": {
+                      "name": "validateAllFields",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "clear_button",
+          "type": "arco/v1/button",
+          "properties": {
+            "type": "default",
+            "status": "default",
+            "long": false,
+            "size": "default",
+            "disabled": false,
+            "loading": false,
+            "shape": "square",
+            "text": "clear"
+          },
+          "traits": [
+            {
+              "type": "core/v1/event",
+              "properties": {
+                "handlers": [
+                  {
+                    "type": "onClick",
+                    "componentId": "name_form",
+                    "method": {
+                      "name": "clearAllErrors",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onClick",
+                    "componentId": "email_form",
+                    "method": {
+                      "name": "clearAllErrors",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onClick",
+                    "componentId": "url_form",
+                    "method": {
+                      "name": "clearAllErrors",
+                      "parameters": {}
+                    }
+                  },
+                  {
+                    "type": "onClick",
+                    "componentId": "ip_form",
+                    "method": {
+                      "name": "clearErrors",
+                      "parameters": {
+                        "names": "{{['ip']}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "onClick",
+                    "componentId": "phone_form",
+                    "method": {
+                      "name": "clearErrors",
+                      "parameters": {
+                        "names": "{{['phone']}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "onClick",
+                    "componentId": "city_form",
+                    "method": {
+                      "name": "clearAllErrors",
+                      "parameters": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "check_name",
+          "type": "core/v1/dummy",
+          "properties": {},
+          "traits": [
+            {
+              "type": "core/v1/fetch",
+              "properties": {
+                "url": "",
+                "method": "get",
+                "lazy": false,
+                "disabled": false,
+                "headers": {},
+                "body": {},
+                "bodyType": "json",
+                "onComplete": [
+                  {
+                    "componentId": "name_form",
+                    "method": {
+                      "name": "setErrors",
+                      "parameters": {
+                        "errorsMap": "{{\n{\n  name: [...name_form.validatedResult.name.errors, { message: 'The name is exist.' }]\n}\n}}"
+                      }
+                    }
+                  }
+                ],
+                "onError": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
