@@ -14,7 +14,9 @@
       import { initSunmaoUI } from './src';
       import { ChakraProvider } from '@chakra-ui/react';
       import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
+      import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
       import examples from '@example.json';
+      import '@arco-design/web-react/dist/css/arco.css';
 
       const selectEl = document.querySelector('select');
       for (const example of examples) {
@@ -29,7 +31,9 @@
       const rootEl = document.querySelector('#root');
       const render = example => {
         ReactDOM.unmountComponentAtNode(rootEl);
-        const { App, registry } = initSunmaoUI({ libs: [sunmaoChakraUILib] });
+        const { App, registry } = initSunmaoUI({
+          libs: [sunmaoChakraUILib, ArcoDesignLib],
+        });
         const { app, modules = [] } = example.value;
         window.registry = registry;
         modules.forEach(m => {
