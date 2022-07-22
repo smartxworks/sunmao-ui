@@ -29,7 +29,7 @@ First, let's look at this Input Component *Spec* example.
     displayName: "Input",
     exampleProperties: {
       placeholder: "Input here",
-      disabled: fasle,
+      disabled: false,
     },
   },
   spec: {
