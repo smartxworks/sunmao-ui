@@ -75,6 +75,14 @@ const rowClickStyle = css`
 export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
     {
+      title: 'Key',
+      dataIndex: 'key',
+      type: 'text',
+      displayValue: '',
+      filter: false,
+      componentSlotIndex: 0,
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       sorter: true,
@@ -107,11 +115,12 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
   data: Array(13)
     .fill('')
     .map((_, index) => ({
-      key: `key ${index}`,
+      key: index,
       name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'Naomi Cook'}${index}`,
       link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
     })),
+  rowKey: 'key',
   checkCrossPage: true,
   pagination: {
     enablePagination: true,
@@ -172,8 +181,15 @@ export const Table = implementRuntimeComponent({
   } = props;
 
   const ref = useRef<TableInstance | null>(null);
-  const { pagination, rowClick, useDefaultFilter, useDefaultSort, data, ...cProps } =
-    getComponentProps(props);
+  const {
+    pagination,
+    rowKey,
+    rowClick,
+    useDefaultFilter,
+    useDefaultSort,
+    data,
+    ...cProps
+  } = getComponentProps(props);
 
   const {
     pageSize,
@@ -186,6 +202,7 @@ export const Table = implementRuntimeComponent({
   } = pagination;
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
+  const currentChecked = useRef<(string | number)[]>([]);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
     defaultCurrent ?? 1,
@@ -196,6 +213,7 @@ export const Table = implementRuntimeComponent({
 
   useEffect(() => {
     mergeState({ pageSize });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [sortRule, setSortRule] = useState<SortRule | null>(null);
@@ -236,8 +254,28 @@ export const Table = implementRuntimeComponent({
       // Otherwise it will automatically paginate on the front end based on the current page
       return sortedData?.slice(0, pageSize);
     }
+
     return sortedData;
   }, [pageSize, sortedData, enablePagination, useCustomPagination]);
+
+  // reset state when data changed
+  useEffect(() => {
+    if (!currentPageData.length) {
+      mergeState({
+        selectedRowKeys: [],
+        selectedRows: [],
+        sortRule: {},
+        filterRule: undefined,
+        currentPage: undefined,
+      });
+    }
+
+    mergeState({
+      selectedRows: currentPageData.filter(d =>
+        currentChecked.current.includes(d[rowKey])
+      ),
+    });
+  }, [currentPageData, mergeState, rowKey]);
 
   useEffect(() => {
     setColumns(
@@ -466,6 +504,7 @@ export const Table = implementRuntimeComponent({
   return (
     <BaseTable
       ref={ref}
+      rowKey={rowKey}
       className={css`
         ${customStyle?.content}
         ${rowClick ? rowClickStyle : ''}
@@ -503,6 +542,7 @@ export const Table = implementRuntimeComponent({
           });
         },
         onChange(selectedRowKeys, selectedRows) {
+          currentChecked.current = selectedRowKeys;
           mergeState({
             selectedRowKeys: selectedRowKeys as string[],
             selectedRows,

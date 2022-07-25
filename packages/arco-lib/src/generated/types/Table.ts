@@ -301,6 +301,13 @@ export const TablePropsSpec = Type.Object({
     },
     weight: 0,
   }),
+  rowKey: Type.Any({
+    title: 'RowKey',
+    category: Category.Columns,
+    widget: 'arco/v1/primaryKey',
+    description:
+      'This optional is used to select a unique key for any given row from columns.',
+  }),
   tableLayoutFixed: Type.Boolean({
     title: 'Layout Fixed',
     description:
