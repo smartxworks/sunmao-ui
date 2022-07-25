@@ -20,7 +20,7 @@ export const TablePrimaryKeyWidget: React.FC<
   const { properties } = component;
   const columns = properties.columns as Static<typeof ColumnSpec>[];
 
-  const keys = ['auto', ...columns.map(c => c.dataIndex)];
+  const keys = columns.map(c => c.dataIndex);
 
   return (
     <Select
