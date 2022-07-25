@@ -4,14 +4,16 @@ import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
 export const unremovableTraits = [`${CORE_VERSION}/${CoreTraitName.Slot}`];
 
-export const ignoreTraitsList = [
+export const hideCreateTraitsList = [
   `${CORE_VERSION}/${CoreTraitName.Event}`,
   `${CORE_VERSION}/${CoreTraitName.Style}`,
   `${CORE_VERSION}/${CoreTraitName.Fetch}`,
+  `${CORE_VERSION}/${CoreTraitName.Slot}`,
 ];
 
 export const hasSpecialFormTraitList = [
-  ...ignoreTraitsList,
+  `${CORE_VERSION}/${CoreTraitName.Event}`,
+  `${CORE_VERSION}/${CoreTraitName.Style}`,
   `${CORE_VERSION}/${CoreTraitName.Fetch}`,
 ];
 
