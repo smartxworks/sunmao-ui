@@ -3,7 +3,6 @@ import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { CloseIcon } from '@chakra-ui/icons';
-import { TSchema } from '@sinclair/typebox';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
@@ -28,7 +27,10 @@ export const GeneralTraitForm: React.FC<Props> = props => {
   );
   const fields = Object.keys(properties || []).map((key: string) => {
     const value = trait.properties[key];
-    const propertySpec = (tImpl.spec.properties as TSchema).properties?.[key];
+    const propertySpec = tImpl.spec.properties.properties?.[key];
+
+    if (!propertySpec) return undefined;
+
     const onChange = (newValue: any) => {
       const operation = genOperation(registry, 'modifyTraitProperty', {
         componentId: component.id,
@@ -41,15 +43,14 @@ export const GeneralTraitForm: React.FC<Props> = props => {
       eventBus.send('operation', operation);
     };
 
+    const specObj = propertySpec === true ? {} : propertySpec;
+
     return (
       <SpecWidget
         key={key}
         level={1}
         path={[key]}
-        spec={{
-          ...propertySpec,
-          title: propertySpec.title || key,
-        }}
+        spec={{ ...specObj, title: specObj.title || key }}
         value={value}
         services={services}
         component={component}
