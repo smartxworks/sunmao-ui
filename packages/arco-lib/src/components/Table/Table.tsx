@@ -72,10 +72,16 @@ const rowClickStyle = css`
   }
 `;
 
-const tableRowKey = Symbol.for('table.rowKey');
-
 export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
+    {
+      title: 'Key',
+      dataIndex: 'key',
+      type: 'text',
+      displayValue: '',
+      filter: false,
+      componentSlotIndex: 0,
+    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -109,11 +115,12 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
   data: Array(13)
     .fill('')
     .map((_, index) => ({
+      key: index,
       name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'Naomi Cook'}${index}`,
       link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
     })),
-  rowKey: 'auto',
+  rowKey: 'key',
   checkCrossPage: true,
   pagination: {
     enablePagination: true,
@@ -242,21 +249,14 @@ export const Table = implementRuntimeComponent({
   }, [data, sortRule]);
 
   const currentPageData = useMemo(() => {
-    let data = sortedData;
     if (enablePagination && useCustomPagination) {
       // If the `useCustomPagination` is true, then no pagination will be done and data over the pagesize will be sliced
       // Otherwise it will automatically paginate on the front end based on the current page
-      data = sortedData?.slice(0, pageSize);
+      return sortedData?.slice(0, pageSize);
     }
 
-    // auto-generated row key
-    return rowKey === 'auto'
-      ? data?.map((el, idx) => {
-          el[tableRowKey] = idx;
-          return el;
-        })
-      : data;
-  }, [pageSize, sortedData, rowKey, enablePagination, useCustomPagination]);
+    return sortedData;
+  }, [pageSize, sortedData, enablePagination, useCustomPagination]);
 
   // reset state when data changed
   useEffect(() => {
@@ -270,9 +270,10 @@ export const Table = implementRuntimeComponent({
       });
     }
 
-    const key = rowKey === 'auto' ? tableRowKey : rowKey;
     mergeState({
-      selectedRows: currentPageData.filter(d => currentChecked.current.includes(d[key])),
+      selectedRows: currentPageData.filter(d =>
+        currentChecked.current.includes(d[rowKey])
+      ),
     });
   }, [currentPageData, mergeState, rowKey]);
 
@@ -503,7 +504,7 @@ export const Table = implementRuntimeComponent({
   return (
     <BaseTable
       ref={ref}
-      rowKey={(rowKey === 'auto' ? tableRowKey : rowKey) as unknown as string}
+      rowKey={rowKey}
       className={css`
         ${customStyle?.content}
         ${rowClick ? rowClickStyle : ''}
