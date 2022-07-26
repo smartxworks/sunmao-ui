@@ -20,6 +20,7 @@ import escodegen from 'escodegen';
 import { JSONSchema7 } from 'json-schema';
 
 export type FunctionNode = ASTNode & { params: ASTNode[] };
+export type DeclaratorNode = ASTNode & { id: ASTNode };
 export class FieldModel implements IFieldModel {
   isDynamic = false;
   refComponentInfos: Record<ComponentId | ModuleId, RefInfo> = {};
@@ -161,7 +162,7 @@ export class FieldModel implements IFieldModel {
 
       this.astNodes[exp] = node as ASTNode;
 
-      // These are varirables of iife, they should be count in refs.
+      // These are variables of iife, they should be count in refs.
       let localVariables: ASTNode[] = [];
 
       simpleWalk(node, {
@@ -199,6 +200,9 @@ export class FieldModel implements IFieldModel {
               break;
             default:
           }
+        },
+        VariableDeclarator: declarator => {
+          localVariables.push((declarator as DeclaratorNode).id);
         },
       });
 
