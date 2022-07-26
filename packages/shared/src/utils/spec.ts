@@ -31,7 +31,6 @@ function getArray(items: JSONSchema7Definition[]): JSONSchema7Type[] {
 
 function getObject(spec: JSONSchema7): JSONSchema7Object {
   const obj: JSONSchema7Object = {};
-  const requiredKeys = spec.required;
 
   if (spec.allOf && spec.allOf.length > 0) {
     return (getArray(spec.allOf) as JSONSchema7Object[]).reduce((prev, cur) => {
@@ -40,15 +39,14 @@ function getObject(spec: JSONSchema7): JSONSchema7Object {
     }, obj);
   }
 
-  requiredKeys &&
-    requiredKeys.forEach(key => {
-      const subSpec = spec.properties?.[key];
-      if (typeof subSpec === 'boolean') {
-        obj[key] = null;
-      } else if (subSpec) {
-        obj[key] = generateDefaultValueFromSpec(subSpec);
-      }
-    });
+  for (const key in spec.properties) {
+    const subSpec = spec.properties?.[key];
+    if (typeof subSpec === 'boolean') {
+      obj[key] = null;
+    } else if (subSpec) {
+      obj[key] = generateDefaultValueFromSpec(subSpec);
+    }
+  }
   return obj;
 }
 

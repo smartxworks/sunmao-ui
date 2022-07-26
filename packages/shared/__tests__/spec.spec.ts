@@ -17,14 +17,9 @@ describe('generateDefaultValueFromSpec function', () => {
     const type = Type.Number();
     expect(generateDefaultValueFromSpec(type)).toEqual(0);
   });
-  // Type.Optional can only be judged by the modifier feature provided by the typebox,
-  // but this would break the consistency of the function,
-  // and it doesn't seem to make much sense to deal with non-object optional alone like Type.Optional(Type.String())
-  // Therefore it is possible to determine whether an object's property is optional using spec.required,
-  // and if the property is within Type.Object is optional then it is not required.
-  it('can parse optional', () => {
+  it('can parse optional and the value is the default value of its type', () => {
     const type = Type.Optional(Type.Object({ str: Type.Optional(Type.String()) }));
-    expect(generateDefaultValueFromSpec(type)).toEqual({ str: undefined });
+    expect(generateDefaultValueFromSpec(type)).toEqual({ str: '' });
   });
   it('can parse object', () => {
     const type = Type.Object({
