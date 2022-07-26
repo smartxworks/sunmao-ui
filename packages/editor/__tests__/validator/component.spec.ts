@@ -5,6 +5,7 @@ import {
   UseDependencyInExpressionSchema,
   LocalVariableInIIFEExpressionSchema,
   DynamicStateTraitAnyTypeSchema,
+  NestedObjectExpressionSchema,
 } from './mock';
 import { SchemaValidator } from '../../src/validator';
 import { registry } from '../services';
@@ -65,6 +66,12 @@ describe('Validate component', () => {
     it('will treat dynamic state from trait as any type', () => {
       const _result = schemaValidator.validate(
         new AppModel(DynamicStateTraitAnyTypeSchema, registry)
+      );
+      expect(_result.length).toBe(0);
+    });
+    it('allow use nested object value in expression', () => {
+      const _result = schemaValidator.validate(
+        new AppModel(NestedObjectExpressionSchema, registry)
       );
       expect(_result.length).toBe(0);
     });
