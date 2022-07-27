@@ -20,6 +20,12 @@ import escodegen from 'escodegen';
 import { JSONSchema7 } from 'json-schema';
 
 export type FunctionNode = ASTNode & { params: ASTNode[] };
+export type DeclaratorNode = ASTNode & { id: ASTNode };
+export type LiteralNode = ASTNode & { raw: string };
+export type ExpressionNode = ASTNode & {
+  object: ExpressionNode;
+  property: ExpressionNode | LiteralNode;
+};
 export class FieldModel implements IFieldModel {
   isDynamic = false;
   refComponentInfos: Record<ComponentId | ModuleId, RefInfo> = {};
@@ -161,7 +167,7 @@ export class FieldModel implements IFieldModel {
 
       this.astNodes[exp] = node as ASTNode;
 
-      // These are varirables of iife, they should be count in refs.
+      // These are variables of iife, they should be count in refs.
       let localVariables: ASTNode[] = [];
 
       simpleWalk(node, {
@@ -190,18 +196,17 @@ export class FieldModel implements IFieldModel {
 
               break;
             case 'MemberExpression':
-              const str = exp.slice(expressionNode.start, expressionNode.end);
-              let path = str.replace(lastIdentifier, '');
-              if (path.startsWith('.')) {
-                path = path.slice(1, path.length);
-              }
-              this.refComponentInfos[lastIdentifier]?.refProperties.push(path);
+              this.refComponentInfos[lastIdentifier]?.refProperties.push(
+                this.genPathFromMemberExpressionNode(expressionNode as ExpressionNode)
+              );
               break;
             default:
           }
         },
+        VariableDeclarator: declarator => {
+          localVariables.push((declarator as DeclaratorNode).id);
+        },
       });
-
       // remove localVariables from refs
       for (const key in this.refComponentInfos) {
         if (localVariables.some(({ name }) => key === name)) {
@@ -209,6 +214,21 @@ export class FieldModel implements IFieldModel {
         }
       }
     });
+  }
+
+  private genPathFromMemberExpressionNode(expNode: ExpressionNode) {
+    const path: string[] = [];
+    function travel(node: ExpressionNode) {
+      path.unshift(
+        node.property?.name || (node.property as LiteralNode)?.raw || node.name
+      );
+      if (node.object) {
+        travel(node.object);
+      }
+    }
+
+    travel(expNode);
+    return path.slice(1).join('.');
   }
 
   private onReferenceIdChange({ oldId, newId }: AppModelEventType['idChange']) {

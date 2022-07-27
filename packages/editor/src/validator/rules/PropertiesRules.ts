@@ -77,7 +77,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
 
   private checkObjHasPath(obj: Record<string, any>, path: string) {
     const arr = path.split('.');
-    const curr = obj;
+    let curr = obj;
     for (const key of arr) {
       const value = curr[key];
       if (value === undefined) {
@@ -86,6 +86,7 @@ class ExpressionValidatorRule implements PropertiesValidatorRule {
         // if meet AnyTypePlaceholder, return true and skip
         return true;
       }
+      curr = value;
     }
     return true;
   }
