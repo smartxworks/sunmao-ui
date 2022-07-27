@@ -1,10 +1,8 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { RegistryInterface } from '@sunmao-ui/runtime';
-import { sunmaoChakraUILib } from '@sunmao-ui/chakra-ui-lib';
-import { widgets as chakraWidgets } from '@sunmao-ui/chakra-ui-lib/dist/esm/widgets/index';
-import { widgets as arcoWidgets } from '@sunmao-ui/arco-lib/dist/esm/widgets/index';
-import { ArcoDesignLib } from '@sunmao-ui/arco-lib';
+import { sunmaoChakraUILib, widgets as chakraWidgets } from '@sunmao-ui/chakra-ui-lib';
+import { ArcoDesignLib, widgets as arcoWidgets } from '@sunmao-ui/arco-lib';
 import { initSunmaoUIEditor } from './init';
 import { LocalStorageManager } from './LocalStorageManager';
 import '@sunmao-ui/arco-lib/dist/index.css';
