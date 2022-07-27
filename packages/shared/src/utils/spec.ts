@@ -73,7 +73,6 @@ export function generateDefaultValueFromSpec(
     }
 
     // It is any type
-    console.log('any', returnPlaceholderForAny);
     if (returnPlaceholderForAny) {
       return AnyTypePlaceholder;
     }

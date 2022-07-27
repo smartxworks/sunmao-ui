@@ -20,10 +20,19 @@ describe('Field test', () => {
       'value',
     ]);
     expect(field.refComponentInfos['list' as ComponentId].refProperties).toEqual([
-      '[0]',
-      '[0].text',
+      '0',
+      '0.text',
     ]);
     expect(field.rawValue).toEqual('{{input.value}} + {{list[0].text}}');
+  });
+
+  it('allow using question mask in expression', () => {
+    const field = new FieldModel('{{api.fetch?.data }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos['api' as ComponentId].refProperties).toEqual([
+      'fetch',
+      'fetch.data',
+    ]);
   });
 
   it('parse inline variable in expression', () => {
