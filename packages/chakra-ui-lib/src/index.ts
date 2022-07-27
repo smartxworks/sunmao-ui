@@ -60,3 +60,5 @@ export const sunmaoChakraUILib: SunmaoLib = {
   modules: [],
   utilMethods: [ChakraUIToastUtilMethodFactory],
 };
+
+export { widgets } from './widgets';
