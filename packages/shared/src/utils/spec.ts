@@ -37,7 +37,7 @@ function getArray(
 function getObject(
   spec: JSONSchema7,
   returnPlaceholderForAny = false
-): JSONSchema7Object {
+): JSONSchema7Object | string {
   const obj: JSONSchema7Object = {};
 
   if (spec.allOf && spec.allOf.length > 0) {
@@ -48,6 +48,15 @@ function getObject(
       },
       obj
     );
+  }
+
+  // if not specific property, treat it as any type
+  if (!spec.properties) {
+    if (returnPlaceholderForAny) {
+      return AnyTypePlaceholder;
+    }
+
+    return {};
   }
 
   for (const key in spec.properties) {
@@ -65,6 +74,7 @@ export function generateDefaultValueFromSpec(
   spec: JSONSchema7,
   returnPlaceholderForAny = false
 ): JSONSchema7Type {
+  console.log(spec);
   if (!spec.type) {
     if ((spec.anyOf && spec.anyOf!.length > 0) || (spec.oneOf && spec.oneOf.length > 0)) {
       const subSpec = (spec.anyOf! || spec.oneOf)[0];
