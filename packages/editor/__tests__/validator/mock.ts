@@ -414,3 +414,44 @@ export const DynamicStateTraitSchema: ComponentSchema[] = [
     traits: [],
   },
 ];
+
+export const NestedObjectExpressionSchema: ComponentSchema[] = [
+  {
+    id: 'api0',
+    type: 'core/v1/dummy',
+    properties: {},
+    traits: [
+      {
+        type: 'core/v1/fetch',
+        properties: {
+          url: '',
+          method: 'get',
+          lazy: false,
+          disabled: false,
+          headers: {},
+          body: {},
+          bodyType: 'json',
+          onComplete: [
+            {
+              componentId: '',
+              method: {
+                name: '',
+              },
+            },
+          ],
+          onError: [
+            {
+              componentId: '',
+              method: {
+                name: '',
+                parameters: {},
+              },
+              // should not warn api0.fetch.code
+              disabled: '{{ api0.fetch.code !== 401 }}',
+            },
+          ],
+        },
+      },
+    ],
+  },
+];

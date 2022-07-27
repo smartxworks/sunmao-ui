@@ -94,6 +94,7 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
               traitType: trait?.type,
               traitIndex,
             });
+            return results;
           });
         }
       } else {

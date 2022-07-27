@@ -20,10 +20,19 @@ describe('Field test', () => {
       'value',
     ]);
     expect(field.refComponentInfos['list' as ComponentId].refProperties).toEqual([
-      '[0]',
-      '[0].text',
+      '0',
+      '0.text',
     ]);
     expect(field.rawValue).toEqual('{{input.value}} + {{list[0].text}}');
+  });
+
+  it('allow using question mask in expression', () => {
+    const field = new FieldModel('{{api.fetch?.data }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos['api' as ComponentId].refProperties).toEqual([
+      'fetch',
+      'fetch.data',
+    ]);
   });
 
   it('parse inline variable in expression', () => {
@@ -67,6 +76,12 @@ describe('Field test', () => {
 
   it('parse iife expression', () => {
     const field = new FieldModel('{{(function(foo) {return foo})("bar") }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos).toEqual({});
+  });
+
+  it('should not count variables declared in iife in refs', () => {
+    const field = new FieldModel('{{(function() {const foo = "bar"})() }}');
     expect(field.isDynamic).toEqual(true);
     expect(field.refComponentInfos).toEqual({});
   });

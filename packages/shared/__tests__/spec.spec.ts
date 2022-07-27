@@ -93,5 +93,13 @@ describe('generateDefaultValueFromSpec function', () => {
   it('can parse any type', () => {
     expect(generateDefaultValueFromSpec({})).toEqual('');
     expect(generateDefaultValueFromSpec({}, true)).toEqual(AnyTypePlaceholder);
+    expect(
+      (
+        generateDefaultValueFromSpec(
+          Type.Object({ foo: Type.Object({ bar: Type.Any() }) }),
+          true
+        ) as any
+      ).foo.bar
+    ).toEqual(AnyTypePlaceholder);
   });
 });
