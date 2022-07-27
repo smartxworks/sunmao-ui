@@ -84,6 +84,55 @@ export const HiddenTraitSchema: Application = {
   },
 };
 
+export const ParentRerenderSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'input',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: '',
+        },
+        traits: [],
+      },
+      {
+        id: 'stack6',
+        type: 'core/v1/stack',
+        properties: {
+          spacing: 12,
+          direction: 'horizontal',
+          align: 'auto',
+          wrap: '{{!!input.value}}',
+          justify: 'flex-start',
+        },
+        traits: [],
+      },
+      {
+        id: 'tester',
+        type: 'test/v1/tester',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: 'stack6',
+                slot: 'content',
+              },
+              ifCondition: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export const MergeStateSchema: Application = {
   version: 'sunmao/v1',
   kind: 'Application',
