@@ -196,11 +196,18 @@ export class FieldModel implements IFieldModel {
 
               break;
             case 'MemberExpression':
-              this.refComponentInfos[lastIdentifier]?.refProperties.push(
-                this.genPathFromMemberExpressionNode(expressionNode as ExpressionNode)
-              );
+              if (lastIdentifier) {
+                this.refComponentInfos[lastIdentifier]?.refProperties.push(
+                  this.genPathFromMemberExpressionNode(expressionNode as ExpressionNode)
+                );
+              }
+              break;
+            case 'Literal':
+              // do nothing, just stop it from going to default
               break;
             default:
+              // clear lastIdentifier when meet other astNode to break the MemberExpression chain
+              lastIdentifier = '' as ComponentId;
           }
         },
         VariableDeclarator: declarator => {
