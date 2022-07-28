@@ -35,6 +35,14 @@ describe('Field test', () => {
     ]);
   });
 
+  it('stop member expression when meeting other expression ast node', () => {
+    const field = new FieldModel('{{ Array.from([]).fill() }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos['Array' as ComponentId].refProperties).toEqual([
+      'from',
+    ]);
+  });
+
   it('parse inline variable in expression', () => {
     const field = new FieldModel('{{ [].length }}');
     expect(field.isDynamic).toEqual(true);
