@@ -22,6 +22,7 @@ import { JSONSchema7 } from 'json-schema';
 export type FunctionNode = ASTNode & { params: ASTNode[] };
 export type DeclaratorNode = ASTNode & { id: ASTNode };
 export type LiteralNode = ASTNode & { raw: string };
+export type SequenceExpressionNode = ASTNode & { expressions: LiteralNode[] };
 export type ExpressionNode = ASTNode & {
   object: ExpressionNode;
   property: ExpressionNode | LiteralNode;
@@ -164,15 +165,15 @@ export class FieldModel implements IFieldModel {
     exps.forEach(exp => {
       let lastIdentifier: ComponentId = '' as ComponentId;
       const node = (acornLoose as typeof acorn).parse(exp, { ecmaVersion: 2020 });
-
       this.astNodes[exp] = node as ASTNode;
 
-      // These are variables of iife, they should be count in refs.
-      let localVariables: ASTNode[] = [];
+      // These are variables of iife or other identifiers, they can't be validated
+      // so they should not be added in refs
+      let whiteList: ASTNode[] = [];
 
       simpleWalk(node, {
         Function: functionNode => {
-          localVariables = [...localVariables, ...(functionNode as FunctionNode).params];
+          whiteList = [...whiteList, ...(functionNode as FunctionNode).params];
         },
         Expression: expressionNode => {
           switch (expressionNode.type) {
@@ -186,7 +187,7 @@ export class FieldModel implements IFieldModel {
                 this.refComponentInfos[key].componentIdASTNodes.push(
                   expressionNode as ASTNode
                 );
-              } else {
+              } else if (key) {
                 this.refComponentInfos[key] = {
                   componentIdASTNodes: [expressionNode as ASTNode],
                   refProperties: [],
@@ -202,6 +203,10 @@ export class FieldModel implements IFieldModel {
                 );
               }
               break;
+            case 'SequenceExpression':
+              const sequenceExpression = expressionNode as SequenceExpressionNode;
+              whiteList.push(sequenceExpression.expressions[1]);
+              break;
             case 'Literal':
               // do nothing, just stop it from going to default
               break;
@@ -211,12 +216,12 @@ export class FieldModel implements IFieldModel {
           }
         },
         VariableDeclarator: declarator => {
-          localVariables.push((declarator as DeclaratorNode).id);
+          whiteList.push((declarator as DeclaratorNode).id);
         },
       });
-      // remove localVariables from refs
+      // remove whiteList from refs
       for (const key in this.refComponentInfos) {
-        if (localVariables.some(({ name }) => key === name)) {
+        if (whiteList.some(({ name }) => key === name)) {
           delete this.refComponentInfos[key as any];
         }
       }
