@@ -10,6 +10,8 @@ import { ExpressionEditor } from '../Form/ExpressionEditor';
 import { WidgetProps } from '../../types/widget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { ExpressionEditorProps } from './ExpressionEditor';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
+import { JSONSchema7 } from 'json-schema';
 
 const IGNORE_SPEC_TYPES = ['array', 'object'];
 
@@ -60,16 +62,16 @@ const RowItem = (props: RowItemProps) => {
     }),
     []
   );
-  const valueSpec = useMemo(() => spec?.properties?.[rowKey], [spec, rowKey]);
+  const valueSpec = useMemo(
+    () => (onlySetValue ? spec?.properties?.[rowKey] : spec?.patternProperties?.['^.*$']),
+    [spec, rowKey, onlySetValue]
+  );
   const valueSpecWithExpressionOptions = useMemo(
     () =>
       valueSpec && typeof valueSpec !== 'boolean'
-        ? {
-            ...valueSpec,
-            widgetOptions: {
-              compactOptions: expressionOptions.compactOptions,
-            },
-          }
+        ? mergeWidgetOptionsIntoSpec<'core/v1/expression'>(valueSpec, {
+            compactOptions: expressionOptions.compactOptions,
+          })
         : Type.Any({
             widget: 'core/v1/expression',
             widgetOptions: {
@@ -131,15 +133,16 @@ const RowItem = (props: RowItemProps) => {
         <HStack minWidth={0} flex="2 2 66.66%" alignItems="center">
           {valueSpec === undefined ||
           typeof valueSpec === 'boolean' ||
-          IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) ? (
-            <ExpressionWidget
-              component={component}
-              path={nextPath}
-              spec={valueSpecWithExpressionOptions}
-              services={services}
-              level={level + 1}
-              value={value}
-              onChange={onValueChange}
+          (IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) &&
+            valueSpecWithExpressionOptions?.widget === undefined) ? (
+              <ExpressionWidget
+                component={component}
+                path={nextPath}
+                spec={valueSpecWithExpressionOptions}
+                services={services}
+                level={level + 1}
+                value={value}
+                onChange={onValueChange}
             />
           ) : (
             <SpecWidget
@@ -214,8 +217,13 @@ export const RecordEditor: React.FC<RecordEditorProps> = props => {
   );
 
   const onAddRow = useCallback(() => {
-    setRows(prev => [...prev, ['', '']]);
-  }, []);
+    const propSpec = spec?.patternProperties?.['^.*$'];
+
+    setRows(prev => [
+      ...prev,
+      ['', propSpec ? generateDefaultValueFromSpec(propSpec as JSONSchema7) : ''],
+    ]);
+  }, [spec]);
   const onRemoveRow = useCallback(
     (i: number) => {
       const newRows = produce(rows, draft => {
