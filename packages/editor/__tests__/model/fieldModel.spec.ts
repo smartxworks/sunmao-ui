@@ -100,6 +100,12 @@ describe('Field test', () => {
     expect(field.refComponentInfos).toEqual({});
   });
 
+  it('should not count keys of object destructuring assignment in refs', () => {
+    const field = new FieldModel('{{ ({foo: bar}) => bar }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos).toEqual({});
+  });
+
   it('get value by path', () => {
     const field = new FieldModel({ foo: [{}, { bar: { baz: 'Hello, world!' } }] });
     expect(field.getPropertyByPath('foo.1.bar.baz')?.getValue()).toEqual('Hello, world!');

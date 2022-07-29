@@ -21,6 +21,8 @@ import { JSONSchema7 } from 'json-schema';
 
 export type FunctionNode = ASTNode & { params: ASTNode[] };
 export type DeclaratorNode = ASTNode & { id: ASTNode };
+export type ObjectPatternNode = ASTNode & { properties: PropertyNode[] };
+export type PropertyNode = ASTNode & { value: ASTNode };
 export type LiteralNode = ASTNode & { raw: string };
 export type SequenceExpressionNode = ASTNode & { expressions: LiteralNode[] };
 export type ExpressionNode = ASTNode & {
@@ -166,7 +168,7 @@ export class FieldModel implements IFieldModel {
       let lastIdentifier: ComponentId = '' as ComponentId;
       const node = (acornLoose as typeof acorn).parse(exp, { ecmaVersion: 2020 });
       this.astNodes[exp] = node as ASTNode;
-
+      console.log('node', node);
       // These are variables of iife or other identifiers, they can't be validated
       // so they should not be added in refs
       let whiteList: ASTNode[] = [];
@@ -215,11 +217,19 @@ export class FieldModel implements IFieldModel {
               lastIdentifier = '' as ComponentId;
           }
         },
+        ObjectPattern: objPatternNode => {
+          console.log('objPatternNode', objPatternNode);
+          const propertyNodes = (objPatternNode as ObjectPatternNode).properties;
+          propertyNodes.forEach(property => {
+            whiteList.push(property.value);
+          });
+        },
         VariableDeclarator: declarator => {
           whiteList.push((declarator as DeclaratorNode).id);
         },
       });
       // remove whiteList from refs
+      console.log(' this.refComponentInfos', this.refComponentInfos);
       for (const key in this.refComponentInfos) {
         if (whiteList.some(({ name }) => key === name)) {
           delete this.refComponentInfos[key as any];
