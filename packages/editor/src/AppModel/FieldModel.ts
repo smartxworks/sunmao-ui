@@ -169,7 +169,6 @@ export class FieldModel implements IFieldModel {
       let lastIdentifier: ComponentId = '' as ComponentId;
       const node = (acornLoose as typeof acorn).parse(exp, { ecmaVersion: 2020 });
       this.astNodes[exp] = node as ASTNode;
-      console.log('node', node);
       // These are variables of iife or other identifiers, they can't be validated
       // so they should not be added in refs
       let whiteList: ASTNode[] = [];
@@ -219,7 +218,6 @@ export class FieldModel implements IFieldModel {
           }
         },
         ObjectPattern: objPatternNode => {
-          console.log('objPatternNode', objPatternNode);
           const propertyNodes = (objPatternNode as ObjectPatternNode).properties;
           propertyNodes.forEach(property => {
             whiteList.push(property.value);
@@ -233,7 +231,6 @@ export class FieldModel implements IFieldModel {
         },
       });
       // remove whiteList from refs
-      console.log(' this.refComponentInfos', this.refComponentInfos);
       for (const key in this.refComponentInfos) {
         if (whiteList.some(({ name }) => key === name)) {
           delete this.refComponentInfos[key as any];
