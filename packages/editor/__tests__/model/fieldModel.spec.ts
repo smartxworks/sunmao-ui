@@ -35,6 +35,14 @@ describe('Field test', () => {
     ]);
   });
 
+  it('stop member expression when meeting other expression ast node', () => {
+    const field = new FieldModel('{{ Array.from([]).fill() }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos['Array' as ComponentId].refProperties).toEqual([
+      'from',
+    ]);
+  });
+
   it('parse inline variable in expression', () => {
     const field = new FieldModel('{{ [].length }}');
     expect(field.isDynamic).toEqual(true);
@@ -82,6 +90,24 @@ describe('Field test', () => {
 
   it('should not count variables declared in iife in refs', () => {
     const field = new FieldModel('{{(function() {const foo = "bar"})() }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos).toEqual({});
+  });
+
+  it('should not count object keys in refs', () => {
+    const field = new FieldModel('{{ {foo: 1, bar: 2, baz: 3, } }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos).toEqual({});
+  });
+
+  it('should not count keys of object destructuring assignment in refs', () => {
+    const field = new FieldModel('{{ ({foo: bar}) => bar }}');
+    expect(field.isDynamic).toEqual(true);
+    expect(field.refComponentInfos).toEqual({});
+  });
+
+  it('should not count keys of array destructuring assignment in refs', () => {
+    const field = new FieldModel('{{ ([bar]) => bar }}');
     expect(field.isDynamic).toEqual(true);
     expect(field.refComponentInfos).toEqual({});
   });
