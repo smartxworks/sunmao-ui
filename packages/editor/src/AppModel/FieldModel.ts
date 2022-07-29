@@ -22,6 +22,7 @@ import { JSONSchema7 } from 'json-schema';
 export type FunctionNode = ASTNode & { params: ASTNode[] };
 export type DeclaratorNode = ASTNode & { id: ASTNode };
 export type ObjectPatternNode = ASTNode & { properties: PropertyNode[] };
+export type ArrayPatternNode = ASTNode & { elements: ASTNode[] };
 export type PropertyNode = ASTNode & { value: ASTNode };
 export type LiteralNode = ASTNode & { raw: string };
 export type SequenceExpressionNode = ASTNode & { expressions: LiteralNode[] };
@@ -223,6 +224,9 @@ export class FieldModel implements IFieldModel {
           propertyNodes.forEach(property => {
             whiteList.push(property.value);
           });
+        },
+        ArrayPattern: arrayPatternNode => {
+          whiteList = [...whiteList, ...(arrayPatternNode as ArrayPatternNode).elements];
         },
         VariableDeclarator: declarator => {
           whiteList.push((declarator as DeclaratorNode).id);
