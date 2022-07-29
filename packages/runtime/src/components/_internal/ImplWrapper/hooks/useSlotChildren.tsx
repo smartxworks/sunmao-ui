@@ -25,6 +25,10 @@ export function getSlotElements(
        * TODO: better naming strategy to avoid of conflicts
        */
       const slotKey = `${c.id}_${slot}${key ? `_${key}` : ''}`;
+      /**
+       * The shallow compare is just a heuristic optimization,
+       * feel free to improve it.
+       */
       if (!shallowCompare(services.stateManager.slotStore[slotKey], slotProps)) {
         services.stateManager.slotStore[slotKey] = slotProps;
       }
