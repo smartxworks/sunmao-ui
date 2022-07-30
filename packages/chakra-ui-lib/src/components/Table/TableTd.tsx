@@ -5,7 +5,7 @@ import {
   PropsBeforeEvaled,
 } from '@sunmao-ui/core';
 import { Static } from '@sinclair/typebox';
-import { ColumnSpec, ColumnsPropertySpec } from './TableTypes';
+import { ColumnSpec, ColumnsPropertySpec, ContentSlotPropsSpec } from './TableTypes';
 import { Button, Link, Td, Text } from '@chakra-ui/react';
 import {
   LIST_ITEM_EXP,
@@ -14,6 +14,8 @@ import {
   UIServices,
   ExpressionError,
   ImplWrapper,
+  SlotsElements,
+  formatSlotKey,
 } from '@sunmao-ui/runtime';
 
 export const TableTd: React.FC<{
@@ -25,9 +27,23 @@ export const TableTd: React.FC<{
   services: UIServices;
   component: RuntimeComponentSchema;
   app: RuntimeApplication;
+  slotsElements: SlotsElements<{
+    content: {
+      slotProps: typeof ContentSlotPropsSpec;
+    };
+  }>;
 }> = props => {
-  const { item, index, component, column, rawColumns, onClickItem, services, app } =
-    props;
+  const {
+    item,
+    index,
+    component,
+    column,
+    rawColumns,
+    onClickItem,
+    services,
+    app,
+    slotsElements,
+  } = props;
   const evalOptions = {
     evalListItem: true,
     scopeObject: {
@@ -118,6 +134,14 @@ export const TableTd: React.FC<{
         id: `${component.id}_${childSchema.id}_${index}`,
       };
 
+      /**
+       * FIXME: temporary hack
+       */
+      slotsElements.content?.({
+        [LIST_ITEM_EXP]: item,
+        [LIST_ITEM_INDEX_EXP]: index,
+      });
+
       content = (
         <ImplWrapper
           key={_childrenSchema.id}
@@ -127,9 +151,9 @@ export const TableTd: React.FC<{
           childrenMap={{}}
           isInModule
           evalListItem
-          slotProps={{
-            [LIST_ITEM_EXP]: item,
-            [LIST_ITEM_INDEX_EXP]: index,
+          slotContext={{
+            renderSet: new Set(),
+            slotKey: formatSlotKey(_childrenSchema.id, 'td', `td_${index}`),
           }}
         />
       );

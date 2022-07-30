@@ -5,6 +5,13 @@ import { ImplWrapper } from '../ImplWrapper';
 import { shallowCompare } from '@sunmao-ui/shared';
 import { slotReceiver } from '../SlotReciver';
 
+export function formatSlotKey(componentId: string, slot: string, key: string): string {
+  /**
+   * TODO: better naming strategy to avoid of conflicts
+   */
+  return `${componentId}_${slot}${key ? `_${key}` : ''}`;
+}
+
 export function getSlotElements(
   props: ImplWrapperProps & { children?: React.ReactNode }
 ): SlotsElements<Record<string, SlotSpec>> {
@@ -21,10 +28,7 @@ export function getSlotElements(
     });
 
     slotElements[slot] = function getSlot(slotProps, slotFallback, key) {
-      /**
-       * TODO: better naming strategy to avoid of conflicts
-       */
-      const slotKey = `${c.id}_${slot}${key ? `_${key}` : ''}`;
+      const slotKey = formatSlotKey(c.id, slot, key!);
       /**
        * The shallow compare is just a heuristic optimization,
        * feel free to improve it.
