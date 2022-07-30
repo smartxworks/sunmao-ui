@@ -85,6 +85,7 @@ export default implementRuntimeTrait({
     subscribeMethods,
     componentId,
     disabled,
+    slotKey,
   }) => {
     const lazy = _lazy === undefined ? true : _lazy;
 
@@ -157,7 +158,13 @@ export default implementRuntimeTrait({
             const rawOnComplete = trait.properties.onComplete;
 
             onComplete?.forEach((_, index) => {
-              generateCallback(onComplete[index], rawOnComplete, index, services)();
+              generateCallback(
+                onComplete[index],
+                rawOnComplete,
+                index,
+                services,
+                slotKey
+              )();
             });
           } else {
             // TODO: Add FetchError class and remove console info
@@ -174,7 +181,7 @@ export default implementRuntimeTrait({
             const rawOnError = trait.properties.onError;
 
             onError?.forEach((_, index) => {
-              generateCallback(onError[index], rawOnError, index, services)();
+              generateCallback(onError[index], rawOnError, index, services, slotKey)();
             });
           }
         },
@@ -193,7 +200,7 @@ export default implementRuntimeTrait({
           const rawOnError = trait.properties.onError;
 
           onError?.forEach((_, index) => {
-            generateCallback(onError[index], rawOnError, index, services)();
+            generateCallback(onError[index], rawOnError, index, services, slotKey)();
           });
         }
       );

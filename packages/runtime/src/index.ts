@@ -94,6 +94,7 @@ export {
   StringUnion,
   generateDefaultValueFromSpec,
 } from '@sunmao-ui/shared';
+export { formatSlotKey } from './components/_internal/ImplWrapper/hooks/useSlotChildren';
 
 // TODO: check this export
 export { watch } from './utils/watchReactivity';
