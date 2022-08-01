@@ -43,7 +43,6 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetType>> = props => 
       overrideScope: true,
       fallbackWhenError: exp => exp,
     });
-    console.log('evaledValue', evaledValue);
     if (!Array.isArray(evaledValue)) {
       return (
         <div>
@@ -54,7 +53,6 @@ export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetType>> = props => 
 
     value = evaledValue;
   }
-
   const isNotBaseType = itemSpec.type === 'object' || itemSpec.type === 'array';
 
   return isNotBaseType ? (
