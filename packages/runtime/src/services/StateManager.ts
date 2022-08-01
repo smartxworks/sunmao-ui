@@ -29,6 +29,8 @@ type EvalOptions = {
   ignoreEvalError?: boolean;
 };
 
+type EvaledResult<T> = T extends string ? unknown : PropsAfterEvaled<Exclude<T, string>>;
+
 // TODO: use web worker
 const DefaultDependencies = {
   dayjs,
@@ -167,7 +169,7 @@ export class StateManager {
   deepEval<T extends Record<string, unknown> | any[] | string>(
     value: T,
     options: EvalOptions = {}
-  ): T extends string ? unknown : PropsAfterEvaled<Exclude<T, string>> {
+  ): EvaledResult<T> {
     // just eval
     if (typeof value !== 'string') {
       return this.mapValuesDeep(value, ({ value }) => {
@@ -175,17 +177,15 @@ export class StateManager {
           return value;
         }
         return this._maskedEval(value, options);
-      }) as T extends string ? unknown : PropsAfterEvaled<Exclude<T, string>>;
+      }) as EvaledResult<T>;
     } else {
-      return this._maskedEval(value, options) as T extends string
-        ? unknown
-        : PropsAfterEvaled<Exclude<T, string>>;
+      return this._maskedEval(value, options) as EvaledResult<T>;
     }
   }
 
   deepEvalAndWatch<T extends Record<string, unknown> | any[] | string>(
     value: T,
-    watcher: (params: { result: PropsAfterEvaled<Exclude<T, string>> }) => void,
+    watcher: (params: { result: EvaledResult<T> }) => void,
     options: EvalOptions = {}
   ) {
     const stops: ReturnType<typeof watch>[] = [];
@@ -195,8 +195,8 @@ export class StateManager {
       ? unknown
       : PropsAfterEvaled<Exclude<T, string>>;
 
+    // watch change
     if (value && typeof value === 'object') {
-      // watch change
       let resultCache = evaluated as PropsAfterEvaled<Exclude<T, string>>;
 
       this.mapValuesDeep(value, ({ value, path }) => {
@@ -219,11 +219,23 @@ export class StateManager {
             resultCache = produce(resultCache, draft => {
               set(draft, path, newV);
             });
-            watcher({ result: resultCache });
+            watcher({ result: resultCache as EvaledResult<T> });
           }
         );
         stops.push(stop);
       });
+    } else {
+      const stop = watch(
+        () => {
+          const result = this._maskedEval(value, options);
+
+          return result;
+        },
+        newV => {
+          watcher({ result: newV as EvaledResult<T> });
+        }
+      );
+      stops.push(stop);
     }
 
     return {
