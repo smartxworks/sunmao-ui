@@ -28,48 +28,48 @@ describe('evalExpression function', () => {
   it('can eval {{}} expression', () => {
     const evalOptions = { evalListItem: false, scopeObject: scope };
 
-    expect(stateManager.maskedEval('value', evalOptions)).toEqual('value');
-    expect(stateManager.maskedEval('{{true}}', evalOptions)).toEqual(true);
-    expect(stateManager.maskedEval('{{ false }}', evalOptions)).toEqual(false);
-    expect(stateManager.maskedEval('{{[]}}', evalOptions)).toEqual([]);
-    expect(stateManager.maskedEval('{{ [] }}', evalOptions)).toEqual([]);
-    expect(stateManager.maskedEval('{{ [1,2,3] }}', evalOptions)).toEqual([1, 2, 3]);
+    expect(stateManager.deepEval('value', evalOptions)).toEqual('value');
+    expect(stateManager.deepEval('{{true}}', evalOptions)).toEqual(true);
+    expect(stateManager.deepEval('{{ false }}', evalOptions)).toEqual(false);
+    expect(stateManager.deepEval('{{[]}}', evalOptions)).toEqual([]);
+    expect(stateManager.deepEval('{{ [] }}', evalOptions)).toEqual([]);
+    expect(stateManager.deepEval('{{ [1,2,3] }}', evalOptions)).toEqual([1, 2, 3]);
 
-    expect(stateManager.maskedEval('{{ {} }}', evalOptions)).toEqual({});
-    expect(stateManager.maskedEval('{{ {id: 123} }}', evalOptions)).toEqual({ id: 123 });
-    expect(stateManager.maskedEval('{{nothing}}', evalOptions)).toBeInstanceOf(
+    expect(stateManager.deepEval('{{ {} }}', evalOptions)).toEqual({});
+    expect(stateManager.deepEval('{{ {id: 123} }}', evalOptions)).toEqual({ id: 123 });
+    expect(stateManager.deepEval('{{nothing}}', evalOptions)).toBeInstanceOf(
       ExpressionError
     );
 
-    expect(stateManager.maskedEval('{{input1.value}}', evalOptions)).toEqual('world');
-    expect(stateManager.maskedEval('{{checkbox.value}}', evalOptions)).toEqual(true);
-    expect(stateManager.maskedEval('{{fetch.data}}', evalOptions)).toMatchObject([
+    expect(stateManager.deepEval('{{input1.value}}', evalOptions)).toEqual('world');
+    expect(stateManager.deepEval('{{checkbox.value}}', evalOptions)).toEqual(true);
+    expect(stateManager.deepEval('{{fetch.data}}', evalOptions)).toMatchObject([
       { id: 1 },
       { id: 2 },
     ]);
 
-    expect(stateManager.maskedEval('{{{{}}}}', evalOptions)).toEqual(undefined);
+    expect(stateManager.deepEval('{{{{}}}}', evalOptions)).toEqual(undefined);
 
     expect(
-      stateManager.maskedEval('{{ value }}, {{ input1.value }}!', evalOptions)
+      stateManager.deepEval('{{ value }}, {{ input1.value }}!', evalOptions)
     ).toEqual('Hello, world!');
   });
 
   it('can eval $listItem expression', () => {
     expect(
-      stateManager.maskedEval('{{ $listItem.value }}', {
+      stateManager.deepEval('{{ $listItem.value }}', {
         evalListItem: false,
         scopeObject: scope,
       })
     ).toEqual('{{ $listItem.value }}');
     expect(
-      stateManager.maskedEval('{{ $listItem.value }}', {
+      stateManager.deepEval('{{ $listItem.value }}', {
         evalListItem: true,
         scopeObject: scope,
       })
     ).toEqual('foo');
     expect(
-      stateManager.maskedEval(
+      stateManager.deepEval(
         '{{ {{$listItem.value}}Input.value + {{$moduleId}}Fetch.value }}!',
         { evalListItem: true, scopeObject: scope }
       )
@@ -78,13 +78,13 @@ describe('evalExpression function', () => {
 
   it('can override scope', () => {
     expect(
-      stateManager.maskedEval('{{value}}', {
+      stateManager.deepEval('{{value}}', {
         scopeObject: { override: 'foo' },
         overrideScope: true,
       })
     ).toBeInstanceOf(ExpressionError);
     expect(
-      stateManager.maskedEval('{{override}}', {
+      stateManager.deepEval('{{override}}', {
         scopeObject: { override: 'foo' },
         overrideScope: true,
       })
@@ -93,7 +93,7 @@ describe('evalExpression function', () => {
 
   it('can fallback to specific value when error', () => {
     expect(
-      stateManager.maskedEval('{{wrongExp}}', {
+      stateManager.deepEval('{{wrongExp}}', {
         fallbackWhenError: exp => exp,
       })
     ).toEqual('{{wrongExp}}');
@@ -101,7 +101,7 @@ describe('evalExpression function', () => {
 
   it('can partially eval nest expression, even when some error happens', () => {
     expect(
-      stateManager.maskedEval('{{text}} {{{{ $moduleId }}__state0.value}}', {
+      stateManager.deepEval('{{text}} {{{{ $moduleId }}__state0.value}}', {
         scopeObject: {
           $moduleId: 'myModule',
           text: 'hello',
@@ -109,5 +109,47 @@ describe('evalExpression function', () => {
         ignoreEvalError: true,
       })
     ).toEqual(`hello {{myModule__state0.value}}`);
+  });
+
+  it('can watch the state change in the object value', () => {
+    const stateManager = new StateManager();
+
+    stateManager.noConsoleError = true;
+    stateManager.store.text = { value: 'hello' };
+
+    return new Promise<void>(resolve => {
+      const { result } = stateManager.deepEvalAndWatch(
+        { text: '{{ text.value }}' },
+        newValue => {
+          expect(newValue.result.text).toBe('bye');
+          resolve();
+        }
+      );
+
+      expect(result.text).toBe('hello');
+
+      stateManager.store.text.value = 'bye';
+    });
+  });
+
+  it('can watch the state change in the expression string', () => {
+    const stateManager = new StateManager();
+
+    stateManager.noConsoleError = true;
+    stateManager.store.text = { value: 'hello' };
+
+    return new Promise<void>(resolve => {
+      const { result, stop } = stateManager.deepEvalAndWatch(
+        '{{ text.value }}',
+        newValue => {
+          expect(newValue.result).toBe('bye');
+          resolve();
+        }
+      );
+
+      expect(result).toBe('hello');
+
+      stateManager.store.text.value = 'bye';
+    });
   });
 });

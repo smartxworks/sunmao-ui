@@ -29,6 +29,8 @@ type EvalOptions = {
   ignoreEvalError?: boolean;
 };
 
+type EvaledResult<T> = T extends string ? unknown : PropsAfterEvaled<Exclude<T, string>>;
+
 // TODO: use web worker
 const DefaultDependencies = {
   dayjs,
@@ -94,7 +96,7 @@ export class StateManager {
     }
   };
 
-  maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
+  private _maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
     const { evalListItem = false, fallbackWhenError } = options;
     let result: unknown[] = [];
 
@@ -134,6 +136,13 @@ export class StateManager {
     }
   }
 
+  /**
+   * @deprecated please use the `deepEval` instead
+   */
+  maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
+    return this.deepEval(raw, options);
+  }
+
   mapValuesDeep<T extends object>(
     obj: T,
     fn: (params: {
@@ -157,58 +166,77 @@ export class StateManager {
     }) as PropsAfterEvaled<T>;
   }
 
-  deepEval<T extends Record<string, unknown> | any[]>(
-    obj: T,
+  deepEval<T extends Record<string, unknown> | any[] | string>(
+    value: T,
     options: EvalOptions = {}
-  ): PropsAfterEvaled<T> {
+  ): EvaledResult<T> {
     // just eval
-    const evaluated = this.mapValuesDeep(obj, ({ value }) => {
-      if (typeof value !== 'string') {
-        return value;
-      }
-      return this.maskedEval(value, options);
-    });
-
-    return evaluated;
+    if (typeof value !== 'string') {
+      return this.mapValuesDeep(value, ({ value }) => {
+        if (typeof value !== 'string') {
+          return value;
+        }
+        return this._maskedEval(value, options);
+      }) as EvaledResult<T>;
+    } else {
+      return this._maskedEval(value, options) as EvaledResult<T>;
+    }
   }
 
-  deepEvalAndWatch<T extends Record<string, unknown> | any[]>(
-    obj: T,
-    watcher: (params: { result: PropsAfterEvaled<T> }) => void,
+  deepEvalAndWatch<T extends Record<string, unknown> | any[] | string>(
+    value: T,
+    watcher: (params: { result: EvaledResult<T> }) => void,
     options: EvalOptions = {}
   ) {
     const stops: ReturnType<typeof watch>[] = [];
 
     // just eval
-    const evaluated = this.deepEval(obj, options);
+    const evaluated = this.deepEval(value, options) as T extends string
+      ? unknown
+      : PropsAfterEvaled<Exclude<T, string>>;
 
     // watch change
-    let resultCache: PropsAfterEvaled<T> = evaluated;
-    this.mapValuesDeep(obj, ({ value, path }) => {
-      const isDynamicExpression =
-        typeof value === 'string' &&
-        parseExpression(value).some(exp => typeof exp !== 'string');
+    if (value && typeof value === 'object') {
+      let resultCache = evaluated as PropsAfterEvaled<Exclude<T, string>>;
 
-      if (!isDynamicExpression) return;
+      this.mapValuesDeep(value, ({ value, path }) => {
+        const isDynamicExpression =
+          typeof value === 'string' &&
+          parseExpression(value).some(exp => typeof exp !== 'string');
 
+        if (!isDynamicExpression) return;
+
+        const stop = watch(
+          () => {
+            const result = this._maskedEval(value as string, options);
+
+            return result;
+          },
+          newV => {
+            if (isProxy(newV)) {
+              newV = toRaw(newV);
+            }
+            resultCache = produce(resultCache, draft => {
+              set(draft, path, newV);
+            });
+            watcher({ result: resultCache as EvaledResult<T> });
+          }
+        );
+        stops.push(stop);
+      });
+    } else {
       const stop = watch(
         () => {
-          const result = this.maskedEval(value as string, options);
+          const result = this._maskedEval(value, options);
 
           return result;
         },
         newV => {
-          if (isProxy(newV)) {
-            newV = toRaw(newV);
-          }
-          resultCache = produce(resultCache, draft => {
-            set(draft, path, newV);
-          });
-          watcher({ result: resultCache });
+          watcher({ result: newV as EvaledResult<T> });
         }
       );
       stops.push(stop);
-    });
+    }
 
     return {
       result: evaluated,
