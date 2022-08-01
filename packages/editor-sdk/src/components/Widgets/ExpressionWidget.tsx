@@ -213,14 +213,6 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const onFocus = useCallback(() => {
     evalCode(code);
   }, [code, evalCode]);
-  const onBlur = useCallback(
-    newCode => {
-      const newValue = getParsedValue(newCode, type);
-
-      onChange(newValue);
-    },
-    [type, onChange]
-  );
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -241,7 +233,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
       error={error}
       defs={defs}
       onChange={onCodeChange}
-      onBlur={onBlur}
+      onBlur={onChange}
       onFocus={onFocus}
     />
   );
