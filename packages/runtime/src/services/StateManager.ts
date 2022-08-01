@@ -1,4 +1,4 @@
-import _, { toNumber, mapValues, isArray, isPlainObject, set } from 'lodash';
+import _, { mapValues, isArray, isPlainObject, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';
@@ -7,13 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { isProxy, reactive, toRaw } from '@vue/reactivity';
 import { watch } from '../utils/watchReactivity';
-import {
-  isNumeric,
-  parseExpression,
-  consoleError,
-  ConsoleType,
-  ExpChunk,
-} from '@sunmao-ui/shared';
+import { parseExpression, consoleError, ConsoleType, ExpChunk } from '@sunmao-ui/shared';
 import { type PropsAfterEvaled } from '@sunmao-ui/core';
 
 dayjs.extend(relativeTime);
@@ -101,15 +95,6 @@ export class StateManager {
     let result: unknown[] = [];
 
     try {
-      if (isNumeric(raw)) {
-        return toNumber(raw);
-      }
-      if (raw === 'true') {
-        return true;
-      }
-      if (raw === 'false') {
-        return false;
-      }
       const expChunk = parseExpression(raw, evalListItem);
 
       if (typeof expChunk === 'string') {
