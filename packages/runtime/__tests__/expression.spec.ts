@@ -110,4 +110,46 @@ describe('evalExpression function', () => {
       })
     ).toEqual(`hello {{myModule__state0.value}}`);
   });
+
+  it('can watch the state change in the object value', () => {
+    const stateManager = new StateManager();
+
+    stateManager.noConsoleError = true;
+    stateManager.store.text = { value: 'hello' };
+
+    return new Promise<void>(resolve => {
+      const { result } = stateManager.deepEvalAndWatch(
+        { text: '{{ text.value }}' },
+        newValue => {
+          expect(newValue.result.text).toBe('bye');
+          resolve();
+        }
+      );
+
+      expect(result.text).toBe('hello');
+
+      stateManager.store.text.value = 'bye';
+    });
+  });
+
+  it('can watch the state change in the expression string', () => {
+    const stateManager = new StateManager();
+
+    stateManager.noConsoleError = true;
+    stateManager.store.text = { value: 'hello' };
+
+    return new Promise<void>(resolve => {
+      const { result, stop } = stateManager.deepEvalAndWatch(
+        '{{ text.value }}',
+        newValue => {
+          expect(newValue.result).toBe('bye');
+          resolve();
+        }
+      );
+
+      expect(result).toBe('hello');
+
+      stateManager.store.text.value = 'bye';
+    });
+  });
 });
