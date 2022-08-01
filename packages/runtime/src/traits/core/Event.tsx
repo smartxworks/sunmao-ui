@@ -31,12 +31,9 @@ export const generateCallback = (
       scopeObject: { $slot: slotProps },
       evalListItem,
     };
-    const evaledHandlers =
-      typeof rawHandlers === 'string'
-        ? (stateManager.maskedEval(rawHandlers, evalOptions) as Static<
-            typeof EventCallBackHandlerSpec
-          >[])
-        : stateManager.deepEval(rawHandlers, evalOptions);
+    const evaledHandlers = stateManager.deepEval(rawHandlers, evalOptions) as Static<
+      typeof EventCallBackHandlerSpec
+    >[];
     const evaledHandler = evaledHandlers[index];
 
     if (evaledHandler.disabled && typeof evaledHandler.disabled === 'boolean') {

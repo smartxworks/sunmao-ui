@@ -155,7 +155,7 @@ const RowItem = (props: RowItemProps) => {
         </HStack>
       ) : (
         (() => {
-          const evaledResult = stateManager.maskedEval(value);
+          const evaledResult = stateManager.deepEval(value);
 
           return (
             <Box flex="2 2 66.66%" minWidth={0}>
