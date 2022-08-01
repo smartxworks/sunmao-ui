@@ -137,10 +137,7 @@ export class EditorMaskManager {
   };
 
   private getMaskPosition(id: string) {
-    let rect = this.eleMap.get(id)?.getBoundingClientRect();
-    if (this.eleMap.get(id)?.classList.contains('chakra-checkbox__input')) {
-      rect = this.eleMap.get(id)?.parentElement?.getBoundingClientRect();
-    }
+    const rect = this.eleMap.get(id)?.getBoundingClientRect();
     if (!this.maskContainerRect || !rect) return null;
     return {
       id,
@@ -182,7 +179,7 @@ export class EditorMaskManager {
 
     // check all the parents of hoverElement, until find a sunmao component's element
     let curr = hoverElement;
-    while (!this.elementIdMap.has(curr) && !curr.classList.contains('chakra-checkbox')) {
+    while (!this.elementIdMap.has(curr)) {
       if (curr !== root && curr.parentElement) {
         curr = curr.parentElement;
       } else {
@@ -191,14 +188,7 @@ export class EditorMaskManager {
     }
 
     this.lastHoverElement = hoverElement;
-    if (curr.classList.contains('chakra-checkbox')) {
-      this.setHoverComponentId(
-        this.elementIdMap.get(curr.querySelector('.chakra-checkbox__input') as Element) ||
-          ''
-      );
-    } else {
-      this.setHoverComponentId(this.elementIdMap.get(curr) || '');
-    }
+    this.setHoverComponentId(this.elementIdMap.get(curr) || '');
   }
 
   private refreshMaskPosition() {
