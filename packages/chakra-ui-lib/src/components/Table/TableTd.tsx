@@ -38,7 +38,7 @@ export const TableTd: React.FC<{
   let buttonConfig = column.buttonConfig;
 
   if (column.displayValue) {
-    const result = services.stateManager.maskedEval(column.displayValue, evalOptions);
+    const result = services.stateManager.deepEval(column.displayValue, evalOptions);
 
     value = result instanceof ExpressionError ? '' : result;
   }
@@ -66,12 +66,10 @@ export const TableTd: React.FC<{
     case 'button':
       const onClick = () => {
         onClickItem();
-        const evaledColumns =
-          typeof rawColumns === 'string'
-            ? (services.stateManager.maskedEval(rawColumns, evalOptions) as Static<
-                typeof ColumnsPropertySpec
-              >)
-            : services.stateManager.deepEval(rawColumns, evalOptions);
+        const evaledColumns = services.stateManager.deepEval(
+          rawColumns,
+          evalOptions
+        ) as Static<typeof ColumnsPropertySpec>;
 
         evaledColumns[index].buttonConfig.handlers.forEach(evaledHandler => {
           services.apiService.send('uiMethod', {
