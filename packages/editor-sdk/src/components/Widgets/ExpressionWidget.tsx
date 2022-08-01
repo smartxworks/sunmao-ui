@@ -170,7 +170,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
       try {
         const value = getParsedValue(code, type);
         const result = isExpression(value)
-          ? services.stateManager.maskedEval(value)
+          ? services.stateManager.deepEval(value)
           : value;
 
         if (result instanceof ExpressionError) {
