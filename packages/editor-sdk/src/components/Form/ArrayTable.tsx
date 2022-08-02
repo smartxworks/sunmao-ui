@@ -147,7 +147,7 @@ export const ArrayTable: React.FC<ArrayTableProps> = props => {
               />
             ))
           ) : (
-            <Tr span>
+            <Tr>
               <Td colSpan={(displayedKeys.length || 1) + 2} textAlign="center">
                 No Data
               </Td>
