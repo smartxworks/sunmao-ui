@@ -149,7 +149,7 @@ export default implementRuntimeComponent({
       if (getElement && ref.current) {
         getElement(ref.current.parentElement as HTMLElement);
       }
-    });
+    }, [getElement, ref]);
 
     const args: {
       colorScheme?: Static<ReturnType<typeof getColorSchemePropertySpec>>;
