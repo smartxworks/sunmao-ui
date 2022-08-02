@@ -1,3 +1,4 @@
+import { isProxy, reactive } from '@vue/reactivity';
 import { StateManager, ExpressionError } from '../src/services/StateManager';
 
 describe('evalExpression function', () => {
@@ -24,9 +25,10 @@ describe('evalExpression function', () => {
     },
   };
   const stateManager = new StateManager();
+  stateManager.store = reactive<Record<string, any>>(scope);
   stateManager.noConsoleError = true;
   it('can eval {{}} expression', () => {
-    const evalOptions = { evalListItem: false, scopeObject: scope };
+    const evalOptions = { evalListItem: false };
 
     expect(stateManager.deepEval('value', evalOptions)).toEqual('value');
     expect(stateManager.deepEval('{{true}}', evalOptions)).toEqual(true);
@@ -55,23 +57,27 @@ describe('evalExpression function', () => {
     ).toEqual('Hello, world!');
   });
 
+  it('will not return Proxy', () => {
+    const evalOptions = { evalListItem: false };
+    const fetchData = stateManager.deepEval('{{fetch.data}}', evalOptions);
+    expect(isProxy(fetchData)).toBe(false);
+  });
+
   it('can eval $listItem expression', () => {
     expect(
       stateManager.deepEval('{{ $listItem.value }}', {
         evalListItem: false,
-        scopeObject: scope,
       })
     ).toEqual('{{ $listItem.value }}');
     expect(
       stateManager.deepEval('{{ $listItem.value }}', {
         evalListItem: true,
-        scopeObject: scope,
       })
     ).toEqual('foo');
     expect(
       stateManager.deepEval(
         '{{ {{$listItem.value}}Input.value + {{$moduleId}}Fetch.value }}!',
-        { evalListItem: true, scopeObject: scope }
+        { evalListItem: true }
       )
     ).toEqual('Yes, ok!');
   });
