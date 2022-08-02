@@ -20,6 +20,7 @@ type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
+  // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
   ignoreEvalError?: boolean;
 };
 
@@ -45,8 +46,7 @@ export class StateManager {
 
   dependencies: Record<string, unknown>;
 
-  // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
-  noConsoleError = false;
+  mute = true;
 
   constructor(dependencies: Record<string, unknown> = {}) {
     this.dependencies = { ...DefaultDependencies, ...dependencies };
@@ -112,8 +112,8 @@ export class StateManager {
       if (error instanceof Error) {
         const expressionError = new ExpressionError(error.message);
 
-        if (!this.noConsoleError) {
-          consoleError(ConsoleType.Expression, '', expressionError.message);
+        if (!this.mute) {
+          consoleError(ConsoleType.Expression, raw, expressionError.message);
         }
 
         return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
