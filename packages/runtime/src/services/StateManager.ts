@@ -119,6 +119,7 @@ export class StateManager {
       result = expChunk.map(e => this.evalExp(e, options));
 
       if (result.length === 1) {
+        if (isProxy(result[0])) return toRaw(result[0]);
         return result[0];
       }
       return result.join('');
@@ -213,9 +214,6 @@ export class StateManager {
             return result;
           },
           newV => {
-            if (isProxy(newV)) {
-              newV = toRaw(newV);
-            }
             resultCache = produce(resultCache, draft => {
               set(draft, path, newV);
             });
