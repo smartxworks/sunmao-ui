@@ -29,7 +29,7 @@ Spec 本质上是一个 JSON，它的作用是描述组件的参数、行为等�
     displayName: "Input",
     exampleProperties: {
       placeholder: "Input here",
-      disabled: fasle,
+      disabled: false,
     },
   },
   spec: {
@@ -135,7 +135,7 @@ const InputSpec = {
     displayName: 'Input',
     exampleProperties: {
       placeholder: 'Input here',
-      disabled: fasle,
+      disabled: false,
     },
   },
   spec: {

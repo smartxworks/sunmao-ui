@@ -70,6 +70,30 @@ export type { StateManagerInterface } from './services/StateManager';
 export { ModuleRenderer } from './components/_internal/ModuleRenderer';
 export { ImplWrapper } from './components/_internal/ImplWrapper';
 export { default as Text, TextPropertySpec } from './components/_internal/Text';
+export {
+  // constants
+  PRESET_PROPERTY_CATEGORY,
+  CORE_VERSION,
+  CoreComponentName,
+  CoreTraitName,
+  CoreWidgetName,
+  StyleWidgetName,
+  EXPRESSION,
+  LIST_ITEM_EXP,
+  LIST_ITEM_INDEX_EXP,
+  SLOT_PROPS_EXP,
+  GLOBAL_UTIL_METHOD_ID,
+  GLOBAL_MODULE_ID,
+  ExpressionKeywords,
+  AnyTypePlaceholder,
+  // specs
+  EventHandlerSpec,
+  EventCallBackHandlerSpec,
+  ModuleRenderSpec,
+  // utils
+  StringUnion,
+  generateDefaultValueFromSpec,
+} from '@sunmao-ui/shared';
 
 // TODO: check this export
 export { watch } from './utils/watchReactivity';

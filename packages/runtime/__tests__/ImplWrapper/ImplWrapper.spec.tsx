@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import produce from 'immer';
+import React from 'react';
 import { initSunmaoUI } from '../../src';
 import { TestLib } from '../testLib';
 import { destroyTimesMap, renderTimesMap, clearTesterMap } from '../testLib/Tester';
@@ -11,6 +12,7 @@ import {
   MergeStateSchema,
   AsyncMergeStateSchema,
   TabsWithSlotsSchema,
+  ParentRerenderSchema,
 } from './mockSchema';
 
 // A pure single sunmao component will render twice when it mount.
@@ -62,6 +64,28 @@ describe('hidden trait condition', () => {
     expect(screen.getByTestId('tester')).toHaveTextContent(SingleComponentRenderTimes);
     expect(screen.getByTestId('tester-text')).toHaveTextContent('');
     expect(stateManager.store['input1']).toBeUndefined();
+
+    unmount();
+    clearTesterMap();
+  });
+});
+
+describe('when parent rerender change', () => {
+  it('the children should not rerender', () => {
+    const { App, stateManager, apiService } = initSunmaoUI({ libs: [TestLib] });
+    stateManager.noConsoleError = true;
+    const { unmount } = render(<App options={ParentRerenderSchema} />);
+    const childTester = screen.getByTestId('tester');
+    expect(childTester).toHaveTextContent(SingleComponentRenderTimes);
+    act(() => {
+      apiService.send('uiMethod', {
+        componentId: 'input',
+        name: 'setValue',
+        parameters: 'foo',
+      });
+    });
+    expect(childTester).toHaveTextContent(SingleComponentRenderTimes);
+    expect(stateManager.store['input'].value).toBe('foo');
 
     unmount();
     clearTesterMap();

@@ -58,6 +58,7 @@ module.exports = {
     confirmCommit: 'Are you sure you want to proceed with the commit above?',
   },
 
+  subjectLimit: 72,
   allowCustomScopes: false,
   allowBreakingChanges: ['feat', 'fix'],
 };

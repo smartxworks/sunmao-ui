@@ -314,9 +314,22 @@
             {
               "type": "core/v1/validation",
               "properties": {
-                "value": "{{ nameInput.value || \"\" }}",
-                "maxLength": 10,
-                "minLength": 2
+                "validators": [
+                  {
+                    "name": "name",
+                    "value": "{{ nameInput.value || \"\" }}",
+                    "rules": [
+                      {
+                        "type": "length",
+                        "maxLength": 10,
+                        "minLength": 2,
+                        "error": {
+                          "message": "Please input the length between 2 and 10."
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]

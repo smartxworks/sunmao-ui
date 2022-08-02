@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "vite",
     "typings": "tsc --emitDeclarationOnly",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
+    "build": "tsup src/index.ts src/widgets/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
     "serve": "vite preview",
     "lint": "eslint ./src --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix ./src --ext .ts --ext .tsx",

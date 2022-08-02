@@ -21,10 +21,28 @@
             {
               "type": "core/v1/validation",
               "properties": {
-                "value": "{{ emailInput.value || \"\" }}",
-                "maxLength": 20,
-                "minLength": 10,
-                "rule": "email"
+                "validators": [
+                  {
+                    "name": "email",
+                    "value": "{{ emailInput.value || \"\" }}",
+                    "rules": [
+                      {
+                        "type": "email",
+                        "error": {
+                          "message": "Please input the email."
+                        }
+                      },
+                      {
+                        "type": "length",
+                        "maxLength": 20,
+                        "minLength": 10,
+                        "error": {
+                          "message": "Please input the length between 10 and 20."
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]
@@ -34,7 +52,7 @@
           "type": "core/v1/text",
           "properties": {
             "value": {
-              "raw": "{{ emailInput.validResult.errorMsg }}",
+              "raw": "{{ emailInput.validatedResult.email.errors[0]?.message }}",
               "format": "plain"
             }
           },
@@ -54,10 +72,29 @@
             {
               "type": "core/v1/validation",
               "properties": {
-                "value": "{{ phoneInput.value || \"\" }}",
-                "maxLength": 100,
-                "minLength": 0,
-                "rule": "phoneNumber"
+                "validators": [
+                  {
+                    "name": "phone",
+                    "value": "{{ phoneInput.value || \"\" }}",
+                    "rules": [
+                      {
+                        "type": "regex",
+                        "regex": "^1[3456789]\\d{9}$",
+                        "error": {
+                          "message": "Please input the correct phone number."
+                        }
+                      },
+                      {
+                        "type": "length",
+                        "maxLength": 100,
+                        "minLength": 0,
+                        "error": {
+                          "message": "Please input the length between 0 and 100."
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]
@@ -95,7 +132,7 @@
                       "parameters": "{{ `email：${ emailInput.value } phone：${ phoneInput.value }` }}"
                     },
                     "wait": {},
-                    "disabled": "{{ emailInput.validResult.isInvalid || phoneInput.validResult.isInvalid }}"
+                    "disabled": "{{ emailInput.validatedResult.email.isInvalid || phoneInput.validatedResult.phone.isInvalid }}"
                   }
                 ]
               }

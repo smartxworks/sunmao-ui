@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Static, Type } from '@sinclair/typebox';
 import { Checkbox as BaseCheckbox, useCheckboxGroupContext } from '@chakra-ui/react';
 import { implementRuntimeComponent, Text, TextPropertySpec } from '@sunmao-ui/runtime';
@@ -116,7 +116,7 @@ export default implementRuntimeComponent({
     colorScheme,
     mergeState,
     customStyle,
-    elementRef,
+    getElement,
   }) => {
     const groupContext = useCheckboxGroupContext();
     let _defaultIsChecked = false;
@@ -126,6 +126,8 @@ export default implementRuntimeComponent({
       _defaultIsChecked = groupContext.value.some(val => val === value);
     }
     const [checked, setChecked] = useState(_defaultIsChecked);
+
+    const ref = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
       mergeState({ text: text.raw });
@@ -142,6 +144,12 @@ export default implementRuntimeComponent({
     useEffect(() => {
       setChecked(!!defaultIsChecked);
     }, [setChecked, defaultIsChecked]);
+
+    useEffect(() => {
+      if (getElement && ref.current) {
+        getElement(ref.current.parentElement as HTMLElement);
+      }
+    }, [getElement, ref]);
 
     const args: {
       colorScheme?: Static<ReturnType<typeof getColorSchemePropertySpec>>;
@@ -170,7 +178,7 @@ export default implementRuntimeComponent({
         className={css`
           ${customStyle?.content}
         `}
-        ref={elementRef}
+        ref={ref}
       >
         <Text value={text} />
       </BaseCheckbox>
