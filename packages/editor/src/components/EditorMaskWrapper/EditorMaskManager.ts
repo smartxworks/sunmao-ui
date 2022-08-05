@@ -20,6 +20,7 @@ export class EditorMaskManager {
   // rect of mask container
   private maskContainerRect: DOMRect | null = null;
   private resizeObserver: ResizeObserver;
+  private containerResizeObserver: ResizeObserver | null = null;
   private visibleMap = new Map<Element, boolean>();
   private intersectionObserver: IntersectionObserver;
   private MaskPadding = 4;
@@ -49,9 +50,7 @@ export class EditorMaskManager {
   }
 
   init() {
-    this.maskContainerRect =
-      this.maskContainerRef.current?.getBoundingClientRect() || null;
-
+    this.observeContainerResize();
     this.observeIntersection();
     this.observeResize();
     this.refreshElementIdMap();
@@ -83,6 +82,7 @@ export class EditorMaskManager {
   destroy() {
     this.intersectionObserver.disconnect();
     this.resizeObserver.disconnect();
+    this.containerResizeObserver?.disconnect();
     this.services.eventBus.off('HTMLElementsUpdated', this.onHTMLElementsUpdated);
 
     // listen scroll events
@@ -114,6 +114,14 @@ export class EditorMaskManager {
     this.eleMap.forEach(ele => {
       this.resizeObserver.observe(ele);
     });
+  }
+
+  private observeContainerResize() {
+    this.containerResizeObserver = new ResizeObserver(e => {
+      this.maskContainerRect = e[0].contentRect;
+    });
+
+    this.containerResizeObserver.observe(this.maskContainerRef.current!);
   }
 
   private observeIntersection() {
