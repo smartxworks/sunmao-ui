@@ -59,7 +59,7 @@ describe('after the schema changes', () => {
 describe('hidden trait condition', () => {
   it('the hidden component should not merge state in store', () => {
     const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     const { unmount } = render(<App options={HiddenTraitSchema} />);
     expect(screen.getByTestId('tester')).toHaveTextContent(SingleComponentRenderTimes);
     expect(screen.getByTestId('tester-text')).toHaveTextContent('');
@@ -73,7 +73,7 @@ describe('hidden trait condition', () => {
 describe('when parent rerender change', () => {
   it('the children should not rerender', () => {
     const { App, stateManager, apiService } = initSunmaoUI({ libs: [TestLib] });
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     const { unmount } = render(<App options={ParentRerenderSchema} />);
     const childTester = screen.getByTestId('tester');
     expect(childTester).toHaveTextContent(SingleComponentRenderTimes);
@@ -111,7 +111,7 @@ describe('when component merge state synchronously', () => {
       draft.spec.components[1] = temp;
     });
     const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     const { unmount } = render(<App options={newMergeStateSchema} />);
     expect(screen.getByTestId('tester')).toHaveTextContent(SingleComponentRenderTimes);
     expect(screen.getByTestId('tester-text')).toHaveTextContent('foo-bar-baz');
@@ -130,7 +130,7 @@ describe('when component merge state asynchronously', () => {
 
   it('it will cause extra render', async () => {
     const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     const { unmount } = render(<App options={AsyncMergeStateSchema} />);
     await waitFor(timeoutPromise);
     // 4 = 2 default render times + timeout trait run twice causing another 2 renders
@@ -147,7 +147,7 @@ describe('when component merge state asynchronously', () => {
       draft.spec.components[1] = temp;
     });
     const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     const { unmount } = render(<App options={newMergeStateSchema} />);
     await waitFor(timeoutPromise);
     // 5 = 2 default render times + timeout trait run twice causing another 2 renders + order causing change
@@ -161,7 +161,7 @@ describe('when component merge state asynchronously', () => {
 describe('slot trait if condition', () => {
   it('only teardown component state when it is not hidden before the check', () => {
     const { App, stateManager, apiService } = initSunmaoUI({ libs: [TestLib] });
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     const { unmount } = render(<App options={TabsWithSlotsSchema} />);
     expect(screen.getByTestId('tabs')).toHaveTextContent(`Tab OneTab Two`);
 
