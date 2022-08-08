@@ -117,8 +117,9 @@ export class EditorMaskManager {
   }
 
   private observeContainerResize() {
-    this.containerResizeObserver = new ResizeObserver(e => {
-      this.maskContainerRect = e[0].contentRect;
+    this.containerResizeObserver = new ResizeObserver(() => {
+      this.maskContainerRect =
+        this.maskContainerRef.current?.getBoundingClientRect() || null;
     });
 
     this.containerResizeObserver.observe(this.maskContainerRef.current!);
