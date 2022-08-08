@@ -32,6 +32,7 @@ export const Select = implementRuntimeComponent({
       loading: false,
       showSearch: false,
       unmountOnExit: false,
+      showTitle: false,
       options: [
         { value: 'Beijing', text: 'Beijing' },
         { value: 'London', text: 'London' },
@@ -69,6 +70,7 @@ export const Select = implementRuntimeComponent({
     options = [],
     retainInputValue,
     updateWhenDefaultValueChanges,
+    showTitle,
     ...cProps
   } = getComponentProps(props);
   const [value, setValue] = useStateValue(
@@ -130,7 +132,12 @@ export const Select = implementRuntimeComponent({
       }}
     >
       {options.map(o => (
-        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
+        <BaseSelect.Option
+          key={o.value}
+          value={o.value}
+          disabled={o.disabled}
+          {...(showTitle && { title: o.text || o.value })}
+        >
           {o.text || o.value}
         </BaseSelect.Option>
       ))}
