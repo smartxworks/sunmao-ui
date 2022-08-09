@@ -71,11 +71,11 @@ export const PopoverWidget = React.forwardRef<
     emitter.emit('other-popover-close', path);
   }, [path]);
   const handleClickTrigger = useCallback(event => {
-    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
   }, []);
   const handleClickContent = useCallback(
     event => {
-      event.stopPropagation();
+      event.nativeEvent.stopImmediatePropagation();
       emitter.emit('sub-popover-close', path);
     },
     [path]
