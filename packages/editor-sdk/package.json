@@ -17,11 +17,12 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser --metafile",
     "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings",
-    "test": "jest"
+    "test": "jest",
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-esm.json --exclude *.png"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
@@ -33,6 +34,7 @@
     "@sunmao-ui/runtime": "^0.7.3",
     "@sunmao-ui/shared": "^0.2.3",
     "codemirror": "^5.63.3",
+    "lodash": "^4.17.21",
     "formik": "^2.2.9",
     "framer-motion": "^4",
     "immer": "^9.0.6",

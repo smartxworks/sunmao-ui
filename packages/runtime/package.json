@@ -23,10 +23,11 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap --metafile",
     "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
-    "prepublish": "npm run build && npm run typings"
+    "prepublish": "npm run build && npm run typings",
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-iife.json --exclude *.png"
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",
