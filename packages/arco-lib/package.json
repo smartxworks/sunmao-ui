@@ -10,22 +10,21 @@
     "type": "git",
     "url": "git+https://github.com/smartxworks/sunmao-ui-arco-lib.git"
   },
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
-  "unpkg": "dist/iife/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "unpkg": "dist/index.global.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "lib"
   ],
   "scripts": {
     "dev": "vite",
-    "typings": "tsc --emitDeclarationOnly",
-    "build": "tsup src/index.ts src/widgets/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
+    "build": "tsup",
     "serve": "vite preview",
     "lint": "eslint ./src --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix ./src --ext .ts --ext .tsx",
-    "prepublish": "npm run build && npm run typings"
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.34.0",

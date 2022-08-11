@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { Category } from '../../constants/category';
 import { StringUnion } from '../../sunmao-helper';
-import { CoreWidgetName, CORE_VERSION } from '@sunmao-ui/editor-sdk';
+import { CoreWidgetName, CORE_VERSION } from '@sunmao-ui/shared';
 
 const expressionWidget = `${CORE_VERSION}/${CoreWidgetName.Expression}` as const;
 const DisabledTimeSpec = {

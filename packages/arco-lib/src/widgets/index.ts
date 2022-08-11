@@ -1,3 +1,3 @@
-import TablePrimaryKeyWidget from './TablePrimaryKeyWidget';
+import { TablePrimaryKeyWidget } from './TablePrimaryKeyWidget';
 
 export const widgets = [TablePrimaryKeyWidget];
