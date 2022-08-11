@@ -15,7 +15,6 @@
     "isolatedModules": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "composite": true,
     "jsx": "react-jsx",
     "outDir": "./lib",
     "baseUrl": "./",
