@@ -1,4 +1,4 @@
-import { ComponentSchema, RuntimeComponent } from '@sunmao-ui/core';
+import { ComponentSchema, RuntimeComponent, SlotSpec } from '@sunmao-ui/core';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import Ajv, { ValidateFunction } from 'ajv';
 import { AppModel } from '../AppModel/AppModel';
@@ -8,6 +8,7 @@ import {
   IFieldModel,
   ITraitModel,
 } from '../AppModel/IAppModel';
+import { JSONSchema7 } from 'json-schema';
 
 export interface ValidatorMap {
   components: Record<string, ValidateFunction>;
@@ -22,7 +23,17 @@ interface BaseValidateContext {
   appModel: IAppModel;
   ajv: Ajv;
   dependencyNames: string[];
-  componentIdSpecMap: Record<string, RuntimeComponent<string, string, string, string>>;
+  componentIdSpecMap: Record<
+    string,
+    RuntimeComponent<
+      any,
+      any,
+      Record<string, JSONSchema7 | undefined>,
+      ReadonlyArray<string>,
+      Record<string, SlotSpec>,
+      ReadonlyArray<string>
+    >
+  >;
 }
 
 export interface ComponentValidateContext extends BaseValidateContext {

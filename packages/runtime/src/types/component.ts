@@ -1,9 +1,11 @@
+import { JSONSchema7 } from 'json-schema';
 import { Static } from '@sinclair/typebox';
 import {
   RuntimeApplication,
   RuntimeComponentSchema,
   RuntimeComponent,
   SlotSpec,
+  MethodSchema,
 } from '@sunmao-ui/core';
 import React from 'react';
 import { UIServices, ComponentParamsFromApp } from './application';
@@ -29,10 +31,10 @@ export type ComponentImplProps<
   TState,
   TMethods,
   TSlots extends Record<string, SlotSpec>,
-  KStyleSlot extends string,
-  KEvent extends string
+  KStyleSlots extends ReadonlyArray<string>,
+  KEvents extends ReadonlyArray<string>
 > = ImplWrapperProps<TProps, string> &
-  TraitResult<KStyleSlot, KEvent>['props'] &
+  TraitResult<KStyleSlots, KEvents>['props'] &
   RuntimeFunctions<TState, TMethods, TSlots> & {
     elementRef?: React.MutableRefObject<any>;
     getElement?: (ele: HTMLElement) => void;
@@ -40,21 +42,23 @@ export type ComponentImplProps<
 
 export type ComponentImpl<
   TProps extends Record<string, unknown> = Record<string, unknown>,
-  TState = any,
+  TState = Record<string, any>,
   TMethods = Record<string, any>,
   TSlots extends Record<string, SlotSpec> = Record<string, any>,
-  KStyleSlot extends string = string,
-  KEvent extends string = string
+  KStyleSlots extends ReadonlyArray<string> = ReadonlyArray<string>,
+  KEvents extends ReadonlyArray<string> = ReadonlyArray<string>
 > = React.FC<
-  TProps & ComponentImplProps<TProps, TState, TMethods, TSlots, KStyleSlot, KEvent>
+  TProps & ComponentImplProps<TProps, TState, TMethods, TSlots, KStyleSlots, KEvents>
 >;
 
 export type ImplementedRuntimeComponent<
-  KMethodName extends string,
-  KStyleSlot extends string,
-  KSlot extends string,
-  KEvent extends string
-> = RuntimeComponent<KMethodName, KStyleSlot, KSlot, KEvent> & {
+  KProperties extends JSONSchema7,
+  KState extends JSONSchema7,
+  KMethods extends Record<string, MethodSchema['parameters']>,
+  KStyleSlots extends ReadonlyArray<string>,
+  KSlots extends Record<string, SlotSpec>,
+  KEvents extends ReadonlyArray<string>
+> = RuntimeComponent<KProperties, KState, KMethods, KStyleSlots, KSlots, KEvents> & {
   impl: ComponentImpl<any>;
 };
 
