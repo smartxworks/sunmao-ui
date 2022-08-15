@@ -10,13 +10,12 @@
     "type": "git",
     "url": "git+https://github.com/smartxworks/sunmao-ui-arco-lib.git"
   },
-  "main": "dist/index.cjs",
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
   "unpkg": "dist/index.global.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",
