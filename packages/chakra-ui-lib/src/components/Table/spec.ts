@@ -24,7 +24,6 @@ const PropsSpec = Type.Object({
 });
 
 export const implementTable = implementRuntimeComponent({
-  kind: 'Component',
   version: 'chakra_ui/v1',
   metadata: {
     name: 'table',

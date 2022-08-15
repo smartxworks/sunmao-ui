@@ -23,12 +23,13 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     );
 
     const [isHidden, setIsHidden] = useState(() => {
-      const results: TraitResult<string, string>[] = unmountTraits.map(t => {
-        const properties = stateManager.deepEval(t.properties, {
-          scopeObject: { $slot: props.slotProps },
+      const results: TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>[] =
+        unmountTraits.map(t => {
+          const properties = stateManager.deepEval(t.properties, {
+            scopeObject: { $slot: props.slotProps },
+          });
+          return executeTrait(t, properties);
         });
-        return executeTrait(t, properties);
-      });
       return results.some(result => result.unmount);
     });
 
