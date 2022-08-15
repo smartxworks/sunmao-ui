@@ -13,20 +13,18 @@
     "url": "git+https://github.com/smartxworks/sunmao-ui.git"
   },
   "main": "dist/index.js",
-  "module": "dist/esm/index.js",
-  "unpkg": "dist/iife/index.js",
-  "types": "lib/index.d.ts",
+  "module": "dist/index.mjs",
+  "unpkg": "dist/index.global.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts src/widgets/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
-    "typings": "tsc --emitDeclarationOnly",
+    "build": "tsup",
     "lint": "eslint src --ext .ts",
-    "prepublish": "npm run build && npm run typings"
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
@@ -49,7 +47,7 @@
     "@vitejs/plugin-react": "^1.0.1",
     "babel-jest": "^27.1.0",
     "jest": "^27.1.0",
-    "tsup": "^5.5.0",
+    "tsup": "^5.11.11",
     "typescript": "^4.5.0",
     "vite": "^2.6.13"
   },

@@ -17,7 +17,7 @@ import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { isEqual } from 'lodash';
 import { resolveApplicationComponents } from '../utils/resolveApplicationComponents';
 import { AppModelManager } from '../operations/AppModelManager';
-import type { Metadata } from '@sunmao-ui/core/lib/metadata';
+import type { Metadata } from '@sunmao-ui/core';
 
 type EditingTarget = {
   kind: 'app' | 'module';
