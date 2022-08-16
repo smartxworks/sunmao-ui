@@ -31,14 +31,11 @@
   "bugs": {
     "url": "https://github.com/smartxworks/sunmao-ui/issues"
   },
-  "dependencies": {
-    "lodash": "^4.17.21"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@swc/core": "^1.2.121",
     "@types/jest": "^26.0.23",
     "@types/json-schema": "^7.0.7",
-    "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "eslint": "^7.29.0",

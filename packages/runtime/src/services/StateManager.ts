@@ -1,4 +1,4 @@
-import _, { mapValues, isArray, isPlainObject, set } from 'lodash';
+import { mapValues, isArray, isPlainObject, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';
@@ -29,7 +29,6 @@ type EvaledResult<T> = T extends string ? unknown : PropsAfterEvaled<Exclude<T, 
 // TODO: use web worker
 const DefaultDependencies = {
   dayjs,
-  _,
 };
 
 export class ExpressionError extends Error {
