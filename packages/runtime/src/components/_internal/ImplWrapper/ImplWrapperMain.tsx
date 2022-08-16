@@ -28,20 +28,20 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
 
     const { mergeState, subscribeMethods, executeTrait } = useRuntimeFunctions(props);
 
-    const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
-      () => {
-        return c.traits.map(t =>
-          executeTrait(
-            t,
-            stateManager.deepEval(t.properties, {
-              evalListItem,
-              scopeObject: { $slot: slotProps },
-              fallbackWhenError: () => undefined,
-            })
-          )
-        );
-      }
-    );
+    const [traitResults, setTraitResults] = useState<
+      TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>[]
+    >(() => {
+      return c.traits.map(t =>
+        executeTrait(
+          t,
+          stateManager.deepEval(t.properties, {
+            evalListItem,
+            scopeObject: { $slot: slotProps },
+            fallbackWhenError: () => undefined,
+          })
+        )
+      );
+    });
 
     useEffect(() => {
       return () => {
@@ -81,9 +81,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     }, [c.id, c.traits, executeTrait, stateManager, slotProps, evalListItem]);
 
     // reduce traitResults
-    const propsFromTraits: TraitResult<string, string>['props'] = useMemo(() => {
+    const propsFromTraits: TraitResult<
+      ReadonlyArray<string>,
+      ReadonlyArray<string>
+    >['props'] = useMemo(() => {
       return Array.from(traitResults.values()).reduce(
-        (prevProps, result: TraitResult<string, string>) => {
+        (
+          prevProps,
+          result: TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>
+        ) => {
           if (!result.props) {
             return prevProps;
           }
@@ -96,7 +102,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             }
           });
         },
-        {} as TraitResult<string, string>['props']
+        {} as TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>['props']
       );
     }, [traitResults]);
 

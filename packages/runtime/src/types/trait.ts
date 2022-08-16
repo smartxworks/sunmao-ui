@@ -2,11 +2,16 @@ import { RuntimeTrait, RuntimeTraitSchema } from '@sunmao-ui/core';
 import { UIServices } from './application';
 import { RuntimeFunctions } from './component';
 
-export type TraitResult<KStyleSlot extends string, KEvent extends string> = {
+type ToStringUnion<T extends ReadonlyArray<string>> = T[number];
+
+export type TraitResult<
+  KStyleSlots extends ReadonlyArray<string>,
+  KEvents extends ReadonlyArray<string>
+> = {
   props: {
     data?: unknown;
-    customStyle?: Record<KStyleSlot, string>;
-    callbackMap?: CallbackMap<KEvent>;
+    customStyle?: Record<ToStringUnion<KStyleSlots>, string>;
+    callbackMap?: CallbackMap<ToStringUnion<KEvents>>;
     componentDidUnmount?: Array<() => void>;
     componentDidMount?: Array<() => Function | void>;
     componentDidUpdate?: Array<() => Function | void>;
@@ -23,7 +28,7 @@ export type TraitImpl<TProperties = any> = (
       evalListItem?: boolean;
       slotProps?: unknown;
     }
-) => TraitResult<string, string>;
+) => TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>;
 
 export type TraitImplFactory<T = any> = () => TraitImpl<T>;
 

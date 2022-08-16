@@ -1,4 +1,5 @@
-import { parseType } from '@sunmao-ui/core';
+import { JSONSchema7 } from 'json-schema';
+import { parseType, SlotSpec } from '@sunmao-ui/core';
 // components
 /* --- core --- */
 import CoreText from '../components/core/Text';
@@ -36,17 +37,26 @@ import { ImplementedUtilMethod } from '../types/utilMethod';
 import { UtilMethodManager } from './UtilMethodManager';
 
 export type SunmaoLib = {
-  components?: ImplementedRuntimeComponent<string, string, string, string>[];
+  components?: ImplementedRuntimeComponent<
+    any,
+    any,
+    Record<string, JSONSchema7 | undefined>,
+    ReadonlyArray<string>,
+    Record<string, SlotSpec>,
+    ReadonlyArray<string>
+  >[];
   traits?: ImplementedRuntimeTraitFactory[];
   modules?: ImplementedRuntimeModule[];
   utilMethods?: UtilMethodFactory[];
 };
 
 type AnyImplementedRuntimeComponent = ImplementedRuntimeComponent<
-  string,
-  string,
-  string,
-  string
+  any,
+  any,
+  Record<string, JSONSchema7 | undefined>,
+  ReadonlyArray<string>,
+  Record<string, SlotSpec>,
+  ReadonlyArray<string>
 >;
 
 export type RegistryInterface = InstanceType<typeof Registry>;
