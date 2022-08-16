@@ -94,6 +94,11 @@ export const SelectPropsSpec = {
     category: Category.Behavior,
     description: 'Whether to allow new options to be created by input',
   }),
+  showTitle: Type.Boolean({
+    title: 'Show Option Title',
+    description:
+      'Whether to show the title on hover when the select option exceeds the width',
+  }),
   error: Type.Boolean({
     title: 'Error',
     category: Category.Behavior,

@@ -26,7 +26,7 @@ describe('evalExpression function', () => {
   };
   const stateManager = new StateManager();
   stateManager.store = reactive<Record<string, any>>(scope);
-  stateManager.noConsoleError = true;
+  stateManager.mute = true;
   it('can eval {{}} expression', () => {
     const evalOptions = { evalListItem: false };
 
@@ -120,7 +120,7 @@ describe('evalExpression function', () => {
   it('can watch the state change in the object value', () => {
     const stateManager = new StateManager();
 
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     stateManager.store.text = { value: 'hello' };
 
     return new Promise<void>(resolve => {
@@ -141,7 +141,7 @@ describe('evalExpression function', () => {
   it('can watch the state change in the expression string', () => {
     const stateManager = new StateManager();
 
-    stateManager.noConsoleError = true;
+    stateManager.mute = true;
     stateManager.store.text = { value: 'hello' };
 
     return new Promise<void>(resolve => {

@@ -1,4 +1,3 @@
-import { isFunction, isArray } from 'lodash';
 import { isPromise } from './object';
 
 export function callWithErrorHandling(
@@ -24,7 +23,7 @@ export function callWithAsyncErrorHandling(
   args?: unknown[],
   handlerError?: (err: Error) => void
 ): any[] {
-  if (isFunction(fn)) {
+  if (typeof fn === 'function') {
     const res = callWithErrorHandling(fn, args, handlerError);
 
     if (res && isPromise(res)) {
@@ -36,7 +35,7 @@ export function callWithAsyncErrorHandling(
     }
 
     return res;
-  } else if (isArray(fn)) {
+  } else if (Array.isArray(fn)) {
     const values = [];
 
     for (let i = 0; i < fn.length; i++) {
