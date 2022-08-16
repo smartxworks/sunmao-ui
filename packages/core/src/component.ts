@@ -1,10 +1,15 @@
 import { JSONSchema7 } from 'json-schema';
 import type { Static } from '@sinclair/typebox';
-import type { DeepPartial } from '@sunmao-ui/shared';
 import { parseVersion, Version } from './version';
 import { ComponentMetadata } from './metadata';
 import { MethodSchema } from './method';
 import { SlotSpec } from './slot';
+
+type DeepPartial<T> = T extends Record<string, any> | Record<string, any>[]
+  ? Partial<{
+      [K in keyof T]: DeepPartial<T[K]>;
+    }>
+  : T;
 
 type ComponentSpec<
   KProperties extends JSONSchema7,
