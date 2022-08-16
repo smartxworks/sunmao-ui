@@ -16,9 +16,10 @@ import { CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
 import { groupBy, sortBy } from 'lodash';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
-import { RuntimeComponent } from '@sunmao-ui/core';
+import { RuntimeComponent, SlotSpec } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
 import { ComponentFilter } from './ComponentFilter';
+import { JSONSchema7 } from 'json-schema';
 
 type Props = {
   services: EditorServices;
@@ -26,7 +27,14 @@ type Props = {
 
 type Category = {
   name: string;
-  components: RuntimeComponent<string, string, string, string>[];
+  components: RuntimeComponent<
+    any,
+    any,
+    Record<string, JSONSchema7 | undefined>,
+    ReadonlyArray<string>,
+    Record<string, SlotSpec>,
+    ReadonlyArray<string>
+  >[];
 };
 
 const PRESET_CATEGORY_ORDER = {

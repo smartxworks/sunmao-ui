@@ -1,4 +1,4 @@
-import { RuntimeComponent } from '@sunmao-ui/core';
+import { RuntimeComponent, SlotSpec } from '@sunmao-ui/core';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import Ajv from 'ajv';
 import { PropertiesValidatorRule } from '.';
@@ -13,6 +13,7 @@ import {
   ValidatorMap,
 } from './interfaces';
 import { rules } from './rules';
+import { JSONSchema7 } from 'json-schema';
 
 export class SchemaValidator implements ISchemaValidator {
   private result: ValidateErrorResult[] = [];
@@ -22,7 +23,14 @@ export class SchemaValidator implements ISchemaValidator {
   private propertiesRules: PropertiesValidatorRule[] = [];
   private componentIdSpecMap: Record<
     string,
-    RuntimeComponent<string, string, string, string>
+    RuntimeComponent<
+      any,
+      any,
+      Record<string, JSONSchema7 | undefined>,
+      ReadonlyArray<string>,
+      Record<string, SlotSpec>,
+      ReadonlyArray<string>
+    >
   > = {};
 
   private ajv!: Ajv;

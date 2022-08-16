@@ -1,4 +1,4 @@
-export type DeepPartial<T> = T extends Record<string, any>
+export type DeepPartial<T> = T extends Record<string, any> | Record<string, any>[]
   ? Partial<{
       [K in keyof T]: DeepPartial<T[K]>;
     }>
