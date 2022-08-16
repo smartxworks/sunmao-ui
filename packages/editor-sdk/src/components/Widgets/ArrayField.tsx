@@ -2,7 +2,7 @@ import React from 'react';
 import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
-import { IconButton, Flex } from '@chakra-ui/react';
+import { IconButton, Flex, Code } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import {
   generateDefaultValueFromSpec,
@@ -28,30 +28,38 @@ declare module '../../types/widget' {
 }
 
 export const ArrayField: React.FC<WidgetProps<ArrayFieldWidgetType>> = props => {
-  const { spec, value, path, level, onChange } = props;
+  const { spec, path, value: rawValue, level, onChange, services } = props;
   const { expressionOptions } = spec.widgetOptions || {};
   const itemSpec = Array.isArray(spec.items) ? spec.items[0] : spec.items;
+  let value = rawValue;
 
   if (typeof itemSpec === 'boolean' || !itemSpec) {
     return null;
   }
 
-  if (!Array.isArray(value)) {
-    return (
-      <div>
-        Expected array but got
-        <pre>{JSON.stringify(value, null, 2)}</pre>
-      </div>
-    );
-  }
+  if (!Array.isArray(rawValue)) {
+    const evaledValue = services.stateManager.deepEval(rawValue, {
+      scopeObject: {},
+      overrideScope: true,
+      fallbackWhenError: exp => exp,
+    });
+    if (!Array.isArray(evaledValue)) {
+      return (
+        <div>
+          Failed to convert <Code>{rawValue}</Code> to Array.
+        </div>
+      );
+    }
 
+    value = evaledValue;
+  }
   const isNotBaseType = itemSpec.type === 'object' || itemSpec.type === 'array';
 
   return isNotBaseType ? (
-    <ArrayTable {...props} itemSpec={itemSpec} />
+    <ArrayTable {...props} value={value} itemSpec={itemSpec} />
   ) : (
     <>
-      {value.map((itemValue, itemIndex) => (
+      {value.map((itemValue: any, itemIndex: number) => (
         <ArrayItemBox key={itemIndex} index={itemIndex} value={value} onChange={onChange}>
           <SpecWidget
             {...props}
