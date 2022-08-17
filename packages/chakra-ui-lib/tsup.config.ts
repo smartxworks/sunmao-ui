@@ -4,7 +4,7 @@ export default defineConfig({
   entry: ['src/lib.ts', 'src/index.ts', 'src/widgets/index.ts'],
   format: ['cjs', 'esm', 'iife'],
   inject: ['./react-import.js'],
-  splitting: false,
+  splitting: true,
   sourcemap: true,
   clean: true,
   dts: true,

@@ -9,16 +9,15 @@
     "access": "public"
   },
   "types": "lib/index.d.ts",
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
-  "unpkg": "dist/iife/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "files": [
     "dist",
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser --metafile",
-    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --clean --sourcemap --platform browser --metafile",
+    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --clean --sourcemap --platform browser",
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings",
     "test": "jest",

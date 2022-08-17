@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap --metafile",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --sourcemap --metafile",
     "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../../utils/widget';
@@ -14,7 +14,6 @@ import {
   PopoverBody,
   Portal,
 } from '@chakra-ui/react';
-import { SketchPicker } from 'react-color';
 
 type ColorWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Color}`;
 
@@ -32,6 +31,9 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
   const onInputChange = (value: string) => {
     onChange(value);
   };
+  const SketchPicker = React.lazy(() => {
+    return import('react-color').then(lib => ({ default: lib.SketchPicker }));
+  });
 
   return (
     <InputGroup>
@@ -60,11 +62,13 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
             <PopoverContent w="auto">
               <PopoverArrow />
               <PopoverBody padding={0}>
-                <SketchPicker
-                  width="250px"
-                  color={value || '#fff'}
-                  onChangeComplete={onColorChange}
-                />
+                <Suspense fallback={() => '加载Picker中'}>
+                  <SketchPicker
+                    width="250px"
+                    color={value || '#fff'}
+                    onChangeComplete={onColorChange}
+                  />
+                </Suspense>
               </PopoverBody>
             </PopoverContent>
           </Portal>
