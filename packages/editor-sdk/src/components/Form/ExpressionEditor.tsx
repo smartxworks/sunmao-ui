@@ -32,7 +32,6 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/display/autorefresh';
 import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
-import ecma from '../../constants/ecmascript';
 import tern, { Def } from 'tern';
 import { getTypeString } from '../../utils/type';
 
@@ -73,7 +72,8 @@ const getCursorIndex = (editor: CodeMirror.Editor) => {
   return cursorIndex;
 };
 
-function installTern(cm: CodeMirror.Editor) {
+async function installTern(cm: CodeMirror.Editor) {
+  const ecma = await import('../../constants/ecmascript');
   const t = new CodeMirror.TernServer({ defs: [ecma as unknown as Def] });
   cm.on('cursorActivity', cm => t.updateArgHints(cm));
   cm.on('change', (_instance, change) => {
@@ -252,8 +252,9 @@ export const BaseExpressionEditor = React.forwardRef<
                 },
               }),
         });
-        const t = installTern(cm.current);
-        tServer.current = t.server;
+        installTern(cm.current).then(t => {
+          tServer.current = t.server;
+        });
       }
       const changeHandler = (instance: CodeMirror.Editor) => {
         const value = instance.getValue();
