@@ -144,7 +144,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           <FormSection
             style={{ position: 'relative', zIndex: sections.length - i }}
             title={section.title}
-            key={section.title}
+            key={`${section.title}-${selectedComponentId}`}
           >
             {section.node}
           </FormSection>

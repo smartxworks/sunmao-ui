@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isFunction, cloneDeep } from 'lodash';
 import { BaseLeafOperation } from '../../type';
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId } from '../../../AppModel/IAppModel';
@@ -22,9 +22,9 @@ export class ModifyTraitPropertiesLeafOperation extends BaseLeafOperation<Modify
       const oldValue = trait.rawProperties[property];
       this.previousState[property] = oldValue;
       let newValue = this.context.properties[property];
-      if (_.isFunction(newValue)) {
+      if (isFunction(newValue)) {
         // if modified value is a lazy function, execute it and assign
-        newValue = newValue(_.cloneDeep(oldValue));
+        newValue = newValue(cloneDeep(oldValue));
       }
       this.context.properties[property] = newValue;
       trait.updateProperty(property, this.context.properties[property]);

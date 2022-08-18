@@ -1,10 +1,11 @@
-import { JSONSchema7Object } from 'json-schema';
-
-export type Metadata<TAnnotations = Record<string, unknown>> = {
+export type Metadata<
+  TAnnotations = Record<string, unknown>,
+  TExample = Record<string, any>
+> = {
   name: string;
   description?: string;
   annotations?: Record<string, any> & TAnnotations;
-  exampleProperties?: JSONSchema7Object;
+  exampleProperties?: TExample;
 };
 
 type ComponentCategory =
@@ -15,7 +16,10 @@ type ComponentCategory =
   | 'Advance'
   | undefined;
 
-export type ComponentMetadata = Metadata<{ category?: ComponentCategory }> & {
+export type ComponentMetadata<TExample = Record<string, any>> = Metadata<
+  { category?: ComponentCategory },
+  TExample
+> & {
   // TODO:(yanzhen): move to annotations
   displayName: string;
   icon?: string;

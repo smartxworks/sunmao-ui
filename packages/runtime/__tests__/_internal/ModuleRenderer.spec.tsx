@@ -117,7 +117,7 @@ const ApplicationSchema: Application = {
 describe('ModuleRenderer', () => {
   const { App, stateManager, registry } = initSunmaoUI({ libs: [TestLib] });
   registry.registerModule(ModuleSchema);
-  stateManager.noConsoleError = true;
+  stateManager.mute = true;
   it('can accept properties', () => {
     const { rerender, unmount } = render(<App options={ApplicationSchema} />);
     expect(screen.getByTestId('myModule__input')).toHaveValue('foo');

@@ -16,6 +16,7 @@ import {
 } from '@sunmao-ui/shared';
 import { Select as RcSelect } from '../Select';
 import { JSONSchema7Object } from 'json-schema';
+import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
 
 const EventWidgetOptions = Type.Object({});
 
@@ -225,6 +226,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
         bordered={false}
         onChange={onTargetComponentChange}
         placeholder="Select Target Component"
+        dropdownClassName={PREVENT_POPOVER_WIDGET_CLOSE_CLASS}
         style={{ width: '100%' }}
         value={formik.values.componentId === '' ? undefined : formik.values.componentId}
       >
