@@ -16,7 +16,7 @@ import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
 import { isExpression } from '../../utils/validator';
 import { getTypeString } from '../../utils/type';
-import Ajv, { EnumParams } from 'ajv';
+import { ValidateFunction, EnumParams } from 'ajv';
 import { ExpressionError } from '@sunmao-ui/runtime';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
@@ -143,8 +143,6 @@ export const ExpressionWidgetOptionsSpec = Type.Object({
   ),
 });
 
-const ajv = new Ajv();
-
 type ExpressionWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Expression}`;
 declare module '../../types/widget' {
   interface WidgetOptionsMap {
@@ -164,9 +162,11 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const [evaledValue, setEvaledValue] = useState<any>({ value: null });
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
-  const validate = useMemo(() => ajv.compile(spec), [spec]);
+  const validateFuncRef = useRef<ValidateFunction | null>(null);
+  // const validate = useMemo(() => ajv.compile(spec), [spec]);
+
   const evalCode = useCallback(
-    (code: string) => {
+    async (code: string) => {
       try {
         const value = getParsedValue(code, type);
         const result = isExpression(value)
@@ -177,10 +177,17 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
           throw result;
         }
 
-        validate(result);
+        if (!validateFuncRef.current) {
+          const { default: Ajv } = await import('ajv');
 
-        if (validate.errors?.length) {
-          const err = validate.errors[0];
+          const ajv = new Ajv();
+          validateFuncRef.current = ajv.compile(spec);
+        }
+
+        validateFuncRef.current(result);
+
+        if (validateFuncRef.current.errors?.length) {
+          const err = validateFuncRef.current.errors[0];
 
           if (err.keyword === 'type') {
             throw new TypeError(
@@ -207,7 +214,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
         setError(String(err));
       }
     },
-    [services, type, validate, spec]
+    [services, type, spec]
   );
   const onCodeChange = useMemo(() => debounce(evalCode, 300), [evalCode]);
   const onFocus = useCallback(() => {
