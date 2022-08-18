@@ -31,7 +31,6 @@
   "bugs": {
     "url": "https://github.com/smartxworks/sunmao-ui/issues"
   },
-  "dependencies": {},
   "devDependencies": {
     "@swc/core": "^1.2.121",
     "@types/jest": "^26.0.23",
@@ -42,7 +41,8 @@
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "tsup": "^5.11.0",
-    "typescript": "^4.5.0"
+    "tsup": "^6.2.2",
+    "typescript": "^4.5.0",
+    "vite": "^3.0.8"
   }
 }

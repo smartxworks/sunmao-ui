@@ -32,7 +32,10 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
     onChange(value);
   };
   const SketchPicker = React.lazy(() => {
-    return import('react-color').then(lib => ({ default: lib.SketchPicker }));
+    return import('react-color').then(lib => {
+      console.log('react color SketchPicker', lib.SketchPicker);
+      return lib as any;
+    });
   });
 
   return (
@@ -62,7 +65,7 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
             <PopoverContent w="auto">
               <PopoverArrow />
               <PopoverBody padding={0}>
-                <Suspense fallback={() => '加载Picker中'}>
+                <Suspense fallback={() => 'Loading Color Picker'}>
                   <SketchPicker
                     width="250px"
                     color={value || '#fff'}

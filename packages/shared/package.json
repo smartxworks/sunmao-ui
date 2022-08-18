@@ -29,7 +29,8 @@
   "devDependencies": {
     "@types/json-schema": "^7.0.7",
     "jest": "^27.1.0",
-    "tsup": "^5.11.0"
+    "tsup": "^6.2.2",
+    "vite": "^3.0.8"
   },
   "keywords": [],
   "husky": {

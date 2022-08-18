@@ -68,9 +68,9 @@
     "jest": "^27.1.0",
     "postcss": "^8.4.5",
     "postcss-import": "^14.0.2",
-    "tsup": "^5.11.0",
+    "tsup": "^6.2.2",
     "typescript": "^4.5.0",
-    "vite": "^2.6.13"
+    "vite": "^3.0.8"
   },
   "peerDependencies": {
     "react": "^17.0.2",

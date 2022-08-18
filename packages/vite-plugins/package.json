@@ -16,5 +16,8 @@
     "type": "git",
     "url": "git+https://github.com/smartxworks/sunmao-ui.git"
   },
-  "scripts": {}
+  "scripts": {},
+  "devDependencies": {
+    "tsup": "^6.2.2"
+  }
 }

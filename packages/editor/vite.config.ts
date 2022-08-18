@@ -7,12 +7,13 @@ import { resolve } from 'path';
 export default defineConfig({
   base: './',
   plugins: [
-    react(),
     virtualExamplePlugin(),
+    react({
+      jsxRuntime: 'classic',
+    }),
   ],
-  define: {
-    // https://github.com/satya164/react-simple-code-editor/issues/86
-    global: 'globalThis',
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' },
   },
   build: {
     rollupOptions: {
