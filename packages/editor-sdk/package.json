@@ -22,7 +22,7 @@
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings",
     "test": "jest",
-    "visualize": "esbuild-visualizer --metadata ./dist/metafile-esm.json --exclude *.png"
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-iife.json --exclude *.png"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",

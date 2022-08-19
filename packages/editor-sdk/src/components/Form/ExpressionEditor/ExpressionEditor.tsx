@@ -33,7 +33,8 @@ import 'codemirror/addon/display/autorefresh';
 import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
 import tern, { Def } from 'tern';
-import { getTypeString } from '../../utils/type';
+import { getTypeString } from '../../../utils/type';
+import ecmascript from '../../../constants/ecmascript';
 
 // TODO: tern uses global variable, maybe there is some workaround
 (window as unknown as { tern: typeof tern }).tern = tern;
@@ -73,8 +74,8 @@ const getCursorIndex = (editor: CodeMirror.Editor) => {
 };
 
 async function installTern(cm: CodeMirror.Editor) {
-  const ecma = await import('../../constants/ecmascript');
-  const t = new CodeMirror.TernServer({ defs: [ecma as unknown as Def] });
+  // const ecma = await import('../../constants/ecmascript');
+  const t = new CodeMirror.TernServer({ defs: [ecmascript as unknown as Def] });
   cm.on('cursorActivity', cm => t.updateArgHints(cm));
   cm.on('change', (_instance, change) => {
     if (!checkIfCursorInsideBinding(_instance)) {
@@ -167,7 +168,7 @@ type BaseExpressionEditorHandle = {
   setCode: (code: string) => void;
 };
 
-export const BaseExpressionEditor = React.forwardRef<
+const BaseExpressionEditor = React.forwardRef<
   BaseExpressionEditorHandle,
   BaseExpressionEditorProps
 >(

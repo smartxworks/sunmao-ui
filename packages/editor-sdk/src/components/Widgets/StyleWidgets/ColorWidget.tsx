@@ -65,7 +65,7 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
             <PopoverContent w="auto">
               <PopoverArrow />
               <PopoverBody padding={0}>
-                <Suspense fallback={() => 'Loading Color Picker'}>
+                <Suspense fallback={'Loading Color Picker'}>
                   <SketchPicker
                     width="250px"
                     color={value || '#fff'}
