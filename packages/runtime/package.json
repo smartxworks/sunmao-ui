@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --clean --sourcemap --metafile",
+    "build": "tsup && npm run visualize",
     "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings",
