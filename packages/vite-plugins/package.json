@@ -18,6 +18,7 @@
   },
   "scripts": {},
   "devDependencies": {
-    "tsup": "^6.2.2"
+    "tsup": "^6.2.2",
+    "vite": "^3.0.8"
   }
 }
