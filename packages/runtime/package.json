@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --sourcemap --metafile",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --clean --sourcemap --metafile",
     "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
     "prepublish": "npm run build && npm run typings",
@@ -62,7 +62,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.2",
     "@types/react-grid-layout": "^1.1.2",
-    "@vitejs/plugin-react": "^1.0.1",
+    "@vitejs/plugin-react": "^2.0.1",
     "babel-jest": "^27.1.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.1.0",

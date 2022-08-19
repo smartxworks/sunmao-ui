@@ -1,10 +1,13 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/lib.ts', 'src/index.ts', 'src/widgets/index.ts'],
+  entry: ['src/index.ts'],
   format: ['cjs', 'esm', 'iife'],
+  legacyOutput: true,
   splitting: true,
   sourcemap: true,
   clean: true,
-  dts: true,
+  dts: false,
+  metafile: true,
+  platform: 'browser',
 });

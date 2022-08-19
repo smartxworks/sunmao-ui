@@ -4,7 +4,7 @@ import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
-import { SchemaValidator, ValidateErrorResult } from '../validator';
+import type { SchemaValidator, ValidateErrorResult } from '../validator';
 import {
   DataSourceType,
   DATASOURCE_NAME_MAP,
@@ -50,7 +50,7 @@ export class EditorStore {
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
-  schemaValidator: SchemaValidator;
+  schemaValidator?: SchemaValidator;
 
   // data source
   activeDataSourceId: string | null = null;
@@ -64,10 +64,18 @@ export class EditorStore {
   ) {
     this.globalDependencies = this.stateManager.dependencies;
     const dependencyNames = Object.keys(this.globalDependencies);
-    this.schemaValidator = new SchemaValidator(this.registry, dependencyNames);
+    // dynamic load validator
+    import('../validator').then(({ SchemaValidator: SchemaValidatorClass }) => {
+      this.setSchemaValidator(new SchemaValidatorClass(this.registry, dependencyNames));
+      // do first validation
+      this.setValidateResult(
+        this.schemaValidator!.validate(this.appModelManager.appModel)
+      );
+    });
     makeAutoObservable(this, {
       eleMap: false,
       components: observable.shallow,
+      schemaValidator: observable.ref,
       setComponents: action,
       setDragOverComponentId: action,
     });
@@ -117,9 +125,11 @@ export class EditorStore {
     reaction(
       () => this.components,
       () => {
-        this.setValidateResult(
-          this.schemaValidator.validate(this.appModelManager.appModel)
-        );
+        if (this.schemaValidator) {
+          this.setValidateResult(
+            this.schemaValidator.validate(this.appModelManager.appModel)
+          );
+        }
       }
     );
 
@@ -364,6 +374,10 @@ export class EditorStore {
 
   setIsDraggingNewComponent = (val: boolean) => {
     this.isDraggingNewComponent = val;
+  };
+
+  setSchemaValidator = (val: SchemaValidator) => {
+    this.schemaValidator = val;
   };
 
   setModuleDependencies = (exampleProperties?: Record<string, unknown>) => {
