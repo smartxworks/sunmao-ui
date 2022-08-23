@@ -2,7 +2,6 @@ import React from 'react';
 import { ImplWrapperProps } from '../../../types';
 import { shallowCompare } from '@sunmao-ui/shared';
 import { UnmountImplWrapper } from './UnmountImplWrapper';
-import { isEqual } from 'lodash';
 
 export const ImplWrapper = React.memo<ImplWrapperProps>(
   UnmountImplWrapper,
@@ -18,12 +17,6 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
     } else if (prevChildren === nextChildren) {
       isComponentEqual = true;
     }
-    return (
-      isComponentEqual &&
-      prevComponent === nextComponent &&
-      // TODO: keep ImplWrapper memorized and get slot props from store
-      shallowCompare(prevProps.slotProps, nextProps.slotProps) &&
-      isEqual(prevProps.slotContext, nextProps.slotContext)
-    );
+    return isComponentEqual && prevComponent === nextComponent;
   }
 );
