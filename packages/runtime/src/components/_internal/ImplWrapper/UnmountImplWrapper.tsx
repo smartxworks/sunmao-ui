@@ -5,7 +5,7 @@ import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 import { initSingleComponentState } from '../../../utils/initStateAndMethod';
 import { ImplWrapperProps, TraitResult } from '../../../types';
 import { watch } from '../../..';
-import { Receiver } from './SlotReciver';
+import { Receiver } from '../../../services/SlotReciver';
 
 export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function UnmountImplWrapper(props, ref) {
@@ -93,7 +93,9 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     if (isHidden && slotContext) {
       slotContext.renderSet.delete(c.id);
       if (slotContext.renderSet.size === 0) {
-        return <Receiver slotKey={slotContext.slotKey} />;
+        return (
+          <Receiver slotKey={slotContext.slotKey} slotReceiver={services.slotReceiver} />
+        );
       }
     }
     return !isHidden ? <ImplWrapperMain {...props} ref={ref} /> : null;

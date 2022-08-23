@@ -17,7 +17,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import mitt from 'mitt';
 
-class SlotReceiver {
+export class SlotReceiver {
   fallbacks: Partial<Record<string, React.ReactNode>> = {};
   emitter = mitt<Record<string, React.ReactNode>>();
 
@@ -32,9 +32,14 @@ class SlotReceiver {
   }
 }
 
-export const slotReceiver = new SlotReceiver();
+export function initSlotReceiver() {
+  return new SlotReceiver();
+}
 
-export const Receiver: React.FC<{ slotKey?: string }> = ({ slotKey = '' }) => {
+export const Receiver: React.FC<{ slotKey?: string; slotReceiver: SlotReceiver }> = ({
+  slotKey = '',
+  slotReceiver,
+}) => {
   const [, setForce] = useState(0);
   const cRef = useRef<React.ReactNode>(slotReceiver.fallbacks[slotKey] || null);
   useEffect(() => {
@@ -59,6 +64,8 @@ export const Receiver: React.FC<{ slotKey?: string }> = ({ slotKey = '' }) => {
     return () => {
       slotReceiver.emitter.off(slotKey, handler);
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slotKey]);
   return <>{cRef.current}</>;
 };

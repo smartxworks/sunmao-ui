@@ -7,6 +7,7 @@ import { UtilMethodManager } from './services/UtilMethodManager';
 import { AppHooks } from './types';
 import { enableES5, setAutoFreeze } from 'immer';
 import './style.css';
+import { initSlotReceiver } from './services/SlotReciver';
 
 // immer would make some errors when read the states, so we do these to avoid it temporarily
 // ref: https://github.com/immerjs/immer/issues/916
@@ -26,12 +27,14 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   const apiService = initApiService();
   const utilMethodManager = new UtilMethodManager(apiService);
   const eleMap = new Map<string, HTMLElement>();
+  const slotReceiver = initSlotReceiver();
   const registry = initRegistry(
     {
       stateManager,
       globalHandlerMap,
       apiService,
       eleMap,
+      slotReceiver,
     },
     utilMethodManager
   );
@@ -48,6 +51,7 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
         globalHandlerMap,
         apiService,
         eleMap,
+        slotReceiver,
       },
       props.hooks,
       props.isInEditor

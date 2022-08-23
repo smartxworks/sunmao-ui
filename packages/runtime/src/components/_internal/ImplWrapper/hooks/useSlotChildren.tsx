@@ -3,7 +3,6 @@ import { SlotSpec } from '@sunmao-ui/core';
 import { ImplWrapperProps, SlotsElements } from '../../../../types';
 import { ImplWrapper } from '../ImplWrapper';
 import { shallowCompare } from '@sunmao-ui/shared';
-import { slotReceiver } from '../SlotReciver';
 
 export function formatSlotKey(componentId: string, slot: string, key: string): string {
   /**
@@ -45,7 +44,7 @@ export function getSlotElements(
           slotContext,
         })
       );
-      slotReceiver.emitter.emit(slotKey, slotFallback);
+      services.slotReceiver.emitter.emit(slotKey, slotFallback);
       return children;
     };
   }
