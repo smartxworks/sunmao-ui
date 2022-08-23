@@ -71,7 +71,9 @@ export default implementRuntimeComponent({
         </div>
         <div className="panels">
           {tabNames.map((n, idx) => (
-            <div key={n}>{slotsElements?.content?.({ tabIndex: idx })}</div>
+            <div key={n}>
+              {slotsElements?.content?.({ tabIndex: idx }, undefined, `content_${idx}`)}
+            </div>
           ))}
         </div>
       </div>
