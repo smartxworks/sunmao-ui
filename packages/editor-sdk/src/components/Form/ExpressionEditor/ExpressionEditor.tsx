@@ -73,8 +73,7 @@ const getCursorIndex = (editor: CodeMirror.Editor) => {
   return cursorIndex;
 };
 
-async function installTern(cm: CodeMirror.Editor) {
-  // const ecma = await import('../../constants/ecmascript');
+function installTern(cm: CodeMirror.Editor) {
   const t = new CodeMirror.TernServer({ defs: [ecmascript as unknown as Def] });
   cm.on('cursorActivity', cm => t.updateArgHints(cm));
   cm.on('change', (_instance, change) => {
@@ -253,9 +252,8 @@ const BaseExpressionEditor = React.forwardRef<
                 },
               }),
         });
-        installTern(cm.current).then(t => {
-          tServer.current = t.server;
-        });
+        const t = installTern(cm.current);
+        tServer.current = t.server;
       }
       const changeHandler = (instance: CodeMirror.Editor) => {
         const value = instance.getValue();

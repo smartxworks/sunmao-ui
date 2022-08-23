@@ -1,4 +1,3 @@
-console.log('import ecma');
 export default {
   '!name': 'ecmascript',
   '!define': {
