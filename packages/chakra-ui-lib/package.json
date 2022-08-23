@@ -12,19 +12,21 @@
     "type": "git",
     "url": "git+https://github.com/smartxworks/sunmao-ui.git"
   },
+  "types": "lib/index.d.ts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "unpkg": "dist/index.global.js",
-  "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "scripts": {
     "dev": "vite",
     "test": "jest",
     "build": "tsup",
+    "typings": "tsc --emitDeclarationOnly",
     "lint": "eslint src --ext .ts",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build && npm run typings"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",

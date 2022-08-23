@@ -6,7 +6,6 @@ export default defineConfig({
   splitting: true,
   sourcemap: true,
   clean: true,
-  dts: false,
   metafile: true,
   platform: 'browser',
 });

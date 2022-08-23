@@ -22,6 +22,8 @@ import { EditorServices } from '../../../types';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { JSONSchema7, JSONSchema7Object } from 'json-schema';
 
+const JsonSchemaEditor = React.lazy(() => import('@optum/json-schema-editor'));
+
 export type ModuleMetaDataFormData = {
   name: string;
   version: string;
@@ -64,7 +66,6 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
 
     const moduleSpecs = (moduleSpec.properties || {}) as Record<string, JSONSchema7>;
 
-    const JsonSchemaEditor = React.lazy(() => import('@optum/json-schema-editor'));
     return (
       <VStack>
         <FormControl isRequired>

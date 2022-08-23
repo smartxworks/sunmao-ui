@@ -23,6 +23,13 @@ declare module '../../../types/widget' {
   }
 }
 
+const SketchPicker = React.lazy(async () => {
+  const { SketchPicker } = await import('react-color');
+  return {
+    default: SketchPicker,
+  };
+});
+
 export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props => {
   const { value, onChange } = props;
   const onColorChange = ({ rgb }: any) => {
@@ -31,12 +38,6 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
   const onInputChange = (value: string) => {
     onChange(value);
   };
-  const SketchPicker = React.lazy(() => {
-    return import('react-color').then(lib => {
-      console.log('react color SketchPicker', lib.SketchPicker);
-      return lib as any;
-    });
-  });
 
   return (
     <InputGroup>

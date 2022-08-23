@@ -17,6 +17,18 @@ import {
 import { JSONSchema7Object } from 'json-schema';
 import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
 
+const ComponentTargetSelect = React.lazy(() =>
+  import('../Select').then(lib => ({
+    default: lib.Select,
+  }))
+);
+
+const ComponentTargetSelectOption = React.lazy(() =>
+  import('../Select').then(lib => ({
+    default: lib.Select.Option,
+  }))
+);
+
 const EventWidgetOptions = Type.Object({});
 
 type EventWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Event}`;
@@ -215,16 +227,6 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
     </FormControl>
   );
 
-  const ComponentTargetSelect = React.lazy(() =>
-    import('../Select').then(lib => ({
-      default: lib.Select,
-    }))
-  );
-  const ComponentTargetSelectOption = React.lazy(() =>
-    import('../Select').then(lib => ({
-      default: lib.Select.Option,
-    }))
-  );
   const targetField = (
     <FormControl>
       <FormLabel fontSize="14px" fontWeight="normal">

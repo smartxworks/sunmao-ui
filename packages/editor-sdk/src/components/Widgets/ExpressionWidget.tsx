@@ -163,7 +163,6 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
   const validateFuncRef = useRef<ValidateFunction | null>(null);
-  // const validate = useMemo(() => ajv.compile(spec), [spec]);
 
   const evalCode = useCallback(
     async (code: string) => {
