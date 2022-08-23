@@ -15,6 +15,10 @@ export default defineConfig({
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
   },
+  define: {
+    // react-codemirror2 need this
+    global: 'globalThis',
+  },
   build: {
     rollupOptions: {
       input: {
