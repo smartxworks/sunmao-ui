@@ -8,6 +8,7 @@ import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
 import { initStateAndMethod } from '../../../utils/initStateAndMethod';
+import ComponentErrorBoundary from '../ComponentErrorBoundary';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function ImplWrapperMain(props, ref) {
@@ -25,7 +26,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       initStateAndMethod(registry, stateManager, [c]);
     }
 
-    const { eleRef, onRef } = useEleRef(props);
+    const { eleRef, onRef, onRecoverFromError } = useEleRef(props);
 
     const { mergeState, subscribeMethods, executeTrait } = useRuntimeFunctions(props);
 
@@ -179,10 +180,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     return (
-      <React.Fragment key={c.id}>
+      <ComponentErrorBoundary
+        key={c.id}
+        componentId={c.id}
+        onRef={onRef}
+        onRecoverFromError={onRecoverFromError}
+      >
         {C}
         {children}
-      </React.Fragment>
+      </ComponentErrorBoundary>
     );
   }
 );
