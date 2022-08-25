@@ -1,3 +1,4 @@
+import { css } from '@emotion/css';
 import React from 'react';
 
 type Props = {
@@ -6,6 +7,24 @@ type Props = {
   onError?: (error: Error | null) => void;
   onRecoverFromError: () => void;
 };
+
+const TitleCss = css`
+  font-weight: bold;
+  font-size: 16px;
+`;
+
+const ButtonStyle = css`
+  background: #3182ce;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+`;
+
+const ErrorStyle = css`
+  white-space: pre-line;
+  font-family: monospace;
+  color: red;
+`;
 
 export default class ComponentErrorBoundary extends React.Component<
   Props,
@@ -54,10 +73,14 @@ export default class ComponentErrorBoundary extends React.Component<
       return (
         <div ref={this.ref}>
           <div>
-            <span>Error occurred in component: {this.props.componentId}.</span>
-            <button onClick={this.onRerender}>Click here to Rerender</button>
+            <p className={TitleCss}>
+              Error occurred in component: {this.props.componentId}.
+            </p>
+            <button className={ButtonStyle} onClick={this.onRerender}>
+              Click here to Rerender
+            </button>
           </div>
-          <div style={{ whiteSpace: 'pre-line' }}>{this.state.error.stack}</div>
+          <div className={ErrorStyle}>{this.state.error.stack}</div>
         </div>
       );
     }
