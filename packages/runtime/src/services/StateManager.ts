@@ -1,4 +1,4 @@
-import { mapValues, isArray, isPlainObject, set } from 'lodash';
+import { mapValues, isArray, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';
@@ -141,11 +141,11 @@ export class StateManager {
     return mapValues(obj, (val, key: string | number) => {
       return isArray(val)
         ? val.map((innerVal, idx) => {
-            return isPlainObject(innerVal)
+            return innerVal && typeof innerVal === 'object'
               ? this.mapValuesDeep(innerVal, fn, path.concat(key, idx))
               : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
           })
-        : isPlainObject(val)
+        : val && typeof val === 'object'
         ? this.mapValuesDeep(val as unknown as T, fn, path.concat(key))
         : fn({ value: val, key, obj, path: path.concat(key) });
     }) as PropsAfterEvaled<T>;
