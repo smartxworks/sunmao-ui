@@ -19,6 +19,7 @@ import {
   ModuleRenderer,
   implementRuntimeComponent,
   ImplWrapper,
+  formatSlotKey,
 } from '@sunmao-ui/runtime';
 import { Type, Static } from '@sinclair/typebox';
 import { ResizableTitle } from './ResizableTitle';
@@ -178,6 +179,7 @@ export const Table = implementRuntimeComponent({
     customStyle,
     services,
     component,
+    slotsElements,
   } = props;
 
   const ref = useRef<TableInstance | null>(null);
@@ -418,6 +420,14 @@ export const Table = implementRuntimeComponent({
                 id: `${component.id}_${childSchema.id}_${index}`,
               };
 
+              /**
+               * FIXME: temporary hack
+               */
+              slotsElements.content?.({
+                [LIST_ITEM_EXP]: record,
+                [LIST_ITEM_INDEX_EXP]: index,
+              });
+
               colItem = (
                 <ImplWrapper
                   key={_childrenSchema.id}
@@ -427,9 +437,9 @@ export const Table = implementRuntimeComponent({
                   childrenMap={{}}
                   isInModule
                   evalListItem
-                  slotProps={{
-                    [LIST_ITEM_EXP]: record,
-                    [LIST_ITEM_INDEX_EXP]: index,
+                  slotContext={{
+                    renderSet: new Set(),
+                    slotKey: formatSlotKey(_childrenSchema.id, 'td', `td_${index}`),
                   }}
                 />
               );

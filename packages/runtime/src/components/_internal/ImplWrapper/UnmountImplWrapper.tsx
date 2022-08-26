@@ -5,6 +5,7 @@ import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 import { initSingleComponentState } from '../../../utils/initStateAndMethod';
 import { ImplWrapperProps, TraitResult } from '../../../types';
 import { watch } from '../../..';
+import { Receiver } from '../../../services/SlotReciver';
 
 export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function UnmountImplWrapper(props, ref) {
@@ -13,6 +14,8 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const { executeTrait } = useRuntimeFunctions(props);
     const renderCount = useRef(0);
     renderCount.current++;
+
+    const slotKey = slotContext?.slotKey || '';
 
     const unmountTraits = useMemo(
       () =>
@@ -26,7 +29,7 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
       const results: TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>[] =
         unmountTraits.map(t => {
           const properties = stateManager.deepEval(t.properties, {
-            scopeObject: { $slot: props.slotProps },
+            slotKey,
           });
           return executeTrait(t, properties);
         });
@@ -69,7 +72,7 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
             t.properties,
             newValue => traitChangeCallback(t, newValue.result),
             {
-              scopeObject: { $slot: props.slotProps },
+              slotKey,
             }
           );
           traitChangeCallback(t, result);
@@ -79,14 +82,7 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
       return () => {
         stops.forEach(stop => stop());
       };
-    }, [
-      c,
-      executeTrait,
-      unmountTraits,
-      stateManager,
-      traitChangeCallback,
-      props.slotProps,
-    ]);
+    }, [c, executeTrait, unmountTraits, stateManager, traitChangeCallback, slotKey]);
 
     // If a component is unmount, its state would be removed.
     // So if it mount again, we should init its state again.
@@ -97,7 +93,9 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     if (isHidden && slotContext) {
       slotContext.renderSet.delete(c.id);
       if (slotContext.renderSet.size === 0) {
-        return <>{slotContext.fallback}</>;
+        return (
+          <Receiver slotKey={slotContext.slotKey} slotReceiver={services.slotReceiver} />
+        );
       }
     }
     return !isHidden ? <ImplWrapperMain {...props} ref={ref} /> : null;
