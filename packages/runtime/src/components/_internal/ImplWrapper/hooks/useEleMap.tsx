@@ -14,6 +14,15 @@ export function useEleRef(props: ImplWrapperProps) {
     hooks?.didDomUpdate && hooks?.didDomUpdate();
   };
 
+  // When component recover from error state, eleRef.current will not update automatically,
+  // so we need do it manually
+  const onRecoverFromError = () => {
+    if (eleRef.current && !isInModule) {
+      eleMap.set(c.id, eleRef.current);
+    }
+    hooks?.didDomUpdate && hooks?.didDomUpdate();
+  };
+
   useEffect(() => {
     // If a component is in module, it should not have mask, so we needn't set it
     if (eleRef.current && !isInModule) {
@@ -31,5 +40,6 @@ export function useEleRef(props: ImplWrapperProps) {
   return {
     eleRef,
     onRef,
+    onRecoverFromError,
   };
 }
