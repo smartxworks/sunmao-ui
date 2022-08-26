@@ -158,4 +158,23 @@ describe('evalExpression function', () => {
       stateManager.store.text.value = 'bye';
     });
   });
+
+  it('can deep deep eval the nest array', () => {
+    const stateManager = new StateManager();
+
+    stateManager.mute = true;
+    stateManager.store.text = { value: 'hello' };
+
+    const result = stateManager.deepEval({
+      data: [
+        [
+          {
+            value: '{{text.value}}',
+          },
+        ],
+      ],
+    });
+
+    expect(result.data[0][0].value).toBe('hello');
+  });
 });
