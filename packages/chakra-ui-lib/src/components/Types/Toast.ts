@@ -67,9 +67,9 @@ const pickProperty = <T, U extends Record<string, any>>(
   return result as Partial<Static<TObject<T>>>;
 };
 
-export default function ToastUtilMethodFactory() {
-  let toast: ReturnType<typeof createStandaloneToast> | undefined;
+const toastInstances: Record<string, ReturnType<typeof createStandaloneToast>> = {};
 
+export function ToastOpenUtilMethodFactory(sunmaoInstanceKey: string) {
   const toastOpen = implementUtilMethod({
     version: 'chakra_ui/v1',
     metadata: {
@@ -79,14 +79,18 @@ export default function ToastUtilMethodFactory() {
       parameters: ToastOpenParameterSpec,
     },
   })(parameters => {
-    if (!toast) {
-      toast = createStandaloneToast();
+    if (!toastInstances[sunmaoInstanceKey]) {
+      toastInstances[sunmaoInstanceKey] = createStandaloneToast();
     }
     if (parameters) {
-      toast(pickProperty(ToastOpenParameterSpec, parameters));
+      toastInstances[sunmaoInstanceKey](pickProperty(ToastOpenParameterSpec, parameters));
     }
   });
 
+  return toastOpen;
+}
+
+export function ToastCloseUtilMethodFactory(sunmaoInstanceKey: string) {
   const toastClose = implementUtilMethod({
     version: 'chakra_ui/v1',
     metadata: {
@@ -96,6 +100,7 @@ export default function ToastUtilMethodFactory() {
       parameters: ToastCloseParameterSpec,
     },
   })(parameters => {
+    const toast = toastInstances[sunmaoInstanceKey];
     if (!toast) {
       return;
     }
@@ -111,5 +116,5 @@ export default function ToastUtilMethodFactory() {
     }
   });
 
-  return [toastOpen, toastClose];
+  return toastClose;
 }
