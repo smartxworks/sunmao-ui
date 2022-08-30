@@ -20,7 +20,7 @@ const ParameterSpec = Type.Object({
 });
 
 export const MessageUtilMethodFactory = () => {
-  const Message = implementUtilMethod({
+  return implementUtilMethod({
     version: 'arco/v1',
     metadata: {
       name: 'message',
@@ -39,6 +39,4 @@ export const MessageUtilMethodFactory = () => {
       ...rest,
     });
   });
-
-  return [Message];
 };
