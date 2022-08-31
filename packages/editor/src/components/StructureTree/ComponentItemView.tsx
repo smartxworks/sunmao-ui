@@ -7,12 +7,14 @@ type Props = {
   title: string;
   isSelected: boolean;
   onClick: () => void;
-  onClickRemove?: () => void;
+  onClickRemove: () => void;
   noChevron: boolean;
   isExpanded?: boolean;
-  onToggleExpanded?: () => void;
-  onDragStart?: () => void;
-  onDragEnd?: () => void;
+  onToggleExpanded: () => void;
+  onDragStart: () => void;
+  onDragEnd: () => void;
+  onMouseOver: () => void;
+  onMouseLeave: () => void;
   depth: number;
 };
 
@@ -31,6 +33,8 @@ export const ComponentItemView: React.FC<Props> = props => {
     onClickRemove,
     onDragStart,
     onDragEnd,
+    onMouseOver,
+    onMouseLeave,
     depth,
   } = props;
   const [isHover, setIsHover] = useState(false);
@@ -65,6 +69,16 @@ export const ComponentItemView: React.FC<Props> = props => {
     onDragEnd && onDragEnd();
   };
 
+  const _onMouseOver = () => {
+    setIsHover(true);
+    onMouseOver();
+  };
+
+  const _onMouseLeave = () => {
+    setIsHover(false);
+    onMouseLeave();
+  };
+
   const backgroundColor = useMemo(() => {
     if (isSelected) {
       return 'blue.100';
@@ -92,8 +106,8 @@ export const ComponentItemView: React.FC<Props> = props => {
       id={`tree-item-${id}`}
       width="full"
       paddingY="1"
-      onMouseOver={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
+      onMouseOver={_onMouseOver}
+      onMouseLeave={_onMouseLeave}
       onDragStart={_onDragStart}
       onDragEnd={_onDragEnd}
       draggable
@@ -120,7 +134,7 @@ export const ComponentItemView: React.FC<Props> = props => {
           {title}
         </Text>
         <Spacer />
-        {onClickRemove && isHover ? (
+        {isHover ? (
           <IconButton
             variant="ghost"
             colorScheme="red"
