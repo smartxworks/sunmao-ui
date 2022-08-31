@@ -132,6 +132,12 @@ const ComponentTree = (props: ComponentTreeProps) => {
   const onToggleExpanded = useCallback(() => setIsExpanded(prev => !prev), []);
   const onDragStart = useCallback(() => setIsDragging(true), []);
   const onDragEnd = useCallback(() => setIsDragging(false), []);
+  const onMouseOver = useCallback(() => {
+    services.editorStore.setHoverComponentId(component.id);
+  }, [component.id, services.editorStore]);
+  const onMouseLeave = useCallback(() => {
+    services.editorStore.setHoverComponentId('');
+  }, [services.editorStore]);
 
   return (
     <VStack
@@ -162,6 +168,8 @@ const ComponentTree = (props: ComponentTreeProps) => {
           onToggleExpanded={onToggleExpanded}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
+          onMouseOver={onMouseOver}
+          onMouseLeave={onMouseLeave}
           depth={depth}
         />
       </DropComponentWrapper>
