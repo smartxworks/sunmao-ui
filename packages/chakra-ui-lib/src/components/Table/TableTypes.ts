@@ -1,5 +1,10 @@
 import { Type } from '@sinclair/typebox';
-import { ModuleRenderSpec, EventCallBackHandlerSpec } from '@sunmao-ui/shared';
+import {
+  ModuleRenderSpec,
+  EventCallBackHandlerSpec,
+  LIST_ITEM_EXP,
+  LIST_ITEM_INDEX_EXP,
+} from '@sunmao-ui/shared';
 import { BASIC, APPEARANCE, BEHAVIOR } from '../constants/category';
 
 export const MajorKeyPropertySpec = Type.String({
@@ -104,4 +109,9 @@ export const IsMultiSelectPropertySpec = Type.Boolean({
 export const TableStateSpec = Type.Object({
   selectedItem: Type.Optional(Type.Object({})),
   selectedItems: Type.Array(Type.Object({})),
+});
+
+export const ContentSlotPropsSpec = Type.Object({
+  [LIST_ITEM_EXP]: Type.Any(),
+  [LIST_ITEM_INDEX_EXP]: Type.Number(),
 });

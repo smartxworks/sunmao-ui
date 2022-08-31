@@ -1,4 +1,4 @@
-import { mapValues, isArray, isPlainObject, set } from 'lodash';
+import { mapValues, isArray, set } from 'lodash';
 import dayjs from 'dayjs';
 import produce from 'immer';
 import 'dayjs/locale/zh-cn';
@@ -22,6 +22,7 @@ type EvalOptions = {
   fallbackWhenError?: (exp: string) => any;
   // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
   ignoreEvalError?: boolean;
+  slotKey?: string;
 };
 
 type EvaledResult<T> = T extends string ? unknown : PropsAfterEvaled<Exclude<T, string>>;
@@ -42,6 +43,7 @@ export type StateManagerInterface = InstanceType<typeof StateManager>;
 
 export class StateManager {
   store = reactive<Record<string, any>>({});
+  slotStore = reactive<Record<string, any>>({});
 
   dependencies: Record<string, unknown>;
 
@@ -141,11 +143,11 @@ export class StateManager {
     return mapValues(obj, (val, key: string | number) => {
       return isArray(val)
         ? val.map((innerVal, idx) => {
-            return isPlainObject(innerVal)
+            return innerVal && typeof innerVal === 'object'
               ? this.mapValuesDeep(innerVal, fn, path.concat(key, idx))
               : fn({ value: innerVal, key, obj, path: path.concat(key, idx) });
           })
-        : isPlainObject(val)
+        : val && typeof val === 'object'
         ? this.mapValuesDeep(val as unknown as T, fn, path.concat(key))
         : fn({ value: val, key, obj, path: path.concat(key) });
     }) as PropsAfterEvaled<T>;
@@ -155,6 +157,20 @@ export class StateManager {
     value: T,
     options: EvalOptions = {}
   ): EvaledResult<T> {
+    const store = this.slotStore;
+    const redirector = new Proxy(
+      {},
+      {
+        get(_, prop) {
+          return options.slotKey ? store[options.slotKey][prop] : undefined;
+        },
+      }
+    );
+
+    options.scopeObject = {
+      ...options.scopeObject,
+      $slot: redirector,
+    };
     // just eval
     if (typeof value !== 'string') {
       return this.mapValuesDeep(value, ({ value }) => {
@@ -180,6 +196,19 @@ export class StateManager {
       ? unknown
       : PropsAfterEvaled<Exclude<T, string>>;
 
+    const store = this.slotStore;
+    const redirector = new Proxy(
+      {},
+      {
+        get(_, prop) {
+          return options.slotKey ? store[options.slotKey][prop] : undefined;
+        },
+      }
+    );
+    options.scopeObject = {
+      ...options.scopeObject,
+      $slot: redirector,
+    };
     // watch change
     if (value && typeof value === 'object') {
       let resultCache = evaluated as PropsAfterEvaled<Exclude<T, string>>;
@@ -210,11 +239,13 @@ export class StateManager {
       const stop = watch(
         () => {
           const result = this._maskedEval(value, options);
-
           return result;
         },
         newV => {
           watcher({ result: newV as EvaledResult<T> });
+        },
+        {
+          deep: true,
         }
       );
       stops.push(stop);

@@ -25,7 +25,10 @@ import ChakraUIDialog from './components/Dialog';
 import ChakraUISelect from './components/Select';
 import ChakraUIRadioGroup from './components/RadioGroup';
 import ChakraUIRadio from './components/Radio';
-import ChakraUIToastUtilMethodFactory from './components/Types/Toast';
+import {
+  ToastOpenUtilMethodFactory,
+  ToastCloseUtilMethodFactory,
+} from './components/Types/Toast';
 
 export const sunmaoChakraUILib: SunmaoLib = {
   components: [
@@ -58,5 +61,5 @@ export const sunmaoChakraUILib: SunmaoLib = {
   ],
   traits: [],
   modules: [],
-  utilMethods: [ChakraUIToastUtilMethodFactory],
+  utilMethods: [ToastOpenUtilMethodFactory, ToastCloseUtilMethodFactory],
 };

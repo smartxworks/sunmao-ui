@@ -7,4 +7,4 @@ export type ImplementedUtilMethod<T = any> = RuntimeUtilMethod & {
   impl: UtilMethodImpl<T>;
 };
 
-export type UtilMethodFactory = () => ImplementedUtilMethod<any>[];
+export type UtilMethodFactory = (sunmaoInstanceKey: string) => ImplementedUtilMethod<any>;

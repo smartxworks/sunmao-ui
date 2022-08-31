@@ -43,7 +43,7 @@ const paddingCfg = [
   },
   {
     direction: 'right',
-    colStart: 2,
+    colStart: 4,
     rowStart: 3,
   },
   {
@@ -53,7 +53,7 @@ const paddingCfg = [
   },
   {
     direction: 'left',
-    colStart: 4,
+    colStart: 2,
     rowStart: 3,
   },
 ];

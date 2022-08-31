@@ -36,10 +36,10 @@ export const getComponentProps = <
   TState,
   TMethods,
   TSlots extends Record<string, SlotSpec>,
-  KStyleSlot extends string,
-  KEvent extends string
+  KStyleSlots extends ReadonlyArray<string>,
+  KEvents extends ReadonlyArray<string>
 >(
-  props: T & ComponentImplProps<T, TState, TMethods, TSlots, KStyleSlot, KEvent>
+  props: T & ComponentImplProps<T, TState, TMethods, TSlots, KStyleSlots, KEvents>
 ) => {
   const {
     /* eslint-disable @typescript-eslint/no-unused-vars */

@@ -6,7 +6,12 @@ import {
   CoreTraitName,
   AnyTypePlaceholder,
 } from '@sunmao-ui/shared';
-import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
+import {
+  ComponentSchema,
+  MethodSchema,
+  RuntimeComponent,
+  SlotSpec,
+} from '@sunmao-ui/core';
 import { genComponent, genTrait } from './utils';
 import {
   ComponentId,
@@ -32,10 +37,12 @@ const DynamicStateTrait = [
 ];
 
 type ComponentSpecModel = RuntimeComponent<
-  MethodName,
-  StyleSlotName,
-  SlotName,
-  EventName
+  any,
+  any,
+  Record<MethodName, MethodSchema['parameters']>,
+  ReadonlyArray<StyleSlotName>,
+  Record<SlotName, SlotSpec>,
+  ReadonlyArray<EventName>
 >;
 export class ComponentModel implements IComponentModel {
   spec: ComponentSpecModel;

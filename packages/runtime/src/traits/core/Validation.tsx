@@ -235,6 +235,7 @@ const ValidatedResultSpec = Type.Record(
 
 export const ValidationTraitStateSpec = Type.Object({
   validatedResult: ValidatedResultSpec,
+  isInvalid: Type.Boolean(),
 });
 
 export default implementRuntimeTrait({
@@ -275,6 +276,7 @@ export default implementRuntimeTrait({
   },
 })(() => {
   const initialMap = new Map();
+  const resultMap = new Map();
 
   return props => {
     const { validators, componentId, subscribeMethods, mergeState } = props;
@@ -303,7 +305,11 @@ export default implementRuntimeTrait({
 
       mergeState({
         validatedResult,
+        isInvalid: Object.keys(validatedResult).some(
+          key => validatedResult[key].isInvalid
+        ),
       });
+      resultMap.set(componentId, validatedResult);
     }
     function validateFields({ names }: { names: string[] }) {
       const validatedResult = names
@@ -339,8 +345,18 @@ export default implementRuntimeTrait({
 
           return result;
         }, {});
+      const mergedValidatedResult = {
+        ...(resultMap.get(componentId) || {}),
+        ...validatedResult,
+      };
 
-      mergeState({ validatedResult });
+      mergeState({
+        validatedResult: mergedValidatedResult,
+        isInvalid: Object.keys(mergedValidatedResult).some(
+          key => mergedValidatedResult[key].isInvalid
+        ),
+      });
+      resultMap.set(componentId, mergedValidatedResult);
     }
     function validateAllFields() {
       validateFields({ names: validators.map(({ name }) => name) });
