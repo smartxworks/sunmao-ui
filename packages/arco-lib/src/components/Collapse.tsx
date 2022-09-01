@@ -96,11 +96,11 @@ export const Collapse = implementRuntimeComponent({
         const { key, ...props } = o;
         return (
           <BaseCollapse.Item key={key} name={String(key)} {...props}>
-            {slotsElements?.content ? (
-              slotsElements.content({ activeKey, index })
-            ) : (
-              <EmptyPlaceholder componentName="" />
-            )}
+            {slotsElements?.content?.(
+              { activeKey, index },
+              <EmptyPlaceholder />,
+              `content_${index}`
+            ) || <EmptyPlaceholder />}
           </BaseCollapse.Item>
         );
       })}
