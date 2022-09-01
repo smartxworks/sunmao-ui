@@ -1,13 +1,12 @@
 import { Typography } from '@arco-design/web-react';
+import React from 'react';
 
-const EmptyPlaceholder: React.FC<{ componentName: string }> = ({ componentName }) => {
+const EmptyPlaceholder: React.FC<{ message?: string | React.ReactNode }> = ({
+  message,
+}) => {
   return (
     <Typography.Paragraph style={{ color: '#b2b2b2' }}>
-      Please drag{' '}
-      <Typography.Text bold style={{ color: '#777' }}>
-        {componentName}
-      </Typography.Text>{' '}
-      components here
+      {message || 'Slot content is empty.Please drag component to this slot.'}
     </Typography.Paragraph>
   );
 };
