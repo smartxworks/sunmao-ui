@@ -82,6 +82,9 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       displayValue: '',
       filter: false,
       componentSlotIndex: 0,
+      sorter: false,
+      ellipsis: false,
+      width: -1,
     },
     {
       title: 'Name',
@@ -91,7 +94,9 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       type: 'text',
       filter: true,
       displayValue: '',
+      ellipsis: false,
       componentSlotIndex: 0,
+      width: -1,
     },
     {
       title: 'Salary',
@@ -101,16 +106,21 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       filter: false,
       type: 'text',
       displayValue: '',
+      ellipsis: false,
       componentSlotIndex: 0,
+      width: -1,
     },
     {
       title: 'Link',
       dataIndex: 'link',
       type: 'link',
       filter: true,
+      sorter: false,
       sortDirections: ['ascend', 'descend'],
       displayValue: '',
+      ellipsis: false,
       componentSlotIndex: 0,
+      width: -1,
     },
   ],
   data: Array(13)
@@ -129,6 +139,9 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
     defaultCurrent: 1,
     updateWhenDefaultPageChanges: false,
     useCustomPagination: false,
+    simple: false,
+    showJumper: false,
+    showTotal: false,
   },
   rowClick: false,
   tableLayoutFixed: false,
@@ -283,6 +296,15 @@ export const Table = implementRuntimeComponent({
     setColumns(
       cProps.columns!.map((column, i) => {
         const newColumn: ColumnProperty = { ...column };
+        if (newColumn.width === -1) {
+          Reflect.deleteProperty(newColumn, 'width');
+        } else if (newColumn.width) {
+          newColumn.onHeaderCell = col => ({
+            width: col.width,
+            onResize: handleResize(i),
+          });
+        }
+
         if (newColumn.filter) {
           newColumn.filterDropdown = ({
             filterKeys,
@@ -323,12 +345,6 @@ export const Table = implementRuntimeComponent({
                 : true;
             };
           }
-        }
-        if (newColumn.width) {
-          newColumn.onHeaderCell = col => ({
-            width: col.width,
-            onResize: handleResize(i),
-          });
         }
 
         newColumn.render = (ceilValue: any, record: any, index: number) => {
@@ -459,6 +475,7 @@ export const Table = implementRuntimeComponent({
     cProps.columns,
     callbackMap,
     component.id,
+    slotsElements,
     component.properties.columns,
     services,
     useDefaultFilter,
