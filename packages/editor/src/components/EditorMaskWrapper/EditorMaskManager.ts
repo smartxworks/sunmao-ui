@@ -12,7 +12,6 @@ type MaskPosition = {
   };
 };
 export class EditorMaskManager {
-  hoverComponentId = '';
   hoverMaskPosition: MaskPosition | null = null;
   selectedMaskPosition: MaskPosition | null = null;
   mousePosition: [number, number] = [0, 0];
@@ -25,19 +24,21 @@ export class EditorMaskManager {
   private intersectionObserver: IntersectionObserver;
   private MaskPadding = 4;
   private lastHoverElement: Element | null = null;
+
+  get hoverComponentId() {
+    return this.services.editorStore.hoverComponentId;
+  }
+
   constructor(
     public services: EditorServices,
     public wrapperRef: React.MutableRefObject<HTMLDivElement | null>,
-    public maskContainerRef: React.MutableRefObject<HTMLDivElement | null>,
-    public hoverComponentIdRef: React.MutableRefObject<string>
+    public maskContainerRef: React.MutableRefObject<HTMLDivElement | null>
   ) {
     makeObservable(this, {
       mousePosition: observable,
       hoverMaskPosition: observable.ref,
       selectedMaskPosition: observable.ref,
-      hoverComponentId: observable,
       setMousePosition: action,
-      setHoverComponentId: action,
       setHoverMaskPosition: action,
       setSelectedMaskPosition: action,
     });
@@ -62,11 +63,6 @@ export class EditorMaskManager {
     // listen scroll events
     // scroll events' timing is similar to intersection events, but they are different. Both of them are necessary.
     this.services.eventBus.on('MaskWrapperScrollCapture', this.onScroll);
-
-    // expose hoverComponentId
-    autorun(() => {
-      this.hoverComponentIdRef.current = this.hoverComponentId;
-    });
 
     // when hoverComponentId & selectedComponentId change, refresh mask position
     autorun(() => {
@@ -197,7 +193,7 @@ export class EditorMaskManager {
     }
 
     this.lastHoverElement = hoverElement;
-    this.setHoverComponentId(this.elementIdMap.get(curr) || '');
+    this.services.editorStore.setHoverComponentId(this.elementIdMap.get(curr) || '');
   }
 
   private refreshMaskPosition() {
@@ -213,10 +209,6 @@ export class EditorMaskManager {
 
   setMousePosition(mousePosition: [number, number]) {
     this.mousePosition = mousePosition;
-  }
-
-  setHoverComponentId(hoverComponentId: string) {
-    this.hoverComponentId = hoverComponentId;
   }
 
   setHoverMaskPosition(hoverMaskPosition: MaskPosition | null) {

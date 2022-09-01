@@ -33,6 +33,7 @@ export class EditorStore {
   // currentEditingComponents, it could be app's or module's components
   _selectedComponentId = '';
   _dragOverComponentId = '';
+  hoverComponentId = '';
   explorerMenuTab = ExplorerMenuTabs.UI_TREE;
   toolMenuTab = ToolMenuTabs.INSERT;
   validateResult: ValidateErrorResult[] = [];
@@ -268,6 +269,10 @@ export class EditorStore {
 
   setDragOverComponentId = (val: string) => {
     this._dragOverComponentId = val;
+  };
+
+  setHoverComponentId = (val: string) => {
+    this.hoverComponentId = val;
   };
 
   setCurrentComponentsVersion = (val: number) => {

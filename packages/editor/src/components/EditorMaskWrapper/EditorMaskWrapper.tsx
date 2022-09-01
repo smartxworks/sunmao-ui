@@ -14,12 +14,16 @@ type Props = {
 export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   const { children, services } = props;
   const { editorStore, eventBus, registry } = services;
-  const { setSelectedComponentId, setExplorerMenuTab, selectedComponentId } = editorStore;
+  const {
+    setSelectedComponentId,
+    setExplorerMenuTab,
+    selectedComponentId,
+    hoverComponentId,
+  } = editorStore;
   const [mousePosition, setMousePosition] = useState<[number, number]>([0, 0]);
   const [scrollOffset, setScrollOffset] = useState<[number, number]>([0, 0]);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const dragOverSlotRef = useRef<string>('');
-  const hoverComponentIdRef = useRef<string>('');
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     setMousePosition([e.clientX, e.clientY]);
@@ -35,8 +39,8 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
   };
 
   const onClick = () => {
-    if (hoverComponentIdRef.current) {
-      setSelectedComponentId(hoverComponentIdRef.current);
+    if (hoverComponentId) {
+      setSelectedComponentId(hoverComponentId);
     }
   };
 
@@ -60,7 +64,7 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
       'operation',
       genOperation(registry, 'createComponent', {
         componentType: creatingComponent,
-        parentId: hoverComponentIdRef.current,
+        parentId: hoverComponentId,
         slot: dragOverSlotRef.current,
       })
     );
@@ -113,7 +117,6 @@ export const EditorMaskWrapper: React.FC<Props> = observer(props => {
       <EditorMask
         services={services}
         mousePosition={mousePositionWithOffset}
-        hoverComponentIdRef={hoverComponentIdRef}
         dragOverSlotRef={dragOverSlotRef}
         wrapperRef={wrapperRef}
       />
