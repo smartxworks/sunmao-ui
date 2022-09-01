@@ -6,6 +6,7 @@ import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { TabsPropsSpec as BaseTabsPropsSpec } from '../generated/types/Tabs';
 import { useEffect, useRef } from 'react';
 import { useStateValue } from '../hooks/useStateValue';
+import { EmptyPlaceholder } from './_internal/EmptyPlaceholder';
 
 const TabsPropsSpec = Type.Object(BaseTabsPropsSpec);
 const TabsStateSpec = Type.Object({
@@ -126,11 +127,11 @@ export const Tabs = implementRuntimeComponent({
             key={String(idx)}
             title={tabItem.title}
           >
-            {slotsElements?.content
-              ? slotsElements.content({
-                  tabIndex: idx,
-                })
-              : null}
+            {slotsElements?.content?.(
+              { tabIndex: idx },
+              <EmptyPlaceholder />,
+              `content_${idx}`
+            ) || <EmptyPlaceholder />}
           </TabPane>
         )
       )}
