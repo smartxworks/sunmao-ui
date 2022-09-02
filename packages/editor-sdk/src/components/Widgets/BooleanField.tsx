@@ -16,7 +16,7 @@ export const BooleanField: React.FC<WidgetProps<BooleanFieldType>> = props => {
 
   useEffect(() => {
     // Convert value to boolean after switch from expression widget mode.
-    if (typeof value !== 'boolean') {
+    if (value && typeof value !== 'boolean') {
       onChange(true);
     }
   }, [onChange, value]);
