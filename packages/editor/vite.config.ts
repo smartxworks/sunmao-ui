@@ -7,11 +7,16 @@ import { resolve } from 'path';
 export default defineConfig({
   base: './',
   plugins: [
-    react(),
     virtualExamplePlugin(),
+    react({
+      jsxRuntime: 'classic',
+    }),
   ],
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' },
+  },
   define: {
-    // https://github.com/satya164/react-simple-code-editor/issues/86
+    // react-codemirror2 need this
     global: 'globalThis',
   },
   build: {

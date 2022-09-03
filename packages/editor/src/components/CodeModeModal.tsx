@@ -13,9 +13,10 @@ import {
 import { observer } from 'mobx-react-lite';
 import { genOperation } from '../operations';
 import { AppModel } from '../AppModel/AppModel';
-import { SchemaEditor } from './CodeEditor';
 import { EditorServices } from '../types';
 import { Application } from '@sunmao-ui/core';
+import { CodeEditor } from './CodeEditor/CodeEditor';
+import { css } from '@emotion/css';
 
 type Props = {
   app: Application;
@@ -46,8 +47,18 @@ export const CodeModeModal: React.FC<Props> = observer(({ app, onClose, services
         <ModalHeader>Code Mode</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Box overflow="auto" minHeight="600px" maxHeight="1000px">
-            <SchemaEditor defaultCode={JSON.stringify(app, null, 2)} onChange={setCode} />
+          <Box overflow="auto" height="calc(100vh - 270px)">
+            <CodeEditor
+              className={css`
+                height: 100%;
+              `}
+              mode={{
+                name: 'javascript',
+                json: true,
+              }}
+              defaultCode={JSON.stringify(app, null, 2)}
+              onChange={setCode}
+            />
           </Box>
         </ModalBody>
         <ModalFooter>

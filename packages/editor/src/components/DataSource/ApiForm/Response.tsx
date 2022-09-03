@@ -10,7 +10,8 @@ import {
   Spinner,
   Tag,
 } from '@chakra-ui/react';
-import { Result } from './Result';
+import { CodeEditor } from '../../CodeEditor';
+import { css } from '@emotion/css';
 
 interface Props {
   data?: unknown;
@@ -56,7 +57,21 @@ export const Response: React.FC<Props> = props => {
         </h2>
         <AccordionPanel pb={4} padding={0} height="250px">
           <Flex alignItems="center" justifyContent="center" height="100%">
-            {props.loading ? <Spinner /> : <Result defaultCode={error || data} />}
+            {props.loading ? (
+              <Spinner />
+            ) : (
+              <CodeEditor
+                className={css`
+                  width: 100%;
+                  height: 100%;
+                `}
+                mode={{
+                  name: 'javascript',
+                  json: true,
+                }}
+                defaultCode={error || data}
+              />
+            )}
           </Flex>
         </AccordionPanel>
       </AccordionItem>

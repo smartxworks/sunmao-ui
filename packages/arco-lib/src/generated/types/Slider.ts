@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
-import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/editor-sdk';
+import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
 
 export const SliderPropsSpec = {
   min: Type.Number({
