@@ -5,7 +5,7 @@ import { Static } from '@sinclair/typebox';
 import { Select } from '@arco-design/web-react';
 import { ARCO_V1_VERSION } from '../constants/widgets';
 
-type TablePrimaryKeyWidget = 'arco/v1/primaryKey';
+type TablePrimaryKeyWidgetID = 'arco/v1/primaryKey';
 
 declare module '@sunmao-ui/editor-sdk' {
   interface WidgetOptionsMap {
@@ -13,8 +13,8 @@ declare module '@sunmao-ui/editor-sdk' {
   }
 }
 
-export const TablePrimaryKeyWidget: React.FC<
-  WidgetProps<TablePrimaryKeyWidget, string>
+export const _TablePrimaryKeyWidget: React.FC<
+  WidgetProps<TablePrimaryKeyWidgetID, string>
 > = props => {
   const { value, onChange, component } = props;
   const { properties } = component;
@@ -41,9 +41,9 @@ export const TablePrimaryKeyWidget: React.FC<
   );
 };
 
-export default implementWidget<TablePrimaryKeyWidget>({
+export const TablePrimaryKeyWidget = implementWidget<TablePrimaryKeyWidgetID>({
   version: ARCO_V1_VERSION,
   metadata: {
     name: 'primaryKey',
   },
-})(TablePrimaryKeyWidget);
+})(_TablePrimaryKeyWidget);

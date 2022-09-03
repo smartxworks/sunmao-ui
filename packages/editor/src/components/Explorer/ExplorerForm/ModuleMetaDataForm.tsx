@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import {
   Box,
   Button,
@@ -19,9 +19,10 @@ import { RecordEditor, SpecWidget } from '@sunmao-ui/editor-sdk';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
-import JsonSchemaEditor from '@optum/json-schema-editor';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { JSONSchema7, JSONSchema7Object } from 'json-schema';
+
+const JsonSchemaEditor = React.lazy(() => import('@optum/json-schema-editor'));
 
 export type ModuleMetaDataFormData = {
   name: string;
@@ -112,16 +113,21 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
               <ModalBody overflow="auto">
                 {isOpen && (
                   <Box>
-                    <JsonSchemaEditor
-                      data={moduleSpec}
-                      onSchemaChange={s => {
-                        const curSpec = JSON.parse(s);
-                        if (s === JSON.stringify(moduleSpec) || curSpec.type === 'array')
-                          return;
+                    <Suspense fallback="Loading Spec Editor">
+                      <JsonSchemaEditor
+                        data={moduleSpec}
+                        onSchemaChange={s => {
+                          const curSpec = JSON.parse(s);
+                          if (
+                            s === JSON.stringify(moduleSpec) ||
+                            curSpec.type === 'array'
+                          )
+                            return;
 
-                        formik.setFieldValue('properties', curSpec);
-                      }}
-                    />
+                          formik.setFieldValue('properties', curSpec);
+                        }}
+                      />
+                    </Suspense>
                   </Box>
                 )}
               </ModalBody>
