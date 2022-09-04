@@ -309,6 +309,14 @@ export default implementRuntimeTrait({
       const validatedResult = names
         .map(name => {
           const validator = validatorMap[name];
+          if (!validator) {
+            return {
+              name,
+              isInvalid: false,
+              errors: [],
+            };
+          }
+
           const { value, rules } = validator;
           const errors = rules
             .map(rule => {

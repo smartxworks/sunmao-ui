@@ -52,6 +52,7 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
            * forever, it still need to teardown at the first time it rendered.
            */
           if (!prevIsHidden || stateManager.initSet.has(c.id)) {
+            stateManager.initSet.delete(c.id);
             delete stateManager.store[c.id];
           }
         }
