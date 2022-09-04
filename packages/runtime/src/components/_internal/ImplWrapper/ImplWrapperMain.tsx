@@ -7,7 +7,7 @@ import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
-import { initStateAndMethod } from '../../../utils/initStateAndMethod';
+import { initSingleComponentState } from '../../../utils/initStateAndMethod';
 import ComponentErrorBoundary from '../ComponentErrorBoundary';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
@@ -23,7 +23,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     // This code is to init dynamic generated components
     // because they have not be initialized before
     if (!stateManager.store[c.id]) {
-      initStateAndMethod(registry, stateManager, [c]);
+      initSingleComponentState(registry, stateManager, c);
     }
 
     const { eleRef, onRef, onRecoverFromError } = useEleRef(props);

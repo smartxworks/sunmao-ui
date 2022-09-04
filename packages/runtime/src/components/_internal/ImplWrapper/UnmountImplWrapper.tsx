@@ -37,9 +37,13 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const traitChangeCallback = useCallback(
       (trait: RuntimeTraitSchema, properties: Record<string, unknown>) => {
         const result = executeTrait(trait, properties);
+
         const prevIsHidden = isHidden;
         setIsHidden(!!result.unmount);
-        if (result.unmount) {
+
+        const isLastRender = slotContext ? slotContext.renderSet.size === 0 : true;
+
+        if (result.unmount && isLastRender) {
           // Every component's state is initialized in initStateAnd Method.
           // So if if it should not render, we should remove it from store.
 
@@ -52,12 +56,12 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
            * forever, it still need to teardown at the first time it rendered.
            */
           if (!prevIsHidden || stateManager.initSet.has(c.id)) {
-            stateManager.initSet.delete(c.id);
             delete stateManager.store[c.id];
+            stateManager.initSet.delete(c.id);
           }
         }
       },
-      [c.id, executeTrait, stateManager, isHidden]
+      [executeTrait, isHidden, stateManager, c.id, slotContext]
     );
 
     useEffect(() => {

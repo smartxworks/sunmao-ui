@@ -17,7 +17,7 @@ export const App: React.FC<AppProps> = props => {
   const {
     options,
     services,
-    debugStore = false,
+    debugStore = true,
     debugEvent = false,
     hooks,
     isInEditor = false,

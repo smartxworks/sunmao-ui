@@ -13,12 +13,11 @@ import { JSONSchema7Object } from 'json-schema';
 export function initStateAndMethod(
   registry: RegistryInterface,
   stateManager: StateManagerInterface,
-  components: RuntimeComponentSchema[],
-  mark?: true
+  components: RuntimeComponentSchema[]
 ) {
   components.forEach(c => {
-    initSingleComponentState(registry, stateManager, c);
-    if (mark) {
+    const inited = initSingleComponentState(registry, stateManager, c);
+    if (inited) {
       stateManager.initSet.add(c.id);
     }
   });
@@ -28,7 +27,7 @@ export function initSingleComponentState(
   registry: RegistryInterface,
   stateManager: StateManagerInterface,
   c: RuntimeComponentSchema
-) {
+): boolean {
   if (stateManager.store[c.id]) {
     return false;
   }
@@ -60,4 +59,6 @@ export function initSingleComponentState(
       stateManager.store[moduleSchema.id] = moduleInitState;
     } catch {}
   }
+
+  return true;
 }
