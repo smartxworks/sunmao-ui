@@ -26,6 +26,9 @@ export function initSingleComponentState(
   if (stateManager.store[c.id]) {
     return false;
   }
+
+  stateManager.initSet.add(c.id);
+
   let state = {};
   c.traits.forEach(t => {
     const tSpec = registry.getTrait(t.parsedType.version, t.parsedType.name).spec;

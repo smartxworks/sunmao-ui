@@ -45,6 +45,18 @@ export class StateManager {
   store = reactive<Record<string, any>>({});
   slotStore = reactive<Record<string, any>>({});
 
+  /**
+   * In `initStateAndMethod`, we setup all components' state with a
+   * default value.
+   *
+   * If some components were unmounted later, the `UnmountImplWrapper`
+   * will teardown the state.
+   *
+   * So we provide this flag set for the `UnmountImplWrapper`, let
+   * it know whether the component's state is setup by the init process.
+   */
+  initSet = new Set<string>();
+
   dependencies: Record<string, unknown>;
 
   mute = true;

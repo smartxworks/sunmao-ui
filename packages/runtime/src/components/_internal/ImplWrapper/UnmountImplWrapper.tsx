@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { ImplWrapperMain } from './ImplWrapperMain';
 import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
@@ -12,8 +12,6 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
     const { component: c, services, slotContext } = props;
     const { stateManager, registry } = services;
     const { executeTrait } = useRuntimeFunctions(props);
-    const renderCount = useRef(0);
-    renderCount.current++;
 
     const slotKey = slotContext?.slotKey || '';
 
@@ -49,14 +47,11 @@ export const UnmountImplWrapper = React.forwardRef<HTMLDivElement, ImplWrapperPr
            * prevIsHidden: Only clear the store when the component is not
            * hidden before this check.
            *
-           * renderCount: Currently we call initStateAndMethod to setup the
-           * state store, and let here to teardown the hidden components'
-           * state. If a component is hidden forever, it still need to teardown
-           * at the first time it rendered.
-           * Not a perfect solution, and we should have better lifecycle
-           * management for the state store.
+           * initSet: when init set has the component's id, it means there
+           * is an initial state setup by us. If a component is hidden
+           * forever, it still need to teardown at the first time it rendered.
            */
-          if (!prevIsHidden || renderCount.current === 1) {
+          if (!prevIsHidden || stateManager.initSet.has(c.id)) {
             delete stateManager.store[c.id];
           }
         }
