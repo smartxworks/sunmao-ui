@@ -172,7 +172,7 @@ export const Table = implementRuntimeComponent({
     state: TableStateSpec,
     methods: {},
     slots: {
-      content: {
+      td: {
         slotProps: Type.Object({
           [LIST_ITEM_EXP]: Type.Any(),
           [LIST_ITEM_INDEX_EXP]: Type.Number(),
@@ -436,13 +436,19 @@ export const Table = implementRuntimeComponent({
                 id: `${component.id}_${childSchema.id}_${index}`,
               };
 
+              console.log('id', `${component.id}_${childSchema.id}_${index}`);
+
               /**
                * FIXME: temporary hack
                */
-              slotsElements.content?.({
-                [LIST_ITEM_EXP]: record,
-                [LIST_ITEM_INDEX_EXP]: index,
-              });
+              slotsElements.td?.(
+                {
+                  [LIST_ITEM_EXP]: record,
+                  [LIST_ITEM_INDEX_EXP]: index,
+                },
+                undefined,
+                `${childSchema.id}_${index}`
+              );
 
               colItem = (
                 <ImplWrapper
@@ -455,7 +461,11 @@ export const Table = implementRuntimeComponent({
                   evalListItem
                   slotContext={{
                     renderSet: new Set(),
-                    slotKey: formatSlotKey(_childrenSchema.id, 'td', `td_${index}`),
+                    slotKey: formatSlotKey(
+                      component.id,
+                      'td',
+                      `${childSchema.id}_${index}`
+                    ),
                   }}
                 />
               );
