@@ -23,11 +23,7 @@ export class SlotReceiver {
 
   constructor() {
     this.emitter.on('*', (slotKey: string, c: React.ReactNode) => {
-      // undefined means no fallback has been received yet
-      // null means the Receiver component start to hanle the events
-      if (this.fallbacks[slotKey] === undefined) {
-        this.fallbacks[slotKey] = c;
-      }
+      this.fallbacks[slotKey] = c;
     });
   }
 }
