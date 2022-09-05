@@ -436,8 +436,6 @@ export const Table = implementRuntimeComponent({
                 id: `${component.id}_${childSchema.id}_${index}`,
               };
 
-              console.log('id', `${component.id}_${childSchema.id}_${index}`);
-
               /**
                * FIXME: temporary hack
                */
