@@ -35,7 +35,7 @@
     "@sunmao-ui/shared": "^0.2.4-alpha.2",
     "codemirror": "^5.63.3",
     "formik": "^2.2.9",
-    "framer-motion": "^4",
+    "framer-motion": "^3.10.6",
     "immer": "^9.0.6",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
