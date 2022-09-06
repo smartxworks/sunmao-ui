@@ -17,11 +17,12 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
-    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "build": "tsup && npm run visualize",
+    "dev": "tsup --platform browser",
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings",
-    "test": "jest"
+    "test": "jest",
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-iife.json --exclude *.png"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
@@ -36,16 +37,18 @@
     "formik": "^2.2.9",
     "framer-motion": "^4",
     "immer": "^9.0.6",
+    "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "mobx": "^6.3.8",
     "mobx-react-lite": "^3.2.2",
     "rc-select": "^14.1.5",
-    "react-color": "^2.19.3",
-    "tern": "^0.24.3"
+    "react-color": "^2.19.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
-    "tsup": "^5.11.0"
+    "@vitejs/plugin-react": "^2.0.1",
+    "esbuild": "^0.15.5",
+    "tsup": "^6.2.2"
   },
   "keywords": [],
   "husky": {
@@ -60,7 +63,9 @@
     ]
   },
   "peerDependencies": {
+    "ajv": "^8.8.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "tern": "^0.24.3"
   }
 }

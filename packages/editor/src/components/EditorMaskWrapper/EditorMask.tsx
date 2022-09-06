@@ -41,29 +41,22 @@ type Props = {
   services: EditorServices;
   mousePosition: [number, number];
   dragOverSlotRef: React.MutableRefObject<string>;
-  hoverComponentIdRef: React.MutableRefObject<string>;
   wrapperRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 // Read this pr to understand the coordinates system before you modify this component.
 // https://github.com/smartxworks/sunmao-ui/pull/286
 export const EditorMask: React.FC<Props> = observer((props: Props) => {
-  const { services, mousePosition, wrapperRef, hoverComponentIdRef, dragOverSlotRef } =
-    props;
+  const { services, mousePosition, wrapperRef, dragOverSlotRef } = props;
   const { editorStore } = services;
-  const { isDraggingNewComponent } = editorStore;
+  const { isDraggingNewComponent, hoverComponentId } = editorStore;
   const maskContainerRef = useRef<HTMLDivElement>(null);
 
   const manager = useLocalObservable(
-    () =>
-      new EditorMaskManager(services, wrapperRef, maskContainerRef, hoverComponentIdRef)
+    () => new EditorMaskManager(services, wrapperRef, maskContainerRef)
   );
 
-  const { hoverComponentId, hoverMaskPosition, selectedMaskPosition } = manager;
-
-  useEffect(() => {
-    hoverComponentIdRef.current = hoverComponentId;
-  }, [hoverComponentId, hoverComponentIdRef]);
+  const { hoverMaskPosition, selectedMaskPosition } = manager;
 
   useEffect(() => {
     manager.init();

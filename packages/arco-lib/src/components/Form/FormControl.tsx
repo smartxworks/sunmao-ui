@@ -82,11 +82,7 @@ export const FormControl = implementRuntimeComponent({
       ref={elementRef}
       {...cProps}
     >
-      {slotsElements.content ? (
-        slotsElements.content({})
-      ) : (
-        <EmptyPlaceholder componentName="Input" />
-      )}
+      {slotsElements.content ? slotsElements.content({}) : <EmptyPlaceholder />}
       <FormControlErrorMessage errorMsg={errorMsg} />
     </BaseFormControl>
   );

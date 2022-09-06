@@ -16,3 +16,5 @@ typings
 
 # jest test coverage
 coverage
+
+stats.html

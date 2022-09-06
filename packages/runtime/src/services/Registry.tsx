@@ -66,6 +66,7 @@ export class Registry {
   traits = new Map<string, Map<string, ImplementedRuntimeTrait>>();
   modules = new Map<string, Map<string, ImplementedRuntimeModule>>();
   utilMethods = new Map<string, Map<string, ImplementedUtilMethod>>();
+  private sunmaoInstanceKey = String(Math.floor(Date.now() / 1000));
   private services: UIServices;
 
   constructor(
@@ -234,8 +235,7 @@ export class Registry {
     lib.modules?.forEach(m => this.registerModule(m));
     if (lib.utilMethods) {
       lib.utilMethods.forEach(factory => {
-        const methods = factory();
-        methods.forEach(m => this.registerUtilMethod(m));
+        this.registerUtilMethod(factory(this.sunmaoInstanceKey));
       });
     }
   }
