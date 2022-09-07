@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import React, { useMemo, useRef, useState, useCallback } from 'react';
+import { ComponentId } from '../../AppModel/IAppModel';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
 
@@ -26,7 +27,7 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     droppable,
     hasSlot,
   } = props;
-  const { registry, eventBus } = services;
+  const { registry, eventBus, appModelManager } = services;
   const ref = useRef<HTMLDivElement>(null);
   const [dragDirection, setDragDirection] = useState<'prev' | 'next' | undefined>();
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
@@ -76,9 +77,12 @@ export const DropComponentWrapper: React.FC<Props> = props => {
       let targetParentId = parentId;
       let targetParentSlot = parentSlot;
       let targetId = componentId;
-      if (dragDirection === 'next' && isExpanded && hasSlot) {
+      if (dragDirection === 'next' && componentId && isExpanded && hasSlot) {
         targetParentId = componentId;
-        targetParentSlot = 'content';
+        // get first slot of component
+        targetParentSlot =
+          appModelManager.appModel.getComponentById(componentId as ComponentId)
+            ?.slots[0] || '';
         targetId = undefined;
       }
 
@@ -114,12 +118,13 @@ export const DropComponentWrapper: React.FC<Props> = props => {
     },
     [
       droppable,
+      parentId,
+      parentSlot,
+      componentId,
       dragDirection,
       isExpanded,
       hasSlot,
-      componentId,
-      parentId,
-      parentSlot,
+      appModelManager.appModel,
       eventBus,
       registry,
     ]
