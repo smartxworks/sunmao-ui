@@ -79,6 +79,7 @@ export class EditorStore {
       schemaValidator: observable.ref,
       setComponents: action,
       setDragOverComponentId: action,
+      setHoverComponentId: action,
     });
 
     this.eventBus.on('selectComponent', id => {

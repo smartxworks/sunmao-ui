@@ -68,18 +68,11 @@ export class ComponentModel implements IComponentModel {
     this.type = schema.type as ComponentType;
     this.spec = this.registry.getComponentByType(this.type) as any;
 
-    this.traits = schema.traits.map(
-      t => new TraitModel(t, this.registry, this.appModel, this)
-    );
+    this.traits = schema.traits.map(t => new TraitModel(t, this.registry, this));
     this.genStateExample();
     this.parentId = this._slotTrait?.rawProperties.container.id;
     this.parentSlot = this._slotTrait?.rawProperties.container.slot;
-    this.properties = new FieldModel(
-      schema.properties,
-      this.spec.spec.properties,
-      this.appModel,
-      this
-    );
+    this.properties = new FieldModel(schema.properties, this, this.spec.spec.properties);
   }
 
   get slots() {
@@ -174,7 +167,7 @@ export class ComponentModel implements IComponentModel {
 
   addTrait(traitType: TraitType, properties: Record<string, unknown>): ITraitModel {
     const traitSchema = genTrait(traitType, properties);
-    const trait = new TraitModel(traitSchema, this.registry, this.appModel, this);
+    const trait = new TraitModel(traitSchema, this.registry, this);
     this.traits.push(trait);
     this._isDirty = true;
     this.genStateExample();
@@ -243,7 +236,7 @@ export class ComponentModel implements IComponentModel {
     }
     this._isDirty = true;
     this.appModel.changeComponentMapId(oldId, newId);
-    this.appModel.emitter.emit('idChange', { oldId, newId });
+    this.appModel.traverseAllFields(field => field.changeReferenceId(oldId, newId));
 
     return this;
   }

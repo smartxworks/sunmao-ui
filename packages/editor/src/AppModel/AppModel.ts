@@ -7,11 +7,13 @@ import {
   ComponentType,
   IAppModel,
   IComponentModel,
+  IFieldModel,
   ModuleId,
   SlotName,
 } from './IAppModel';
 import { genComponent } from './utils';
 import mitt from 'mitt';
+import { forEach } from 'lodash';
 
 export class AppModel implements IAppModel {
   topComponents: IComponentModel[] = [];
@@ -143,8 +145,35 @@ export class AppModel implements IAppModel {
         });
       }
     }
-    this.topComponents.forEach(parent => {
-      traverse(parent);
+    if (this.topComponents.length) {
+      this.topComponents.forEach(parent => {
+        traverse(parent);
+      });
+    } else {
+      // When all the components have slot trait, there is no topComponents.
+      // Just iterate them in order.
+      Object.values(this.componentMap).forEach(c => {
+        cb(c);
+      });
+    }
+  }
+
+  traverseAllFields(cb: (f: IFieldModel) => void) {
+    function traverseField(field: IFieldModel) {
+      cb(field);
+      const value = field.getValue();
+      if (typeof value === 'object') {
+        forEach(value, childField => {
+          traverseField(childField);
+        });
+      }
+    }
+
+    this.traverseTree(c => {
+      traverseField(c.properties);
+      c.traits.forEach(t => {
+        traverseField(t.properties);
+      });
     });
   }
 }
