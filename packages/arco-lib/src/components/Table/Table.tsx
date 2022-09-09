@@ -172,7 +172,7 @@ export const Table = implementRuntimeComponent({
     state: TableStateSpec,
     methods: {},
     slots: {
-      td: {
+      content: {
         slotProps: Type.Object({
           [LIST_ITEM_EXP]: Type.Any(),
           [LIST_ITEM_INDEX_EXP]: Type.Number(),
@@ -439,7 +439,7 @@ export const Table = implementRuntimeComponent({
               /**
                * FIXME: temporary hack
                */
-              slotsElements.td?.(
+              slotsElements.content?.(
                 {
                   [LIST_ITEM_EXP]: record,
                   [LIST_ITEM_INDEX_EXP]: index,
@@ -461,7 +461,7 @@ export const Table = implementRuntimeComponent({
                     renderSet: new Set(),
                     slotKey: formatSlotKey(
                       component.id,
-                      'td',
+                      'content',
                       `${childSchema.id}_${index}`
                     ),
                   }}
