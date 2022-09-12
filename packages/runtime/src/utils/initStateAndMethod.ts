@@ -16,8 +16,10 @@ export function initStateAndMethod(
   components: RuntimeComponentSchema[]
 ) {
   components.forEach(c => {
-    stateManager.initSet.add(c.id);
-    initSingleComponentState(registry, stateManager, c);
+    const inited = initSingleComponentState(registry, stateManager, c);
+    if (inited) {
+      stateManager.initSet.add(c.id);
+    }
   });
 }
 
@@ -25,7 +27,7 @@ export function initSingleComponentState(
   registry: RegistryInterface,
   stateManager: StateManagerInterface,
   c: RuntimeComponentSchema
-) {
+): boolean {
   if (stateManager.store[c.id]) {
     return false;
   }
@@ -57,4 +59,6 @@ export function initSingleComponentState(
       stateManager.store[moduleSchema.id] = moduleInitState;
     } catch {}
   }
+
+  return true;
 }
