@@ -266,3 +266,51 @@ export const TabsWithSlotsSchema: Application = {
     ],
   },
 };
+
+export const MultiSlotsSchema: Application = {
+  kind: 'Application',
+  version: 'example/v1',
+  metadata: { name: 'sunmao application', description: 'sunmao empty application' },
+  spec: {
+    components: [
+      {
+        id: 'testList0',
+        type: 'custom/v1/testList',
+        properties: { number: 2 },
+        traits: [],
+      },
+      {
+        id: 'input1',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: '1',
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: { id: 'testList0', slot: 'content' },
+              ifCondition: '{{$slot.index === 0}}',
+            },
+          },
+        ],
+      },
+      {
+        id: 'input2',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: '2',
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: { id: 'testList0', slot: 'content' },
+              ifCondition: '{{$slot.index === 1}}',
+            },
+          },
+        ],
+      },
+    ],
+  },
+};

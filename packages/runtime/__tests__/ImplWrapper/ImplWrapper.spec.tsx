@@ -13,6 +13,7 @@ import {
   AsyncMergeStateSchema,
   TabsWithSlotsSchema,
   ParentRerenderSchema,
+  MultiSlotsSchema,
 } from './mockSchema';
 
 // A pure single sunmao component will render twice when it mount.
@@ -193,6 +194,27 @@ describe('slot trait if condition', () => {
         "tabs": Object {
           "selectedTabIndex": 1,
         },
+      }
+    `);
+
+    unmount();
+    clearTesterMap();
+  });
+
+  it('only teardown component state in the last render', () => {
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
+    stateManager.mute = true;
+    const { unmount } = render(<App options={MultiSlotsSchema} />);
+
+    expect(stateManager.store).toMatchInlineSnapshot(`
+      Object {
+        "input1": Object {
+          "value": "1",
+        },
+        "input2": Object {
+          "value": "2",
+        },
+        "testList0": Object {},
       }
     `);
 
