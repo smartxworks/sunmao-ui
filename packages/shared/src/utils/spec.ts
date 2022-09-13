@@ -72,7 +72,8 @@ function getObject(
 
 export function generateDefaultValueFromSpec(
   spec: JSONSchema7,
-  returnPlaceholderForAny = false
+  returnPlaceholderForAny = false,
+  genArrayItemDefaults = false
 ): JSONSchema7Type {
   if (!spec.type) {
     if ((spec.anyOf && spec.anyOf!.length > 0) || (spec.oneOf && spec.oneOf.length > 0)) {
@@ -112,7 +113,9 @@ export function generateDefaultValueFromSpec(
         ? Array.isArray(spec.items)
           ? getArray(spec.items, returnPlaceholderForAny)
           : isJSONSchema(spec.items)
-          ? [generateDefaultValueFromSpec(spec.items, returnPlaceholderForAny)]
+          ? genArrayItemDefaults
+            ? [generateDefaultValueFromSpec(spec.items, returnPlaceholderForAny)]
+            : []
           : null
         : [];
     case spec.type === 'number':

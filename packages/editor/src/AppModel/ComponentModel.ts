@@ -323,7 +323,7 @@ export class ComponentModel implements IComponentModel {
   private genStateExample() {
     if (!this.spec) return [];
     const componentStateSpec = this.spec.spec.state;
-    let _temp = generateDefaultValueFromSpec(componentStateSpec, true) as Record<
+    let _temp = generateDefaultValueFromSpec(componentStateSpec, true, true) as Record<
       string,
       any
     >;
@@ -336,7 +336,7 @@ export class ComponentModel implements IComponentModel {
           _temp[key] = AnyTypePlaceholder;
         }
       } else {
-        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state, true));
+        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state, true, true));
       }
     });
     this.stateExample = _temp;
