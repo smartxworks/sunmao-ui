@@ -323,10 +323,10 @@ export class ComponentModel implements IComponentModel {
   private genStateExample() {
     if (!this.spec) return [];
     const componentStateSpec = this.spec.spec.state;
-    let _temp = generateDefaultValueFromSpec(componentStateSpec, true, true) as Record<
-      string,
-      any
-    >;
+    let _temp = generateDefaultValueFromSpec(componentStateSpec, {
+      returnPlaceholderForAny: true,
+      genArrayItemDefaults: true,
+    }) as Record<string, any>;
 
     this.traits.forEach(t => {
       // if component has state trait, read state trait key and add it in
@@ -336,7 +336,13 @@ export class ComponentModel implements IComponentModel {
           _temp[key] = AnyTypePlaceholder;
         }
       } else {
-        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state, true, true));
+        _temp = merge(
+          _temp,
+          generateDefaultValueFromSpec(t.spec.spec.state, {
+            returnPlaceholderForAny: true,
+            genArrayItemDefaults: true,
+          })
+        );
       }
     });
     this.stateExample = _temp;
