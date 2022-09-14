@@ -267,6 +267,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
                   mode="css"
                   defaultCode={style}
                   onBlur={v => changeStyleContent(i, v)}
+                  needRerenderAfterMount
                 />
               </CollapsibleFormControl>
             </VStack>
