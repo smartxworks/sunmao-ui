@@ -220,7 +220,7 @@ export const Table = implementRuntimeComponent({
   const currentChecked = useRef<(string | number)[]>([]);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
-    defaultCurrent ?? 1,
+    !defaultCurrent || defaultCurrent < 1 ? 1 : defaultCurrent,
     mergeState,
     updateWhenDefaultPageChanges,
     'currentPage'
