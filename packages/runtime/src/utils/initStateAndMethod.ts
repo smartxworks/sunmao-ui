@@ -15,17 +15,23 @@ export function initStateAndMethod(
   stateManager: StateManagerInterface,
   components: RuntimeComponentSchema[]
 ) {
-  components.forEach(c => initSingleComponentState(registry, stateManager, c));
+  components.forEach(c => {
+    const inited = initSingleComponentState(registry, stateManager, c);
+    if (inited) {
+      stateManager.initSet.add(c.id);
+    }
+  });
 }
 
 export function initSingleComponentState(
   registry: RegistryInterface,
   stateManager: StateManagerInterface,
   c: RuntimeComponentSchema
-) {
+): boolean {
   if (stateManager.store[c.id]) {
     return false;
   }
+
   let state = {};
   c.traits.forEach(t => {
     const tSpec = registry.getTrait(t.parsedType.version, t.parsedType.name).spec;
@@ -53,4 +59,6 @@ export function initSingleComponentState(
       stateManager.store[moduleSchema.id] = moduleInitState;
     } catch {}
   }
+
+  return true;
 }
