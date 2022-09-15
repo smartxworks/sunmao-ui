@@ -4,6 +4,7 @@ import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import { ImplWrapper } from '../_internal/ImplWrapper';
 import { formatSlotKey } from '../_internal/ImplWrapper/hooks/useSlotChildren';
+import React from 'react';
 
 const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {

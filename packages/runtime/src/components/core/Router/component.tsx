@@ -1,4 +1,4 @@
-import {
+import React, {
   cloneElement,
   Fragment,
   isValidElement,
@@ -21,10 +21,7 @@ import {
   RouterCtx,
   useNavigate,
 } from './hooks';
-import {
-  UIServices,
-  ChildrenMap,
-} from '../../../types';
+import { UIServices, ChildrenMap } from '../../../types';
 import { RuntimeComponentSchema } from '@sunmao-ui/core';
 
 export type RouteLikeElement = PropsWithChildren<{
@@ -87,7 +84,7 @@ export const Switch: React.FC<SwitchProps> = props => {
   const [loc, naviagte] = useLocation();
 
   const routes = useMemo(() => {
-    let defaultPath: string | undefined = undefined;
+    let defaultPath: string | undefined;
     const result = switchPolicy.map(
       ({ type, path, slotId, href, default: _default, exact, strict, sensitive }) => {
         const children = slotsElements[slotId];
@@ -166,7 +163,7 @@ export const Switch: React.FC<SwitchProps> = props => {
     mergeState({
       route: loc,
     });
-    () => {
+    return () => {
       mergeState({
         route: undefined,
       });

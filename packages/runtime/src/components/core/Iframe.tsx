@@ -2,7 +2,7 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import { Type } from '@sinclair/typebox';
 import { CORE_VERSION, CoreComponentName, StringUnion } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 export default implementRuntimeComponent({
   version: CORE_VERSION,
