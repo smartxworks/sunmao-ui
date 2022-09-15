@@ -25,7 +25,7 @@ export const _TablePrimaryKeyWidget: React.FC<
   return (
     <Select
       value={value}
-      defaultValue="auto"
+      allowCreate
       onChange={value => {
         onChange(value);
       }}

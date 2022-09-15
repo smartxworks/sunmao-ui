@@ -220,7 +220,7 @@ export const Table = implementRuntimeComponent({
   const currentChecked = useRef<(string | number)[]>([]);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
-    defaultCurrent ?? 1,
+    !defaultCurrent || defaultCurrent < 1 ? 1 : defaultCurrent,
     mergeState,
     updateWhenDefaultPageChanges,
     'currentPage'
@@ -439,10 +439,14 @@ export const Table = implementRuntimeComponent({
               /**
                * FIXME: temporary hack
                */
-              slotsElements.content?.({
-                [LIST_ITEM_EXP]: record,
-                [LIST_ITEM_INDEX_EXP]: index,
-              });
+              slotsElements.content?.(
+                {
+                  [LIST_ITEM_EXP]: record,
+                  [LIST_ITEM_INDEX_EXP]: index,
+                },
+                undefined,
+                `${childSchema.id}_${index}`
+              );
 
               colItem = (
                 <ImplWrapper
@@ -455,7 +459,11 @@ export const Table = implementRuntimeComponent({
                   evalListItem
                   slotContext={{
                     renderSet: new Set(),
-                    slotKey: formatSlotKey(_childrenSchema.id, 'td', `td_${index}`),
+                    slotKey: formatSlotKey(
+                      component.id,
+                      'content',
+                      `${childSchema.id}_${index}`
+                    ),
                   }}
                 />
               );

@@ -9,9 +9,15 @@ describe('generateDefaultValueFromSpec function', () => {
         foo: Type.Number(),
       })
     );
-    expect(generateDefaultValueFromSpec(type)).toEqual([{ foo: 0 }]);
+    expect(generateDefaultValueFromSpec(type)).toEqual([]);
+    expect(generateDefaultValueFromSpec(type, { genArrayItemDefaults: true })).toEqual([
+      { foo: 0 },
+    ]);
     const type2 = Type.Array(Type.String());
-    expect(generateDefaultValueFromSpec(type2)).toEqual(['']);
+    expect(generateDefaultValueFromSpec(type2)).toEqual([]);
+    expect(generateDefaultValueFromSpec(type2, { genArrayItemDefaults: true })).toEqual([
+      '',
+    ]);
   });
   it('can parse number', () => {
     const type = Type.Number();
@@ -26,7 +32,10 @@ describe('generateDefaultValueFromSpec function', () => {
       key: Type.String(),
       value: Type.Array(Type.String()),
     });
-    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [''] });
+    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [] });
+    expect(
+      generateDefaultValueFromSpec(type, { genArrayItemDefaults: true })
+    ).toMatchObject({ key: '', value: [''] });
   });
 
   it('can parse enum', () => {
@@ -92,12 +101,14 @@ describe('generateDefaultValueFromSpec function', () => {
   });
   it('can parse any type', () => {
     expect(generateDefaultValueFromSpec({})).toEqual('');
-    expect(generateDefaultValueFromSpec({}, true)).toEqual(AnyTypePlaceholder);
+    expect(generateDefaultValueFromSpec({}, { returnPlaceholderForAny: true })).toEqual(
+      AnyTypePlaceholder
+    );
     expect(
       (
         generateDefaultValueFromSpec(
           Type.Object({ foo: Type.Object({ bar: Type.Any() }) }),
-          true
+          { returnPlaceholderForAny: true }
         ) as any
       ).foo.bar
     ).toEqual(AnyTypePlaceholder);

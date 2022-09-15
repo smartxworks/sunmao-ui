@@ -302,7 +302,7 @@ export const TablePropsSpec = Type.Object({
     weight: 0,
   }),
   rowKey: Type.Any({
-    title: 'RowKey',
+    title: 'Row Key',
     category: Category.Columns,
     widget: 'arco/v1/primaryKey',
     description:

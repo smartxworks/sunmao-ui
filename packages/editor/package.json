@@ -88,7 +88,7 @@
     "vite": "^3.0.8"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.1.1"
+    "@emotion/react": "^11.8.1"
   },
   "husky": {
     "hooks": {
