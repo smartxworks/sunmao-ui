@@ -38,7 +38,7 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldType>> = props => {
         return shouldRender(subSpec.conditions || [], value) ? (
           <SpecWidget
             component={component}
-            key={name}
+            key={name + component.id}
             spec={mergeWidgetOptionsIntoSpec<'core/v1/spec'>(
               {
                 ...subSpec,
