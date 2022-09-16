@@ -16,18 +16,7 @@ import {
 } from '@sunmao-ui/shared';
 import { JSONSchema7Object } from 'json-schema';
 import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
-
-const ComponentTargetSelect = React.lazy(() =>
-  import('../Select').then(lib => ({
-    default: lib.Select,
-  }))
-);
-
-const ComponentTargetSelectOption = React.lazy(() =>
-  import('../Select').then(lib => ({
-    default: lib.Select.Option,
-  }))
-);
+import { Select as ComponentTargetSelect } from '../Select';
 
 const EventWidgetOptions = Type.Object({});
 
@@ -244,9 +233,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
           value={formik.values.componentId === '' ? undefined : formik.values.componentId}
         >
           {[{ id: GLOBAL_UTIL_METHOD_ID }].concat(components).map(c => (
-            <ComponentTargetSelectOption key={c.id} value={c.id}>
+            <ComponentTargetSelect.Option key={c.id} value={c.id}>
               {c.id}
-            </ComponentTargetSelectOption>
+            </ComponentTargetSelect.Option>
           ))}
         </ComponentTargetSelect>
       </Suspense>

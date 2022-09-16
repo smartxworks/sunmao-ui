@@ -1,4 +1,4 @@
-import { css, keyframes } from '@emotion/react';
+import { injectGlobal, keyframes } from '@emotion/css';
 
 const rcSelectSlideUpIn = keyframes`
 	0% {
@@ -49,7 +49,7 @@ const rcSelectSlideDownOut = keyframes`
   }
 }`;
 
-export const rcSelectStyle = css`
+injectGlobal`
   .sunmao-select-single .sunmao-select-selector {
     display: flex;
   }

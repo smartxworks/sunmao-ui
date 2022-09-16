@@ -5,12 +5,11 @@ import RcSelect, {
   Option,
   SelectProps as RcSelectProps,
 } from 'rc-select';
-import getIcons from './utils';
-import { rcSelectStyle } from './style';
+import { cx } from '@emotion/css';
 import { BaseOptionType, DefaultOptionType } from 'rc-select/lib/Select';
 import { Placement, RenderDOMFunc } from 'rc-select/lib/BaseSelect';
-import { cx } from '@emotion/css';
-import { Global } from '@emotion/react';
+import getIcons from './utils';
+import './style';
 
 const prefixCls = 'sunmao-select';
 const defaultRenderEmpty = 'Not Found';
@@ -88,27 +87,24 @@ const SelectMain = <
   const notFound: React.ReactNode = notFoundContent || defaultRenderEmpty;
 
   return (
-    <>
-      <Global styles={rcSelectStyle} />
-      <RcSelect
-        ref={ref}
-        className={cx(className, borderLessCls)}
-        prefixCls={prefixCls}
-        dropdownMatchSelectWidth={dropdownMatchSelectWidth}
-        listItemHeight={listItemHeight}
-        listHeight={listHeight}
-        placement={placement}
-        inputIcon={suffixIcon}
-        clearIcon={clearIcon}
-        mode={isMultiple ? mode : undefined}
-        menuItemSelectedIcon={itemIcon}
-        removeIcon={removeIcon}
-        {...props}
-        getPopupContainer={getPopupContainer}
-        notFoundContent={notFound}
-        dropdownClassName={dropdownClassName}
-      />
-    </>
+    <RcSelect
+      ref={ref}
+      className={cx(className, borderLessCls)}
+      prefixCls={prefixCls}
+      dropdownMatchSelectWidth={dropdownMatchSelectWidth}
+      listItemHeight={listItemHeight}
+      listHeight={listHeight}
+      placement={placement}
+      inputIcon={suffixIcon}
+      clearIcon={clearIcon}
+      mode={isMultiple ? mode : undefined}
+      menuItemSelectedIcon={itemIcon}
+      removeIcon={removeIcon}
+      {...props}
+      getPopupContainer={getPopupContainer}
+      notFoundContent={notFound}
+      dropdownClassName={dropdownClassName}
+    />
   );
 };
 
