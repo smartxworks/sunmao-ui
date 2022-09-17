@@ -88,7 +88,8 @@
     "vite": "^3.0.8"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.8.1"
+    "react": "16.x || 17.x",
+    "react-dom": "16.x || 17.x"
   },
   "husky": {
     "hooks": {
