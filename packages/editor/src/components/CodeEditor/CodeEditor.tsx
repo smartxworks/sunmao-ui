@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/css/css';
 import 'codemirror/addon/fold/brace-fold';
@@ -16,24 +16,38 @@ export const CodeEditor: React.FC<{
   mode?: string | ModeSpec<ModeSpecOptions>;
   onChange?: (v: string) => void;
   onBlur?: (v: string) => void;
-}> = ({ defaultCode, mode, className, onChange, onBlur }) => {
-  const [value, setValue] = useState(defaultCode);
+  needRerenderAfterMount?: boolean;
+}> = ({ defaultCode, mode, needRerenderAfterMount, className, onChange, onBlur }) => {
+  const valueRef = useRef(defaultCode);
+  const [rerenderFlag, setRerenderFlag] = useState(0);
   const style = css`
     .CodeMirror {
       height: 100%;
     }
   `;
+
+  // StyleTraitForm has animation which will affect the position calculation of CodeMirror.
+  // So it need a force rerender to correct the position of CodeMirror after mount.
+  useEffect(() => {
+    if (needRerenderAfterMount) {
+      requestIdleCallback(() => {
+        setRerenderFlag(1);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <CodeMirror
+      key={rerenderFlag}
       className={cx([style, className])}
-      value={value}
+      value={defaultCode}
       onChange={(_x, _y, v: string) => {
-        setValue(v);
+        valueRef.current = v;
         onChange?.(v);
       }}
       onBlur={() => {
-        setValue(value);
-        onBlur?.(value);
+        onBlur?.(valueRef.current);
       }}
       options={{
         mode: mode || 'css',
