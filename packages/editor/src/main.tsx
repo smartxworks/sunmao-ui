@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import { sunmaoChakraUILib, widgets as chakraWidgets } from '@sunmao-ui/chakra-ui-lib';
