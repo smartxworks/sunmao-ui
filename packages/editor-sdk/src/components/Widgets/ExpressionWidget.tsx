@@ -16,7 +16,7 @@ import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
 import { isExpression } from '../../utils/validator';
 import { getTypeString } from '../../utils/type';
-import { ValidateFunction, EnumParams } from 'ajv';
+import { ValidateFunction } from 'ajv';
 import { ExpressionError } from '@sunmao-ui/runtime';
 import { CORE_VERSION, CoreWidgetName, initAjv } from '@sunmao-ui/shared';
 
@@ -196,9 +196,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
             );
           } else if (err.keyword === 'enum') {
             throw new TypeError(
-              `${err.message}: ${JSON.stringify(
-                (err.params as EnumParams).allowedValues
-              )}`
+              `${err.message}: ${JSON.stringify(err.params.allowedValues)}`
             );
           } else {
             throw new TypeError(err.message);
