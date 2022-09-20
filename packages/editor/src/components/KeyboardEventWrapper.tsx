@@ -21,7 +21,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   services,
   children,
 }) => {
-  const { eventBus, registry } = services;
+  const { eventBus, registry, appModelManager } = services;
   const pasteManager = useRef(new PasteManager());
   const style = css`
     &:focus {
@@ -30,12 +30,10 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   `;
 
   function getComponentFirstSlot(componentId: string) {
-    const component = components.find(c => c.id === componentId);
-    if (component) {
-      const spec = registry.getComponentByType(component?.type);
-      return Object.keys(spec.spec.slots)[0] || '';
-    }
-    return '';
+    const component = appModelManager.appModel.getComponentById(
+      componentId as ComponentId
+    );
+    return component?.slots[0] || '';
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

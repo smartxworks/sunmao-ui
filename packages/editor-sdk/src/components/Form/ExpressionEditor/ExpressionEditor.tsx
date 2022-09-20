@@ -19,7 +19,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { css, Global } from '@emotion/react';
+import { css, injectGlobal } from '@emotion/css';
 import { parseExpression } from '@sunmao-ui/shared';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/mode/multiplex';
@@ -35,6 +35,12 @@ import 'tern/plugin/complete_strings';
 import tern, { Def } from 'tern';
 import { getTypeString } from '../../../utils/type';
 import ecmascript from '../../../constants/ecmascript';
+
+injectGlobal`
+  .CodeMirror-hints {
+    zIndex: 1800
+  }
+`;
 
 // TODO: tern uses global variable, maybe there is some workaround
 (window as unknown as { tern: typeof tern }).tern = tern;
@@ -218,6 +224,7 @@ const BaseExpressionEditor = React.forwardRef<
     const wrapperEl = useRef<HTMLDivElement>(null);
     const cm = useRef<CodeMirror.Editor | null>(null);
     const tServer = useRef<tern.Server | null>(null);
+
     useEffect(() => {
       if (!wrapperEl.current) {
         return;
@@ -289,15 +296,13 @@ const BaseExpressionEditor = React.forwardRef<
     }));
 
     return (
-      <Box css={style} ref={wrapperEl} height="100%" width="100%" overflow="hidden">
-        <Global
-          styles={{
-            '.CodeMirror-hints': {
-              zIndex: 1800,
-            },
-          }}
-        />
-      </Box>
+      <Box
+        className={style}
+        ref={wrapperEl}
+        height="100%"
+        width="100%"
+        overflow="hidden"
+      />
     );
   }
 );
