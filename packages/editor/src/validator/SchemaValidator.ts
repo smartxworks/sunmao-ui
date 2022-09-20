@@ -14,6 +14,7 @@ import {
 } from './interfaces';
 import { rules } from './rules';
 import { JSONSchema7 } from 'json-schema';
+import { initAjv } from '@sunmao-ui/shared';
 
 export class SchemaValidator implements ISchemaValidator {
   private result: ValidateErrorResult[] = [];
@@ -144,17 +145,7 @@ export class SchemaValidator implements ISchemaValidator {
   }
 
   private initAjv() {
-    this.ajv = new Ajv({})
-      .addKeyword('kind')
-      .addKeyword('modifier')
-      .addKeyword('widget')
-      .addKeyword('weight')
-      .addKeyword('category')
-      .addKeyword('widgetOptions')
-      .addKeyword('conditions')
-      .addKeyword('name')
-      .addKeyword('isComponentId')
-      .addKeyword('defaultValue');
+    this.ajv = initAjv(new Ajv({}));
 
     this.validatorMap = {
       components: {},
