@@ -41,10 +41,12 @@
     "mobx": "^6.3.8",
     "mobx-react-lite": "^3.2.2",
     "rc-select": "^14.1.5",
-    "react-color": "^2.19.3"
+    "react-color": "^2.19.3",
+    "tern": "^0.24.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
+    "@types/tern": "^0.23.4",
     "@vitejs/plugin-react": "^2.0.1",
     "esbuild": "^0.15.5",
     "tsup": "^6.2.2"
