@@ -23,11 +23,11 @@ export default implementRuntimeTrait({
   },
 })(() => {
   return ({ hidden, visually }) => {
-    if (visually) {
+    if (hidden && visually) {
       return {
         props: {
           customStyle: {
-            content: hidden ? '&&&& { display: none }' : '',
+            content: '&&&& { display: none }',
           },
         },
       };
