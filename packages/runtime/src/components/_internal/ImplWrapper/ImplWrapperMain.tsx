@@ -222,6 +222,7 @@ function mergeCustomStyle(s1?: Record<string, string>, s2?: Record<string, strin
       if (target && src) {
         return `${target};${src}`;
       }
+      return target || src;
     });
   }
   return s1 || s2;
