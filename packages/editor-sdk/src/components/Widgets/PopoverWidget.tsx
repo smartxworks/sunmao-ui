@@ -151,7 +151,13 @@ export const PopoverWidget = React.forwardRef<
   }));
 
   return (
-    <Popover placement="left" closeOnBlur={false} isOpen={isOpen} onOpen={handleOpen}>
+    <Popover
+      isLazy
+      placement="left"
+      closeOnBlur={false}
+      isOpen={isOpen}
+      onOpen={handleOpen}
+    >
       <PopoverTrigger>
         {isObjectChildren && 'trigger' in children ? (
           (children as Children).trigger

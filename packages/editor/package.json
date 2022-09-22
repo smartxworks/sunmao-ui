@@ -48,7 +48,7 @@
     "acorn-loose": "^8.3.0",
     "acorn-walk": "^8.2.0",
     "ajv": "^8.8.2",
-    "codemirror": "^5.63.3",
+    "codemirror": "^5.65.9",
     "escodegen": "^2.0.0",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
