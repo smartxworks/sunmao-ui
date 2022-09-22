@@ -42,7 +42,8 @@
     "mobx-react-lite": "^3.2.2",
     "rc-select": "^14.1.5",
     "react-color": "^2.19.3",
-    "tern": "^0.24.3"
+    "tern": "^0.24.3",
+    "ajv": "^8.8.2"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
