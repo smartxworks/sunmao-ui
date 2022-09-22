@@ -1,5 +1,13 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Text,
+  HStack,
+  IconButton,
+  VStack,
+  Textarea,
+} from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -57,7 +65,7 @@ const RowItem = (props: RowItemProps) => {
   }>(
     () => ({
       compactOptions: {
-        height: '32px',
+        maxHeight: '125px',
       },
     }),
     []
@@ -117,9 +125,15 @@ const RowItem = (props: RowItemProps) => {
   const onRemove = useCallback(() => onRemoveRow(i), [i, onRemoveRow]);
 
   return (
-    <HStack spacing="1" display="flex">
-      <Input
+    <HStack spacing="1" display="flex" alignItems="stretch">
+      <Textarea
+        resize="none"
+        rows={1}
+        paddingTop="6px"
+        paddingBottom="6px"
         minWidth={0}
+        border="none"
+        height="auto"
         flex="1 1 33.33%"
         name="key"
         value={rowKey}
@@ -164,7 +178,7 @@ const RowItem = (props: RowItemProps) => {
             <Box flex="2 2 66.66%" minWidth={0}>
               <ExpressionEditor
                 compactOptions={{
-                  height: '32px',
+                  maxHeight: '125px',
                 }}
                 defaultCode={value}
                 evaledValue={evaledResult}
