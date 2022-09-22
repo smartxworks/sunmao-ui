@@ -133,7 +133,7 @@ const DefaultTemplate: React.FC<TemplateProps> = props => {
   return (
     <FormControl className={FormControlStyle} isRequired={required} id={id}>
       {displayLabel && (
-        <Popover trigger="hover" closeOnBlur placement="left">
+        <Popover trigger="hover" isLazy closeOnBlur placement="left">
           <PopoverTrigger>
             <FormLabel display="flex" alignItems="center">
               <span className={LabelStyle}>{children.title || label}</span>
