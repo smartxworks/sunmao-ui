@@ -31,7 +31,6 @@ import { useStateValue } from '../../hooks/useStateValue';
 const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
-  selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
   filterRule: Type.Any(),
   sortRule: Type.Object({
@@ -273,22 +272,14 @@ export const Table = implementRuntimeComponent({
     return sortedData;
   }, [pageSize, sortedData, enablePagination, useCustomPagination]);
 
-  // reset state when data changed
+  // reset selectedRows state when data changed
   useEffect(() => {
-    if (!currentPageData.length) {
-      mergeState({
-        selectedRowKeys: [],
-        selectedRows: [],
-        sortRule: {},
-        filterRule: undefined,
-        currentPage: undefined,
-      });
-    }
-
+    const selectedRows = currentPageData.filter(d =>
+      currentChecked.current.includes(d[rowKey])
+    );
     mergeState({
-      selectedRows: currentPageData.filter(d =>
-        currentChecked.current.includes(d[rowKey])
-      ),
+      selectedRowKeys: selectedRows.map(r => r[rowKey]),
+      selectedRows,
     });
   }, [currentPageData, mergeState, rowKey]);
 
@@ -501,9 +492,9 @@ export const Table = implementRuntimeComponent({
     switch (action) {
       case 'paginate':
         if (useCustomPagination) {
-          mergeState({ currentPage: current, pageSize });
           callbackMap?.onPageChange?.();
         }
+        mergeState({ currentPage: current, pageSize });
         setCurrentPage(current!);
         break;
       case 'sort':
@@ -563,16 +554,6 @@ export const Table = implementRuntimeComponent({
         checkCrossPage: checkCrossPage,
         // This option is required to achieve multi-selection across pages when customizing paging
         preserveSelectedRowKeys: useCustomPagination ? checkCrossPage : undefined,
-        onSelect: (selected, record) => {
-          mergeState({
-            selectedRow: selected ? record : undefined,
-          });
-        },
-        onSelectAll: () => {
-          mergeState({
-            selectedRow: undefined,
-          });
-        },
         onChange(selectedRowKeys, selectedRows) {
           currentChecked.current = selectedRowKeys;
           mergeState({

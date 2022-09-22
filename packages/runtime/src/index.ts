@@ -65,6 +65,7 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
 }
 
 export * from './utils/buildKit';
+export * from './utils/runEventHandler';
 export * from './types';
 export * from './constants';
 export * from './traits/core';

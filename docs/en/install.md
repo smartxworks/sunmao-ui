@@ -79,29 +79,29 @@ Sunmao's initialization function accepts some parameters. These parameters are o
 
 #### Parameters of `initSunmaoUI`
 
-| Name | Type | Introduction |
-| ------------ | ------------------------------------ -------------------------------------------------- -------------- | ----------------------------------- -------------------- |
-| dependencies | Record<string, any> | Dependencies that can be used when the expression is evaluated, can be any JS variable. |
-| hooks | {<br /> didMount?: () => void;<br /> didUpdate?: () => void;<br /> didDomUpdate?: () => void;<br />} | Sunmao Application lifecycle hooks. |
-| libs | SunmaoLib[] | Used to load custom Component, Trait, Module, UtilMethod. |
+| Name         | Type                                                                                                 | Introduction                                                                            |
+| ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| dependencies | Record<string, any>                                                                                  | Dependencies that can be used when the expression is evaluated, can be any JS variable. |
+| hooks        | {<br /> didMount?: () => void;<br /> didUpdate?: () => void;<br /> didDomUpdate?: () => void;<br />} | Sunmao Application lifecycle hooks.                                                     |
+| libs         | SunmaoLib[]                                                                                          | Used to load custom Component, Trait, Module, UtilMethod.                               |
 
 #### The return result of `initSunmaoUI`
 
-| Name | Type | Introduction |
-| -------- | --------------- | ------------------------ ------- |
-| App | React Component | The React component that renders the Sunmao app. |
-| Registry | Registry | Register custom Component, Trait. |
+| Name     | Type            | Introduction                                     |
+| -------- | --------------- | ------------------------------------------------ |
+| App      | React Component | The React component that renders the Sunmao app. |
+| Registry | Registry        | Register custom Component, Trait.                |
 
 #### Parameters of `initSunmaoUIEditor`
 
-| Name | Type | Introduction |
-| ------------------ | ------------------------------ -------------------------------------------------- --------------------- | ---------------------------- ------------------------------ |
-| App | React Component | The React component that renders the Sunmao app. |
-| widgets | ImplementedWidget[] | Custom editor widget. |
-| storageHandler | {<br />onSaveApp?: (app: Application) => void,<br />onSaveModules?: (module: Module[]) => void<br />} | callback function for persistent storage of Application and Module. |
-| defaultApplication | Application | Default Application Schema. |
-| defaultModules | Module[] | Default Module. |
-| runtimeProps | Sunmao Runtime Props | Same as `initSunmaoUI` parameter |
+| Name               | Type                                                                                                  | Introduction                                                        |
+| ------------------ | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| App                | React Component                                                                                       | The React component that renders the Sunmao app.                    |
+| widgets            | ImplementedWidget[]                                                                                   | Custom editor widget.                                               |
+| storageHandler     | {<br />onSaveApp?: (app: Application) => void,<br />onSaveModules?: (module: Module[]) => void<br />} | callback function for persistent storage of Application and Module. |
+| defaultApplication | Application                                                                                           | Default Application Schema.                                         |
+| defaultModules     | Module[]                                                                                              | Default Module.                                                     |
+| runtimeProps       | Sunmao Runtime Props                                                                                  | Same as `initSunmaoUI` parameter                                    |
 
 #### Return result of `initSunmaoUIEditor`
 
@@ -109,6 +109,6 @@ Same as the return result of `initSunmaoUI`.
 
 ### Parameters of App component
 
-| Name | Type | Introduction |
-| ------- | ----------- | ----------------------------- ----- |
+| Name    | Type        | Introduction                                |
+| ------- | ----------- | ------------------------------------------- |
 | options | Application | Application Schema for Sunmao applications. |

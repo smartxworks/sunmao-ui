@@ -20,15 +20,16 @@ declare module '../../types/widget' {
 
 export const NumberField: React.FC<WidgetProps<NumberFieldType>> = props => {
   const { value, onChange } = props;
-  const [stringValue, setStringValue] = React.useState(String(value));
+  const [stringValue, setStringValue] = React.useState('');
   const numValue = useRef<number>(value);
 
   useEffect(() => {
-    // Convert value to boolean after switch from expression widget mode.
-    if (typeof value !== 'number') {
-      onChange(0);
-      setStringValue('0');
-      numValue.current = 0;
+    // Convert value to number after switch from expression widget mode.
+    if (value !== undefined && typeof value !== 'number') {
+      const num = Number(value) || 0;
+      onChange(num);
+      setStringValue(String(num));
+      numValue.current = num;
     }
   }, [onChange, value]);
 
