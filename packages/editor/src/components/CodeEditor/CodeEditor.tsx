@@ -17,7 +17,16 @@ export const CodeEditor: React.FC<{
   onChange?: (v: string) => void;
   onBlur?: (v: string) => void;
   needRerenderAfterMount?: boolean;
-}> = ({ defaultCode, mode, needRerenderAfterMount, className, onChange, onBlur }) => {
+  readOnly?: boolean;
+}> = ({
+  defaultCode,
+  mode,
+  needRerenderAfterMount,
+  className,
+  onChange,
+  onBlur,
+  readOnly,
+}) => {
   const valueRef = useRef(defaultCode);
   const [rerenderFlag, setRerenderFlag] = useState(0);
   const style = css`
@@ -61,6 +70,7 @@ export const CodeEditor: React.FC<{
           },
         },
         theme: 'ayu-mirage',
+        readOnly,
       }}
     />
   );
