@@ -7,7 +7,7 @@ import {
   CORE_VERSION,
   CoreWidgetName,
 } from '@sunmao-ui/shared';
-import { generateCallback } from './Event';
+import { runEventHandler } from '../../utils/runEventHandler';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 
 export const FetchTraitPropertiesSpec = Type.Object({
@@ -158,7 +158,7 @@ export default implementRuntimeTrait({
             const rawOnComplete = trait.properties.onComplete;
 
             onComplete?.forEach((_, index) => {
-              generateCallback(
+              runEventHandler(
                 onComplete[index],
                 rawOnComplete,
                 index,
@@ -181,7 +181,7 @@ export default implementRuntimeTrait({
             const rawOnError = trait.properties.onError;
 
             onError?.forEach((_, index) => {
-              generateCallback(onError[index], rawOnError, index, services, slotKey)();
+              runEventHandler(onError[index], rawOnError, index, services, slotKey)();
             });
           }
         },
@@ -200,7 +200,7 @@ export default implementRuntimeTrait({
           const rawOnError = trait.properties.onError;
 
           onError?.forEach((_, index) => {
-            generateCallback(onError[index], rawOnError, index, services, slotKey)();
+            runEventHandler(onError[index], rawOnError, index, services, slotKey)();
           });
         }
       );
