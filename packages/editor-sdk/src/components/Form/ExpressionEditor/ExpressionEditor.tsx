@@ -314,26 +314,25 @@ export type ExpressionEditorProps = BaseExpressionEditorProps & {
 };
 export type ExpressionEditorHandle = BaseExpressionEditorHandle;
 
+const wrapperStyle = css`
+  position: relative;
+  width: 100%;
+  .expand-icon {
+    display: none;
+  }
+  &:hover,
+  &:focus-within {
+    .expand-icon {
+      display: inherit;
+    }
+  }
+`;
+
 export const ExpressionEditor = React.forwardRef<
   ExpressionEditorHandle,
   ExpressionEditorProps
 >((props: ExpressionEditorProps, ref) => {
   const { compactOptions = {}, error, evaledValue, onFocus, onBlur } = props;
-  const style = useMemo(
-    () => css`
-      width: 100%;
-      .expand-icon {
-        display: none;
-      }
-      &:hover,
-      &:focus-within {
-        .expand-icon {
-          display: inherit;
-        }
-      }
-    `,
-    []
-  );
   const [showModal, setShowModal] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
   const [isFocus, setIsFocus] = useState(false);
@@ -370,7 +369,7 @@ export const ExpressionEditor = React.forwardRef<
   }));
 
   return (
-    <Box position="relative" css={style}>
+    <Box className={wrapperStyle}>
       {/* Force re-render CodeMirror when editted in modal, since it's not reactive */}
       <Box border={error ? '1px solid #c04035' : '1px solid transparent'}>
         <BaseExpressionEditor
