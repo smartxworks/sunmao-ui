@@ -81,7 +81,7 @@ export const ComponentFilter: React.FC<FilterProps> = ({
   };
 
   return (
-    <Popover closeOnBlur placement="bottom">
+    <Popover isLazy closeOnBlur placement="bottom">
       <PopoverTrigger>
         <Button _focus={{ boxShadow: 'none' }} bg="transparent" h="1.75rem" size="sm">
           <FilterIcon />

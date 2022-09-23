@@ -50,7 +50,7 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
         onChange={onInputChange}
       />
       <InputRightElement>
-        <Popover arrowSize={8} placement="left" matchWidth>
+        <Popover isLazy arrowSize={8} placement="left" matchWidth>
           <PopoverTrigger>
             <Box
               cursor="pointer"
