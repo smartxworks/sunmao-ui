@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor-sdk",
-  "version": "0.3.5-alpha.10",
+  "version": "0.3.5-alpha.11",
   "description": "The SDK for SunMao Editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
@@ -30,8 +30,9 @@
     "@emotion/css": "^11.7.1",
     "@sinclair/typebox": "^0.21.2",
     "@sunmao-ui/core": "^0.7.4-alpha.2",
-    "@sunmao-ui/runtime": "^0.7.4-alpha.8",
-    "@sunmao-ui/shared": "^0.2.4-alpha.6",
+    "@sunmao-ui/runtime": "^0.7.4-alpha.9",
+    "@sunmao-ui/shared": "^0.2.4-alpha.7",
+    "ajv": "^8.8.2",
     "codemirror": "^5.65.9",
     "formik": "^2.2.9",
     "framer-motion": "^3.10.6",
@@ -42,8 +43,7 @@
     "mobx-react-lite": "^3.2.2",
     "rc-select": "^14.1.5",
     "react-color": "^2.19.3",
-    "tern": "^0.24.3",
-    "ajv": "^8.8.2"
+    "tern": "^0.24.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
