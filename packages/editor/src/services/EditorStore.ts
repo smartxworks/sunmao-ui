@@ -78,6 +78,7 @@ export class EditorStore {
       components: observable.shallow,
       schemaValidator: observable.ref,
       setComponents: action,
+      setHoverComponentId: action,
       setDragOverComponentId: action,
     });
 
