@@ -15,6 +15,8 @@ type Props = {
   services: EditorServices;
 };
 
+const KeyboardEventWrapperId = 'keyboard-event-wrapper';
+
 export const KeyboardEventWrapper: React.FC<Props> = ({
   selectedComponentId,
   components,
@@ -36,7 +38,8 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
     return component?.slots[0] || '';
   }
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.target as Element).id !== KeyboardEventWrapperId) return;
     switch (e.key) {
       case 'Delete':
       case 'Backspace':
@@ -124,7 +127,7 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
 
   return (
     <Box
-      id="keyboard-event-wrapper"
+      id={KeyboardEventWrapperId}
       className={style}
       width="100%"
       height="100%"
