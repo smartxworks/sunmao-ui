@@ -48,13 +48,6 @@ export class EditorMaskManager {
     });
 
     this.intersectionObserver = this.initIntersectionObserver();
-  }
-
-  init() {
-    this.observeContainerResize();
-    this.observeIntersection();
-    this.observeResize();
-    this.refreshElementIdMap();
     // listen to the DOM elements' mount and unmount events
     // TODO: This is not very accurate, because sunmao runtime 'didDOMUpdate' hook is not accurate.
     // We will refactor the 'didDOMUpdate' hook with components' life cycle in the future.
@@ -63,6 +56,13 @@ export class EditorMaskManager {
     // listen scroll events
     // scroll events' timing is similar to intersection events, but they are different. Both of them are necessary.
     this.services.eventBus.on('MaskWrapperScrollCapture', this.onScroll);
+  }
+
+  init() {
+    this.observeContainerResize();
+    this.observeIntersection();
+    this.observeResize();
+    this.refreshElementIdMap();
 
     // when hoverComponentId & selectedComponentId change, refresh mask position
     autorun(() => {
