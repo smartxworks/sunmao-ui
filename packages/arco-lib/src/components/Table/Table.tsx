@@ -32,7 +32,7 @@ const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
-  filterRule: Type.Any(),
+  filterRule: Type.Record(Type.String(), Type.Array(Type.String())),
   sortRule: Type.Object({
     field: Type.Optional(Type.String()),
     direction: Type.Optional(Type.String()),
