@@ -20,7 +20,7 @@ declare module '../../types/widget' {
 
 export const NumberField: React.FC<WidgetProps<NumberFieldType>> = props => {
   const { value, onChange } = props;
-  const [stringValue, setStringValue] = React.useState('');
+  const [stringValue, setStringValue] = React.useState(String(value));
   const numValue = useRef<number>(value);
 
   useEffect(() => {
