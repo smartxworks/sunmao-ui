@@ -39,7 +39,12 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
   }
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.target as Element).id !== KeyboardEventWrapperId) return;
+    // if user is focusing input elements, prevent keyboard events
+    if (
+      document.activeElement?.tagName === 'TEXTAREA' ||
+      document.activeElement?.tagName === 'INPUT'
+    )
+      return;
     switch (e.key) {
       case 'Delete':
       case 'Backspace':
