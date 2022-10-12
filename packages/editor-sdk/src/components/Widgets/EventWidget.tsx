@@ -13,6 +13,7 @@ import {
   CORE_VERSION,
   CoreWidgetName,
   generateDefaultValueFromSpec,
+  MountEvents,
 } from '@sunmao-ui/shared';
 import { JSONSchema7Object } from 'json-schema';
 import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
@@ -62,7 +63,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
     [registry]
   );
   const eventTypes = useMemo(() => {
-    return registry.getComponentByType(component.type).spec.events;
+    return [...registry.getComponentByType(component.type).spec.events, ...MountEvents];
   }, [component.type, registry]);
   const hasParams = useMemo(
     () => Object.keys(formik.values.method.parameters ?? {}).length,
@@ -156,9 +157,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
 
   useEffect(() => {
     formik.setValues(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, formik.setValues]);
   useEffect(() => {
     formik.setFieldValue('method.parameters', params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, formik.setFieldValue]);
   useEffect(() => {
     if (formik.values.componentId) {

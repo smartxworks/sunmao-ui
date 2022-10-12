@@ -1,7 +1,12 @@
 import { Type } from '@sinclair/typebox';
 import { CallbackMap } from '../../types';
 import { implementRuntimeTrait } from '../../utils/buildKit';
-import { EventHandlerSpec, CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import {
+  EventHandlerSpec,
+  CORE_VERSION,
+  CoreTraitName,
+  MountEvent,
+} from '@sunmao-ui/shared';
 import { runEventHandler } from '../../utils/runEventHandler';
 
 const HandlersSpec = Type.Array(EventHandlerSpec);
@@ -51,6 +56,33 @@ export default implementRuntimeTrait({
     return {
       props: {
         callbackMap,
+        componentDidMount: [
+          () => {
+            handlers.forEach((h, i) => {
+              if (h.type === MountEvent.mount) {
+                runEventHandler(h, rawHandlers, i, services, slotKey, evalListItem)();
+              }
+            });
+          },
+        ],
+        componentDidUpdate: [
+          () => {
+            handlers.forEach((h, i) => {
+              if (h.type === MountEvent.update) {
+                runEventHandler(h, rawHandlers, i, services, slotKey, evalListItem)();
+              }
+            });
+          },
+        ],
+        componentDidUnmount: [
+          () => {
+            handlers.forEach((h, i) => {
+              if (h.type === MountEvent.unmount) {
+                runEventHandler(h, rawHandlers, i, services, slotKey, evalListItem)();
+              }
+            });
+          },
+        ],
       },
     };
   };
