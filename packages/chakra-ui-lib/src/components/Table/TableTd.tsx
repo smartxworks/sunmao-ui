@@ -45,7 +45,6 @@ export const TableTd: React.FC<{
     slotsElements,
   } = props;
   const evalOptions = {
-    evalListItem: true,
     scopeObject: {
       [LIST_ITEM_EXP]: item,
     },
@@ -150,7 +149,6 @@ export const TableTd: React.FC<{
           services={services}
           childrenMap={{}}
           isInModule
-          evalListItem
           slotContext={{
             renderSet: new Set(),
             slotKey: formatSlotKey(_childrenSchema.id, 'td', `td_${index}`),

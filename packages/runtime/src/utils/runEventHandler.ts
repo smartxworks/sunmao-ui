@@ -11,15 +11,13 @@ export const runEventHandler = (
   rawHandlers: string | PropsBeforeEvaled<Static<typeof CallbackSpec>>,
   index: number,
   services: UIServices,
-  slotKey: string,
-  evalListItem?: boolean
+  slotKey: string
 ) => {
   const { stateManager } = services;
   const send = () => {
     // Eval before sending event to assure the handler object is evaled from the latest state.
     const evalOptions = {
       slotKey,
-      evalListItem,
     };
     const evaledHandlers = stateManager.deepEval(rawHandlers, evalOptions) as Static<
       typeof EventCallBackHandlerSpec

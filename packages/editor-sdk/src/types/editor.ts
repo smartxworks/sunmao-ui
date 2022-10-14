@@ -4,7 +4,6 @@ import WidgetManager from '../models/WidgetManager';
 import type { Operations } from '../types/operation';
 
 type EvalOptions = {
-  evalListItem?: boolean;
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
