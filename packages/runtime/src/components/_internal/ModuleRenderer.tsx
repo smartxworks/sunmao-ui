@@ -39,14 +39,13 @@ const ModuleRendererContent = React.forwardRef<
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
   const moduleId = services.stateManager.deepEval(props.id, {
-    evalListItem: true,
     scopeObject: evalScope,
   }) as string | ExpressionError;
 
   function evalObject<T extends Record<string, any> = Record<string, any>>(
     obj: T
   ): PropsAfterEvaled<T> {
-    const evalOptions = { evalListItem: true, scopeObject: evalScope };
+    const evalOptions = { scopeObject: evalScope };
 
     return services.stateManager.deepEval(obj, evalOptions) as PropsAfterEvaled<T>;
   }
@@ -62,7 +61,6 @@ const ModuleRendererContent = React.forwardRef<
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
     return services.stateManager.deepEval(moduleSpec.spec.stateMap, {
-      evalListItem: false,
       scopeObject: { $moduleId: moduleId },
       overrideScope: true,
     });
@@ -74,7 +72,6 @@ const ModuleRendererContent = React.forwardRef<
     return services.stateManager.deepEval(
       { template: parsedTemplate },
       {
-        evalListItem: false,
         scopeObject: {
           ...evaledProperties,
           $moduleId: moduleId,
@@ -130,7 +127,6 @@ const ModuleRendererContent = React.forwardRef<
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
           const evaledHandler = services.stateManager.deepEval(h, {
-            evalListItem: true,
             scopeObject: evalScope,
           });
           services.apiService.send('uiMethod', {

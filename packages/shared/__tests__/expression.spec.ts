@@ -36,22 +36,4 @@ describe('parseExpression function', () => {
         ]
       `);
   });
-
-  it('can parse $listItem expression', () => {
-    expect(parseExpression('{{ $listItem.value }}')).toMatchObject([
-      '{{ $listItem.value }}',
-    ]);
-    expect(parseExpression('{{ $listItem.value }}', true)).toMatchObject([
-      [' $listItem.value '],
-    ]);
-    expect(
-      parseExpression(
-        '{{ {{$listItem.value}}input.value + {{$moduleId}}fetch.value }}!',
-        true
-      )
-    ).toMatchObject([
-      [' ', ['$listItem.value'], 'input.value + ', ['$moduleId'], 'fetch.value '],
-      '!',
-    ]);
-  });
 });

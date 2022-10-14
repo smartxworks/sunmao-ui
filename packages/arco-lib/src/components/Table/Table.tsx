@@ -338,7 +338,6 @@ export const Table = implementRuntimeComponent({
 
         newColumn.render = (ceilValue: any, record: any, index: number) => {
           const evalOptions = {
-            evalListItem: true,
             scopeObject: {
               [LIST_ITEM_EXP]: record,
             },
@@ -445,7 +444,6 @@ export const Table = implementRuntimeComponent({
                   services={services}
                   childrenMap={{}}
                   isInModule
-                  evalListItem
                   slotContext={{
                     renderSet: new Set(),
                     slotKey: formatSlotKey(
