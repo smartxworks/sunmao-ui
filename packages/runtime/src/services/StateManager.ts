@@ -228,7 +228,6 @@ export class StateManager {
         const isDynamicExpression =
           typeof value === 'string' &&
           parseExpression(value).some(exp => typeof exp !== 'string');
-        console.log('isDynamicExpression', value, isDynamicExpression);
 
         if (!isDynamicExpression) return;
 
