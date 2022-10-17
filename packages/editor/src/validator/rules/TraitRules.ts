@@ -7,7 +7,13 @@ import {
 import { GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
-import { CORE_VERSION, CoreTraitName, EventHandlerSpec } from '@sunmao-ui/shared';
+import {
+  CORE_VERSION,
+  CoreTraitName,
+  EventHandlerSpec,
+  MountEvents,
+  MountEvent,
+} from '@sunmao-ui/shared';
 import { get } from 'lodash';
 import { ErrorObject } from 'ajv';
 
@@ -59,7 +65,11 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         });
       }
 
-      if (eventName && !component.events.includes(eventName as EventName)) {
+      if (
+        eventName &&
+        !component.events.includes(eventName as EventName) &&
+        !MountEvents.includes(eventName as MountEvent)
+      ) {
         results.push({
           message: `Component does not have event: ${eventName}.`,
           componentId: component.id,

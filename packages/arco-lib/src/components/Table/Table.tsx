@@ -32,7 +32,7 @@ const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
-  filterRule: Type.Any(),
+  filterRule: Type.Record(Type.String(), Type.Array(Type.String())),
   sortRule: Type.Object({
     field: Type.Optional(Type.String()),
     direction: Type.Optional(Type.String()),
@@ -45,8 +45,6 @@ type SortRule = {
   field?: string;
   direction?: 'ascend' | 'descend';
 };
-
-type FilterRule = Partial<Record<string, string[]>>;
 
 type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps;
 
@@ -483,7 +481,7 @@ export const Table = implementRuntimeComponent({
   const handleChange = (
     pagination: PaginationProps,
     sorter: { field?: string; direction?: 'descend' | 'ascend' },
-    filters: FilterRule,
+    filters: Partial<Record<string, string[]>>,
     extra: { currentData: any[]; action: 'paginate' | 'sort' | 'filter' }
   ) => {
     const { current } = pagination;
@@ -508,7 +506,7 @@ export const Table = implementRuntimeComponent({
         break;
       case 'filter':
         if (!useDefaultFilter) {
-          mergeState({ filterRule: filters });
+          mergeState({ filterRule: filters as Record<string, string[]> });
           callbackMap?.onFilter?.();
         }
         break;
