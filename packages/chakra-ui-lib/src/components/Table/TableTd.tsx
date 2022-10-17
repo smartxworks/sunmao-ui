@@ -12,7 +12,6 @@ import {
   LIST_ITEM_INDEX_EXP,
   ModuleRenderer,
   UIServices,
-  ExpressionError,
   ImplWrapper,
   SlotsElements,
   formatSlotKey,
@@ -49,17 +48,20 @@ export const TableTd: React.FC<{
       [LIST_ITEM_EXP]: item,
     },
   };
+
   let value = item[column.key];
   let buttonConfig = column.buttonConfig;
+  const evaledColumn = services.stateManager.deepEval(
+    rawColumns[index],
+    evalOptions
+  ) as Static<typeof ColumnSpec>;
 
-  if (column.displayValue) {
-    const result = services.stateManager.deepEval(column.displayValue, evalOptions);
-
-    value = result instanceof ExpressionError ? '' : result;
+  if (evaledColumn.displayValue) {
+    value = evaledColumn.displayValue;
   }
 
-  if (column.buttonConfig) {
-    buttonConfig = services.stateManager.deepEval(column.buttonConfig, evalOptions);
+  if (evaledColumn.buttonConfig) {
+    buttonConfig = evaledColumn.buttonConfig;
   }
 
   let content = value;
@@ -81,12 +83,7 @@ export const TableTd: React.FC<{
     case 'button':
       const onClick = () => {
         onClickItem();
-        const evaledColumns = services.stateManager.deepEval(
-          rawColumns,
-          evalOptions
-        ) as Static<typeof ColumnsPropertySpec>;
-
-        evaledColumns[index].buttonConfig.handlers.forEach(evaledHandler => {
+        evaledColumn.buttonConfig.handlers.forEach(evaledHandler => {
           services.apiService.send('uiMethod', {
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
