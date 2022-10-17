@@ -342,10 +342,13 @@ export const Table = implementRuntimeComponent({
               [LIST_ITEM_EXP]: record,
             },
           };
-          const evaledColumn: ColumnProperty = services.stateManager.deepEval(
-            column,
+
+          const rawColumn = component.properties.columns[i];
+          const evaledColumn = services.stateManager.deepEval(
+            rawColumn,
             evalOptions
-          );
+          ) as ColumnProperty;
+
           const value = record[evaledColumn.dataIndex];
 
           let colItem;
@@ -353,12 +356,7 @@ export const Table = implementRuntimeComponent({
           switch (evaledColumn.type) {
             case 'button':
               const handleClick = () => {
-                const rawColumns = component.properties.columns;
-                const evaledColumns = services.stateManager.deepEval(
-                  rawColumns,
-                  evalOptions
-                ) as ColumnProperty[];
-                const evaledButtonConfig = evaledColumns[i].btnCfg;
+                const evaledButtonConfig = evaledColumn.btnCfg;
 
                 if (!evaledButtonConfig) return;
 
