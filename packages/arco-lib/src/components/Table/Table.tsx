@@ -281,6 +281,20 @@ export const Table = implementRuntimeComponent({
     });
   }, [currentPageData, mergeState, rowKey]);
 
+  // If there is less data to display than the current page, reset to the first page
+  useEffect(() => {
+    if (useCustomPagination) return;
+    if (currentPageData.length <= Number(pageSize) * (currentPage - 1)) {
+      setCurrentPage(1);
+    }
+  }, [
+    currentPage,
+    currentPageData.length,
+    pageSize,
+    setCurrentPage,
+    useCustomPagination,
+  ]);
+
   useEffect(() => {
     setColumns(
       cProps.columns!.map((column, i) => {
