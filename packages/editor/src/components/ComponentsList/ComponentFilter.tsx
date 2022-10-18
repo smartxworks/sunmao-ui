@@ -80,6 +80,10 @@ export const ComponentFilter: React.FC<FilterProps> = ({
     setCheckedVersions(newCheckedVersions);
   };
 
+  const checkVersion = (version: string) => {
+    return checkedVersions.includes(version);
+  };
+
   return (
     <Popover isLazy closeOnBlur placement="bottom">
       <PopoverTrigger>
@@ -108,7 +112,12 @@ export const ComponentFilter: React.FC<FilterProps> = ({
         >
           {versions.map(version => {
             return (
-              <Checkbox key={version} value={version} onChange={handleChange}>
+              <Checkbox
+                key={version}
+                value={version}
+                isChecked={checkVersion(version)}
+                onChange={handleChange}
+              >
                 {version}
               </Checkbox>
             );
