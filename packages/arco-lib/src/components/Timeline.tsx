@@ -64,26 +64,44 @@ export const Timeline = implementRuntimeComponent({
     properties: TimelinePropsSpec,
     state: TimelineStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      content: {
+        slotProps: Type.Object({
+          content: Type.String(),
+        }),
+      },
+      label: {
+        slotProps: Type.Object({
+          label: Type.String(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: [],
   },
 })(props => {
   const { items, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle } = props;
+  const { elementRef, customStyle, slotsElements } = props;
 
   return (
     <BaseTimeline ref={elementRef} className={css(customStyle?.content)} {...cProps}>
       {items?.map((item, idx) => (
         <BaseTimeline.Item
           key={idx}
-          label={item.label}
+          label={
+            slotsElements?.label?.({ label: item.label }, undefined, `content_${idx}`) ||
+            item.label
+          }
           dotColor={item.dotColor}
           lineType={item.lineType}
           lineColor={item.lineColor}
           dotType={item.dotType}
         >
-          {item.content}
+          {slotsElements?.content?.(
+            { content: item.content },
+            undefined,
+            `content_${idx}`
+          ) || item.content}
         </BaseTimeline.Item>
       ))}
     </BaseTimeline>
