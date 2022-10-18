@@ -307,6 +307,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
       </FormLabel>
       <Input
         name="wait.time"
+        type="number"
         onBlur={onSubmit}
         onChange={formik.handleChange}
         value={formik.values.wait?.time}
