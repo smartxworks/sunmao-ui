@@ -16,7 +16,6 @@ dayjs.extend(LocalizedFormat);
 dayjs.locale('zh-cn');
 
 type EvalOptions = {
-  evalListItem?: boolean;
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
   fallbackWhenError?: (exp: string) => any;
@@ -104,11 +103,11 @@ export class StateManager {
   };
 
   private _maskedEval(raw: string, options: EvalOptions = {}): unknown | ExpressionError {
-    const { evalListItem = false, fallbackWhenError } = options;
+    const { fallbackWhenError } = options;
     let result: unknown[] = [];
 
     try {
-      const expChunk = parseExpression(raw, evalListItem);
+      const expChunk = parseExpression(raw);
 
       if (typeof expChunk === 'string') {
         return expChunk;
