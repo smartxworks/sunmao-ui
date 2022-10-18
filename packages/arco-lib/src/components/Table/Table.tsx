@@ -215,6 +215,7 @@ export const Table = implementRuntimeComponent({
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
   const currentChecked = useRef<(string | number)[]>([]);
+  const currentClickedRow = useRef<(string | number)[] | undefined>(undefined);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
     !defaultCurrent || defaultCurrent < 1 ? 1 : defaultCurrent,
@@ -275,9 +276,13 @@ export const Table = implementRuntimeComponent({
     const selectedRows = currentPageData.filter(d =>
       currentChecked.current.includes(d[rowKey])
     );
+    // TODO: Save clickedRow state when rowkey changes, save the UI of clickedRow when turning the page
+    const clickedRow = currentPageData.find(d => d[rowKey] === currentClickedRow.current);
+    if (!clickedRow) currentClickedRow.current = undefined;
     mergeState({
       selectedRowKeys: selectedRows.map(r => r[rowKey]),
       selectedRows,
+      clickedRow,
     });
   }, [currentPageData, mergeState, rowKey]);
 
@@ -285,6 +290,7 @@ export const Table = implementRuntimeComponent({
   useEffect(() => {
     if (useCustomPagination) return;
     if (currentPageData.length <= Number(pageSize) * (currentPage - 1)) {
+      // TODO: Better interaction experience
       setCurrentPage(1);
     }
   }, [
@@ -590,6 +596,7 @@ export const Table = implementRuntimeComponent({
                     prevSelectedEl?.classList.remove('selected');
                   }
                   tr?.classList.add('selected');
+                  currentClickedRow.current = record[rowKey];
                   mergeState({ clickedRow: record });
                   callbackMap?.onRowClick?.();
                 },
