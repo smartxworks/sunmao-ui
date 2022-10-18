@@ -215,6 +215,7 @@ export const Table = implementRuntimeComponent({
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
   const currentChecked = useRef<(string | number)[]>([]);
+  const currentClickedRow = useRef<(string | number)[] | undefined>(undefined);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
     !defaultCurrent || defaultCurrent < 1 ? 1 : defaultCurrent,
@@ -275,11 +276,30 @@ export const Table = implementRuntimeComponent({
     const selectedRows = currentPageData.filter(d =>
       currentChecked.current.includes(d[rowKey])
     );
+    // TODO: Save clickedRow state when rowkey changes, save the UI of clickedRow when turning the page
+    const clickedRow = currentPageData.find(d => d[rowKey] === currentClickedRow.current);
+    if (!clickedRow) currentClickedRow.current = undefined;
     mergeState({
       selectedRowKeys: selectedRows.map(r => r[rowKey]),
       selectedRows,
+      clickedRow,
     });
   }, [currentPageData, mergeState, rowKey]);
+
+  // If there is less data to display than the current page, reset to the first page
+  useEffect(() => {
+    if (useCustomPagination) return;
+    if (currentPageData.length <= Number(pageSize) * (currentPage - 1)) {
+      // TODO: Better interaction experience
+      setCurrentPage(1);
+    }
+  }, [
+    currentPage,
+    currentPageData.length,
+    pageSize,
+    setCurrentPage,
+    useCustomPagination,
+  ]);
 
   useEffect(() => {
     setColumns(
@@ -338,15 +358,17 @@ export const Table = implementRuntimeComponent({
 
         newColumn.render = (ceilValue: any, record: any, index: number) => {
           const evalOptions = {
-            evalListItem: true,
             scopeObject: {
               [LIST_ITEM_EXP]: record,
             },
           };
-          const evaledColumn: ColumnProperty = services.stateManager.deepEval(
-            column,
+
+          const rawColumn = component.properties.columns[i];
+          const evaledColumn = services.stateManager.deepEval(
+            rawColumn,
             evalOptions
-          );
+          ) as ColumnProperty;
+
           const value = record[evaledColumn.dataIndex];
 
           let colItem;
@@ -354,12 +376,7 @@ export const Table = implementRuntimeComponent({
           switch (evaledColumn.type) {
             case 'button':
               const handleClick = () => {
-                const rawColumns = component.properties.columns;
-                const evaledColumns = services.stateManager.deepEval(
-                  rawColumns,
-                  evalOptions
-                ) as ColumnProperty[];
-                const evaledButtonConfig = evaledColumns[i].btnCfg;
+                const evaledButtonConfig = evaledColumn.btnCfg;
 
                 if (!evaledButtonConfig) return;
 
@@ -445,7 +462,6 @@ export const Table = implementRuntimeComponent({
                   services={services}
                   childrenMap={{}}
                   isInModule
-                  evalListItem
                   slotContext={{
                     renderSet: new Set(),
                     slotKey: formatSlotKey(
@@ -576,6 +592,7 @@ export const Table = implementRuntimeComponent({
                     prevSelectedEl?.classList.remove('selected');
                   }
                   tr?.classList.add('selected');
+                  currentClickedRow.current = record[rowKey];
                   mergeState({ clickedRow: record });
                   callbackMap?.onRowClick?.();
                 },

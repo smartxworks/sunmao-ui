@@ -97,7 +97,6 @@ export default implementRuntimeComponent({
           services={services}
           childrenMap={{}}
           isInModule
-          evalListItem
           slotContext={{
             renderSet: new Set(),
             slotKey: formatSlotKey(component.id, 'content', `content_${i}`),

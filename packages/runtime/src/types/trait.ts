@@ -25,7 +25,6 @@ export type TraitImpl<TProperties = any> = (
       trait: RuntimeTraitSchema<TProperties>;
       componentId: string;
       services: UIServices;
-      evalListItem?: boolean;
       slotKey: string;
     }
 ) => TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>;
