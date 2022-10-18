@@ -26,7 +26,7 @@ export default implementRuntimeTrait({
     state: {},
   },
 })(() => {
-  return ({ trait, handlers, services, evalListItem, slotKey }) => {
+  return ({ trait, handlers, services, slotKey }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
     const rawHandlers = trait.properties.handlers;
     // setup current handlers
@@ -37,7 +37,7 @@ export default implementRuntimeTrait({
         callbackQueueMap[handler.type] = [];
       }
       callbackQueueMap[handler.type].push(
-        runEventHandler(handler, rawHandlers, Number(i), services, slotKey, evalListItem)
+        runEventHandler(handler, rawHandlers, Number(i), services, slotKey)
       );
     }
 
@@ -60,7 +60,7 @@ export default implementRuntimeTrait({
           () => {
             handlers.forEach((h, i) => {
               if (h.type === MountEvent.mount) {
-                runEventHandler(h, rawHandlers, i, services, slotKey, evalListItem)();
+                runEventHandler(h, rawHandlers, i, services, slotKey)();
               }
             });
           },
@@ -69,7 +69,7 @@ export default implementRuntimeTrait({
           () => {
             handlers.forEach((h, i) => {
               if (h.type === MountEvent.update) {
-                runEventHandler(h, rawHandlers, i, services, slotKey, evalListItem)();
+                runEventHandler(h, rawHandlers, i, services, slotKey)();
               }
             });
           },
@@ -78,7 +78,7 @@ export default implementRuntimeTrait({
           () => {
             handlers.forEach((h, i) => {
               if (h.type === MountEvent.unmount) {
-                runEventHandler(h, rawHandlers, i, services, slotKey, evalListItem)();
+                runEventHandler(h, rawHandlers, i, services, slotKey)();
               }
             });
           },

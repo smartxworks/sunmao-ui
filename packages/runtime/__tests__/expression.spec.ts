@@ -28,7 +28,7 @@ describe('evalExpression function', () => {
   stateManager.store = reactive<Record<string, any>>(scope);
   stateManager.mute = true;
   it('can eval {{}} expression', () => {
-    const evalOptions = { evalListItem: false };
+    const evalOptions = {};
 
     expect(stateManager.deepEval('value', evalOptions)).toEqual('value');
     expect(stateManager.deepEval('{{true}}', evalOptions)).toEqual(true);
@@ -58,26 +58,15 @@ describe('evalExpression function', () => {
   });
 
   it('will not return Proxy', () => {
-    const evalOptions = { evalListItem: false };
-    const fetchData = stateManager.deepEval('{{fetch.data}}', evalOptions);
+    const fetchData = stateManager.deepEval('{{fetch.data}}');
     expect(isProxy(fetchData)).toBe(false);
   });
 
   it('can eval $listItem expression', () => {
-    expect(
-      stateManager.deepEval('{{ $listItem.value }}', {
-        evalListItem: false,
-      })
-    ).toEqual('{{ $listItem.value }}');
-    expect(
-      stateManager.deepEval('{{ $listItem.value }}', {
-        evalListItem: true,
-      })
-    ).toEqual('foo');
+    expect(stateManager.deepEval('{{ $listItem.value }}')).toEqual('foo');
     expect(
       stateManager.deepEval(
-        '{{ {{$listItem.value}}Input.value + {{$moduleId}}Fetch.value }}!',
-        { evalListItem: true }
+        '{{ {{$listItem.value}}Input.value + {{$moduleId}}Fetch.value }}!'
       )
     ).toEqual('Yes, ok!');
   });
