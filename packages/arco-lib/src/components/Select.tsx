@@ -1,18 +1,12 @@
 import { Select as BaseSelect } from '@arco-design/web-react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SelectPropsSpec as BaseSelectPropsSpec } from '../generated/types/Select';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { SelectHandle } from '@arco-design/web-react/es/Select/interface';
 import { useStateValue } from '../hooks/useStateValue';
-
-const OptionSpec = Type.Object({
-  value: Type.String({}),
-  text: Type.String({}),
-  disabled: Type.Optional(Type.Boolean({})),
-});
 
 const SelectPropsSpec = Type.Object({
   ...BaseSelectPropsSpec,
@@ -20,8 +14,6 @@ const SelectPropsSpec = Type.Object({
 const SelectStateSpec = Type.Object({
   value: Type.String(),
 });
-
-type Option = Static<typeof OptionSpec>;
 
 export const Select = implementRuntimeComponent({
   version: 'arco/v1',
@@ -59,7 +51,6 @@ export const Select = implementRuntimeComponent({
     properties: SelectPropsSpec,
     state: SelectStateSpec,
     methods: {
-      addOption: OptionSpec,
       setValue: Type.Object({
         value: Type.String(),
       }),
@@ -81,7 +72,7 @@ export const Select = implementRuntimeComponent({
     subscribeMethods,
   } = props;
   const {
-    options: defaultOptions,
+    options = [],
     retainInputValue,
     updateWhenDefaultValueChanges,
     showTitle,
@@ -95,25 +86,11 @@ export const Select = implementRuntimeComponent({
     undefined,
     callbackMap?.onChange
   );
-  const [options, setOptions] = useState(defaultOptions || []);
 
   const ref = useRef<SelectHandle | null>(null);
 
   useEffect(() => {
-    if (Array.isArray(defaultOptions)) {
-      setOptions(defaultOptions);
-    }
-  }, [defaultOptions]);
-
-  useEffect(() => {
     subscribeMethods({
-      addOption: (option: Option) => {
-        const newOption: Option = {
-          value: option.value,
-          text: option.text || option.value,
-        };
-        setOptions(options => [...options, newOption]);
-      },
       setValue: ({ value }: { value: string }) => {
         setValue(value);
         callbackMap?.onChange?.();
