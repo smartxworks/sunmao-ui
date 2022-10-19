@@ -137,10 +137,14 @@ export const Tree = implementRuntimeComponent({
         e: Event;
       }
     ) => {
-      const selectNodes = extra.selectedNodes.map(node => formatNode(node.props));
+      // In multi-select mode, select an item, remove it from data, and select an item again. Two items will be selected at the same time
+      // Think it's a bug in the arco tree
+      const selectNodes = extra.selectedNodes
+        .filter(node => node)
+        .map(node => formatNode(node.props));
 
       mergeState({
-        selectedKeys,
+        selectedKeys: selectNodes.map(node => node.key),
         selectedNode: selectNodes[0],
         selectedNodes: selectNodes,
       });
