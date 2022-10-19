@@ -91,7 +91,9 @@ export const Select = implementRuntimeComponent({
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    undefined,
+    callbackMap?.onChange
   );
   const [options, setOptions] = useState(defaultOptions || []);
 
@@ -114,12 +116,13 @@ export const Select = implementRuntimeComponent({
       },
       setValue: ({ value }: { value: string }) => {
         setValue(value);
+        callbackMap?.onChange?.();
         mergeState({
           value,
         });
       },
     });
-  }, [mergeState, setValue, subscribeMethods]);
+  }, [callbackMap, mergeState, setValue, subscribeMethods]);
 
   useEffect(() => {
     const ele = ref.current?.dom;
