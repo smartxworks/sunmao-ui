@@ -68,7 +68,9 @@ export const Input = implementRuntimeComponent({
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    undefined,
+    callbackMap?.onChange
   );
 
   const onChange = useCallback(
