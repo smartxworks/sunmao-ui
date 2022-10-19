@@ -10,7 +10,8 @@ export const useStateValue = <
   defaultValue: T,
   mergeState?: RuntimeFunctions<Record<string, T>, TMethods, TSlots>['mergeState'],
   updateWhenDefaultValueChanges?: boolean,
-  key = 'value'
+  key = 'value',
+  cb?: () => void
 ): [T, React.Dispatch<React.SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(defaultValue);
 
@@ -25,8 +26,9 @@ export const useStateValue = <
     if (updateWhenDefaultValueChanges && mergeState) {
       setValue(defaultValue);
       mergeState({ [key]: defaultValue });
+      cb?.();
     }
-  }, [defaultValue, updateWhenDefaultValueChanges, mergeState, key]);
+  }, [defaultValue, updateWhenDefaultValueChanges, mergeState, key, cb]);
 
   return [value, setValue];
 };
