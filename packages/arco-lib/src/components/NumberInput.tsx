@@ -59,7 +59,9 @@ export const NumberInput = implementRuntimeComponent({
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    undefined,
+    callbackMap?.onChange
   );
   const ref = useRef<RefInputType | null>(null);
 

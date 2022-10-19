@@ -50,7 +50,11 @@ export const Select = implementRuntimeComponent({
   spec: {
     properties: SelectPropsSpec,
     state: SelectStateSpec,
-    methods: {},
+    methods: {
+      setValue: Type.Object({
+        value: Type.String(),
+      }),
+    },
     slots: {
       dropdownRenderSlot: { slotProps: Type.Object({}) },
     },
@@ -65,6 +69,7 @@ export const Select = implementRuntimeComponent({
     callbackMap,
     mergeState,
     defaultValue = '',
+    subscribeMethods,
   } = props;
   const {
     options = [],
@@ -73,12 +78,28 @@ export const Select = implementRuntimeComponent({
     showTitle,
     ...cProps
   } = getComponentProps(props);
+
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    undefined,
+    callbackMap?.onChange
   );
+
   const ref = useRef<SelectHandle | null>(null);
+
+  useEffect(() => {
+    subscribeMethods({
+      setValue: ({ value }: { value: string }) => {
+        setValue(value);
+        callbackMap?.onChange?.();
+        mergeState({
+          value,
+        });
+      },
+    });
+  }, [callbackMap, mergeState, setValue, subscribeMethods]);
 
   useEffect(() => {
     const ele = ref.current?.dom;
