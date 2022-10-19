@@ -4,24 +4,25 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 import { TreePropsSpec, TreeNodeSpec } from '../generated/types/Tree';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
+  selectedKeys: Type.Array(Type.String()),
   selectedNode: TreeNodeSpec,
   selectedNodes: Type.Array(TreeNodeSpec),
 });
 
 function formatNode(
-  node: NodeInstance
+  nodeProps: NodeInstance['props']
 ): Static<typeof TreeNodeSpec> & { path: string[] } {
   return {
-    title: node.props.title as string,
-    key: node.props._key!,
-    selectable: node.props.selectable,
-    checkable: node.props.checkable,
-    path: [...node.props.pathParentKeys!, node.props._key!],
-    children: node.props.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
+    title: nodeProps.title as string,
+    key: nodeProps._key!,
+    selectable: nodeProps.selectable,
+    checkable: nodeProps.checkable,
+    path: [...nodeProps.pathParentKeys!, nodeProps._key!],
+    children: nodeProps.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
   };
 }
 
@@ -103,12 +104,43 @@ export const Tree = implementRuntimeComponent({
     customStyle,
     mergeState,
   } = props;
+  const treeRef = useRef<BaseTree>(null);
 
-  const onSelect = useCallback(
-    (value, extra) => {
-      const selectNodes = extra.selectedNodes.map(formatNode);
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      const treeState = treeRef.current?.getTreeState();
+      const selectedKeys = treeState?.selectedKeys;
+      const selectedData = data.filter(d => selectedKeys?.includes(d.key));
+      const selectedNodes = treeRef.current?.getNodeList(selectedData).map(formatNode);
 
       mergeState({
+        selectedKeys: selectedData.map(d => d.key),
+        selectedNode: selectedNodes?.[0],
+        selectedNodes: selectedNodes,
+      });
+    } else {
+      mergeState({
+        selectedKeys: [],
+        selectedNode: undefined,
+        selectedNodes: [],
+      });
+    }
+  }, [data, mergeState]);
+
+  const onSelect = useCallback(
+    (
+      selectedKeys: string[],
+      extra: {
+        selected: boolean;
+        selectedNodes: NodeInstance[];
+        node: NodeInstance;
+        e: Event;
+      }
+    ) => {
+      const selectNodes = extra.selectedNodes.map(node => formatNode(node.props));
+
+      mergeState({
+        selectedKeys,
         selectedNode: selectNodes[0],
         selectedNodes: selectNodes,
       });
@@ -120,6 +152,7 @@ export const Tree = implementRuntimeComponent({
   return (
     <div ref={elementRef} className={css(customStyle?.content)}>
       <BaseTree
+        ref={treeRef}
         treeData={data}
         multiple={multiple}
         autoExpandParent={autoExpandParent}
