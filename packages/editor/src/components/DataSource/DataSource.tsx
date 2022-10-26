@@ -29,7 +29,7 @@ const DATASOURCE_TYPES = Object.values(DataSourceType);
 export const DataSource: React.FC<Props> = props => {
   const { active, services } = props;
   const { editorStore } = services;
-  const NORMAL_DATASOURCES = DATA_DATASOURCES.map((item)=> ({
+  const NORMAL_DATASOURCES = DATA_DATASOURCES.map(item => ({
     ...item,
     title: item.type,
     datas: editorStore.dataSources[item.type],
@@ -52,6 +52,9 @@ export const DataSource: React.FC<Props> = props => {
   };
   const onApiItemRemove = (api: ComponentSchema) => {
     editorStore.removeDataSource(api);
+  };
+  const onApiItemDuplicate = (api: ComponentSchema) => {
+    editorStore.duplicateApi(api);
   };
   const onStateItemRemove = (state: ComponentSchema) => {
     editorStore.removeDataSource(state);
@@ -97,6 +100,7 @@ export const DataSource: React.FC<Props> = props => {
           active={active}
           onItemClick={onApiItemClick}
           onItemRemove={onApiItemRemove}
+          onItemDuplicate={onApiItemDuplicate}
         />
         {NORMAL_DATASOURCES.map(dataSourceItem => (
           <Data

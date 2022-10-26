@@ -18,6 +18,7 @@ import { isEqual } from 'lodash';
 import { resolveApplicationComponents } from '../utils/resolveApplicationComponents';
 import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
+import { DataSourceProperties } from '../operations/branch';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -304,7 +305,7 @@ export class EditorStore {
 
   createDataSource = (
     type: DataSourceType,
-    defaultProperties: Record<string, any> = {}
+    defaultProperties: DataSourceProperties = {}
   ) => {
     const getCount = (
       dataSources: ComponentSchema[] = [],
@@ -354,6 +355,10 @@ export class EditorStore {
     if (this.activeDataSource?.id === dataSource.id) {
       this.setActiveDataSourceId(null);
     }
+  };
+
+  duplicateApi = (dataSource: ComponentSchema) => {
+    this.createDataSource(DataSourceType.API, dataSource.traits[0].properties);
   };
 
   changeDataSourceName = (dataSource: ComponentSchema, name: string) => {

@@ -9,11 +9,27 @@ import {
   CoreComponentName,
 } from '@sunmao-ui/shared';
 import { JSONSchema7Object } from 'json-schema';
+import { Static } from '@sinclair/typebox';
+import {
+  FetchTraitPropertiesSpec,
+  LocalStorageTraitPropertiesSpec,
+  StateTraitPropertiesSpec,
+} from '@sunmao-ui/runtime';
+
+export type ApiProperties = Static<typeof FetchTraitPropertiesSpec>;
+
+export type LocalStorageProperties = Static<typeof LocalStorageTraitPropertiesSpec>;
+
+export type StateProperties = Static<typeof StateTraitPropertiesSpec>;
+
+export type DataSourceProperties = Partial<
+  ApiProperties & LocalStorageProperties & StateProperties
+>;
 
 export type CreateDataSourceBranchOperationContext = {
   id: string;
   type: DataSourceType;
-  defaultProperties: Record<string, any>;
+  defaultProperties: DataSourceProperties;
 };
 
 export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateDataSourceBranchOperationContext> {
@@ -39,7 +55,8 @@ export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateD
           type === DataSourceType.API
             ? {
                 ...initProperties,
-                method: 'get',
+                ...defaultProperties,
+                method: defaultProperties.method || 'get',
               }
             : { ...initProperties, ...defaultProperties },
       })

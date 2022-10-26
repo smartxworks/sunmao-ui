@@ -11,6 +11,7 @@ import {
 import { ComponentSchema } from '@sunmao-ui/core';
 import { DataSourceItem } from './DataSourceItem';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import { DataSourceType } from '../../constants/dataSource';
 
 const COLOR_MAP = {
   GET: 'green',
@@ -25,11 +26,12 @@ interface Props {
   active: string;
   onItemClick: (api: ComponentSchema) => void;
   onItemRemove: (api: ComponentSchema) => void;
+  onItemDuplicate: (api: ComponentSchema) => void;
 }
 
 export const Api: React.FC<Props> = props => {
   const [search, setSearch] = useState('');
-  const { apis, active, onItemClick, onItemRemove } = props;
+  const { apis, active, onItemClick, onItemRemove, onItemDuplicate } = props;
   const list = useMemo(
     () => apis.filter(({ id }) => id.includes(search)),
     [search, apis]
@@ -37,7 +39,9 @@ export const Api: React.FC<Props> = props => {
   const ApiItems = () => (
     <>
       {list.map(api => {
-        const trait = api.traits.find(({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`);
+        const trait = api.traits.find(
+          ({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`
+        );
         const properties = trait!.properties;
         const method = (
           properties.method as string
@@ -51,8 +55,10 @@ export const Api: React.FC<Props> = props => {
             name={api.id}
             active={active === api.id}
             colorMap={COLOR_MAP}
+            type={DataSourceType.API}
             onItemClick={onItemClick}
             onItemRemove={onItemRemove}
+            onItemDuplicate={onItemDuplicate}
           />
         );
       })}
