@@ -1,0 +1,190 @@
+{
+  "version": "sunmao/v1",
+  "kind": "Application",
+  "metadata": {
+    "name": "login"
+  },
+  "spec": {
+    "components": [
+      {
+        "id": "stack0",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": []
+      },
+      {
+        "id": "text1",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text1",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack0",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          },
+          {
+            "type": "core/v1/hidden",
+            "properties": {
+              "hidden": false,
+              "visually": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "text2",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text2",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack0",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          },
+          {
+            "type": "core/v1/style",
+            "properties": {
+              "styles": [
+                {
+                  "styleSlot": "content",
+                  "style": "",
+                  "cssProperties": {
+                    "width": "100px",
+                    "height": "200px",
+                    "color": "rgba(245, 166, 35, 1)"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "core/v1/event",
+            "properties": {
+              "handlers": []
+            }
+          }
+        ]
+      },
+      {
+<<<<<<< HEAD
+        "id": "sub_stack1_newId",
+=======
+        "id": "iframe8",
+        "type": "core/v1/iframe",
+        "properties": {
+          "src": "https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C51.47612752641776%2C0.00030577182769775396%2C51.478569861898606&layer=mapnik",
+          "referrerpolicy": "unset",
+          "sandbox": "unset",
+          "fetchpriority": "auto"
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack0",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "sub_stack1",
+>>>>>>> testaddIframe
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack0",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "text3",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text3",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "sub_stack1_newId",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "sub_sub_stack0",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "sub_stack1_newId",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

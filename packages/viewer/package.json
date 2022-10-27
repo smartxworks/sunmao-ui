@@ -5,22 +5,44 @@
   "author": "Bowen Tan <bowen.tan@smartx.com>",
   "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
   "license": "Apache-2.0",
-  "main": "lib/viewer.js",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
   },
   "files": [
+    "dist",
     "lib"
   ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsup && npm run visualize",
+    "typings": "tsc --emitDeclarationOnly",
+    "test": "jest",
+    "prepublish": "npm run build && npm run typings"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/smartxworks/sunmao-ui.git"
   },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
   "bugs": {
     "url": "https://github.com/smartxworks/sunmao-ui/issues"
+  },
+  "dependencies": {
+    "@arco-design/web-react": "^2.34.0",
+    "@emotion/css": "^11.7.1",
+    "@sunmao-ui/core": "^0.7.4-alpha.2",
+    "diff": "^5.1.0",
+    "lodash": "^4.17.21",
+    "node-diff3": "^3.1.2",
+    "react": "16.x || 17.x",
+    "react-dom": "16.x || 17.x"
+  },
+  "devDependencies": {
+    "@types/diff": "^5.0.2",
+    "@types/lodash": "^4.14.182"
   }
 }
