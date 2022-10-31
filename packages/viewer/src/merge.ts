@@ -63,19 +63,19 @@ export function merge(o: Application, a: Application, b: Application) {
   return { mergeRegion: formatted, map };
 }
 
-type OKDiffBlock = {
+export type OKDiffBlock = {
   kind: 'ok';
   o: ComponentSchema<unknown>[];
   hashes: string[];
 };
-type ConflictDiffBlock = {
+export type ConflictDiffBlock = {
   kind: 'conflict';
   a: ComponentSchema<unknown>[];
   b: ComponentSchema<unknown>[];
   aHashes: string[];
   bHashes: string[];
 };
-type ChangeDiffBlock = {
+export type ChangeDiffBlock = {
   kind: 'change';
   hashA: string;
   hashB: string;
@@ -131,24 +131,208 @@ export function formatRegion(
       }
     }
 
-    const block: ConflictDiffBlock = {
-      kind: 'conflict',
-      aHashes: conflict.a,
-      bHashes: conflict.b,
-      a: conflict.a
-        .filter(hash =>
-          blocks.find(block => block.kind === 'change' && block.hashA !== hash)
-        )
-        .map(hash => map[hash]),
-      b: conflict.a
-        .filter(hash =>
-          blocks.find(block => block.kind === 'change' && block.hashB !== hash)
-        )
-        .map(hash => map[hash]),
-    };
+    const restAHashes = conflict.a.filter(
+      hash => !blocks.find(block => block.kind === 'change' && block.hashA === hash)
+    );
+    const restBHashes = conflict.b.filter(
+      hash => !blocks.find(block => block.kind === 'change' && block.hashB === hash)
+    );
 
-    blocks.push(block);
+    if (restAHashes.length || restBHashes.length) {
+      const block: ConflictDiffBlock = {
+        kind: 'conflict',
+        aHashes: restAHashes,
+        bHashes: restBHashes,
+        a: restAHashes.map(hash => map[hash]),
+        b: restBHashes.map(hash => map[hash]),
+      };
+
+      blocks.push(block);
+    }
   }
 
   return blocks;
+}
+
+type PropsOkBlock = {
+  kind: 'ok';
+  key: string;
+  value: any;
+  path: string;
+  children: PropsBlock[];
+  hasChange?: boolean;
+};
+
+type PropsConflictBlock = {
+  kind: 'conflict';
+  key: string;
+  oValue: any;
+  aValue: any;
+  bValue: any;
+  path: string;
+};
+
+export type PropsBlock = PropsOkBlock | PropsConflictBlock;
+export function mergeJSON(
+  o: Record<string, any>,
+  a: Record<string, any>,
+  b: Record<string, any>,
+  path = ''
+): PropsBlock[] {
+  const blocks: PropsBlock[] = [];
+  for (const oKey in o) {
+    const oVal = o[oKey];
+    const aVal = a[oKey];
+    const bVal = b[oKey];
+    if (oKey in a && oKey in b) {
+      if (oVal === aVal && oVal === bVal) {
+        // oab都在，且无变化
+        blocks.push({
+          kind: 'ok',
+          key: oKey,
+          value: oVal,
+          path: `${path}.${oKey}`,
+          // TODO: 暂时无嵌套
+          children: [],
+        });
+        continue;
+      }
+      if (oVal !== aVal && oVal !== bVal && aVal !== bVal) {
+        // oab都在，但不相等
+        if (typeof aVal === 'object' && typeof bVal === 'object') {
+          const merged = mergeJSON(oVal, aVal, bVal, `${path}.${oKey}`);
+          // 都是对象，进一步diff
+          blocks.push({
+            kind: 'ok',
+            key: oKey,
+            value: aVal,
+            path: `${path}.${oKey}`,
+            children: merged,
+            hasChange: merged.some(block => block.kind === 'conflict' || block.hasChange),
+          });
+        } else {
+          blocks.push({
+            kind: 'conflict',
+            key: oKey,
+            oValue: oVal,
+            aValue: aVal,
+            bValue: bVal,
+            path: `${path}.${oKey}`,
+          });
+        }
+        continue;
+      }
+      if (oVal !== aVal && oVal === bVal) {
+        // oab都在，a变，b不变
+        blocks.push({
+          kind: 'ok',
+          key: oKey,
+          value: aVal,
+          path: `${path}.${oKey}`,
+          children: [],
+        });
+        continue;
+      }
+      if (oVal === aVal && oVal !== bVal) {
+        // oab都在，a不变，b变
+        blocks.push({
+          kind: 'ok',
+          key: oKey,
+          value: bVal,
+          path: `${path}.${oKey}`,
+          children: [],
+        });
+        continue;
+      }
+    } else if (notIn(oKey, a) && oKey in b) {
+      // a 删了，b没删。b如果没变，那就相当于直接删了，不用插入block。
+      if (bVal !== oVal) {
+        // b变了
+        blocks.push({
+          kind: 'conflict',
+          key: oKey,
+          oValue: oVal,
+          aValue: null,
+          bValue: bVal,
+          path: `${path}.${oKey}`,
+        });
+        continue;
+      }
+    } else if (notIn(oKey, b) && oKey in a) {
+      // b 删了，a没删。a如果没变，那就相当于直接删了，不用插入block。
+      if (aVal !== oVal) {
+        // a变了
+        blocks.push({
+          kind: 'conflict',
+          key: oKey,
+          oValue: oVal,
+          aValue: aVal,
+          bValue: null,
+          path: `${path}.${oKey}`,
+        });
+        continue;
+      }
+    } else if (notIn(oKey, b) && notIn(oKey, a)) {
+      // ab都删了, 直接跳过
+      continue;
+    }
+  }
+
+  const aBlocks = findIncrement(o, a, b, path);
+  const bBlocks = findIncrement(o, a, b, path, true);
+  return blocks.concat(aBlocks).concat(bBlocks);
+}
+
+function findIncrement(
+  o: Record<string, any>,
+  a: Record<string, any>,
+  b: Record<string, any>,
+  path = '',
+  reverse = false
+): PropsBlock[] {
+  const blocks: PropsBlock[] = [];
+  const target = reverse ? b : a;
+
+  for (const aKey in target) {
+    const oVal = o[aKey];
+    const aVal = a[aKey];
+    const bVal = b[aKey];
+    if (notIn(aKey, o) && notIn(aKey, b)) {
+      blocks.push({
+        kind: 'ok',
+        key: aKey,
+        value: aVal,
+        path: `${path}.${aKey}`,
+        children: [],
+      });
+      continue;
+    }
+
+    if (notIn(aKey, o) && aKey in b) {
+      if (typeof aVal === 'object' && typeof bVal === 'object') {
+        // 都是对象，进一步diff
+        blocks.push({
+          kind: 'ok',
+          key: aKey,
+          value: aVal,
+          path: `${path}.${aKey}`,
+          children: mergeJSON(oVal, aVal, bVal),
+        });
+      } else {
+        blocks.push({
+          kind: 'conflict',
+          key: aKey,
+          oValue: oVal,
+          aValue: aVal,
+          bValue: bVal,
+          path: `${path}.${aKey}`,
+        });
+      }
+    }
+  }
+  return blocks;
+}
+
+function notIn(key: string, obj: object) {
+  return !(key in obj);
 }

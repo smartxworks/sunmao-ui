@@ -8,6 +8,7 @@ import { DiffBlock } from '../merge';
 type Props = {
   diffs: DiffBlock[];
   map: Record<string, ComponentSchema<unknown>>;
+  onSelectNode: (hash: string) => void;
 };
 
 const TreeStyle = css`
@@ -33,7 +34,7 @@ function diffToTreeNode(
           title: block.id,
           key: block.hashA,
           checkable: true,
-          style: { color: 'yellow' },
+          style: { color: 'orange' },
         },
       ];
     case 'conflict':
@@ -57,7 +58,7 @@ function diffToTreeNode(
   }
 }
 
-export const SchemaTree: React.FC<Props> = ({ diffs }) => {
+export const SchemaTree: React.FC<Props> = ({ diffs, onSelectNode }) => {
   // const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
   // const [mergedText, setMergedText] = useState('');
   const treeData = diffs.reduce((res, diff) => {
@@ -86,6 +87,9 @@ export const SchemaTree: React.FC<Props> = ({ diffs }) => {
       <h1>冲突树</h1>
       <ArcoTree
         treeData={treeData}
+        onSelect={hash => {
+          onSelectNode(hash[0]);
+        }}
         // onCheck={value => {
         //   setCheckedKeys(value);
         // }}
