@@ -29,6 +29,9 @@ export const CodeEditor: React.FC<{
 }) => {
   const valueRef = useRef(defaultCode);
   const [rerenderFlag, setRerenderFlag] = useState(0);
+  const blurRef = useRef<((v: string) => void) | undefined>(undefined);
+  blurRef.current = onBlur;
+
   const style = css`
     .CodeMirror {
       height: 100%;
@@ -56,7 +59,7 @@ export const CodeEditor: React.FC<{
         onChange?.(v);
       }}
       onBlur={() => {
-        onBlur?.(valueRef.current);
+        blurRef.current?.(valueRef.current);
       }}
       options={{
         mode: mode || 'css',
