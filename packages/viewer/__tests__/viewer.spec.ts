@@ -1,4 +1,4 @@
-import { merge } from '../src/merge';
+import { mergeApplication } from '../src/mergeApplication';
 import { BaseSchema, Schema1, Schema2 } from '../src/mock/mock';
 
 describe('detect create component tests', () => {
@@ -17,7 +17,7 @@ describe('detect create component tests', () => {
       },
       { ok: ['moduleContainer15'] },
     ];
-    const { mergeRegion } = merge(BaseSchema, Schema1, Schema2);
+    const { diffBlocks: mergeRegion } = mergeApplication(BaseSchema, Schema1, Schema2);
     expect(mergeRegion).toEqual(result);
   });
 });

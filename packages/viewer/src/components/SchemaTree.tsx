@@ -1,25 +1,25 @@
 import React from 'react';
-import { ComponentSchema } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
-import { Tree as ArcoTree, TreeNodeProps, Button } from '@arco-design/web-react';
+import { Tree as ArcoTree, TreeNodeProps } from '@arco-design/web-react';
+
+import { DiffBlock } from '../type';
 import '@arco-design/web-react/dist/css/arco.css';
-import { DiffBlock } from '../merge';
 
 type Props = {
   diffs: DiffBlock[];
-  map: Record<string, ComponentSchema<unknown>>;
   onSelectNode: (hash: string) => void;
+  onCheck: (hashes: string[]) => void;
 };
 
 const TreeStyle = css`
-  height: 100vh;
+  height: 100%;
+  padding: 32px;
+  width: 400px;
   overflow: auto;
+  border-right: 1px solid #eee;
 `;
 
-function diffToTreeNode(
-  block: DiffBlock,
-  checkable = false
-): Array<TreeNodeProps & { key: string }> {
+function diffToTreeNode(block: DiffBlock): Array<TreeNodeProps & { key: string }> {
   switch (block.kind) {
     case 'ok':
       return block.o.map((component, i) => {
@@ -42,7 +42,7 @@ function diffToTreeNode(
         return {
           title: `${c.id}  >>>>>>>> ${block.aHashes[i]}`,
           key: block.aHashes[i],
-          checkable,
+          checkable: true,
           style: { color: 'green' },
         };
       });
@@ -50,7 +50,7 @@ function diffToTreeNode(
         return {
           title: `${c.id}  >>>>>>>> ${block.bHashes[i]}`,
           key: block.bHashes[i],
-          checkable,
+          checkable: true,
           style: { color: 'green' },
         };
       });
@@ -58,30 +58,10 @@ function diffToTreeNode(
   }
 }
 
-export const SchemaTree: React.FC<Props> = ({ diffs, onSelectNode }) => {
-  // const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
-  // const [mergedText, setMergedText] = useState('');
+export const SchemaTree: React.FC<Props> = ({ diffs, onSelectNode, onCheck }) => {
   const treeData = diffs.reduce((res, diff) => {
     return res.concat(diffToTreeNode(diff));
   }, [] as TreeNodeProps[]);
-  console.log('treeData', treeData);
-  const onClickMerge = () => {
-    // const components = diffs.reduce((res, diff) => {
-    //   if (diff.ok) {
-    //     return res.concat(diff.ok.map(item => map[item]));
-    //   }
-    //   if (diff.conflict) {
-    //     console.log('checkedKeys', checkedKeys);
-    //     const selectedKeys = diff.conflict.a
-    //       .concat(diff.conflict.b)
-    //       .filter(item => checkedKeys.includes(item));
-    //     return res.concat(selectedKeys.map(item => map[item]));
-    //   }
-    //   return res;
-    // }, [] as any[]);
-    // setMergedText(JSON.stringify(components, null, 2));
-  };
-
   return (
     <div className={TreeStyle}>
       <h1>冲突树</h1>
@@ -90,12 +70,10 @@ export const SchemaTree: React.FC<Props> = ({ diffs, onSelectNode }) => {
         onSelect={hash => {
           onSelectNode(hash[0]);
         }}
-        // onCheck={value => {
-        //   setCheckedKeys(value);
-        // }}
+        onCheck={value => {
+          onCheck(value);
+        }}
       />
-      <Button onClick={onClickMerge}>合并</Button>
-      {/* <pre>{mergedText}</pre> */}
     </div>
   );
 };

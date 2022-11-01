@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { css } from '@emotion/css';
 import { flatten } from 'lodash';
 import { Tree as ArcoTree, TreeNodeProps } from '@arco-design/web-react';
+import { PropsDiffBlock } from '../type';
 import '@arco-design/web-react/dist/css/arco.css';
-import { PropsBlock } from '../merge';
+
+export type PropsConflictMap = Record<string, 'a' | 'b'>;
 
 export type TreeDataType = TreeNodeProps & {
   key?: string;
@@ -12,16 +14,19 @@ export type TreeDataType = TreeNodeProps & {
   [key: string]: any;
 };
 type Props = {
-  diffs: PropsBlock[];
-  onCheck: (m: Record<string, 'a' | 'b'>) => void;
+  selectedHash: string;
+  propsDiffBlocks: PropsDiffBlock[];
+  onCheck: (m: PropsConflictMap) => void;
 };
 
-const TreeStyle = css`
-  height: 100vh;
+const Style = css`
+  height: 100%;
   overflow: auto;
+  padding: 32px;
+  border-right: 1px solid #eee;
 `;
 
-function diffToTreeNode(block: PropsBlock): Array<TreeDataType> {
+function diffToTreeNode(block: PropsDiffBlock): Array<TreeDataType> {
   if (block.kind === 'conflict') {
     return [
       {
@@ -60,7 +65,11 @@ function diffToTreeNode(block: PropsBlock): Array<TreeDataType> {
   return [];
 }
 
-export const PropertyViewer: React.FC<Props> = ({ diffs, onCheck }) => {
+export const PropertyViewer: React.FC<Props> = ({
+  selectedHash,
+  propsDiffBlocks: diffs,
+  onCheck,
+}) => {
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
   const data = flatten(diffs.map(diffToTreeNode));
   console.log('checkedKeys', checkedKeys);
@@ -69,7 +78,7 @@ export const PropertyViewer: React.FC<Props> = ({ diffs, onCheck }) => {
 
   const _onCheck = (keys: string[]) => {
     setCheckedKeys(keys);
-    const checkedPropsMap: Record<string, 'a' | 'b'> = {};
+    const checkedPropsMap: PropsConflictMap = {};
     keys.forEach(key => {
       const rawKey = key.slice(0, -2);
       if (key.endsWith('-a')) {
@@ -83,8 +92,9 @@ export const PropertyViewer: React.FC<Props> = ({ diffs, onCheck }) => {
   };
 
   return (
-    <div className={TreeStyle}>
+    <div className={Style}>
       <h1>参数编辑器</h1>
+      <div>当前选择的Component: {selectedHash}</div>
       <ArcoTree treeData={data} onCheck={_onCheck} />
     </div>
   );
