@@ -80,7 +80,6 @@ export class EditorStore {
       setComponents: action,
       setHoverComponentId: action,
       setDragOverComponentId: action,
-      setHoverComponentId: action,
     });
 
     this.eventBus.on('selectComponent', id => {
