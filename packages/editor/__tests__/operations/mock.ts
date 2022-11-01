@@ -15,3 +15,71 @@ export const AppSchema: Application = {
     ],
   },
 };
+export const PasteComponentWithChildrenSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'stack3',
+        type: 'core/v1/stack',
+        properties: {
+          spacing: 12,
+          direction: 'horizontal',
+          align: 'auto',
+          wrap: false,
+          justify: 'flex-start',
+        },
+        traits: [],
+      },
+      {
+        id: 'stack5',
+        type: 'core/v1/stack',
+        properties: {
+          spacing: 12,
+          direction: 'horizontal',
+          align: 'auto',
+          wrap: false,
+          justify: 'flex-start',
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: 'stack3',
+                slot: 'content',
+              },
+              ifCondition: true,
+            },
+          },
+        ],
+      },
+      {
+        id: 'text6',
+        type: 'core/v1/text',
+        properties: {
+          value: {
+            raw: 'text',
+            format: 'plain',
+          },
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: 'stack5',
+                slot: 'content',
+              },
+              ifCondition: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
+};

@@ -62,6 +62,7 @@ export interface IAppModel {
   changeComponentMapId(oldId: ComponentId, newId: ComponentId): void;
   _bindComponentToModel(component: IComponentModel): void;
   traverseTree(cb: (c: IComponentModel) => void): void;
+  traverseAllFields(cb: (f: IFieldModel) => void): void;
 }
 
 export interface IModuleModel {
@@ -145,4 +146,5 @@ export interface IFieldModel {
   traverse: (cb: (f: IFieldModel, key: string) => void) => void;
   // ids of used components in the expression
   refComponentInfos: Record<ComponentId | ModuleId, RefInfo>;
+  changeReferenceId(oldId: ComponentId, newId: ComponentId): void;
 }

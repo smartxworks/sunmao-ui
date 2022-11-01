@@ -6,7 +6,6 @@ import {
   ITraitModel,
   IFieldModel,
   TraitId,
-  IAppModel,
 } from './IAppModel';
 import { FieldModel } from './FieldModel';
 import { genTrait } from './utils';
@@ -24,7 +23,6 @@ export class TraitModel implements ITraitModel {
   constructor(
     trait: TraitSchema,
     private registry: RegistryInterface,
-    private appModel: IAppModel,
     public parent: IComponentModel
   ) {
     this.schema = trait;
@@ -35,9 +33,8 @@ export class TraitModel implements ITraitModel {
 
     this.properties = new FieldModel(
       trait.properties,
-      this.spec.spec.properties,
-      this.appModel,
       this.parent,
+      this.spec.spec.properties,
       this
     );
   }
