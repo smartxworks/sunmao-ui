@@ -31,7 +31,7 @@ export const Select = implementRuntimeComponent({
       labelInValue: false,
       loading: false,
       showSearch: false,
-      unmountOnExit: false,
+      unmountOnExit: true,
       showTitle: false,
       options: [
         { value: 'Beijing', text: 'Beijing' },
@@ -42,6 +42,12 @@ export const Select = implementRuntimeComponent({
       size: 'default',
       error: false,
       updateWhenDefaultValueChanges: false,
+      autoFixPosition: false,
+      autoAlignPopupMinWidth: false,
+      autoAlignPopupWidth: true,
+      autoFitPosition: false,
+      position: 'bottom',
+      mountToBody: true,
     },
     annotations: {
       category: 'Data Entry',
@@ -76,6 +82,12 @@ export const Select = implementRuntimeComponent({
     retainInputValue,
     updateWhenDefaultValueChanges,
     showTitle,
+    mountToBody,
+    autoFixPosition,
+    autoAlignPopupMinWidth,
+    autoAlignPopupWidth,
+    autoFitPosition,
+    position,
     ...cProps
   } = getComponentProps(props);
 
@@ -126,6 +138,13 @@ export const Select = implementRuntimeComponent({
       }}
       value={value}
       {...cProps}
+      triggerProps={{
+        autoAlignPopupMinWidth,
+        autoAlignPopupWidth,
+        autoFitPosition,
+        autoFixPosition,
+        position,
+      }}
       showSearch={showSearch}
       filterOption={(inputValue, option) =>
         option.props.value.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0 ||
@@ -140,6 +159,9 @@ export const Select = implementRuntimeComponent({
               : null}
           </div>
         );
+      }}
+      getPopupContainer={node => {
+        return mountToBody ? document.body : node;
       }}
       mode={cProps.multiple ? 'multiple' : undefined}
       onClear={() => {
