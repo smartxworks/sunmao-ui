@@ -9,7 +9,6 @@ import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
   selectedKeys: Type.Array(Type.String()),
-  selectedNode: TreeNodeSpec,
   selectedNodes: Type.Array(TreeNodeSpec),
 });
 
@@ -112,41 +111,40 @@ export const Tree = implementRuntimeComponent({
   } = props;
   const treeRef = useRef<BaseTree>(null);
   const [expandKeys, setExpandKeys] = useState(defaultExpandKeys);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-  // autoExpandParent
+  // init expanded keys
   useEffect(() => {
     if (autoExpandParent) {
       setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+    } else {
+      setExpandKeys(defaultExpandKeys);
     }
-  }, [autoExpandParent]);
-
-  useEffect(() => {
-    setExpandKeys(defaultExpandKeys);
-  }, [defaultExpandKeys]);
+  }, [autoExpandParent, defaultExpandKeys]);
 
   useEffect(() => {
     if (Array.isArray(data)) {
       // reset tree state
       const treeState = treeRef.current?.getTreeState();
-      const selectedKeys = treeState?.selectedKeys;
-      const selectedData = data.filter(d => selectedKeys?.includes(d.key));
-      const selectedNodes = treeRef.current?.getNodeList(selectedData).map(formatNode);
+      const selectedKeys = treeState?.selectedKeys || [];
+
+      const selectedNodes = selectedKeys
+        .map(key => treeRef.current?.key2nodeProps[key])
+        .filter(node => node)
+        .map(node => formatNode(node!));
 
       mergeState({
-        selectedKeys: selectedData.map(d => d.key),
-        selectedNode: selectedNodes?.[0],
+        selectedKeys: selectedNodes.map(node => node.key),
         selectedNodes: selectedNodes,
       });
 
       // auto expand parent
       if (autoExpandParentWhenDataChanges && autoExpandParent) {
-        treeRef.current?.getNodeList(data);
         setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
       }
     } else {
       mergeState({
         selectedKeys: [],
-        selectedNode: undefined,
         selectedNodes: [],
       });
     }
@@ -154,7 +152,7 @@ export const Tree = implementRuntimeComponent({
 
   const onSelect = useCallback(
     (
-      selectedKeys: string[],
+      _selectedKeys: string[],
       extra: {
         selected: boolean;
         selectedNodes: NodeInstance[];
@@ -162,16 +160,15 @@ export const Tree = implementRuntimeComponent({
         e: Event;
       }
     ) => {
-      // In multi-select mode, select an item, remove it from data, and select an item again. Two items will be selected at the same time
-      // Think it's a bug in the arco tree
-      const selectNodes = extra.selectedNodes
+      const selectedNodes = extra.selectedNodes
         .filter(node => node)
         .map(node => formatNode(node.props));
+      const selectedKeys = selectedNodes.map(node => node.key);
+      setSelectedKeys(selectedKeys);
 
       mergeState({
-        selectedKeys: selectNodes.map(node => node.key),
-        selectedNode: selectNodes[0],
-        selectedNodes: selectNodes,
+        selectedKeys: selectedKeys,
+        selectedNodes: selectedNodes,
       });
       callbackMap?.onSelect?.();
     },
@@ -182,10 +179,14 @@ export const Tree = implementRuntimeComponent({
     <div ref={elementRef} className={css(customStyle?.content)}>
       <BaseTree
         ref={treeRef}
+        selectedKeys={selectedKeys}
         expandedKeys={expandKeys}
         treeData={data}
         multiple={multiple}
         autoExpandParent={autoExpandParent}
+        onExpand={expandKeys => {
+          setExpandKeys(expandKeys);
+        }}
         onSelect={onSelect}
       />
     </div>
