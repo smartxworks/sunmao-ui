@@ -16,13 +16,15 @@ const TreeStateSpec = Type.Object({
 function formatNode(
   nodeProps: NodeInstance['props']
 ): Static<typeof TreeNodeSpec> & { path: string[] } {
+  const { title, key, ...rest } = nodeProps.dataRef!;
   return {
-    title: nodeProps.title as string,
-    key: nodeProps._key!,
+    title: title as string,
+    key: key!,
     selectable: nodeProps.selectable,
     checkable: nodeProps.checkable,
     path: [...nodeProps.pathParentKeys!, nodeProps._key!],
     children: nodeProps.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
+    ...rest,
   };
 }
 
