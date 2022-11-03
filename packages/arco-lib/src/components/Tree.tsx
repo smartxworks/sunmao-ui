@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 import { TreePropsSpec, TreeNodeSpec } from '../generated/types/Tree';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
@@ -30,6 +30,8 @@ const exampleProperties: Static<typeof TreePropsSpec> = {
   multiple: false,
   size: 'medium',
   autoExpandParent: true,
+  defaultExpandKeys: [],
+  autoExpandParentWhenDataChanges: false,
   data: [
     {
       title: 'Asia',
@@ -103,11 +105,26 @@ export const Tree = implementRuntimeComponent({
     autoExpandParent,
     customStyle,
     mergeState,
+    defaultExpandKeys,
+    autoExpandParentWhenDataChanges,
   } = props;
   const treeRef = useRef<BaseTree>(null);
+  const [expandKeys, setExpandKeys] = useState(defaultExpandKeys);
+
+  // autoExpandParent
+  useEffect(() => {
+    if (autoExpandParent) {
+      setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+    }
+  }, [autoExpandParent]);
+
+  useEffect(() => {
+    setExpandKeys(defaultExpandKeys);
+  }, [defaultExpandKeys]);
 
   useEffect(() => {
     if (Array.isArray(data)) {
+      // reset tree state
       const treeState = treeRef.current?.getTreeState();
       const selectedKeys = treeState?.selectedKeys;
       const selectedData = data.filter(d => selectedKeys?.includes(d.key));
@@ -118,6 +135,12 @@ export const Tree = implementRuntimeComponent({
         selectedNode: selectedNodes?.[0],
         selectedNodes: selectedNodes,
       });
+
+      // auto expand parent
+      if (autoExpandParentWhenDataChanges && autoExpandParent) {
+        treeRef.current?.getNodeList(data);
+        setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+      }
     } else {
       mergeState({
         selectedKeys: [],
@@ -125,7 +148,7 @@ export const Tree = implementRuntimeComponent({
         selectedNodes: [],
       });
     }
-  }, [data, mergeState]);
+  }, [autoExpandParent, autoExpandParentWhenDataChanges, data, mergeState]);
 
   const onSelect = useCallback(
     (
@@ -157,6 +180,7 @@ export const Tree = implementRuntimeComponent({
     <div ref={elementRef} className={css(customStyle?.content)}>
       <BaseTree
         ref={treeRef}
+        expandedKeys={expandKeys}
         treeData={data}
         multiple={multiple}
         autoExpandParent={autoExpandParent}
