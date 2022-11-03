@@ -3,7 +3,7 @@ import { ComponentHashMap, DiffBlock, PropsDiffBlock } from './type';
 
 export type CheckedPropsMap = Record<string, 'a' | 'b'>;
 
-export function restoreApplication(params: {
+export function solveApplication(params: {
   diffBlocks: DiffBlock[];
   hashMap: ComponentHashMap;
   solvedComponentsIdMap: Record<string, ComponentSchema>;
@@ -42,7 +42,7 @@ export function restoreApplication(params: {
   };
 }
 
-export function restoreJson(
+export function solveJson(
   blocks: PropsDiffBlock[],
   map: CheckedPropsMap
 ): Record<string, any> {
@@ -51,7 +51,7 @@ export function restoreJson(
     switch (block.kind) {
       case 'ok':
         if (block.hasChange) {
-          json[block.key] = restoreJson(block.children, map);
+          json[block.key] = solveJson(block.children, map);
         } else {
           json[block.key] = block.value;
         }

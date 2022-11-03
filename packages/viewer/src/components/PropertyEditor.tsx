@@ -3,7 +3,6 @@ import { css } from '@emotion/css';
 import { flatten } from 'lodash';
 import { Tree as ArcoTree, TreeNodeProps } from '@arco-design/web-react';
 import { PropsDiffBlock } from '../type';
-import '@arco-design/web-react/dist/css/arco.css';
 
 export type PropsConflictMap = Record<string, 'a' | 'b'>;
 
@@ -30,13 +29,13 @@ function diffToTreeNode(block: PropsDiffBlock): Array<TreeDataType> {
   if (block.kind === 'conflict') {
     return [
       {
-        title: `${block.key}: ${JSON.stringify(block.aValue)} <<<<<< A`,
+        title: `${block.key}: ${JSON.stringify(block.aValue)} >>>>>>>> A`,
         checkable: true,
         key: `${block.path}-a`,
         style: { color: 'green' },
       },
       {
-        title: `${block.key}: ${JSON.stringify(block.bValue)} <<<<<< B`,
+        title: `${block.key}: ${JSON.stringify(block.bValue)} >>>>>>>> B`,
         checkable: true,
         key: `${block.path}-b`,
         style: { color: 'green' },

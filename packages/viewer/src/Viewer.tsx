@@ -1,13 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { SchemaTree } from './components/SchemaTree';
 import { HashDivider, mergeApplication } from './mergeApplication';
 import { ChangeDiffBlock } from './type';
 import { BaseSchema, Schema1, Schema2 } from './mock/changeProperty';
-import { Button } from '@arco-design/web-react';
+import { Button, Radio } from '@arco-design/web-react';
 import { PropertyViewer } from './components/PropertyEditor';
-import { restoreApplication, restoreJson } from './restore';
-import { ComponentSchema } from '@sunmao-ui/core';
+import { solveApplication, solveJson } from './solve';
+import { Application, ComponentSchema } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
+import jsyaml from 'js-yaml';
+import { FileUploadArea } from './components/FileUploadArea';
+import '@arco-design/web-react/dist/css/arco.css';
 
 const ViewerStyle = css`
   width: 100vw;
@@ -16,31 +19,54 @@ const ViewerStyle = css`
 `;
 
 const ResultAreaStyle = css`
+  flex: 1 1 auto;
   height: 100%;
   overflow: auto;
   padding: 32px;
 `;
 export const Viewer: React.FC = () => {
-  const { diffBlocks, map, appSkeleton } = mergeApplication(BaseSchema, Schema1, Schema2);
-  console.log('diffBlocks', diffBlocks);
-  console.log('map', map);
+  const [appO, setAppO] = useState(BaseSchema);
+  const [appA, setAppA] = useState(Schema1);
+  const [appB, setAppB] = useState(Schema2);
+
   const solvedComponentsIdMap = useRef<Record<string, ComponentSchema>>({});
   const [mergedText, setMergedText] = useState<string>('');
   const [selectedHash, setSelectedHash] = useState<string>('');
   const [checkedHashes, setCheckedHashes] = useState<string[]>([]);
+  const [copied, setCopied] = useState(false);
+  const [exportFormat, setExportFormat] = useState<'JSON' | 'YAML'>('JSON');
+
+  const { diffBlocks, map, appSkeleton } = useMemo(
+    () => mergeApplication(appO, appA, appB),
+    [appA, appB, appO]
+  );
+  console.log('diffBlocks', diffBlocks);
+  console.log('map', map);
   const changeRegion: ChangeDiffBlock = diffBlocks.find(
     block => block.kind === 'change' && block.hashA === selectedHash
   ) as ChangeDiffBlock;
 
-  const onClickMerge = () => {
-    const newApp = restoreApplication({
+  const onClickSolve = () => {
+    const newApp = solveApplication({
       diffBlocks: diffBlocks,
       hashMap: map,
       solvedComponentsIdMap: solvedComponentsIdMap.current,
       checkedHashes,
       appSkeleton,
     });
-    setMergedText(JSON.stringify(newApp, null, 2));
+    switch (exportFormat) {
+      case 'JSON':
+        setMergedText(JSON.stringify(newApp, null, 2));
+        break;
+      case 'YAML':
+        setMergedText(jsyaml.dump(newApp));
+        break;
+    }
+  };
+
+  const onClickCopy = () => {
+    navigator.clipboard.writeText(mergedText);
+    setCopied(true);
   };
 
   const onSolveComponent = (component: Record<string, any>) => {
@@ -48,8 +74,15 @@ export const Viewer: React.FC = () => {
     solvedComponentsIdMap.current[id] = component as ComponentSchema;
   };
 
+  const onClickMerge = (o: Application, a: Application, b: Application) => {
+    setAppO(o);
+    setAppA(a);
+    setAppB(b);
+  };
+
   return (
     <div className={ViewerStyle}>
+      <FileUploadArea onClickMerge={onClickMerge} />
       <SchemaTree
         diffs={diffBlocks}
         onSelectNode={hash => {
@@ -65,7 +98,7 @@ export const Viewer: React.FC = () => {
           selectedHash={selectedHash}
           propsDiffBlocks={changeRegion.merged}
           onCheck={map => {
-            const component = restoreJson(changeRegion.merged, map);
+            const component = solveJson(changeRegion.merged, map);
             console.log('changeRegion.merged', changeRegion.merged);
             console.log('map', map);
             console.log('newjson', component);
@@ -74,8 +107,19 @@ export const Viewer: React.FC = () => {
         />
       ) : undefined}
       <div className={ResultAreaStyle}>
-        <h1>合并结果</h1>
-        <Button onClick={onClickMerge}>合并</Button>
+        <h1>冲突解决结果</h1>
+        <Radio.Group
+          defaultValue="JSON"
+          value={exportFormat}
+          onChange={val => setExportFormat(val)}
+        >
+          <Radio value="JSON">JSON</Radio>
+          <Radio value="YAML">YAML</Radio>
+        </Radio.Group>
+        <Button onClick={onClickSolve}>Solve</Button>
+        <Button disabled={!mergedText} onClick={onClickCopy}>
+          {copied ? 'Copied!' : 'Copy'}
+        </Button>
         <pre>{mergedText}</pre>
       </div>
     </div>
