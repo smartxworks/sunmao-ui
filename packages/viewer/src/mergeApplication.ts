@@ -1,7 +1,7 @@
 import { Application, ComponentSchema } from '@sunmao-ui/core';
 import { flatten } from 'lodash';
 import * as Diff3 from 'node-diff3';
-import { mergeJSON } from './mergeJSON';
+import { mergeJSON, propsDiffBlocksHasChange } from './mergeJSON';
 import {
   ComponentHashMap,
   DiffBlock,
@@ -53,14 +53,9 @@ export function mergeApplication(
     return hash;
   });
 
-  console.log(oHashed);
-  console.log(aHashed);
-  console.log(bHashed);
-
   const mergeRegion = Diff3.diff3Merge(aHashed, oHashed, bHashed);
-  console.log('mergeRegion', mergeRegion);
   const formatted = flatten(mergeRegion.map(r => formatMergeRegionToDiffBlock(r, map)));
-  console.log('formatted', formatted);
+  console.log('diffBlocks', formatted);
   const appSkeleton = { ...o, spec: { ...o.spec, components: [] } };
   return { diffBlocks: formatted, map, appSkeleton };
 }
@@ -89,6 +84,7 @@ function formatMergeRegionToDiffBlock(
       const idA = hashA.split(HashDivider)[0];
       const idB = hashB.split(HashDivider)[0];
       if (idA === idB) {
+        const propsDiffBlocks = mergeJSON(map[hashO], map[hashA], map[hashB]);
         const block: ChangeDiffBlock = {
           kind: 'change',
           hashA: hashA,
@@ -97,8 +93,8 @@ function formatMergeRegionToDiffBlock(
           o: map[hashO],
           a: map[hashA],
           b: map[hashB],
-          // TODO：暂时全用 A 版本
-          merged: mergeJSON(map[hashO], map[hashA], map[hashB]),
+          diffBlocks: propsDiffBlocks,
+          hasConflict: propsDiffBlocksHasChange(propsDiffBlocks),
         };
         blocks.push(block);
         ca++;

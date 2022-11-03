@@ -11,15 +11,17 @@ export function mergeJSON(
     const oVal = o[oKey];
     const aVal = a[oKey];
     const bVal = b[oKey];
+    console.log('a', a);
+    console.log('b', b);
     if (oKey in a && oKey in b) {
       if (oVal === aVal && oVal === bVal) {
         // oab都在，且无变化
         blocks.push({
-          kind: 'ok',
+          kind: 'equal',
           key: oKey,
           value: oVal,
           path: `${path}.${oKey}`,
-          // TODO: 暂时无嵌套
+          // 相等的只可能是基本类型，所以无children
           children: [],
         });
         continue;
@@ -27,15 +29,15 @@ export function mergeJSON(
       if (oVal !== aVal && oVal !== bVal && aVal !== bVal) {
         // oab都在，但不相等
         if (typeof aVal === 'object' && typeof bVal === 'object') {
-          const merged = mergeJSON(oVal, aVal, bVal, `${path}.${oKey}`);
+          const diffBlocks = mergeJSON(oVal, aVal, bVal, `${path}.${oKey}`);
           // 都是对象，进一步diff
           blocks.push({
-            kind: 'ok',
+            kind: 'change',
             key: oKey,
-            value: aVal,
+            value: oVal,
             path: `${path}.${oKey}`,
-            children: merged,
-            hasChange: merged.some(block => block.kind === 'conflict' || block.hasChange),
+            children: diffBlocks,
+            childrenHasConflict: propsDiffBlocksHasChange(diffBlocks),
           });
         } else {
           blocks.push({
@@ -52,22 +54,24 @@ export function mergeJSON(
       if (oVal !== aVal && oVal === bVal) {
         // oab都在，a变，b不变
         blocks.push({
-          kind: 'ok',
+          kind: 'change',
           key: oKey,
           value: aVal,
           path: `${path}.${oKey}`,
           children: [],
+          childrenHasConflict: false,
         });
         continue;
       }
       if (oVal === aVal && oVal !== bVal) {
         // oab都在，a不变，b变
         blocks.push({
-          kind: 'ok',
+          kind: 'change',
           key: oKey,
           value: bVal,
           path: `${path}.${oKey}`,
           children: [],
+          childrenHasConflict: false,
         });
         continue;
       }
@@ -127,11 +131,12 @@ function findIncrement(
     const bVal = another[aKey];
     if (notIn(aKey, o) && notIn(aKey, another)) {
       blocks.push({
-        kind: 'ok',
+        kind: 'change',
         key: aKey,
         value: aVal,
         path: `${path}.${aKey}`,
         children: [],
+        childrenHasConflict: false,
       });
       continue;
     }
@@ -139,12 +144,14 @@ function findIncrement(
     if (notIn(aKey, o) && aKey in another) {
       if (typeof aVal === 'object' && typeof bVal === 'object') {
         // 都是对象，进一步diff
+        const diffBlocks = mergeJSON(oVal, aVal, bVal);
         blocks.push({
-          kind: 'ok',
+          kind: 'change',
           key: aKey,
           value: aVal,
           path: `${path}.${aKey}`,
-          children: mergeJSON(oVal, aVal, bVal),
+          children: diffBlocks,
+          childrenHasConflict: propsDiffBlocksHasChange(diffBlocks),
         });
       } else {
         blocks.push({
@@ -163,4 +170,11 @@ function findIncrement(
 
 function notIn(key: string, obj: object) {
   return !(key in obj);
+}
+
+export function propsDiffBlocksHasChange(blocks: PropsDiffBlock[]) {
+  return blocks.some(
+    block =>
+      block.kind === 'conflict' || (block.kind === 'change' && block.childrenHasConflict)
+  );
 }

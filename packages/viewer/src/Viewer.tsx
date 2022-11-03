@@ -40,8 +40,6 @@ export const Viewer: React.FC = () => {
     () => mergeApplication(appO, appA, appB),
     [appA, appB, appO]
   );
-  console.log('diffBlocks', diffBlocks);
-  console.log('map', map);
   const changeRegion: ChangeDiffBlock = diffBlocks.find(
     block => block.kind === 'change' && block.hashA === selectedHash
   ) as ChangeDiffBlock;
@@ -96,12 +94,9 @@ export const Viewer: React.FC = () => {
         <PropertyViewer
           key={selectedHash}
           selectedHash={selectedHash}
-          propsDiffBlocks={changeRegion.merged}
+          propsDiffBlocks={changeRegion.diffBlocks}
           onCheck={map => {
-            const component = solveJson(changeRegion.merged, map);
-            console.log('changeRegion.merged', changeRegion.merged);
-            console.log('map', map);
-            console.log('newjson', component);
+            const component = solveJson(changeRegion.diffBlocks, map);
             onSolveComponent(component);
           }}
         />

@@ -28,7 +28,7 @@ export const FileUploadArea: React.FC<Props> = ({ onClickMerge }) => {
       try {
         return jsyaml.load(text) as Application;
       } catch {
-        console.log('Failed parsing file, please choose json and yaml file.');
+        console.warn('Failed parsing file, please choose json and yaml file.');
       }
     }
   };

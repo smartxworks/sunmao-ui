@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { css } from '@emotion/css';
 import { flatten } from 'lodash';
 import { Tree as ArcoTree, TreeNodeProps } from '@arco-design/web-react';
@@ -26,40 +26,39 @@ const Style = css`
 `;
 
 function diffToTreeNode(block: PropsDiffBlock): Array<TreeDataType> {
-  if (block.kind === 'conflict') {
-    return [
-      {
-        title: `${block.key}: ${JSON.stringify(block.aValue)} >>>>>>>> A`,
-        checkable: true,
-        key: `${block.path}-a`,
-        style: { color: 'green' },
-      },
-      {
-        title: `${block.key}: ${JSON.stringify(block.bValue)} >>>>>>>> B`,
-        checkable: true,
-        key: `${block.path}-b`,
-        style: { color: 'green' },
-      },
-    ];
-  }
-
-  if (block.kind === 'ok') {
-    if (typeof block.value === 'object') {
+  switch (block.kind) {
+    case 'conflict':
+      return [
+        {
+          title: `${block.key}: ${JSON.stringify(block.aValue)} >>>>>>>> A`,
+          checkable: true,
+          key: `${block.path}-a`,
+          style: { color: 'green' },
+        },
+        {
+          title: `${block.key}: ${JSON.stringify(block.bValue)} >>>>>>>> B`,
+          checkable: true,
+          key: `${block.path}-b`,
+          style: { color: 'green' },
+        },
+      ];
+    case 'equal':
       return [
         {
           title: block.key,
           children: flatten(block.children.map(diffToTreeNode)),
           key: block.path,
-          style: { color: block.hasChange ? 'orange' : undefined },
         },
       ];
-    }
-    return [
-      {
-        title: `${block.key}: ${block.value}`,
-        key: block.path,
-      },
-    ];
+    case 'change':
+      return [
+        {
+          title: block.key,
+          children: flatten(block.children.map(diffToTreeNode)),
+          key: block.path,
+          style: { color: block.childrenHasConflict ? 'orange' : undefined },
+        },
+      ];
   }
   return [];
 }
@@ -69,14 +68,9 @@ export const PropertyViewer: React.FC<Props> = ({
   propsDiffBlocks: diffs,
   onCheck,
 }) => {
-  const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
   const data = flatten(diffs.map(diffToTreeNode));
-  console.log('checkedKeys', checkedKeys);
-  console.log('diffs', diffs);
-  console.log('data', data);
 
   const _onCheck = (keys: string[]) => {
-    setCheckedKeys(keys);
     const checkedPropsMap: PropsConflictMap = {};
     keys.forEach(key => {
       const rawKey = key.slice(0, -2);
@@ -86,7 +80,6 @@ export const PropertyViewer: React.FC<Props> = ({
         checkedPropsMap[rawKey] = 'b';
       }
     });
-    console.log('value', checkedPropsMap);
     onCheck(checkedPropsMap);
   };
 

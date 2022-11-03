@@ -13,22 +13,22 @@ export function solveApplication(params: {
   const { diffBlocks, hashMap, solvedComponentsIdMap, checkedHashes, appSkeleton } =
     params;
   const components = diffBlocks.reduce((res, block) => {
-    if (block.kind === 'ok') {
-      return res.concat(block.hashes.map(hash => hashMap[hash]));
-    }
-    if (block.kind === 'conflict') {
-      console.log('checkedHashes', checkedHashes);
-      const checkedComponents = block.aHashes
-        .concat(block.bHashes)
-        .filter(hash => checkedHashes.includes(hash))
-        .map(item => hashMap[item]);
-      return res.concat(checkedComponents);
-    }
-    if (block.kind === 'change') {
-      if (checkedHashes.includes(block.hashA) && solvedComponentsIdMap[block.id]) {
-        console.log('solvedComponentsIdMap', solvedComponentsIdMap);
-        return res.concat([solvedComponentsIdMap[block.id]]);
-      }
+    switch (block.kind) {
+      case 'ok':
+        return res.concat(block.hashes.map(hash => hashMap[hash]));
+      case 'conflict':
+        const checkedComponents = block.aHashes
+          .concat(block.bHashes)
+          .filter(hash => checkedHashes.includes(hash))
+          .map(item => hashMap[item]);
+        return res.concat(checkedComponents);
+      case 'change':
+        if (!block.hasConflict) {
+          return res.concat([solveJson(block.diffBlocks, {})]);
+        }
+        if (checkedHashes.includes(block.hashA) && solvedComponentsIdMap[block.id]) {
+          return res.concat([solvedComponentsIdMap[block.id]]);
+        }
     }
     return res;
   }, [] as any[]);
@@ -49,9 +49,14 @@ export function solveJson(
   const json: Record<string, any> = {};
   blocks.forEach(block => {
     switch (block.kind) {
-      case 'ok':
-        if (block.hasChange) {
+      case 'equal':
+        json[block.key] = block.value;
+        break;
+      case 'change':
+        if (block.childrenHasConflict) {
           json[block.key] = solveJson(block.children, map);
+        } else if (block.children.length > 0) {
+          json[block.key] = solveJson(block.children, {});
         } else {
           json[block.key] = block.value;
         }

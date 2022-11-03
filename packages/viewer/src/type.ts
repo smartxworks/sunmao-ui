@@ -22,20 +22,29 @@ export type ChangeDiffBlock = {
   o: ComponentSchema<unknown>;
   a: ComponentSchema<unknown>;
   b: ComponentSchema<unknown>;
-  merged: PropsDiffBlock[];
+  diffBlocks: PropsDiffBlock[];
+  hasConflict: boolean;
 };
 
 export type DiffBlock = OKDiffBlock | ConflictDiffBlock | ChangeDiffBlock;
 
 export type JSONType = Record<string, any>;
 
-export type PropsOkDiffBlock = {
-  kind: 'ok';
+export type PropsEqualDiffBlock = {
+  kind: 'equal';
   key: string;
   value: any;
   path: string;
   children: PropsDiffBlock[];
-  hasChange?: boolean;
+};
+
+export type PropsChangeDiffBlock = {
+  kind: 'change';
+  key: string;
+  path: string;
+  value: any;
+  children: PropsDiffBlock[];
+  childrenHasConflict: boolean;
 };
 
 export type PropsConflictDiffBlock = {
@@ -47,4 +56,7 @@ export type PropsConflictDiffBlock = {
   path: string;
 };
 
-export type PropsDiffBlock = PropsOkDiffBlock | PropsConflictDiffBlock;
+export type PropsDiffBlock =
+  | PropsEqualDiffBlock
+  | PropsChangeDiffBlock
+  | PropsConflictDiffBlock;

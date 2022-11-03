@@ -33,8 +33,8 @@ function diffToTreeNode(block: DiffBlock): Array<TreeNodeProps & { key: string }
         {
           title: block.id,
           key: block.hashA,
-          checkable: true,
-          style: { color: 'orange' },
+          checkable: block.hasConflict,
+          style: { color: block.hasConflict ? 'orange' : undefined },
         },
       ];
     case 'conflict':
