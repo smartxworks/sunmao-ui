@@ -111,8 +111,10 @@ export const Viewer: React.FC = () => {
           <Radio value="JSON">JSON</Radio>
           <Radio value="YAML">YAML</Radio>
         </Radio.Group>
-        <Button onClick={onClickSolve}>Solve</Button>
-        <Button disabled={!mergedText} onClick={onClickCopy}>
+        <Button type="primary" onClick={onClickSolve}>
+          Solve
+        </Button>
+        <Button type="primary" disabled={!mergedText} onClick={onClickCopy}>
           {copied ? 'Copied!' : 'Copy'}
         </Button>
         <pre>{mergedText}</pre>

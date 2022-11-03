@@ -22,7 +22,7 @@
     "jsx": "react",
     "rootDir": "src",
     "declaration": true,
-    "declarationDir": "lib"
+    "declarationDir": "lib",
   },
-  "include": ["./src", "__tests__/mock"]
+  "include": ["./src", "./__tests__"]
 }

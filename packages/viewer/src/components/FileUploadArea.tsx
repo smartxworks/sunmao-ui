@@ -41,6 +41,7 @@ export const FileUploadArea: React.FC<Props> = ({ onClickMerge }) => {
   return (
     <div className={Style}>
       <Upload
+        drag
         accept=".json, .yaml"
         onChange={async fileList => {
           if (!fileList[0].originFile) return;
@@ -50,6 +51,7 @@ export const FileUploadArea: React.FC<Props> = ({ onClickMerge }) => {
         tip="Version O"
       />
       <Upload
+        drag
         accept=".json, .yaml"
         onChange={async fileList => {
           if (!fileList[0].originFile) return;
@@ -59,6 +61,7 @@ export const FileUploadArea: React.FC<Props> = ({ onClickMerge }) => {
         tip="Version A"
       />
       <Upload
+        drag
         accept=".json, .yaml"
         onChange={async fileList => {
           if (!fileList[0].originFile) return;
@@ -67,7 +70,11 @@ export const FileUploadArea: React.FC<Props> = ({ onClickMerge }) => {
         }}
         tip="Version B"
       />
-      <Button disabled={!fileO || !fileA || !fileB} onClick={_onClickMerge}>
+      <Button
+        type="primary"
+        disabled={!fileO || !fileA || !fileB}
+        onClick={_onClickMerge}
+      >
         合并
       </Button>
     </div>

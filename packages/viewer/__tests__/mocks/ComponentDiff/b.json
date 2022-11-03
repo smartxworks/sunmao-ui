@@ -1,0 +1,231 @@
+{
+  "version": "sunmao/v1",
+  "kind": "Application",
+  "metadata": {
+    "name": "some App"
+  },
+  "spec": {
+    "components": [
+      {
+        "id": "stack1",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": []
+      },
+      {
+        "id": "text2",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack1",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "text3",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack1",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "image11",
+        "type": "arco/v1/image",
+        "properties": {
+          "src": "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp",
+          "title": "",
+          "description": "",
+          "footerPosition": "inner",
+          "preview": false,
+          "width": 200,
+          "height": 200,
+          "error": ""
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack1",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "stack3",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": []
+      },
+      {
+        "id": "button9",
+        "type": "arco/v1/button",
+        "properties": {
+          "type": "default",
+          "status": "default",
+          "long": false,
+          "size": "default",
+          "disabled": false,
+          "loading": false,
+          "shape": "square",
+          "text": "button"
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack3",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "text6",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack3",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "stack4",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": []
+      },
+      {
+        "id": "text7",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack4",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "text8",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack4",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "text12",
+        "type": "core/v1/text",
+        "properties": {
+          "value": {
+            "raw": "text",
+            "format": "plain"
+          }
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack4",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
