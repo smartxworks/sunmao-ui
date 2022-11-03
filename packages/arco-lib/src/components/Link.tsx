@@ -44,6 +44,9 @@ export const Link = implementRuntimeComponent({
       content: {
         slotProps: Type.Object({}),
       },
+      icon: {
+        slotProps: Type.Object({}),
+      },
     },
     styleSlots: ['content'],
     events: ['onClick'],
@@ -58,6 +61,7 @@ export const Link = implementRuntimeComponent({
       ref={elementRef}
       status={statusMap[status]}
       className={css(customStyle?.content)}
+      icon={slotsElements.icon?.({})}
       onClick={() => {
         callbackMap?.onClick?.();
       }}
