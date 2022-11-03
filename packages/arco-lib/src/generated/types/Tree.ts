@@ -19,10 +19,6 @@ export const TreePropsSpec = Type.Object({
       displayedKeys: ['title'],
     },
   }),
-  defaultExpandKeys: Type.Array(Type.String(), {
-    category: Category.Basic,
-    title: 'Expand Keys',
-  }),
   size: StringUnion(['mini', 'small', 'medium', 'large'], {
     category: Category.Style,
     title: 'Size',
@@ -38,5 +34,21 @@ export const TreePropsSpec = Type.Object({
   autoExpandParentWhenDataChanges: Type.Boolean({
     category: Category.Basic,
     title: 'Auto Expand Parent When Data Changes',
+    conditions: [
+      {
+        key: 'autoExpandParent',
+        value: true,
+      },
+    ],
+  }),
+  defaultExpandKeys: Type.Array(Type.String(), {
+    category: Category.Basic,
+    title: 'Expand Keys',
+    conditions: [
+      {
+        key: 'autoExpandParent',
+        value: false,
+      },
+    ],
   }),
 });
