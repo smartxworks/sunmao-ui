@@ -3,10 +3,20 @@ import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
 export const LinkPropsSpec = {
+  asLink: Type.Boolean({
+    title: 'As Link',
+    category: Category.Basic,
+    description: 'If false, only the Link style is retained',
+  }),
   href: Type.String({
     title: 'Href',
     category: Category.Basic,
-    weight: 2,
+    conditions: [
+      {
+        key: 'asLink',
+        value: true,
+      },
+    ],
   }),
   content: Type.String({
     title: 'Content',
@@ -15,7 +25,13 @@ export const LinkPropsSpec = {
   }),
   openInNewPage: Type.Boolean({
     title: 'Open In New Page',
-    category: Category.Behavior,
+    category: Category.Basic,
+    conditions: [
+      {
+        key: 'asLink',
+        value: true,
+      },
+    ],
   }),
   hoverable: Type.Boolean({
     title: 'Hoverable',
@@ -28,6 +44,6 @@ export const LinkPropsSpec = {
   }),
   disabled: Type.Boolean({
     title: 'Disabled',
-    category: Category.Behavior,
+    category: Category.Basic,
   }),
 };

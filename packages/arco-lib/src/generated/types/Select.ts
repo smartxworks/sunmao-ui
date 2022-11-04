@@ -45,6 +45,7 @@ export const SelectPropsSpec = {
     title: 'Label In Value',
     description:
       'Setting value format.The default is string, when set to true, the value format will turn to: { label: string, value: string }',
+    category: Category.Behavior,
   }),
   placeholder: Type.String({
     title: 'Placeholder',
@@ -98,6 +99,7 @@ export const SelectPropsSpec = {
     title: 'Show Option Title',
     description:
       'Whether to show the title on hover when the select option exceeds the width',
+    category: Category.Behavior,
   }),
   error: Type.Boolean({
     title: 'Error',
@@ -107,4 +109,33 @@ export const SelectPropsSpec = {
     title: 'Destroy On Hide',
     category: Category.Behavior,
   }),
+  mountToBody: Type.Boolean({
+    title: 'Mount To Body',
+    category: Category.Behavior,
+    description:
+      'The default is to mount the popup to the body, setting it to false will mount it to the current select element',
+  }),
+  autoFixPosition: Type.Boolean({
+    title: 'Auto Fix Position',
+    category: 'Popup Props',
+  }),
+  autoAlignPopupMinWidth: Type.Boolean({
+    title: 'Auto Align Popup Min Width',
+    category: 'Popup Props',
+  }),
+  autoAlignPopupWidth: Type.Boolean({
+    title: 'Auto Align Popup Width',
+    category: 'Popup Props',
+  }),
+  autoFitPosition: Type.Boolean({
+    title: 'Auto Fit Position',
+    category: 'Popup Props',
+  }),
+  position: StringUnion(
+    ['top', 'tl', 'tr', 'bottom', 'bl', 'br', 'left', 'lt', 'lb', 'right', 'rt', 'rb'],
+    {
+      title: 'Position',
+      category: 'Popup Props',
+    }
+  ),
 };

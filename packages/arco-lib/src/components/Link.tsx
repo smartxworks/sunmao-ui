@@ -9,6 +9,7 @@ const LinkPropsSpec = Type.Object(BaseLinkPropsSpec);
 const LinkStateSpec = Type.Object({});
 
 const exampleProperties: Static<typeof LinkPropsSpec> = {
+  asLink: true,
   disabled: false,
   hoverable: true,
   status: 'default',
@@ -43,21 +44,32 @@ export const Link = implementRuntimeComponent({
       content: {
         slotProps: Type.Object({}),
       },
+      icon: {
+        slotProps: Type.Object({}),
+      },
     },
     styleSlots: ['content'],
-    events: [],
+    events: ['onClick'],
   },
 })(props => {
-  const { content, status, openInNewPage, ...cProps } = getComponentProps(props);
-  const { elementRef, customStyle, slotsElements } = props;
+  const { asLink, content, status, openInNewPage, href, ...cProps } =
+    getComponentProps(props);
+  const { elementRef, customStyle, slotsElements, callbackMap } = props;
 
   return (
     <BaseLink
       ref={elementRef}
       status={statusMap[status]}
       className={css(customStyle?.content)}
+      icon={slotsElements.icon?.({})}
+      onClick={() => {
+        callbackMap?.onClick?.();
+      }}
       {...cProps}
-      target={openInNewPage ? '_blank' : '_self'}
+      {...(asLink && {
+        target: openInNewPage ? '_blank' : '_self',
+        href,
+      })}
     >
       {slotsElements.content ? slotsElements.content({}) : content}
     </BaseLink>
