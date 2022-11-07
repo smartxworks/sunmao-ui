@@ -55,7 +55,6 @@ export function mergeApplication(
 
   const mergeRegion = Diff3.diff3Merge(aHashed, oHashed, bHashed);
   const formatted = flatten(mergeRegion.map(r => formatMergeRegionToDiffBlock(r, map)));
-  console.log('diffBlocks', formatted);
   const appSkeleton = { ...o, spec: { ...o.spec, components: [] } };
   return { diffBlocks: formatted, map, appSkeleton };
 }

@@ -1,5 +1,4 @@
 import { mergeApplication } from '../src/mergeApplication';
-import { BaseSchema, Schema1, Schema2 } from '../src/mock/mock';
 import o from './mocks/ComponentDiff/o.json';
 import a from './mocks/ComponentDiff/a.json';
 import b from './mocks/ComponentDiff/b.json';

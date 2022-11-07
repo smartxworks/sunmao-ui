@@ -1,0 +1,174 @@
+{
+  "version": "sunmao/v1",
+  "kind": "Application",
+  "metadata": {
+    "name": "some App"
+  },
+  "spec": {
+    "components": [
+      {
+        "id": "stack0",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": []
+      },
+      {
+        "id": "table2",
+        "type": "arco/v1/table",
+        "properties": {
+          "columns": [
+            {
+              "title": "Key",
+              "dataIndex": "key",
+              "type": "text",
+              "displayValue": "",
+              "filter": false,
+              "componentSlotIndex": 0,
+              "sorter": false,
+              "ellipsis": false,
+              "width": -1
+            },
+            {
+              "title": "Name",
+              "dataIndex": "name",
+              "sorter": true,
+              "sortDirections": ["ascend", "descend"],
+              "type": "text",
+              "filter": true,
+              "displayValue": "",
+              "ellipsis": false,
+              "componentSlotIndex": 0,
+              "width": -1
+            },
+            {
+              "title": "Age",
+              "dataIndex": "salary",
+              "sorter": true,
+              "sortDirections": ["ascend", "descend"],
+              "filter": false,
+              "type": "text",
+              "displayValue": "",
+              "ellipsis": false,
+              "componentSlotIndex": 0,
+              "width": -1
+            },
+            {
+              "title": "Link",
+              "dataIndex": "link",
+              "type": "link",
+              "filter": true,
+              "sorter": false,
+              "sortDirections": ["ascend", "descend"],
+              "displayValue": "",
+              "ellipsis": false,
+              "componentSlotIndex": 0,
+              "width": -1
+            },
+            {
+              "title": "Address",
+              "type": "text",
+              "componentSlotIndex": 0,
+              "dataIndex": "address",
+              "displayValue": "Shanghai, China",
+              "width": 0,
+              "ellipsis": false,
+              "sorter": false,
+              "filter": false,
+              "sortDirections": [],
+              "btnCfg": {
+                "text": "",
+                "handlers": []
+              },
+              "module": {
+                "id": "",
+                "type": "",
+                "properties": {},
+                "handlers": []
+              }
+            }
+          ],
+          "data": "{{[\n  {\n    \"key\": 0,\n    \"name\": \"Kevin Sandra0\",\n    \"link\": \"link-B\",\n    \"salary\": 456\n  },\n  {\n    \"key\": 1,\n    \"name\": \"Naomi Cook1\",\n    \"link\": \"link-B\",\n    \"salary\": 51\n  },\n  {\n    \"key\": 2,\n    \"name\": \"Naomi Cook2\",\n    \"link\": \"link-A\",\n    \"salary\": 817\n  },\n  {\n    \"key\": 3,\n    \"name\": \"Kevin Sandra3\",\n    \"link\": \"link-B\",\n    \"salary\": 865\n  },\n  {\n    \"key\": 4,\n    \"name\": \"Naomi Cook4\",\n    \"link\": \"link-B\",\n    \"salary\": 318\n  },\n  {\n    \"key\": 5,\n    \"name\": \"Naomi Cook5\",\n    \"link\": \"link-A\",\n    \"salary\": 701\n  },\n  {\n    \"key\": 6,\n    \"name\": \"Naomi Cook6\",\n    \"link\": \"link-B\",\n    \"salary\": 567\n  },\n  {\n    \"key\": 7,\n    \"name\": \"Naomi Cook7\",\n    \"link\": \"link-A\",\n    \"salary\": 740\n  },\n  {\n    \"key\": 8,\n    \"name\": \"Naomi Cook8\",\n    \"link\": \"link-A\",\n    \"salary\": 967\n  },\n  {\n    \"key\": 9,\n    \"name\": \"Kevin Sandra9\",\n    \"link\": \"link-A\",\n    \"salary\": 906\n  },\n  {\n    \"key\": 10,\n    \"name\": \"Naomi Cook10\",\n    \"link\": \"link-B\",\n    \"salary\": 272\n  },\n  {\n    \"key\": 11,\n    \"name\": \"Naomi Cook11\",\n    \"link\": \"link-A\",\n    \"salary\": 831\n  },\n  {\n    \"key\": 12,\n    \"name\": \"Naomi Cook12\",\n    \"link\": \"link-A\",\n    \"salary\": 661\n  }\n]}}",
+          "rowKey": "id",
+          "checkCrossPage": true,
+          "pagination": {
+            "enablePagination": true,
+            "pageSize": 10,
+            "defaultCurrent": 1,
+            "updateWhenDefaultPageChanges": false,
+            "useCustomPagination": false,
+            "simple": false,
+            "showJumper": false,
+            "showTotal": false
+          },
+          "rowClick": false,
+          "tableLayoutFixed": false,
+          "borderCell": false,
+          "stripe": false,
+          "size": "default",
+          "useDefaultFilter": true,
+          "useDefaultSort": true,
+          "pagePosition": "bottomCenter",
+          "rowSelectionType": "single",
+          "border": true,
+          "loading": true
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack0",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          },
+          {
+            "type": "core/v1/style",
+            "properties": {
+              "styles": [
+                {
+                  "styleSlot": "content",
+                  "style": "",
+                  "cssProperties": {
+                    "width": "600px",
+                    "height": "1000px",
+                    "backgroundColor": "yellow"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "core/v1/event",
+            "properties": {
+              "handlers": [
+                {
+                  "type": "onRowClick",
+                  "componentId": "$utils",
+                  "method": {
+                    "name": "core/v1/scrollToComponent",
+                    "parameters": {
+                      "componentId": "stack0"
+                    }
+                  },
+                  "wait": {
+                    "type": "debounce",
+                    "time": 0
+                  },
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

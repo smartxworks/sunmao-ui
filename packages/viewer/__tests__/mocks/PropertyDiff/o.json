@@ -1,0 +1,208 @@
+{
+  "version": "sunmao/v1",
+  "kind": "Application",
+  "metadata": {
+    "name": "some App"
+  },
+  "spec": {
+    "components": [
+      {
+        "id": "stack0",
+        "type": "core/v1/stack",
+        "properties": {
+          "spacing": 12,
+          "direction": "horizontal",
+          "align": "auto",
+          "wrap": false,
+          "justify": "flex-start"
+        },
+        "traits": []
+      },
+      {
+        "id": "table2",
+        "type": "arco/v1/table",
+        "properties": {
+          "columns": [
+            {
+              "title": "Key",
+              "dataIndex": "key",
+              "type": "text",
+              "displayValue": "",
+              "filter": false,
+              "componentSlotIndex": 0,
+              "sorter": false,
+              "ellipsis": false,
+              "width": -1
+            },
+            {
+              "title": "Name",
+              "dataIndex": "name",
+              "sorter": true,
+              "sortDirections": ["ascend", "descend"],
+              "type": "text",
+              "filter": true,
+              "displayValue": "",
+              "ellipsis": false,
+              "componentSlotIndex": 0,
+              "width": -1
+            },
+            {
+              "title": "Salary",
+              "dataIndex": "salary",
+              "sorter": true,
+              "sortDirections": ["ascend", "descend"],
+              "filter": false,
+              "type": "text",
+              "displayValue": "",
+              "ellipsis": false,
+              "componentSlotIndex": 0,
+              "width": -1
+            },
+            {
+              "title": "Link",
+              "dataIndex": "link",
+              "type": "link",
+              "filter": true,
+              "sorter": false,
+              "sortDirections": ["ascend", "descend"],
+              "displayValue": "",
+              "ellipsis": false,
+              "componentSlotIndex": 0,
+              "width": -1
+            }
+          ],
+          "data": [
+            {
+              "key": 0,
+              "name": "Kevin Sandra0",
+              "link": "link-B",
+              "salary": 456
+            },
+            {
+              "key": 1,
+              "name": "Naomi Cook1",
+              "link": "link-B",
+              "salary": 51
+            },
+            {
+              "key": 2,
+              "name": "Naomi Cook2",
+              "link": "link-A",
+              "salary": 817
+            },
+            {
+              "key": 3,
+              "name": "Kevin Sandra3",
+              "link": "link-B",
+              "salary": 865
+            },
+            {
+              "key": 4,
+              "name": "Naomi Cook4",
+              "link": "link-B",
+              "salary": 318
+            },
+            {
+              "key": 5,
+              "name": "Naomi Cook5",
+              "link": "link-A",
+              "salary": 701
+            },
+            {
+              "key": 6,
+              "name": "Naomi Cook6",
+              "link": "link-B",
+              "salary": 567
+            },
+            {
+              "key": 7,
+              "name": "Naomi Cook7",
+              "link": "link-A",
+              "salary": 740
+            },
+            {
+              "key": 8,
+              "name": "Naomi Cook8",
+              "link": "link-A",
+              "salary": 967
+            },
+            {
+              "key": 9,
+              "name": "Kevin Sandra9",
+              "link": "link-A",
+              "salary": 906
+            },
+            {
+              "key": 10,
+              "name": "Naomi Cook10",
+              "link": "link-B",
+              "salary": 272
+            },
+            {
+              "key": 11,
+              "name": "Naomi Cook11",
+              "link": "link-A",
+              "salary": 831
+            },
+            {
+              "key": 12,
+              "name": "Naomi Cook12",
+              "link": "link-A",
+              "salary": 661
+            }
+          ],
+          "rowKey": "key",
+          "checkCrossPage": true,
+          "pagination": {
+            "enablePagination": true,
+            "pageSize": 6,
+            "defaultCurrent": 1,
+            "updateWhenDefaultPageChanges": false,
+            "useCustomPagination": false,
+            "simple": false,
+            "showJumper": false,
+            "showTotal": false
+          },
+          "rowClick": false,
+          "tableLayoutFixed": false,
+          "borderCell": false,
+          "stripe": false,
+          "size": "default",
+          "useDefaultFilter": true,
+          "useDefaultSort": true,
+          "pagePosition": "bottomCenter",
+          "rowSelectionType": "single",
+          "border": true,
+          "loading": false
+        },
+        "traits": [
+          {
+            "type": "core/v1/slot",
+            "properties": {
+              "container": {
+                "id": "stack0",
+                "slot": "content"
+              },
+              "ifCondition": true
+            }
+          },
+          {
+            "type": "core/v1/style",
+            "properties": {
+              "styles": [
+                {
+                  "styleSlot": "content",
+                  "style": "",
+                  "cssProperties": {
+                    "color": "red",
+                    "backgroundColor": "yellow"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

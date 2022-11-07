@@ -19,6 +19,7 @@ type Props = {
 };
 
 const Style = css`
+  box-sizing: border-box;
   height: 100%;
   overflow: auto;
   padding: 32px;
@@ -34,18 +35,20 @@ function diffToTreeNode(block: PropsDiffBlock): Array<TreeDataType> {
           checkable: true,
           key: `${block.path}-a`,
           style: { color: 'green' },
+          expanded: true,
         },
         {
           title: `${block.key}: ${JSON.stringify(block.bValue)} >>>>>>>> B`,
           checkable: true,
           key: `${block.path}-b`,
           style: { color: 'green' },
+          expanded: true,
         },
       ];
     case 'equal':
       return [
         {
-          title: block.key,
+          title: `${block.key}: ${block.value}`,
           children: flatten(block.children.map(diffToTreeNode)),
           key: block.path,
         },
@@ -53,14 +56,27 @@ function diffToTreeNode(block: PropsDiffBlock): Array<TreeDataType> {
     case 'change':
       return [
         {
-          title: block.key,
+          title: `${block.key}: ${block.value}`,
           children: flatten(block.children.map(diffToTreeNode)),
           key: block.path,
           style: { color: block.childrenHasConflict ? 'orange' : undefined },
+          expanded: true,
         },
       ];
   }
   return [];
+}
+function getDefaultExpandedKeys(tree: TreeDataType[]) {
+  const expandedKeys: string[] = [];
+
+  function traverseTreeNode(node: TreeDataType) {
+    if (node.expanded) {
+      expandedKeys.push(node.key!);
+    }
+    node.children?.forEach(traverseTreeNode);
+  }
+  tree.forEach(traverseTreeNode);
+  return expandedKeys;
 }
 
 export const PropertyViewer: React.FC<Props> = ({
@@ -68,7 +84,8 @@ export const PropertyViewer: React.FC<Props> = ({
   propsDiffBlocks: diffs,
   onCheck,
 }) => {
-  const data = flatten(diffs.map(diffToTreeNode));
+  const data = flatten(diffs.map(diff => diffToTreeNode(diff)));
+  const defaultExpandedKeys = getDefaultExpandedKeys(data);
 
   const _onCheck = (keys: string[]) => {
     const checkedPropsMap: PropsConflictMap = {};
@@ -87,7 +104,11 @@ export const PropertyViewer: React.FC<Props> = ({
     <div className={Style}>
       <h1>参数编辑器</h1>
       <div>当前选择的Component: {selectedHash}</div>
-      <ArcoTree treeData={data} onCheck={_onCheck} />
+      <ArcoTree
+        treeData={data}
+        onCheck={_onCheck}
+        defaultExpandedKeys={defaultExpandedKeys}
+      />
     </div>
   );
 };

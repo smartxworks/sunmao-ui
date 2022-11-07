@@ -11,8 +11,6 @@ export function mergeJSON(
     const oVal = o[oKey];
     const aVal = a[oKey];
     const bVal = b[oKey];
-    console.log('a', a);
-    console.log('b', b);
     if (oKey in a && oKey in b) {
       if (oVal === aVal && oVal === bVal) {
         // oab都在，且无变化
@@ -29,16 +27,29 @@ export function mergeJSON(
       if (oVal !== aVal && oVal !== bVal && aVal !== bVal) {
         // oab都在，但不相等
         if (typeof aVal === 'object' && typeof bVal === 'object') {
-          const diffBlocks = mergeJSON(oVal, aVal, bVal, `${path}.${oKey}`);
           // 都是对象，进一步diff
-          blocks.push({
-            kind: 'change',
-            key: oKey,
-            value: oVal,
-            path: `${path}.${oKey}`,
-            children: diffBlocks,
-            childrenHasConflict: propsDiffBlocksHasChange(diffBlocks),
-          });
+          const diffBlocks = mergeJSON(oVal, aVal, bVal, `${path}.${oKey}`);
+          const childrenHasConflict = propsDiffBlocksHasChange(diffBlocks);
+          if (childrenHasConflict) {
+            // 对象内有冲突
+            blocks.push({
+              kind: 'change',
+              key: oKey,
+              value: oVal,
+              path: `${path}.${oKey}`,
+              children: diffBlocks,
+              childrenHasConflict: propsDiffBlocksHasChange(diffBlocks),
+            });
+          } else {
+            // 对象内无冲突
+            blocks.push({
+              kind: 'equal',
+              key: oKey,
+              value: oVal,
+              path: `${path}.${oKey}`,
+              children: diffBlocks,
+            });
+          }
         } else {
           blocks.push({
             kind: 'conflict',
@@ -131,17 +142,17 @@ function findIncrement(
     const bVal = another[aKey];
     if (notIn(aKey, o) && notIn(aKey, another)) {
       blocks.push({
-        kind: 'change',
+        kind: 'equal',
         key: aKey,
         value: aVal,
         path: `${path}.${aKey}`,
         children: [],
-        childrenHasConflict: false,
       });
       continue;
     }
 
-    if (notIn(aKey, o) && aKey in another) {
+    // 如果反转了，就不需要对比ab都有value了，因为a已经比过了
+    if (!reverse && notIn(aKey, o) && aKey in another) {
       if (typeof aVal === 'object' && typeof bVal === 'object') {
         // 都是对象，进一步diff
         const diffBlocks = mergeJSON(oVal, aVal, bVal);
@@ -152,6 +163,15 @@ function findIncrement(
           path: `${path}.${aKey}`,
           children: diffBlocks,
           childrenHasConflict: propsDiffBlocksHasChange(diffBlocks),
+        });
+      } else if (aVal === bVal) {
+        // 两者相等
+        blocks.push({
+          kind: 'equal',
+          key: aKey,
+          value: aVal,
+          path: `${path}.${aKey}`,
+          children: [],
         });
       } else {
         blocks.push({

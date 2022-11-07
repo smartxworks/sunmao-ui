@@ -4,7 +4,7 @@ import { HashDivider, mergeApplication } from './mergeApplication';
 import { ChangeDiffBlock } from './type';
 import { BaseSchema, Schema1, Schema2 } from './mock/changeProperty';
 import { Button, Radio } from '@arco-design/web-react';
-import { PropertyViewer } from './components/PropertyEditor';
+import { PropertyViewer } from './components/PropertyViewer';
 import { solveApplication, solveJson } from './solve';
 import { Application, ComponentSchema } from '@sunmao-ui/core';
 import { css } from '@emotion/css';
