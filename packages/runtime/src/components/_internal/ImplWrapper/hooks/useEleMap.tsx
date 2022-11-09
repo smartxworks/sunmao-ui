@@ -28,14 +28,16 @@ export function useEleRef(props: ImplWrapperProps) {
     if (eleRef.current && !isInModule) {
       eleMap.set(c.id, eleRef.current);
     }
+    hooks?.didDomUpdate && hooks?.didDomUpdate();
     return () => {
       if (!isInModule) {
         eleMap.delete(c.id);
       }
+      hooks?.didDomUpdate && hooks?.didDomUpdate();
     };
     // These dependencies should not change in the whole life cycle of ImplWrapper.
     // Otherwise, the clear function will run unexpectedly
-  }, [c.id, eleMap, isInModule, stateManager.store]);
+  }, [c.id, eleMap, hooks, isInModule, stateManager.store]);
 
   return {
     eleRef,
