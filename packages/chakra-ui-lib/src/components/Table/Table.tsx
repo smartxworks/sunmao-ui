@@ -34,6 +34,7 @@ export const TableImpl = implementTable(
     services,
     app,
     elementRef,
+    slotsElements,
   }) => {
     const [selectedItem, setSelectedItem] = useState<Record<string, any> | undefined>();
     const [selectedItems, setSelectedItems] = useState<Array<Record<string, any>>>([]);
@@ -196,6 +197,7 @@ export const TableImpl = implementTable(
                       column={column}
                       services={services}
                       app={app}
+                      slotsElements={slotsElements}
                     />
                   ))}
                 </Tr>

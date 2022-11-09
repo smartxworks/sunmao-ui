@@ -88,7 +88,7 @@ export const Editor: React.FC<Props> = observer(
 
     const inspectForm = useMemo(() => {
       if (activeDataSource && activeDataSourceType) {
-        return (
+        return activeDataSourceType === DataSourceType.API ? null : (
           <DataForm
             datasource={activeDataSource}
             services={services}
@@ -228,9 +228,10 @@ export const Editor: React.FC<Props> = observer(
                   height="100%"
                   display="flex"
                   flexDirection="column"
+                  lazyBehavior="keepMounted"
+                  isLazy
                   index={toolMenuTab}
                   onChange={onRightTabChange}
-                  isLazy
                 >
                   <TabList background="gray.50">
                     <Tab>Inspect</Tab>

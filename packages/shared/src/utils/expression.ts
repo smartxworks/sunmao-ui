@@ -1,19 +1,11 @@
-import { EXPRESSION, LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../constants/expression';
+import { EXPRESSION } from '../constants/expression';
 
 export type ExpChunk = string | ExpChunk[];
 
 // copy and modify from
 // https://stackoverflow.com/questions/68161410/javascript-parse-multiple-brackets-recursively-from-a-string
-export const parseExpression = (rawExp: string, parseListItem = false): ExpChunk[] => {
+export const parseExpression = (rawExp: string): ExpChunk[] => {
   const exp = rawExp.trim();
-  // $listItem cannot be evaled in stateStore, so don't mark it as dynamic
-  // unless explicitly pass parseListItem as true
-  if (
-    (exp.includes(LIST_ITEM_EXP) || exp.includes(LIST_ITEM_INDEX_EXP)) &&
-    !parseListItem
-  ) {
-    return [exp];
-  }
 
   function lexer(str: string): string[] {
     let token = '';

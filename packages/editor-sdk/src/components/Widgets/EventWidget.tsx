@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useMemo, Suspense } from 'react';
 import { FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
@@ -13,9 +13,11 @@ import {
   CORE_VERSION,
   CoreWidgetName,
   generateDefaultValueFromSpec,
+  MountEvents,
 } from '@sunmao-ui/shared';
-import { Select as RcSelect } from '../Select';
 import { JSONSchema7Object } from 'json-schema';
+import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
+import { Select as ComponentTargetSelect } from '../Select';
 
 const EventWidgetOptions = Type.Object({});
 
@@ -61,7 +63,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
     [registry]
   );
   const eventTypes = useMemo(() => {
-    return registry.getComponentByType(component.type).spec.events;
+    return [...registry.getComponentByType(component.type).spec.events, ...MountEvents];
   }, [component.type, registry]);
   const hasParams = useMemo(
     () => Object.keys(formik.values.method.parameters ?? {}).length,
@@ -155,9 +157,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
 
   useEffect(() => {
     formik.setValues(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, formik.setValues]);
   useEffect(() => {
     formik.setFieldValue('method.parameters', params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, formik.setFieldValue]);
   useEffect(() => {
     if (formik.values.componentId) {
@@ -166,13 +170,13 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
   }, [formik.values.componentId, updateMethods]);
 
   const onTargetComponentChange = useCallback(
-    (value: string) => {
+    (value: unknown) => {
       formik.setValues({
         ...formik.values,
         componentId: value,
         method: { name: '', parameters: {} },
       });
-      updateMethods(value);
+      updateMethods(value as string);
     },
     [updateMethods, formik]
   );
@@ -214,26 +218,30 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
       </Select>
     </FormControl>
   );
+
   const targetField = (
     <FormControl>
       <FormLabel fontSize="14px" fontWeight="normal">
         Target Component
       </FormLabel>
-      <RcSelect
-        showSearch
-        onBlur={onSubmit}
-        bordered={false}
-        onChange={onTargetComponentChange}
-        placeholder="Select Target Component"
-        style={{ width: '100%' }}
-        value={formik.values.componentId === '' ? undefined : formik.values.componentId}
-      >
-        {[{ id: GLOBAL_UTIL_METHOD_ID }].concat(components).map(c => (
-          <RcSelect.Option key={c.id} value={c.id}>
-            {c.id}
-          </RcSelect.Option>
-        ))}
-      </RcSelect>
+      <Suspense fallback="Loading Component Target Select">
+        <ComponentTargetSelect
+          showSearch
+          onBlur={onSubmit}
+          bordered={false}
+          onChange={onTargetComponentChange}
+          placeholder="Select Target Component"
+          dropdownClassName={PREVENT_POPOVER_WIDGET_CLOSE_CLASS}
+          style={{ width: '100%' }}
+          value={formik.values.componentId === '' ? undefined : formik.values.componentId}
+        >
+          {[{ id: GLOBAL_UTIL_METHOD_ID }].concat(components).map(c => (
+            <ComponentTargetSelect.Option key={c.id} value={c.id}>
+              {c.id}
+            </ComponentTargetSelect.Option>
+          ))}
+        </ComponentTargetSelect>
+      </Suspense>
     </FormControl>
   );
   const methodField = (
@@ -299,6 +307,7 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
       </FormLabel>
       <Input
         name="wait.time"
+        type="number"
         onBlur={onSubmit}
         onChange={formik.handleChange}
         value={formik.values.wait?.time}

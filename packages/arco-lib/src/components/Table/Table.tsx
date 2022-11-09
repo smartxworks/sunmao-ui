@@ -19,6 +19,7 @@ import {
   ModuleRenderer,
   implementRuntimeComponent,
   ImplWrapper,
+  formatSlotKey,
 } from '@sunmao-ui/runtime';
 import { Type, Static } from '@sinclair/typebox';
 import { ResizableTitle } from './ResizableTitle';
@@ -30,9 +31,8 @@ import { useStateValue } from '../../hooks/useStateValue';
 const TableStateSpec = Type.Object({
   clickedRow: Type.Optional(Type.Any()),
   selectedRows: Type.Array(Type.Any()),
-  selectedRow: Type.Optional(Type.Any()),
   selectedRowKeys: Type.Array(Type.String()),
-  filterRule: Type.Any(),
+  filterRule: Type.Record(Type.String(), Type.Array(Type.String())),
   sortRule: Type.Object({
     field: Type.Optional(Type.String()),
     direction: Type.Optional(Type.String()),
@@ -45,8 +45,6 @@ type SortRule = {
   field?: string;
   direction?: 'ascend' | 'descend';
 };
-
-type FilterRule = Partial<Record<string, string[]>>;
 
 type ColumnProperty = Static<typeof ColumnSpec> & ColumnProps;
 
@@ -75,6 +73,17 @@ const rowClickStyle = css`
 export const exampleProperties: Static<typeof TablePropsSpec> = {
   columns: [
     {
+      title: 'Key',
+      dataIndex: 'key',
+      type: 'text',
+      displayValue: '',
+      filter: false,
+      componentSlotIndex: 0,
+      sorter: false,
+      ellipsis: false,
+      width: -1,
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       sorter: true,
@@ -82,7 +91,9 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       type: 'text',
       filter: true,
       displayValue: '',
+      ellipsis: false,
       componentSlotIndex: 0,
+      width: -1,
     },
     {
       title: 'Salary',
@@ -92,26 +103,32 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
       filter: false,
       type: 'text',
       displayValue: '',
+      ellipsis: false,
       componentSlotIndex: 0,
+      width: -1,
     },
     {
       title: 'Link',
       dataIndex: 'link',
       type: 'link',
       filter: true,
+      sorter: false,
       sortDirections: ['ascend', 'descend'],
       displayValue: '',
+      ellipsis: false,
       componentSlotIndex: 0,
+      width: -1,
     },
   ],
   data: Array(13)
     .fill('')
     .map((_, index) => ({
-      key: `key ${index}`,
+      key: index,
       name: `${Math.random() > 0.5 ? 'Kevin Sandra' : 'Naomi Cook'}${index}`,
       link: `link${Math.random() > 0.5 ? '-A' : '-B'}`,
       salary: Math.floor(Math.random() * 1000),
     })),
+  rowKey: 'key',
   checkCrossPage: true,
   pagination: {
     enablePagination: true,
@@ -119,6 +136,9 @@ export const exampleProperties: Static<typeof TablePropsSpec> = {
     defaultCurrent: 1,
     updateWhenDefaultPageChanges: false,
     useCustomPagination: false,
+    simple: false,
+    showJumper: false,
+    showTotal: false,
   },
   rowClick: false,
   tableLayoutFixed: false,
@@ -169,11 +189,19 @@ export const Table = implementRuntimeComponent({
     customStyle,
     services,
     component,
+    slotsElements,
   } = props;
 
   const ref = useRef<TableInstance | null>(null);
-  const { pagination, rowClick, useDefaultFilter, useDefaultSort, data, ...cProps } =
-    getComponentProps(props);
+  const {
+    pagination,
+    rowKey,
+    rowClick,
+    useDefaultFilter,
+    useDefaultSort,
+    data,
+    ...cProps
+  } = getComponentProps(props);
 
   const {
     pageSize,
@@ -186,9 +214,11 @@ export const Table = implementRuntimeComponent({
   } = pagination;
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
+  const currentChecked = useRef<(string | number)[]>([]);
+  const currentClickedRow = useRef<(string | number)[] | undefined>(undefined);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
-    defaultCurrent ?? 1,
+    !defaultCurrent || defaultCurrent < 1 ? 1 : defaultCurrent,
     mergeState,
     updateWhenDefaultPageChanges,
     'currentPage'
@@ -196,6 +226,7 @@ export const Table = implementRuntimeComponent({
 
   useEffect(() => {
     mergeState({ pageSize });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [sortRule, setSortRule] = useState<SortRule | null>(null);
@@ -236,13 +267,53 @@ export const Table = implementRuntimeComponent({
       // Otherwise it will automatically paginate on the front end based on the current page
       return sortedData?.slice(0, pageSize);
     }
+
     return sortedData;
   }, [pageSize, sortedData, enablePagination, useCustomPagination]);
+
+  // reset selectedRows state when data changed
+  useEffect(() => {
+    const selectedRows = currentPageData.filter(d =>
+      currentChecked.current.includes(d[rowKey])
+    );
+    // TODO: Save clickedRow state when rowkey changes, save the UI of clickedRow when turning the page
+    const clickedRow = currentPageData.find(d => d[rowKey] === currentClickedRow.current);
+    if (!clickedRow) currentClickedRow.current = undefined;
+    mergeState({
+      selectedRowKeys: selectedRows.map(r => r[rowKey]),
+      selectedRows,
+      clickedRow,
+    });
+  }, [currentPageData, mergeState, rowKey]);
+
+  // If there is less data to display than the current page, reset to the first page
+  useEffect(() => {
+    if (useCustomPagination) return;
+    if (currentPageData.length <= Number(pageSize) * (currentPage - 1)) {
+      // TODO: Better interaction experience
+      setCurrentPage(1);
+    }
+  }, [
+    currentPage,
+    currentPageData.length,
+    pageSize,
+    setCurrentPage,
+    useCustomPagination,
+  ]);
 
   useEffect(() => {
     setColumns(
       cProps.columns!.map((column, i) => {
         const newColumn: ColumnProperty = { ...column };
+        if (newColumn.width === -1) {
+          Reflect.deleteProperty(newColumn, 'width');
+        } else if (newColumn.width) {
+          newColumn.onHeaderCell = col => ({
+            width: col.width,
+            onResize: handleResize(i),
+          });
+        }
+
         if (newColumn.filter) {
           newColumn.filterDropdown = ({
             filterKeys,
@@ -284,24 +355,20 @@ export const Table = implementRuntimeComponent({
             };
           }
         }
-        if (newColumn.width) {
-          newColumn.onHeaderCell = col => ({
-            width: col.width,
-            onResize: handleResize(i),
-          });
-        }
 
         newColumn.render = (ceilValue: any, record: any, index: number) => {
           const evalOptions = {
-            evalListItem: true,
             scopeObject: {
               [LIST_ITEM_EXP]: record,
             },
           };
-          const evaledColumn: ColumnProperty = services.stateManager.deepEval(
-            column,
+
+          const rawColumn = component.properties.columns[i];
+          const evaledColumn = services.stateManager.deepEval(
+            rawColumn,
             evalOptions
-          );
+          ) as ColumnProperty;
+
           const value = record[evaledColumn.dataIndex];
 
           let colItem;
@@ -309,15 +376,7 @@ export const Table = implementRuntimeComponent({
           switch (evaledColumn.type) {
             case 'button':
               const handleClick = () => {
-                const rawColumns = component.properties.columns;
-                const evaledColumns =
-                  typeof rawColumns === 'string'
-                    ? (services.stateManager.maskedEval(
-                        rawColumns,
-                        evalOptions
-                      ) as ColumnProperty[])
-                    : services.stateManager.deepEval(rawColumns, evalOptions);
-                const evaledButtonConfig = evaledColumns[i].btnCfg;
+                const evaledButtonConfig = evaledColumn.btnCfg;
 
                 if (!evaledButtonConfig) return;
 
@@ -383,6 +442,18 @@ export const Table = implementRuntimeComponent({
                 id: `${component.id}_${childSchema.id}_${index}`,
               };
 
+              /**
+               * FIXME: temporary hack
+               */
+              slotsElements.content?.(
+                {
+                  [LIST_ITEM_EXP]: record,
+                  [LIST_ITEM_INDEX_EXP]: index,
+                },
+                undefined,
+                `${childSchema.id}_${index}`
+              );
+
               colItem = (
                 <ImplWrapper
                   key={_childrenSchema.id}
@@ -391,10 +462,13 @@ export const Table = implementRuntimeComponent({
                   services={services}
                   childrenMap={{}}
                   isInModule
-                  evalListItem
-                  slotProps={{
-                    [LIST_ITEM_EXP]: record,
-                    [LIST_ITEM_INDEX_EXP]: index,
+                  slotContext={{
+                    renderSet: new Set(),
+                    slotKey: formatSlotKey(
+                      component.id,
+                      'content',
+                      `${childSchema.id}_${index}`
+                    ),
                   }}
                 />
               );
@@ -414,6 +488,7 @@ export const Table = implementRuntimeComponent({
     cProps.columns,
     callbackMap,
     component.id,
+    slotsElements,
     component.properties.columns,
     services,
     useDefaultFilter,
@@ -422,7 +497,7 @@ export const Table = implementRuntimeComponent({
   const handleChange = (
     pagination: PaginationProps,
     sorter: { field?: string; direction?: 'descend' | 'ascend' },
-    filters: FilterRule,
+    filters: Partial<Record<string, string[]>>,
     extra: { currentData: any[]; action: 'paginate' | 'sort' | 'filter' }
   ) => {
     const { current } = pagination;
@@ -431,9 +506,9 @@ export const Table = implementRuntimeComponent({
     switch (action) {
       case 'paginate':
         if (useCustomPagination) {
-          mergeState({ currentPage: current, pageSize });
           callbackMap?.onPageChange?.();
         }
+        mergeState({ currentPage: current, pageSize });
         setCurrentPage(current!);
         break;
       case 'sort':
@@ -447,7 +522,7 @@ export const Table = implementRuntimeComponent({
         break;
       case 'filter':
         if (!useDefaultFilter) {
-          mergeState({ filterRule: filters });
+          mergeState({ filterRule: filters as Record<string, string[]> });
           callbackMap?.onFilter?.();
         }
         break;
@@ -466,6 +541,7 @@ export const Table = implementRuntimeComponent({
   return (
     <BaseTable
       ref={ref}
+      rowKey={rowKey}
       className={css`
         ${customStyle?.content}
         ${rowClick ? rowClickStyle : ''}
@@ -492,17 +568,8 @@ export const Table = implementRuntimeComponent({
         checkCrossPage: checkCrossPage,
         // This option is required to achieve multi-selection across pages when customizing paging
         preserveSelectedRowKeys: useCustomPagination ? checkCrossPage : undefined,
-        onSelect: (selected, record) => {
-          mergeState({
-            selectedRow: selected ? record : undefined,
-          });
-        },
-        onSelectAll: () => {
-          mergeState({
-            selectedRow: undefined,
-          });
-        },
         onChange(selectedRowKeys, selectedRows) {
+          currentChecked.current = selectedRowKeys;
           mergeState({
             selectedRowKeys: selectedRowKeys as string[],
             selectedRows,
@@ -525,6 +592,7 @@ export const Table = implementRuntimeComponent({
                     prevSelectedEl?.classList.remove('selected');
                   }
                   tr?.classList.add('selected');
+                  currentClickedRow.current = record[rowKey];
                   mergeState({ clickedRow: record });
                   callbackMap?.onRowClick?.();
                 },

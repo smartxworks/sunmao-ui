@@ -126,11 +126,7 @@ export const Tabs = implementRuntimeComponent({
             key={String(idx)}
             title={tabItem.title}
           >
-            {slotsElements?.content
-              ? slotsElements.content({
-                  tabIndex: idx,
-                })
-              : null}
+            {slotsElements?.content?.({ tabIndex: idx }, undefined, `content_${idx}`)}
           </TabPane>
         )
       )}

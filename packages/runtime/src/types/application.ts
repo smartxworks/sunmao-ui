@@ -2,6 +2,7 @@ import { ApiService } from '../services/apiService';
 import { GlobalHandlerMap } from '../services/handler';
 import { RegistryInterface } from '../services/Registry';
 import { StateManagerInterface } from '../services/StateManager';
+import { SlotReceiver } from '../services/SlotReciver';
 import { Application } from '@sunmao-ui/core';
 
 export type UIServices = {
@@ -10,6 +11,7 @@ export type UIServices = {
   globalHandlerMap: GlobalHandlerMap;
   apiService: ApiService;
   eleMap: Map<string, HTMLElement>;
+  slotReceiver: SlotReceiver;
 };
 
 export type ComponentParamsFromApp = {

@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/shared",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "The Sunmao shared lib",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
@@ -17,21 +17,22 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
-    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --clean --sourcemap --platform browser",
+    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --clean --sourcemap --platform browser",
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings",
     "test": "jest"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.21.2",
-    "lodash": "^4.17.21"
+    "ajv": "^8.8.2"
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.7",
-    "@types/lodash": "^4.14.182",
+    "ajv": "^8.8.2",
     "jest": "^27.1.0",
-    "tsup": "^5.11.0"
+    "tsup": "^6.2.2",
+    "vite": "^3.0.8"
   },
   "keywords": [],
   "husky": {

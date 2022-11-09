@@ -20,6 +20,7 @@ import { SpecWidget } from './SpecWidget';
 import { implementWidget } from '../../utils/widget';
 import { WidgetProps } from '../../types/widget';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
+import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
 
 type EvenType = {
   'sub-popover-close': string[];
@@ -72,10 +73,12 @@ export const PopoverWidget = React.forwardRef<
   }, [path]);
   const handleClickTrigger = useCallback(event => {
     event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
   }, []);
   const handleClickContent = useCallback(
     event => {
       event.stopPropagation();
+      event.nativeEvent.stopImmediatePropagation();
       emitter.emit('sub-popover-close', path);
     },
     [path]
@@ -117,14 +120,22 @@ export const PopoverWidget = React.forwardRef<
     };
   }, [handlerCloseByParent, handlerCloseByOther]);
   useEffect(() => {
-    const handleClickOutside = () => {
+    const handleClickOutside = (event: any) => {
+      if (
+        event.path.some((node: Element) =>
+          [...(node.classList?.values() || [])].includes(
+            PREVENT_POPOVER_WIDGET_CLOSE_CLASS
+          )
+        )
+      )
+        return;
       setIsOpen(false);
     };
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('click', handleClickOutside, true);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside, true);
     };
   }, []);
 
@@ -140,7 +151,13 @@ export const PopoverWidget = React.forwardRef<
   }));
 
   return (
-    <Popover placement="left" closeOnBlur={false} isOpen={isOpen} onOpen={handleOpen}>
+    <Popover
+      isLazy
+      placement="left"
+      closeOnBlur={false}
+      isOpen={isOpen}
+      onOpen={handleOpen}
+    >
       <PopoverTrigger>
         {isObjectChildren && 'trigger' in children ? (
           (children as Children).trigger
@@ -155,9 +172,13 @@ export const PopoverWidget = React.forwardRef<
         )}
       </PopoverTrigger>
       <Portal>
-        <PopoverContent onClick={handleClickContent}>
+        <PopoverContent
+          width="sm"
+          className={PREVENT_POPOVER_WIDGET_CLOSE_CLASS}
+          onClick={handleClickContent}
+        >
           <PopoverArrow />
-          <PopoverBody maxHeight="400px" overflow="auto">
+          <PopoverBody maxHeight="75vh" overflow="auto">
             {isInit ? (
               isObjectChildren && 'body' in children ? (
                 (children as Children).body

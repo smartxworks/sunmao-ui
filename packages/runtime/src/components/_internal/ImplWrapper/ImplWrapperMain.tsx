@@ -7,12 +7,14 @@ import { useRuntimeFunctions } from './hooks/useRuntimeFunctions';
 import { getSlotElements } from './hooks/useSlotChildren';
 import { useGlobalHandlerMap } from './hooks/useGlobalHandlerMap';
 import { useEleRef } from './hooks/useEleMap';
-import { initStateAndMethod } from '../../../utils/initStateAndMethod';
+import { initSingleComponentState } from '../../../utils/initStateAndMethod';
+import ComponentErrorBoundary from '../ComponentErrorBoundary';
 
 export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps>(
   function ImplWrapperMain(props, ref) {
-    const { component: c, children, evalListItem, slotProps } = props;
+    const { component: c, children, slotContext } = props;
     const { registry, stateManager } = props.services;
+    const slotKey = slotContext?.slotKey || '';
 
     const Impl = registry.getComponent(c.parsedType.version, c.parsedType.name).impl;
 
@@ -21,27 +23,26 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     // This code is to init dynamic generated components
     // because they have not be initialized before
     if (!stateManager.store[c.id]) {
-      initStateAndMethod(registry, stateManager, [c]);
+      initSingleComponentState(registry, stateManager, c);
     }
 
-    const { eleRef, onRef } = useEleRef(props);
+    const { eleRef, onRef, onRecoverFromError } = useEleRef(props);
 
     const { mergeState, subscribeMethods, executeTrait } = useRuntimeFunctions(props);
 
-    const [traitResults, setTraitResults] = useState<TraitResult<string, string>[]>(
-      () => {
-        return c.traits.map(t =>
-          executeTrait(
-            t,
-            stateManager.deepEval(t.properties, {
-              evalListItem,
-              scopeObject: { $slot: slotProps },
-              fallbackWhenError: () => undefined,
-            })
-          )
-        );
-      }
-    );
+    const [traitResults, setTraitResults] = useState<
+      TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>[]
+    >(() => {
+      return c.traits.map(t =>
+        executeTrait(
+          t,
+          stateManager.deepEval(t.properties, {
+            slotKey,
+            fallbackWhenError: () => undefined,
+          })
+        )
+      );
+    });
 
     useEffect(() => {
       return () => {
@@ -66,8 +67,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             });
           },
           {
-            evalListItem,
-            scopeObject: { $slot: slotProps },
+            slotKey,
             fallbackWhenError: () => undefined,
           }
         );
@@ -78,12 +78,18 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       // because mergeState will be called during the first render of component, and state will change
       setTraitResults(c.traits.map((trait, i) => executeTrait(trait, properties[i])));
       return () => stops.forEach(s => s());
-    }, [c.id, c.traits, executeTrait, stateManager, slotProps, evalListItem]);
+    }, [c.id, c.traits, executeTrait, stateManager, slotKey]);
 
     // reduce traitResults
-    const propsFromTraits: TraitResult<string, string>['props'] = useMemo(() => {
+    const propsFromTraits: TraitResult<
+      ReadonlyArray<string>,
+      ReadonlyArray<string>
+    >['props'] = useMemo(() => {
       return Array.from(traitResults.values()).reduce(
-        (prevProps, result: TraitResult<string, string>) => {
+        (
+          prevProps,
+          result: TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>
+        ) => {
           if (!result.props) {
             return prevProps;
           }
@@ -96,7 +102,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
             }
           });
         },
-        {} as TraitResult<string, string>['props']
+        {} as TraitResult<ReadonlyArray<string>, ReadonlyArray<string>>['props']
       );
     }, [traitResults]);
 
@@ -105,8 +111,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       return merge(
         stateManager.deepEval(c.properties, {
           fallbackWhenError: () => undefined,
-          evalListItem,
-          scopeObject: { $slot: slotProps },
+          slotKey,
         }),
         propsFromTraits
       );
@@ -119,16 +124,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
           setEvaledComponentProperties({ ...newResult });
         },
         {
-          evalListItem,
           fallbackWhenError: () => undefined,
-          scopeObject: { $slot: slotProps },
+          slotKey,
         }
       );
       // must keep this line, reason is the same as above
       setEvaledComponentProperties({ ...result });
 
       return stop;
-    }, [c.properties, stateManager, slotProps, evalListItem]);
+    }, [c.properties, stateManager, slotKey]);
 
     useEffect(() => {
       const clearFunctions = propsFromTraits?.componentDidMount?.map(e => e());
@@ -161,7 +165,7 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       <Impl
         ref={ref}
         key={c.id}
-        {...omit(props, ['slotProps', 'slotContext'])}
+        {...omit(props, ['slotContext'])}
         {...mergedProps}
         slotsElements={slotElements}
         mergeState={mergeState}
@@ -172,10 +176,15 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
     );
 
     return (
-      <React.Fragment key={c.id}>
+      <ComponentErrorBoundary
+        key={c.id}
+        componentId={c.id}
+        onRef={onRef}
+        onRecoverFromError={onRecoverFromError}
+      >
         {C}
         {children}
-      </React.Fragment>
+      </ComponentErrorBoundary>
     );
   }
 );
@@ -209,6 +218,7 @@ function mergeCustomStyle(s1?: Record<string, string>, s2?: Record<string, strin
       if (target && src) {
         return `${target};${src}`;
       }
+      return target || src;
     });
   }
   return s1 || s2;

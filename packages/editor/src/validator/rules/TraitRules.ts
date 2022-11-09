@@ -7,11 +7,34 @@ import {
 import { GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
 import { isExpression } from '../utils';
 import { ComponentId, EventName } from '../../AppModel/IAppModel';
-import { CORE_VERSION, CoreTraitName, EventHandlerSpec } from '@sunmao-ui/shared';
+import {
+  CORE_VERSION,
+  CoreTraitName,
+  EventHandlerSpec,
+  MountEvents,
+  MountEvent,
+} from '@sunmao-ui/shared';
+import { get } from 'lodash';
+import { ErrorObject } from 'ajv';
 
 class EventHandlerValidatorRule implements TraitValidatorRule {
   kind: 'trait' = 'trait';
   traitMethods = ['setValue', 'resetValue', 'triggerFetch'];
+
+  private isErrorAnExpression(
+    error: ErrorObject,
+    parameters: Record<string, any> | undefined
+  ) {
+    let path = '';
+    const { instancePath, params } = error;
+    if (instancePath) {
+      path = instancePath.split('/').slice(1).join('.');
+    } else {
+      path = params.missingProperty;
+    }
+    const field = get(parameters, path);
+    return isExpression(field);
+  }
 
   validate({
     appModel,
@@ -42,7 +65,11 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         });
       }
 
-      if (eventName && !component.events.includes(eventName as EventName)) {
+      if (
+        eventName &&
+        !component.events.includes(eventName as EventName) &&
+        !MountEvents.includes(eventName as MountEvent)
+      ) {
         results.push({
           message: `Component does not have event: ${eventName}.`,
           componentId: component.id,
@@ -87,13 +114,16 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         const valid = validate(parameters);
         if (!valid) {
           validate.errors!.forEach(error => {
-            results.push({
-              message: error.message || '',
-              componentId: component.id,
-              property: error.instancePath,
-              traitType: trait?.type,
-              traitIndex,
-            });
+            if (!this.isErrorAnExpression(error, parameters)) {
+              results.push({
+                message: error.message || '',
+                componentId: component.id,
+                property: error.instancePath,
+                traitType: trait?.type,
+                traitIndex,
+              });
+              return results;
+            }
           });
         }
       } else {
@@ -125,22 +155,14 @@ class EventHandlerValidatorRule implements TraitValidatorRule {
         // check component method properties type
         if (method.parameters && !ajv.validate(method.parameters, parameters)) {
           ajv.errors!.forEach(error => {
-            if (error.keyword === 'type') {
-              const { instancePath } = error;
-              const path = instancePath.split('/')[1];
-              const value = trait.rawProperties[path];
-
-              // if value is an expression, skip it
-              if (isExpression(value)) {
-                return;
-              }
+            if (!this.isErrorAnExpression(error, parameters)) {
+              results.push({
+                message: error.message || '',
+                componentId: component.id,
+                traitType: trait.type,
+                property: `/handlers/${i}/method/parameters${error.instancePath}`,
+              });
             }
-            results.push({
-              message: error.message || '',
-              componentId: component.id,
-              traitType: trait.type,
-              property: `/handlers/${i}/method/parameters${error.instancePath}`,
-            });
           });
         }
       }

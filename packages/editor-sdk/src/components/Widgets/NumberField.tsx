@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import {
@@ -22,6 +22,16 @@ export const NumberField: React.FC<WidgetProps<NumberFieldType>> = props => {
   const { value, onChange } = props;
   const [stringValue, setStringValue] = React.useState(String(value));
   const numValue = useRef<number>(value);
+
+  useEffect(() => {
+    // Convert value to number after switch from expression widget mode.
+    if (value !== undefined && typeof value !== 'number') {
+      const num = Number(value) || 0;
+      onChange(num);
+      setStringValue(String(num));
+      numValue.current = num;
+    }
+  }, [onChange, value]);
 
   return (
     <NumberInput

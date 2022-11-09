@@ -145,7 +145,7 @@ const ListEventSchema: Application = {
 
 describe('Core List Component', () => {
   const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
-  stateManager.noConsoleError = true;
+  stateManager.mute = true;
   it('can render component directly', () => {
     const { unmount } = render(<App options={ListSchema} />);
 

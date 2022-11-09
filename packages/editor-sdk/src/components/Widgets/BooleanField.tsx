@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { Switch } from '@chakra-ui/react';
@@ -13,6 +13,14 @@ declare module '../../types/widget' {
 
 export const BooleanField: React.FC<WidgetProps<BooleanFieldType>> = props => {
   const { value, onChange } = props;
+
+  useEffect(() => {
+    // Convert value to boolean after switch from expression widget mode.
+    if (value && typeof value !== 'boolean') {
+      onChange(true);
+    }
+  }, [onChange, value]);
+
   const onValueChange = useCallback(
     event => {
       onChange(event.currentTarget.checked);

@@ -29,7 +29,7 @@ import {
 } from './leaf';
 import { IOperation } from './type';
 
-const OperationConstructors: Record<
+export const OperationConstructors: Record<
   OperationTypes,
   OperationConfigMaps[OperationTypes]['constructor']
 > = {
@@ -55,7 +55,7 @@ type OperationConfigMap<TOperation, TContext> = {
   registry: RegistryInterface;
 };
 
-type OperationConfigMaps = {
+export type OperationConfigMaps = {
   createComponent: OperationConfigMap<
     CreateComponentBranchOperation,
     CreateComponentBranchOperationContext

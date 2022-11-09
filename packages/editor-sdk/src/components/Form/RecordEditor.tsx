@@ -1,5 +1,13 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import { Box, Button, Text, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Text,
+  HStack,
+  IconButton,
+  VStack,
+  Textarea,
+} from '@chakra-ui/react';
 import produce from 'immer';
 import { fromPairs, toPairs } from 'lodash';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -10,6 +18,8 @@ import { ExpressionEditor } from '../Form/ExpressionEditor';
 import { WidgetProps } from '../../types/widget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { ExpressionEditorProps } from './ExpressionEditor';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
+import { JSONSchema7 } from 'json-schema';
 
 const IGNORE_SPEC_TYPES = ['array', 'object'];
 
@@ -55,21 +65,21 @@ const RowItem = (props: RowItemProps) => {
   }>(
     () => ({
       compactOptions: {
-        height: '32px',
+        maxHeight: '125px',
       },
     }),
     []
   );
-  const valueSpec = useMemo(() => spec?.properties?.[rowKey], [spec, rowKey]);
+  const valueSpec = useMemo(
+    () => (onlySetValue ? spec?.properties?.[rowKey] : spec?.patternProperties?.['^.*$']),
+    [spec, rowKey, onlySetValue]
+  );
   const valueSpecWithExpressionOptions = useMemo(
     () =>
       valueSpec && typeof valueSpec !== 'boolean'
-        ? {
-            ...valueSpec,
-            widgetOptions: {
-              compactOptions: expressionOptions.compactOptions,
-            },
-          }
+        ? mergeWidgetOptionsIntoSpec<'core/v1/expression'>(valueSpec, {
+            compactOptions: expressionOptions.compactOptions,
+          })
         : Type.Any({
             widget: 'core/v1/expression',
             widgetOptions: {
@@ -115,9 +125,15 @@ const RowItem = (props: RowItemProps) => {
   const onRemove = useCallback(() => onRemoveRow(i), [i, onRemoveRow]);
 
   return (
-    <HStack spacing="1" display="flex">
-      <Input
+    <HStack spacing="1" display="flex" alignItems="stretch">
+      <Textarea
+        resize="none"
+        rows={1}
+        paddingTop="6px"
+        paddingBottom="6px"
         minWidth={0}
+        border="none"
+        height="auto"
         flex="1 1 33.33%"
         name="key"
         value={rowKey}
@@ -131,15 +147,16 @@ const RowItem = (props: RowItemProps) => {
         <HStack minWidth={0} flex="2 2 66.66%" alignItems="center">
           {valueSpec === undefined ||
           typeof valueSpec === 'boolean' ||
-          IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) ? (
-            <ExpressionWidget
-              component={component}
-              path={nextPath}
-              spec={valueSpecWithExpressionOptions}
-              services={services}
-              level={level + 1}
-              value={value}
-              onChange={onValueChange}
+          (IGNORE_SPEC_TYPES.includes(String(valueSpec.type)) &&
+            valueSpecWithExpressionOptions?.widget === undefined) ? (
+              <ExpressionWidget
+                component={component}
+                path={nextPath}
+                spec={valueSpecWithExpressionOptions}
+                services={services}
+                level={level + 1}
+                value={value}
+                onChange={onValueChange}
             />
           ) : (
             <SpecWidget
@@ -155,13 +172,13 @@ const RowItem = (props: RowItemProps) => {
         </HStack>
       ) : (
         (() => {
-          const evaledResult = stateManager.maskedEval(value);
+          const evaledResult = stateManager.deepEval(value);
 
           return (
             <Box flex="2 2 66.66%" minWidth={0}>
               <ExpressionEditor
                 compactOptions={{
-                  height: '32px',
+                  maxHeight: '125px',
                 }}
                 defaultCode={value}
                 evaledValue={evaledResult}
@@ -214,8 +231,13 @@ export const RecordEditor: React.FC<RecordEditorProps> = props => {
   );
 
   const onAddRow = useCallback(() => {
-    setRows(prev => [...prev, ['', '']]);
-  }, []);
+    const propSpec = spec?.patternProperties?.['^.*$'];
+
+    setRows(prev => [
+      ...prev,
+      ['', propSpec ? generateDefaultValueFromSpec(propSpec as JSONSchema7) : ''],
+    ]);
+  }, [spec]);
   const onRemoveRow = useCallback(
     (i: number) => {
       const newRows = produce(rows, draft => {

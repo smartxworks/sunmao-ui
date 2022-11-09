@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/arco-lib",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "homepage": "https://github.com/smartxworks/sunmao-ui-arco-lib",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -10,27 +10,28 @@
     "type": "git",
     "url": "git+https://github.com/smartxworks/sunmao-ui-arco-lib.git"
   },
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
-  "unpkg": "dist/iife/index.js",
   "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "unpkg": "dist/index.global.js",
   "files": [
     "dist",
     "lib"
   ],
   "scripts": {
     "dev": "vite",
+    "build": "tsup && npm run visualize",
     "typings": "tsc --emitDeclarationOnly",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ./react-import.js --clean --no-splitting --sourcemap",
     "serve": "vite preview",
     "lint": "eslint ./src --ext .ts --ext .tsx",
     "fix-lint": "eslint --fix ./src --ext .ts --ext .tsx",
-    "prepublish": "npm run build && npm run typings"
+    "prepublish": "npm run build && npm run typings",
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-esm.json --exclude *.png"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.34.0",
-    "@sunmao-ui/editor-sdk": "^0.3.4",
-    "@sunmao-ui/shared": "^0.2.3",
+    "@sunmao-ui/editor-sdk": "^0.4.0",
+    "@sunmao-ui/shared": "^0.3.0",
     "react-resizable": "^3.0.4"
   },
   "devDependencies": {
@@ -40,7 +41,8 @@
     "@types/react-resizable": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
-    "@vitejs/plugin-react": "^1.0.0",
+    "@vitejs/plugin-react": "^2.0.1",
+    "esbuild-visualizer": "^0.3.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.25.1",
@@ -49,9 +51,9 @@
     "lint-staged": "^11.0.0",
     "postcss": "^8.4.5",
     "postcss-import": "^14.0.2",
-    "tsup": "^5.11.11",
+    "tsup": "^6.2.2",
     "typescript": "^4.3.2",
-    "vite": "^2.6.4"
+    "vite": "^3.0.8"
   },
   "husky": {
     "hooks": {
@@ -70,7 +72,7 @@
     "@sunmao-ui/core": "^0.7.0",
     "@sunmao-ui/runtime": "^0.7.0",
     "lodash": "^4.17.21",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "16.x || 17.x",
+    "react-dom": "16.x || 17.x"
   }
 }

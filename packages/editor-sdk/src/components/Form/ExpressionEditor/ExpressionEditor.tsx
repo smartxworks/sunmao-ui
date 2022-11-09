@@ -19,7 +19,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { css, Global } from '@emotion/react';
+import { css, injectGlobal } from '@emotion/css';
 import { parseExpression } from '@sunmao-ui/shared';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/mode/multiplex';
@@ -32,9 +32,15 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/display/autorefresh';
 import 'tern/plugin/doc_comment';
 import 'tern/plugin/complete_strings';
-import ecma from '../../constants/ecmascript';
 import tern, { Def } from 'tern';
-import { getTypeString } from '../../utils/type';
+import { getTypeString } from '../../../utils/type';
+import ecmascript from '../../../constants/ecmascript';
+
+injectGlobal`
+  .CodeMirror-hints {
+    zIndex: 1800
+  }
+`;
 
 // TODO: tern uses global variable, maybe there is some workaround
 (window as unknown as { tern: typeof tern }).tern = tern;
@@ -74,7 +80,7 @@ const getCursorIndex = (editor: CodeMirror.Editor) => {
 };
 
 function installTern(cm: CodeMirror.Editor) {
-  const t = new CodeMirror.TernServer({ defs: [ecma as unknown as Def] });
+  const t = new CodeMirror.TernServer({ defs: [ecmascript as unknown as Def] });
   cm.on('cursorActivity', cm => t.updateArgHints(cm));
   cm.on('change', (_instance, change) => {
     if (!checkIfCursorInsideBinding(_instance)) {
@@ -167,7 +173,7 @@ type BaseExpressionEditorHandle = {
   setCode: (code: string) => void;
 };
 
-export const BaseExpressionEditor = React.forwardRef<
+const BaseExpressionEditor = React.forwardRef<
   BaseExpressionEditorHandle,
   BaseExpressionEditorProps
 >(
@@ -218,6 +224,7 @@ export const BaseExpressionEditor = React.forwardRef<
     const wrapperEl = useRef<HTMLDivElement>(null);
     const cm = useRef<CodeMirror.Editor | null>(null);
     const tServer = useRef<tern.Server | null>(null);
+
     useEffect(() => {
       if (!wrapperEl.current) {
         return;
@@ -289,15 +296,13 @@ export const BaseExpressionEditor = React.forwardRef<
     }));
 
     return (
-      <Box css={style} ref={wrapperEl} height="100%" width="100%" overflow="hidden">
-        <Global
-          styles={{
-            '.CodeMirror-hints': {
-              zIndex: 1800,
-            },
-          }}
-        />
-      </Box>
+      <Box
+        className={style}
+        ref={wrapperEl}
+        height="100%"
+        width="100%"
+        overflow="hidden"
+      />
     );
   }
 );
@@ -309,26 +314,25 @@ export type ExpressionEditorProps = BaseExpressionEditorProps & {
 };
 export type ExpressionEditorHandle = BaseExpressionEditorHandle;
 
+const wrapperStyle = css`
+  position: relative;
+  width: 100%;
+  .expand-icon {
+    display: none;
+  }
+  &:hover,
+  &:focus-within {
+    .expand-icon {
+      display: inherit;
+    }
+  }
+`;
+
 export const ExpressionEditor = React.forwardRef<
   ExpressionEditorHandle,
   ExpressionEditorProps
 >((props: ExpressionEditorProps, ref) => {
   const { compactOptions = {}, error, evaledValue, onFocus, onBlur } = props;
-  const style = useMemo(
-    () => css`
-      width: 100%;
-      .expand-icon {
-        display: none;
-      }
-      &:hover,
-      &:focus-within {
-        .expand-icon {
-          display: inherit;
-        }
-      }
-    `,
-    []
-  );
   const [showModal, setShowModal] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
   const [isFocus, setIsFocus] = useState(false);
@@ -365,7 +369,7 @@ export const ExpressionEditor = React.forwardRef<
   }));
 
   return (
-    <Box position="relative" css={style}>
+    <Box className={wrapperStyle}>
       {/* Force re-render CodeMirror when editted in modal, since it's not reactive */}
       <Box border={error ? '1px solid #c04035' : '1px solid transparent'}>
         <BaseExpressionEditor

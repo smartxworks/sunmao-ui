@@ -12,7 +12,6 @@ type MaskPosition = {
   };
 };
 export class EditorMaskManager {
-  hoverComponentId = '';
   hoverMaskPosition: MaskPosition | null = null;
   selectedMaskPosition: MaskPosition | null = null;
   mousePosition: [number, number] = [0, 0];
@@ -20,23 +19,26 @@ export class EditorMaskManager {
   // rect of mask container
   private maskContainerRect: DOMRect | null = null;
   private resizeObserver: ResizeObserver;
+  private containerResizeObserver: ResizeObserver | null = null;
   private visibleMap = new Map<Element, boolean>();
   private intersectionObserver: IntersectionObserver;
   private MaskPadding = 4;
   private lastHoverElement: Element | null = null;
+
+  get hoverComponentId() {
+    return this.services.editorStore.hoverComponentId;
+  }
+
   constructor(
     public services: EditorServices,
     public wrapperRef: React.MutableRefObject<HTMLDivElement | null>,
-    public maskContainerRef: React.MutableRefObject<HTMLDivElement | null>,
-    public hoverComponentIdRef: React.MutableRefObject<string>
+    public maskContainerRef: React.MutableRefObject<HTMLDivElement | null>
   ) {
     makeObservable(this, {
       mousePosition: observable,
       hoverMaskPosition: observable.ref,
       selectedMaskPosition: observable.ref,
-      hoverComponentId: observable,
       setMousePosition: action,
-      setHoverComponentId: action,
       setHoverMaskPosition: action,
       setSelectedMaskPosition: action,
     });
@@ -46,15 +48,6 @@ export class EditorMaskManager {
     });
 
     this.intersectionObserver = this.initIntersectionObserver();
-  }
-
-  init() {
-    this.maskContainerRect =
-      this.maskContainerRef.current?.getBoundingClientRect() || null;
-
-    this.observeIntersection();
-    this.observeResize();
-    this.refreshElementIdMap();
     // listen to the DOM elements' mount and unmount events
     // TODO: This is not very accurate, because sunmao runtime 'didDOMUpdate' hook is not accurate.
     // We will refactor the 'didDOMUpdate' hook with components' life cycle in the future.
@@ -63,11 +56,13 @@ export class EditorMaskManager {
     // listen scroll events
     // scroll events' timing is similar to intersection events, but they are different. Both of them are necessary.
     this.services.eventBus.on('MaskWrapperScrollCapture', this.onScroll);
+  }
 
-    // expose hoverComponentId
-    autorun(() => {
-      this.hoverComponentIdRef.current = this.hoverComponentId;
-    });
+  init() {
+    this.observeContainerResize();
+    this.observeIntersection();
+    this.observeResize();
+    this.refreshElementIdMap();
 
     // when hoverComponentId & selectedComponentId change, refresh mask position
     autorun(() => {
@@ -83,6 +78,7 @@ export class EditorMaskManager {
   destroy() {
     this.intersectionObserver.disconnect();
     this.resizeObserver.disconnect();
+    this.containerResizeObserver?.disconnect();
     this.services.eventBus.off('HTMLElementsUpdated', this.onHTMLElementsUpdated);
 
     // listen scroll events
@@ -114,6 +110,15 @@ export class EditorMaskManager {
     this.eleMap.forEach(ele => {
       this.resizeObserver.observe(ele);
     });
+  }
+
+  private observeContainerResize() {
+    this.containerResizeObserver = new ResizeObserver(() => {
+      this.maskContainerRect =
+        this.maskContainerRef.current?.getBoundingClientRect() || null;
+    });
+
+    this.containerResizeObserver.observe(this.maskContainerRef.current!);
   }
 
   private observeIntersection() {
@@ -188,7 +193,7 @@ export class EditorMaskManager {
     }
 
     this.lastHoverElement = hoverElement;
-    this.setHoverComponentId(this.elementIdMap.get(curr) || '');
+    this.services.editorStore.setHoverComponentId(this.elementIdMap.get(curr) || '');
   }
 
   private refreshMaskPosition() {
@@ -204,10 +209,6 @@ export class EditorMaskManager {
 
   setMousePosition(mousePosition: [number, number]) {
     this.mousePosition = mousePosition;
-  }
-
-  setHoverComponentId(hoverComponentId: string) {
-    this.hoverComponentId = hoverComponentId;
   }
 
   setHoverMaskPosition(hoverMaskPosition: MaskPosition | null) {

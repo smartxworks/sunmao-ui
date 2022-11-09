@@ -4,24 +4,26 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 import { TreePropsSpec, TreeNodeSpec } from '../generated/types/Tree';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
-  selectedNode: TreeNodeSpec,
+  selectedKeys: Type.Array(Type.String()),
   selectedNodes: Type.Array(TreeNodeSpec),
 });
 
 function formatNode(
-  node: NodeInstance
+  nodeProps: NodeInstance['props']
 ): Static<typeof TreeNodeSpec> & { path: string[] } {
+  const { title, key, ...rest } = nodeProps.dataRef!;
   return {
-    title: node.props.title as string,
-    key: node.props._key!,
-    selectable: node.props.selectable,
-    checkable: node.props.checkable,
-    path: [...node.props.pathParentKeys!, node.props._key!],
-    children: node.props.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
+    title: title as string,
+    key: key!,
+    selectable: nodeProps.selectable,
+    checkable: nodeProps.checkable,
+    path: [...nodeProps.pathParentKeys!, nodeProps._key!],
+    children: nodeProps.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
+    ...rest,
   };
 }
 
@@ -29,6 +31,8 @@ const exampleProperties: Static<typeof TreePropsSpec> = {
   multiple: false,
   size: 'medium',
   autoExpandParent: true,
+  defaultExpandKeys: [],
+  autoExpandParentWhenDataChanges: false,
   data: [
     {
       title: 'Asia',
@@ -102,15 +106,69 @@ export const Tree = implementRuntimeComponent({
     autoExpandParent,
     customStyle,
     mergeState,
+    defaultExpandKeys,
+    autoExpandParentWhenDataChanges,
   } = props;
+  const treeRef = useRef<BaseTree>(null);
+  const [expandKeys, setExpandKeys] = useState(defaultExpandKeys);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-  const onSelect = useCallback(
-    (value, extra) => {
-      const selectNodes = extra.selectedNodes.map(formatNode);
+  // init expanded keys
+  useEffect(() => {
+    if (autoExpandParent) {
+      setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+    } else {
+      setExpandKeys(defaultExpandKeys);
+    }
+  }, [autoExpandParent, defaultExpandKeys]);
+
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      // reset tree state
+      const treeState = treeRef.current?.getTreeState();
+      const selectedKeys = treeState?.selectedKeys || [];
+
+      const selectedNodes = selectedKeys
+        .map(key => treeRef.current?.key2nodeProps[key])
+        .filter(node => node)
+        .map(node => formatNode(node!));
 
       mergeState({
-        selectedNode: selectNodes[0],
-        selectedNodes: selectNodes,
+        selectedKeys: selectedNodes.map(node => node.key),
+        selectedNodes: selectedNodes,
+      });
+
+      // auto expand parent
+      if (autoExpandParentWhenDataChanges && autoExpandParent) {
+        setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+      }
+    } else {
+      mergeState({
+        selectedKeys: [],
+        selectedNodes: [],
+      });
+    }
+  }, [autoExpandParent, autoExpandParentWhenDataChanges, data, mergeState]);
+
+  const onSelect = useCallback(
+    (
+      _selectedKeys: string[],
+      extra: {
+        selected: boolean;
+        selectedNodes: NodeInstance[];
+        node: NodeInstance;
+        e: Event;
+      }
+    ) => {
+      const selectedNodes = extra.selectedNodes
+        .filter(node => node)
+        .map(node => formatNode(node.props));
+      const selectedKeys = selectedNodes.map(node => node.key);
+      setSelectedKeys(selectedKeys);
+
+      mergeState({
+        selectedKeys: selectedKeys,
+        selectedNodes: selectedNodes,
       });
       callbackMap?.onSelect?.();
     },
@@ -120,9 +178,15 @@ export const Tree = implementRuntimeComponent({
   return (
     <div ref={elementRef} className={css(customStyle?.content)}>
       <BaseTree
+        ref={treeRef}
+        selectedKeys={selectedKeys}
+        expandedKeys={expandKeys}
         treeData={data}
         multiple={multiple}
         autoExpandParent={autoExpandParent}
+        onExpand={expandKeys => {
+          setExpandKeys(expandKeys);
+        }}
         onSelect={onSelect}
       />
     </div>

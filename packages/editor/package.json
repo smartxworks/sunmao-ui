@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "description": "sunmao-ui editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
@@ -15,10 +15,11 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --inject ../runtime/react-import.js --clean --no-splitting --sourcemap",
+    "build": "tsup && npm run visualize",
     "typings": "tsc --emitDeclarationOnly",
     "test": "jest",
-    "prepublish": "npm run build && npm run typings"
+    "prepublish": "npm run build && npm run typings",
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-esm.json --exclude *.png"
   },
   "publishConfig": {
     "access": "public"
@@ -37,17 +38,17 @@
     "@emotion/css": "^11.7.1",
     "@optum/json-schema-editor": "^2.1.0",
     "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/arco-lib": "^0.3.4",
-    "@sunmao-ui/chakra-ui-lib": "^0.5.4",
-    "@sunmao-ui/core": "^0.7.3",
-    "@sunmao-ui/editor-sdk": "^0.3.4",
-    "@sunmao-ui/runtime": "^0.7.3",
-    "@sunmao-ui/shared": "^0.2.3",
+    "@sunmao-ui/arco-lib": "^0.4.0",
+    "@sunmao-ui/chakra-ui-lib": "^0.6.0",
+    "@sunmao-ui/core": "^0.8.0",
+    "@sunmao-ui/editor-sdk": "^0.4.0",
+    "@sunmao-ui/runtime": "^0.8.0",
+    "@sunmao-ui/shared": "^0.3.0",
     "acorn": "^8.7.0",
     "acorn-loose": "^8.3.0",
     "acorn-walk": "^8.2.0",
     "ajv": "^8.8.2",
-    "codemirror": "^5.63.3",
+    "codemirror": "^5.65.9",
     "escodegen": "^2.0.0",
     "formik": "^2.2.9",
     "immer": "^9.0.6",
@@ -56,35 +57,38 @@
     "mobx-react-lite": "^3.2.2",
     "re-resizable": "^6.9.5",
     "react": "^17.0.2",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
     "react-json-tree": "^0.16.1",
-    "scroll-into-view": "^1.16.2",
-    "tern": "^0.24.3"
+    "scroll-into-view": "^1.16.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
-    "@sunmao-ui/vite-plugins": "^1.0.5",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@sunmao-ui/vite-plugins": "^1.1.0",
     "@swc/core": "^1.2.121",
     "@types/codemirror": "^5.60.5",
     "@types/escodegen": "^0.0.7",
     "@types/json-schema": "^7.0.7",
     "@types/lodash": "^4.14.182",
     "@types/scroll-into-view": "^1.16.0",
-    "@types/tern": "^0.23.4",
-    "@vitejs/plugin-react": "^1.0.1",
+    "@vitejs/plugin-react": "^2.0.1",
     "@vitejs/plugin-react-refresh": "^1.3.6",
     "babel-jest": "^27.2.1",
+    "esbuild-visualizer": "^0.3.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.2.1",
     "jest-css-modules": "^2.1.0",
     "postcss": "^8.4.5",
     "postcss-import": "^14.0.2",
-    "tsup": "^5.11.0",
+    "tsup": "^6.2.2",
     "typescript": "^4.5.0",
-    "vite": "^2.6.13"
+    "vite": "^3.0.8"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.1.1"
+    "@emotion/react": "^11.8.1",
+    "react": "16.x || 17.x",
+    "react-dom": "16.x || 17.x"
   },
   "husky": {
     "hooks": {

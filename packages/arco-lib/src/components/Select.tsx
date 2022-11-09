@@ -1,7 +1,7 @@
 import { Select as BaseSelect } from '@arco-design/web-react';
 import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
-import { Type, Static } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { SelectPropsSpec as BaseSelectPropsSpec } from '../generated/types/Select';
 import { useEffect, useRef } from 'react';
@@ -15,35 +15,40 @@ const SelectStateSpec = Type.Object({
   value: Type.String(),
 });
 
-const exampleProperties: Static<typeof SelectPropsSpec> = {
-  allowClear: false,
-  multiple: false,
-  allowCreate: false,
-  bordered: true,
-  defaultValue: 'Beijing',
-  disabled: false,
-  labelInValue: false,
-  loading: false,
-  showSearch: false,
-  unmountOnExit: false,
-  options: [
-    { value: 'Beijing', text: 'Beijing' },
-    { value: 'London', text: 'London' },
-    { value: 'NewYork', text: 'NewYork' },
-  ],
-  placeholder: 'Select city',
-  size: 'default',
-  error: false,
-  updateWhenDefaultValueChanges: false,
-};
-
 export const Select = implementRuntimeComponent({
   version: 'arco/v1',
   metadata: {
     ...FALLBACK_METADATA,
     name: 'select',
     displayName: 'Select',
-    exampleProperties,
+    exampleProperties: {
+      allowClear: false,
+      multiple: false,
+      allowCreate: false,
+      bordered: true,
+      defaultValue: 'Beijing',
+      disabled: false,
+      labelInValue: false,
+      loading: false,
+      showSearch: false,
+      unmountOnExit: true,
+      showTitle: false,
+      options: [
+        { value: 'Beijing', text: 'Beijing' },
+        { value: 'London', text: 'London' },
+        { value: 'NewYork', text: 'NewYork' },
+      ],
+      placeholder: 'Select city',
+      size: 'default',
+      error: false,
+      updateWhenDefaultValueChanges: false,
+      autoFixPosition: false,
+      autoAlignPopupMinWidth: false,
+      autoAlignPopupWidth: true,
+      autoFitPosition: false,
+      position: 'bottom',
+      mountToBody: true,
+    },
     annotations: {
       category: 'Data Entry',
     },
@@ -51,7 +56,11 @@ export const Select = implementRuntimeComponent({
   spec: {
     properties: SelectPropsSpec,
     state: SelectStateSpec,
-    methods: {},
+    methods: {
+      setValue: Type.Object({
+        value: Type.String(),
+      }),
+    },
     slots: {
       dropdownRenderSlot: { slotProps: Type.Object({}) },
     },
@@ -66,19 +75,43 @@ export const Select = implementRuntimeComponent({
     callbackMap,
     mergeState,
     defaultValue = '',
+    subscribeMethods,
   } = props;
   const {
     options = [],
     retainInputValue,
     updateWhenDefaultValueChanges,
+    showTitle,
+    mountToBody,
+    autoFixPosition,
+    autoAlignPopupMinWidth,
+    autoAlignPopupWidth,
+    autoFitPosition,
+    position,
     ...cProps
   } = getComponentProps(props);
+
   const [value, setValue] = useStateValue(
     defaultValue,
     mergeState,
-    updateWhenDefaultValueChanges
+    updateWhenDefaultValueChanges,
+    undefined,
+    callbackMap?.onChange
   );
+
   const ref = useRef<SelectHandle | null>(null);
+
+  useEffect(() => {
+    subscribeMethods({
+      setValue: ({ value }: { value: string }) => {
+        setValue(value);
+        callbackMap?.onChange?.();
+        mergeState({
+          value,
+        });
+      },
+    });
+  }, [callbackMap, mergeState, setValue, subscribeMethods]);
 
   useEffect(() => {
     const ele = ref.current?.dom;
@@ -105,6 +138,13 @@ export const Select = implementRuntimeComponent({
       }}
       value={value}
       {...cProps}
+      triggerProps={{
+        autoAlignPopupMinWidth,
+        autoAlignPopupWidth,
+        autoFitPosition,
+        autoFixPosition,
+        position,
+      }}
       showSearch={showSearch}
       filterOption={(inputValue, option) =>
         option.props.value.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0 ||
@@ -120,6 +160,9 @@ export const Select = implementRuntimeComponent({
           </div>
         );
       }}
+      getPopupContainer={node => {
+        return mountToBody ? document.body : node;
+      }}
       mode={cProps.multiple ? 'multiple' : undefined}
       onClear={() => {
         callbackMap?.onClear?.();
@@ -132,7 +175,12 @@ export const Select = implementRuntimeComponent({
       }}
     >
       {options.map(o => (
-        <BaseSelect.Option key={o.value} value={o.value} disabled={o.disabled}>
+        <BaseSelect.Option
+          key={o.value}
+          value={o.value}
+          disabled={o.disabled}
+          {...(showTitle && { title: o.text || o.value })}
+        >
           {o.text || o.value}
         </BaseSelect.Option>
       ))}

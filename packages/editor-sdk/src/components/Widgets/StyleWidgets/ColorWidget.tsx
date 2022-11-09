@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../../utils/widget';
@@ -14,7 +14,6 @@ import {
   PopoverBody,
   Portal,
 } from '@chakra-ui/react';
-import { SketchPicker } from 'react-color';
 
 type ColorWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Color}`;
 
@@ -23,6 +22,13 @@ declare module '../../../types/widget' {
     'core/v1/color': {};
   }
 }
+
+const SketchPicker = React.lazy(async () => {
+  const { SketchPicker } = await import('react-color');
+  return {
+    default: SketchPicker,
+  };
+});
 
 export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props => {
   const { value, onChange } = props;
@@ -44,7 +50,7 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
         onChange={onInputChange}
       />
       <InputRightElement>
-        <Popover arrowSize={8} placement="left" matchWidth>
+        <Popover isLazy arrowSize={8} placement="left" matchWidth>
           <PopoverTrigger>
             <Box
               cursor="pointer"
@@ -60,11 +66,13 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
             <PopoverContent w="auto">
               <PopoverArrow />
               <PopoverBody padding={0}>
-                <SketchPicker
-                  width="250px"
-                  color={value || '#fff'}
-                  onChangeComplete={onColorChange}
-                />
+                <Suspense fallback={'Loading Color Picker'}>
+                  <SketchPicker
+                    width="250px"
+                    color={value || '#fff'}
+                    onChangeComplete={onColorChange}
+                  />
+                </Suspense>
               </PopoverBody>
             </PopoverContent>
           </Portal>

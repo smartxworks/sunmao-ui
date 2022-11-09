@@ -3,6 +3,8 @@ import { css } from '@emotion/css';
 import { LIST_ITEM_EXP, LIST_ITEM_INDEX_EXP } from '../../constants';
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import { ImplWrapper } from '../_internal/ImplWrapper';
+import { formatSlotKey } from '../_internal/ImplWrapper/hooks/useSlotChildren';
+import React from 'react';
 
 const PropsSpec = Type.Object({
   listData: Type.Array(Type.Record(Type.String(), Type.String()), {
@@ -42,7 +44,7 @@ export default implementRuntimeComponent({
     styleSlots: ['content'],
     events: [],
   },
-})(({ listData, component, app, services, customStyle, elementRef }) => {
+})(({ listData, component, app, services, customStyle, elementRef, slotsElements }) => {
   if (!listData) {
     return null;
   }
@@ -74,6 +76,18 @@ export default implementRuntimeComponent({
       };
     });
 
+    /**
+     * FIXME: temporary hack
+     */
+    slotsElements.content?.(
+      {
+        [LIST_ITEM_EXP]: listItem,
+        [LIST_ITEM_INDEX_EXP]: i,
+      },
+      undefined,
+      `content_${i}`
+    );
+
     const childrenEles = _childrenSchema.map(child => {
       return (
         <ImplWrapper
@@ -83,10 +97,9 @@ export default implementRuntimeComponent({
           services={services}
           childrenMap={{}}
           isInModule
-          evalListItem
-          slotProps={{
-            [LIST_ITEM_EXP]: listItem,
-            [LIST_ITEM_INDEX_EXP]: i,
+          slotContext={{
+            renderSet: new Set(),
+            slotKey: formatSlotKey(component.id, 'content', `content_${i}`),
           }}
         />
       );

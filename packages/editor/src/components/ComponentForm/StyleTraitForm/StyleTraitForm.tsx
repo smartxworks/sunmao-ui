@@ -21,10 +21,11 @@ import { ComponentSchema } from '@sunmao-ui/core';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 import { FontWidget, SizeWidget, ColorWidget, SpaceWidget } from '@sunmao-ui/editor-sdk';
 import { capitalize } from 'lodash';
-import { CssEditor } from '../../../components/CodeEditor';
 import { genOperation } from '../../../operations';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
+import { CodeEditor } from '../../CodeEditor';
+import { css } from '@emotion/css';
 
 type PartialCSSProperties = Partial<Record<keyof React.CSSProperties, any>>;
 
@@ -258,7 +259,16 @@ export const StyleTraitForm: React.FC<Props> = props => {
                 </Box>
               </CollapsibleFormControl>
               <CollapsibleFormControl label="CSS">
-                <CssEditor defaultCode={style} onBlur={v => changeStyleContent(i, v)} />
+                <CodeEditor
+                  className={css`
+                    width: 100%;
+                    height: 120px;
+                  `}
+                  mode="css"
+                  defaultCode={style}
+                  onBlur={v => changeStyleContent(i, v)}
+                  needRerenderAfterMount
+                />
               </CollapsibleFormControl>
             </VStack>
           </AccordionPanel>

@@ -6,7 +6,12 @@ import {
   CoreTraitName,
   AnyTypePlaceholder,
 } from '@sunmao-ui/shared';
-import { ComponentSchema, MethodSchema, RuntimeComponent } from '@sunmao-ui/core';
+import {
+  ComponentSchema,
+  MethodSchema,
+  RuntimeComponent,
+  SlotSpec,
+} from '@sunmao-ui/core';
 import { genComponent, genTrait } from './utils';
 import {
   ComponentId,
@@ -32,10 +37,12 @@ const DynamicStateTrait = [
 ];
 
 type ComponentSpecModel = RuntimeComponent<
-  MethodName,
-  StyleSlotName,
-  SlotName,
-  EventName
+  any,
+  any,
+  Record<MethodName, MethodSchema['parameters']>,
+  ReadonlyArray<StyleSlotName>,
+  Record<SlotName, SlotSpec>,
+  ReadonlyArray<EventName>
 >;
 export class ComponentModel implements IComponentModel {
   spec: ComponentSpecModel;
@@ -61,18 +68,11 @@ export class ComponentModel implements IComponentModel {
     this.type = schema.type as ComponentType;
     this.spec = this.registry.getComponentByType(this.type) as any;
 
-    this.traits = schema.traits.map(
-      t => new TraitModel(t, this.registry, this.appModel, this)
-    );
+    this.traits = schema.traits.map(t => new TraitModel(t, this.registry, this));
     this.genStateExample();
     this.parentId = this._slotTrait?.rawProperties.container.id;
     this.parentSlot = this._slotTrait?.rawProperties.container.slot;
-    this.properties = new FieldModel(
-      schema.properties,
-      this.spec.spec.properties,
-      this.appModel,
-      this
-    );
+    this.properties = new FieldModel(schema.properties, this, this.spec.spec.properties);
   }
 
   get slots() {
@@ -167,7 +167,7 @@ export class ComponentModel implements IComponentModel {
 
   addTrait(traitType: TraitType, properties: Record<string, unknown>): ITraitModel {
     const traitSchema = genTrait(traitType, properties);
-    const trait = new TraitModel(traitSchema, this.registry, this.appModel, this);
+    const trait = new TraitModel(traitSchema, this.registry, this);
     this.traits.push(trait);
     this._isDirty = true;
     this.genStateExample();
@@ -236,7 +236,7 @@ export class ComponentModel implements IComponentModel {
     }
     this._isDirty = true;
     this.appModel.changeComponentMapId(oldId, newId);
-    this.appModel.emitter.emit('idChange', { oldId, newId });
+    this.appModel.traverseAllFields(field => field.changeReferenceId(oldId, newId));
 
     return this;
   }
@@ -316,10 +316,10 @@ export class ComponentModel implements IComponentModel {
   private genStateExample() {
     if (!this.spec) return [];
     const componentStateSpec = this.spec.spec.state;
-    let _temp = generateDefaultValueFromSpec(componentStateSpec, true) as Record<
-      string,
-      any
-    >;
+    let _temp = generateDefaultValueFromSpec(componentStateSpec, {
+      returnPlaceholderForAny: true,
+      genArrayItemDefaults: true,
+    }) as Record<string, any>;
 
     this.traits.forEach(t => {
       // if component has state trait, read state trait key and add it in
@@ -329,7 +329,13 @@ export class ComponentModel implements IComponentModel {
           _temp[key] = AnyTypePlaceholder;
         }
       } else {
-        _temp = merge(_temp, generateDefaultValueFromSpec(t.spec.spec.state, true));
+        _temp = merge(
+          _temp,
+          generateDefaultValueFromSpec(t.spec.spec.state, {
+            returnPlaceholderForAny: true,
+            genArrayItemDefaults: true,
+          })
+        );
       }
     });
     this.stateExample = _temp;

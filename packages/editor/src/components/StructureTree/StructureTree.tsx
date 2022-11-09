@@ -35,8 +35,7 @@ export const StructureTree: React.FC<Props> = props => {
   const [search, setSearch] = useState('');
   const { components, onSelectComponent, services } = props;
   const { editorStore } = services;
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
+  const scrollWrapper = useRef<HTMLDivElement>(null);
   const onSelectOption = useCallback(
     ({ item }: { item: Item }) => {
       onSelectComponent(item.value);
@@ -49,10 +48,19 @@ export const StructureTree: React.FC<Props> = props => {
       // wait the component tree to be expanded
       setTimeout(() => {
         const selectedElement: HTMLElement | undefined | null =
-          wrapperRef.current?.querySelector(`#tree-item-${selectedId}`);
+          scrollWrapper.current?.querySelector(`#tree-item-${selectedId}`);
 
-        if (selectedElement) {
-          scrollIntoView(selectedElement, { time: 0, align: { lockX: true } });
+        const wrapperRect = scrollWrapper.current?.getBoundingClientRect();
+        const eleRect = selectedElement?.getBoundingClientRect();
+        if (
+          selectedElement &&
+          eleRect &&
+          wrapperRect &&
+          (eleRect.top < wrapperRect.top ||
+            eleRect.top > wrapperRect.top + wrapperRect?.height)
+        ) {
+          // check selected element is outside of view
+          scrollIntoView(selectedElement, { time: 300, align: { lockX: true } });
         }
       });
     }
@@ -90,7 +98,6 @@ export const StructureTree: React.FC<Props> = props => {
 
   return (
     <VStack
-      ref={wrapperRef}
       height="full"
       paddingY="4"
       alignItems="start"
@@ -109,6 +116,7 @@ export const StructureTree: React.FC<Props> = props => {
           <AutoCompleteInput
             value={search}
             placeholder="Search component"
+            autoComplete="off"
             size="md"
             variant="filled"
             marginTop={0}
@@ -123,7 +131,14 @@ export const StructureTree: React.FC<Props> = props => {
           </AutoCompleteList>
         </AutoComplete>
       </VStack>
-      <Box width="full" flex={1} minHeight={0} overflowY="auto" overflowX="hidden">
+      <Box
+        ref={scrollWrapper}
+        width="full"
+        flex={1}
+        minHeight={0}
+        overflowY="auto"
+        overflowX="hidden"
+      >
         {componentEles.length > 0 ? (
           componentEles
         ) : (

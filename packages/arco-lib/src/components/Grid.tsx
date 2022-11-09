@@ -37,11 +37,7 @@ export const Row = implementRuntimeComponent({
 
   return (
     <Grid.Row className={css(customStyle?.wrapper)} ref={elementRef} {...cProps}>
-      {slotsElements.content ? (
-        slotsElements.content({})
-      ) : (
-        <EmptyPlaceholder componentName="" />
-      )}
+      {slotsElements.content ? slotsElements.content({}) : <EmptyPlaceholder />}
     </Grid.Row>
   );
 });
@@ -78,11 +74,7 @@ export const Col = implementRuntimeComponent({
   const { ...cProps } = getComponentProps(props);
   return (
     <Grid.Col className={css(customStyle?.wrapper)} ref={elementRef} {...cProps}>
-      {slotsElements.content ? (
-        slotsElements.content({})
-      ) : (
-        <EmptyPlaceholder componentName="" />
-      )}
+      {slotsElements.content ? slotsElements.content({}) : <EmptyPlaceholder />}
     </Grid.Col>
   );
 });

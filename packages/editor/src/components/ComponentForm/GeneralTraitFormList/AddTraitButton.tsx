@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { RegistryInterface } from '@sunmao-ui/runtime';
 import React, { useMemo } from 'react';
-import { ignoreTraitsList } from '../../../constants';
+import { hideCreateTraitsList } from '../../../constants';
 import { ComponentSchema } from '@sunmao-ui/core';
 
 type Props = {
@@ -30,7 +30,9 @@ export const AddTraitButton: React.FC<Props> = props => {
     [component]
   );
   const traitTypes = useMemo(() => {
-    return registry.getAllTraitTypes().filter(type => !ignoreTraitsList.includes(type));
+    return registry
+      .getAllTraitTypes()
+      .filter(type => !hideCreateTraitsList.includes(type));
   }, [registry]);
 
   const menuItems = traitTypes.map(type => {

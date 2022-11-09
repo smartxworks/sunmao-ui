@@ -84,6 +84,55 @@ export const HiddenTraitSchema: Application = {
   },
 };
 
+export const ParentRerenderSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'input',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: '',
+        },
+        traits: [],
+      },
+      {
+        id: 'stack6',
+        type: 'core/v1/stack',
+        properties: {
+          spacing: 12,
+          direction: 'horizontal',
+          align: 'auto',
+          wrap: '{{!!input.value}}',
+          justify: 'flex-start',
+        },
+        traits: [],
+      },
+      {
+        id: 'tester',
+        type: 'test/v1/tester',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: 'stack6',
+                slot: 'content',
+              },
+              ifCondition: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export const MergeStateSchema: Application = {
   version: 'sunmao/v1',
   kind: 'Application',
@@ -169,6 +218,98 @@ export const AsyncMergeStateSchema: Application = {
           text: '{{text.result}}',
         },
         traits: [],
+      },
+    ],
+  },
+};
+
+export const TabsWithSlotsSchema: Application = {
+  kind: 'Application',
+  version: 'example/v1',
+  metadata: {
+    name: 'nested_components',
+    description: 'nested components example',
+  },
+  spec: {
+    components: [
+      {
+        id: 'tabs',
+        type: 'test/v1/tabs',
+        properties: {
+          tabNames: ['Tab One', 'Tab Two'],
+          initialSelectedTabIndex: 0,
+        },
+        traits: [],
+      },
+      {
+        id: 'input',
+        type: 'test/v1/input',
+        properties: {
+          text: {
+            raw: 'only in tab {{ $slot.tabIndex + 1 }}',
+            format: 'plain',
+          },
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: {
+                id: 'tabs',
+                slot: 'content',
+              },
+              ifCondition: '{{ $slot.tabIndex === 0 }}',
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const MultiSlotsSchema: Application = {
+  kind: 'Application',
+  version: 'example/v1',
+  metadata: { name: 'sunmao application', description: 'sunmao empty application' },
+  spec: {
+    components: [
+      {
+        id: 'testList0',
+        type: 'custom/v1/testList',
+        properties: { number: 2 },
+        traits: [],
+      },
+      {
+        id: 'input1',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: '1',
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: { id: 'testList0', slot: 'content' },
+              ifCondition: '{{$slot.index === 0}}',
+            },
+          },
+        ],
+      },
+      {
+        id: 'input2',
+        type: 'test/v1/input',
+        properties: {
+          defaultValue: '2',
+        },
+        traits: [
+          {
+            type: 'core/v1/slot',
+            properties: {
+              container: { id: 'testList0', slot: 'content' },
+              ifCondition: '{{$slot.index === 1}}',
+            },
+          },
+        ],
       },
     ],
   },

@@ -10,20 +10,13 @@ export const ImplWrapper = React.memo<ImplWrapperProps>(
     const nextChildren = nextProps.childrenMap[nextProps.component.id]?._grandChildren;
     const prevComponent = prevProps.component;
     const nextComponent = nextProps.component;
-    let isEqual = false;
+    let isComponentEqual = false;
 
     if (prevChildren && nextChildren) {
-      isEqual = shallowCompare(prevChildren, nextChildren);
+      isComponentEqual = shallowCompare(prevChildren, nextChildren);
     } else if (prevChildren === nextChildren) {
-      isEqual = true;
+      isComponentEqual = true;
     }
-
-    return (
-      isEqual &&
-      prevComponent === nextComponent &&
-      // TODO: keep ImplWrapper memorized and get slot props from store
-      shallowCompare(prevProps.slotProps, nextProps.slotProps) &&
-      shallowCompare(prevProps.slotContext, nextProps.slotContext)
-    );
+    return isComponentEqual && prevComponent === nextComponent;
   }
 );

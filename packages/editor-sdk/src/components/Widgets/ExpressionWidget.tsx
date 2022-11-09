@@ -16,9 +16,9 @@ import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
 import { isExpression } from '../../utils/validator';
 import { getTypeString } from '../../utils/type';
-import Ajv, { EnumParams } from 'ajv';
+import { ValidateFunction } from 'ajv';
 import { ExpressionError } from '@sunmao-ui/runtime';
-import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
+import { CORE_VERSION, CoreWidgetName, initAjv } from '@sunmao-ui/shared';
 
 // FIXME: move into a new package and share with runtime?
 export function isNumeric(x: string | number) {
@@ -143,8 +143,6 @@ export const ExpressionWidgetOptionsSpec = Type.Object({
   ),
 });
 
-const ajv = new Ajv();
-
 type ExpressionWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Expression}`;
 declare module '../../types/widget' {
   interface WidgetOptionsMap {
@@ -164,23 +162,31 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const [evaledValue, setEvaledValue] = useState<any>({ value: null });
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
-  const validate = useMemo(() => ajv.compile(spec), [spec]);
+  const validateFuncRef = useRef<ValidateFunction | null>(null);
+
   const evalCode = useCallback(
-    (code: string) => {
+    async (code: string) => {
       try {
         const value = getParsedValue(code, type);
         const result = isExpression(value)
-          ? services.stateManager.maskedEval(value)
+          ? services.stateManager.deepEval(value)
           : value;
 
         if (result instanceof ExpressionError) {
           throw result;
         }
 
-        validate(result);
+        if (!validateFuncRef.current) {
+          const { default: Ajv } = await import('ajv');
 
-        if (validate.errors?.length) {
-          const err = validate.errors[0];
+          const ajv = initAjv(new Ajv());
+          validateFuncRef.current = ajv.compile(spec);
+        }
+
+        validateFuncRef.current(result);
+
+        if (validateFuncRef.current.errors?.length) {
+          const err = validateFuncRef.current.errors[0];
 
           if (err.keyword === 'type') {
             throw new TypeError(
@@ -190,9 +196,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
             );
           } else if (err.keyword === 'enum') {
             throw new TypeError(
-              `${err.message}: ${JSON.stringify(
-                (err.params as EnumParams).allowedValues
-              )}`
+              `${err.message}: ${JSON.stringify(err.params.allowedValues)}`
             );
           } else {
             throw new TypeError(err.message);
@@ -207,20 +211,12 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
         setError(String(err));
       }
     },
-    [services, type, validate, spec]
+    [services, type, spec]
   );
   const onCodeChange = useMemo(() => debounce(evalCode, 300), [evalCode]);
   const onFocus = useCallback(() => {
     evalCode(code);
   }, [code, evalCode]);
-  const onBlur = useCallback(
-    newCode => {
-      const newValue = getParsedValue(newCode, type);
-
-      onChange(newValue);
-    },
-    [type, onChange]
-  );
 
   useEffect(() => {
     setDefs([customTreeTypeDefCreator(stateManager.store)]);
@@ -241,7 +237,7 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
       error={error}
       defs={defs}
       onChange={onCodeChange}
-      onBlur={onBlur}
+      onBlur={onChange}
       onFocus={onFocus}
     />
   );

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   HStack,
   Flex,
@@ -10,7 +10,8 @@ import {
   Spinner,
   Tag,
 } from '@chakra-ui/react';
-import { Result } from './Result';
+import { CodeEditor } from '../../CodeEditor';
+import { css } from '@emotion/css';
 
 interface Props {
   data?: unknown;
@@ -31,15 +32,21 @@ const stringify = (value: any): string => {
 };
 
 export const Response: React.FC<Props> = props => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const data = useMemo(() => {
     return stringify(props.data);
   }, [props.data]);
   const error = useMemo(() => {
     return stringify(props.error);
   }, [props.error]);
-
   return props.data || props.error || props.loading ? (
-    <Accordion defaultIndex={0} allowToggle border="solid" borderColor="inherit">
+    <Accordion
+      onChange={i => setIsOpen(i === 0)}
+      allowToggle
+      reduceMotion
+      border="solid"
+      borderColor="inherit"
+    >
       <AccordionItem>
         <h2>
           <AccordionButton>
@@ -56,7 +63,22 @@ export const Response: React.FC<Props> = props => {
         </h2>
         <AccordionPanel pb={4} padding={0} height="250px">
           <Flex alignItems="center" justifyContent="center" height="100%">
-            {props.loading ? <Spinner /> : <Result defaultCode={error || data} />}
+            {props.loading || !isOpen ? (
+              <Spinner />
+            ) : (
+              <CodeEditor
+                className={css`
+                  width: 100%;
+                  height: 100%;
+                `}
+                mode={{
+                  name: 'javascript',
+                  json: true,
+                }}
+                defaultCode={error || data}
+                readOnly
+              />
+            )}
           </Flex>
         </AccordionPanel>
       </AccordionItem>

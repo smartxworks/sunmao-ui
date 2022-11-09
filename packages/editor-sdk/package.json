@@ -1,6 +1,6 @@
 {
   "name": "@sunmao-ui/editor-sdk",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "The SDK for SunMao Editor",
   "author": "sunmao-ui developers",
   "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
@@ -17,25 +17,27 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
-    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --no-splitting --clean --sourcemap --platform browser",
+    "build": "tsup && npm run visualize",
+    "dev": "tsup --platform browser",
     "typings": "tsc --emitDeclarationOnly",
     "prepublish": "npm run build && npm run typings",
-    "test": "jest"
+    "test": "jest",
+    "visualize": "esbuild-visualizer --metadata ./dist/metafile-iife.json --exclude *.png"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.7.1",
     "@emotion/css": "^11.7.1",
-    "@emotion/react": "^11.1.1",
     "@sinclair/typebox": "^0.21.2",
-    "@sunmao-ui/core": "^0.7.3",
-    "@sunmao-ui/runtime": "^0.7.3",
-    "@sunmao-ui/shared": "^0.2.3",
-    "codemirror": "^5.63.3",
+    "@sunmao-ui/core": "^0.8.0",
+    "@sunmao-ui/runtime": "^0.8.0",
+    "@sunmao-ui/shared": "^0.3.0",
+    "ajv": "^8.8.2",
+    "codemirror": "^5.65.9",
     "formik": "^2.2.9",
-    "framer-motion": "^4",
+    "framer-motion": "^3.10.6",
     "immer": "^9.0.6",
+    "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "mobx": "^6.3.8",
     "mobx-react-lite": "^3.2.2",
@@ -45,7 +47,10 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
-    "tsup": "^5.11.0"
+    "@types/tern": "^0.23.4",
+    "@vitejs/plugin-react": "^2.0.1",
+    "esbuild": "^0.15.5",
+    "tsup": "^6.2.2"
   },
   "keywords": [],
   "husky": {
@@ -60,7 +65,9 @@
     ]
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "ajv": "^8.8.2",
+    "react": "16.x || 17.x",
+    "react-dom": "16.x || 17.x",
+    "tern": "^0.24.3"
   }
 }

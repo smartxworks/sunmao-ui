@@ -38,21 +38,16 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app } = props;
-  const moduleId = services.stateManager.maskedEval(props.id, {
-    evalListItem: true,
+  const moduleId = services.stateManager.deepEval(props.id, {
     scopeObject: evalScope,
   }) as string | ExpressionError;
 
   function evalObject<T extends Record<string, any> = Record<string, any>>(
     obj: T
-  ): PropsAfterEvaled<{ obj: T }>['obj'] {
-    const evalOptions = { evalListItem: true, scopeObject: evalScope };
-    return services.stateManager.mapValuesDeep({ obj }, ({ value }) => {
-      if (typeof value === 'string') {
-        return services.stateManager.maskedEval(value, evalOptions);
-      }
-      return value;
-    }).obj;
+  ): PropsAfterEvaled<T> {
+    const evalOptions = { scopeObject: evalScope };
+
+    return services.stateManager.deepEval(obj, evalOptions) as PropsAfterEvaled<T>;
   }
 
   // first eval the property, handlers, id of module
@@ -66,7 +61,6 @@ const ModuleRendererContent = React.forwardRef<
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
     return services.stateManager.deepEval(moduleSpec.spec.stateMap, {
-      evalListItem: false,
       scopeObject: { $moduleId: moduleId },
       overrideScope: true,
     });
@@ -78,7 +72,6 @@ const ModuleRendererContent = React.forwardRef<
     return services.stateManager.deepEval(
       { template: parsedTemplate },
       {
-        evalListItem: false,
         scopeObject: {
           ...evaledProperties,
           $moduleId: moduleId,
@@ -134,7 +127,6 @@ const ModuleRendererContent = React.forwardRef<
       const moduleEventHandler = ({ fromId, eventType }: Record<string, string>) => {
         if (eventType === h.type && fromId === moduleId) {
           const evaledHandler = services.stateManager.deepEval(h, {
-            evalListItem: true,
             scopeObject: evalScope,
           });
           services.apiService.send('uiMethod', {

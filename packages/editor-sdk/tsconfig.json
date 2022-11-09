@@ -19,7 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "baseUrl": "./",
-    "jsx": "react-jsx",
+    "jsx": "react",
     "rootDir": "src",
     "declaration": true,
     "declarationDir": "lib"

@@ -1,6 +1,7 @@
 import { implementRuntimeComponent } from '../../utils/buildKit';
 import { ModuleRenderSpec, CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
+import React from 'react';
 
 export default implementRuntimeComponent({
   version: CORE_VERSION,

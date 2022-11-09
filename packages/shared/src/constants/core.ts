@@ -45,3 +45,11 @@ export enum StyleWidgetName {
   Font = 'font',
   Space = 'space',
 }
+
+export enum MountEvent {
+  mount = '$onMount',
+  unmount = '$onUnmount',
+  update = '$onUpdate',
+}
+
+export const MountEvents = [MountEvent.mount, MountEvent.unmount, MountEvent.update];

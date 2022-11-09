@@ -9,29 +9,33 @@ describe('generateDefaultValueFromSpec function', () => {
         foo: Type.Number(),
       })
     );
-    expect(generateDefaultValueFromSpec(type)).toEqual([{ foo: 0 }]);
+    expect(generateDefaultValueFromSpec(type)).toEqual([]);
+    expect(generateDefaultValueFromSpec(type, { genArrayItemDefaults: true })).toEqual([
+      { foo: 0 },
+    ]);
     const type2 = Type.Array(Type.String());
-    expect(generateDefaultValueFromSpec(type2)).toEqual(['']);
+    expect(generateDefaultValueFromSpec(type2)).toEqual([]);
+    expect(generateDefaultValueFromSpec(type2, { genArrayItemDefaults: true })).toEqual([
+      '',
+    ]);
   });
   it('can parse number', () => {
     const type = Type.Number();
     expect(generateDefaultValueFromSpec(type)).toEqual(0);
   });
-  // Type.Optional can only be judged by the modifier feature provided by the typebox,
-  // but this would break the consistency of the function,
-  // and it doesn't seem to make much sense to deal with non-object optional alone like Type.Optional(Type.String())
-  // Therefore it is possible to determine whether an object's property is optional using spec.required,
-  // and if the property is within Type.Object is optional then it is not required.
-  it('can parse optional', () => {
+  it('can parse optional and the value is the default value of its type', () => {
     const type = Type.Optional(Type.Object({ str: Type.Optional(Type.String()) }));
-    expect(generateDefaultValueFromSpec(type)).toEqual({ str: undefined });
+    expect(generateDefaultValueFromSpec(type)).toEqual({ str: '' });
   });
   it('can parse object', () => {
     const type = Type.Object({
       key: Type.String(),
       value: Type.Array(Type.String()),
     });
-    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [''] });
+    expect(generateDefaultValueFromSpec(type)).toMatchObject({ key: '', value: [] });
+    expect(
+      generateDefaultValueFromSpec(type, { genArrayItemDefaults: true })
+    ).toMatchObject({ key: '', value: [''] });
   });
 
   it('can parse enum', () => {
@@ -97,6 +101,16 @@ describe('generateDefaultValueFromSpec function', () => {
   });
   it('can parse any type', () => {
     expect(generateDefaultValueFromSpec({})).toEqual('');
-    expect(generateDefaultValueFromSpec({}, true)).toEqual(AnyTypePlaceholder);
+    expect(generateDefaultValueFromSpec({}, { returnPlaceholderForAny: true })).toEqual(
+      AnyTypePlaceholder
+    );
+    expect(
+      (
+        generateDefaultValueFromSpec(
+          Type.Object({ foo: Type.Object({ bar: Type.Any() }) }),
+          { returnPlaceholderForAny: true }
+        ) as any
+      ).foo.bar
+    ).toEqual(AnyTypePlaceholder);
   });
 });
