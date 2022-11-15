@@ -27,6 +27,7 @@ export default implementRuntimeComponent({
     annotations: {
       category: 'Display',
     },
+    deprecated: true,
   },
   spec: {
     properties: PropsSpec,

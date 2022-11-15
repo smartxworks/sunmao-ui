@@ -1,4 +1,5 @@
 export const CORE_VERSION = 'core/v1';
+export const CORE_VERSION_V2 = 'core/v2';
 export declare const STYLE_VERSION = 'style/v1';
 // core components
 export enum CoreComponentName {
