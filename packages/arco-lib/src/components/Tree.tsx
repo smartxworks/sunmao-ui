@@ -4,25 +4,26 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA } from '../sunmao-helper';
 import { TreePropsSpec, TreeNodeSpec } from '../generated/types/Tree';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NodeInstance } from '@arco-design/web-react/es/Tree/interface';
 
 const TreeStateSpec = Type.Object({
   selectedKeys: Type.Array(Type.String()),
-  selectedNode: TreeNodeSpec,
   selectedNodes: Type.Array(TreeNodeSpec),
 });
 
 function formatNode(
   nodeProps: NodeInstance['props']
 ): Static<typeof TreeNodeSpec> & { path: string[] } {
+  const { title, key, ...rest } = nodeProps.dataRef!;
   return {
-    title: nodeProps.title as string,
-    key: nodeProps._key!,
+    title: title as string,
+    key: key!,
     selectable: nodeProps.selectable,
     checkable: nodeProps.checkable,
     path: [...nodeProps.pathParentKeys!, nodeProps._key!],
     children: nodeProps.dataRef?.children || ([] as Static<typeof TreeNodeSpec>[]),
+    ...rest,
   };
 }
 
@@ -30,6 +31,8 @@ const exampleProperties: Static<typeof TreePropsSpec> = {
   multiple: false,
   size: 'medium',
   autoExpandParent: true,
+  defaultExpandKeys: [],
+  autoExpandParentWhenDataChanges: false,
   data: [
     {
       title: 'Asia',
@@ -103,33 +106,53 @@ export const Tree = implementRuntimeComponent({
     autoExpandParent,
     customStyle,
     mergeState,
+    defaultExpandKeys,
+    autoExpandParentWhenDataChanges,
   } = props;
   const treeRef = useRef<BaseTree>(null);
+  const [expandKeys, setExpandKeys] = useState(defaultExpandKeys);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+
+  // init expanded keys
+  useEffect(() => {
+    if (autoExpandParent) {
+      setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+    } else {
+      setExpandKeys(defaultExpandKeys);
+    }
+  }, [autoExpandParent, defaultExpandKeys]);
 
   useEffect(() => {
     if (Array.isArray(data)) {
+      // reset tree state
       const treeState = treeRef.current?.getTreeState();
-      const selectedKeys = treeState?.selectedKeys;
-      const selectedData = data.filter(d => selectedKeys?.includes(d.key));
-      const selectedNodes = treeRef.current?.getNodeList(selectedData).map(formatNode);
+      const selectedKeys = treeState?.selectedKeys || [];
+
+      const selectedNodes = selectedKeys
+        .map(key => treeRef.current?.key2nodeProps[key])
+        .filter(node => node)
+        .map(node => formatNode(node!));
 
       mergeState({
-        selectedKeys: selectedData.map(d => d.key),
-        selectedNode: selectedNodes?.[0],
+        selectedKeys: selectedNodes.map(node => node.key),
         selectedNodes: selectedNodes,
       });
+
+      // auto expand parent
+      if (autoExpandParentWhenDataChanges && autoExpandParent) {
+        setExpandKeys(treeRef.current?.getInitExpandedKeys(undefined));
+      }
     } else {
       mergeState({
         selectedKeys: [],
-        selectedNode: undefined,
         selectedNodes: [],
       });
     }
-  }, [data, mergeState]);
+  }, [autoExpandParent, autoExpandParentWhenDataChanges, data, mergeState]);
 
   const onSelect = useCallback(
     (
-      selectedKeys: string[],
+      _selectedKeys: string[],
       extra: {
         selected: boolean;
         selectedNodes: NodeInstance[];
@@ -137,16 +160,15 @@ export const Tree = implementRuntimeComponent({
         e: Event;
       }
     ) => {
-      // In multi-select mode, select an item, remove it from data, and select an item again. Two items will be selected at the same time
-      // Think it's a bug in the arco tree
-      const selectNodes = extra.selectedNodes
+      const selectedNodes = extra.selectedNodes
         .filter(node => node)
         .map(node => formatNode(node.props));
+      const selectedKeys = selectedNodes.map(node => node.key);
+      setSelectedKeys(selectedKeys);
 
       mergeState({
-        selectedKeys: selectNodes.map(node => node.key),
-        selectedNode: selectNodes[0],
-        selectedNodes: selectNodes,
+        selectedKeys: selectedKeys,
+        selectedNodes: selectedNodes,
       });
       callbackMap?.onSelect?.();
     },
@@ -157,9 +179,14 @@ export const Tree = implementRuntimeComponent({
     <div ref={elementRef} className={css(customStyle?.content)}>
       <BaseTree
         ref={treeRef}
+        selectedKeys={selectedKeys}
+        expandedKeys={expandKeys}
         treeData={data}
         multiple={multiple}
         autoExpandParent={autoExpandParent}
+        onExpand={expandKeys => {
+          setExpandKeys(expandKeys);
+        }}
         onSelect={onSelect}
       />
     </div>

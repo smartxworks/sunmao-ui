@@ -1,5 +1,7 @@
+import { debounce } from 'lodash';
 import { action, autorun, makeObservable, observable } from 'mobx';
 import React from 'react';
+import { traverse as traverseFiber } from 'react-fiber-traverse';
 import { EditorServices } from '../../types';
 
 type MaskPosition = {
@@ -15,6 +17,8 @@ export class EditorMaskManager {
   hoverMaskPosition: MaskPosition | null = null;
   selectedMaskPosition: MaskPosition | null = null;
   mousePosition: [number, number] = [0, 0];
+  // the elements get by fiber
+  private fiberEleMap = new Map<string, Element>();
   private elementIdMap = new Map<Element, string>();
   // rect of mask container
   private maskContainerRect: DOMRect | null = null;
@@ -59,10 +63,11 @@ export class EditorMaskManager {
   }
 
   init() {
+    this.unsafeAutoFindNoRefElement();
+    this.updateElementIdMap();
     this.observeContainerResize();
     this.observeIntersection();
     this.observeResize();
-    this.refreshElementIdMap();
 
     // when hoverComponentId & selectedComponentId change, refresh mask position
     autorun(() => {
@@ -110,6 +115,9 @@ export class EditorMaskManager {
     this.eleMap.forEach(ele => {
       this.resizeObserver.observe(ele);
     });
+    this.fiberEleMap.forEach(ele => {
+      this.intersectionObserver.observe(ele);
+    });
   }
 
   private observeContainerResize() {
@@ -126,23 +134,32 @@ export class EditorMaskManager {
     this.eleMap.forEach(ele => {
       this.intersectionObserver.observe(ele);
     });
+    this.fiberEleMap.forEach(ele => {
+      this.intersectionObserver.observe(ele);
+    });
   }
 
-  private onHTMLElementsUpdated = () => {
+  private onHTMLElementsUpdated = debounce(() => {
+    this.unsafeAutoFindNoRefElement();
+    this.updateElementIdMap();
     this.observeIntersection();
     this.observeResize();
-    this.refreshElementIdMap();
     this.refreshHoverElement();
     this.refreshMaskPosition();
-  };
+  }, 16);
 
   private onScroll = () => {
     this.refreshHoverElement();
     this.refreshMaskPosition();
   };
 
+  private getHTMLElement(id: string) {
+    return this.eleMap.get(id) || this.fiberEleMap.get(id);
+  }
+
   private getMaskPosition(id: string) {
-    const rect = this.eleMap.get(id)?.getBoundingClientRect();
+    if (!id) return null;
+    const rect = this.getHTMLElement(id)?.getBoundingClientRect();
     if (!this.maskContainerRect || !rect) return null;
     return {
       id,
@@ -163,14 +180,63 @@ export class EditorMaskManager {
     };
   }
 
-  private refreshElementIdMap() {
+  private updateElementIdMap() {
     // generate elementIdMap, this only aim to improving the  performance of refreshHoverElement method
-    const elementIdMap = new Map<Element, string>();
     this.eleMap.forEach((ele, id) => {
-      elementIdMap.set(ele, id);
+      this.elementIdMap.set(ele, id);
     });
+    this.fiberEleMap.forEach((ele, id) => {
+      this.elementIdMap.set(ele, id);
+    });
+  }
 
-    this.elementIdMap = elementIdMap;
+  private getElementsByFiber(ids: string[]): Record<string, HTMLElement | undefined> {
+    const map: Record<string, HTMLElement | undefined> = {};
+    const rootFiberNode = (document.getElementById('root') as any)._reactRootContainer
+      ._internalRoot.current;
+    traverseFiber(rootFiberNode, (fiber: any) => {
+      if (!fiber.memoizedProps) {
+        return;
+      }
+      const componentId = fiber.memoizedProps['data-sunmao-id'];
+      const i = ids.indexOf(componentId);
+      if (i === -1) {
+        return;
+      }
+      ids.splice(i, 1);
+      // find the nearest child HTMLElement
+      let curr = fiber;
+      while (!curr.stateNode && curr.child) {
+        curr = curr.child;
+      }
+      if (curr.stateNode instanceof HTMLElement) {
+        map[componentId] = curr.stateNode;
+      }
+    });
+    return map;
+  }
+
+  // Auto find the components that does not have ref by React Fiber
+  // This function is a fallback.
+  // And because it uses React Fiber, it is not stable.
+  private unsafeAutoFindNoRefElement() {
+    try {
+      const noEleComponentIds: string[] = [];
+      this.services.appModelManager.appModel.allComponents.forEach(c => {
+        if (!this.eleMap.has(c.id)) {
+          const eleFromFiber = this.fiberEleMap.get(c.id);
+          if (!eleFromFiber || !eleFromFiber.isConnected) {
+            noEleComponentIds.push(c.id);
+          }
+        }
+      });
+      if (noEleComponentIds.length === 0) return;
+      const fiberElements = this.getElementsByFiber(noEleComponentIds);
+      for (const key in fiberElements) {
+        const ele = fiberElements[key];
+        if (ele) this.fiberEleMap.set(key, ele);
+      }
+    } catch {}
   }
 
   private refreshHoverElement() {
@@ -199,7 +265,7 @@ export class EditorMaskManager {
   private refreshMaskPosition() {
     this.setHoverMaskPosition(this.getMaskPosition(this.hoverComponentId));
     const selectedComponentId = this.services.editorStore.selectedComponentId;
-    const selectedComponentEle = this.eleMap.get(selectedComponentId);
+    const selectedComponentEle = this.getHTMLElement(selectedComponentId);
     if (selectedComponentEle && this.visibleMap.get(selectedComponentEle)) {
       this.setSelectedMaskPosition(this.getMaskPosition(selectedComponentId));
     } else {

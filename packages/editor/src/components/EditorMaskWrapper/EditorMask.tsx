@@ -59,7 +59,9 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
   const { hoverMaskPosition, selectedMaskPosition } = manager;
 
   useEffect(() => {
-    manager.init();
+    setTimeout(() => {
+      manager.init();
+    }, 0);
     return () => {
       manager.destroy();
     };

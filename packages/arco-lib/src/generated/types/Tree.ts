@@ -29,6 +29,26 @@ export const TreePropsSpec = Type.Object({
   }),
   autoExpandParent: Type.Boolean({
     category: Category.Basic,
-    title: 'Auto Expand Node',
+    title: 'Auto Expand Parent',
+  }),
+  autoExpandParentWhenDataChanges: Type.Boolean({
+    category: Category.Basic,
+    title: 'Auto Expand Parent When Data Changes',
+    conditions: [
+      {
+        key: 'autoExpandParent',
+        value: true,
+      },
+    ],
+  }),
+  defaultExpandKeys: Type.Array(Type.String(), {
+    category: Category.Basic,
+    title: 'Expand Keys',
+    conditions: [
+      {
+        key: 'autoExpandParent',
+        value: false,
+      },
+    ],
   }),
 });
