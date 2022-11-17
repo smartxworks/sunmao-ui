@@ -90,6 +90,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
       node: (
         <VStack width="full" background="white">
           <SpecWidget
+            key={selectedComponent.id}
             component={selectedComponent}
             spec={cImpl.spec.properties}
             value={properties}
@@ -115,7 +116,13 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     },
     {
       title: 'Styles',
-      node: <StyleTraitForm component={selectedComponent} services={services} />,
+      node: (
+        <StyleTraitForm
+          key={selectedComponentId}
+          component={selectedComponent}
+          services={services}
+        />
+      ),
     },
     {
       title: 'Traits',
@@ -137,7 +144,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           <FormSection
             style={{ position: 'relative', zIndex: sections.length - i }}
             title={section.title}
-            key={section.title}
+            key={`${section.title}-${selectedComponentId}`}
           >
             {section.node}
           </FormSection>
