@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef } from 'react';
 import { CORE_VERSION, StyleWidgetName } from '@sunmao-ui/shared';
 import { WidgetProps } from '../../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../../utils/widget';
@@ -14,6 +14,7 @@ import {
   PopoverBody,
   Portal,
 } from '@chakra-ui/react';
+import { ComponentFormElementId } from '../../../constants';
 
 type ColorWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Color}`;
 
@@ -32,6 +33,7 @@ const SketchPicker = React.lazy(async () => {
 
 export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props => {
   const { value, onChange } = props;
+  const containerRef = useRef(document.getElementById(ComponentFormElementId) || null);
   const onColorChange = ({ rgb }: any) => {
     onChange(`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`);
   };
@@ -62,7 +64,7 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
               boxShadow="rgba(149, 157, 165, 0.2) 0px 8px 24px"
             />
           </PopoverTrigger>
-          <Portal>
+          <Portal containerRef={containerRef}>
             <PopoverContent w="auto">
               <PopoverArrow />
               <PopoverBody padding={0}>
