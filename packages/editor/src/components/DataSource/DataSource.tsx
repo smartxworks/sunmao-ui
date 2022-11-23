@@ -29,7 +29,7 @@ const DATASOURCE_TYPES = Object.values(DataSourceType);
 export const DataSource: React.FC<Props> = props => {
   const { active, services } = props;
   const { editorStore } = services;
-  const NORMAL_DATASOURCES = DATA_DATASOURCES.map((item)=> ({
+  const NORMAL_DATASOURCES = DATA_DATASOURCES.map(item => ({
     ...item,
     title: item.type,
     datas: editorStore.dataSources[item.type],
@@ -89,6 +89,7 @@ export const DataSource: React.FC<Props> = props => {
         </Menu>
       </Flex>
       <Accordion
+        reduceMotion
         defaultIndex={[0].concat(NORMAL_DATASOURCES.map((_, i) => i + 1))}
         allowMultiple
       >

@@ -121,7 +121,11 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
           />
         </InputRightElement>
       </InputGroup>
-      <Accordion allowMultiple defaultIndex={categories.map((_, idx) => idx)}>
+      <Accordion
+        allowMultiple
+        defaultIndex={categories.map((_, idx) => idx)}
+        reduceMotion
+      >
         {categories.map(category => {
           return (
             <AccordionItem key={category.name}>

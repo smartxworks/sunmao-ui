@@ -133,6 +133,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   return (
     <ErrorBoundary>
       <Accordion
+        reduceMotion
         className={ComponentFormStyle}
         defaultIndex={sections.map((_, i) => i)}
         background="gray.50"
