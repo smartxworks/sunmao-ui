@@ -9,9 +9,10 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { RegistryInterface } from '@sunmao-ui/runtime';
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { hideCreateTraitsList } from '../../../constants';
 import { ComponentSchema } from '@sunmao-ui/core';
+import { ComponentFormElementId } from '@sunmao-ui/editor-sdk';
 
 type Props = {
   registry: RegistryInterface;
@@ -21,6 +22,7 @@ type Props = {
 
 export const AddTraitButton: React.FC<Props> = props => {
   const { onAddTrait, registry, component } = props;
+  const containerRef = useRef(document.getElementById(ComponentFormElementId) || null);
   const componentTraitsMap = useMemo(
     () =>
       component.traits.reduce((result, trait) => {
@@ -48,7 +50,7 @@ export const AddTraitButton: React.FC<Props> = props => {
   });
   return (
     <Box>
-      <Menu>
+      <Menu isLazy>
         <MenuButton
           as={Button}
           aria-label="add event"
@@ -59,7 +61,7 @@ export const AddTraitButton: React.FC<Props> = props => {
         >
           Add Trait
         </MenuButton>
-        <Portal>
+        <Portal containerRef={containerRef}>
           <MenuList>{menuItems}</MenuList>
         </Portal>
       </Menu>

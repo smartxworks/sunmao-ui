@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useCallback,
   useImperativeHandle,
+  useRef,
 } from 'react';
 import {
   Popover,
@@ -20,7 +21,10 @@ import { SpecWidget } from './SpecWidget';
 import { implementWidget } from '../../utils/widget';
 import { WidgetProps } from '../../types/widget';
 import { CORE_VERSION, CoreWidgetName } from '@sunmao-ui/shared';
-import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
+import {
+  PREVENT_POPOVER_WIDGET_CLOSE_CLASS,
+  ComponentFormElementId,
+} from '../../constants';
 
 type EvenType = {
   'sub-popover-close': string[];
@@ -52,6 +56,7 @@ export const PopoverWidget = React.forwardRef<
   React.ComponentPropsWithoutRef<React.ComponentType> & WidgetProps<PopoverWidgetType>
 >((props, ref) => {
   const { spec, path, children } = props;
+  const containerRef = useRef(document.getElementById(ComponentFormElementId) || null);
   const isObjectChildren = children && typeof children === 'object';
   const [isInit, setIsInit] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -171,7 +176,7 @@ export const PopoverWidget = React.forwardRef<
           />
         )}
       </PopoverTrigger>
-      <Portal>
+      <Portal containerRef={containerRef}>
         <PopoverContent
           width="sm"
           className={PREVENT_POPOVER_WIDGET_CLOSE_CLASS}
