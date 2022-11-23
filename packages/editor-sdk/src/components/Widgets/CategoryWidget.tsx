@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { SpecWidget } from './SpecWidget';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
@@ -10,6 +10,7 @@ import {
   AccordionIcon,
   Box,
   Accordion,
+  ExpandedIndex,
 } from '@chakra-ui/react';
 import {
   PRESET_PROPERTY_CATEGORY,
@@ -56,7 +57,7 @@ declare module '../../types/widget' {
 
 export const CategoryWidget: React.FC<WidgetProps<CategoryWidgetType>> = props => {
   const { component, spec, value, path, level, services, onChange } = props;
-
+  const [expandedIndex, setExpandedIndex] = useState([0]);
   const categories = useMemo<Category[]>(() => {
     const properties = (spec.properties || {}) as Property;
     Object.keys(properties).forEach(name => {
@@ -74,11 +75,50 @@ export const CategoryWidget: React.FC<WidgetProps<CategoryWidgetType>> = props =
     );
   }, [spec.properties]);
 
-  return (
-    <Accordion width="full" defaultIndex={[0]} allowMultiple>
-      {categories.map(category => {
-        const specs = category.specs;
+  const onExpandedIndexChange = (index: ExpandedIndex) => {
+    setExpandedIndex(index as number[]);
+  };
 
+  return (
+    <Accordion
+      reduceMotion
+      width="full"
+      index={expandedIndex}
+      onChange={onExpandedIndexChange}
+      allowMultiple
+    >
+      {categories.map((category, i) => {
+        const specs = category.specs;
+        let content: ReactNode | undefined;
+        if (expandedIndex.includes(i)) {
+          content = specs.map(propertySpec => {
+            const name = propertySpec.name;
+
+            if (typeof propertySpec === 'boolean') {
+              return null;
+            }
+            return shouldRender(propertySpec.conditions || [], value) ? (
+              <SpecWidget
+                key={name}
+                component={component}
+                spec={{
+                  ...propertySpec,
+                  title: propertySpec.title || name,
+                }}
+                value={value?.[name!]}
+                path={path.concat(name!)}
+                level={level + 1}
+                services={services}
+                onChange={newValue => {
+                  onChange({
+                    ...value,
+                    [name!]: newValue,
+                  });
+                }}
+              />
+            ) : null;
+          });
+        }
         return (
           <AccordionItem width="full" key={category.name}>
             <AccordionButton bg="white">
@@ -87,35 +127,7 @@ export const CategoryWidget: React.FC<WidgetProps<CategoryWidgetType>> = props =
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel bg="white">
-              {specs.map(propertySpec => {
-                const name = propertySpec.name;
-
-                if (typeof propertySpec === 'boolean') {
-                  return null;
-                }
-                return shouldRender(propertySpec.conditions || [], value) ? (
-                  <SpecWidget
-                    key={name}
-                    component={component}
-                    spec={{
-                      ...propertySpec,
-                      title: propertySpec.title || name,
-                    }}
-                    value={value?.[name!]}
-                    path={path.concat(name!)}
-                    level={level + 1}
-                    services={services}
-                    onChange={newValue => {
-                      onChange({
-                        ...value,
-                        [name!]: newValue,
-                      });
-                    }}
-                  />
-                ) : null;
-              })}
-            </AccordionPanel>
+            <AccordionPanel bg="white">{content}</AccordionPanel>
           </AccordionItem>
         );
       })}
