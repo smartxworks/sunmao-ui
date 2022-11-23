@@ -76,12 +76,12 @@ export const CategoryWidget: React.FC<WidgetProps<CategoryWidgetType>> = props =
   }, [spec.properties]);
 
   const onExpandedIndexChange = (index: ExpandedIndex) => {
-    console.log('index', index);
     setExpandedIndex(index as number[]);
   };
 
   return (
     <Accordion
+      reduceMotion
       width="full"
       index={expandedIndex}
       onChange={onExpandedIndexChange}

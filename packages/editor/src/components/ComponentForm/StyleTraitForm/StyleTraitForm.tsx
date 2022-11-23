@@ -286,7 +286,7 @@ export const StyleTraitForm: React.FC<Props> = props => {
 
   return (
     <VStack width="full" alignItems="self-start" spacing="2">
-      <Accordion width="full" defaultIndex={[0]} allowMultiple>
+      <Accordion width="full" defaultIndex={[0]} allowMultiple reduceMotion>
         {styleForms}
       </Accordion>
       <Button
