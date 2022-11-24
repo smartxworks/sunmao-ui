@@ -171,7 +171,7 @@ export const PopoverWidget = React.forwardRef<
       onClick={handleClickContent}
     >
       <PopoverArrow />
-      <PopoverBody maxHeight="75vh" overflow="auto">
+      <PopoverBody maxHeight="75vh" overflow="visible">
         {isInit ? (
           isObjectChildren && 'body' in children ? (
             (children as Children).body
