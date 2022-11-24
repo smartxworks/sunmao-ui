@@ -51,7 +51,8 @@ export default implementRuntimeComponent({
   const childrenSchema = app.spec.components.filter(c => {
     return c.traits.find(
       t =>
-        t.type === 'core/v1/slot' && (t.properties.container as any).id === component.id
+        (t.type === 'core/v1/slot' || t.type === 'core/v2/slot') &&
+        (t.properties.container as any).id === component.id
     );
   });
 

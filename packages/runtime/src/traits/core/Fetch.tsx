@@ -10,44 +10,53 @@ import {
 import { runEventHandler } from '../../utils/runEventHandler';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 
-export const FetchTraitPropertiesSpec = Type.Object({
-  url: Type.String({ title: 'URL' }), // {format:uri}?;
-  method: Type.KeyOf(
-    Type.Object({
-      get: Type.String(),
-      post: Type.String(),
-      put: Type.String(),
-      delete: Type.String(),
-      patch: Type.String(),
+export const FetchTraitPropertiesSpec = Type.Object(
+  {
+    url: Type.String({ title: 'URL' }), // {format:uri}?;
+    method: Type.KeyOf(
+      Type.Object({
+        get: Type.String(),
+        post: Type.String(),
+        put: Type.String(),
+        delete: Type.String(),
+        patch: Type.String(),
+      }),
+      { title: 'Method' }
+    ), // {pattern: /^(get|post|put|delete)$/i}
+    lazy: Type.Boolean({ title: 'Lazy' }),
+    disabled: Type.Boolean({ title: 'Disabled' }),
+    headers: Type.Record(Type.String(), Type.String(), {
+      title: 'Headers',
     }),
-    { title: 'Method' }
-  ), // {pattern: /^(get|post|put|delete)$/i}
-  lazy: Type.Boolean({ title: 'Lazy' }),
-  disabled: Type.Boolean({ title: 'Disabled' }),
-  headers: Type.Record(Type.String(), Type.String(), {
-    title: 'Headers',
-  }),
-  body: Type.Record(Type.String(), Type.Any(), {
-    title: 'Body',
-    widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
-  }),
-  bodyType: Type.KeyOf(
-    Type.Object({
-      json: Type.String(),
-      formData: Type.String(),
-      raw: Type.String(),
+    body: Type.Record(Type.String(), Type.Any(), {
+      title: 'Body',
+      widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
     }),
-    { title: 'Body Type' }
-  ),
-  onComplete: Type.Array(EventCallBackHandlerSpec),
-  onError: Type.Array(EventCallBackHandlerSpec),
-});
+    bodyType: Type.KeyOf(
+      Type.Object({
+        json: Type.String(),
+        formData: Type.String(),
+        raw: Type.String(),
+      }),
+      { title: 'Body Type' }
+    ),
+    onComplete: Type.Array(EventCallBackHandlerSpec),
+    onError: Type.Array(EventCallBackHandlerSpec),
+  },
+  {
+    widget: 'core/v1/fetch',
+    widgetOptions: {
+      isDisplayLabel: false,
+    },
+  }
+);
 
 export default implementRuntimeTrait({
   version: CORE_VERSION,
   metadata: {
     name: CoreTraitName.Fetch,
     description: 'fetch data to store',
+    isDataSource: true,
   },
   spec: {
     properties: FetchTraitPropertiesSpec,
@@ -99,10 +108,9 @@ export default implementRuntimeTrait({
           headers.append(key, _headers[key]);
         }
       }
-
       mergeState({
         fetch: {
-          ...(services.stateManager.store[componentId].fetch || {}),
+          ...(services.stateManager.store[componentId]?.fetch || {}),
           code: undefined,
           codeText: '',
           loading: true,

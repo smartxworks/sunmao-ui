@@ -15,7 +15,7 @@ type Props = {
 
 export const StructureTree: React.FC<Props> = observer(props => {
   const { editorStore } = props.services;
-  const { setSelectedComponentId, selectedComponentId } = editorStore;
+  const { setSelectedComponentId, selectedComponentId, components } = editorStore;
   const scrollWrapper = useRef<HTMLDivElement>(null);
 
   const {
@@ -97,7 +97,11 @@ export const StructureTree: React.FC<Props> = observer(props => {
         <Text fontSize="lg" fontWeight="bold">
           Components
         </Text>
-        <ComponentSearch services={props.services} />
+        <ComponentSearch
+          components={components}
+          onChange={id => setSelectedComponentId(id)}
+          services={props.services}
+        />
       </VStack>
       <Box
         ref={scrollWrapper}

@@ -28,6 +28,7 @@ export default implementRuntimeTrait({
   metadata: {
     name: CoreTraitName.LocalStorage,
     description: 'localStorage trait',
+    isDataSource: true,
   },
   spec: {
     properties: LocalStorageTraitPropertiesSpec,

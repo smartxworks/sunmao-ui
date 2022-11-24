@@ -9,7 +9,10 @@ import {
 } from '@choc-ui/chakra-autocomplete';
 import { css } from '@emotion/css';
 import { observer } from 'mobx-react-lite';
+import { ComponentSchema } from '@sunmao-ui/core';
 type Props = {
+  components: ComponentSchema[];
+  onChange: (id: string) => void;
   services: EditorServices;
 };
 
@@ -19,14 +22,13 @@ const AutoCompleteStyle = css`
 `;
 
 export const ComponentSearch: React.FC<Props> = observer(props => {
-  const { editorStore } = props.services;
-  const { setSelectedComponentId, components } = editorStore;
+  const { components, onChange } = props;
 
   const onSelectOption = useCallback(
     ({ item }: { item: Item }) => {
-      setSelectedComponentId(item.value);
+      onChange(item.value);
     },
-    [setSelectedComponentId]
+    [onChange]
   );
 
   const options = useMemo(() => {
