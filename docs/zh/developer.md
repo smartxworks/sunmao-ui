@@ -8,6 +8,6 @@
 
 ### 进阶（TODO）
 
-- [表达式](./expression)
+- [表达式](./expression.md)
 - Property 的 `ExpressionOption`
 - 生命周期
