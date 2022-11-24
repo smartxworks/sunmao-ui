@@ -14,6 +14,7 @@ import moduleWidgetSpec from './ModuleWidget';
 import recordWidgetSpec from './RecordField';
 import eventWidgetSpec from './EventWidget';
 import popoverWidgetSpec from './PopoverWidget';
+import fetchWidgetSpec from './FetchWidget';
 import sizeWidgetSpec from './StyleWidgets/SizeWidget';
 import fontWidgetSpec from './StyleWidgets/FontWidget';
 import colorWidgetSpec from './StyleWidgets/ColorWidget';
@@ -34,6 +35,7 @@ export * from './ModuleWidget';
 export * from './RecordField';
 export * from './EventWidget';
 export * from './PopoverWidget';
+export * from './FetchWidget';
 export * from './StyleWidgets/SizeWidget';
 export * from './StyleWidgets/FontWidget';
 export * from './StyleWidgets/ColorWidget';
@@ -56,6 +58,7 @@ export const widgets: ImplementedWidget<any>[] = [
   recordWidgetSpec,
   eventWidgetSpec,
   popoverWidgetSpec,
+  fetchWidgetSpec,
   sizeWidgetSpec,
   fontWidgetSpec,
   colorWidgetSpec,

@@ -1,4 +1,3 @@
-
 import { AppModel } from '../../../AppModel/AppModel';
 import { ComponentId, TraitId, TraitType } from '../../../AppModel/IAppModel';
 import { BaseLeafOperation } from '../../type';
@@ -15,11 +14,14 @@ export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafO
   do(prev: AppModel): AppModel {
     const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
-      return prev
+      return prev;
     }
-    const trait = component.addTrait(this.context.traitType as TraitType, this.context.properties);
+    const trait = component.addTrait(
+      this.context.traitType as TraitType,
+      this.context.properties
+    );
     this.traitId = trait.id;
-    return prev
+    return prev;
   }
 
   redo(prev: AppModel): AppModel {
@@ -29,9 +31,9 @@ export class CreateTraitLeafOperation extends BaseLeafOperation<CreateTraitLeafO
   undo(prev: AppModel): AppModel {
     const component = prev.getComponentById(this.context.componentId as ComponentId);
     if (!component) {
-      return prev
+      return prev;
     }
     component.removeTrait(this.traitId);
-    return prev
+    return prev;
   }
 }

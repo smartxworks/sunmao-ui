@@ -16,6 +16,7 @@ type Props = {
   onMouseLeave: () => void;
   paddingLeft: number;
   actionMenu?: React.ReactNode;
+  prefix?: React.ReactNode;
 };
 
 const ChevronWidth = 24;
@@ -35,6 +36,7 @@ export const ComponentItemView: React.FC<Props> = props => {
     onMouseLeave,
     paddingLeft,
     actionMenu,
+    prefix,
   } = props;
   const [isHover, setIsHover] = useState(false);
 
@@ -117,6 +119,7 @@ export const ComponentItemView: React.FC<Props> = props => {
         paddingLeft={`${paddingLeft + (noChevron ? ChevronWidth : 0)}px`}
       >
         {noChevron ? null : expandIcon}
+        {prefix}
         <Text
           cursor="pointer"
           overflow="hidden"
