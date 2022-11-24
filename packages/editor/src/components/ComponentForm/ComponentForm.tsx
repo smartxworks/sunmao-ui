@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Accordion, Input, Text, VStack } from '@chakra-ui/react';
-import { SpecWidget } from '@sunmao-ui/editor-sdk';
+import { ComponentFormElementId, SpecWidget } from '@sunmao-ui/editor-sdk';
 import { parseType } from '@sunmao-ui/core';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
@@ -133,6 +133,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   return (
     <ErrorBoundary>
       <Accordion
+        id={ComponentFormElementId}
         reduceMotion
         className={ComponentFormStyle}
         defaultIndex={sections.map((_, i) => i)}

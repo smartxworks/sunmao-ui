@@ -73,7 +73,7 @@ export const DataSource: React.FC<Props> = props => {
           DataSource
         </Text>
         <Spacer />
-        <Menu>
+        <Menu isLazy>
           <MenuButton
             as={IconButton}
             aria-label="add event"
