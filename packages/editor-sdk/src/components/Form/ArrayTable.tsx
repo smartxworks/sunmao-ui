@@ -50,6 +50,7 @@ const TableRow: React.FC<RowProps> = props => {
     expressionOptions,
     displayedKeys = [],
     appendToBody,
+    appendToParent,
   } = spec.widgetOptions || {};
   const keys = displayedKeys.length ? displayedKeys : DEFAULT_KEYS;
   const mergedSpec = useMemo(
@@ -62,9 +63,10 @@ const TableRow: React.FC<RowProps> = props => {
         {
           expressionOptions,
           appendToBody,
+          appendToParent,
         }
       ),
-    [itemSpec, expressionOptions, appendToBody]
+    [itemSpec, expressionOptions, appendToBody, appendToParent]
   );
   const nextPath = useMemo(() => path.concat(String(itemIndex)), [path, itemIndex]);
   const onPopoverWidgetChange = useCallback(

@@ -84,6 +84,7 @@ export const Basic: React.FC<Props> = props => {
             FetchTraitPropertiesSpec.properties.onComplete as JSONSchema7,
             {
               displayedKeys: ['componentId', 'method.name', 'method.parameters'],
+              appendToParent: true,
             }
           )}
           level={1}
@@ -101,6 +102,7 @@ export const Basic: React.FC<Props> = props => {
             FetchTraitPropertiesSpec.properties.onError as JSONSchema7,
             {
               displayedKeys: ['componentId', 'method.name', 'method.parameters'],
+              appendToParent: true,
             }
           )}
           level={1}
