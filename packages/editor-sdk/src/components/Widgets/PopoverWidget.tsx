@@ -46,6 +46,7 @@ export type PopoverWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Popover
 
 const PopoverWidgetOption = Type.Object({
   appendToBody: Type.Optional(Type.Boolean()),
+  appendToParent: Type.Optional(Type.Boolean()),
 });
 
 declare module '../../types/widget' {
@@ -204,9 +205,15 @@ export const PopoverWidget = React.forwardRef<
           />
         )}
       </PopoverTrigger>
-      <Portal containerRef={spec.widgetOptions?.appendToBody ? undefined : containerRef}>
-        {popoverContent}
-      </Portal>
+      {spec.widgetOptions?.appendToParent ? (
+        popoverContent
+      ) : (
+        <Portal
+          containerRef={spec.widgetOptions?.appendToBody ? undefined : containerRef}
+        >
+          {popoverContent}
+        </Portal>
+      )}
     </Popover>
   );
 });

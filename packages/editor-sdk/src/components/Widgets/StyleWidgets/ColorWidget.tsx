@@ -19,12 +19,13 @@ import { Static, Type } from '@sinclair/typebox';
 
 type ColorWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Color}`;
 
-const PopoverWidgetOption = Type.Object({
+const ColorWidgetOption = Type.Object({
   appendToBody: Type.Optional(Type.Boolean()),
+  appendToParent: Type.Optional(Type.Boolean()),
 });
 declare module '../../../types/widget' {
   interface WidgetOptionsMap {
-    'core/v1/color': Static<typeof PopoverWidgetOption>;
+    'core/v1/color': Static<typeof ColorWidgetOption>;
   }
 }
 
@@ -87,11 +88,15 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
               boxShadow="rgba(149, 157, 165, 0.2) 0px 8px 24px"
             />
           </PopoverTrigger>
-          <Portal
-            containerRef={spec.widgetOptions?.appendToBody ? undefined : containerRef}
-          >
-            {popoverContent}
-          </Portal>
+          {spec.widgetOptions?.appendToParent ? (
+            popoverContent
+          ) : (
+            <Portal
+              containerRef={spec.widgetOptions?.appendToBody ? undefined : containerRef}
+            >
+              {popoverContent}
+            </Portal>
+          )}
         </Popover>
       </InputRightElement>
     </InputGroup>
@@ -104,6 +109,6 @@ export default implementWidget<ColorWidgetType>({
     name: StyleWidgetName.Color,
   },
   spec: {
-    options: PopoverWidgetOption,
+    options: ColorWidgetOption,
   },
 })(ColorWidget);
