@@ -10,16 +10,15 @@ type Props = {
   onClickRemove: () => void;
   noChevron: boolean;
   isExpanded?: boolean;
-  onToggleExpanded: () => void;
+  onClickExpand: () => void;
   onDragStart: () => void;
   onDragEnd: () => void;
   onMouseOver: () => void;
   onMouseLeave: () => void;
-  depth: number;
+  paddingLeft: number;
 };
 
-const LeftPanelPadding = 20;
-const IndentPadding = 12;
+const ChevronWidth = 24;
 
 export const ComponentItemView: React.FC<Props> = props => {
   const {
@@ -29,35 +28,41 @@ export const ComponentItemView: React.FC<Props> = props => {
     noChevron,
     isExpanded,
     onClick,
-    onToggleExpanded,
+    onClickExpand,
     onClickRemove,
     onDragStart,
     onDragEnd,
     onMouseOver,
     onMouseLeave,
-    depth,
+    paddingLeft,
   } = props;
   const [isHover, setIsHover] = useState(false);
 
-  const expandIcon = (
-    <IconButton
-      margin="auto"
-      flex="0 0 auto"
-      aria-label="showChildren"
-      size="xs"
-      variant="unstyled"
-      onClick={onToggleExpanded}
-      _focus={{
-        outline: '0',
-      }}
-      icon={
-        isExpanded ? (
-          <TriangleDownIcon />
-        ) : (
-          <TriangleDownIcon transform="rotate(-90deg)" />
-        )
-      }
-    />
+  const expandIcon = useMemo(
+    () => (
+      <IconButton
+        margin="auto"
+        flex="0 0 auto"
+        aria-label="showChildren"
+        size="xs"
+        variant="unstyled"
+        onClick={e => {
+          e.stopPropagation();
+          onClickExpand();
+        }}
+        _focus={{
+          outline: '0',
+        }}
+        icon={
+          isExpanded ? (
+            <TriangleDownIcon />
+          ) : (
+            <TriangleDownIcon transform="rotate(-90deg)" />
+          )
+        }
+      />
+    ),
+    [isExpanded, onClickExpand]
   );
 
   const _onDragStart = (e: React.DragEvent) => {
@@ -89,18 +94,6 @@ export const ComponentItemView: React.FC<Props> = props => {
     return undefined;
   }, [isHover, isSelected]);
 
-  const highlightBackground = (
-    <Box
-      background={backgroundColor}
-      position="absolute"
-      top="0"
-      bottom="0"
-      left={`${-depth * IndentPadding - LeftPanelPadding}px`}
-      right={`${-LeftPanelPadding}px`}
-      zIndex="-1"
-    />
-  );
-
   return (
     <Box
       id={`tree-item-${id}`}
@@ -114,13 +107,13 @@ export const ComponentItemView: React.FC<Props> = props => {
       cursor="pointer"
       position="relative"
       onClick={onClick}
+      backgroundColor={backgroundColor}
     >
-      {highlightBackground}
       <HStack
         width="full"
         justify="space-between"
         spacing="0"
-        paddingLeft={noChevron ? '6' : '0'}
+        paddingLeft={`${paddingLeft + (noChevron ? ChevronWidth : 0)}px`}
       >
         {noChevron ? null : expandIcon}
         <Text
