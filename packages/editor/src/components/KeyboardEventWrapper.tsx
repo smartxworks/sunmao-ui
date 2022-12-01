@@ -120,10 +120,8 @@ export const KeyboardEventWrapper: React.FC<Props> = ({
                 parentId: selectedComponentId || RootId,
                 slot: getComponentFirstSlot(selectedComponentId),
                 component: clonedComponent!,
-                copyTimes: pasteManager.current.copyTimes,
               })
             );
-            pasteManager.current.copyTimes++;
           }
         }
         break;

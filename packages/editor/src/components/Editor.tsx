@@ -111,12 +111,6 @@ export const Editor: React.FC<Props> = observer(
       }
     }, [isDisplayApp]);
     const onPreview = useCallback(() => setPreview(true), []);
-    const onSelectComponent = useCallback(
-      id => {
-        editorStore.setSelectedComponentId(id);
-      },
-      [editorStore]
-    );
     const onRightTabChange = useCallback(activatedTab => {
       setToolMenuTab(activatedTab);
     }, []);
@@ -187,12 +181,7 @@ export const Editor: React.FC<Props> = observer(
                     <Explorer services={services} />
                   </TabPanel>
                   <TabPanel height="full" overflow="auto" p={0}>
-                    <StructureTree
-                      components={components}
-                      selectedComponentId={selectedComponentId}
-                      onSelectComponent={onSelectComponent}
-                      services={services}
-                    />
+                    <StructureTree services={services} />
                   </TabPanel>
                   <TabPanel height="full" overflow="auto" p={0}>
                     <DataSource active={activeDataSource?.id ?? ''} services={services} />

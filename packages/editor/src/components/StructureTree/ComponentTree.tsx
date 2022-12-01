@@ -1,122 +1,54 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { Box, Text, VStack } from '@chakra-ui/react';
-import { ComponentSchema } from '@sunmao-ui/core';
+import React, { useCallback } from 'react';
+import { CopyIcon, DeleteIcon, HamburgerIcon } from '@chakra-ui/icons';
+import {
+  Text,
+  VStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  IconButton,
+} from '@chakra-ui/react';
+import { isEqual, xor } from 'lodash';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
-import { observer } from 'mobx-react-lite';
-import { isEqual } from 'lodash';
+import { ComponentNodeWithState } from './type';
+import { AppModel } from '../../AppModel/AppModel';
+import { ComponentId } from '../../AppModel/IAppModel';
+import { RootId } from '../../constants';
 
-type Props = {
-  component: ComponentSchema;
-  parentId: string | undefined;
-  slot: string | undefined;
-  onSelectComponent: (id: string) => void;
-  onSelected?: (id: string) => void;
+const IndextWidth = 24;
+
+type Props = ComponentNodeWithState & {
   services: EditorServices;
-  isAncestorDragging: boolean;
-  depth: number;
-};
-type ComponentTreeProps = Props & {
-  slotMap: Map<string, ComponentSchema[]>;
-  isSelected: boolean;
+  onSelectComponent: (id: string) => void;
+  onToggleExpand: (id: string) => void;
+  onDragStart: (id: string) => void;
+  onDragEnd: (id: string) => void;
 };
 
-const ComponentTree = (props: ComponentTreeProps) => {
+const ComponentTree = (props: Props) => {
   const {
     component,
-    slotMap,
+    onSelectComponent,
+    services,
+    droppable,
+    depth,
+    isSelected,
+    isExpanded,
+    onToggleExpand,
     parentId,
     slot,
-    isSelected,
-    onSelectComponent,
-    onSelected,
-    services,
-    isAncestorDragging,
-    depth,
+    shouldShowSelfSlotName,
+    hasChildrenSlots,
+    onDragStart,
+    onDragEnd,
   } = props;
-  const { registry, eventBus } = services;
+  const { registry, eventBus, appModelManager } = services;
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const onChildSelected = useCallback(
-    selectedId => {
-      setIsExpanded(true);
-      onSelected?.(selectedId);
-    },
-    [onSelected]
-  );
-
-  const slotsEle = useMemo(() => {
-    if (slots.length === 0) {
-      return undefined;
-    }
-
-    return slots.map(_slot => {
-      let slotContent;
-      const slotChildren = slotMap.get(_slot);
-      const slotName = (
-        <DropComponentWrapper
-          componentId={undefined}
-          parentId={component.id}
-          parentSlot={_slot}
-          services={services}
-          isExpanded={isExpanded}
-          isDropInOnly
-          droppable={!isAncestorDragging && !isDragging}
-          hasSlot={true}
-        >
-          <Text fontSize={12} color="gray.500" paddingLeft="3" paddingY={1}>
-            Slot: {_slot}
-          </Text>
-        </DropComponentWrapper>
-      );
-
-      if (slotChildren && slotChildren.length > 0) {
-        slotContent = slotChildren.map(c => {
-          return (
-            <ComponentTreeWrapper
-              key={c.id}
-              component={c}
-              parentId={component.id}
-              slot={_slot}
-              onSelectComponent={onSelectComponent}
-              onSelected={onChildSelected}
-              services={services}
-              isAncestorDragging={isAncestorDragging || isDragging}
-              depth={depth + 1}
-            />
-          );
-        });
-      } else {
-        slotContent = slotName;
-      }
-
-      return (
-        <Box key={_slot} paddingLeft="3" width="full" display={isExpanded ? '' : 'none'}>
-          {/* although component can have multiple slots, but for now, most components have only one slot
-        so we hide slot name to save more view area */}
-          {(slotChildren || []).length ? slotName : undefined}
-          <VStack spacing="0" width="full" alignItems="start">
-            {slotContent}
-          </VStack>
-        </Box>
-      );
-    });
-  }, [
-    slots,
-    slotMap,
-    component.id,
-    onSelectComponent,
-    onChildSelected,
-    services,
-    isAncestorDragging,
-    isDragging,
-    depth,
-    isExpanded,
-  ]);
+  const paddingLeft = depth * IndextWidth;
 
   const onClickRemove = useCallback(() => {
     eventBus.send(
@@ -126,18 +58,82 @@ const ComponentTree = (props: ComponentTreeProps) => {
       })
     );
   }, [component.id, eventBus, registry]);
+  const onClickDuplicate = useCallback(() => {
+    const copiedComponents = appModelManager.appModel.getComponentById(
+      component.id as ComponentId
+    );
+    const clonedComponent = new AppModel(
+      copiedComponents!.allComponents.map(c => c.toSchema()),
+      registry
+    ).getComponentById(component.id as ComponentId);
+    eventBus.send(
+      'operation',
+      genOperation(registry, 'pasteComponent', {
+        parentId: parentId || RootId,
+        slot: slot || '',
+        component: clonedComponent!,
+      })
+    );
+  }, [appModelManager.appModel, component.id, eventBus, parentId, registry, slot]);
+
   const onClickItem = useCallback(() => {
     onSelectComponent(component.id);
   }, [component.id, onSelectComponent]);
-  const onToggleExpanded = useCallback(() => setIsExpanded(prev => !prev), []);
-  const onDragStart = useCallback(() => setIsDragging(true), []);
-  const onDragEnd = useCallback(() => setIsDragging(false), []);
+  const onClickExpand = useCallback(() => {
+    onToggleExpand(component.id);
+  }, [component.id, onToggleExpand]);
+  const _onDragStart = useCallback(
+    () => onDragStart(component.id),
+    [component.id, onDragStart]
+  );
+  const _onDragEnd = useCallback(
+    () => onDragEnd(component.id),
+    [component.id, onDragEnd]
+  );
   const onMouseOver = useCallback(() => {
     services.editorStore.setHoverComponentId(component.id);
   }, [component.id, services.editorStore]);
   const onMouseLeave = useCallback(() => {
     services.editorStore.setHoverComponentId('');
   }, [services.editorStore]);
+  const emptySlots = xor(hasChildrenSlots, slots);
+
+  const emptyChildrenSlotsPlaceholder = isExpanded
+    ? emptySlots.map(_slot => {
+        return (
+          <DropComponentWrapper
+            key={_slot}
+            parentId={component.id}
+            parentSlot={_slot!}
+            services={services}
+            isExpanded={isExpanded}
+            isDropInOnly
+            droppable={droppable}
+            hasSlot={true}
+          >
+            {_slot !== 'content' ? (
+              <Text
+                fontSize={12}
+                color="gray.500"
+                paddingY={1}
+                paddingLeft={`${paddingLeft + IndextWidth}px`}
+              >
+                {_slot}
+              </Text>
+            ) : undefined}
+            <Text
+              height="32px"
+              lineHeight="32px"
+              fontSize={14}
+              color="gray.500"
+              paddingLeft={`${paddingLeft + IndextWidth * 2}px`}
+            >
+              Empty
+            </Text>
+          </DropComponentWrapper>
+        );
+      })
+    : undefined;
 
   return (
     <VStack
@@ -148,13 +144,33 @@ const ComponentTree = (props: ComponentTreeProps) => {
       alignItems="start"
       marginTop="0 !important"
     >
+      {shouldShowSelfSlotName ? (
+        <DropComponentWrapper
+          parentId={parentId!}
+          parentSlot={slot!}
+          services={services}
+          isExpanded={isExpanded}
+          isDropInOnly
+          droppable={droppable}
+          hasSlot={true}
+        >
+          <Text
+            fontSize={12}
+            color="gray.500"
+            paddingY={1}
+            paddingLeft={`${paddingLeft}px`}
+          >
+            {slot}
+          </Text>
+        </DropComponentWrapper>
+      ) : undefined}
       <DropComponentWrapper
         componentId={component.id}
-        parentSlot={slot}
-        parentId={parentId}
+        parentSlot={slot!}
+        parentId={parentId!}
         services={props.services}
         isExpanded={isExpanded}
-        droppable={!isAncestorDragging && !isDragging}
+        droppable={droppable}
         hasSlot={slots.length > 0}
       >
         <ComponentItemView
@@ -162,67 +178,58 @@ const ComponentTree = (props: ComponentTreeProps) => {
           title={component.id}
           isSelected={isSelected}
           onClick={onClickItem}
-          onClickRemove={onClickRemove}
           noChevron={slots.length === 0}
           isExpanded={isExpanded}
-          onToggleExpanded={onToggleExpanded}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
+          onClickExpand={onClickExpand}
+          onDragStart={_onDragStart}
+          onDragEnd={_onDragEnd}
           onMouseOver={onMouseOver}
           onMouseLeave={onMouseLeave}
-          depth={depth}
+          paddingLeft={paddingLeft}
+          actionMenu={
+            <Menu isLazy gutter={4}>
+              <MenuButton
+                as={IconButton}
+                variant="ghost"
+                height="24px"
+                width="24px"
+                minWidth="24px"
+                marginInlineEnd="8px !important"
+                icon={<HamburgerIcon width="16px" height="16px" />}
+                onClick={e => e.stopPropagation()}
+              />
+              <MenuList>
+                <MenuItem icon={<CopyIcon />} onClick={onClickDuplicate}>
+                  Duplicate
+                </MenuItem>
+                <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
+                  Remove
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          }
         />
       </DropComponentWrapper>
-      {slotsEle}
+      {emptyChildrenSlotsPlaceholder}
     </VStack>
   );
 };
 
-const MemoComponentTree: React.FC<ComponentTreeProps> = React.memo(
+const MemoComponentTree: React.FC<Props> = React.memo(
   ComponentTree,
-  (oldProps, props) => {
-    const { slotMap: oldSlotMap, ...oldRest } = oldProps;
-    const { slotMap, ...rest } = props;
-    const oldKeys = [...oldSlotMap.keys()];
-    const keys = [...slotMap.keys()];
-    // check whether adding or removing the components
-    const isHasSameSlots = oldKeys.length === keys.length;
-    // check whether the properties of the child components have changed
-    // if the properties aren't changed, then it must have the same object reference
-    const isSameSlotMap =
-      isHasSameSlots &&
-      oldKeys.every(key => {
-        const oldChildren = oldSlotMap.get(key) || [];
-        const children = slotMap.get(key) || [];
-
-        return (
-          oldChildren.length === children.length &&
-          oldChildren.every((oldComponent, i) => oldComponent === children[i])
-        );
-      });
-
-    return isSameSlotMap && isEqual(oldRest, rest);
+  (prevProps, nextProps) => {
+    const isSame =
+      prevProps.component === nextProps.component &&
+      prevProps.parentId === nextProps.parentId &&
+      prevProps.slot === nextProps.slot &&
+      prevProps.droppable === nextProps.droppable &&
+      prevProps.depth === nextProps.depth &&
+      prevProps.isSelected === nextProps.isSelected &&
+      prevProps.isExpanded === nextProps.isExpanded &&
+      prevProps.shouldShowSelfSlotName === nextProps.shouldShowSelfSlotName &&
+      isEqual(prevProps.hasChildrenSlots, nextProps.hasChildrenSlots);
+    return isSame;
   }
 );
 
-export const ComponentTreeWrapper: React.FC<Props> = observer(props => {
-  const { services, component, onSelected } = props;
-  const { editorStore } = services;
-  const { selectedComponentId, resolvedComponents } = editorStore;
-  const { childrenMap } = resolvedComponents;
-  const slotMap = childrenMap.get(component.id);
-
-  useEffect(() => {
-    if (selectedComponentId === component.id) {
-      onSelected?.(selectedComponentId);
-    }
-  }, [selectedComponentId, component.id, onSelected]);
-
-  return (
-    <MemoComponentTree
-      {...props}
-      isSelected={selectedComponentId === component.id}
-      slotMap={slotMap || new Map()}
-    />
-  );
-});
+export const ComponentTreeWrapper = MemoComponentTree;

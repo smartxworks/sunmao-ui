@@ -1,100 +1,84 @@
-import React, { useState, useMemo, useRef, useCallback } from 'react';
-import { ComponentSchema } from '@sunmao-ui/core';
+import React, { useRef, useEffect } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ComponentTreeWrapper } from './ComponentTree';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import ErrorBoundary from '../ErrorBoundary';
 import { EditorServices } from '../../types';
-import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList,
-  type Item,
-} from '@choc-ui/chakra-autocomplete';
-import { css } from '@emotion/css';
 import scrollIntoView from 'scroll-into-view';
-
-export type ChildrenMap = Map<string, SlotsMap>;
-type SlotsMap = Map<string, ComponentSchema[]>;
+import { observer } from 'mobx-react-lite';
+import { useStructureTreeState } from './useStructureTreeState';
+import { ComponentSearch } from './ComponentSearch';
 
 type Props = {
-  components: ComponentSchema[];
-  selectedComponentId: string;
-  onSelectComponent: (id: string) => void;
   services: EditorServices;
 };
 
-const AutoCompleteStyle = css`
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-`;
-
-export const StructureTree: React.FC<Props> = props => {
-  const [search, setSearch] = useState('');
-  const { components, onSelectComponent, services } = props;
-  const { editorStore } = services;
+export const StructureTree: React.FC<Props> = observer(props => {
+  const { editorStore } = props.services;
+  const { setSelectedComponentId, selectedComponentId } = editorStore;
   const scrollWrapper = useRef<HTMLDivElement>(null);
-  const onSelectOption = useCallback(
-    ({ item }: { item: Item }) => {
-      onSelectComponent(item.value);
-      setSearch(item.value);
-    },
-    [onSelectComponent]
-  );
-  const onSelected = useCallback(selectedId => {
-    if (selectedId) {
-      // wait the component tree to be expanded
-      setTimeout(() => {
-        const selectedElement: HTMLElement | undefined | null =
-          scrollWrapper.current?.querySelector(`#tree-item-${selectedId}`);
 
-        const wrapperRect = scrollWrapper.current?.getBoundingClientRect();
-        const eleRect = selectedElement?.getBoundingClientRect();
-        if (
-          selectedElement &&
-          eleRect &&
-          wrapperRect &&
-          (eleRect.top < wrapperRect.top ||
-            eleRect.top > wrapperRect.top + wrapperRect?.height)
-        ) {
-          // check selected element is outside of view
-          scrollIntoView(selectedElement, { time: 300, align: { lockX: true } });
-        }
-      });
+  const {
+    shouldRenderNodes,
+    expandedMap,
+    onToggleExpand,
+    expandNode,
+    undroppableMap,
+    setDraggingId,
+  } = useStructureTreeState(editorStore);
+
+  useEffect(() => {
+    expandNode(selectedComponentId);
+
+    setTimeout(() => {
+      const selectedElement: HTMLElement | undefined | null =
+        scrollWrapper.current?.querySelector(`#tree-item-${selectedComponentId}`);
+
+      const wrapperRect = scrollWrapper.current?.getBoundingClientRect();
+      const eleRect = selectedElement?.getBoundingClientRect();
+      if (
+        selectedElement &&
+        eleRect &&
+        wrapperRect &&
+        (eleRect.top < wrapperRect.top ||
+          eleRect.top > wrapperRect.top + wrapperRect?.height)
+      ) {
+        // check selected element is outside of view
+        scrollIntoView(selectedElement, { time: 300, align: { lockX: true } });
+      }
+    });
+  }, [expandNode, selectedComponentId]);
+
+  const componentEles = shouldRenderNodes.map((node, i) => {
+    const prevNode = i > 0 ? shouldRenderNodes[i - 1] : null;
+    let shouldShowSlot = false;
+    if (node.slot && node.slot !== 'content' && prevNode) {
+      const prevNodeIsParent = prevNode.id === node.parentId;
+      const prevNodeInDifferentSlot =
+        prevNode.parentId === node.parentId && prevNode.slot !== node.slot;
+      shouldShowSlot = prevNodeIsParent || prevNodeInDifferentSlot;
     }
-  }, []);
-  const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    event => {
-      setSearch(event.target.value);
-    },
-    []
-  );
-
-  const realComponents = useMemo(() => {
-    return components.filter(
-      c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`
-    );
-  }, [components]);
-
-  const componentEles = useMemo(() => {
-    const { topLevelComponents } = editorStore.resolvedComponents;
-
-    return topLevelComponents.map(c => (
+    return (
       <ComponentTreeWrapper
-        key={c.id}
-        component={c}
-        parentId={undefined}
-        slot={undefined}
-        onSelectComponent={onSelectComponent}
-        onSelected={onSelected}
-        services={services}
-        isAncestorDragging={false}
-        depth={0}
+        id={node.id}
+        key={node.id}
+        component={node.component}
+        parentId={node.parentId}
+        slot={node.slot}
+        onSelectComponent={setSelectedComponentId}
+        services={props.services}
+        droppable={!undroppableMap[node.id]}
+        depth={node.depth}
+        isSelected={editorStore.selectedComponent?.id === node.id}
+        isExpanded={!!expandedMap[node.id]}
+        onToggleExpand={onToggleExpand}
+        shouldShowSelfSlotName={shouldShowSlot}
+        hasChildrenSlots={node.hasChildrenSlots}
+        onDragStart={id => setDraggingId(id)}
+        onDragEnd={() => setDraggingId('')}
       />
-    ));
-  }, [onSelectComponent, onSelected, services, editorStore.resolvedComponents]);
+    );
+  });
 
   return (
     <VStack
@@ -108,28 +92,7 @@ export const StructureTree: React.FC<Props> = props => {
         <Text fontSize="lg" fontWeight="bold">
           Components
         </Text>
-        <AutoComplete
-          openOnFocus
-          onSelectOption={onSelectOption}
-          className={AutoCompleteStyle}
-        >
-          <AutoCompleteInput
-            value={search}
-            placeholder="Search component"
-            autoComplete="off"
-            size="md"
-            variant="filled"
-            marginTop={0}
-            onChange={onSearchChange}
-          />
-          <AutoCompleteList>
-            {realComponents.map(component => (
-              <AutoCompleteItem key={component.id} value={component.id}>
-                {component.id}
-              </AutoCompleteItem>
-            ))}
-          </AutoCompleteList>
-        </AutoComplete>
+        <ComponentSearch services={props.services} />
       </VStack>
       <Box
         ref={scrollWrapper}
@@ -143,13 +106,13 @@ export const StructureTree: React.FC<Props> = props => {
           componentEles
         ) : (
           <Box padding="4">
-            <Placeholder services={services} />
+            <Placeholder services={props.services} />
           </Box>
         )}
       </Box>
     </VStack>
   );
-};
+});
 
 function Placeholder(props: { services: EditorServices }) {
   return (
