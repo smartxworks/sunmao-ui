@@ -1,4 +1,4 @@
-import { SmallCloseIcon, TriangleDownIcon } from '@chakra-ui/icons';
+import { TriangleDownIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Spacer, Text } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 
@@ -7,7 +7,6 @@ type Props = {
   title: string;
   isSelected: boolean;
   onClick: () => void;
-  onClickRemove: () => void;
   noChevron: boolean;
   isExpanded?: boolean;
   onClickExpand: () => void;
@@ -16,6 +15,7 @@ type Props = {
   onMouseOver: () => void;
   onMouseLeave: () => void;
   paddingLeft: number;
+  actionMenu?: React.ReactNode;
 };
 
 const ChevronWidth = 24;
@@ -29,20 +29,18 @@ export const ComponentItemView: React.FC<Props> = props => {
     isExpanded,
     onClick,
     onClickExpand,
-    onClickRemove,
     onDragStart,
     onDragEnd,
     onMouseOver,
     onMouseLeave,
     paddingLeft,
+    actionMenu,
   } = props;
   const [isHover, setIsHover] = useState(false);
 
   const expandIcon = useMemo(
     () => (
       <IconButton
-        margin="auto"
-        flex="0 0 auto"
         aria-label="showChildren"
         size="xs"
         variant="unstyled"
@@ -98,7 +96,9 @@ export const ComponentItemView: React.FC<Props> = props => {
     <Box
       id={`tree-item-${id}`}
       width="full"
-      paddingY="1"
+      height="32px"
+      lineHeight="24px"
+      paddingY="4px"
       onMouseOver={_onMouseOver}
       onMouseLeave={_onMouseLeave}
       onDragStart={_onDragStart}
@@ -113,6 +113,7 @@ export const ComponentItemView: React.FC<Props> = props => {
         width="full"
         justify="space-between"
         spacing="0"
+        margin="auto"
         paddingLeft={`${paddingLeft + (noChevron ? ChevronWidth : 0)}px`}
       >
         {noChevron ? null : expandIcon}
@@ -127,17 +128,7 @@ export const ComponentItemView: React.FC<Props> = props => {
           {title}
         </Text>
         <Spacer />
-        {isHover ? (
-          <IconButton
-            variant="ghost"
-            colorScheme="red"
-            height="20px"
-            width="20px"
-            aria-label="remove"
-            icon={<SmallCloseIcon />}
-            onClick={onClickRemove}
-          />
-        ) : null}
+        {isHover ? actionMenu : undefined}
       </HStack>
     </Box>
   );

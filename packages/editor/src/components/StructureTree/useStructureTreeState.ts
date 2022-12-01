@@ -89,10 +89,10 @@ export function useStructureTreeState(editorStore: EditorStore) {
       setExpandedMap(prevMap => {
         if (prevMap[id]) return prevMap;
         const newExpandedMap = { ...prevMap };
-        let curr: string = nodesMap[id].parentId || '';
+        let curr: string = nodesMap[id]?.parentId || '';
         while (curr) {
           newExpandedMap[curr] = true;
-          curr = nodesMap[curr].parentId || '';
+          curr = nodesMap[curr]?.parentId || '';
         }
         return newExpandedMap;
       });

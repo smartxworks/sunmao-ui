@@ -1,13 +1,25 @@
 import React, { useCallback } from 'react';
-import { Text, VStack } from '@chakra-ui/react';
+import { CopyIcon, DeleteIcon, HamburgerIcon } from '@chakra-ui/icons';
+import {
+  Text,
+  VStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  IconButton,
+} from '@chakra-ui/react';
 import { isEqual, xor } from 'lodash';
 import { ComponentItemView } from './ComponentItemView';
 import { DropComponentWrapper } from './DropComponentWrapper';
 import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
 import { ComponentNodeWithState } from './type';
+import { AppModel } from '../../AppModel/AppModel';
+import { ComponentId } from '../../AppModel/IAppModel';
+import { RootId } from '../../constants';
 
-const IndentPadding = 24;
+const IndextWidth = 24;
 
 type Props = ComponentNodeWithState & {
   services: EditorServices;
@@ -34,9 +46,9 @@ const ComponentTree = (props: Props) => {
     onDragStart,
     onDragEnd,
   } = props;
-  const { registry, eventBus } = services;
+  const { registry, eventBus, appModelManager } = services;
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
-  const paddingLeft = depth * IndentPadding;
+  const paddingLeft = depth * IndextWidth;
 
   const onClickRemove = useCallback(() => {
     eventBus.send(
@@ -46,6 +58,24 @@ const ComponentTree = (props: Props) => {
       })
     );
   }, [component.id, eventBus, registry]);
+  const onClickDuplicate = useCallback(() => {
+    const copiedComponents = appModelManager.appModel.getComponentById(
+      component.id as ComponentId
+    );
+    const clonedComponent = new AppModel(
+      copiedComponents!.allComponents.map(c => c.toSchema()),
+      registry
+    ).getComponentById(component.id as ComponentId);
+    eventBus.send(
+      'operation',
+      genOperation(registry, 'pasteComponent', {
+        parentId: parentId || RootId,
+        slot: slot || '',
+        component: clonedComponent!,
+      })
+    );
+  }, [appModelManager.appModel, component.id, eventBus, parentId, registry, slot]);
+
   const onClickItem = useCallback(() => {
     onSelectComponent(component.id);
   }, [component.id, onSelectComponent]);
@@ -86,15 +116,17 @@ const ComponentTree = (props: Props) => {
                 fontSize={12}
                 color="gray.500"
                 paddingY={1}
-                paddingLeft={`${paddingLeft + IndentPadding}px`}
+                paddingLeft={`${paddingLeft + IndextWidth}px`}
               >
                 {_slot}
               </Text>
             ) : undefined}
             <Text
-              fontSize={12}
+              height="32px"
+              lineHeight="32px"
+              fontSize={14}
               color="gray.500"
-              paddingLeft={`${paddingLeft + IndentPadding + IndentPadding}px`}
+              paddingLeft={`${paddingLeft + IndextWidth * 2}px`}
             >
               Empty
             </Text>
@@ -146,7 +178,6 @@ const ComponentTree = (props: Props) => {
           title={component.id}
           isSelected={isSelected}
           onClick={onClickItem}
-          onClickRemove={onClickRemove}
           noChevron={slots.length === 0}
           isExpanded={isExpanded}
           onClickExpand={onClickExpand}
@@ -155,9 +186,31 @@ const ComponentTree = (props: Props) => {
           onMouseOver={onMouseOver}
           onMouseLeave={onMouseLeave}
           paddingLeft={paddingLeft}
+          actionMenu={
+            <Menu isLazy gutter={4}>
+              <MenuButton
+                as={IconButton}
+                variant="ghost"
+                height="24px"
+                width="24px"
+                minWidth="24px"
+                marginInlineEnd="8px !important"
+                icon={<HamburgerIcon width="16px" height="16px" />}
+                onClick={e => e.stopPropagation()}
+              />
+              <MenuList>
+                <MenuItem icon={<CopyIcon />} onClick={onClickDuplicate}>
+                  Duplicate
+                </MenuItem>
+                <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
+                  Remove
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          }
         />
-        {emptyChildrenSlotsPlaceholder}
       </DropComponentWrapper>
+      {emptyChildrenSlotsPlaceholder}
     </VStack>
   );
 };

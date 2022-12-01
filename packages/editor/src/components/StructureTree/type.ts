@@ -1,6 +1,6 @@
 import { ComponentSchema } from '@sunmao-ui/core';
 
-// These fields can be computed from the schema components
+// These fields can be computed from the schema
 export type ComponentNode = {
   id: string;
   component: ComponentSchema;
