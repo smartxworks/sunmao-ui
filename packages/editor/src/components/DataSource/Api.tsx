@@ -7,10 +7,12 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  Tag,
 } from '@chakra-ui/react';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { DataSourceItem } from './DataSourceItem';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import { EditorServices } from '../../types';
+import { ComponentNode } from '../StructureTree/ComponentNode';
 
 const COLOR_MAP = {
   GET: 'green',
@@ -22,14 +24,13 @@ const COLOR_MAP = {
 
 interface Props {
   apis: ComponentSchema[];
-  active: string;
-  onItemClick: (api: ComponentSchema) => void;
-  onItemRemove: (api: ComponentSchema) => void;
+  services: EditorServices;
 }
 
 export const Api: React.FC<Props> = props => {
+  const { apis, services } = props;
+  const { editorStore } = services;
   const [search, setSearch] = useState('');
-  const { apis, active, onItemClick, onItemRemove } = props;
   const list = useMemo(
     () => apis.filter(({ id }) => id.includes(search)),
     [search, apis]
@@ -37,22 +38,42 @@ export const Api: React.FC<Props> = props => {
   const ApiItems = () => (
     <>
       {list.map(api => {
-        const trait = api.traits.find(({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`);
+        const trait = api.traits.find(
+          ({ type }) => type === `${CORE_VERSION}/${CoreTraitName.Fetch}`
+        );
         const properties = trait!.properties;
         const method = (
           properties.method as string
         ).toUpperCase() as keyof typeof COLOR_MAP;
 
         return (
-          <DataSourceItem
+          <ComponentNode
+            id={api.id}
             key={api.id}
-            dataSource={api}
-            tag={method}
-            name={api.id}
-            active={active === api.id}
-            colorMap={COLOR_MAP}
-            onItemClick={onItemClick}
-            onItemRemove={onItemRemove}
+            component={api}
+            parentId={null}
+            slot={null}
+            onSelectComponent={editorStore.setSelectedComponentId}
+            services={services}
+            droppable={false}
+            depth={0}
+            isSelected={editorStore.selectedComponent?.id === api.id}
+            isExpanded={false}
+            onToggleExpand={() => undefined}
+            shouldShowSelfSlotName={false}
+            hasChildrenSlots={[]}
+            onDragStart={() => undefined}
+            onDragEnd={() => undefined}
+            prefix={
+              <Tag
+                size="sm"
+                colorScheme={COLOR_MAP[method]}
+                marginLeft="-3"
+                marginRight="1"
+              >
+                {method}
+              </Tag>
+            }
           />
         );
       })}

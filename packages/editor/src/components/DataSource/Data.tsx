@@ -7,22 +7,19 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  Tag,
 } from '@chakra-ui/react';
-import { DataSourceItem } from './DataSourceItem';
 import { EditorServices } from '../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { watch } from '@sunmao-ui/runtime';
+import { ComponentNode } from '../StructureTree/ComponentNode';
 
 interface Props {
   datas: ComponentSchema[];
-  active: string;
   title: string;
-  traitType: string;
   filterPlaceholder: string;
   emptyPlaceholder: string;
   services: EditorServices;
-  onItemClick: (state: ComponentSchema) => void;
-  onItemRemove: (state: ComponentSchema) => void;
 }
 
 const STATE_MAP: Record<string, string> = {
@@ -34,20 +31,11 @@ const STATE_MAP: Record<string, string> = {
 };
 
 export const Data: React.FC<Props> = props => {
-  const {
-    datas = [],
-    active,
-    onItemClick,
-    onItemRemove,
-    filterPlaceholder,
-    emptyPlaceholder,
-    title,
-    services,
-  } = props;
-  const { stateManager } = services;
+  const { datas = [], filterPlaceholder, emptyPlaceholder, title, services } = props;
+  const { stateManager, editorStore } = services;
   const { store } = stateManager;
   const [search, setSearch] = useState('');
-  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({...store});
+  const [reactiveStore, setReactiveStore] = useState<Record<string, any>>({ ...store });
   const list = useMemo(
     () => datas.filter(({ id }) => id.includes(search)),
     [search, datas]
@@ -60,23 +48,36 @@ export const Data: React.FC<Props> = props => {
 
     return stop;
   }, [store]);
-  
+
   const StateItems = () => (
     <>
       {list.map(state => {
+        const tag = Array.isArray(reactiveStore[state.id]?.value)
+          ? 'Array'
+          : STATE_MAP[typeof reactiveStore[state.id]?.value] ?? 'Any';
         return (
-          <DataSourceItem
+          <ComponentNode
+            id={state.id}
             key={state.id}
-            dataSource={state}
-            tag={
-              Array.isArray(reactiveStore[state.id]?.value)
-                ? 'Array'
-                : STATE_MAP[typeof reactiveStore[state.id]?.value] ?? 'Any'
+            component={state}
+            parentId={null}
+            slot={null}
+            onSelectComponent={editorStore.setSelectedComponentId}
+            services={services}
+            droppable={false}
+            depth={0}
+            isSelected={editorStore.selectedComponent?.id === state.id}
+            isExpanded={false}
+            onToggleExpand={() => undefined}
+            shouldShowSelfSlotName={false}
+            hasChildrenSlots={[]}
+            onDragStart={() => undefined}
+            onDragEnd={() => undefined}
+            prefix={
+              <Tag size="xs" colorScheme={tag} marginLeft="-3" marginRight="1">
+                {tag}
+              </Tag>
             }
-            name={state.id}
-            active={active === state.id}
-            onItemClick={onItemClick}
-            onItemRemove={onItemRemove}
           />
         );
       })}

@@ -12,11 +12,9 @@ import {
   Accordion,
 } from '@chakra-ui/react';
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { ComponentSchema } from '@sunmao-ui/core';
 import { Api } from './Api';
 import { Data } from './Data';
 import { EditorServices } from '../../types';
-import { ToolMenuTabs } from '../../constants/enum';
 import { DataSourceType, DATA_DATASOURCES } from '../../constants/dataSource';
 
 interface Props {
@@ -27,7 +25,7 @@ interface Props {
 const DATASOURCE_TYPES = Object.values(DataSourceType);
 
 export const DataSource: React.FC<Props> = props => {
-  const { active, services } = props;
+  const { services } = props;
   const { editorStore } = services;
   const NORMAL_DATASOURCES = DATA_DATASOURCES.map(item => ({
     ...item,
@@ -41,21 +39,21 @@ export const DataSource: React.FC<Props> = props => {
     );
     editorStore.setSelectedComponentId('');
   };
-  const onApiItemClick = (api: ComponentSchema) => {
-    editorStore.setActiveDataSourceId(api.id);
-    editorStore.setSelectedComponentId('');
-  };
-  const onDataSourceItemClick = (dataSource: ComponentSchema) => {
-    editorStore.setActiveDataSourceId(dataSource.id);
-    editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
-    editorStore.setSelectedComponentId('');
-  };
-  const onApiItemRemove = (api: ComponentSchema) => {
-    editorStore.removeDataSource(api);
-  };
-  const onStateItemRemove = (state: ComponentSchema) => {
-    editorStore.removeDataSource(state);
-  };
+  // const onApiItemClick = (api: ComponentSchema) => {
+  //   editorStore.setActiveDataSourceId(api.id);
+  //   editorStore.setSelectedComponentId(api.id);
+  // };
+  // const onDataSourceItemClick = (dataSource: ComponentSchema) => {
+  //   editorStore.setActiveDataSourceId(dataSource.id);
+  //   editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
+  //   editorStore.setSelectedComponentId(dataSource.id);
+  // };
+  // const onApiItemRemove = (api: ComponentSchema) => {
+  //   editorStore.removeDataSource(api);
+  // };
+  // const onStateItemRemove = (state: ComponentSchema) => {
+  //   editorStore.removeDataSource(state);
+  // };
   const MenuItems = () => (
     <>
       {DATASOURCE_TYPES.map(type => (
@@ -94,10 +92,8 @@ export const DataSource: React.FC<Props> = props => {
         allowMultiple
       >
         <Api
+          services={services}
           apis={editorStore.dataSources[DataSourceType.API] || []}
-          active={active}
-          onItemClick={onApiItemClick}
-          onItemRemove={onApiItemRemove}
         />
         {NORMAL_DATASOURCES.map(dataSourceItem => (
           <Data
@@ -105,12 +101,8 @@ export const DataSource: React.FC<Props> = props => {
             title={dataSourceItem.title}
             filterPlaceholder={dataSourceItem.filterPlaceholder}
             emptyPlaceholder={dataSourceItem.emptyPlaceholder}
-            traitType={dataSourceItem.traitType}
             datas={dataSourceItem.datas}
-            active={active}
             services={services}
-            onItemClick={onDataSourceItemClick}
-            onItemRemove={onStateItemRemove}
           />
         ))}
       </Accordion>
