@@ -15,12 +15,17 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { ComponentFormElementId } from '../../../constants';
+import { Static, Type } from '@sinclair/typebox';
 
 type ColorWidgetType = `${typeof CORE_VERSION}/${StyleWidgetName.Color}`;
 
+const ColorWidgetOption = Type.Object({
+  appendToBody: Type.Optional(Type.Boolean()),
+  appendToParent: Type.Optional(Type.Boolean()),
+});
 declare module '../../../types/widget' {
   interface WidgetOptionsMap {
-    'core/v1/color': {};
+    'core/v1/color': Static<typeof ColorWidgetOption>;
   }
 }
 
@@ -32,14 +37,33 @@ const SketchPicker = React.lazy(async () => {
 });
 
 export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props => {
-  const { value, onChange } = props;
-  const containerRef = useRef(document.getElementById(ComponentFormElementId) || null);
+  const { value, onChange, spec } = props;
+  const containerRef = useRef(
+    spec.widgetOptions?.appendToBody
+      ? null
+      : document.getElementById(ComponentFormElementId)
+  );
   const onColorChange = ({ rgb }: any) => {
     onChange(`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`);
   };
   const onInputChange = (value: string) => {
     onChange(value);
   };
+
+  const popoverContent = (
+    <PopoverContent w="auto">
+      <PopoverArrow />
+      <PopoverBody padding={0}>
+        <Suspense fallback={'Loading Color Picker'}>
+          <SketchPicker
+            width="250px"
+            color={value || '#fff'}
+            onChangeComplete={onColorChange}
+          />
+        </Suspense>
+      </PopoverBody>
+    </PopoverContent>
+  );
 
   return (
     <InputGroup>
@@ -64,20 +88,15 @@ export const ColorWidget: React.FC<WidgetProps<ColorWidgetType, string>> = props
               boxShadow="rgba(149, 157, 165, 0.2) 0px 8px 24px"
             />
           </PopoverTrigger>
-          <Portal containerRef={containerRef}>
-            <PopoverContent w="auto">
-              <PopoverArrow />
-              <PopoverBody padding={0}>
-                <Suspense fallback={'Loading Color Picker'}>
-                  <SketchPicker
-                    width="250px"
-                    color={value || '#fff'}
-                    onChangeComplete={onColorChange}
-                  />
-                </Suspense>
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
+          {spec.widgetOptions?.appendToParent ? (
+            popoverContent
+          ) : (
+            <Portal
+              containerRef={spec.widgetOptions?.appendToBody ? undefined : containerRef}
+            >
+              {popoverContent}
+            </Portal>
+          )}
         </Popover>
       </InputRightElement>
     </InputGroup>
@@ -88,5 +107,8 @@ export default implementWidget<ColorWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: StyleWidgetName.Color,
+  },
+  spec: {
+    options: ColorWidgetOption,
   },
 })(ColorWidget);

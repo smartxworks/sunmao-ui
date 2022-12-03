@@ -17,6 +17,8 @@ import { ArrayItemBox } from '../Form/ArrayItemBox';
 const ArrayFieldWidgetOptions = Type.Object({
   expressionOptions: Type.Optional(ExpressionWidgetOptionsSpec),
   displayedKeys: Type.Optional(Type.Array(Type.String())),
+  appendToBody: Type.Optional(Type.Boolean()),
+  appendToParent: Type.Optional(Type.Boolean()),
 });
 
 type ArrayFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.ArrayField}`;
@@ -101,5 +103,8 @@ export default implementWidget<ArrayFieldWidgetType>({
   version: CORE_VERSION,
   metadata: {
     name: CoreWidgetName.ArrayField,
+  },
+  spec: {
+    options: ArrayFieldWidgetOptions,
   },
 })(ArrayField);

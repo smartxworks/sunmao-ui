@@ -5,7 +5,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { generateDefaultValueFromSpec, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
 import { ArrayButtonGroup } from './ArrayButtonGroup';
-import { PopoverWidget } from '../Widgets/PopoverWidget';
+import { PopoverWidget, PopoverWidgetType } from '../Widgets/PopoverWidget';
 import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { WidgetProps } from '../../types/widget';
 import { get } from 'lodash';
@@ -46,7 +46,12 @@ const DEFAULT_KEYS = ['index'];
 const TableRow: React.FC<RowProps> = props => {
   const { value, itemSpec, spec, level, path, children, itemValue, itemIndex, onChange } =
     props;
-  const { expressionOptions, displayedKeys = [] } = spec.widgetOptions || {};
+  const {
+    expressionOptions,
+    displayedKeys = [],
+    appendToBody,
+    appendToParent,
+  } = spec.widgetOptions || {};
   const keys = displayedKeys.length ? displayedKeys : DEFAULT_KEYS;
   const mergedSpec = useMemo(
     () =>
@@ -57,9 +62,11 @@ const TableRow: React.FC<RowProps> = props => {
         },
         {
           expressionOptions,
+          appendToBody,
+          appendToParent,
         }
       ),
-    [itemSpec, expressionOptions]
+    [itemSpec, expressionOptions, appendToBody, appendToParent]
   );
   const nextPath = useMemo(() => path.concat(String(itemIndex)), [path, itemIndex]);
   const onPopoverWidgetChange = useCallback(
@@ -77,7 +84,7 @@ const TableRow: React.FC<RowProps> = props => {
         <PopoverWidget
           {...props}
           value={itemValue}
-          spec={mergedSpec}
+          spec={mergedSpec as WidgetProps<PopoverWidgetType>}
           path={nextPath}
           level={level + 1}
           onChange={onPopoverWidgetChange}
