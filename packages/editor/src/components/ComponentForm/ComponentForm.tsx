@@ -28,7 +28,8 @@ type Props = {
 export const ComponentForm: React.FC<Props> = observer(props => {
   const { services } = props;
   const { editorStore, registry, eventBus } = services;
-  const { selectedComponent, selectedComponentId } = editorStore;
+  const { selectedComponent, selectedComponentId, selectedComponentIsDataSource } =
+    editorStore;
   if (!selectedComponentId) {
     return (
       <Text p={2} fontSize="md">
@@ -123,6 +124,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           services={services}
         />
       ),
+      hide: selectedComponentIsDataSource,
     },
     {
       title: 'Traits',
@@ -142,15 +144,18 @@ export const ComponentForm: React.FC<Props> = observer(props => {
         allowMultiple
         onKeyDown={onKeyDown}
       >
-        {sections.map((section, i) => (
-          <FormSection
-            style={{ position: 'relative', zIndex: sections.length - i }}
-            title={section.title}
-            key={`${section.title}-${selectedComponentId}`}
-          >
-            {section.node}
-          </FormSection>
-        ))}
+        {sections.map((section, i) => {
+          if (section.hide) return undefined;
+          return (
+            <FormSection
+              style={{ position: 'relative', zIndex: sections.length - i }}
+              title={section.title}
+              key={`${section.title}-${selectedComponentId}`}
+            >
+              {section.node}
+            </FormSection>
+          );
+        })}
       </Accordion>
     </ErrorBoundary>
   );

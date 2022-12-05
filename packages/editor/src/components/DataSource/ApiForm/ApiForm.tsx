@@ -202,7 +202,7 @@ export const ApiForm: React.FC<Props> = props => {
         )}
         <CloseButton
           onClick={() => {
-            editorStore.setActiveDataSourceId(null);
+            editorStore.setSelectedComponentId('');
           }}
         />
       </HStack>

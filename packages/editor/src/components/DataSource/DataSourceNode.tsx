@@ -22,6 +22,13 @@ interface Props {
   services: EditorServices;
 }
 
+const COLOR_MAP = {
+  GET: 'green',
+  POST: 'orange',
+  PUT: 'yellow',
+  PATCH: 'yellow',
+  DELETE: 'red',
+};
 const STATE_MAP: Record<string, string> = {
   undefined: 'Any',
   boolean: 'Boolean',
@@ -30,7 +37,7 @@ const STATE_MAP: Record<string, string> = {
   object: 'Object',
 };
 
-export const Data: React.FC<Props> = props => {
+export const DataSourceNode: React.FC<Props> = props => {
   const { datas = [], filterPlaceholder, emptyPlaceholder, title, services } = props;
   const { stateManager, editorStore } = services;
   const { store } = stateManager;
@@ -52,9 +59,17 @@ export const Data: React.FC<Props> = props => {
   const StateItems = () => (
     <>
       {list.map(state => {
-        const tag = Array.isArray(reactiveStore[state.id]?.value)
-          ? 'Array'
-          : STATE_MAP[typeof reactiveStore[state.id]?.value] ?? 'Any';
+        let tag = '';
+
+        const trait = state.traits.find(({ type }) => type === `core/v1/fetch`);
+        if (trait?.properties) {
+          tag = (trait.properties.method as string).toUpperCase();
+        } else {
+          tag = Array.isArray(reactiveStore[state.id]?.value)
+            ? 'Array'
+            : STATE_MAP[typeof reactiveStore[state.id]?.value] ?? 'Any';
+        }
+
         return (
           <ComponentNode
             id={state.id}
@@ -70,13 +85,20 @@ export const Data: React.FC<Props> = props => {
             isExpanded={false}
             onToggleExpand={() => undefined}
             shouldShowSelfSlotName={false}
-            hasChildrenSlots={[]}
+            notEmptySlots={[]}
             onDragStart={() => undefined}
             onDragEnd={() => undefined}
             prefix={
-              <Tag size="xs" colorScheme={tag} marginLeft="-3" marginRight="1">
-                {tag}
-              </Tag>
+              tag ? (
+                <Tag
+                  size="sm"
+                  colorScheme={COLOR_MAP[tag as keyof typeof COLOR_MAP]}
+                  marginLeft="-3"
+                  marginRight="1"
+                >
+                  {tag}
+                </Tag>
+              ) : undefined
             }
           />
         );

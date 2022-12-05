@@ -8,7 +8,7 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer } from './CodeEditor';
-import { DataSource } from './DataSource';
+import { DataSourceList } from './DataSource';
 import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
 import { ApiForm } from './DataSource/ApiForm';
 import { ComponentForm } from './ComponentForm';
@@ -54,6 +54,7 @@ export const Editor: React.FC<Props> = observer(
       modules,
       activeDataSource,
       activeDataSourceType,
+      selectedComponent,
       toolMenuTab,
       explorerMenuTab,
       setToolMenuTab,
@@ -86,19 +87,7 @@ export const Editor: React.FC<Props> = observer(
       ) : null;
     }, [App, app, isDisplayApp]);
 
-    const inspectForm = useMemo(() => {
-      if (activeDataSource && activeDataSourceType) {
-        return activeDataSourceType === DataSourceType.API ? null : (
-          <DataForm
-            datasource={activeDataSource}
-            services={services}
-            traitType={DATASOURCE_TRAIT_TYPE_MAP[activeDataSourceType]}
-          />
-        );
-      } else {
-        return <ComponentForm services={services} />;
-      }
-    }, [activeDataSource, services, activeDataSourceType]);
+    const inspectForm = <ComponentForm services={services} />;
 
     const onRefresh = useCallback(() => {
       setIsDisplayApp(false);
@@ -184,7 +173,7 @@ export const Editor: React.FC<Props> = observer(
                     <StructureTree services={services} />
                   </TabPanel>
                   <TabPanel height="full" overflow="auto" p={0}>
-                    <DataSource active={activeDataSource?.id ?? ''} services={services} />
+                    <DataSourceList active={activeDataSource?.id ?? ''} services={services} />
                   </TabPanel>
                   <TabPanel overflow="auto" p={0} height="100%">
                     <StateViewer store={stateStore} />
@@ -235,10 +224,10 @@ export const Editor: React.FC<Props> = observer(
                 </Tabs>
               </Box>
             </Resizable>
-            {activeDataSource && activeDataSourceType === DataSourceType.API ? (
+            {selectedComponent && activeDataSourceType === 'core/v1/fetch' ? (
               <ApiForm
-                key={activeDataSource.id}
-                api={activeDataSource}
+                key={selectedComponentId}
+                api={selectedComponent}
                 services={services}
                 store={stateStore}
                 className={ApiFormStyle}

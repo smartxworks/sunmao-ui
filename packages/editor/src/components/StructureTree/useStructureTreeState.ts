@@ -1,5 +1,4 @@
 import { ComponentSchema } from '@sunmao-ui/core';
-import { CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
 import { useCallback, useMemo, useState } from 'react';
 import { EditorStore } from '../../services/EditorStore';
 import {
@@ -17,10 +16,7 @@ export function useStructureTreeState(editorStore: EditorStore) {
     const nodes: ComponentNode[] = [];
     const nodesMapCache: Record<string, ComponentNode> = {};
     const depthMap: Record<string, number> = {};
-    const uiComponents = editorStore.components.filter(
-      c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`
-    );
-    const resolvedComponents = resolveApplicationComponents(uiComponents);
+    const resolvedComponents = resolveApplicationComponents(editorStore.uiComponents);
     const { topLevelComponents, childrenMap } = resolvedComponents;
 
     topLevelComponents.forEach(c => {

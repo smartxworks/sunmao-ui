@@ -12,6 +12,7 @@ export default implementRuntimeComponent({
     annotations: {
       category: 'Advance',
     },
+    isDataSource: true,
   },
   spec: {
     properties: Type.Object({}),

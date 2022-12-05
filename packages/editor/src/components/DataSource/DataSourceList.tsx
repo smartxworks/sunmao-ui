@@ -12,10 +12,10 @@ import {
   Accordion,
 } from '@chakra-ui/react';
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { Api } from './Api';
-import { Data } from './Data';
+import { DataSourceNode } from './DataSourceNode';
 import { EditorServices } from '../../types';
-import { DataSourceType, DATA_DATASOURCES } from '../../constants/dataSource';
+import { DataSourceType } from '../../constants/dataSource';
+import { groupBy } from 'lodash';
 
 interface Props {
   active: string;
@@ -24,14 +24,21 @@ interface Props {
 
 const DATASOURCE_TYPES = Object.values(DataSourceType);
 
-export const DataSource: React.FC<Props> = props => {
+export const DataSourceList: React.FC<Props> = props => {
   const { services } = props;
   const { editorStore } = services;
-  const NORMAL_DATASOURCES = DATA_DATASOURCES.map(item => ({
-    ...item,
-    title: item.type,
-    datas: editorStore.dataSources[item.type],
-  }));
+  const group = groupBy(editorStore.dataSources, c => c.traits[0]?.type);
+  // const NORMAL_DATASOURCES = DATA_DATASOURCES.map(item => ({
+  //   ...item,
+  //   title: item.type,
+  //   datas: editorStore.dataSources[item.type],
+  // }));
+  const NORMAL_DATASOURCES = Object.keys(group).map(type => {
+    return {
+      title: type,
+      datas: group[type],
+    };
+  });
   const onMenuItemClick = (type: DataSourceType) => {
     editorStore.createDataSource(
       type,
@@ -91,16 +98,12 @@ export const DataSource: React.FC<Props> = props => {
         defaultIndex={[0].concat(NORMAL_DATASOURCES.map((_, i) => i + 1))}
         allowMultiple
       >
-        <Api
-          services={services}
-          apis={editorStore.dataSources[DataSourceType.API] || []}
-        />
         {NORMAL_DATASOURCES.map(dataSourceItem => (
-          <Data
+          <DataSourceNode
             key={dataSourceItem.title}
             title={dataSourceItem.title}
-            filterPlaceholder={dataSourceItem.filterPlaceholder}
-            emptyPlaceholder={dataSourceItem.emptyPlaceholder}
+            filterPlaceholder={'filter'}
+            emptyPlaceholder={'Empty'}
             datas={dataSourceItem.datas}
             services={services}
           />

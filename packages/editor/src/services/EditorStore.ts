@@ -5,15 +5,10 @@ import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import type { SchemaValidator, ValidateErrorResult } from '../validator';
-import {
-  DataSourceType,
-  DATASOURCE_NAME_MAP,
-  DATASOURCE_TRAIT_TYPE_MAP,
-} from '../constants/dataSource';
+import { DataSourceType, DATASOURCE_NAME_MAP } from '../constants/dataSource';
 import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
-import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { isEqual } from 'lodash';
 import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
@@ -54,6 +49,8 @@ export class EditorStore {
 
   // data source
   activeDataSourceId: string | null = null;
+
+  private isDataSourceTypeCache: Record<string, boolean> = {};
 
   constructor(
     private eventBus: EventBusType,
@@ -157,6 +154,11 @@ export class EditorStore {
     return this._selectedComponentId;
   }
 
+  get selectedComponentIsDataSource() {
+    if (!this.selectedComponent) return false;
+    return !!this.isDataSourceTypeCache[this.selectedComponent.type];
+  }
+
   get dragOverComponentId() {
     return this._dragOverComponentId;
   }
@@ -182,26 +184,28 @@ export class EditorStore {
     }
   }
 
-  get dataSources(): Record<string, ComponentSchema[]> {
-    const dataSources: Record<string, ComponentSchema[]> = {};
-
-    this.components.forEach(component => {
-      if (component.type === `${CORE_VERSION}/${CoreComponentName.Dummy}`) {
-        component.traits.forEach(trait => {
-          Object.entries(DATASOURCE_TRAIT_TYPE_MAP).forEach(
-            ([dataSourceType, traitType]) => {
-              if (trait.type === traitType) {
-                dataSources[dataSourceType] = (dataSources[dataSourceType] || []).concat(
-                  component
-                );
-              }
-            }
-          );
-        });
+  get uiComponents(): ComponentSchema[] {
+    return this.components.filter(component => {
+      if (this.isDataSourceTypeCache[component.type]) return false;
+      const spec = this.registry.getComponentByType(component.type);
+      if (spec.metadata.isDataSource) {
+        this.isDataSourceTypeCache[component.type] = true;
+        return false;
       }
+      return true;
     });
+  }
 
-    return dataSources;
+  get dataSources(): ComponentSchema[] {
+    return this.components.filter(component => {
+      if (this.isDataSourceTypeCache[component.type]) return true;
+      const spec = this.registry.getComponentByType(component.type);
+      if (spec.metadata.isDataSource) {
+        this.isDataSourceTypeCache[component.type] = true;
+        return true;
+      }
+      return false;
+    });
   }
 
   get activeDataSource(): ComponentSchema | null {
@@ -210,19 +214,10 @@ export class EditorStore {
     );
   }
 
-  get activeDataSourceType(): DataSourceType | null {
-    for (const trait of this.activeDataSource?.traits || []) {
-      const [dataSourceType] =
-        Object.entries(DATASOURCE_TRAIT_TYPE_MAP).find(
-          ([, traitType]) => trait.type === traitType
-        ) || [];
-
-      if (dataSourceType) {
-        return dataSourceType as DataSourceType;
-      }
-    }
-
-    return null;
+  get activeDataSourceType(): string | null {
+    if (!this.selectedComponent) return null;
+    const isDataSource = this.isDataSourceTypeCache[this.selectedComponent.type];
+    return isDataSource ? this.selectedComponent.traits[0].type : null;
   }
 
   clearSunmaoGlobalState() {
@@ -315,7 +310,7 @@ export class EditorStore {
     };
 
     const id = `${DATASOURCE_NAME_MAP[type]}${getCount(
-      this.dataSources[type],
+      this.dataSources,
       DATASOURCE_NAME_MAP[type]
     )}`;
 
