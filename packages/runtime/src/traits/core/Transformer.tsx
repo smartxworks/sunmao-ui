@@ -16,6 +16,7 @@ export default implementRuntimeTrait({
   metadata: {
     name: CoreTraitName.Transformer,
     description: 'transform the value',
+    isDataSource: true,
   },
   spec: {
     properties: TransformerTraitPropertiesSpec,

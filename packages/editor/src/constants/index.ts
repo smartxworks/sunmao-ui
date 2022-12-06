@@ -7,14 +7,12 @@ export const unremovableTraits = [`${CORE_VERSION}/${CoreTraitName.Slot}`];
 export const hideCreateTraitsList = [
   `${CORE_VERSION}/${CoreTraitName.Event}`,
   `${CORE_VERSION}/${CoreTraitName.Style}`,
-  // `${CORE_VERSION}/${CoreTraitName.Fetch}`,
   `${CORE_VERSION}/${CoreTraitName.Slot}`,
 ];
 
 export const hasSpecialFormTraitList = [
   `${CORE_VERSION}/${CoreTraitName.Event}`,
   `${CORE_VERSION}/${CoreTraitName.Style}`,
-  // `${CORE_VERSION}/${CoreTraitName.Fetch}`,
 ];
 
 export const RootId = '__root__';

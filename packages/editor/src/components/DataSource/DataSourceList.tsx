@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   VStack,
   Flex,
@@ -10,65 +10,114 @@ import {
   MenuList,
   IconButton,
   Accordion,
+  MenuGroup,
 } from '@chakra-ui/react';
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { DataSourceNode } from './DataSourceNode';
+import { DataSourceGroup } from './DataSourceGroup';
 import { EditorServices } from '../../types';
-import { DataSourceType } from '../../constants/dataSource';
 import { groupBy } from 'lodash';
+import { genOperation } from '../../operations';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
+import { JSONSchema7 } from 'json-schema';
+import { ToolMenuTabs } from '../../constants/enum';
 
 interface Props {
-  active: string;
   services: EditorServices;
 }
 
-const DATASOURCE_TYPES = Object.values(DataSourceType);
-
 export const DataSourceList: React.FC<Props> = props => {
   const { services } = props;
-  const { editorStore } = services;
-  const group = groupBy(editorStore.dataSources, c => c.traits[0]?.type);
-  // const NORMAL_DATASOURCES = DATA_DATASOURCES.map(item => ({
-  //   ...item,
-  //   title: item.type,
-  //   datas: editorStore.dataSources[item.type],
-  // }));
-  const NORMAL_DATASOURCES = Object.keys(group).map(type => {
+  const { editorStore, eventBus, registry } = services;
+  const { dataSources, setSelectedComponentId, setToolMenuTab } = editorStore;
+  const tDataSources = dataSources.filter(ds => ds.type === 'core/v1/dummy');
+  const cDataSources = dataSources.filter(ds => ds.type !== 'core/v1/dummy');
+  const cdsMap = groupBy(cDataSources, c => c.type);
+  const tdsMap = groupBy(tDataSources, c => c.traits[0]?.type);
+  const cdsGroups = Object.keys(cdsMap).map(type => {
     return {
       title: type,
-      datas: group[type],
+      dataSources: cdsMap[type],
+      type: 'component',
     };
   });
-  const onMenuItemClick = (type: DataSourceType) => {
-    editorStore.createDataSource(
-      type,
-      type === DataSourceType.API ? {} : { key: 'value' }
-    );
-    editorStore.setSelectedComponentId('');
-  };
-  // const onApiItemClick = (api: ComponentSchema) => {
-  //   editorStore.setActiveDataSourceId(api.id);
-  //   editorStore.setSelectedComponentId(api.id);
-  // };
-  // const onDataSourceItemClick = (dataSource: ComponentSchema) => {
-  //   editorStore.setActiveDataSourceId(dataSource.id);
-  //   editorStore.setToolMenuTab(ToolMenuTabs.INSPECT);
-  //   editorStore.setSelectedComponentId(dataSource.id);
-  // };
-  // const onApiItemRemove = (api: ComponentSchema) => {
-  //   editorStore.removeDataSource(api);
-  // };
-  // const onStateItemRemove = (state: ComponentSchema) => {
-  //   editorStore.removeDataSource(state);
-  // };
-  const MenuItems = () => (
-    <>
-      {DATASOURCE_TYPES.map(type => (
-        <MenuItem key={type} onClick={() => onMenuItemClick(type)}>
-          {type}
-        </MenuItem>
-      ))}
-    </>
+  const tdsGroups = Object.keys(tdsMap).map(type => {
+    return {
+      title: type,
+      dataSources: tdsMap[type],
+      type: 'trait',
+    };
+  });
+
+  const dsGroups = cdsGroups.concat(tdsGroups);
+
+  // cdsTypes: component data source types
+  // tdsTypes: trait data source types
+  const { cdsTypes, tdsTypes } = useMemo(() => {
+    const cdsTypes = registry
+      .getAllComponents()
+      .filter(c => c.metadata.isDataSource && c.metadata.name !== 'dummy')
+      .map(c => `${c.version}/${c.metadata.name}`);
+    const tdsTypes = registry
+      .getAllTraits()
+      .filter(t => t.metadata.isDataSource)
+      .map(t => `${t.version}/${t.metadata.name}`);
+    return { cdsTypes, tdsTypes };
+  }, [registry]);
+
+  const getNewId = useCallback(
+    (name: string): string => {
+      let count = dataSources.length;
+      let id = `${name}${count}`;
+      const ids = dataSources.map(({ id }) => id);
+
+      while (ids.includes(id)) {
+        id = `${name}${++count}`;
+      }
+
+      return `${name}${count}`;
+    },
+    [dataSources]
+  );
+  const onCreateDSFromComponent = useCallback(
+    (type: string) => {
+      const name = type.split('/')[2];
+      const id = getNewId(name);
+
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'createComponent', {
+          componentType: type,
+          componentId: id,
+        })
+      );
+
+      setSelectedComponentId(id);
+      setToolMenuTab(ToolMenuTabs.INSPECT);
+    },
+    [eventBus, getNewId, registry, setSelectedComponentId, setToolMenuTab]
+  );
+  const onCreateDSFromTrait = useCallback(
+    (type: string) => {
+      const propertiesSpec = registry.getTraitByType(type).spec.properties;
+      const defaultProperties = generateDefaultValueFromSpec(propertiesSpec, {
+        genArrayItemDefaults: true,
+      });
+      const name = type.split('/')[2];
+      const id = getNewId(name);
+
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'createDataSource', {
+          id,
+          type,
+          defaultProperties: defaultProperties as JSONSchema7,
+        })
+      );
+
+      setSelectedComponentId(id);
+      setToolMenuTab(ToolMenuTabs.INSPECT);
+    },
+    [eventBus, getNewId, registry, setSelectedComponentId, setToolMenuTab]
   );
 
   return (
@@ -89,22 +138,36 @@ export const DataSourceList: React.FC<Props> = props => {
             rightIcon={<ChevronDownIcon />}
           />
           <MenuList>
-            <MenuItems />
+            {cdsTypes.length ? (
+              <MenuGroup title="From Component">
+                {cdsTypes.map(type => (
+                  <MenuItem key={type} onClick={() => onCreateDSFromComponent(type)}>
+                    {type}
+                  </MenuItem>
+                ))}
+              </MenuGroup>
+            ) : undefined}
+            <MenuGroup title="From Trait">
+              {tdsTypes.map(type => (
+                <MenuItem key={type} onClick={() => onCreateDSFromTrait(type)}>
+                  {type}
+                </MenuItem>
+              ))}
+            </MenuGroup>
           </MenuList>
         </Menu>
       </Flex>
       <Accordion
         reduceMotion
-        defaultIndex={[0].concat(NORMAL_DATASOURCES.map((_, i) => i + 1))}
+        defaultIndex={[0].concat(dsGroups.map((_, i) => i + 1))}
         allowMultiple
       >
-        {NORMAL_DATASOURCES.map(dataSourceItem => (
-          <DataSourceNode
-            key={dataSourceItem.title}
-            title={dataSourceItem.title}
-            filterPlaceholder={'filter'}
-            emptyPlaceholder={'Empty'}
-            datas={dataSourceItem.datas}
+        {dsGroups.map(group => (
+          <DataSourceGroup
+            key={group.title}
+            title={group.title}
+            type={group.type}
+            dataSources={group.dataSources}
             services={services}
           />
         ))}

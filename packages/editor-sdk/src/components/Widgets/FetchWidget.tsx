@@ -22,7 +22,7 @@ declare module '../../types/widget' {
 
 export const FetchWidget: React.FC<WidgetProps<FetchWidgetType>> = props => {
   const { value, onChange, component, services } = props;
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Box>
       <Button onClick={() => setIsOpen(true)}>Edit In Modal</Button>

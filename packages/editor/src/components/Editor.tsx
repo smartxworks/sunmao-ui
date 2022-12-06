@@ -39,7 +39,6 @@ export const Editor: React.FC<Props> = observer(
       components,
       selectedComponentId,
       modules,
-      activeDataSource,
       toolMenuTab,
       explorerMenuTab,
       setToolMenuTab,
@@ -158,10 +157,7 @@ export const Editor: React.FC<Props> = observer(
                     <StructureTree services={services} />
                   </TabPanel>
                   <TabPanel height="full" overflow="auto" p={0}>
-                    <DataSourceList
-                      active={activeDataSource?.id ?? ''}
-                      services={services}
-                    />
+                    <DataSourceList services={services} />
                   </TabPanel>
                   <TabPanel overflow="auto" p={0} height="100%">
                     <StateViewer store={stateStore} />
@@ -212,15 +208,6 @@ export const Editor: React.FC<Props> = observer(
                 </Tabs>
               </Box>
             </Resizable>
-            {/* {selectedComponent && activeDataSourceType === 'core/v1/fetch' ? (
-              <ApiForm
-                key={selectedComponentId}
-                api={selectedComponent}
-                services={services}
-                store={stateStore}
-                className={ApiFormStyle}
-              />
-            ) : null} */}
           </Flex>
         </>
       );

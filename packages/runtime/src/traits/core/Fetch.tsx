@@ -60,6 +60,7 @@ export default implementRuntimeTrait({
   metadata: {
     name: CoreTraitName.Fetch,
     description: 'fetch data to store',
+    isDataSource: true,
   },
   spec: {
     properties: Type.Object({
