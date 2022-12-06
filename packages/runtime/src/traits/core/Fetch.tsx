@@ -10,38 +10,50 @@ import {
 import { runEventHandler } from '../../utils/runEventHandler';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 
-export const FetchTraitPropertiesSpec = Type.Object({
-  url: Type.String({ title: 'URL' }), // {format:uri}?;
-  method: Type.KeyOf(
-    Type.Object({
-      get: Type.String(),
-      post: Type.String(),
-      put: Type.String(),
-      delete: Type.String(),
-      patch: Type.String(),
+export const FetchTraitPropertiesSpec = Type.Object(
+  {
+    url: Type.String({ title: 'URL' }), // {format:uri}?;
+    method: Type.KeyOf(
+      Type.Object({
+        get: Type.String(),
+        post: Type.String(),
+        put: Type.String(),
+        delete: Type.String(),
+        patch: Type.String(),
+      }),
+      { title: 'Method' }
+    ), // {pattern: /^(get|post|put|delete)$/i}
+    lazy: Type.Boolean({ title: 'Lazy' }),
+    disabled: Type.Boolean({ title: 'Disabled' }),
+    headers: Type.Record(Type.String(), Type.String(), {
+      title: 'Headers',
     }),
-    { title: 'Method' }
-  ), // {pattern: /^(get|post|put|delete)$/i}
-  lazy: Type.Boolean({ title: 'Lazy' }),
-  disabled: Type.Boolean({ title: 'Disabled' }),
-  headers: Type.Record(Type.String(), Type.String(), {
-    title: 'Headers',
-  }),
-  body: Type.Record(Type.String(), Type.Any(), {
-    title: 'Body',
-    widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
-  }),
-  bodyType: Type.KeyOf(
-    Type.Object({
-      json: Type.String(),
-      formData: Type.String(),
-      raw: Type.String(),
+    body: Type.Record(Type.String(), Type.Any(), {
+      title: 'Body',
+      widget: `${CORE_VERSION}/${CoreWidgetName.RecordField}`,
     }),
-    { title: 'Body Type' }
-  ),
-  onComplete: Type.Array(EventCallBackHandlerSpec),
-  onError: Type.Array(EventCallBackHandlerSpec),
-});
+    bodyType: Type.KeyOf(
+      Type.Object({
+        json: Type.String(),
+        formData: Type.String(),
+        raw: Type.String(),
+      }),
+      { title: 'Body Type' }
+    ),
+    onComplete: Type.Array(EventCallBackHandlerSpec, {
+      widgetOptions: { appendToParent: true },
+    }),
+    onError: Type.Array(EventCallBackHandlerSpec, {
+      widgetOptions: { appendToParent: true },
+    }),
+  },
+  {
+    widget: 'core/v1/fetch',
+    widgetOptions: {
+      isDisplayLabel: false,
+    },
+  }
+);
 
 export default implementRuntimeTrait({
   version: CORE_VERSION,
@@ -50,7 +62,9 @@ export default implementRuntimeTrait({
     description: 'fetch data to store',
   },
   spec: {
-    properties: FetchTraitPropertiesSpec,
+    properties: Type.Object({
+      config: FetchTraitPropertiesSpec,
+    }),
     state: Type.Object({
       fetch: Type.Object({
         loading: Type.Boolean(),
@@ -71,22 +85,26 @@ export default implementRuntimeTrait({
   },
 })(() => {
   return ({
+    config,
     trait,
-    url,
-    method,
-    lazy: _lazy,
-    headers: _headers,
-    body,
-    bodyType,
-    onComplete,
-    onError,
     mergeState,
     services,
     subscribeMethods,
     componentId,
-    disabled,
     slotKey,
   }) => {
+    const {
+      url,
+      method,
+      lazy: _lazy,
+      headers: _headers,
+      body,
+      bodyType,
+      onComplete,
+      onError,
+      disabled,
+    } = config;
+    const rawConfig = trait.properties.config;
     const lazy = _lazy === undefined ? true : _lazy;
 
     const fetchData = () => {
@@ -155,7 +173,8 @@ export default implementRuntimeTrait({
                 error: undefined,
               },
             });
-            const rawOnComplete = trait.properties.onComplete;
+            const rawOnComplete =
+              typeof rawConfig === 'string' ? [] : rawConfig.onComplete;
 
             onComplete?.forEach((_, index) => {
               runEventHandler(
@@ -178,7 +197,7 @@ export default implementRuntimeTrait({
                 error,
               },
             });
-            const rawOnError = trait.properties.onError;
+            const rawOnError = typeof rawConfig === 'string' ? [] : rawConfig.onError;
 
             onError?.forEach((_, index) => {
               runEventHandler(onError[index], rawOnError, index, services, slotKey)();
@@ -197,7 +216,7 @@ export default implementRuntimeTrait({
               error: error.toString(),
             },
           });
-          const rawOnError = trait.properties.onError;
+          const rawOnError = typeof rawConfig === 'string' ? [] : rawConfig.onError;
 
           onError?.forEach((_, index) => {
             runEventHandler(onError[index], rawOnError, index, services, slotKey)();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { JSONSchema7 } from 'json-schema';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { EditorServices } from './editor';
+import { EditorServicesInterface } from './editor';
 import * as TypeBox from '@sinclair/typebox';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -144,7 +144,7 @@ export type WidgetProps<
       widget?: keyof WidgetOptionsMap;
       widgetOptions?: WidgetOptionsMap[WidgetType];
     };
-  services: EditorServices;
+  services: EditorServicesInterface;
   path: string[];
   level: number;
   value: ValueType;

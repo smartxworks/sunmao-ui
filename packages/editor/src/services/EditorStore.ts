@@ -344,20 +344,6 @@ export class EditorStore {
     }
   };
 
-  changeDataSourceName = (dataSource: ComponentSchema, name: string) => {
-    this.eventBus.send(
-      'operation',
-      genOperation(this.registry, 'modifyComponentId', {
-        componentId: dataSource.id,
-        newId: name,
-      })
-    );
-
-    const component = this.components.find(({ id: componentId }) => componentId === name);
-
-    this.setActiveDataSourceId(component!.id);
-  };
-
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
     this.explorerMenuTab = val;
   };

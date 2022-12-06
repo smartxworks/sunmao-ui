@@ -9,16 +9,12 @@ import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer } from './CodeEditor';
 import { DataSourceList } from './DataSource';
-import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
-import { ApiForm } from './DataSource/ApiForm';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
-import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
-import { DataForm } from './DataSource/DataForm';
 import { Explorer } from './Explorer';
 import { Resizable } from 're-resizable';
 import { CodeModeModal } from './CodeModeModal';
@@ -36,15 +32,6 @@ type Props = {
   onRefresh: () => void;
 };
 
-const ApiFormStyle = css`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-`;
-
 export const Editor: React.FC<Props> = observer(
   ({ App, stateStore, services, libs, dependencies, onRefresh: onRefreshApp }) => {
     const { editorStore } = services;
@@ -53,8 +40,6 @@ export const Editor: React.FC<Props> = observer(
       selectedComponentId,
       modules,
       activeDataSource,
-      activeDataSourceType,
-      selectedComponent,
       toolMenuTab,
       explorerMenuTab,
       setToolMenuTab,
@@ -173,7 +158,10 @@ export const Editor: React.FC<Props> = observer(
                     <StructureTree services={services} />
                   </TabPanel>
                   <TabPanel height="full" overflow="auto" p={0}>
-                    <DataSourceList active={activeDataSource?.id ?? ''} services={services} />
+                    <DataSourceList
+                      active={activeDataSource?.id ?? ''}
+                      services={services}
+                    />
                   </TabPanel>
                   <TabPanel overflow="auto" p={0} height="100%">
                     <StateViewer store={stateStore} />
@@ -224,7 +212,7 @@ export const Editor: React.FC<Props> = observer(
                 </Tabs>
               </Box>
             </Resizable>
-            {selectedComponent && activeDataSourceType === 'core/v1/fetch' ? (
+            {/* {selectedComponent && activeDataSourceType === 'core/v1/fetch' ? (
               <ApiForm
                 key={selectedComponentId}
                 api={selectedComponent}
@@ -232,7 +220,7 @@ export const Editor: React.FC<Props> = observer(
                 store={stateStore}
                 className={ApiFormStyle}
               />
-            ) : null}
+            ) : null} */}
           </Flex>
         </>
       );
