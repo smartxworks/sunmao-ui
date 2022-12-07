@@ -7,7 +7,7 @@ export type ComponentNode = {
   parentId: string | null;
   slot: string | null;
   depth: number;
-  hasChildrenSlots: string[];
+  notEmptySlots: string[];
 };
 
 // These fields need computed with UI State

@@ -1,13 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Text, VStack } from '@chakra-ui/react';
-import { ComponentTreeWrapper } from './ComponentTree';
-import { DropComponentWrapper } from './DropComponentWrapper';
-import ErrorBoundary from '../ErrorBoundary';
-import { EditorServices } from '../../types';
 import scrollIntoView from 'scroll-into-view';
 import { observer } from 'mobx-react-lite';
+import { ComponentNode } from './ComponentNode';
+import { DropComponentWrapper } from './DropComponentWrapper';
+import ErrorBoundary from '../ErrorBoundary';
 import { useStructureTreeState } from './useStructureTreeState';
 import { ComponentSearch } from './ComponentSearch';
+import { EditorServices } from '../../types';
 
 type Props = {
   services: EditorServices;
@@ -27,6 +27,7 @@ export const StructureTree: React.FC<Props> = observer(props => {
     setDraggingId,
   } = useStructureTreeState(editorStore);
 
+  // auto expand and scroll node into view when the node is selected
   useEffect(() => {
     expandNode(selectedComponentId);
 
@@ -36,6 +37,7 @@ export const StructureTree: React.FC<Props> = observer(props => {
 
       const wrapperRect = scrollWrapper.current?.getBoundingClientRect();
       const eleRect = selectedElement?.getBoundingClientRect();
+      // check whether selected node is outside of view
       if (
         selectedElement &&
         eleRect &&
@@ -43,8 +45,7 @@ export const StructureTree: React.FC<Props> = observer(props => {
         (eleRect.top < wrapperRect.top ||
           eleRect.top > wrapperRect.top + wrapperRect?.height)
       ) {
-        // check selected element is outside of view
-        scrollIntoView(selectedElement, { time: 300, align: { lockX: true } });
+        scrollIntoView(selectedElement, { align: { lockX: true } });
       }
     });
   }, [expandNode, selectedComponentId]);
@@ -52,6 +53,10 @@ export const StructureTree: React.FC<Props> = observer(props => {
   const componentEles = shouldRenderNodes.map((node, i) => {
     const prevNode = i > 0 ? shouldRenderNodes[i - 1] : null;
     let shouldShowSlot = false;
+    // Conditions in which a component should show the slot name it belongs
+    // 1. It is in a slot and the slot is not 'content'.
+    // 2. And its previous node is its parent(has the same parent).
+    // 3. Or its previous node is its sibling and is in different slot.
     if (node.slot && node.slot !== 'content' && prevNode) {
       const prevNodeIsParent = prevNode.id === node.parentId;
       const prevNodeInDifferentSlot =
@@ -59,7 +64,7 @@ export const StructureTree: React.FC<Props> = observer(props => {
       shouldShowSlot = prevNodeIsParent || prevNodeInDifferentSlot;
     }
     return (
-      <ComponentTreeWrapper
+      <ComponentNode
         id={node.id}
         key={node.id}
         component={node.component}
@@ -73,7 +78,7 @@ export const StructureTree: React.FC<Props> = observer(props => {
         isExpanded={!!expandedMap[node.id]}
         onToggleExpand={onToggleExpand}
         shouldShowSelfSlotName={shouldShowSlot}
-        hasChildrenSlots={node.hasChildrenSlots}
+        notEmptySlots={node.notEmptySlots}
         onDragStart={id => setDraggingId(id)}
         onDragEnd={() => setDraggingId('')}
       />

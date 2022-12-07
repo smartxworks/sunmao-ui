@@ -39,7 +39,7 @@ export function createTrait(options: CreateTraitOptions): RuntimeTrait {
     kind: 'Trait' as any,
     parsedVersion: parseVersion(options.version),
     metadata: {
-      name: options.metadata.name,
+      ...options.metadata,
       description: options.metadata.description || '',
       annotations: options.metadata.annotations || {},
     },

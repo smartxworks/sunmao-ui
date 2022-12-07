@@ -27,9 +27,10 @@ type Props = ComponentNodeWithState & {
   onToggleExpand: (id: string) => void;
   onDragStart: (id: string) => void;
   onDragEnd: (id: string) => void;
+  prefix?: React.ReactNode;
 };
 
-const ComponentTree = (props: Props) => {
+const ComponentNodeImpl = (props: Props) => {
   const {
     component,
     onSelectComponent,
@@ -42,9 +43,10 @@ const ComponentTree = (props: Props) => {
     parentId,
     slot,
     shouldShowSelfSlotName,
-    hasChildrenSlots,
+    notEmptySlots,
     onDragStart,
     onDragEnd,
+    prefix,
   } = props;
   const { registry, eventBus, appModelManager } = services;
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
@@ -96,7 +98,7 @@ const ComponentTree = (props: Props) => {
   const onMouseLeave = useCallback(() => {
     services.editorStore.setHoverComponentId('');
   }, [services.editorStore]);
-  const emptySlots = xor(hasChildrenSlots, slots);
+  const emptySlots = xor(notEmptySlots, slots);
 
   const emptyChildrenSlotsPlaceholder = isExpanded
     ? emptySlots.map(_slot => {
@@ -134,6 +136,29 @@ const ComponentTree = (props: Props) => {
         );
       })
     : undefined;
+
+  const actionMenu = (
+    <Menu isLazy gutter={4}>
+      <MenuButton
+        as={IconButton}
+        variant="ghost"
+        height="24px"
+        width="24px"
+        minWidth="24px"
+        marginInlineEnd="8px !important"
+        icon={<HamburgerIcon width="16px" height="16px" />}
+        onClick={e => e.stopPropagation()}
+      />
+      <MenuList>
+        <MenuItem icon={<CopyIcon />} onClick={onClickDuplicate}>
+          Duplicate
+        </MenuItem>
+        <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
+          Remove
+        </MenuItem>
+      </MenuList>
+    </Menu>
+  );
 
   return (
     <VStack
@@ -186,28 +211,8 @@ const ComponentTree = (props: Props) => {
           onMouseOver={onMouseOver}
           onMouseLeave={onMouseLeave}
           paddingLeft={paddingLeft}
-          actionMenu={
-            <Menu isLazy gutter={4}>
-              <MenuButton
-                as={IconButton}
-                variant="ghost"
-                height="24px"
-                width="24px"
-                minWidth="24px"
-                marginInlineEnd="8px !important"
-                icon={<HamburgerIcon width="16px" height="16px" />}
-                onClick={e => e.stopPropagation()}
-              />
-              <MenuList>
-                <MenuItem icon={<CopyIcon />} onClick={onClickDuplicate}>
-                  Duplicate
-                </MenuItem>
-                <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
-                  Remove
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          }
+          actionMenu={actionMenu}
+          prefix={prefix}
         />
       </DropComponentWrapper>
       {emptyChildrenSlotsPlaceholder}
@@ -215,8 +220,8 @@ const ComponentTree = (props: Props) => {
   );
 };
 
-const MemoComponentTree: React.FC<Props> = React.memo(
-  ComponentTree,
+const MemoComponentNode: React.FC<Props> = React.memo(
+  ComponentNodeImpl,
   (prevProps, nextProps) => {
     const isSame =
       prevProps.component === nextProps.component &&
@@ -227,9 +232,9 @@ const MemoComponentTree: React.FC<Props> = React.memo(
       prevProps.isSelected === nextProps.isSelected &&
       prevProps.isExpanded === nextProps.isExpanded &&
       prevProps.shouldShowSelfSlotName === nextProps.shouldShowSelfSlotName &&
-      isEqual(prevProps.hasChildrenSlots, nextProps.hasChildrenSlots);
+      isEqual(prevProps.notEmptySlots, nextProps.notEmptySlots);
     return isSame;
   }
 );
 
-export const ComponentTreeWrapper = MemoComponentTree;
+export const ComponentNode = MemoComponentNode;

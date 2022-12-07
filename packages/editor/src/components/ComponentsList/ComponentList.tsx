@@ -12,7 +12,7 @@ import {
   InputRightElement,
   Tag,
 } from '@chakra-ui/react';
-import { CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
+import { CORE_VERSION } from '@sunmao-ui/shared';
 import { groupBy, sortBy } from 'lodash';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
@@ -66,8 +66,6 @@ const tagStyle = css`
   white-space: nowrap;
 `;
 
-const IGNORE_COMPONENTS: string[] = [CoreComponentName.Dummy];
-
 export const ComponentList: React.FC<Props> = ({ services }) => {
   const { registry, editorStore } = services;
   const [filterText, setFilterText] = useState('');
@@ -84,10 +82,7 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
-        if (
-          IGNORE_COMPONENTS.includes(c.metadata.name) ||
-          (checkedVersions.length && !checkedVersions.includes(c.version))
-        ) {
+        if (checkedVersions.length && !checkedVersions.includes(c.version)) {
           return false;
         } else if (!filterText) {
           return true;

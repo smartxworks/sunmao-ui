@@ -1,5 +1,4 @@
 import { ComponentSchema } from '@sunmao-ui/core';
-import { CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
 import { useCallback, useMemo, useState } from 'react';
 import { EditorStore } from '../../services/EditorStore';
 import {
@@ -12,30 +11,22 @@ export function useStructureTreeState(editorStore: EditorStore) {
   const [expandedMap, setExpandedMap] = useState<Record<string, boolean>>({});
   const [draggingId, setDraggingId] = useState('');
 
-  const { nodes, nodesMap, childrenMap } = useMemo(() => {
+  // format components schema to ComponentNode
+  const { nodes, nodesMapCache, childrenMap } = useMemo(() => {
     const nodes: ComponentNode[] = [];
-    const nodesMap: Record<string, ComponentNode> = {};
-    const uiComponents = editorStore.components.filter(
-      c => c.type !== `${CORE_VERSION}/${CoreComponentName.Dummy}`
-    );
+    const nodesMapCache: Record<string, ComponentNode> = {};
     const depthMap: Record<string, number> = {};
-    // const parentMap: Record<string, string | null> = {};
-    uiComponents.forEach(c => {
-      depthMap[c.id] = 0;
-    });
-    const resolvedComponents = resolveApplicationComponents(uiComponents);
+    const resolvedComponents = resolveApplicationComponents(editorStore.uiComponents);
     const { topLevelComponents, childrenMap } = resolvedComponents;
 
     topLevelComponents.forEach(c => {
       const cb = (params: Required<TraverseParams>) => {
-        depthMap[params.root.id] = params.depth;
-        // parentMap[params.root.id] = params.parentId;
-        const hasChildrenSlots = [];
+        const notEmptySlots = [];
         const slots = childrenMap.get(params.root.id);
         if (slots) {
           for (const slot of slots.keys()) {
             if (slots.get(slot)?.length) {
-              hasChildrenSlots.push(slot);
+              notEmptySlots.push(slot);
             }
           }
         }
@@ -45,9 +36,10 @@ export function useStructureTreeState(editorStore: EditorStore) {
           depth: params.depth,
           parentId: params.parentId,
           slot: params.slot,
-          hasChildrenSlots,
+          notEmptySlots,
         };
-        nodesMap[params.root.id] = node;
+        nodesMapCache[params.root.id] = node;
+        depthMap[params.root.id] = params.depth;
         nodes.push(node);
       };
 
@@ -61,7 +53,7 @@ export function useStructureTreeState(editorStore: EditorStore) {
       });
     });
 
-    return { nodes, nodesMap, childrenMap };
+    return { nodes, nodesMapCache, childrenMap };
   }, [editorStore.components]);
 
   const onToggleExpand = useCallback(
@@ -71,48 +63,49 @@ export function useStructureTreeState(editorStore: EditorStore) {
         if (nextExpanded) {
           return { ...prevMap, [id]: nextExpanded };
         }
-        // if close, close all its children
+        // if collapse, collapse all its children
         const newExpandedMap = { ...prevMap };
         traverse({
           childrenMap,
-          root: nodesMap[id].component,
+          root: nodesMapCache[id].component,
           cb: params => delete newExpandedMap[params.root.id],
         });
         return newExpandedMap;
       });
     },
-    [childrenMap, nodesMap]
+    [childrenMap, nodesMapCache]
   );
 
+  // expand all the ancestors of a node
   const expandNode = useCallback(
     (id: string) => {
       setExpandedMap(prevMap => {
         if (prevMap[id]) return prevMap;
         const newExpandedMap = { ...prevMap };
-        let curr: string = nodesMap[id]?.parentId || '';
+        // don't expand its self
+        let curr: string = nodesMapCache[id]?.parentId || '';
         while (curr) {
           newExpandedMap[curr] = true;
-          curr = nodesMap[curr]?.parentId || '';
+          curr = nodesMapCache[curr]?.parentId || '';
         }
         return newExpandedMap;
       });
     },
-    [nodesMap]
+    [nodesMapCache]
   );
 
-  const shouldRender = useCallback(
-    (node: ComponentNode) => {
-      if (!node.parentId) return true;
-      if (expandedMap[node.parentId]) return true;
-      return false;
-    },
-    [expandedMap]
-  );
+  // nodes whose parent is expanded
   const shouldRenderNodes = useMemo(
-    () => nodes.filter(shouldRender),
-    [nodes, shouldRender]
+    () =>
+      nodes.filter((node: ComponentNode) => {
+        if (!node.parentId) return true;
+        if (expandedMap[node.parentId]) return true;
+        return false;
+      }),
+    [expandedMap, nodes]
   );
 
+  // nodes that is being dragged or its ancestor is being dragged
   const undroppableMap = useMemo(() => {
     const map: Record<string, boolean> = {};
 
@@ -120,13 +113,13 @@ export function useStructureTreeState(editorStore: EditorStore) {
 
     traverse({
       childrenMap,
-      root: nodesMap[draggingId].component,
+      root: nodesMapCache[draggingId].component,
       cb: params => {
         map[params.root.id] = true;
       },
     });
     return map;
-  }, [childrenMap, draggingId, nodesMap]);
+  }, [childrenMap, draggingId, nodesMapCache]);
 
   return {
     nodes,

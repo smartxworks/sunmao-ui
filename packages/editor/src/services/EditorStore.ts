@@ -5,15 +5,8 @@ import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import type { SchemaValidator, ValidateErrorResult } from '../validator';
-import {
-  DataSourceType,
-  DATASOURCE_NAME_MAP,
-  DATASOURCE_TRAIT_TYPE_MAP,
-} from '../constants/dataSource';
-import { genOperation } from '../operations';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
-import { CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { isEqual } from 'lodash';
 import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
@@ -52,8 +45,7 @@ export class EditorStore {
   lastSavedComponentsVersion = 0;
   schemaValidator?: SchemaValidator;
 
-  // data source
-  activeDataSourceId: string | null = null;
+  private isDataSourceTypeCache: Record<string, boolean> = {};
 
   constructor(
     private eventBus: EventBusType,
@@ -118,7 +110,6 @@ export class EditorStore {
       () => {
         if (this.selectedComponentId) {
           this.setToolMenuTab(ToolMenuTabs.INSPECT);
-          this.setActiveDataSourceId(null);
         }
       }
     );
@@ -157,6 +148,11 @@ export class EditorStore {
     return this._selectedComponentId;
   }
 
+  get selectedComponentIsDataSource() {
+    if (!this.selectedComponent) return false;
+    return !!this.isDataSourceTypeCache[this.selectedComponent.type];
+  }
+
   get dragOverComponentId() {
     return this._dragOverComponentId;
   }
@@ -182,47 +178,28 @@ export class EditorStore {
     }
   }
 
-  get dataSources(): Record<string, ComponentSchema[]> {
-    const dataSources: Record<string, ComponentSchema[]> = {};
-
-    this.components.forEach(component => {
-      if (component.type === `${CORE_VERSION}/${CoreComponentName.Dummy}`) {
-        component.traits.forEach(trait => {
-          Object.entries(DATASOURCE_TRAIT_TYPE_MAP).forEach(
-            ([dataSourceType, traitType]) => {
-              if (trait.type === traitType) {
-                dataSources[dataSourceType] = (dataSources[dataSourceType] || []).concat(
-                  component
-                );
-              }
-            }
-          );
-        });
+  get uiComponents(): ComponentSchema[] {
+    return this.components.filter(component => {
+      if (this.isDataSourceTypeCache[component.type]) return false;
+      const spec = this.registry.getComponentByType(component.type);
+      if (spec.metadata.isDataSource) {
+        this.isDataSourceTypeCache[component.type] = true;
+        return false;
       }
+      return true;
     });
-
-    return dataSources;
   }
 
-  get activeDataSource(): ComponentSchema | null {
-    return (
-      this.components.find(component => component.id === this.activeDataSourceId) || null
-    );
-  }
-
-  get activeDataSourceType(): DataSourceType | null {
-    for (const trait of this.activeDataSource?.traits || []) {
-      const [dataSourceType] =
-        Object.entries(DATASOURCE_TRAIT_TYPE_MAP).find(
-          ([, traitType]) => trait.type === traitType
-        ) || [];
-
-      if (dataSourceType) {
-        return dataSourceType as DataSourceType;
+  get dataSources(): ComponentSchema[] {
+    return this.components.filter(component => {
+      if (this.isDataSourceTypeCache[component.type]) return true;
+      const spec = this.registry.getComponentByType(component.type);
+      if (spec.metadata.isDataSource) {
+        this.isDataSourceTypeCache[component.type] = true;
+        return true;
       }
-    }
-
-    return null;
+      return false;
+    });
   }
 
   clearSunmaoGlobalState() {
@@ -287,80 +264,8 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
-  setActiveDataSourceId = (dataSourceId: string | null) => {
-    this.activeDataSourceId = dataSourceId;
-  };
-
   setValidateResult = (validateResult: ValidateErrorResult[]) => {
     this.validateResult = validateResult;
-  };
-
-  createDataSource = (
-    type: DataSourceType,
-    defaultProperties: Record<string, any> = {}
-  ) => {
-    const getCount = (
-      dataSources: ComponentSchema[] = [],
-      dataSourceName = ''
-    ): number => {
-      let count = dataSources.length;
-      let id = `${dataSourceName}${count}`;
-      const ids = dataSources.map(({ id }) => id);
-
-      while (ids.includes(id)) {
-        id = `${dataSourceName}${++count}`;
-      }
-
-      return count;
-    };
-
-    const id = `${DATASOURCE_NAME_MAP[type]}${getCount(
-      this.dataSources[type],
-      DATASOURCE_NAME_MAP[type]
-    )}`;
-
-    this.eventBus.send(
-      'operation',
-      genOperation(this.registry, 'createDataSource', {
-        id,
-        type,
-        defaultProperties,
-      })
-    );
-
-    const component = this.components.find(({ id: componentId }) => id === componentId);
-
-    this.setActiveDataSourceId(component!.id);
-
-    if (type === DataSourceType.STATE || type === DataSourceType.LOCALSTORAGE) {
-      this.setToolMenuTab(ToolMenuTabs.INSPECT);
-    }
-  };
-
-  removeDataSource = (dataSource: ComponentSchema) => {
-    this.eventBus.send(
-      'operation',
-      genOperation(this.registry, 'removeComponent', {
-        componentId: dataSource.id,
-      })
-    );
-    if (this.activeDataSource?.id === dataSource.id) {
-      this.setActiveDataSourceId(null);
-    }
-  };
-
-  changeDataSourceName = (dataSource: ComponentSchema, name: string) => {
-    this.eventBus.send(
-      'operation',
-      genOperation(this.registry, 'modifyComponentId', {
-        componentId: dataSource.id,
-        newId: name,
-      })
-    );
-
-    const component = this.components.find(({ id: componentId }) => componentId === name);
-
-    this.setActiveDataSourceId(component!.id);
   };
 
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
