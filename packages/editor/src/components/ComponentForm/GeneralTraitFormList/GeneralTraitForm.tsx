@@ -63,7 +63,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     <VStack key={trait.type} className={formWrapperCSS}>
       <HStack width="full" justifyContent="space-between">
         <strong>{trait.type}</strong>
-        {onRemove ? (
+        {!tImpl.metadata.isDataSource && onRemove ? (
           <IconButton
             aria-label="remove trait"
             variant="ghost"

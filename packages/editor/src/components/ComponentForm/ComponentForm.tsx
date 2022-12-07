@@ -110,6 +110,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
           />
         </VStack>
       ),
+      hide: Object.keys(cImpl.spec.properties.properties).length === 0,
     },
     {
       title: 'Events',
