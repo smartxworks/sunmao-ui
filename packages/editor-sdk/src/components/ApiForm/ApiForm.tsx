@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { watch, FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
@@ -53,13 +53,6 @@ export const ApiForm: React.FC<Props> = props => {
   const { value, onChange, component, services } = props;
   const [tabIndex, setTabIndex] = useState(0);
   const [fetchResult, setFetchResult] = useState<FetchResultType | undefined>();
-  const compactOptions = useMemo(
-    () => ({
-      height: '40px',
-      paddingY: '6px',
-    }),
-    []
-  );
   const formik = useFormik({
     initialValues: value,
     onSubmit: values => {
@@ -69,7 +62,11 @@ export const ApiForm: React.FC<Props> = props => {
   const { values } = formik;
   const URLSpec = Type.String({
     widget: 'core/v1/expression',
-    widgetOptions: { compactOptions },
+    widgetOptions: {
+      compactOptions: {
+        paddingY: '6px',
+      },
+    },
   });
 
   const onFetch = useCallback(() => {
@@ -138,33 +135,31 @@ export const ApiForm: React.FC<Props> = props => {
       >
         {component.id}
       </Text>
-      <HStack display="flex" spacing={4}>
-        <HStack display="flex" spacing={1} flex={1} alignItems="stretch">
-          <Select
-            width={200}
-            name="method"
-            value={values.method}
-            onChange={onMethodChange}
-            size="md"
-          >
-            {METHODS.map(method => (
-              <option key={method} value={method}>
-                {method.toLocaleUpperCase()}
-              </option>
-            ))}
-          </Select>
-          <Box flex={1}>
-            <ExpressionWidget
-              component={component}
-              spec={URLSpec}
-              value={values.url}
-              path={EMPTY_ARRAY}
-              level={1}
-              services={services}
-              onChange={onURLChange}
-            />
-          </Box>
-        </HStack>
+      <HStack spacing={1} flex="0 1 auto" alignItems="start">
+        <Select
+          width={200}
+          name="method"
+          value={values.method}
+          onChange={onMethodChange}
+          size="md"
+        >
+          {METHODS.map(method => (
+            <option key={method} value={method}>
+              {method.toLocaleUpperCase()}
+            </option>
+          ))}
+        </Select>
+        <Box width="0" flex="1">
+          <ExpressionWidget
+            component={component}
+            spec={URLSpec}
+            value={values.url}
+            path={EMPTY_ARRAY}
+            level={1}
+            services={services}
+            onChange={onURLChange}
+          />
+        </Box>
         <Button colorScheme="blue" isLoading={fetchResult?.loading} onClick={onFetch}>
           Run
         </Button>

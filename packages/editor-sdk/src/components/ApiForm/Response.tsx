@@ -10,6 +10,7 @@ import {
   Spinner,
   Tag,
 } from '@chakra-ui/react';
+import { css } from '@emotion/css';
 
 interface Props {
   data?: unknown;
@@ -60,11 +61,18 @@ export const Response: React.FC<Props> = props => {
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4} padding={0} height="250px">
-          <Flex alignItems="center" justifyContent="center" height="100%">
+          <Flex alignItems="center" justifyContent="center" height="100%" overflow="auto">
             {props.loading || !isOpen ? (
               <Spinner />
             ) : (
-              <pre>
+              <pre
+                className={css`
+                  height: 100%;
+                  width: 100%;
+                  overflow: auto;
+                  padding: 0 20px;
+                `}
+              >
                 <code>{error || data}</code>
               </pre>
             )}

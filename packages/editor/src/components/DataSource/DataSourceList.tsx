@@ -1,18 +1,18 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   VStack,
-  Flex,
   Spacer,
   Text,
   Menu,
   MenuItem,
   MenuButton,
   MenuList,
-  IconButton,
   Accordion,
   MenuGroup,
+  HStack,
+  Button,
 } from '@chakra-ui/react';
-import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import { DataSourceGroup } from './DataSourceGroup';
 import { EditorServices } from '../../types';
 import { groupBy } from 'lodash';
@@ -20,6 +20,7 @@ import { genOperation } from '../../operations';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
 import { ToolMenuTabs } from '../../constants/enum';
+import { ComponentSearch } from '../StructureTree/ComponentSearch';
 
 interface Props {
   services: EditorServices;
@@ -122,21 +123,21 @@ export const DataSourceList: React.FC<Props> = props => {
 
   return (
     <VStack spacing="2" alignItems="stretch">
-      <Flex padding="4" paddingBottom="0">
+      <HStack padding="4" paddingBottom="0">
         <Text fontSize="lg" fontWeight="bold">
-          DataSource
+          DataSources
         </Text>
         <Spacer />
         <Menu isLazy>
           <MenuButton
-            as={IconButton}
-            aria-label="add event"
+            as={Button}
             size="sm"
             variant="ghost"
-            colorScheme="blue"
-            icon={<AddIcon />}
             rightIcon={<ChevronDownIcon />}
-          />
+            colorScheme="blue"
+          >
+            Add
+          </MenuButton>
           <MenuList>
             {cdsTypes.length ? (
               <MenuGroup title="From Component">
@@ -156,7 +157,12 @@ export const DataSourceList: React.FC<Props> = props => {
             </MenuGroup>
           </MenuList>
         </Menu>
-      </Flex>
+      </HStack>
+      <ComponentSearch
+        components={dataSources}
+        onChange={id => setSelectedComponentId(id)}
+        services={props.services}
+      />
       <Accordion
         reduceMotion
         defaultIndex={[0].concat(dsGroups.map((_, i) => i + 1))}
