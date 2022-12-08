@@ -12,7 +12,7 @@ import {
   InputRightElement,
   Tag,
 } from '@chakra-ui/react';
-import {  CORE_VERSION } from '@sunmao-ui/shared';
+import { CORE_VERSION } from '@sunmao-ui/shared';
 import { groupBy, sortBy } from 'lodash';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
@@ -82,6 +82,7 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
+        if (c.metadata.isDataSource) return false;
         if (checkedVersions.length && !checkedVersions.includes(c.version)) {
           return false;
         } else if (!filterText) {
