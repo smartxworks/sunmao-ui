@@ -46,8 +46,8 @@ export const DataSourceGroup: React.FC<Props> = props => {
 
         const fetchTrait = dataSource.traits.find(({ type }) => type === `core/v1/fetch`);
         if (fetchTrait?.properties) {
-          tag = ((fetchTrait.properties.config as any).method as string).toUpperCase();
-        } else if ('value' in store[dataSource.id]) {
+          tag = ((fetchTrait.properties as any)?.method as string)?.toUpperCase();
+        } else if (store[dataSource.id]?.value) {
           tag = Array.isArray(store[dataSource.id]?.value)
             ? 'Array'
             : STATE_MAP[typeof store[dataSource.id]?.value] ?? 'Any';

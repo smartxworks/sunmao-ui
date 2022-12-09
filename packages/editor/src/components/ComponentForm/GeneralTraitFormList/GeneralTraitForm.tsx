@@ -1,11 +1,11 @@
 import React from 'react';
 import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
-import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { CloseIcon } from '@chakra-ui/icons';
+import { SpecWidget } from '@sunmao-ui/editor-sdk';
+import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
-import { SpecWidget } from '@sunmao-ui/editor-sdk';
 import { genOperation } from '../../../operations';
 
 type Props = {
@@ -25,39 +25,15 @@ export const GeneralTraitForm: React.FC<Props> = props => {
     generateDefaultValueFromSpec(tImpl.spec.properties)!,
     trait.properties
   );
-  const fields = Object.keys(properties || []).map((key: string) => {
-    const value = trait.properties[key];
-    const propertySpec = tImpl.spec.properties.properties?.[key];
+  const onChange = (newValue: any) => {
+    const operation = genOperation(registry, 'modifyTraitProperty', {
+      componentId: component.id,
+      traitIndex: traitIndex,
+      properties: newValue,
+    });
 
-    if (!propertySpec) return undefined;
-
-    const onChange = (newValue: any) => {
-      const operation = genOperation(registry, 'modifyTraitProperty', {
-        componentId: component.id,
-        traitIndex: traitIndex,
-        properties: {
-          [key]: newValue,
-        },
-      });
-
-      eventBus.send('operation', operation);
-    };
-
-    const specObj = propertySpec === true ? {} : propertySpec;
-
-    return (
-      <SpecWidget
-        key={key}
-        level={1}
-        path={[key]}
-        spec={{ ...specObj, title: specObj.title || key }}
-        value={value}
-        services={services}
-        component={component}
-        onChange={onChange}
-      />
-    );
-  });
+    eventBus.send('operation', operation);
+  };
 
   return (
     <VStack key={trait.type} className={formWrapperCSS}>
@@ -74,7 +50,17 @@ export const GeneralTraitForm: React.FC<Props> = props => {
           />
         ) : null}
       </HStack>
-      {fields}
+      <SpecWidget
+        level={0}
+        path={[]}
+        // don't show category in trait form
+        hideCategory
+        spec={tImpl.spec.properties}
+        value={properties}
+        services={services}
+        component={component}
+        onChange={onChange}
+      />
     </VStack>
   );
 };

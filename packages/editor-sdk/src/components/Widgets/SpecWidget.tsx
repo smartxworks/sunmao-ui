@@ -187,6 +187,7 @@ export const SchemaFieldWidgetOptions = Type.Object({
 
 type SpecFieldWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Spec}`;
 type Props = WidgetProps<SpecFieldWidgetType> & {
+  hideCategory?: boolean;
   children?:
     | (React.ReactNode & {
         title?: any;
@@ -201,7 +202,17 @@ declare module '../../types/widget' {
 }
 
 export const SpecWidget: React.FC<Props> = props => {
-  const { component, spec, level, path, value, services, children, onChange } = props;
+  const {
+    component,
+    spec,
+    level,
+    path,
+    value,
+    services,
+    children,
+    onChange,
+    hideCategory,
+  } = props;
   const { title, widgetOptions } = spec;
   const { isShowAsideExpressionButton, expressionOptions, isHidden } =
     widgetOptions || {};
@@ -226,7 +237,7 @@ export const SpecWidget: React.FC<Props> = props => {
     Component = ExpressionWidget;
   } else if (widget) {
     Component = widget.impl;
-  } else if (level === 0) {
+  } else if (level === 0 && !hideCategory) {
     Component = CategoryWidget;
     showAsideExpressionButton = false;
   }
