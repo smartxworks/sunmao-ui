@@ -82,6 +82,7 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
   const categories = useMemo<Category[]>(() => {
     const grouped = groupBy(
       registry.getAllComponents().filter(c => {
+        if (c.metadata.isDataSource) return false;
         if (checkedVersions.length && !checkedVersions.includes(c.version)) {
           return false;
         } else if (!filterText) {

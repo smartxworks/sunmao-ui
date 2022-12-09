@@ -101,7 +101,7 @@ export const DataSourceList: React.FC<Props> = props => {
     (type: string) => {
       const propertiesSpec = registry.getTraitByType(type).spec.properties;
       const defaultProperties = generateDefaultValueFromSpec(propertiesSpec, {
-        genArrayItemDefaults: true,
+        genArrayItemDefaults: false,
       });
       const name = type.split('/')[2];
       const id = getNewId(name);

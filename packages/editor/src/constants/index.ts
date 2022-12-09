@@ -2,12 +2,16 @@ import { Application } from '@sunmao-ui/core';
 import { ImplementedRuntimeModule } from '@sunmao-ui/runtime';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
-export const unremovableTraits = [`${CORE_VERSION}/${CoreTraitName.Slot}`];
+export const unremovableTraits = [
+  `${CORE_VERSION}/${CoreTraitName.Slot}`,
+  `core/v2/${CoreTraitName.Slot}`,
+];
 
 export const hideCreateTraitsList = [
   `${CORE_VERSION}/${CoreTraitName.Event}`,
   `${CORE_VERSION}/${CoreTraitName.Style}`,
   `${CORE_VERSION}/${CoreTraitName.Slot}`,
+  `core/v2/${CoreTraitName.Slot}`,
 ];
 
 export const hasSpecialFormTraitList = [

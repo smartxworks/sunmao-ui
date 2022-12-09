@@ -40,12 +40,8 @@ export const FetchTraitPropertiesSpec = Type.Object(
       }),
       { title: 'Body Type' }
     ),
-    onComplete: Type.Array(EventCallBackHandlerSpec, {
-      widgetOptions: { appendToParent: true },
-    }),
-    onError: Type.Array(EventCallBackHandlerSpec, {
-      widgetOptions: { appendToParent: true },
-    }),
+    onComplete: Type.Array(EventCallBackHandlerSpec),
+    onError: Type.Array(EventCallBackHandlerSpec),
   },
   {
     widget: 'core/v1/fetch',
@@ -63,9 +59,7 @@ export default implementRuntimeTrait({
     isDataSource: true,
   },
   spec: {
-    properties: Type.Object({
-      config: FetchTraitPropertiesSpec,
-    }),
+    properties: FetchTraitPropertiesSpec,
     state: Type.Object({
       fetch: Type.Object({
         loading: Type.Boolean(),
@@ -86,26 +80,22 @@ export default implementRuntimeTrait({
   },
 })(() => {
   return ({
-    config,
     trait,
+    url,
+    method,
+    lazy: _lazy,
+    headers: _headers,
+    body,
+    bodyType,
+    onComplete,
+    onError,
     mergeState,
     services,
     subscribeMethods,
     componentId,
+    disabled,
     slotKey,
   }) => {
-    const {
-      url,
-      method,
-      lazy: _lazy,
-      headers: _headers,
-      body,
-      bodyType,
-      onComplete,
-      onError,
-      disabled,
-    } = config;
-    const rawConfig = trait.properties.config;
     const lazy = _lazy === undefined ? true : _lazy;
 
     const fetchData = () => {
@@ -118,10 +108,9 @@ export default implementRuntimeTrait({
           headers.append(key, _headers[key]);
         }
       }
-
       mergeState({
         fetch: {
-          ...(services.stateManager.store[componentId].fetch || {}),
+          ...(services.stateManager.store[componentId]?.fetch || {}),
           code: undefined,
           codeText: '',
           loading: true,
@@ -174,8 +163,7 @@ export default implementRuntimeTrait({
                 error: undefined,
               },
             });
-            const rawOnComplete =
-              typeof rawConfig === 'string' ? [] : rawConfig.onComplete;
+            const rawOnComplete = trait.properties.onComplete;
 
             onComplete?.forEach((_, index) => {
               runEventHandler(
@@ -198,7 +186,7 @@ export default implementRuntimeTrait({
                 error,
               },
             });
-            const rawOnError = typeof rawConfig === 'string' ? [] : rawConfig.onError;
+            const rawOnError = trait.properties.onError;
 
             onError?.forEach((_, index) => {
               runEventHandler(onError[index], rawOnError, index, services, slotKey)();
@@ -217,7 +205,7 @@ export default implementRuntimeTrait({
               error: error.toString(),
             },
           });
-          const rawOnError = typeof rawConfig === 'string' ? [] : rawConfig.onError;
+          const rawOnError = trait.properties.onError;
 
           onError?.forEach((_, index) => {
             runEventHandler(onError[index], rawOnError, index, services, slotKey)();
