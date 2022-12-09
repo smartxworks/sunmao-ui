@@ -26,18 +26,10 @@ const COLOR_MAP = {
   PATCH: 'yellow',
   DELETE: 'red',
 };
-const STATE_MAP: Record<string, string> = {
-  undefined: 'Any',
-  boolean: 'Boolean',
-  string: 'String',
-  number: 'Number',
-  object: 'Object',
-};
 
 export const DataSourceGroup: React.FC<Props> = props => {
   const { dataSources = [], title, services, type } = props;
-  const { stateManager, editorStore } = services;
-  const { store } = stateManager;
+  const { editorStore } = services;
 
   const StateItems = () => (
     <>
@@ -47,10 +39,6 @@ export const DataSourceGroup: React.FC<Props> = props => {
         const fetchTrait = dataSource.traits.find(({ type }) => type === `core/v1/fetch`);
         if (fetchTrait?.properties) {
           tag = ((fetchTrait.properties as any)?.method as string)?.toUpperCase();
-        } else if (store[dataSource.id]?.value) {
-          tag = Array.isArray(store[dataSource.id]?.value)
-            ? 'Array'
-            : STATE_MAP[typeof store[dataSource.id]?.value] ?? 'Any';
         }
 
         return (
