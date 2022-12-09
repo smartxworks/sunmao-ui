@@ -11,7 +11,11 @@ export function resolveApplicationComponents(components: ComponentSchema[]): {
   const topLevelComponents: ComponentSchema[] = [];
   const childrenMap: ChildrenMap = new Map();
   components.forEach(c => {
-    const slotTrait = c.traits.find(t => t.type === `${CORE_VERSION}/${CoreTraitName.Slot}`);
+    const slotTrait = c.traits.find(
+      t =>
+        t.type === `${CORE_VERSION}/${CoreTraitName.Slot}` ||
+        t.type === `core/v2/${CoreTraitName.Slot}`
+    );
     if (slotTrait) {
       const { id: parentId, slot } = slotTrait.properties.container as any;
       if (!childrenMap.has(parentId)) {
@@ -28,6 +32,6 @@ export function resolveApplicationComponents(components: ComponentSchema[]): {
   });
   return {
     topLevelComponents,
-    childrenMap
+    childrenMap,
   };
 }

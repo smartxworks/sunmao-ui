@@ -31,6 +31,7 @@ import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
 
 const SlotTraitType: TraitType = `${CORE_VERSION}/${CoreTraitName.Slot}` as TraitType;
+const SlotTraitTypeV2: TraitType = `core/v2/${CoreTraitName.Slot}` as TraitType;
 const DynamicStateTrait = [
   `${CORE_VERSION}/${CoreTraitName.State}`,
   `${CORE_VERSION}/${CoreTraitName.LocalStorage}`,
@@ -132,7 +133,10 @@ export class ComponentModel implements IComponentModel {
   }
 
   get _slotTrait() {
-    return this.traits.find(t => t.type === SlotTraitType) || null;
+    return (
+      this.traits.find(t => t.type === SlotTraitType || t.type === SlotTraitTypeV2) ||
+      null
+    );
   }
 
   get allComponents(): IComponentModel[] {
@@ -292,7 +296,7 @@ export class ComponentModel implements IComponentModel {
       this._slotTrait.properties.update({ container: { id: parent, slot } });
       this._slotTrait._isDirty = true;
     } else {
-      this.addTrait(SlotTraitType, {
+      this.addTrait(SlotTraitTypeV2, {
         container: { id: parent, slot },
         ifCondition: true,
       });

@@ -16,6 +16,7 @@ import CoreArrayState from '../traits/core/ArrayState';
 import CoreState from '../traits/core/State';
 import CoreEvent from '../traits/core/Event';
 import CoreSlot from '../traits/core/Slot';
+import CoreSlotV2 from '../traits/core/SlotV2';
 import CoreStyle from '../traits/core/Style';
 import CoreHidden from '../traits/core/Hidden';
 import CoreFetch from '../traits/core/Fetch';
@@ -259,6 +260,7 @@ export function initRegistry(
   registry.registerTrait(CoreArrayState);
   registry.registerTrait(CoreEvent);
   registry.registerTrait(CoreSlot);
+  registry.registerTrait(CoreSlotV2);
   registry.registerTrait(CoreStyle);
   registry.registerTrait(CoreHidden);
   registry.registerTrait(CoreFetch);
