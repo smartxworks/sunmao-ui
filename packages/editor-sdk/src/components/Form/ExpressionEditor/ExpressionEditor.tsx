@@ -235,6 +235,7 @@ const BaseExpressionEditor = React.forwardRef<
           mode: {
             name: 'sunmao-ui',
           },
+          tabindex: 1,
           lineWrapping: true,
           theme: 'neat',
           viewportMargin: Infinity,
