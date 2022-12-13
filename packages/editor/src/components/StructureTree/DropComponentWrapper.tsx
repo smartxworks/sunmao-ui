@@ -5,9 +5,9 @@ import { genOperation } from '../../operations';
 import { EditorServices } from '../../types';
 
 type Props = {
-  componentId: string | undefined;
-  parentId: string | undefined;
-  parentSlot: string | undefined;
+  componentId?: string;
+  parentId?: string;
+  parentSlot?: string;
   isExpanded: boolean;
   // only can be drop in and cannot drop before or after
   isDropInOnly?: boolean;
