@@ -12,7 +12,7 @@ import {
   InputRightElement,
   Tag,
 } from '@chakra-ui/react';
-import { CoreComponentName, CORE_VERSION } from '@sunmao-ui/shared';
+import { CoreComponentName } from '@sunmao-ui/shared';
 import { groupBy, sortBy } from 'lodash';
 import { EditorServices } from '../../types';
 import { ExplorerMenuTabs } from '../../constants/enum';
@@ -53,7 +53,7 @@ function getCategoryOrder(name: string): number {
 function getTagColor(version: string): string {
   if (version.startsWith('chakra_ui/')) {
     return 'teal';
-  } else if (version.startsWith(CORE_VERSION)) {
+  } else if (version.startsWith('core/')) {
     return 'yellow';
   } else {
     return 'blackAlpha';
@@ -86,6 +86,7 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
       registry.getAllComponents().filter(c => {
         if (
           IGNORE_COMPONENTS.includes(c.metadata.name) ||
+          c.metadata.deprecated ||
           (checkedVersions.length && !checkedVersions.includes(c.version))
         ) {
           return false;
