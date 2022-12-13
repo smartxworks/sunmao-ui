@@ -4,6 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { DescriptionPropsSpec as BaseDescriptionPropsSpec } from '../generated/types/Descriptions';
+import { useMemo } from 'react';
 
 const DescriptionPropsSpec = Type.Object(BaseDescriptionPropsSpec);
 const DescriptionStateSpec = Type.Object({});
@@ -33,7 +34,7 @@ const exampleProperties: Static<typeof DescriptionPropsSpec> = {
     },
     {
       label: 'Address',
-      value: 'Yingdu Building, Zhichun Road, Beijing',
+      value: 'Zhichun Road, Beijing',
     },
   ],
   title: 'User Info',
@@ -60,15 +61,45 @@ export const Descriptions = implementRuntimeComponent({
     properties: DescriptionPropsSpec,
     state: DescriptionStateSpec,
     methods: {},
-    slots: {},
+    slots: {
+      title: { slotProps: Type.Object({}) },
+      label: {
+        slotProps: Type.Object({
+          label: Type.String(),
+        }),
+      },
+      value: {
+        slotProps: Type.Object({
+          value: Type.String(),
+        }),
+      },
+    },
     styleSlots: ['content'],
     events: [],
   },
 })(props => {
-  const { data, ...cProps } = getComponentProps(props);
-  const { customStyle } = props;
+  const { data, title, ...cProps } = getComponentProps(props);
+  const { slotsElements, customStyle } = props;
+  const descriptionData = useMemo(() => {
+    return data.map((d, idx) => {
+      return {
+        label:
+          slotsElements?.label?.({ label: d.label }, undefined, `label_${idx}`) ||
+          d.label,
+        value:
+          slotsElements?.value?.({ value: d.value }, undefined, `value_${idx}`) ||
+          d.value,
+        span: d.span,
+      };
+    });
+  }, [data, slotsElements]);
 
   return (
-    <BaseDescriptions data={data} className={css(customStyle?.content)} {...cProps} />
+    <BaseDescriptions
+      data={descriptionData}
+      title={slotsElements?.title?.({}) || title}
+      className={css(customStyle?.content)}
+      {...cProps}
+    />
   );
 });
