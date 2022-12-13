@@ -38,7 +38,7 @@ import ecmascript from '../../../constants/ecmascript';
 
 injectGlobal`
   .CodeMirror-hints {
-    zIndex: 1800
+    z-index: 1800 !important;
   }
 `;
 
