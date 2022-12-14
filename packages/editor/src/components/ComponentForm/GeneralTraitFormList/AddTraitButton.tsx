@@ -31,13 +31,18 @@ export const AddTraitButton: React.FC<Props> = props => {
       }, {} as Record<string, boolean>),
     [component]
   );
-  const traitTypes = useMemo(() => {
+  const traits = useMemo(() => {
     return registry
-      .getAllTraitTypes()
-      .filter(type => !hideCreateTraitsList.includes(type));
+      .getAllTraits()
+      .filter(
+        t =>
+          !t.metadata.deprecated &&
+          !hideCreateTraitsList.includes(`${t.version}/${t.metadata.name}`)
+      );
   }, [registry]);
 
-  const menuItems = traitTypes.map(type => {
+  const menuItems = traits.map(t => {
+    const type = `${t.version}/${t.metadata.name}`;
     return (
       <MenuItem
         key={type}

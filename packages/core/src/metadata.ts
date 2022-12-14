@@ -6,6 +6,7 @@ export type Metadata<
   description?: string;
   annotations?: Record<string, any> & TAnnotations;
   exampleProperties?: TExample;
+  deprecated?: boolean;
 };
 
 type ComponentCategory =
