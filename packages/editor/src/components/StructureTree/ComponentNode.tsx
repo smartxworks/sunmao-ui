@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { CopyIcon, DeleteIcon, HamburgerIcon } from '@chakra-ui/icons';
+import React, { useCallback, useState } from 'react';
+import { CopyIcon, DeleteIcon, HamburgerIcon, ViewIcon } from '@chakra-ui/icons';
 import {
   Text,
   VStack,
@@ -18,6 +18,7 @@ import { ComponentNodeWithState } from './type';
 import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
 import { RootId } from '../../constants';
+import { RelationshipModal } from '../RelationshipModal';
 
 const IndextWidth = 24;
 
@@ -49,34 +50,48 @@ const ComponentNodeImpl = (props: Props) => {
     prefix,
   } = props;
   const { registry, eventBus, appModelManager } = services;
+  const [isShowRelationshipModal, setIsShowRelationshipModal] = useState(false);
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const paddingLeft = depth * IndextWidth;
 
-  const onClickRemove = useCallback(() => {
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'removeComponent', {
-        componentId: component.id,
-      })
-    );
-  }, [component.id, eventBus, registry]);
-  const onClickDuplicate = useCallback(() => {
-    const copiedComponents = appModelManager.appModel.getComponentById(
-      component.id as ComponentId
-    );
-    const clonedComponent = new AppModel(
-      copiedComponents!.allComponents.map(c => c.toSchema()),
-      registry
-    ).getComponentById(component.id as ComponentId);
-    eventBus.send(
-      'operation',
-      genOperation(registry, 'pasteComponent', {
-        parentId: parentId || RootId,
-        slot: slot || '',
-        component: clonedComponent!,
-      })
-    );
-  }, [appModelManager.appModel, component.id, eventBus, parentId, registry, slot]);
+  const onClickRemove = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'removeComponent', {
+          componentId: component.id,
+        })
+      );
+    },
+    [component.id, eventBus, registry]
+  );
+  const onClickDuplicate = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const copiedComponents = appModelManager.appModel.getComponentById(
+        component.id as ComponentId
+      );
+      const clonedComponent = new AppModel(
+        copiedComponents!.allComponents.map(c => c.toSchema()),
+        registry
+      ).getComponentById(component.id as ComponentId);
+      eventBus.send(
+        'operation',
+        genOperation(registry, 'pasteComponent', {
+          parentId: parentId || RootId,
+          slot: slot || '',
+          component: clonedComponent!,
+        })
+      );
+    },
+    [appModelManager.appModel, component.id, eventBus, parentId, registry, slot]
+  );
+
+  const onClickShowRelationshipModal = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsShowRelationshipModal(true);
+  }, []);
 
   const onClickItem = useCallback(() => {
     onSelectComponent(component.id);
@@ -153,12 +168,23 @@ const ComponentNodeImpl = (props: Props) => {
         <MenuItem icon={<CopyIcon />} onClick={onClickDuplicate}>
           Duplicate
         </MenuItem>
+        <MenuItem icon={<ViewIcon />} onClick={onClickShowRelationshipModal}>
+          Show Relationship
+        </MenuItem>
         <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
           Remove
         </MenuItem>
       </MenuList>
     </Menu>
   );
+
+  const relationshipViewModal = isShowRelationshipModal ? (
+    <RelationshipModal
+      componentId={component.id}
+      services={services}
+      onClose={() => setIsShowRelationshipModal(false)}
+    />
+  ) : null;
 
   return (
     <VStack
@@ -216,6 +242,7 @@ const ComponentNodeImpl = (props: Props) => {
         />
       </DropComponentWrapper>
       {emptyChildrenSlotsPlaceholder}
+      {relationshipViewModal}
     </VStack>
   );
 };

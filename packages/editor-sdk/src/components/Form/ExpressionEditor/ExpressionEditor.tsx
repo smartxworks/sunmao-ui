@@ -38,7 +38,7 @@ import ecmascript from '../../../constants/ecmascript';
 
 injectGlobal`
   .CodeMirror-hints {
-    zIndex: 1800
+    z-index: 1800 !important;
   }
 `;
 
@@ -235,6 +235,7 @@ const BaseExpressionEditor = React.forwardRef<
           mode: {
             name: 'sunmao-ui',
           },
+          tabindex: 1,
           lineWrapping: true,
           theme: 'neat',
           viewportMargin: Infinity,

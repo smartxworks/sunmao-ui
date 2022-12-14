@@ -3,6 +3,7 @@ import { parseType, SlotSpec } from '@sunmao-ui/core';
 // components
 /* --- core --- */
 import CoreText from '../components/core/Text';
+import CoreTextV2 from '../components/core/TextV2';
 import CoreRouter from '../components/core/Router';
 import CoreDummy from '../components/core/Dummy';
 import CoreModuleContainer from '../components/core/ModuleContainer';
@@ -248,6 +249,7 @@ export function initRegistry(
 ): Registry {
   const registry = new Registry(services, utilMethodManager);
   registry.registerComponent(CoreText);
+  registry.registerComponent(CoreTextV2);
   registry.registerComponent(CoreRouter);
   registry.registerComponent(CoreDummy);
   registry.registerComponent(CoreModuleContainer);

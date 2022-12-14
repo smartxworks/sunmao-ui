@@ -75,7 +75,7 @@ export const EventTraitForm: React.FC<Props> = props => {
           spec={mergeWidgetOptionsIntoSpec<'core/v1/array'>(
             spec.spec.properties.properties!.handlers as any,
             {
-              displayedKeys: ['componentId'],
+              displayedKeys: ['componentId', 'type'],
             }
           )}
           value={handlers || []}
