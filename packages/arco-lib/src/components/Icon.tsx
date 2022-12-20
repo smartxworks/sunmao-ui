@@ -7,6 +7,7 @@ import { FALLBACK_METADATA } from '../sunmao-helper';
 const IconPropsSpec = Type.Object({
   name: Type.KeyOf(Type.Object(Icons as Record<keyof typeof Icons, any>), {
     title: 'Name',
+    widget: 'arco/v1/icon',
   }),
   spin: Type.Boolean({
     title: 'Spin',
