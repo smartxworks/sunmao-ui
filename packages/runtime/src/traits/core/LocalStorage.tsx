@@ -2,13 +2,68 @@ import { Type } from '@sinclair/typebox';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 
-function getLocalStorageValue(key: string) {
+const isEmpty = (value: unknown) => value === '' || value === null || value === undefined;
+
+type LocalStorageItem = {
+  value: any;
+  meta: {
+    versions?: number;
+  };
+};
+
+function setLocalStorage(key: string, value: unknown, options: LocalStorageItem['meta']) {
+  const { versions = 0 } = options;
+  if (isEmpty(value)) value = null;
+
+  if (isNaN(versions)) {
+    throw new Error('Versions must be number');
+  }
+
+  const data = {
+    value,
+    meta: {
+      versions,
+    },
+  };
+
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function removeStorage(key: string) {
+  localStorage.removeItem(key);
+}
+
+function getLocalStorage(
+  key: string,
+  defaultValue = null,
+  options: LocalStorageItem['meta']
+) {
+  const { versions = 0 } = options;
   try {
-    const json = localStorage.getItem(key);
-    if (json) {
-      return JSON.parse(json);
+    const value = localStorage.getItem(key);
+
+    if (!value) {
+      return null;
     }
-    return null;
+
+    let localStorageItem;
+    try {
+      localStorageItem = JSON.parse(value) as LocalStorageItem;
+    } catch {
+      // ignore
+    }
+
+    if (!localStorageItem?.meta) {
+      setLocalStorage(key, localStorageItem, { versions });
+      return localStorageItem;
+    }
+
+    if (versions > localStorageItem.meta.versions!) {
+      setLocalStorage(key, defaultValue, { versions });
+      return defaultValue;
+    } else {
+      return localStorageItem.value;
+    }
   } catch (error) {
     return null;
   }
@@ -20,6 +75,11 @@ export const LocalStorageTraitPropertiesSpec = Type.Object({
   }),
   initialValue: Type.Any({
     title: 'Initial Value',
+  }),
+  versions: Type.Number({
+    title: 'Versions',
+    description:
+      'The value of localStorage will only be reset to initial value if the versions becomes larger',
   }),
 });
 
@@ -39,12 +99,16 @@ export default implementRuntimeTrait({
           value: Type.Any(),
         }),
       },
+      {
+        name: 'clear',
+        parameters: {},
+      },
     ],
   },
 })(() => {
   const HasInitializedMap = new Map<string, boolean>();
 
-  return ({ key, initialValue, componentId, mergeState, subscribeMethods }) => {
+  return ({ key, versions, initialValue, componentId, mergeState, subscribeMethods }) => {
     const hashId = `#${componentId}@${key}`;
     const hasInitialized = HasInitializedMap.get(hashId);
 
@@ -52,17 +116,20 @@ export default implementRuntimeTrait({
       mergeState({
         [key]: newValue,
       });
-      localStorage.setItem(hashId, JSON.stringify(newValue));
+      setLocalStorage(hashId, newValue, { versions });
     };
 
     if (key) {
       if (!hasInitialized) {
-        const value = getLocalStorageValue(hashId) ?? initialValue;
+        const value = getLocalStorage(hashId, initialValue, { versions }) ?? initialValue;
         setValue(value);
 
         subscribeMethods({
           setValue: ({ value: newValue }: { value: any }) => {
             setValue(newValue);
+          },
+          removeItem: () => {
+            removeStorage(hashId);
           },
         });
         HasInitializedMap.set(hashId, true);
