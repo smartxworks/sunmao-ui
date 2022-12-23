@@ -35,6 +35,7 @@ import 'tern/plugin/complete_strings';
 import tern, { Def } from 'tern';
 import { getTypeString } from '../../../utils/type';
 import ecmascript from '../../../constants/ecmascript';
+import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../../constants';
 
 injectGlobal`
   .CodeMirror-hints {
@@ -433,7 +434,7 @@ export const ExpressionEditor = React.forwardRef<
           closeOnOverlayClick={false}
         >
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent className={PREVENT_POPOVER_WIDGET_CLOSE_CLASS}>
             <ModalHeader>Expression Editor</ModalHeader>
             <ModalBody>
               <Box height="500">

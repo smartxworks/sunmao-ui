@@ -209,7 +209,6 @@ export const Editor: React.FC<Props> = observer(
                 borderLeftWidth="1px"
                 borderColor="gray.400"
                 position="relative"
-                zIndex="0"
               >
                 <Tabs
                   align="center"
