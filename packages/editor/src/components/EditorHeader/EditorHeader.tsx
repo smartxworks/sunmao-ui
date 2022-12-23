@@ -1,27 +1,50 @@
 import React from 'react';
-import { Flex, Button, Box } from '@chakra-ui/react';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
+import { Flex, Button, Icon } from '@chakra-ui/react';
+const SideBarIcon: React.FC<{
+  transform?: string;
+  color?: string;
+  onClick?: () => void;
+}> = props => (
+  <Icon cursor="pointer" {...props} viewBox="-5 -5 24 24" width="24px" height="24px">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M13 2.5H8v11h5a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5Zm-10 0h3.5v11H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5ZM3 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H3Zm1.5 11.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm1-4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-1-2.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+      fill="currentColor"
+    />
+  </Icon>
+);
 
 export const EditorHeader: React.FC<{
-  scale: number;
-  setScale: (v: number) => void;
+  isDisplayLeftMenu: boolean;
+  isDisplayRightMenu: boolean;
+  setIsDisplayLeftMenu: (show: boolean) => void;
+  setIsDisplayRightMenu: (show: boolean) => void;
   onPreview: () => void;
   onCodeMode: () => void;
   onRefresh: () => void;
-}> = ({ scale, setScale, onPreview, onCodeMode, onRefresh }) => {
+}> = ({
+  onPreview,
+  onCodeMode,
+  onRefresh,
+  setIsDisplayLeftMenu,
+  setIsDisplayRightMenu,
+  isDisplayLeftMenu,
+  isDisplayRightMenu,
+}) => {
   return (
     <Flex p={2} borderBottomWidth="2px" borderColor="gray.200" align="center">
       <Flex flex="1" />
       <Flex flex="1" align="center" justify="center">
-        <Button size="sm" disabled={scale <= 50} onClick={() => setScale(scale - 10)}>
-          <MinusIcon />
-        </Button>
-        <Box fontSize="sm" mx="2" width={10} textAlign="center">
-          {scale}%
-        </Box>
-        <Button size="sm" disabled={scale >= 100} onClick={() => setScale(scale + 10)}>
-          <AddIcon />
-        </Button>
+        <SideBarIcon
+          color={isDisplayLeftMenu ? '#000' : '#eee'}
+          onClick={() => setIsDisplayLeftMenu(!isDisplayLeftMenu)}
+        />
+        <SideBarIcon
+          transform="rotateY(180deg)"
+          color={isDisplayRightMenu ? '#000' : '#eee'}
+          onClick={() => setIsDisplayRightMenu(!isDisplayRightMenu)}
+        />
       </Flex>
       <Flex flex="1" justify="end">
         <Button colorScheme="blue" mr={3} onClick={onCodeMode}>
