@@ -13,7 +13,6 @@ import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSour
 import { ApiForm } from './DataSource/ApiForm';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
-import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
 import { css } from '@emotion/css';
@@ -46,12 +45,11 @@ const ApiFormStyle = css`
 `;
 
 export const Editor: React.FC<Props> = observer(
-  ({ App, stateStore, services, libs, dependencies, onRefresh: onRefreshApp }) => {
+  ({ App, stateStore, services, onRefresh: onRefreshApp }) => {
     const { editorStore } = services;
     const {
       components,
       selectedComponentId,
-      modules,
       activeDataSource,
       activeDataSourceType,
       toolMenuTab,
@@ -61,7 +59,6 @@ export const Editor: React.FC<Props> = observer(
     } = editorStore;
 
     const [scale, setScale] = useState(100);
-    const [preview, setPreview] = useState(false);
     const [codeMode, setCodeMode] = useState(false);
     const [isDisplayApp, setIsDisplayApp] = useState(true);
 
@@ -110,7 +107,7 @@ export const Editor: React.FC<Props> = observer(
         setIsDisplayApp(true);
       }
     }, [isDisplayApp]);
-    const onPreview = useCallback(() => setPreview(true), []);
+    const onPreview = useCallback(() => window.open('/preview.html'), []);
     const onRightTabChange = useCallback(activatedTab => {
       setToolMenuTab(activatedTab);
     }, []);
@@ -267,15 +264,6 @@ export const Editor: React.FC<Props> = observer(
             {renderMain()}
           </Box>
         </Box>
-        {preview && (
-          <PreviewModal
-            onClose={() => setPreview(false)}
-            app={app}
-            modules={modules}
-            libs={libs}
-            dependencies={dependencies}
-          />
-        )}
         {codeMode && (
           <CodeModeModal
             onClose={() => setCodeMode(false)}

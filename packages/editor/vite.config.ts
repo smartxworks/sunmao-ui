@@ -19,11 +19,13 @@ export default defineConfig({
     // react-codemirror2 need this
     global: 'globalThis',
   },
+
   build: {
     rollupOptions: {
       input: {
-        index: resolve(__dirname, './index.html'),
-        playground: resolve(__dirname, './playground.html'),
+        index: resolve(__dirname, 'index.html'),
+        playground: resolve(__dirname, 'playground.html'),
+        preview: resolve(__dirname, 'preview.html'),
       },
     },
   },
