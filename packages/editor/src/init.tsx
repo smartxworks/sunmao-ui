@@ -92,10 +92,7 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   editorStore.eleMap = ui.eleMap;
 
   const services = {
-    App,
-    registry: ui.registry,
-    apiService: ui.apiService,
-    stateManager,
+    ...ui,
     appModelManager,
     widgetManager,
     eventBus,

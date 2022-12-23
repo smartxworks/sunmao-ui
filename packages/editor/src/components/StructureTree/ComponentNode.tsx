@@ -27,6 +27,7 @@ type Props = ComponentNodeWithState & {
   onToggleExpand: (id: string) => void;
   onDragStart: (id: string) => void;
   onDragEnd: (id: string) => void;
+  prefix?: React.ReactNode;
 };
 
 const ComponentNodeImpl = (props: Props) => {
@@ -45,6 +46,7 @@ const ComponentNodeImpl = (props: Props) => {
     notEmptySlots,
     onDragStart,
     onDragEnd,
+    prefix,
   } = props;
   const { registry, eventBus, appModelManager } = services;
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
@@ -210,6 +212,7 @@ const ComponentNodeImpl = (props: Props) => {
           onMouseLeave={onMouseLeave}
           paddingLeft={paddingLeft}
           actionMenu={actionMenu}
+          prefix={prefix}
         />
       </DropComponentWrapper>
       {emptyChildrenSlotsPlaceholder}
