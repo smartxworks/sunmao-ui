@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { WidgetProps, implementWidget } from '@sunmao-ui/editor-sdk';
+import {
+  WidgetProps,
+  implementWidget,
+  ComponentFormElementId,
+} from '@sunmao-ui/editor-sdk';
 import * as Icons from '@arco-design/web-react/icon';
 import IconsMessage from '@arco-design/web-react/icon/icons.json';
 import { Popover, Input, Button, Radio, Space } from '@arco-design/web-react';
@@ -140,7 +144,7 @@ export const PopoverContent: React.FC<{
 };
 
 const _IconWidget: React.FC<WidgetProps<IconWidgetWidgetID, string>> = props => {
-  const { value, onChange } = props;
+  const { value, onChange, spec } = props;
   const CurrentIcon = Icons[value as keyof typeof Icons];
   const [visible, setVisible] = useState(false);
 
@@ -150,17 +154,24 @@ const _IconWidget: React.FC<WidgetProps<IconWidgetWidgetID, string>> = props => 
 
   return (
     <Popover
+      unmountOnExit={false}
       triggerProps={{
         onClickOutside: () => {
           closePopover();
         },
       }}
+      getPopupContainer={_node =>
+        spec.widgetOptions?.appendToBody
+          ? document.body
+          : document.getElementById(ComponentFormElementId)!
+      }
       popupVisible={visible}
       position="left"
       className={popoverStyle}
       content={<PopoverContent closePopover={closePopover} onChange={onChange} />}
       title="Select Icon"
       trigger="click"
+      {...(spec.widgetOptions?.appendToBody ? {} : { style: { left: '-390px' } })}
     >
       <Button
         onClick={() => {
