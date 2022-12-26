@@ -18,6 +18,7 @@ export default implementRuntimeTrait({
   metadata: {
     name: CoreTraitName.State,
     description: 'add state to component',
+    isDataSource: true,
   },
   spec: {
     properties: StateTraitPropertiesSpec,

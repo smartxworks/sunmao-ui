@@ -10,7 +10,6 @@ import {
   Spinner,
   Tag,
 } from '@chakra-ui/react';
-import { CodeEditor } from '../../CodeEditor';
 import { css } from '@emotion/css';
 
 interface Props {
@@ -39,7 +38,7 @@ export const Response: React.FC<Props> = props => {
   const error = useMemo(() => {
     return stringify(props.error);
   }, [props.error]);
-  return props.data || props.error || props.loading ? (
+  return props.data || props.error || props.loading || props.codeText ? (
     <Accordion
       onChange={i => setIsOpen(i === 0)}
       allowToggle
@@ -52,7 +51,7 @@ export const Response: React.FC<Props> = props => {
           <AccordionButton>
             <HStack flex="1" textAlign="left" spacing={2}>
               <span>Response</span>
-              {props.data || props.error ? (
+              {props.data || props.error || props.codeText ? (
                 <Tag colorScheme={CODE_MAP[String(props.code)[0]] || 'red'}>
                   {props.code} {(props.codeText || '').toLocaleUpperCase()}
                 </Tag>
@@ -62,22 +61,20 @@ export const Response: React.FC<Props> = props => {
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4} padding={0} height="250px">
-          <Flex alignItems="center" justifyContent="center" height="100%">
+          <Flex alignItems="center" justifyContent="center" height="100%" overflow="auto">
             {props.loading || !isOpen ? (
               <Spinner />
             ) : (
-              <CodeEditor
+              <pre
                 className={css`
-                  width: 100%;
                   height: 100%;
+                  width: 100%;
+                  overflow: auto;
+                  padding: 0 20px;
                 `}
-                mode={{
-                  name: 'javascript',
-                  json: true,
-                }}
-                defaultCode={error || data}
-                readOnly
-              />
+              >
+                <code>{error || data}</code>
+              </pre>
             )}
           </Flex>
         </AccordionPanel>

@@ -1,17 +1,18 @@
 import React, { useCallback, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { RecordWidget, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { Type, Static } from '@sinclair/typebox';
 import { FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { EditorServices } from '../../../types';
+import { EditorServicesInterface } from '../../types/editor';
+import { RecordWidget } from '../Widgets';
+import { mergeWidgetOptionsIntoSpec } from '../..';
 
 type Values = Static<typeof FetchTraitPropertiesSpec>;
 interface Props {
   api: ComponentSchema;
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
-  services: EditorServices;
+  services: EditorServicesInterface;
 }
 
 const EMPTY_ARRAY: string[] = [];

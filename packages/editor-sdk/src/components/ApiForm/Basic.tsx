@@ -3,16 +3,17 @@ import { VStack, FormControl, FormLabel, Switch } from '@chakra-ui/react';
 import { FormikHelpers, FormikHandlers, FormikState } from 'formik';
 import { FetchTraitPropertiesSpec } from '@sunmao-ui/runtime';
 import { Static, Type } from '@sinclair/typebox';
-import { EditorServices } from '../../../types';
 import { ComponentSchema } from '@sunmao-ui/core';
-import { SpecWidget, mergeWidgetOptionsIntoSpec } from '@sunmao-ui/editor-sdk';
 import { JSONSchema7 } from 'json-schema';
+import { EditorServicesInterface } from '../../types/editor';
+import { mergeWidgetOptionsIntoSpec } from '../..';
+import { SpecWidget } from '../Widgets';
 
 type Values = Static<typeof FetchTraitPropertiesSpec>;
 interface Props {
   api: ComponentSchema;
   formik: FormikHelpers<Values> & FormikHandlers & FormikState<Values>;
-  services: EditorServices;
+  services: EditorServicesInterface;
 }
 
 const DisabledSpec = Type.Boolean({

@@ -67,7 +67,7 @@ export const AddTraitButton: React.FC<Props> = props => {
           Add Trait
         </MenuButton>
         <Portal containerRef={containerRef}>
-          <MenuList>{menuItems}</MenuList>
+          <MenuList zIndex={100}>{menuItems}</MenuList>
         </Portal>
       </Menu>
     </Box>

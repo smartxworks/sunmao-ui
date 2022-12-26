@@ -85,7 +85,7 @@ describe('append to another component', () => {
   expect(newComponent.parentSlot).toEqual('content');
 
   it('create slot trait', () => {
-    expect(newComponent.traits[0].type).toEqual('core/v1/slot');
+    expect(newComponent.traits[0].type).toEqual('core/v2/slot');
     expect(newComponent.traits[0].rawProperties).toEqual({
       container: { id: 'vstack1', slot: 'content' },
       ifCondition: true,

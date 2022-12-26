@@ -8,17 +8,13 @@ import { ComponentList } from './ComponentsList';
 import { EditorHeader } from './EditorHeader';
 import { KeyboardEventWrapper } from './KeyboardEventWrapper';
 import { StateViewer } from './CodeEditor';
-import { DataSource } from './DataSource';
-import { DataSourceType, DATASOURCE_TRAIT_TYPE_MAP } from '../constants/dataSource';
-import { ApiForm } from './DataSource/ApiForm';
+import { DataSourceList } from './DataSource';
 import { ComponentForm } from './ComponentForm';
 import ErrorBoundary from './ErrorBoundary';
 import { PreviewModal } from './PreviewModal';
 import { WarningArea } from './WarningArea';
 import { EditorServices } from '../types';
-import { css } from '@emotion/css';
 import { EditorMaskWrapper } from './EditorMaskWrapper';
-import { DataForm } from './DataSource/DataForm';
 import { Explorer } from './Explorer';
 import { Resizable } from 're-resizable';
 import { CodeModeModal } from './CodeModeModal';
@@ -36,15 +32,6 @@ type Props = {
   onRefresh: () => void;
 };
 
-const ApiFormStyle = css`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-`;
-
 export const Editor: React.FC<Props> = observer(
   ({ App, stateStore, services, libs, dependencies, onRefresh: onRefreshApp }) => {
     const { editorStore } = services;
@@ -52,15 +39,14 @@ export const Editor: React.FC<Props> = observer(
       components,
       selectedComponentId,
       modules,
-      activeDataSource,
-      activeDataSourceType,
       toolMenuTab,
       explorerMenuTab,
       setToolMenuTab,
       setExplorerMenuTab,
     } = editorStore;
 
-    const [scale, setScale] = useState(100);
+    const [isDisplayLeftMenu, setIsDisplayLeftMenu] = useState(true);
+    const [isDisplayRightMenu, setIsDisplayRightMenu] = useState(true);
     const [preview, setPreview] = useState(false);
     const [codeMode, setCodeMode] = useState(false);
     const [isDisplayApp, setIsDisplayApp] = useState(true);
@@ -86,19 +72,7 @@ export const Editor: React.FC<Props> = observer(
       ) : null;
     }, [App, app, isDisplayApp]);
 
-    const inspectForm = useMemo(() => {
-      if (activeDataSource && activeDataSourceType) {
-        return activeDataSourceType === DataSourceType.API ? null : (
-          <DataForm
-            datasource={activeDataSource}
-            services={services}
-            traitType={DATASOURCE_TRAIT_TYPE_MAP[activeDataSourceType]}
-          />
-        );
-      } else {
-        return <ComponentForm services={services} />;
-      }
-    }, [activeDataSource, services, activeDataSourceType]);
+    const inspectForm = <ComponentForm services={services} />;
 
     const onRefresh = useCallback(() => {
       setIsDisplayApp(false);
@@ -124,7 +98,6 @@ export const Editor: React.FC<Props> = observer(
             flexDirection="column"
             width="full"
             height="full"
-            transform={`scale(${scale / 100})`}
             position="relative"
             overflow="hidden"
           >
@@ -141,107 +114,107 @@ export const Editor: React.FC<Props> = observer(
 
       return (
         <>
-          <Resizable
-            defaultSize={{
-              width: 300,
-              height: '100%',
-            }}
-            enable={{ right: true }}
-            style={{ zIndex: 2 }}
-            maxWidth={480}
-            minWidth={300}
-          >
-            <Box
-              borderRightWidth="1px"
-              borderColor="gray.200"
-              position="relative"
-              zIndex="2"
-              height="full"
-            >
-              <Tabs
-                height="100%"
-                display="flex"
-                flexDirection="column"
-                textAlign="left"
-                lazyBehavior="keepMounted"
-                isLazy
-                index={explorerMenuTab}
-                onChange={activatedTab => {
-                  setExplorerMenuTab(activatedTab);
-                }}
-              >
-                <TabList background="gray.50" whiteSpace="nowrap" justifyContent="center">
-                  <Tab>Explorer</Tab>
-                  <Tab>UI</Tab>
-                  <Tab>Data</Tab>
-                  <Tab>State</Tab>
-                </TabList>
-                <TabPanels overflow="hidden" height="full" flex="1">
-                  <TabPanel height="full" overflow="auto" p={0}>
-                    <Explorer services={services} />
-                  </TabPanel>
-                  <TabPanel height="full" overflow="auto" p={0}>
-                    <StructureTree services={services} />
-                  </TabPanel>
-                  <TabPanel height="full" overflow="auto" p={0}>
-                    <DataSource active={activeDataSource?.id ?? ''} services={services} />
-                  </TabPanel>
-                  <TabPanel overflow="auto" p={0} height="100%">
-                    <StateViewer store={stateStore} />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Box>
-          </Resizable>
-          <Flex flex={1} position="relative" overflow="hidden">
-            {appBox}
+          {isDisplayLeftMenu ? (
             <Resizable
               defaultSize={{
-                width: 360,
+                width: 300,
                 height: '100%',
               }}
-              enable={{ left: true }}
+              enable={{ right: true }}
+              style={{ zIndex: 2 }}
               maxWidth={480}
               minWidth={300}
             >
               <Box
-                height="full"
-                borderLeftWidth="1px"
-                borderColor="gray.400"
+                borderRightWidth="1px"
+                borderColor="gray.200"
                 position="relative"
+                zIndex="2"
+                height="full"
               >
                 <Tabs
-                  align="center"
-                  textAlign="left"
                   height="100%"
                   display="flex"
                   flexDirection="column"
+                  textAlign="left"
                   lazyBehavior="keepMounted"
                   isLazy
-                  index={toolMenuTab}
-                  onChange={onRightTabChange}
+                  index={explorerMenuTab}
+                  onChange={activatedTab => {
+                    setExplorerMenuTab(activatedTab);
+                  }}
                 >
-                  <TabList background="gray.50">
-                    <Tab>Inspect</Tab>
-                    <Tab>Insert</Tab>
+                  <TabList
+                    background="gray.50"
+                    whiteSpace="nowrap"
+                    justifyContent="center"
+                  >
+                    <Tab>Explorer</Tab>
+                    <Tab>UI</Tab>
+                    <Tab>Data</Tab>
+                    <Tab>State</Tab>
                   </TabList>
-                  <TabPanels flex="1" overflow="auto" background="gray.50">
-                    <TabPanel p={0}>{inspectForm}</TabPanel>
-                    <TabPanel p={0}>
-                      <ComponentList services={services} />
+                  <TabPanels overflow="hidden" height="full" flex="1">
+                    <TabPanel height="full" overflow="auto" p={0}>
+                      <Explorer services={services} />
+                    </TabPanel>
+                    <TabPanel height="full" overflow="auto" p={0}>
+                      <StructureTree services={services} />
+                    </TabPanel>
+                    <TabPanel height="full" overflow="auto" p={0}>
+                      <DataSourceList services={services} />
+                    </TabPanel>
+                    <TabPanel overflow="auto" p={0} height="100%">
+                      <StateViewer store={stateStore} />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
               </Box>
             </Resizable>
-            {activeDataSource && activeDataSourceType === DataSourceType.API ? (
-              <ApiForm
-                key={activeDataSource.id}
-                api={activeDataSource}
-                services={services}
-                store={stateStore}
-                className={ApiFormStyle}
-              />
+          ) : null}
+          <Flex flex={1} position="relative" overflow="hidden">
+            {appBox}
+            {isDisplayRightMenu ? (
+              <Resizable
+                defaultSize={{
+                  width: 360,
+                  height: '100%',
+                }}
+                enable={{ left: true }}
+                maxWidth={480}
+                minWidth={300}
+              >
+                <Box
+                  height="full"
+                  borderLeftWidth="1px"
+                  borderColor="gray.400"
+                  position="relative"
+                  zIndex="0"
+                >
+                  <Tabs
+                    align="center"
+                    textAlign="left"
+                    height="100%"
+                    display="flex"
+                    flexDirection="column"
+                    lazyBehavior="keepMounted"
+                    isLazy
+                    index={toolMenuTab}
+                    onChange={onRightTabChange}
+                  >
+                    <TabList background="gray.50">
+                      <Tab>Inspect</Tab>
+                      <Tab>Insert</Tab>
+                    </TabList>
+                    <TabPanels flex="1" overflow="auto" background="gray.50">
+                      <TabPanel p={0}>{inspectForm}</TabPanel>
+                      <TabPanel p={0}>
+                        <ComponentList services={services} />
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </Box>
+              </Resizable>
             ) : null}
           </Flex>
         </>
@@ -256,10 +229,12 @@ export const Editor: React.FC<Props> = observer(
       >
         <Box display="flex" height="100%" width="100%" flexDirection="column">
           <EditorHeader
-            scale={scale}
-            setScale={setScale}
             onPreview={onPreview}
             onRefresh={onRefresh}
+            isDisplayLeftMenu={isDisplayLeftMenu}
+            isDisplayRightMenu={isDisplayRightMenu}
+            setIsDisplayLeftMenu={setIsDisplayLeftMenu}
+            setIsDisplayRightMenu={setIsDisplayRightMenu}
             onCodeMode={() => setCodeMode(true)}
           />
           <Box display="flex" flex="1" overflow="auto">

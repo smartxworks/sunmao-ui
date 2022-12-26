@@ -365,6 +365,7 @@ export const DynamicStateTraitSchema: ComponentSchema[] = [
         properties: {
           key: 'value',
           initialValue: {},
+          version: 0,
         },
       },
     ],
