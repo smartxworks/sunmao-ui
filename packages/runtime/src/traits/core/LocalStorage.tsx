@@ -13,14 +13,13 @@ type LocalStorageItem = {
 
 function setLocalStorage(key: string, value: unknown, options: LocalStorageItem['meta']) {
   const { versions = 0 } = options;
-  if (isEmpty(value)) value = null;
 
   if (isNaN(versions)) {
-    throw new Error('Versions must be number');
+    throw new Error('Versions must be a number');
   }
 
   const data = {
-    value,
+    value: isEmpty(value) ? null : value,
     meta: {
       versions,
     },
@@ -29,21 +28,17 @@ function setLocalStorage(key: string, value: unknown, options: LocalStorageItem[
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-function removeStorage(key: string) {
-  localStorage.removeItem(key);
-}
-
 function getLocalStorage(
   key: string,
   defaultValue = null,
-  options: LocalStorageItem['meta']
+  options: LocalStorageItem['meta'] = {}
 ) {
   const { versions = 0 } = options;
   try {
     const value = localStorage.getItem(key);
 
     if (!value) {
-      return null;
+      return { value: defaultValue, versions };
     }
 
     let localStorageItem;
@@ -54,18 +49,16 @@ function getLocalStorage(
     }
 
     if (!localStorageItem?.meta) {
-      setLocalStorage(key, localStorageItem, { versions });
-      return localStorageItem;
+      return { value: localStorageItem, versions };
     }
 
     if (versions > localStorageItem.meta.versions!) {
-      setLocalStorage(key, defaultValue, { versions });
-      return defaultValue;
+      return { value: defaultValue, versions };
     } else {
-      return localStorageItem.value;
+      return { value: localStorageItem.value, versions: localStorageItem.meta.versions };
     }
   } catch (error) {
-    return null;
+    return { value: defaultValue, versions };
   }
 }
 
@@ -91,7 +84,10 @@ export default implementRuntimeTrait({
   },
   spec: {
     properties: LocalStorageTraitPropertiesSpec,
-    state: Type.Object({}),
+    state: Type.Object({
+      value: Type.Any(),
+      versions: Type.Number(),
+    }),
     methods: [
       {
         name: 'setValue',
@@ -112,24 +108,23 @@ export default implementRuntimeTrait({
     const hashId = `#${componentId}@${key}`;
     const hasInitialized = HasInitializedMap.get(hashId);
 
-    const setValue = (newValue: any) => {
+    const setValue = (newValue: any, versions?: number) => {
+      const storageItem = getLocalStorage(hashId);
       mergeState({
         [key]: newValue,
+        versions: versions || storageItem.versions,
       });
-      setLocalStorage(hashId, newValue, { versions });
+      setLocalStorage(hashId, newValue, { versions: versions || storageItem.versions });
     };
 
     if (key) {
       if (!hasInitialized) {
-        const value = getLocalStorage(hashId, initialValue, { versions }) ?? initialValue;
-        setValue(value);
+        const storageItem = getLocalStorage(hashId, initialValue, { versions });
+        setValue(storageItem?.value, storageItem.versions);
 
         subscribeMethods({
           setValue: ({ value: newValue }: { value: any }) => {
             setValue(newValue);
-          },
-          removeItem: () => {
-            removeStorage(hashId);
           },
         });
         HasInitializedMap.set(hashId, true);
