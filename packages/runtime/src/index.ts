@@ -61,7 +61,7 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
     globalHandlerMap,
     apiService,
     eleMap,
-    slotReceiver
+    slotReceiver,
   };
 }
 
