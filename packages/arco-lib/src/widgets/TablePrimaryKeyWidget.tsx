@@ -7,12 +7,6 @@ import { ARCO_V1_VERSION } from '../constants/widgets';
 
 type TablePrimaryKeyWidgetID = 'arco/v1/primaryKey';
 
-declare module '@sunmao-ui/editor-sdk' {
-  interface WidgetOptionsMap {
-    'arco/v1/primaryKey': Record<string, unknown>;
-  }
-}
-
 export const _TablePrimaryKeyWidget: React.FC<
   WidgetProps<TablePrimaryKeyWidgetID, string>
 > = props => {

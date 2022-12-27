@@ -81,6 +81,12 @@ export const PopoverWidget = React.forwardRef<
     [spec]
   );
 
+  useEffect(() => {
+    containerRef.current = spec.widgetOptions?.appendToBody
+      ? null
+      : document.getElementById(ComponentFormElementId);
+  }, [spec.widgetOptions]);
+
   const handleOpen = useCallback(() => {
     setIsOpen(true);
     setIsInit(true);
