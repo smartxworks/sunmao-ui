@@ -28,11 +28,13 @@ export class EditorStore {
   hoverComponentId = '';
   explorerMenuTab = ExplorerMenuTabs.UI_TREE;
   toolMenuTab = ToolMenuTabs.INSERT;
+  viewStateComponentId = '';
   validateResult: ValidateErrorResult[] = [];
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
     version: '',
+
     name: '',
   };
 
@@ -270,6 +272,10 @@ export class EditorStore {
 
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
     this.explorerMenuTab = val;
+  };
+
+  setViewStateComponentId = (val: string) => {
+    this.viewStateComponentId = val;
   };
 
   setToolMenuTab = (val: ToolMenuTabs) => {

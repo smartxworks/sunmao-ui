@@ -166,7 +166,7 @@ export const Editor: React.FC<Props> = observer(
                       <DataSourceList services={services} />
                     </TabPanel>
                     <TabPanel overflow="auto" p={0} height="100%">
-                      <StateViewer store={stateStore} />
+                      <StateViewer store={stateStore} services={services} />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
