@@ -5,6 +5,7 @@ import { JSONTree } from 'react-json-tree';
 import { pickBy } from 'lodash';
 import { watch } from '@sunmao-ui/runtime';
 import ErrorBoundary from '../ErrorBoundary';
+import { EditorServices } from '../../types';
 
 const theme = {
   base0A: '#fded02',
@@ -34,7 +35,13 @@ const style = css`
   }
 `;
 
-export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ store }) => {
+type Props = {
+  store: Record<string, unknown>;
+  services: EditorServices;
+};
+
+export const StateViewer: React.FC<Props> = ({ store, services }) => {
+  const { viewStateComponentId, setViewStateComponentId } = services.editorStore;
   const [filterText, setFilterText] = useState('');
   const [refreshFlag, setRefreshFlag] = useState(0);
   const data = useMemo(() => {
@@ -52,6 +59,13 @@ export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ stor
     return stop;
   }, [store]);
 
+  useEffect(() => {
+    if (viewStateComponentId) {
+      setFilterText(viewStateComponentId);
+      setViewStateComponentId('');
+    }
+  }, [setViewStateComponentId, viewStateComponentId]);
+
   return (
     <ErrorBoundary>
       <Box height="100%" className={style} display="flex" flexDirection="column">
@@ -60,7 +74,15 @@ export const StateViewer: React.FC<{ store: Record<string, unknown> }> = ({ stor
           value={filterText}
           onChange={evt => setFilterText(evt.currentTarget.value)}
         />
-        <JSONTree data={data} theme={theme} hideRoot sortObjectKeys />
+        <JSONTree
+          data={data}
+          theme={theme}
+          hideRoot
+          sortObjectKeys
+          shouldExpandNode={keyPath => {
+            return keyPath[0] === filterText;
+          }}
+        />
       </Box>
     </ErrorBoundary>
   );
