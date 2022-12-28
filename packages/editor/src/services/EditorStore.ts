@@ -10,6 +10,8 @@ import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 import { isEqual } from 'lodash';
 import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
+import { ComponentId } from '../AppModel/IAppModel';
+import { genOperation } from '../operations';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -113,6 +115,19 @@ export class EditorStore {
         if (this.selectedComponentId) {
           this.setToolMenuTab(ToolMenuTabs.INSPECT);
         }
+      }
+    );
+
+    reaction(
+      () => this.rawModules,
+      () => {
+        // Remove old modules and re-register all modules,
+        console.log('rawmodules变了', this.rawModules);
+        this.registry.unregisterAllModules();
+        this.rawModules.forEach(m => {
+          const modules = createModule(m);
+          this.registry.registerModule(modules, true);
+        });
       }
     );
 
@@ -224,6 +239,69 @@ export class EditorStore {
       toJS(this.components)
     );
     this.setLastSavedComponentsVersion(this.currentComponentsVersion);
+  }
+
+  contractModules(props: {
+    id: string;
+    properties: Record<string, string>;
+    extraComponentIds: string[];
+    moduleName: string;
+    moduleVersion: string;
+  }) {
+    const { id, properties, extraComponentIds, moduleName, moduleVersion } = props;
+    const comp = this.appModelManager.appModel.getComponentById(id as ComponentId);
+    console.log('extraComponentIds', extraComponentIds);
+    if (comp) {
+      const propertySpec: Record<string, any> = {
+        type: 'object',
+        properties: { ...properties },
+      };
+      for (const key in propertySpec.properties) {
+        propertySpec.properties[key] = {};
+      }
+
+      const moduleComponents = comp?.allComponents.map(c => c.toSchema());
+      if (extraComponentIds.length) {
+        extraComponentIds.forEach(id => {
+          moduleComponents.push(
+            this.appModelManager.appModel.getComponentById(id as ComponentId)!.toSchema()
+          );
+        });
+      }
+
+      console.log('propertySpec', propertySpec);
+      console.log('moduleComponents', moduleComponents);
+      const rawModule = this.appStorage.createModule(
+        moduleComponents,
+        propertySpec,
+        moduleVersion,
+        moduleName
+      );
+
+      const module = createModule(rawModule);
+      this.registry.registerModule(module);
+
+      const newId = `${id}__module`;
+      this.eventBus.send(
+        'operation',
+        genOperation(this.registry, 'createComponent', {
+          componentId: newId,
+          componentType: `core/v1/moduleContainer`,
+        })
+      );
+      this.eventBus.send(
+        'operation',
+        genOperation(this.registry, 'modifyComponentProperty', {
+          componentId: newId,
+          properties: {
+            id: `${id}Module`,
+            type: `${moduleVersion}/${moduleName}`,
+            properties,
+          },
+        })
+      );
+      console.log('properties', properties);
+    }
   }
 
   updateCurrentEditingTarget = (

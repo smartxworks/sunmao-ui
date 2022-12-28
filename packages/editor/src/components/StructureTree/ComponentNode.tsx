@@ -19,6 +19,7 @@ import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
 import { RootId } from '../../constants';
 import { RelationshipModal } from '../RelationshipModal';
+import { ContractModuleModal } from '../ContractModuleModal';
 
 const IndextWidth = 24;
 
@@ -51,6 +52,7 @@ const ComponentNodeImpl = (props: Props) => {
   } = props;
   const { registry, eventBus, appModelManager, editorStore } = services;
   const [isShowRelationshipModal, setIsShowRelationshipModal] = useState(false);
+  const [isShowContractModuleModal, setIsShowContractModuleModal] = useState(false);
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const paddingLeft = depth * IndextWidth;
 
@@ -100,6 +102,10 @@ const ComponentNodeImpl = (props: Props) => {
     },
     [component.id, editorStore]
   );
+  const onClickContractToModule = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsShowContractModuleModal(true);
+  }, []);
 
   const onClickItem = useCallback(() => {
     onSelectComponent(component.id);
@@ -182,6 +188,9 @@ const ComponentNodeImpl = (props: Props) => {
         <MenuItem icon={<ViewIcon />} onClick={onClickShowState}>
           Show State
         </MenuItem>
+        <MenuItem icon={<ViewIcon />} onClick={onClickContractToModule}>
+          Contract to Module
+        </MenuItem>
         <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
           Remove
         </MenuItem>
@@ -194,6 +203,14 @@ const ComponentNodeImpl = (props: Props) => {
       componentId={component.id}
       services={services}
       onClose={() => setIsShowRelationshipModal(false)}
+    />
+  ) : null;
+
+  const contractModuleModal = isShowContractModuleModal ? (
+    <ContractModuleModal
+      componentId={component.id}
+      services={services}
+      onClose={() => setIsShowContractModuleModal(false)}
     />
   ) : null;
 
@@ -254,6 +271,7 @@ const ComponentNodeImpl = (props: Props) => {
       </DropComponentWrapper>
       {emptyChildrenSlotsPlaceholder}
       {relationshipViewModal}
+      {contractModuleModal}
     </VStack>
   );
 };
