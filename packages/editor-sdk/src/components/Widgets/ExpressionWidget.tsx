@@ -144,6 +144,7 @@ export const ExpressionWidgetOptionsSpec = Type.Object({
 });
 
 type ExpressionWidgetType = `${typeof CORE_VERSION}/${CoreWidgetName.Expression}`;
+type Container = { id: string; slot: string };
 declare module '../../types/widget' {
   interface WidgetOptionsMap {
     'core/v1/expression': Static<typeof ExpressionWidgetOptionsSpec>;
@@ -151,7 +152,7 @@ declare module '../../types/widget' {
 }
 
 export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = props => {
-  const { value, services, spec, onChange } = props;
+  const { value, services, spec, component, onChange } = props;
   const { widgetOptions } = spec;
   const { stateManager } = services;
   const code = useMemo(() => getCode(value), [value]);
@@ -163,6 +164,24 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
   const validateFuncRef = useRef<ValidateFunction | null>(null);
+  const slotTrait = useMemo(
+    () =>
+      component.traits.find(trait =>
+        ['core/v1/slot', 'core/v2/slot'].includes(trait.type)
+      ),
+    [component.traits]
+  );
+  const $slot = useMemo(
+    () =>
+      slotTrait
+        ? Object.entries(services.stateManager.slotStore).find(([key]) => {
+            const { id, slot } = slotTrait.properties.container as Container;
+
+            return key.includes(`${id}_${slot}`);
+          })?.[1]
+        : null,
+    [services.stateManager.slotStore, slotTrait]
+  );
 
   const evalCode = useCallback(
     async (code: string) => {
@@ -219,8 +238,8 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   }, [code, evalCode]);
 
   useEffect(() => {
-    setDefs([customTreeTypeDefCreator(stateManager.store)]);
-  }, [stateManager]);
+    setDefs([customTreeTypeDefCreator({ ...stateManager.store, $slot })]);
+  }, [stateManager, $slot]);
   useEffect(() => {
     editorRef.current?.setCode(code);
   }, [code]);
