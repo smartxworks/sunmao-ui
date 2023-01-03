@@ -241,7 +241,7 @@ export class EditorStore {
     this.setLastSavedComponentsVersion(this.currentComponentsVersion);
   }
 
-  contractModules(props: {
+  extractModules(props: {
     id: string;
     properties: Record<string, string>;
     toMoveComponentIds: string[];

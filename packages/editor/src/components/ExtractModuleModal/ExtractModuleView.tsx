@@ -14,7 +14,6 @@ import {
   HStack,
   Radio,
   RadioGroup,
-  FormLabel,
   Input,
 } from '@chakra-ui/react';
 import { EditorServices } from '../../types';
@@ -50,7 +49,7 @@ type AllRelations = {
   method: MethodRelation[];
 };
 
-export const ContractModuleView: React.FC<Props> = ({ componentId, services }) => {
+export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) => {
   const { appModelManager, editorStore } = services;
   const { appModel } = appModelManager;
   const [showRelationId, setShowRelationId] = useState('');
@@ -160,7 +159,7 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
     );
   };
 
-  const onContract = () => {
+  const onExtract = () => {
     const properties: Record<string, string> = {};
     const toMoveComponentIds: string[] = [];
     expressionRelations.forEach(relation => {
@@ -173,7 +172,7 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
           break;
       }
     });
-    editorStore.contractModules({
+    editorStore.extractModules({
       id: componentId,
       properties,
       toMoveComponentIds: uniq(toMoveComponentIds),
@@ -194,7 +193,7 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
       <VStack spacing="6" width="full" alignItems="start">
         <Input value={moduleVersion} onChange={v => setModuleVersion(v.target.value)} />
         <Input value={moduleName} onChange={v => setModuleName(v.target.value)} />
-        <Button onClick={onContract}>Contract</Button>
+        <Button onClick={onExtract}>Extract</Button>
         <VStack width="full" alignItems="start">
           <Heading size="md">
             These components are used in module, you have to decide how to treat them.

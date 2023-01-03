@@ -19,7 +19,7 @@ import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
 import { RootId } from '../../constants';
 import { RelationshipModal } from '../RelationshipModal';
-import { ContractModuleModal } from '../ContractModuleModal';
+import { ExtractModuleModal } from '../ExtractModuleModal';
 
 const IndextWidth = 24;
 
@@ -52,7 +52,7 @@ const ComponentNodeImpl = (props: Props) => {
   } = props;
   const { registry, eventBus, appModelManager, editorStore } = services;
   const [isShowRelationshipModal, setIsShowRelationshipModal] = useState(false);
-  const [isShowContractModuleModal, setIsShowContractModuleModal] = useState(false);
+  const [isShowExtractModuleModal, setIsShowExtractModuleModal] = useState(false);
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const paddingLeft = depth * IndextWidth;
 
@@ -102,9 +102,9 @@ const ComponentNodeImpl = (props: Props) => {
     },
     [component.id, editorStore]
   );
-  const onClickContractToModule = useCallback((e: React.MouseEvent) => {
+  const onClickExtractToModule = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsShowContractModuleModal(true);
+    setIsShowExtractModuleModal(true);
   }, []);
 
   const onClickItem = useCallback(() => {
@@ -188,8 +188,8 @@ const ComponentNodeImpl = (props: Props) => {
         <MenuItem icon={<ViewIcon />} onClick={onClickShowState}>
           Show State
         </MenuItem>
-        <MenuItem icon={<ViewIcon />} onClick={onClickContractToModule}>
-          Contract to Module
+        <MenuItem icon={<ViewIcon />} onClick={onClickExtractToModule}>
+          Extract to Module
         </MenuItem>
         <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
           Remove
@@ -206,11 +206,11 @@ const ComponentNodeImpl = (props: Props) => {
     />
   ) : null;
 
-  const contractModuleModal = isShowContractModuleModal ? (
-    <ContractModuleModal
+  const extractModuleModal = isShowExtractModuleModal ? (
+    <ExtractModuleModal
       componentId={component.id}
       services={services}
-      onClose={() => setIsShowContractModuleModal(false)}
+      onClose={() => setIsShowExtractModuleModal(false)}
     />
   ) : null;
 
@@ -271,7 +271,7 @@ const ComponentNodeImpl = (props: Props) => {
       </DropComponentWrapper>
       {emptyChildrenSlotsPlaceholder}
       {relationshipViewModal}
-      {contractModuleModal}
+      {extractModuleModal}
     </VStack>
   );
 };

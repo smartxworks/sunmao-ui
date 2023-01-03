@@ -8,7 +8,7 @@ import {
   ModalBody,
 } from '@chakra-ui/react';
 import { EditorServices } from '../../types';
-import { ContractModuleView } from './ContractModuleView';
+import { ExtractModuleView } from './ExtractModuleView';
 
 type Props = {
   componentId: string;
@@ -16,7 +16,7 @@ type Props = {
   services: EditorServices;
 };
 
-export const ContractModuleModal: React.FC<Props> = ({
+export const ExtractModuleModal: React.FC<Props> = ({
   componentId,
   onClose,
   services,
@@ -28,7 +28,7 @@ export const ContractModuleModal: React.FC<Props> = ({
         <ModalHeader>Relationships of {componentId}</ModalHeader>
         <ModalCloseButton />
         <ModalBody flex="1 1 auto" height="75vh" alignItems="start" overflow="auto">
-          <ContractModuleView componentId={componentId} services={services} />
+          <ExtractModuleView componentId={componentId} services={services} />
         </ModalBody>
       </ModalContent>
     </Modal>
