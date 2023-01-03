@@ -249,59 +249,58 @@ export class EditorStore {
     moduleVersion: string;
   }) {
     const { id, properties, toMoveComponentIds, moduleName, moduleVersion } = props;
-    const comp = this.appModelManager.appModel.getComponentById(id as ComponentId);
+    const root = this.appModelManager.appModel
+      .getComponentById(id as ComponentId)!
+      .clone();
     console.log('toMoveComponentIds', toMoveComponentIds);
-    if (comp) {
-      const propertySpec: Record<string, any> = {
-        type: 'object',
-        properties: { ...properties },
-      };
-      for (const key in propertySpec.properties) {
-        propertySpec.properties[key] = {};
-      }
-
-      const moduleComponents = comp?.allComponents.map(c => c.toSchema());
-      if (toMoveComponentIds.length) {
-        toMoveComponentIds.forEach(id => {
-          moduleComponents.push(
-            this.appModelManager.appModel.getComponentById(id as ComponentId)!.toSchema()
-          );
-        });
-      }
-
-      console.log('propertySpec', propertySpec);
-      console.log('moduleComponents', moduleComponents);
-      const rawModule = this.appStorage.createModule(
-        moduleComponents,
-        propertySpec,
-        moduleVersion,
-        moduleName
-      );
-
-      const module = createModule(rawModule);
-      this.registry.registerModule(module);
-
-      const newId = `${id}__module`;
-      this.eventBus.send(
-        'operation',
-        genOperation(this.registry, 'createComponent', {
-          componentId: newId,
-          componentType: `core/v1/moduleContainer`,
-        })
-      );
-      this.eventBus.send(
-        'operation',
-        genOperation(this.registry, 'modifyComponentProperty', {
-          componentId: newId,
-          properties: {
-            id: `${id}Module`,
-            type: `${moduleVersion}/${moduleName}`,
-            properties,
-          },
-        })
-      );
-      console.log('properties', properties);
+    const propertySpec: Record<string, any> = {
+      type: 'object',
+      properties: { ...properties },
+    };
+    for (const key in propertySpec.properties) {
+      propertySpec.properties[key] = {};
     }
+    root.removeSlotTrait();
+    const moduleComponents = root?.allComponents.map(c => c.toSchema());
+    if (toMoveComponentIds.length) {
+      toMoveComponentIds.forEach(id => {
+        const comp = this.appModelManager.appModel.getComponentById(id as ComponentId)!;
+        moduleComponents.push(comp.toSchema());
+      });
+    }
+
+    console.log('propertySpec', propertySpec);
+    console.log('moduleComponents', moduleComponents);
+    const rawModule = this.appStorage.createModule(
+      moduleComponents,
+      propertySpec,
+      moduleVersion,
+      moduleName
+    );
+
+    const module = createModule(rawModule);
+    this.registry.registerModule(module);
+
+    const newId = `${id}__module`;
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'createComponent', {
+        componentId: newId,
+        componentType: `core/v1/moduleContainer`,
+      })
+    );
+    this.eventBus.send(
+      'operation',
+      genOperation(this.registry, 'modifyComponentProperty', {
+        componentId: newId,
+        properties: {
+          id: `${id}Module`,
+          type: `${moduleVersion}/${moduleName}`,
+          properties,
+        },
+      })
+    );
+    console.log('properties', properties);
   }
 
   updateCurrentEditingTarget = (

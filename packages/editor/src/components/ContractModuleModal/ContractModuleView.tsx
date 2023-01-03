@@ -27,6 +27,7 @@ import {
 } from '@sunmao-ui/shared';
 import { Static } from '@sinclair/typebox';
 import { uniq } from 'lodash';
+import { RelationshipModal } from '../RelationshipModal';
 
 type Props = {
   componentId: string;
@@ -52,6 +53,7 @@ type AllRelations = {
 export const ContractModuleView: React.FC<Props> = ({ componentId, services }) => {
   const { appModelManager, editorStore } = services;
   const { appModel } = appModelManager;
+  const [showRelationId, setShowRelationId] = useState('');
   const radioMapRef = useRef<RefTreatmentMap>({});
   const [moduleName, setModuleName] = useState('myModule0');
   const [moduleVersion, setModuleVersion] = useState('custom/v1');
@@ -105,6 +107,7 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
           radioMapRef.current = v;
           console.log(v);
         }}
+        onClickComponent={id => setShowRelationId(id)}
       />
       // <Table size="sm" border="1px solid" borderColor="gray.100">
       //   <Thead>
@@ -179,22 +182,32 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
     });
   };
 
+  const relationshipViewModal = showRelationId ? (
+    <RelationshipModal
+      componentId={showRelationId}
+      services={services}
+      onClose={() => setShowRelationId('')}
+    />
+  ) : null;
   return (
-    <VStack spacing="6" width="full" alignItems="start">
-      <Input value={moduleVersion} onChange={v => setModuleVersion(v.target.value)} />
-      <Input value={moduleName} onChange={v => setModuleName(v.target.value)} />
-      <Button onClick={onContract}>Contract</Button>
-      <VStack width="full" alignItems="start">
-        <Heading size="md">
-          These components are used in module, you have to decide how to treat them.
-        </Heading>
-        {expressionTable()}
+    <>
+      <VStack spacing="6" width="full" alignItems="start">
+        <Input value={moduleVersion} onChange={v => setModuleVersion(v.target.value)} />
+        <Input value={moduleName} onChange={v => setModuleName(v.target.value)} />
+        <Button onClick={onContract}>Contract</Button>
+        <VStack width="full" alignItems="start">
+          <Heading size="md">
+            These components are used in module, you have to decide how to treat them.
+          </Heading>
+          {expressionTable()}
+        </VStack>
+        <VStack width="full" alignItems="start">
+          <Heading size="md">Who calls my methods?</Heading>
+          {methodTable()}
+        </VStack>
       </VStack>
-      <VStack width="full" alignItems="start">
-        <Heading size="md">Who calls my methods?</Heading>
-        {methodTable()}
-      </VStack>
-    </VStack>
+      {relationshipViewModal}
+    </>
   );
 };
 
@@ -280,9 +293,14 @@ type RefTreatmentMap = Record<string, RefTreatment>;
 type RefTreatmentFormProps = {
   ids: string[];
   onChange: (map: RefTreatmentMap) => void;
+  onClickComponent: (id: string) => void;
 };
 
-const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({ ids, onChange }) => {
+const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({
+  ids,
+  onChange,
+  onClickComponent,
+}) => {
   const [value, setValue] = useState<RefTreatmentMap>({});
 
   useEffect(() => {
@@ -307,7 +325,14 @@ const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({ ids, onChange }) =>
             value={value[id]}
           >
             <HStack>
-              <FormLabel>{id}</FormLabel>
+              <Button
+                variant="link"
+                colorScheme="blue"
+                size="sm"
+                onClick={() => onClickComponent(id)}
+              >
+                {id}
+              </Button>
               <Radio value={RefTreatment.move}>Move in module</Radio>
               <Radio value={RefTreatment.keep}>Keep outside</Radio>
               <Radio value={RefTreatment.ignore}>Ignore</Radio>
