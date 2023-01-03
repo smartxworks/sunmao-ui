@@ -1,6 +1,7 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
 import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
+import { EventHandlerSpec, GLOBAL_MODULE_ID } from '@sunmao-ui/shared';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
@@ -12,6 +13,8 @@ import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
 import { ComponentId } from '../AppModel/IAppModel';
 import { genOperation } from '../operations';
+import { MethodRelation } from '../components/ExtractModuleModal/ExtractModuleView';
+import { Static } from '@sinclair/typebox';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -247,8 +250,16 @@ export class EditorStore {
     toMoveComponentIds: string[];
     moduleName: string;
     moduleVersion: string;
+    methodRelations: MethodRelation[];
   }) {
-    const { id, properties, toMoveComponentIds, moduleName, moduleVersion } = props;
+    const {
+      id,
+      properties,
+      toMoveComponentIds,
+      moduleName,
+      moduleVersion,
+      methodRelations,
+    } = props;
     const root = this.appModelManager.appModel
       .getComponentById(id as ComponentId)!
       .clone();
@@ -257,11 +268,54 @@ export class EditorStore {
       type: 'object',
       properties: { ...properties },
     };
+    const eventSpec: string[] = [];
     for (const key in propertySpec.properties) {
       propertySpec.properties[key] = {};
     }
     root.removeSlotTrait();
-    const moduleComponents = root?.allComponents.map(c => c.toSchema());
+    // 转换module内的组件
+    const moduleComponents = root?.allComponents.map(c => {
+      const eventTrait = c.traits.find(t => t.type === 'core/v1/event');
+      // 给module内组件添加module Event
+      if (eventTrait) {
+        const cache: Record<string, boolean> = {};
+        const handlers: Static<typeof EventHandlerSpec>[] = [];
+        eventTrait?.rawProperties.handlers.forEach(
+          (h: Static<typeof EventHandlerSpec>) => {
+            const newEventName = `${c.id}${h.type}`;
+            // 如果同样的module event已经发出$module了，那就不需要它了
+            if (cache[newEventName]) {
+              return;
+            }
+            const hasRelation = methodRelations.find(r => {
+              return r.source === c.id && r.event === h.type;
+            });
+            if (hasRelation) {
+              // 发出新的module event
+              cache[newEventName] = true;
+              eventSpec.push(newEventName);
+              handlers.push({
+                type: h.type,
+                componentId: GLOBAL_MODULE_ID,
+                method: {
+                  name: newEventName,
+                  parameters: {
+                    moduleId: '{{$moduleId}}',
+                  },
+                },
+                disabled: false,
+                wait: { type: 'delay', time: 0 },
+              });
+            } else {
+              handlers.push(h);
+            }
+          }
+        );
+        eventTrait.updateProperty('handlers', handlers);
+      }
+      return c.toSchema();
+    });
+    // 添加额外塞进来的组件
     if (toMoveComponentIds.length) {
       toMoveComponentIds.forEach(id => {
         const comp = this.appModelManager.appModel.getComponentById(id as ComponentId)!;
@@ -269,11 +323,21 @@ export class EditorStore {
       });
     }
 
+    // 添加module handler
+    const moduleHandlers = methodRelations.map(r => {
+      const { handler } = r;
+      return {
+        ...handler,
+        type: `${r.source}${r.event}`,
+      };
+    });
+
     console.log('propertySpec', propertySpec);
     console.log('moduleComponents', moduleComponents);
     const rawModule = this.appStorage.createModule(
       moduleComponents,
       propertySpec,
+      eventSpec,
       moduleVersion,
       moduleName
     );
@@ -297,6 +361,7 @@ export class EditorStore {
           id: `${id}Module`,
           type: `${moduleVersion}/${moduleName}`,
           properties,
+          handlers: moduleHandlers,
         },
       })
     );

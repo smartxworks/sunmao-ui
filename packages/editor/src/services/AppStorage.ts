@@ -42,6 +42,7 @@ export class AppStorage {
   createModule(
     components?: ComponentSchema[],
     propertySpec?: JSONSchema7,
+    events?: string[],
     moduleVersion?: string,
     moduleName?: string
   ): Module {
@@ -72,6 +73,9 @@ export class AppStorage {
 
     if (propertySpec) {
       newModule.spec.properties = propertySpec;
+    }
+    if (events) {
+      newModule.spec.events = events;
     }
 
     this.setModules([...this.modules, newModule]);

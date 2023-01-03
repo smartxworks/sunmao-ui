@@ -38,8 +38,11 @@ type ExpressionRelation = {
   exp: string;
   key: string;
 };
-type MethodRelation = {
-  componentId: string;
+
+export type MethodRelation = {
+  handler: Static<typeof EventHandlerSpec>;
+  source: string;
+  target: string;
   event: string;
   method: string;
 };
@@ -139,8 +142,9 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
       <Table size="sm" border="1px solid" borderColor="gray.100">
         <Thead>
           <Tr>
-            <Th>ComponentId</Th>
+            <Th>Source</Th>
             <Th>Event</Th>
+            <Th>Target</Th>
             <Th>Method</Th>
           </Tr>
         </Thead>
@@ -148,8 +152,9 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
           {methodRelations.map((d, i) => {
             return (
               <Tr key={i}>
-                <Td>{idLink(d.componentId)}</Td>
+                <Td>{d.source}</Td>
                 <Td>{d.event}</Td>
+                <Td>{idLink(d.target)}</Td>
                 <Td>{d.method}</Td>
               </Tr>
             );
@@ -178,6 +183,7 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
       toMoveComponentIds: uniq(toMoveComponentIds),
       moduleName,
       moduleVersion,
+      methodRelations,
     });
   };
 
@@ -251,13 +257,16 @@ function getRelations(component: IComponentModel, components: IComponentModel[])
       }
     });
 
+    // 检查Module中有没有调用外部的组件的Method
     if (t.type === `${CORE_VERSION}/${CoreTraitName.Event}`) {
       t.rawProperties.handlers.forEach((h: Static<typeof EventHandlerSpec>) => {
         if (!ids.includes(h.componentId)) {
           methodRelations.push({
-            componentId: h.componentId,
+            source: component.id,
             event: h.type,
+            target: h.componentId,
             method: h.method.name,
+            handler: h,
           });
         }
       });
