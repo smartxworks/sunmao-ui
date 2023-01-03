@@ -244,13 +244,13 @@ export class EditorStore {
   contractModules(props: {
     id: string;
     properties: Record<string, string>;
-    extraComponentIds: string[];
+    toMoveComponentIds: string[];
     moduleName: string;
     moduleVersion: string;
   }) {
-    const { id, properties, extraComponentIds, moduleName, moduleVersion } = props;
+    const { id, properties, toMoveComponentIds, moduleName, moduleVersion } = props;
     const comp = this.appModelManager.appModel.getComponentById(id as ComponentId);
-    console.log('extraComponentIds', extraComponentIds);
+    console.log('toMoveComponentIds', toMoveComponentIds);
     if (comp) {
       const propertySpec: Record<string, any> = {
         type: 'object',
@@ -261,8 +261,8 @@ export class EditorStore {
       }
 
       const moduleComponents = comp?.allComponents.map(c => c.toSchema());
-      if (extraComponentIds.length) {
-        extraComponentIds.forEach(id => {
+      if (toMoveComponentIds.length) {
+        toMoveComponentIds.forEach(id => {
           moduleComponents.push(
             this.appModelManager.appModel.getComponentById(id as ComponentId)!.toSchema()
           );

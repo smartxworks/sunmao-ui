@@ -19,7 +19,12 @@ import {
 } from '@chakra-ui/react';
 import { EditorServices } from '../../types';
 import { ComponentId, IComponentModel } from '../../AppModel/IAppModel';
-import { CoreTraitName, CORE_VERSION, EventHandlerSpec } from '@sunmao-ui/shared';
+import {
+  CoreTraitName,
+  CORE_VERSION,
+  EventHandlerSpec,
+  ExpressionKeywords,
+} from '@sunmao-ui/shared';
 import { Static } from '@sinclair/typebox';
 import { uniq } from 'lodash';
 
@@ -47,7 +52,7 @@ type AllRelations = {
 export const ContractModuleView: React.FC<Props> = ({ componentId, services }) => {
   const { appModelManager, editorStore } = services;
   const { appModel } = appModelManager;
-  const radioMapRef = useRef<RadioMapType>({});
+  const radioMapRef = useRef<RefTreatmentMap>({});
   const [moduleName, setModuleName] = useState('myModule0');
   const [moduleVersion, setModuleVersion] = useState('custom/v1');
 
@@ -94,7 +99,7 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
     }
 
     return (
-      <RadioMapForm
+      <RefTreatmentForm
         ids={uniqExpRelations}
         onChange={v => {
           radioMapRef.current = v;
@@ -154,19 +159,21 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
 
   const onContract = () => {
     const properties: Record<string, string> = {};
-    const extraComponentIds: string[] = [];
+    const toMoveComponentIds: string[] = [];
     expressionRelations.forEach(relation => {
-      if (radioMapRef.current[relation.componentId] === '1') {
-        extraComponentIds.push(relation.componentId);
-      }
-      if (radioMapRef.current[relation.componentId] === '2') {
-        properties[relation.componentId] = `{{${relation.componentId}}}`;
+      switch (radioMapRef.current[relation.componentId]) {
+        case RefTreatment.move:
+          toMoveComponentIds.push(relation.componentId);
+          break;
+        case RefTreatment.keep:
+          properties[relation.componentId] = `{{${relation.componentId}}}`;
+          break;
       }
     });
     editorStore.contractModules({
       id: componentId,
       properties,
-      extraComponentIds: uniq(extraComponentIds),
+      toMoveComponentIds: uniq(toMoveComponentIds),
       moduleName,
       moduleVersion,
     });
@@ -178,7 +185,9 @@ export const ContractModuleView: React.FC<Props> = ({ componentId, services }) =
       <Input value={moduleName} onChange={v => setModuleName(v.target.value)} />
       <Button onClick={onContract}>Contract</Button>
       <VStack width="full" alignItems="start">
-        <Heading size="md">These component will not be in module.</Heading>
+        <Heading size="md">
+          These components are used in module, you have to decide how to treat them.
+        </Heading>
         {expressionTable()}
       </VStack>
       <VStack width="full" alignItems="start">
@@ -193,11 +202,17 @@ function getRelations(component: IComponentModel, components: IComponentModel[])
   const expressionRelations: ExpressionRelation[] = [];
   const methodRelations: MethodRelation[] = [];
   const ids = components.map(c => c.id) as string[];
+  // 获取到Module中用到的外部id
   component.properties.traverse((field, key) => {
     if (field.isDynamic) {
       const usedIds = Object.keys(field.refComponentInfos);
       usedIds.forEach(usedId => {
-        if (!ids.includes(usedId)) {
+        // 排除掉全局变量和sunmao关键字
+        if (
+          !ids.includes(usedId) &&
+          !(usedId in window) &&
+          !ExpressionKeywords.includes(usedId)
+        ) {
           expressionRelations.push({
             componentId: usedId,
             exp: field.rawValue,
@@ -207,6 +222,7 @@ function getRelations(component: IComponentModel, components: IComponentModel[])
       });
     }
   });
+
   component.traits.forEach(t => {
     t.properties.traverse((field, key) => {
       if (field.isDynamic) {
@@ -253,20 +269,26 @@ const Placeholder = () => {
   );
 };
 
-type RadioMapType = Record<string, '1' | '2'>;
+enum RefTreatment {
+  'keep' = 'keep',
+  'move' = 'move',
+  'ignore' = 'ignore',
+}
 
-type RadioMapFormProps = {
+type RefTreatmentMap = Record<string, RefTreatment>;
+
+type RefTreatmentFormProps = {
   ids: string[];
-  onChange: (map: RadioMapType) => void;
+  onChange: (map: RefTreatmentMap) => void;
 };
 
-const RadioMapForm: React.FC<RadioMapFormProps> = ({ ids, onChange }) => {
-  const [value, setValue] = useState<RadioMapType>({});
+const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({ ids, onChange }) => {
+  const [value, setValue] = useState<RefTreatmentMap>({});
 
   useEffect(() => {
-    const map: Record<string, '1' | '2'> = {};
+    const map: RefTreatmentMap = {};
     ids.forEach(r => {
-      map[r] = '1';
+      map[r] = RefTreatment.keep;
     });
     setValue(map);
   }, [ids]);
@@ -286,8 +308,9 @@ const RadioMapForm: React.FC<RadioMapFormProps> = ({ ids, onChange }) => {
           >
             <HStack>
               <FormLabel>{id}</FormLabel>
-              <Radio value="1">Move in module</Radio>
-              <Radio value="2">Keep outside</Radio>
+              <Radio value={RefTreatment.move}>Move in module</Radio>
+              <Radio value={RefTreatment.keep}>Keep outside</Radio>
+              <Radio value={RefTreatment.ignore}>Ignore</Radio>
             </HStack>
           </RadioGroup>
         );
