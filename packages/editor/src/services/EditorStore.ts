@@ -264,6 +264,7 @@ export class EditorStore {
       .getComponentById(id as ComponentId)!
       .clone();
     console.log('toMoveComponentIds', toMoveComponentIds);
+    console.log('properties', properties);
     const propertySpec: Record<string, any> = {
       type: 'object',
       properties: { ...properties },
@@ -283,14 +284,16 @@ export class EditorStore {
         eventTrait?.rawProperties.handlers.forEach(
           (h: Static<typeof EventHandlerSpec>) => {
             const newEventName = `${c.id}${h.type}`;
-            // 如果同样的module event已经发出$module了，那就不需要它了
-            if (cache[newEventName]) {
-              return;
-            }
             const hasRelation = methodRelations.find(r => {
-              return r.source === c.id && r.event === h.type;
+              return (
+                r.source === c.id && r.event === h.type && r.target === h.componentId
+              );
             });
             if (hasRelation) {
+              // 如果同样的module event已经发出$module了，那就不需要它了
+              if (cache[newEventName]) {
+                return;
+              }
               // 发出新的module event
               cache[newEventName] = true;
               eventSpec.push(newEventName);

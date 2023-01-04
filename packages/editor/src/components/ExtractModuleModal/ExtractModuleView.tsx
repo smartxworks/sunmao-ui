@@ -167,6 +167,7 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
   const onExtract = () => {
     const properties: Record<string, string> = {};
     const toMoveComponentIds: string[] = [];
+    console.log('radioMapRef', radioMapRef);
     expressionRelations.forEach(relation => {
       switch (radioMapRef.current[relation.componentId]) {
         case RefTreatment.move:
@@ -319,6 +320,10 @@ const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({
     setValue(map);
   }, [ids]);
 
+  useEffect(() => {
+    onChange(value);
+  }, [onChange, value]);
+
   return (
     <VStack>
       {Object.keys(value).map(id => {
@@ -327,7 +332,6 @@ const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({
             key={id}
             onChange={newValue => {
               const next = { ...value, [id]: newValue as any };
-              onChange(next);
               setValue(next);
             }}
             value={value[id]}
