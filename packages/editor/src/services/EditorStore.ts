@@ -8,13 +8,14 @@ import { AppStorage } from './AppStorage';
 import type { SchemaValidator, ValidateErrorResult } from '../validator';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
-import { isEqual } from 'lodash';
+import { isEqual, set } from 'lodash';
 import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
 import { ComponentId } from '../AppModel/IAppModel';
 import { genOperation } from '../operations';
-import { MethodRelation } from '../components/ExtractModuleModal/ExtractModuleView';
+import { InsideMethodRelation } from '../components/ExtractModuleModal/ExtractModuleView';
 import { Static } from '@sinclair/typebox';
+import { OutsideExpRelationWithState } from '../components/ExtractModuleModal';
 
 type EditingTarget = {
   kind: 'app' | 'module';
@@ -250,7 +251,8 @@ export class EditorStore {
     toMoveComponentIds: string[];
     moduleName: string;
     moduleVersion: string;
-    methodRelations: MethodRelation[];
+    methodRelations: InsideMethodRelation[];
+    outsideExpRelations: OutsideExpRelationWithState[];
   }) {
     const {
       id,
@@ -259,12 +261,15 @@ export class EditorStore {
       moduleName,
       moduleVersion,
       methodRelations,
+      outsideExpRelations,
     } = props;
     const root = this.appModelManager.appModel
       .getComponentById(id as ComponentId)!
       .clone();
     console.log('toMoveComponentIds', toMoveComponentIds);
     console.log('properties', properties);
+    const newModuleContainerId = `${id}__module`;
+    const newModuleId = `${id}Module`;
     const propertySpec: Record<string, any> = {
       type: 'object',
       properties: { ...properties },
@@ -335,6 +340,31 @@ export class EditorStore {
       };
     });
 
+    // 开始处理 State
+    const stateMap: Record<string, string> = {};
+    outsideExpRelations.forEach(r => {
+      // 添加 StateMap
+      if (r.stateName) {
+        const origin = `${r.relyOn}.${r.valuePath}`;
+        stateMap[r.stateName] = origin;
+        // 然后一个个替换Exp里的字符串
+        const newExp = r.exp.replaceAll(origin, `${newModuleId}.${r.stateName}`);
+        const c = this.appModelManager.appModel.getComponentById(
+          r.componentId as ComponentId
+        )!;
+        const fieldKey = r.key.startsWith('.') ? r.key.slice(1) : r.key;
+        const newProperties = set(c.properties.rawValue, fieldKey, newExp);
+        console.log('newProperties', newProperties);
+        this.eventBus.send(
+          'operation',
+          genOperation(this.registry, 'modifyComponentProperties', {
+            componentId: r.componentId,
+            properties: newProperties,
+          })
+        );
+      }
+    });
+
     console.log('propertySpec', propertySpec);
     console.log('moduleComponents', moduleComponents);
     const rawModule = this.appStorage.createModule(
@@ -342,26 +372,26 @@ export class EditorStore {
       propertySpec,
       eventSpec,
       moduleVersion,
-      moduleName
+      moduleName,
+      stateMap
     );
 
     const module = createModule(rawModule);
     this.registry.registerModule(module);
 
-    const newId = `${id}__module`;
     this.eventBus.send(
       'operation',
       genOperation(this.registry, 'createComponent', {
-        componentId: newId,
+        componentId: newModuleContainerId,
         componentType: `core/v1/moduleContainer`,
       })
     );
     this.eventBus.send(
       'operation',
-      genOperation(this.registry, 'modifyComponentProperty', {
-        componentId: newId,
+      genOperation(this.registry, 'modifyComponentProperties', {
+        componentId: newModuleContainerId,
         properties: {
-          id: `${id}Module`,
+          id: newModuleId,
           type: `${moduleVersion}/${moduleName}`,
           properties,
           handlers: moduleHandlers,

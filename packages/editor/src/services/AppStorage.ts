@@ -44,7 +44,8 @@ export class AppStorage {
     propertySpec?: JSONSchema7,
     events?: string[],
     moduleVersion?: string,
-    moduleName?: string
+    moduleName?: string,
+    stateMap?: Record<string, string>
   ): Module {
     let index = this.modules.length;
 
@@ -76,6 +77,9 @@ export class AppStorage {
     }
     if (events) {
       newModule.spec.events = events;
+    }
+    if (stateMap) {
+      newModule.spec.stateMap = stateMap;
     }
 
     this.setModules([...this.modules, newModule]);

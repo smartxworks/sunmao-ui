@@ -1,7 +1,7 @@
 type OperationType =
   | 'createComponent'
   | 'removeComponent'
-  | 'modifyComponentProperty'
+  | 'modifyComponentProperties'
   | 'modifyComponentId'
   | 'adjustComponentOrder'
   | 'createTrait'

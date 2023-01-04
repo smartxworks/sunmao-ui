@@ -27,19 +27,24 @@ import {
 import { Static } from '@sinclair/typebox';
 import { uniq } from 'lodash';
 import { RelationshipModal } from '../RelationshipModal';
+import { OutsideExpRelation } from './type';
+import { RenameStateForm } from './RenameStateForm';
+import { OutsideExpRelationWithState } from '.';
 
 type Props = {
   componentId: string;
   services: EditorServices;
 };
 
-type ExpressionRelation = {
+// 里面exp依赖外面
+type InsideExpRelation = {
   componentId: string;
   exp: string;
   key: string;
 };
 
-export type MethodRelation = {
+// 里面的event调用外面的method
+export type InsideMethodRelation = {
   handler: Static<typeof EventHandlerSpec>;
   source: string;
   target: string;
@@ -48,8 +53,9 @@ export type MethodRelation = {
 };
 
 type AllRelations = {
-  exp: ExpressionRelation[];
-  method: MethodRelation[];
+  exp: InsideExpRelation[];
+  method: InsideMethodRelation[];
+  outsideExpRelations: OutsideExpRelation[];
 };
 
 export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) => {
@@ -57,25 +63,32 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
   const { appModel } = appModelManager;
   const [showRelationId, setShowRelationId] = useState('');
   const radioMapRef = useRef<RefTreatmentMap>({});
+  const outsideExpRelationsValueRef = useRef<OutsideExpRelationWithState[]>([]);
   const [moduleName, setModuleName] = useState('myModule0');
   const [moduleVersion, setModuleVersion] = useState('custom/v1');
 
-  const { expressionRelations, methodRelations } = useMemo(() => {
+  const { expressionRelations, methodRelations, outsideExpRelations } = useMemo(() => {
     const root = appModel.getComponentById(componentId as ComponentId)!;
-    const components = root.allComponents;
-    const allRelations = components.reduce(
+    const moduleComponents = root.allComponents;
+    const allRelations = moduleComponents.reduce(
       (res, c) => {
-        const { expressionRelations, methodRelations } = getRelations(c, components);
+        const { expressionRelations, methodRelations } = getRelations(
+          c,
+          moduleComponents
+        );
         res.exp = res.exp.concat(expressionRelations);
         res.method = res.method.concat(methodRelations);
         return res;
       },
-      { exp: [], method: [] } as AllRelations
+      { exp: [], method: [], outsideExpRelations: [] } as AllRelations
     );
+    const outsideExpRelations = getOutsideExpRelations(appModel.allComponents, root);
+    console.log('outsideExpRelations', outsideExpRelations);
     console.log('allRelations', allRelations);
     return {
       expressionRelations: allRelations.exp,
       methodRelations: allRelations.method,
+      outsideExpRelations,
     };
   }, [appModel, componentId]);
 
@@ -111,26 +124,22 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
         }}
         onClickComponent={id => setShowRelationId(id)}
       />
-      // <Table size="sm" border="1px solid" borderColor="gray.100">
-      //   <Thead>
-      //     <Tr>
-      //       <Th>ComponentId</Th>
-      //       <Th>Move In to</Th>
-      //       <Th>Expression</Th>
-      //     </Tr>
-      //   </Thead>
-      //   <Tbody>
-      //     {uniqExpRelations.map((d, i) => {
-      //       return (
-      //         <Tr key={i}>
-      //           <Td>{idLink(d)}</Td>
-      //           {/* <Td>{d.key}</Td>
-      //           <Td>{d.exp}</Td> */}
-      //         </Tr>
-      //       );
-      //     })}
-      //   </Tbody>
-      // </Table>
+    );
+  };
+
+  const renameStateForm = () => {
+    if (!outsideExpRelations.length) {
+      return <Placeholder />;
+    }
+
+    return (
+      <RenameStateForm
+        outsideExpRelations={outsideExpRelations}
+        onChange={v => {
+          outsideExpRelationsValueRef.current = v;
+          console.log('outsideExpRelationsValueRef', v);
+        }}
+      />
     );
   };
 
@@ -185,6 +194,7 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
       moduleName,
       moduleVersion,
       methodRelations,
+      outsideExpRelations: outsideExpRelationsValueRef.current,
     });
   };
 
@@ -208,6 +218,10 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
           {expressionTable()}
         </VStack>
         <VStack width="full" alignItems="start">
+          <Heading size="md">State map Config</Heading>
+          {renameStateForm()}
+        </VStack>
+        <VStack width="full" alignItems="start">
           <Heading size="md">Who calls my methods?</Heading>
           {methodTable()}
         </VStack>
@@ -217,9 +231,44 @@ export const ExtractModuleView: React.FC<Props> = ({ componentId, services }) =>
   );
 };
 
+// 获取外部组件中依赖Module内组件的表达式;
+// TODO: 这里只检查了component的property，没检查trait里面的
+function getOutsideExpRelations(
+  allComponents: IComponentModel[],
+  moduleRoot: IComponentModel
+): OutsideExpRelation[] {
+  const res: OutsideExpRelation[] = [];
+  const clonedRoot = moduleRoot.clone();
+  const ids = clonedRoot.allComponents.map(c => c.id);
+  allComponents.forEach(c => {
+    if (clonedRoot.appModel.getComponentById(c.id)) {
+      // 是module内的，无视
+      return;
+    }
+    c.properties.traverse((field, key) => {
+      if (field.isDynamic) {
+        const relyRefs = Object.keys(field.refComponentInfos).filter(refId =>
+          ids.includes(refId as ComponentId)
+        );
+        relyRefs.forEach(refId => {
+          res.push({
+            componentId: c.id,
+            exp: field.getValue() as string,
+            key,
+            valuePath:
+              field.refComponentInfos[refId as ComponentId].refProperties.slice(-1)[0],
+            relyOn: refId,
+          });
+        });
+      }
+    });
+  });
+  return res;
+}
+
 function getRelations(component: IComponentModel, components: IComponentModel[]) {
-  const expressionRelations: ExpressionRelation[] = [];
-  const methodRelations: MethodRelation[] = [];
+  const expressionRelations: InsideExpRelation[] = [];
+  const methodRelations: InsideMethodRelation[] = [];
   const ids = components.map(c => c.id) as string[];
   // 获取到Module中用到的外部id
   component.properties.traverse((field, key) => {
@@ -273,6 +322,7 @@ function getRelations(component: IComponentModel, components: IComponentModel[])
       });
     }
   });
+
   return { expressionRelations, methodRelations };
 }
 

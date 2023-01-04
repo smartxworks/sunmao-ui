@@ -35,7 +35,7 @@ export const OperationConstructors: Record<
 > = {
   createComponent: CreateComponentBranchOperation,
   removeComponent: RemoveComponentBranchOperation,
-  modifyComponentProperty: ModifyComponentPropertiesLeafOperation,
+  modifyComponentProperties: ModifyComponentPropertiesLeafOperation,
   modifyComponentId: ModifyComponentIdBranchOperation,
   adjustComponentOrder: AdjustComponentOrderLeafOperation,
   createTrait: CreateTraitLeafOperation,
@@ -64,7 +64,7 @@ export type OperationConfigMaps = {
     RemoveComponentBranchOperation,
     RemoveComponentBranchOperationContext
   >;
-  modifyComponentProperty: OperationConfigMap<
+  modifyComponentProperties: OperationConfigMap<
     ModifyComponentPropertiesLeafOperation,
     ModifyComponentPropertiesLeafOperationContext
   >;
