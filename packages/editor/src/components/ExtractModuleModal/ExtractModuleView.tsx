@@ -15,6 +15,8 @@ import {
   Radio,
   RadioGroup,
   Input,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
 import { EditorServices } from '../../types';
 import { ComponentId, IComponentModel } from '../../AppModel/IAppModel';
@@ -383,15 +385,8 @@ const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({
     <VStack>
       {Object.keys(value).map(id => {
         return (
-          <RadioGroup
-            key={id}
-            onChange={newValue => {
-              const next = { ...value, [id]: newValue as any };
-              setValue(next);
-            }}
-            value={value[id]}
-          >
-            <HStack>
+          <FormControl key={id} as="fieldset">
+            <FormLabel>
               <Button
                 variant="link"
                 colorScheme="blue"
@@ -400,11 +395,21 @@ const RefTreatmentForm: React.FC<RefTreatmentFormProps> = ({
               >
                 {id}
               </Button>
-              <Radio value={RefTreatment.move}>Move in module</Radio>
-              <Radio value={RefTreatment.keep}>Keep outside</Radio>
-              <Radio value={RefTreatment.ignore}>Ignore</Radio>
-            </HStack>
-          </RadioGroup>
+            </FormLabel>
+            <RadioGroup
+              onChange={newValue => {
+                const next = { ...value, [id]: newValue as any };
+                setValue(next);
+              }}
+              value={value[id]}
+            >
+              <HStack>
+                <Radio value={RefTreatment.move}>Move in module</Radio>
+                <Radio value={RefTreatment.keep}>Keep outside</Radio>
+                <Radio value={RefTreatment.ignore}>Ignore</Radio>
+              </HStack>
+            </RadioGroup>
+          </FormControl>
         );
       })}
     </VStack>
