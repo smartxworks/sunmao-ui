@@ -296,7 +296,12 @@ function getRelations(component: IComponentModel, components: IComponentModel[])
       if (field.isDynamic) {
         const usedIds = Object.keys(field.refComponentInfos);
         usedIds.forEach(usedId => {
-          if (!ids.includes(usedId)) {
+          // 排除掉全局变量和sunmao关键字
+          if (
+            !ids.includes(usedId) &&
+            !(usedId in window) &&
+            !ExpressionKeywords.includes(usedId)
+          ) {
             expressionRelations.push({
               componentId: usedId,
               exp: field.rawValue,
