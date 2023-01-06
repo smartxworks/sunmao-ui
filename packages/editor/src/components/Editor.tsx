@@ -95,6 +95,7 @@ export const Editor: React.FC<Props> = observer(
           <Box
             id="editor-main"
             display="flex"
+            transform="auto"
             flexDirection="column"
             width="full"
             height="full"

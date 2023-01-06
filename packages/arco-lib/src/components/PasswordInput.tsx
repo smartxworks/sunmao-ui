@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
 import { PasswordInputPropsSpec as BasePasswordInputPropsSpec } from '../generated/types/PasswordInput';
-import { useStateValue } from 'src/hooks/useStateValue';
+import { useStateValue } from '../hooks/useStateValue';
 
 const InputPropsSpec = Type.Object({
   ...BasePasswordInputPropsSpec,
