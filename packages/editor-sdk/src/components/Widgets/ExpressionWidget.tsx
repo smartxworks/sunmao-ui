@@ -1,21 +1,11 @@
 import React, { useEffect, useMemo, useCallback, useState, useRef } from 'react';
-import {
-  toNumber,
-  isString,
-  isNumber,
-  isBoolean,
-  isFunction,
-  isObject,
-  isUndefined,
-  isNull,
-  debounce,
-} from 'lodash';
+import { toNumber, debounce } from 'lodash';
 import { Type, Static } from '@sinclair/typebox';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { ExpressionEditor, ExpressionEditorHandle } from '../Form';
 import { isExpression } from '../../utils/validator';
-import { getTypeString } from '../../utils/type';
+import { getType, getTypeString, Types } from '../../utils/type';
 import { ValidateFunction } from 'ajv';
 import { ExpressionError } from '@sunmao-ui/runtime';
 import { CORE_VERSION, CoreWidgetName, initAjv } from '@sunmao-ui/shared';
@@ -26,30 +16,6 @@ export function isNumeric(x: string | number) {
 }
 
 // highly inspired by appsmith
-export enum Types {
-  STRING = 'STRING',
-  NUMBER = 'NUMBER',
-  BOOLEAN = 'BOOLEAN',
-  OBJECT = 'OBJECT',
-  ARRAY = 'ARRAY',
-  FUNCTION = 'FUNCTION',
-  UNDEFINED = 'UNDEFINED',
-  NULL = 'NULL',
-  UNKNOWN = 'UNKNOWN',
-}
-
-export const getType = (value: unknown) => {
-  if (isString(value)) return Types.STRING;
-  if (isNumber(value)) return Types.NUMBER;
-  if (isBoolean(value)) return Types.BOOLEAN;
-  if (Array.isArray(value)) return Types.ARRAY;
-  if (isFunction(value)) return Types.FUNCTION;
-  if (isObject(value)) return Types.OBJECT;
-  if (isUndefined(value)) return Types.UNDEFINED;
-  if (isNull(value)) return Types.NULL;
-  return Types.UNKNOWN;
-};
-
 function generateTypeDef(
   obj: any
 ): string | Record<string, string | Record<string, unknown>> {
@@ -164,13 +130,14 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
   const [error, setError] = useState<string | null>(null);
   const editorRef = useRef<ExpressionEditorHandle>(null);
   const validateFuncRef = useRef<ValidateFunction | null>(null);
-  const slotTrait = useMemo(
-    () =>
-      component.traits.find(trait =>
+  const slotTrait = useMemo(() => {
+    if (component.traits) {
+      return component.traits.find(trait =>
         ['core/v1/slot', 'core/v2/slot'].includes(trait.type)
-      ),
-    [component.traits]
-  );
+      );
+    }
+    return undefined;
+  }, [component]);
   const $slot = useMemo(
     () =>
       slotTrait

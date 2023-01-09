@@ -1,13 +1,13 @@
 import { action, makeAutoObservable, observable, reaction, toJS } from 'mobx';
 import { ComponentSchema, createModule } from '@sunmao-ui/core';
 import { RegistryInterface, StateManagerInterface } from '@sunmao-ui/runtime';
+import { isEqual } from 'lodash';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
 import type { SchemaValidator, ValidateErrorResult } from '../validator';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
-import { isEqual } from 'lodash';
 import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
 
@@ -34,6 +34,7 @@ export class EditorStore {
   currentEditingTarget: EditingTarget = {
     kind: 'app',
     version: '',
+
     name: '',
   };
 
@@ -112,6 +113,18 @@ export class EditorStore {
         if (this.selectedComponentId) {
           this.setToolMenuTab(ToolMenuTabs.INSPECT);
         }
+      }
+    );
+
+    reaction(
+      () => this.rawModules,
+      () => {
+        // Remove old modules and re-register all modules,
+        this.registry.unregisterAllModules();
+        this.rawModules.forEach(m => {
+          const modules = createModule(m);
+          this.registry.registerModule(modules, true);
+        });
       }
     );
 

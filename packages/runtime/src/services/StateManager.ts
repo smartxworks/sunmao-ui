@@ -18,7 +18,7 @@ dayjs.locale('zh-cn');
 type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
-  fallbackWhenError?: (exp: string) => any;
+  fallbackWhenError?: (exp: string, err: Error) => any;
   // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
   ignoreEvalError?: boolean;
   slotKey?: string;
@@ -128,7 +128,9 @@ export class StateManager {
           consoleError(ConsoleType.Expression, raw, expressionError.message);
         }
 
-        return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
+        return fallbackWhenError
+          ? fallbackWhenError(raw, expressionError)
+          : expressionError;
       }
       return undefined;
     }
@@ -169,18 +171,10 @@ export class StateManager {
     options: EvalOptions = {}
   ): EvaledResult<T> {
     const store = this.slotStore;
-    const redirector = new Proxy(
-      {},
-      {
-        get(_, prop) {
-          return options.slotKey ? store[options.slotKey][prop] : undefined;
-        },
-      }
-    );
 
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: redirector,
+      $slot: options.slotKey ? store[options.slotKey] : undefined,
     };
     // just eval
     if (typeof value !== 'string') {
@@ -208,17 +202,9 @@ export class StateManager {
       : PropsAfterEvaled<Exclude<T, string>>;
 
     const store = this.slotStore;
-    const redirector = new Proxy(
-      {},
-      {
-        get(_, prop) {
-          return options.slotKey ? store[options.slotKey][prop] : undefined;
-        },
-      }
-    );
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: redirector,
+      $slot: options.slotKey ? store[options.slotKey] : undefined,
     };
     // watch change
     if (value && typeof value === 'object') {

@@ -21,6 +21,7 @@ type Props = Static<typeof ModuleRenderSpec> & {
   evalScope?: Record<string, any>;
   services: UIServices;
   app: RuntimeApplication;
+  className?: string;
 };
 
 export const ModuleRenderer = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -37,7 +38,7 @@ const ModuleRendererContent = React.forwardRef<
   HTMLDivElement,
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
-  const { moduleSpec, properties, handlers, evalScope, services, app } = props;
+  const { moduleSpec, properties, handlers, evalScope, services, app, className } = props;
   const moduleId = services.stateManager.deepEval(props.id, {
     scopeObject: evalScope,
   }) as string | ExpressionError;
@@ -166,7 +167,7 @@ const ModuleRendererContent = React.forwardRef<
   }, [evaledModuleTemplate, services, app]);
 
   return (
-    <div className="module-container" ref={ref}>
+    <div className={className} ref={ref}>
       {result}
     </div>
   );

@@ -1,6 +1,7 @@
 import { EventHandlerSpec } from './event';
 import { Type } from '@sinclair/typebox';
 import { CORE_VERSION, CoreWidgetName } from '../constants/core';
+import { MODULE_ID_EXP } from '../constants';
 
 export const ModuleRenderSpec = Type.Object(
   {
@@ -27,3 +28,7 @@ export const ModuleRenderSpec = Type.Object(
     widget: 'core/v1/module',
   }
 );
+
+export const ModuleEventMethodSpec = Type.Object({
+  moduleId: Type.Literal(MODULE_ID_EXP),
+});

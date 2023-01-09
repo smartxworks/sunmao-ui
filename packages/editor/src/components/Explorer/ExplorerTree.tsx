@@ -101,7 +101,7 @@ export const ExplorerTree: React.FC<ExplorerTreeProps> = observer(
             aria-label="create module"
             size="xs"
             icon={<AddIcon />}
-            onClick={() => editorStore.appStorage.createModule()}
+            onClick={() => editorStore.appStorage.createModule({})}
           />
         </HStack>
         {moduleItems}

@@ -96,7 +96,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
             onChange={newFormData => {
               eventBus.send(
                 'operation',
-                genOperation(registry, 'modifyComponentProperty', {
+                genOperation(registry, 'modifyComponentProperties', {
                   componentId: selectedComponentId,
                   properties: newFormData,
                 })
