@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
-import { EventCallBackHandlerSpec } from '@sunmao-ui/shared';
+import { EventCallBackHandlerSpec, MODULE_ID_EXP } from '@sunmao-ui/shared';
 import { type PropsBeforeEvaled } from '@sunmao-ui/core';
 import { UIServices } from '../types';
 
@@ -18,6 +18,10 @@ export const runEventHandler = (
     // Eval before sending event to assure the handler object is evaled from the latest state.
     const evalOptions = {
       slotKey,
+      // keep MODULE_ID_EXP when error
+      fallbackWhenError(exp: string, err: Error) {
+        return exp === MODULE_ID_EXP ? exp : err;
+      },
     };
     const evaledHandlers = stateManager.deepEval(rawHandlers, evalOptions) as Static<
       typeof EventCallBackHandlerSpec

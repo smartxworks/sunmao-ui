@@ -58,6 +58,7 @@ export const Explorer: React.FC<Props> = ({ services }) => {
                 setCurrentVersion={setCurrentVersion}
                 setCurrentName={setCurrentName}
                 services={services}
+                onClose={() => setIsEditingMode(false)}
               />
             </ModalBody>
           </ModalContent>

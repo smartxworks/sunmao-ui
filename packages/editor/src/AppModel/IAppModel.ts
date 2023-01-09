@@ -98,6 +98,7 @@ export interface IComponentModel {
   _isDirty: boolean;
   _slotTrait: ITraitModel | null;
   toSchema(): ComponentSchema;
+  clone(): IComponentModel;
   updateComponentProperty: (property: string, value: unknown) => void;
   // move component from old parent to new parent(or top level if parent is undefined).
   appendTo: (parent?: IComponentModel, slot?: SlotName) => void;
@@ -110,6 +111,7 @@ export interface IComponentModel {
   removeTrait: (traitId: TraitId) => void;
   updateTraitProperties: (traitId: TraitId, properties: Record<string, unknown>) => void;
   updateSlotTrait: (parent: ComponentId, slot: SlotName) => void;
+  removeSlotTrait: () => void;
   removeChild: (child: IComponentModel) => void;
 }
 

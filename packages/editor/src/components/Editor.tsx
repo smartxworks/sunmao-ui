@@ -85,9 +85,12 @@ export const Editor: React.FC<Props> = observer(
       }
     }, [isDisplayApp]);
     const onPreview = useCallback(() => setPreview(true), []);
-    const onRightTabChange = useCallback(activatedTab => {
-      setToolMenuTab(activatedTab);
-    }, []);
+    const onRightTabChange = useCallback(
+      activatedTab => {
+        setToolMenuTab(activatedTab);
+      },
+      [setToolMenuTab]
+    );
 
     const renderMain = () => {
       const appBox = (
