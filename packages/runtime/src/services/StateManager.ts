@@ -18,7 +18,7 @@ dayjs.locale('zh-cn');
 type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
-  fallbackWhenError?: (exp: string) => any;
+  fallbackWhenError?: (exp: string, err: Error) => any;
   // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
   ignoreEvalError?: boolean;
   slotKey?: string;
@@ -128,7 +128,9 @@ export class StateManager {
           consoleError(ConsoleType.Expression, raw, expressionError.message);
         }
 
-        return fallbackWhenError ? fallbackWhenError(raw) : expressionError;
+        return fallbackWhenError
+          ? fallbackWhenError(raw, expressionError)
+          : expressionError;
       }
       return undefined;
     }
