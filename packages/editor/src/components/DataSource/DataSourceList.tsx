@@ -33,7 +33,7 @@ export const DataSourceList: React.FC<Props> = props => {
   const tDataSources = dataSources.filter(ds => ds.type === 'core/v1/dummy');
   const cDataSources = dataSources.filter(ds => ds.type !== 'core/v1/dummy');
   const cdsMap = groupBy(cDataSources, c => c.type);
-  const tdsMap = groupBy(tDataSources, c => c.traits[0]?.type);
+  const tdsMap = groupBy(tDataSources, c => c.traits[0]?.type || '');
   const cdsGroups = Object.keys(cdsMap).map(type => {
     return {
       title: type,
@@ -44,7 +44,7 @@ export const DataSourceList: React.FC<Props> = props => {
   const tdsGroups = Object.keys(tdsMap).map(type => {
     return {
       title: type,
-      dataSources: tdsMap[type],
+      dataSources: tdsMap[type] || [],
       type: 'trait',
     };
   });
