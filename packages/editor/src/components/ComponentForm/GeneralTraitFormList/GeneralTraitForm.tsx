@@ -3,7 +3,6 @@ import { ComponentSchema, TraitSchema } from '@sunmao-ui/core';
 import { HStack, IconButton, VStack } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { SpecWidget } from '@sunmao-ui/editor-sdk';
-import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { formWrapperCSS } from '../style';
 import { EditorServices } from '../../../types';
 import { genOperation } from '../../../operations';
@@ -21,10 +20,7 @@ export const GeneralTraitForm: React.FC<Props> = props => {
   const { registry, eventBus } = services;
 
   const tImpl = registry.getTraitByType(trait.type);
-  const properties = Object.assign(
-    generateDefaultValueFromSpec(tImpl.spec.properties)!,
-    trait.properties
-  );
+  const properties = trait.properties;
   const onChange = (newValue: any) => {
     const operation = genOperation(registry, 'modifyTraitProperty', {
       componentId: component.id,

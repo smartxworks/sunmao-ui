@@ -18,10 +18,13 @@ export type CreateDataSourceBranchOperationContext = {
 export class CreateDataSourceBranchOperation extends BaseBranchOperation<CreateDataSourceBranchOperationContext> {
   do(prev: AppModel): AppModel {
     const { id, type, defaultProperties } = this.context;
-    const traitSpec = this.registry.getTraitByType(type).spec;
-    const initProperties = generateDefaultValueFromSpec(traitSpec.properties, {
-      genArrayItemDefaults: true,
-    }) as JSONSchema7Object;
+    const traitDefine = this.registry.getTraitByType(type);
+    const traitSpec = traitDefine.spec;
+    const initProperties =
+      traitDefine.metadata.exampleProperties ||
+      (generateDefaultValueFromSpec(traitSpec.properties, {
+        genArrayItemDefaults: true,
+      }) as JSONSchema7Object);
 
     this.operationStack.insert(
       new CreateComponentBranchOperation(this.registry, {
