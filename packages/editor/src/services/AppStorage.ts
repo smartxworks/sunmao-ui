@@ -116,12 +116,14 @@ export class AppStorage {
       stateMap,
       properties,
       exampleProperties,
+      events,
     }: {
       version: string;
       name: string;
       stateMap: Record<string, string>;
       properties: JSONSchema7;
       exampleProperties: JSONSchema7Object;
+      events: { name: string }[];
     }
   ) {
     const i = this.modules.findIndex(
@@ -133,6 +135,7 @@ export class AppStorage {
       draft[i].spec.stateMap = stateMap;
       draft[i].spec.properties = properties;
       draft[i].version = version;
+      draft[i].spec.events = events;
     });
 
     this.setModules(newModules);
