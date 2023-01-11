@@ -123,7 +123,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
                   }}
                 />
                 {isModuleVersionError && (
-                  <FormErrorMessage>Module name can not be empty</FormErrorMessage>
+                  <FormErrorMessage>Module version can not be empty</FormErrorMessage>
                 )}
               </VStack>
             </HStack>

@@ -54,7 +54,9 @@ export const AppMetaDataForm: React.FC<AppMetaDataFormProps> = observer(
                   }}
                 />
                 {isAppVersionError && (
-                  <FormErrorMessage>Application name can not be empty</FormErrorMessage>
+                  <FormErrorMessage>
+                    Application version can not be empty
+                  </FormErrorMessage>
                 )}
               </VStack>
             </HStack>
