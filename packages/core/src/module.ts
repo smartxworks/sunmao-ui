@@ -15,7 +15,9 @@ export type Module = {
 
 type ModuleSpec = {
   properties: JSONSchema7;
-  events: string[];
+  events: {
+    name: string;
+  }[];
   stateMap: Record<string, string>;
 };
 
