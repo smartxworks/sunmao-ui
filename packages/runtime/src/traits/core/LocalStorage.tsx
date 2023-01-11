@@ -65,6 +65,7 @@ function getLocalStorage(
 export const LocalStorageTraitPropertiesSpec = Type.Object({
   key: Type.String({
     title: 'Key',
+    default: 'value',
   }),
   initialValue: Type.Any({
     title: 'Initial Value',
