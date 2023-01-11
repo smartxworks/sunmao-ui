@@ -4,7 +4,6 @@ import { WidgetProps } from '../../types/widget';
 import { implementWidget } from '../../utils/widget';
 import { SpecWidget } from './SpecWidget';
 import { CORE_VERSION, CoreWidgetName, isJSONSchema } from '@sunmao-ui/shared';
-import { isExpression } from '../../utils/validator';
 import { css } from '@emotion/css';
 import { mapValues } from 'lodash';
 import { Type, TSchema } from '@sinclair/typebox';
@@ -28,7 +27,6 @@ const genSpec = (type: Types, target: any): TSchema => {
   switch (type) {
     case Types.ARRAY: {
       const arrayType = getType(target[0]);
-      console.log('array', target, genSpec(arrayType, target[0]));
       return Type.Array(genSpec(arrayType, target[0]));
     }
     case Types.OBJECT: {
@@ -101,13 +99,10 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
 
   const modulePropertiesSpec = useMemo<JSONSchema7>(() => {
     const obj = mapValues(module?.metadata.exampleProperties, p => {
-      let type = Types.STRING;
-      let result;
-      if (isExpression(p)) {
-        result = services.stateManager.deepEval(p);
-        type = getType(result);
-      }
+      const result = services.stateManager.deepEval(p);
+      const type = getType(result);
       const spec = genSpec(type, result);
+
       return spec;
     });
 
