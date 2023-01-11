@@ -20,6 +20,7 @@ import { mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { ExpressionEditorProps } from './ExpressionEditor';
 import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
+import { css } from '@emotion/css';
 
 const IGNORE_SPEC_TYPES = ['array', 'object'];
 
@@ -127,6 +128,11 @@ const RowItem = (props: RowItemProps) => {
   return (
     <HStack spacing="1" display="flex" alignItems="stretch">
       <Textarea
+        className={css`
+          &&&:focus {
+            background: var(--chakra-colors-gray-100);
+          }
+        `}
         resize="none"
         rows={1}
         paddingTop="6px"

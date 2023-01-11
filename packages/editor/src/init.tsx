@@ -55,11 +55,8 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
       variant: 'filled',
       components: ['Input', 'NumberInput', 'Textarea', 'Select'],
     }),
-    {
-      ...zIndices,
-    }
+    zIndices
   );
-  console.log('editor theme', editorTheme);
   const didMount = () => {
     eventBus.send('HTMLElementsUpdated');
     if (props.runtimeProps?.hooks?.didMount) props.runtimeProps.hooks.didMount();
