@@ -20,10 +20,11 @@ export const GeneralTraitFormList: React.FC<Props> = props => {
   const { eventBus, registry } = services;
 
   const onAddTrait = (type: string) => {
-    const traitSpec = registry.getTraitByType(type).spec;
-    const initProperties = generateDefaultValueFromSpec(
-      traitSpec.properties
-    ) as JSONSchema7Object;
+    const traitDefine = registry.getTraitByType(type);
+    const traitSpec = traitDefine.spec;
+    const initProperties =
+      traitDefine.metadata.exampleProperties ||
+      (generateDefaultValueFromSpec(traitSpec.properties) as JSONSchema7Object);
     eventBus.send(
       'operation',
       genOperation(registry, 'createTrait', {

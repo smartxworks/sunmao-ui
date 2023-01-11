@@ -5,7 +5,7 @@ import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
 type KeyValue = { key: string; value: unknown };
 
 export const ArrayStateTraitPropertiesSpec = Type.Object({
-  key: Type.String(),
+  key: Type.String({ default: 'value' }),
   initialValue: Type.Optional(Type.Array(Type.Any())),
 });
 

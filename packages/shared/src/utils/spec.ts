@@ -34,8 +34,12 @@ function getArray(items: JSONSchema7Definition[], options?: Options): JSONSchema
   );
 }
 
+function isJSONSchema7Object(value: unknown): value is JSONSchema7Object {
+  return !!value && typeof value === 'object' && value instanceof Array === false;
+}
+
 function getObject(spec: JSONSchema7, options?: Options): JSONSchema7Object | string {
-  const obj: JSONSchema7Object = {};
+  const obj: JSONSchema7Object = isJSONSchema7Object(spec.default) ? spec.default : {};
 
   if (spec.allOf && spec.allOf.length > 0) {
     return (getArray(spec.allOf, options) as JSONSchema7Object[]).reduce((prev, cur) => {
@@ -47,10 +51,10 @@ function getObject(spec: JSONSchema7, options?: Options): JSONSchema7Object | st
   // if not specific property, treat it as any type
   if (!spec.properties) {
     if (options?.returnPlaceholderForAny) {
-      return AnyTypePlaceholder;
+      return isJSONSchema7Object(spec.default) ? spec.default : AnyTypePlaceholder;
     }
 
-    return {};
+    return isJSONSchema7Object(spec.default) ? spec.default : {};
   }
 
   for (const key in spec.properties) {
@@ -58,7 +62,8 @@ function getObject(spec: JSONSchema7, options?: Options): JSONSchema7Object | st
     if (typeof subSpec === 'boolean') {
       obj[key] = null;
     } else if (subSpec) {
-      obj[key] = generateDefaultValueFromSpec(subSpec, options);
+      obj[key] =
+        subSpec.default ?? obj[key] ?? generateDefaultValueFromSpec(subSpec, options);
     }
   }
   return obj;
@@ -98,14 +103,14 @@ export function generateDefaultValueFromSpec(
     }
     case spec.type === 'string':
       if (spec.enum && spec.enum.length > 0) {
-        return spec.enum[0];
+        return spec.default ?? spec.enum[0];
       } else {
-        return '';
+        return spec.default ?? '';
       }
     case spec.type === 'boolean':
-      return false;
+      return spec.default ?? false;
     case spec.type === 'array':
-      return spec.items
+      return spec.default ?? spec.items
         ? Array.isArray(spec.items)
           ? getArray(spec.items, options)
           : isJSONSchema(spec.items)
@@ -116,13 +121,13 @@ export function generateDefaultValueFromSpec(
         : [];
     case spec.type === 'number':
     case spec.type === 'integer':
-      return 0;
+      return spec.default ?? 0;
     case spec.type === 'object':
       return getObject(spec, options);
     case spec.type === 'null':
       return null;
     default:
-      return {};
+      return spec.default ?? {};
   }
 }
 

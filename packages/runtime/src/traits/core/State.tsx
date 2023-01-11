@@ -7,6 +7,7 @@ type KeyValue = { key: string; value: unknown };
 export const StateTraitPropertiesSpec = Type.Object({
   key: Type.String({
     title: 'Key',
+    default: 'value',
   }),
   initialValue: Type.Any({
     title: 'Initial Value',
