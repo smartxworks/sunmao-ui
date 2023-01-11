@@ -12,6 +12,7 @@ import {
   extendTheme,
   withDefaultSize,
   withDefaultVariant,
+  theme,
 } from '@chakra-ui/react';
 import { initEventBus } from './services/eventBus';
 import { EditorStore } from './services/EditorStore';
@@ -26,6 +27,14 @@ type SunmaoUIEditorProps = {
   storageHandler?: StorageHandler;
   defaultApplication?: Application;
   defaultModules?: Module[];
+};
+
+const zIndices = {
+  zIndices: {
+    ...theme.zIndices,
+    // smaller than the default value of zIndex for chakra modal (1400)
+    editorMask: 1399,
+  },
 };
 
 export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
@@ -45,9 +54,12 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
     withDefaultVariant({
       variant: 'filled',
       components: ['Input', 'NumberInput', 'Textarea', 'Select'],
-    })
+    }),
+    {
+      ...zIndices,
+    }
   );
-
+  console.log('editor theme', editorTheme);
   const didMount = () => {
     eventBus.send('HTMLElementsUpdated');
     if (props.runtimeProps?.hooks?.didMount) props.runtimeProps.hooks.didMount();

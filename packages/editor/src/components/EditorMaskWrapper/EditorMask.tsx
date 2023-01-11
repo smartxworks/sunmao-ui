@@ -101,7 +101,7 @@ export const EditorMask: React.FC<Props> = observer((props: Props) => {
       right="0"
       bottom="0"
       pointerEvents="none"
-      zIndex="99999"
+      zIndex="editorMask"
       ref={maskContainerRef}
     >
       {isDraggingNewComponent ? dragMask : hoverMask}
