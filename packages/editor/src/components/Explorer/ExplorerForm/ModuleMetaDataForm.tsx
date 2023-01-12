@@ -22,9 +22,7 @@ export type ModuleMetaDataFormData = {
   version: string;
   stateMap: Record<string, string>;
   properties: JSONSchema7;
-  events: {
-    name: string;
-  }[];
+  events: string[];
   exampleProperties: JSONSchema7Object;
 };
 
@@ -34,12 +32,11 @@ type ModuleMetaDataFormProps = {
   onSubmit?: (value: ModuleMetaDataFormData) => void;
 };
 
-const genEventsName = (events: { name: string }[]) => {
+const genEventsName = (events: string[]) => {
   let count = events.length;
   let name = `event${count}`;
-  const eventNames = events.map(({ name }) => name);
 
-  while (eventNames.includes(name)) {
+  while (events.includes(name)) {
     name = `event${++count}`;
   }
 
@@ -48,7 +45,7 @@ const genEventsName = (events: { name: string }[]) => {
 
 const EventInput: React.FC<{
   name: string;
-  events: { name: string }[];
+  events: string[];
   index: number;
   onChange: (value: string) => void;
 }> = ({ name: defaultName, onChange, events, index }) => {
@@ -69,7 +66,7 @@ const EventInput: React.FC<{
         onBlur={() => {
           const newEvents = [...events];
           newEvents.splice(index, 1);
-          if (newEvents.find(e => e.name === name)) {
+          if (newEvents.find(eventName => eventName === name)) {
             setIsRepeated(true);
             return;
           }
@@ -173,20 +170,20 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
         </FormControl>
         <FormControl>
           <FormLabel>Events</FormLabel>
-          {formik.values.events.map((event, i) => {
+          {formik.values.events.map((eventName, i) => {
             return (
-              <HStack m="10px 0 10px 0" alignItems="normal" key={event.name}>
+              <HStack m="10px 0 10px 0" alignItems="normal" key={eventName}>
                 <EventInput
                   events={formik.values.events}
                   index={i}
                   onChange={newName => {
                     const newEvents = produce(formik.values.events, draft => {
-                      draft[i].name = newName;
+                      draft[i] = newName;
                     });
                     formik.setFieldValue('events', newEvents);
                     formik.submitForm();
                   }}
-                  name={event.name}
+                  name={eventName}
                 />
                 <IconButton
                   aria-label="remove row"
@@ -207,9 +204,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
           <Button
             onClick={() => {
               const newEvents = produce(formik.values.events, draft => {
-                draft.push({
-                  name: genEventsName(draft),
-                });
+                draft.push(genEventsName(draft));
               });
               formik.setFieldValue('events', newEvents);
               formik.submitForm();

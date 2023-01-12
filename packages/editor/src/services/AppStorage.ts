@@ -123,7 +123,7 @@ export class AppStorage {
       stateMap: Record<string, string>;
       properties: JSONSchema7;
       exampleProperties: JSONSchema7Object;
-      events: { name: string }[];
+      events: string[];
     }
   ) {
     const i = this.modules.findIndex(
