@@ -43,12 +43,6 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
       exampleProperties: options.metadata.exampleProperties || {},
     },
     spec: {
-      // `json-schema-editor` has a readonly root object by default,
-      // it provides two schema formats,array({type:'array'}) and object({type:'object'}).
-      // In sunmao, we only use the object schema, so we need to specify a default value here
-      // and silently fail when root selects array.
-      // This is a bit obscure, so should remove the array type of root from the json-schema-editor later
-      // TODO remove the array type of root from the json-schema-editor
       properties: { type: 'object' },
       events: [],
       stateMap: {},

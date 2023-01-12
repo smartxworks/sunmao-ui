@@ -5,6 +5,10 @@ import { implementWidget } from '../../utils/widget';
 import { SpecWidget } from './SpecWidget';
 import { CORE_VERSION, CoreWidgetName, isJSONSchema } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
+import { mapValues } from 'lodash';
+import { Type, TSchema } from '@sinclair/typebox';
+import type { JSONSchema7 } from 'json-schema';
+import { getType, Types } from './ExpressionWidget';
 
 const LabelStyle = css`
   font-weight: normal;
@@ -18,6 +22,34 @@ declare module '../../types/widget' {
     'core/v1/module': {};
   }
 }
+
+const genSpec = (type: Types, target: any): TSchema => {
+  switch (type) {
+    case Types.ARRAY: {
+      const arrayType = getType(target[0]);
+      return Type.Array(genSpec(arrayType, target[0]));
+    }
+    case Types.OBJECT: {
+      const objType: Record<string, any> = {};
+      Object.keys(target).forEach(k => {
+        const type = getType(target[k]);
+        objType[k] = genSpec(type, target[k]);
+      });
+      return Type.Object(objType);
+    }
+    case Types.STRING:
+      return Type.String();
+    case Types.NUMBER:
+      return Type.Number();
+    case Types.BOOLEAN:
+      return Type.Boolean();
+    case Types.NULL:
+    case Types.UNDEFINED:
+      return Type.Any();
+    default:
+      return Type.Any();
+  }
+};
 
 export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
   const { component, value, spec, services, path, level, onChange } = props;
@@ -65,6 +97,18 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
     });
   };
 
+  const modulePropertiesSpec = useMemo<JSONSchema7>(() => {
+    const obj = mapValues(module?.metadata.exampleProperties, p => {
+      const result = services.stateManager.deepEval(p);
+      const type = getType(result);
+      const spec = genSpec(type, result);
+
+      return spec;
+    });
+
+    return Type.Object(obj);
+  }, [module?.metadata.exampleProperties, services.stateManager]);
+
   return (
     <Box p="2" border="1px solid" borderColor="gray.200" borderRadius="4">
       <SpecWidget
@@ -99,7 +143,7 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
         <SpecWidget
           component={component}
           spec={{
-            ...module.spec.properties,
+            ...modulePropertiesSpec,
             title: 'Module Properties',
           }}
           path={[]}

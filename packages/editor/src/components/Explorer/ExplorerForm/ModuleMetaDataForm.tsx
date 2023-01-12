@@ -1,34 +1,28 @@
-import React, { Suspense } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Box,
   Button,
   FormControl,
   FormLabel,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
   VStack,
+  IconButton,
+  HStack,
+  FormErrorMessage,
 } from '@chakra-ui/react';
-import { RecordEditor, SpecWidget } from '@sunmao-ui/editor-sdk';
+import { RecordEditor } from '@sunmao-ui/editor-sdk';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
-import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { JSONSchema7, JSONSchema7Object } from 'json-schema';
-
-const JsonSchemaEditor = React.lazy(() => import('@optum/json-schema-editor'));
+import { CloseIcon } from '@chakra-ui/icons';
+import produce from 'immer';
 
 export type ModuleMetaDataFormData = {
   name: string;
   version: string;
   stateMap: Record<string, string>;
   properties: JSONSchema7;
+  events: string[];
   exampleProperties: JSONSchema7Object;
 };
 
@@ -38,9 +32,58 @@ type ModuleMetaDataFormProps = {
   onSubmit?: (value: ModuleMetaDataFormData) => void;
 };
 
+const genEventsName = (events: string[]) => {
+  let count = events.length;
+  let name = `event${count}`;
+
+  while (events.includes(name)) {
+    name = `event${++count}`;
+  }
+
+  return `event${count}`;
+};
+
+const EventInput: React.FC<{
+  name: string;
+  events: string[];
+  index: number;
+  onChange: (value: string) => void;
+}> = ({ name: defaultName, onChange, events, index }) => {
+  const [name, setName] = useState(defaultName);
+  const [isRepeated, setIsRepeated] = useState(false);
+
+  useEffect(() => {
+    setName(defaultName);
+  }, [defaultName]);
+
+  return (
+    <FormControl w="33.33%" isInvalid={isRepeated}>
+      <Input
+        name="name"
+        onChange={e => {
+          setName(e.target.value);
+        }}
+        onBlur={() => {
+          const newEvents = [...events];
+          newEvents.splice(index, 1);
+          if (newEvents.find(eventName => eventName === name)) {
+            setIsRepeated(true);
+            return;
+          }
+          setIsRepeated(false);
+          onChange(name);
+        }}
+        value={name}
+      />
+      <FormErrorMessage mt="0" pl="10px">
+        event name already exists
+      </FormErrorMessage>
+    </FormControl>
+  );
+};
+
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
   ({ initData, services, onSubmit: onSubmitForm }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const { editorStore } = services;
 
     const onSubmit = (value: ModuleMetaDataFormData) => {
@@ -57,35 +100,52 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
       onSubmit,
     });
 
-    const moduleSpec = formik.values.properties;
-
-    const moduleProperties = {
-      ...(generateDefaultValueFromSpec(moduleSpec) as JSONSchema7Object),
-      ...formik.values.exampleProperties,
-    };
-
-    const moduleSpecs = (moduleSpec.properties || {}) as Record<string, JSONSchema7>;
-
+    const isModuleVersionError = formik.values.version === '';
+    const isModuleNameError = formik.values.name === '';
     return (
-      <VStack>
-        <FormControl isRequired>
-          <FormLabel>Module Version</FormLabel>
-          <Input
-            name="version"
-            value={formik.values.version}
-            onChange={formik.handleChange}
-            onBlur={() => formik.submitForm()}
-          />
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel>Module Name</FormLabel>
-          <Input
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={() => formik.submitForm()}
-          />
-        </FormControl>
+      <VStack w="full" spacing="5">
+        <HStack w="full" align="normal">
+          <FormControl isInvalid={isModuleVersionError}>
+            <HStack align="normal">
+              <FormLabel>Version</FormLabel>
+              <VStack w="full" align="normal">
+                <Input
+                  name="version"
+                  value={formik.values.version}
+                  onChange={formik.handleChange}
+                  onBlur={() => {
+                    if (formik.values.version && formik.values.name) {
+                      formik.submitForm();
+                    }
+                  }}
+                />
+                {isModuleVersionError && (
+                  <FormErrorMessage>Module version can not be empty</FormErrorMessage>
+                )}
+              </VStack>
+            </HStack>
+          </FormControl>
+          <FormControl isInvalid={isModuleNameError}>
+            <HStack align="normal">
+              <FormLabel>Name</FormLabel>
+              <VStack w="full" align="normal">
+                <Input
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={() => {
+                    if (formik.values.version && formik.values.name) {
+                      formik.submitForm();
+                    }
+                  }}
+                />
+                {isModuleNameError && (
+                  <FormErrorMessage>Module name can not be empty</FormErrorMessage>
+                )}
+              </VStack>
+            </HStack>
+          </FormControl>
+        </HStack>
         <FormControl>
           <FormLabel>Module StateMap</FormLabel>
           <RecordEditor
@@ -98,75 +158,62 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
           />
         </FormControl>
         <FormControl>
-          <Button onClick={onOpen}>Edit Spec</Button>
-          <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            size="900px"
-            closeOnEsc={false}
-            trapFocus={false}
-          >
-            <ModalOverlay />
-            <ModalContent w="900px">
-              <ModalHeader>Module Spec</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody overflow="auto">
-                {isOpen && (
-                  <Box>
-                    <Suspense fallback="Loading Spec Editor">
-                      <JsonSchemaEditor
-                        data={moduleSpec}
-                        onSchemaChange={s => {
-                          const curSpec = JSON.parse(s);
-                          if (
-                            s === JSON.stringify(moduleSpec) ||
-                            curSpec.type === 'array'
-                          )
-                            return;
-
-                          formik.setFieldValue('properties', curSpec);
-                        }}
-                      />
-                    </Suspense>
-                  </Box>
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  colorScheme="blue"
-                  onClick={() => {
-                    onClose();
-                    formik.submitForm();
-                  }}
-                >
-                  Save
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+          <FormLabel>Properties</FormLabel>
+          <RecordEditor
+            services={services}
+            value={formik.values.exampleProperties}
+            onChange={json => {
+              formik.setFieldValue('exampleProperties', json);
+              formik.submitForm();
+            }}
+          />
         </FormControl>
         <FormControl>
-          <FormLabel>Properties</FormLabel>
-          {Object.keys(moduleSpecs).map(key => {
+          <FormLabel>Events</FormLabel>
+          {formik.values.events.map((eventName, i) => {
             return (
-              <SpecWidget
-                key={key}
-                spec={{ ...moduleSpecs[key], title: moduleSpecs[key].title || key }}
-                value={moduleProperties[key]}
-                path={[]}
-                component={{} as any}
-                level={1}
-                services={services}
-                onChange={newFormData => {
-                  formik.setFieldValue('exampleProperties', {
-                    ...moduleProperties,
-                    [key]: newFormData,
-                  });
-                  formik.submitForm();
-                }}
-              />
+              <HStack m="10px 0 10px 0" alignItems="normal" key={eventName}>
+                <EventInput
+                  events={formik.values.events}
+                  index={i}
+                  onChange={newName => {
+                    const newEvents = produce(formik.values.events, draft => {
+                      draft[i] = newName;
+                    });
+                    formik.setFieldValue('events', newEvents);
+                    formik.submitForm();
+                  }}
+                  name={eventName}
+                />
+                <IconButton
+                  aria-label="remove row"
+                  icon={<CloseIcon />}
+                  size="xs"
+                  onClick={() => {
+                    const newEvents = produce(formik.values.events, draft => {
+                      draft.splice(i, 1);
+                    });
+                    formik.setFieldValue('events', newEvents);
+                    formik.submitForm();
+                  }}
+                  variant="ghost"
+                />
+              </HStack>
             );
           })}
+          <Button
+            onClick={() => {
+              const newEvents = produce(formik.values.events, draft => {
+                draft.push(genEventsName(draft));
+              });
+              formik.setFieldValue('events', newEvents);
+              formik.submitForm();
+            }}
+            size="xs"
+            alignSelf="start"
+          >
+            + Add
+          </Button>
         </FormControl>
       </VStack>
     );

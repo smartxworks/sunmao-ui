@@ -1,5 +1,12 @@
 import React from 'react';
-import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  HStack,
+  Input,
+  VStack,
+} from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
@@ -26,26 +33,55 @@ export const AppMetaDataForm: React.FC<AppMetaDataFormProps> = observer(
       initialValues: data,
       onSubmit,
     });
+
+    const isAppVersionError = formik.values.version === '';
+    const isAppNameError = formik.values.name === '';
     return (
-      <VStack>
-        <FormControl isRequired>
-          <FormLabel>App Version</FormLabel>
-          <Input
-            name="version"
-            value={formik.values.version}
-            onChange={formik.handleChange}
-            onBlur={() => formik.submitForm()}
-          />
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel>App Name</FormLabel>
-          <Input
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={() => formik.submitForm()}
-          />
-        </FormControl>
+      <VStack w="full" spacing="5">
+        <HStack w="full" align="normal">
+          <FormControl isInvalid={isAppVersionError}>
+            <HStack align="normal">
+              <FormLabel>Version</FormLabel>
+              <VStack w="full" align="normal">
+                <Input
+                  name="version"
+                  value={formik.values.version}
+                  onChange={formik.handleChange}
+                  onBlur={() => {
+                    if (formik.values.version && formik.values.name) {
+                      formik.submitForm();
+                    }
+                  }}
+                />
+                {isAppVersionError && (
+                  <FormErrorMessage>
+                    Application version can not be empty
+                  </FormErrorMessage>
+                )}
+              </VStack>
+            </HStack>
+          </FormControl>
+          <FormControl isInvalid={isAppNameError}>
+            <HStack align="normal">
+              <FormLabel>Name</FormLabel>
+              <VStack w="full" align="normal">
+                <Input
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={() => {
+                    if (formik.values.version && formik.values.name) {
+                      formik.submitForm();
+                    }
+                  }}
+                />
+                {isAppNameError && (
+                  <FormErrorMessage>Application name can not be empty</FormErrorMessage>
+                )}
+              </VStack>
+            </HStack>
+          </FormControl>
+        </HStack>
       </VStack>
     );
   }
