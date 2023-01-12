@@ -3,7 +3,10 @@ import { implementRuntimeComponent } from '@sunmao-ui/runtime';
 import { css } from '@emotion/css';
 import { Type, Static } from '@sinclair/typebox';
 import { FALLBACK_METADATA, getComponentProps } from '../sunmao-helper';
-import { RadioPropsSpec as BaseRadioPropsSpec } from '../generated/types/Radio';
+import {
+  RadioPropsSpec as BaseRadioPropsSpec,
+  radioValueType,
+} from '../generated/types/Radio';
 import { useEffect } from 'react';
 import { useStateValue } from '../hooks/useStateValue';
 
@@ -11,7 +14,7 @@ const RadioPropsSpec = Type.Object({
   ...BaseRadioPropsSpec,
 });
 const RadioStateSpec = Type.Object({
-  checkedValue: Type.String(),
+  checkedValue: Type.Union(radioValueType),
 });
 
 const exampleProperties: Static<typeof RadioPropsSpec> = {
@@ -43,7 +46,9 @@ export const Radio = implementRuntimeComponent({
     state: RadioStateSpec,
     methods: {
       setCheckedValue: Type.Object({
-        value: Type.String(),
+        value: Type.Union(radioValueType, {
+          widget: 'core/v1/expression',
+        }),
       }),
     },
     slots: {},
