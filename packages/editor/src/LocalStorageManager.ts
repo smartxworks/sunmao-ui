@@ -1,5 +1,6 @@
 import { Application, Module } from '@sunmao-ui/core';
 import { EmptyAppSchema } from './constants';
+import isSSR from './utils/isSSR';
 
 export class LocalStorageManager {
   static AppLSKey = 'schema';
@@ -30,10 +31,14 @@ export class LocalStorageManager {
   }
 
   saveAppInLS(app: Application) {
-    localStorage.setItem(LocalStorageManager.AppLSKey, JSON.stringify(app));
+    if (!isSSR) {
+      localStorage.setItem(LocalStorageManager.AppLSKey, JSON.stringify(app));
+    }
   }
 
   saveModulesInLS(modules: Module[]) {
-    localStorage.setItem(LocalStorageManager.ModulesLSKey, JSON.stringify(modules));
+    if (!isSSR) {
+      localStorage.setItem(LocalStorageManager.ModulesLSKey, JSON.stringify(modules));
+    }
   }
 }

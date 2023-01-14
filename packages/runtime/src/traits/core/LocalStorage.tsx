@@ -1,6 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 import { CORE_VERSION, CoreTraitName } from '@sunmao-ui/shared';
+import isSSR from 'src/utils/isSSR';
 
 const isEmpty = (value: unknown) => value === '' || value === null || value === undefined;
 
@@ -25,7 +26,9 @@ function setLocalStorage(key: string, value: unknown, options: LocalStorageItem[
     },
   };
 
-  localStorage.setItem(key, JSON.stringify(data));
+  if (!isSSR) {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
 }
 
 function getLocalStorage(
