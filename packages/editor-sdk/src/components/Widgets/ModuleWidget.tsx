@@ -5,6 +5,9 @@ import { implementWidget } from '../../utils/widget';
 import { SpecWidget } from './SpecWidget';
 import { CORE_VERSION, CoreWidgetName, isJSONSchema } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
+import { mapValues } from 'lodash';
+import type { JSONSchema7 } from 'json-schema';
+import { json2JsonSchema } from '../../utils/type';
 
 const LabelStyle = css`
   font-weight: normal;
@@ -65,6 +68,16 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
     });
   };
 
+  const modulePropertiesSpec = useMemo<JSONSchema7>(() => {
+    const obj = mapValues(module?.metadata.exampleProperties, p => {
+      const result = services.stateManager.deepEval(p);
+
+      return json2JsonSchema(result);
+    });
+
+    return { type: 'object', properties: obj };
+  }, [module?.metadata.exampleProperties, services.stateManager]);
+
   return (
     <Box p="2" border="1px solid" borderColor="gray.200" borderRadius="4">
       <SpecWidget
@@ -99,7 +112,7 @@ export const ModuleWidget: React.FC<WidgetProps<ModuleWidgetType>> = props => {
         <SpecWidget
           component={component}
           spec={{
-            ...module.spec.properties,
+            ...modulePropertiesSpec,
             title: 'Module Properties',
           }}
           path={[]}

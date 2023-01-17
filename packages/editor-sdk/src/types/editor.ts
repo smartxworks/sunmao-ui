@@ -7,6 +7,11 @@ export interface EditorServicesInterface extends UIServices {
   registry: RegistryInterface;
   editorStore: {
     components: ComponentSchema[];
+    currentEditingTarget: {
+      kind: 'app' | 'module';
+      version: string;
+      name: string;
+    };
   };
   appModelManager: {
     appModel: any;

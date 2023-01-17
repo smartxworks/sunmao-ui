@@ -1,5 +1,11 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import { Application, ComponentSchema, Module, RuntimeModule } from '@sunmao-ui/core';
+import {
+  Application,
+  ComponentSchema,
+  Module,
+  parseVersion,
+  RuntimeModule,
+} from '@sunmao-ui/core';
 import { produce } from 'immer';
 import { DefaultNewModule, EmptyAppSchema } from '../constants';
 import { addModuleId, removeModuleId } from '../utils/addModuleId';
@@ -33,7 +39,24 @@ export class AppStorage {
     });
   }
 
-  createModule() {
+  createModule(props: {
+    components?: ComponentSchema[];
+    propertySpec?: JSONSchema7;
+    exampleProperties?: Record<string, any>;
+    events?: string[];
+    moduleVersion?: string;
+    moduleName?: string;
+    stateMap?: Record<string, string>;
+  }): Module {
+    const {
+      components,
+      propertySpec,
+      exampleProperties,
+      events,
+      moduleVersion,
+      moduleName,
+      stateMap,
+    } = props;
     let index = this.modules.length;
 
     this.modules.forEach(module => {
@@ -45,19 +68,46 @@ export class AppStorage {
     const name = `myModule${index}`;
     const newModule: RuntimeModule = {
       ...DefaultNewModule,
-      parsedVersion: {
-        ...DefaultNewModule.parsedVersion,
-        value: name,
-      },
+      version: moduleVersion || DefaultNewModule.version,
+      parsedVersion: moduleVersion
+        ? parseVersion(moduleVersion)
+        : DefaultNewModule.parsedVersion,
       metadata: {
         ...DefaultNewModule.metadata,
-        name,
+        name: moduleName || name,
       },
     };
 
+    if (components) {
+      newModule.impl = components;
+    }
+
+    if (propertySpec) {
+      newModule.spec.properties = propertySpec;
+    }
+    if (exampleProperties) {
+      for (const key in exampleProperties) {
+        const value = exampleProperties[key];
+        if (typeof value === 'string') {
+          newModule.metadata.exampleProperties![key] = value;
+        } else {
+          // save value as expression
+          newModule.metadata.exampleProperties![key] = `{{${JSON.stringify(value)}}}`;
+        }
+      }
+    }
+    if (events) {
+      newModule.spec.events = events;
+    }
+    if (stateMap) {
+      newModule.spec.stateMap = stateMap;
+    }
+
     this.setModules([...this.modules, newModule]);
-    this.setRawModules(this.modules.map(addModuleId));
+    const rawModules = this.modules.map(addModuleId);
+    this.setRawModules(rawModules);
     this.saveModules();
+    return rawModules[rawModules.length - 1];
   }
 
   removeModule(v: string, n: string) {
@@ -116,12 +166,14 @@ export class AppStorage {
       stateMap,
       properties,
       exampleProperties,
+      events,
     }: {
       version: string;
       name: string;
       stateMap: Record<string, string>;
       properties: JSONSchema7;
       exampleProperties: JSONSchema7Object;
+      events: string[];
     }
   ) {
     const i = this.modules.findIndex(
@@ -133,6 +185,7 @@ export class AppStorage {
       draft[i].spec.stateMap = stateMap;
       draft[i].spec.properties = properties;
       draft[i].version = version;
+      draft[i].spec.events = events;
     });
 
     this.setModules(newModules);

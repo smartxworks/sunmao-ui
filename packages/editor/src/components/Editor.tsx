@@ -85,9 +85,12 @@ export const Editor: React.FC<Props> = observer(
       }
     }, [isDisplayApp]);
     const onPreview = useCallback(() => setPreview(true), []);
-    const onRightTabChange = useCallback(activatedTab => {
-      setToolMenuTab(activatedTab);
-    }, []);
+    const onRightTabChange = useCallback(
+      activatedTab => {
+        setToolMenuTab(activatedTab);
+      },
+      [setToolMenuTab]
+    );
 
     const renderMain = () => {
       const appBox = (
@@ -95,6 +98,7 @@ export const Editor: React.FC<Props> = observer(
           <Box
             id="editor-main"
             display="flex"
+            transform="auto"
             flexDirection="column"
             width="full"
             height="full"
@@ -165,7 +169,7 @@ export const Editor: React.FC<Props> = observer(
                       <DataSourceList services={services} />
                     </TabPanel>
                     <TabPanel overflow="auto" p={0} height="100%">
-                      <StateViewer store={stateStore} />
+                      <StateViewer store={stateStore} services={services} />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>

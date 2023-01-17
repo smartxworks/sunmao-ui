@@ -14,6 +14,8 @@ import {
   CoreWidgetName,
   generateDefaultValueFromSpec,
   MountEvents,
+  GLOBAL_MODULE_ID,
+  ModuleEventMethodSpec,
 } from '@sunmao-ui/shared';
 import { JSONSchema7Object } from 'json-schema';
 import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
@@ -32,7 +34,7 @@ declare module '../../types/widget' {
 export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(props => {
   const { value, path, level, component, spec, services, onChange } = props;
   const { registry, editorStore, appModelManager } = services;
-  const { components } = editorStore;
+  const { components, currentEditingTarget } = editorStore;
   const utilMethods = useMemo(() => registry.getAllUtilMethods(), [registry]);
   const [methods, setMethods] = useState<string[]>([]);
 
@@ -62,9 +64,22 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
     },
     [registry]
   );
+
   const eventTypes = useMemo(() => {
-    return [...registry.getComponentByType(component.type).spec.events, ...MountEvents];
-  }, [component.type, registry]);
+    let moduleEvents: string[] = [];
+    if (component.type === 'core/v1/moduleContainer') {
+      // if component is moduleContainer, add module events to it
+      const moduleType = component.properties.type as string;
+      const moduleSpec = registry.getModuleByType(moduleType);
+      moduleEvents = moduleSpec.spec.events;
+    }
+    return [
+      ...registry.getComponentByType(component.type).spec.events,
+      ...moduleEvents,
+      ...MountEvents,
+    ];
+  }, [component.properties.type, component.type, registry]);
+
   const hasParams = useMemo(
     () => Object.keys(formik.values.method.parameters ?? {}).length,
     [formik.values.method.parameters]
@@ -79,6 +94,8 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
         const targetMethod = registry.getUtilMethodByType(methodType)!;
 
         spec = targetMethod.spec.parameters;
+      } else if (componentId === GLOBAL_MODULE_ID) {
+        spec = ModuleEventMethodSpec;
       } else {
         const targetComponent = appModelManager.appModel.getComponentById(componentId);
         const targetMethod = (findMethodsByComponent(targetComponent) ?? []).find(
@@ -140,19 +157,42 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
             utilMethod => `${utilMethod.version}/${utilMethod.metadata.name}`
           )
         );
+      } else if (
+        componentId === GLOBAL_MODULE_ID &&
+        currentEditingTarget.kind === 'module'
+      ) {
+        // if user is editing module, show the events of module spec as method
+        const moduleType = `${currentEditingTarget.version}/${currentEditingTarget.name}`;
+        let methodNames: string[] = [];
+        if (moduleType) {
+          const moduleSpec = services.registry.getModuleByType(moduleType);
+
+          if (moduleSpec) {
+            methodNames = moduleSpec.spec.events;
+          }
+        }
+        setMethods(methodNames);
       } else {
+        // if user is editing application, show methods of component
         const component = components.find(c => c.id === componentId);
 
         if (component) {
           const methodNames: string[] = findMethodsByComponent(component).map(
             ({ name }) => name
           );
-
           setMethods(methodNames);
         }
       }
     },
-    [components, utilMethods, findMethodsByComponent]
+    [
+      currentEditingTarget.kind,
+      currentEditingTarget.version,
+      currentEditingTarget.name,
+      utilMethods,
+      services.registry,
+      components,
+      findMethodsByComponent,
+    ]
   );
 
   useEffect(() => {
@@ -235,6 +275,11 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
           style={{ width: '100%' }}
           value={formik.values.componentId === '' ? undefined : formik.values.componentId}
         >
+          {currentEditingTarget.kind === 'module' ? (
+            <ComponentTargetSelect.Option key={GLOBAL_MODULE_ID} value={GLOBAL_MODULE_ID}>
+              {GLOBAL_MODULE_ID}
+            </ComponentTargetSelect.Option>
+          ) : undefined}
           {[{ id: GLOBAL_UTIL_METHOD_ID }].concat(components).map(c => (
             <ComponentTargetSelect.Option key={c.id} value={c.id}>
               {c.id}

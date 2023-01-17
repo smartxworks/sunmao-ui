@@ -65,6 +65,7 @@ function getLocalStorage(
 export const LocalStorageTraitPropertiesSpec = Type.Object({
   key: Type.String({
     title: 'Key',
+    default: 'value',
   }),
   initialValue: Type.Any({
     title: 'Initial Value',
@@ -86,7 +87,6 @@ export default implementRuntimeTrait({
   spec: {
     properties: LocalStorageTraitPropertiesSpec,
     state: Type.Object({
-      value: Type.Any(),
       version: Type.Number(),
     }),
     methods: [
@@ -117,7 +117,7 @@ export default implementRuntimeTrait({
     if (key) {
       if (!hasInitialized) {
         const storageItem = getLocalStorage(hashId, initialValue, { version });
-        setValue(storageItem?.value, storageItem.version);
+        setValue(storageItem?.value || initialValue, storageItem.version);
 
         subscribeMethods({
           setValue: ({ value: newValue }: { value: any }) => {

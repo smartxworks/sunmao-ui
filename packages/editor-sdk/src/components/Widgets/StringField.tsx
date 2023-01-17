@@ -23,7 +23,11 @@ const EnumField: React.FC<WidgetProps> = props => {
   const options = (spec.enum || []).map(item => item?.toString() || '');
 
   return (
-    <Select value={value} onChange={evt => onChange(evt.currentTarget.value)}>
+    <Select
+      value={value}
+      onChange={evt => onChange(evt.currentTarget.value)}
+      placeholder="Select option"
+    >
       {options.map((value, idx) => {
         return <option key={idx}>{value}</option>;
       })}

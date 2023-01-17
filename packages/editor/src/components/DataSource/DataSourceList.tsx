@@ -99,10 +99,13 @@ export const DataSourceList: React.FC<Props> = props => {
   );
   const onCreateDSFromTrait = useCallback(
     (type: string) => {
-      const propertiesSpec = registry.getTraitByType(type).spec.properties;
-      const defaultProperties = generateDefaultValueFromSpec(propertiesSpec, {
-        genArrayItemDefaults: false,
-      });
+      const traitDefine = registry.getTraitByType(type);
+      const propertiesSpec = traitDefine.spec.properties;
+      const defaultProperties =
+        traitDefine.metadata.exampleProperties ||
+        generateDefaultValueFromSpec(propertiesSpec, {
+          genArrayItemDefaults: false,
+        });
       const name = type.split('/')[2];
       const id = getNewId(name);
 

@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { Accordion, Input, Text, VStack } from '@chakra-ui/react';
 import { ComponentFormElementId, SpecWidget } from '@sunmao-ui/editor-sdk';
 import { parseType } from '@sunmao-ui/core';
-import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { css } from '@emotion/css';
 
 import { EventTraitForm } from './EventTraitForm';
@@ -47,10 +46,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
   }
   const { version, name } = parseType(selectedComponent.type);
   const cImpl = registry.getComponent(version, name);
-  const properties = Object.assign(
-    generateDefaultValueFromSpec(cImpl.spec.properties)!,
-    selectedComponent.properties
-  );
+  const properties = selectedComponent.properties;
 
   const changeComponentId = (selectedComponentId: string, value: string) => {
     eventBus.send(
@@ -100,7 +96,7 @@ export const ComponentForm: React.FC<Props> = observer(props => {
             onChange={newFormData => {
               eventBus.send(
                 'operation',
-                genOperation(registry, 'modifyComponentProperty', {
+                genOperation(registry, 'modifyComponentProperties', {
                   componentId: selectedComponentId,
                   properties: newFormData,
                 })

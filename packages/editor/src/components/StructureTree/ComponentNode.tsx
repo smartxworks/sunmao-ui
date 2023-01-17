@@ -19,6 +19,8 @@ import { AppModel } from '../../AppModel/AppModel';
 import { ComponentId } from '../../AppModel/IAppModel';
 import { RootId } from '../../constants';
 import { RelationshipModal } from '../RelationshipModal';
+import { ExplorerMenuTabs } from '../../constants/enum';
+import { ExtractModuleModal } from '../ExtractModuleModal';
 
 const IndextWidth = 24;
 
@@ -49,8 +51,9 @@ const ComponentNodeImpl = (props: Props) => {
     onDragEnd,
     prefix,
   } = props;
-  const { registry, eventBus, appModelManager } = services;
+  const { registry, eventBus, appModelManager, editorStore } = services;
   const [isShowRelationshipModal, setIsShowRelationshipModal] = useState(false);
+  const [isShowExtractModuleModal, setIsShowExtractModuleModal] = useState(false);
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const paddingLeft = depth * IndextWidth;
 
@@ -92,6 +95,18 @@ const ComponentNodeImpl = (props: Props) => {
     e.stopPropagation();
     setIsShowRelationshipModal(true);
   }, []);
+  const onClickShowState = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      editorStore.setExplorerMenuTab(ExplorerMenuTabs.STATE);
+      editorStore.setViewStateComponentId(component.id);
+    },
+    [component.id, editorStore]
+  );
+  const onClickExtractToModule = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsShowExtractModuleModal(true);
+  }, []);
 
   const onClickItem = useCallback(() => {
     onSelectComponent(component.id);
@@ -108,11 +123,11 @@ const ComponentNodeImpl = (props: Props) => {
     [component.id, onDragEnd]
   );
   const onMouseOver = useCallback(() => {
-    services.editorStore.setHoverComponentId(component.id);
-  }, [component.id, services.editorStore]);
+    editorStore.setHoverComponentId(component.id);
+  }, [component.id, editorStore]);
   const onMouseLeave = useCallback(() => {
-    services.editorStore.setHoverComponentId('');
-  }, [services.editorStore]);
+    editorStore.setHoverComponentId('');
+  }, [editorStore]);
   const emptySlots = xor(notEmptySlots, slots);
 
   const emptyChildrenSlotsPlaceholder = isExpanded
@@ -171,6 +186,12 @@ const ComponentNodeImpl = (props: Props) => {
         <MenuItem icon={<ViewIcon />} onClick={onClickShowRelationshipModal}>
           Show Relationship
         </MenuItem>
+        <MenuItem icon={<ViewIcon />} onClick={onClickShowState}>
+          Show State
+        </MenuItem>
+        <MenuItem icon={<ViewIcon />} onClick={onClickExtractToModule}>
+          Extract to Module
+        </MenuItem>
         <MenuItem icon={<DeleteIcon />} color="red.500" onClick={onClickRemove}>
           Remove
         </MenuItem>
@@ -183,6 +204,14 @@ const ComponentNodeImpl = (props: Props) => {
       componentId={component.id}
       services={services}
       onClose={() => setIsShowRelationshipModal(false)}
+    />
+  ) : null;
+
+  const extractModuleModal = isShowExtractModuleModal ? (
+    <ExtractModuleModal
+      componentId={component.id}
+      services={services}
+      onClose={() => setIsShowExtractModuleModal(false)}
     />
   ) : null;
 
@@ -243,6 +272,7 @@ const ComponentNodeImpl = (props: Props) => {
       </DropComponentWrapper>
       {emptyChildrenSlotsPlaceholder}
       {relationshipViewModal}
+      {extractModuleModal}
     </VStack>
   );
 };
