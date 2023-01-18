@@ -103,8 +103,8 @@ export class EditorStore {
           this.setComponents([]);
           setTimeout(() => {
             // set new components
-            this.setModuleDependencies(target.metadata?.exampleProperties);
             this.setSelectedComponentId(this.originComponents[0]?.id || '');
+            this.setModuleDependencies(target.metadata?.exampleProperties);
             this.eventBus.send('componentsRefresh', this.originComponents);
             this.setComponents(this.originComponents);
           }, 0);
