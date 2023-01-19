@@ -74,7 +74,7 @@ export const Select = implementRuntimeComponent({
     customStyle,
     callbackMap,
     mergeState,
-    defaultValue = '',
+    defaultValue,
     subscribeMethods,
   } = props;
   const {
@@ -92,7 +92,7 @@ export const Select = implementRuntimeComponent({
   } = getComponentProps(props);
 
   const [value, setValue] = useStateValue(
-    defaultValue,
+    defaultValue || undefined,
     mergeState,
     updateWhenDefaultValueChanges,
     undefined,
