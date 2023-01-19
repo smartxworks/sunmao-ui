@@ -1,5 +1,9 @@
 import { Type } from '@sinclair/typebox';
-import { addModuleId, removeModuleId } from '../src/utils/addModuleId';
+import {
+  addModuleId,
+  removeModuleId,
+  replaceIdsInProperty,
+} from '../src/utils/addModuleId';
 
 describe('format to module schema', () => {
   it('will add module id to the expression', () => {
@@ -168,5 +172,16 @@ describe('format to module schema', () => {
         ],
       }).spec.stateMap
     ).toEqual({ value: 'input1.value' });
+  });
+});
+
+describe('test replaceIdsInProperty', () => {
+  it('works when there is \n in expression', () => {
+    const exp = '{{ \nlicense_type_map.value[license.value.info.licenseType]}}';
+    const ids = ['license_type_map'];
+    const result = replaceIdsInProperty(exp, ids);
+    expect(result).toBe(
+      '{{ \n{{ $moduleId }}__license_type_map.value[license.value.info.licenseType]}}'
+    );
   });
 });
