@@ -8,6 +8,8 @@ import {
   RemoveComponentBranchOperationContext,
   MoveComponentBranchOperation,
   MoveComponentBranchOperationContext,
+  ExtractModuleBranchOperation,
+  ExtractModuleBranchOperationContext,
   CreateDataSourceBranchOperation,
   CreateDataSourceBranchOperationContext,
 } from './branch';
@@ -35,7 +37,7 @@ export const OperationConstructors: Record<
 > = {
   createComponent: CreateComponentBranchOperation,
   removeComponent: RemoveComponentBranchOperation,
-  modifyComponentProperty: ModifyComponentPropertiesLeafOperation,
+  modifyComponentProperties: ModifyComponentPropertiesLeafOperation,
   modifyComponentId: ModifyComponentIdBranchOperation,
   adjustComponentOrder: AdjustComponentOrderLeafOperation,
   createTrait: CreateTraitLeafOperation,
@@ -44,6 +46,7 @@ export const OperationConstructors: Record<
   replaceApp: ReplaceAppLeafOperation,
   pasteComponent: PasteComponentLeafOperation,
   moveComponent: MoveComponentBranchOperation,
+  extractModule: ExtractModuleBranchOperation,
   createDataSource: CreateDataSourceBranchOperation,
 };
 
@@ -64,7 +67,7 @@ export type OperationConfigMaps = {
     RemoveComponentBranchOperation,
     RemoveComponentBranchOperationContext
   >;
-  modifyComponentProperty: OperationConfigMap<
+  modifyComponentProperties: OperationConfigMap<
     ModifyComponentPropertiesLeafOperation,
     ModifyComponentPropertiesLeafOperationContext
   >;
@@ -97,6 +100,10 @@ export type OperationConfigMaps = {
   moveComponent: OperationConfigMap<
     MoveComponentBranchOperation,
     MoveComponentBranchOperationContext
+  >;
+  extractModule: OperationConfigMap<
+    ExtractModuleBranchOperation,
+    ExtractModuleBranchOperationContext
   >;
   createDataSource: OperationConfigMap<
     CreateDataSourceBranchOperation,

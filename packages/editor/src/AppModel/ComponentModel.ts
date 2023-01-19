@@ -29,6 +29,7 @@ import {
 } from './IAppModel';
 import { TraitModel } from './TraitModel';
 import { FieldModel } from './FieldModel';
+import { AppModel } from './AppModel';
 
 const SlotTraitType: TraitType = `${CORE_VERSION}/${CoreTraitName.Slot}` as TraitType;
 const SlotTraitTypeV2: TraitType = `core/v2/${CoreTraitName.Slot}` as TraitType;
@@ -302,6 +303,19 @@ export class ComponentModel implements IComponentModel {
       });
     }
     this._isDirty = true;
+  }
+
+  removeSlotTrait() {
+    if (this._slotTrait) {
+      this.removeTrait(this._slotTrait.id);
+    }
+  }
+
+  clone() {
+    return new AppModel(
+      this.allComponents.map(c => c.toSchema()),
+      this.registry
+    ).getComponentById(this.id)!;
   }
 
   private traverseTree(cb: (c: IComponentModel) => void) {

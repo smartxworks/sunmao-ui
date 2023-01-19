@@ -30,6 +30,7 @@ type ModuleMetaDataFormProps = {
   initData: ModuleMetaDataFormData;
   services: EditorServices;
   onSubmit?: (value: ModuleMetaDataFormData) => void;
+  disabled?: boolean;
 };
 
 const genEventsName = (events: string[]) => {
@@ -84,17 +85,9 @@ const EventInput: React.FC<{
 
 export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
   ({ initData, services, onSubmit: onSubmitForm }) => {
-    const { editorStore } = services;
-
     const onSubmit = (value: ModuleMetaDataFormData) => {
-      editorStore.appStorage.saveModuleMetaData(
-        { originName: initData.name, originVersion: initData.version },
-        value
-      );
-      editorStore.setModuleDependencies(value.exampleProperties);
       onSubmitForm?.(value);
     };
-
     const formik = useFormik({
       initialValues: initData,
       onSubmit,
@@ -158,7 +151,7 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
           />
         </FormControl>
         <FormControl>
-          <FormLabel>Properties</FormLabel>
+          <FormLabel>Example Properties</FormLabel>
           <RecordEditor
             services={services}
             value={formik.values.exampleProperties}

@@ -2,6 +2,7 @@ import { implementRuntimeComponent } from '../../utils/buildKit';
 import { ModuleRenderSpec, CORE_VERSION, CoreComponentName } from '@sunmao-ui/shared';
 import { ModuleRenderer } from '../_internal/ModuleRenderer';
 import React from 'react';
+import { css } from '@emotion/css';
 
 export default implementRuntimeComponent({
   version: CORE_VERSION,
@@ -22,10 +23,10 @@ export default implementRuntimeComponent({
     state: {},
     methods: {},
     slots: {},
-    styleSlots: [],
+    styleSlots: ['content'],
     events: [],
   },
-})(({ id, type, properties, handlers, services, app, elementRef }) => {
+})(({ id, type, properties, handlers, services, app, elementRef, customStyle }) => {
   if (!type) {
     return <span ref={elementRef}>Please choose a module to render.</span>;
   }
@@ -36,6 +37,9 @@ export default implementRuntimeComponent({
   return (
     <ModuleRenderer
       id={id}
+      className={css`
+        ${customStyle?.content}
+      `}
       type={type}
       properties={properties}
       handlers={handlers}

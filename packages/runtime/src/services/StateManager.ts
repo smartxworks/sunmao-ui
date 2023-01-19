@@ -171,18 +171,10 @@ export class StateManager {
     options: EvalOptions = {}
   ): EvaledResult<T> {
     const store = this.slotStore;
-    const redirector = new Proxy(
-      {},
-      {
-        get(_, prop) {
-          return options.slotKey ? store[options.slotKey][prop] : undefined;
-        },
-      }
-    );
 
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: redirector,
+      $slot: options.slotKey ? store[options.slotKey] : undefined,
     };
     // just eval
     if (typeof value !== 'string') {
@@ -210,17 +202,9 @@ export class StateManager {
       : PropsAfterEvaled<Exclude<T, string>>;
 
     const store = this.slotStore;
-    const redirector = new Proxy(
-      {},
-      {
-        get(_, prop) {
-          return options.slotKey ? store[options.slotKey][prop] : undefined;
-        },
-      }
-    );
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: redirector,
+      $slot: options.slotKey ? store[options.slotKey] : undefined,
     };
     // watch change
     if (value && typeof value === 'object') {
