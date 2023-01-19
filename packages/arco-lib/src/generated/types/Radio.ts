@@ -2,8 +2,12 @@ import { Type } from '@sinclair/typebox';
 import { StringUnion } from '../../sunmao-helper';
 import { Category } from '../../constants/category';
 
+export const radioValueType = [Type.Boolean(), Type.String(), Type.Number()];
+
 const RadioItemSpec = Type.Object({
-  value: Type.String(),
+  value: Type.Union(radioValueType, {
+    widget: 'core/v1/expression',
+  }),
   label: Type.String(),
   disabled: Type.Optional(Type.Boolean()),
 });
@@ -17,7 +21,7 @@ export const RadioPropsSpec = {
       displayedKeys: ['label'],
     },
   }),
-  defaultCheckedValue: Type.String({
+  defaultCheckedValue: Type.Union(radioValueType, {
     title: 'Default Value',
     category: Category.Basic,
   }),
