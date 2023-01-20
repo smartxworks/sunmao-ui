@@ -45,7 +45,14 @@ export const ExtractModuleStateForm: React.FC<Props> = ({
   );
   if (outsideExpRelations.length) {
     content = (
-      <Table size="sm" border="1px solid" borderColor="gray.100">
+      <Table
+        size="sm"
+        border="1px solid"
+        borderColor="gray.100"
+        style={{
+          tableLayout: 'fixed',
+        }}
+      >
         <Thead>
           <Tr>
             <Th>Component</Th>

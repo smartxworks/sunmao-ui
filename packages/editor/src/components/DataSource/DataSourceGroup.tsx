@@ -82,7 +82,7 @@ export const DataSourceGroup: React.FC<Props> = props => {
       <AccordionButton justifyContent="space-between">
         <HStack>
           {type === 'component' ? <Tag colorScheme="blue">C</Tag> : undefined}
-          <Text fontWeight="bold">{title}</Text>
+          <Text fontWeight="bold">{title || 'Unknown'}</Text>
         </HStack>
         <AccordionIcon />
       </AccordionButton>

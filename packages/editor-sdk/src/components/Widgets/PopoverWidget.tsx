@@ -142,8 +142,9 @@ export const PopoverWidget = React.forwardRef<
   }, [handlerCloseByParent, handlerCloseByOther]);
   useEffect(() => {
     const handleClickOutside = (event: any) => {
+      const eventPath = event.path || (event.composedPath && event.composedPath()) || [];
       if (
-        event.path.some((node: Element) =>
+        eventPath.some((node: Element) =>
           [...(node.classList?.values() || [])].includes(
             PREVENT_POPOVER_WIDGET_CLOSE_CLASS
           )

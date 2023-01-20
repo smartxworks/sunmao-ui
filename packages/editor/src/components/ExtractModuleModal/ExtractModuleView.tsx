@@ -89,8 +89,8 @@ export const ExtractModuleView: React.FC<Props> = ({
   const genModule = useCallback(() => {
     const exampleProperties: Record<string, string> = {};
     const moduleContainerProperties: Record<string, string> = {};
-    const toMoveComponentIds: string[] = [];
-    const toDeleteComponentIds: string[] = [];
+    let toMoveComponentIds: string[] = [];
+    let toDeleteComponentIds: string[] = [];
     insideExpRelations.forEach(relation => {
       switch (refTreatmentMap.current[relation.componentId]) {
         case RefTreatment.move:
@@ -112,6 +112,10 @@ export const ExtractModuleView: React.FC<Props> = ({
           break;
       }
     });
+
+    toMoveComponentIds = uniq(toMoveComponentIds);
+    toDeleteComponentIds = uniq(toDeleteComponentIds);
+
     const root = services.appModelManager.appModel
       .getComponentById(componentId as ComponentId)!
       .clone();
@@ -227,8 +231,8 @@ export const ExtractModuleView: React.FC<Props> = ({
       exampleProperties,
       moduleContainerProperties,
       eventSpec,
-      toMoveComponentIds: uniq(toMoveComponentIds),
-      toDeleteComponentIds: uniq(toDeleteComponentIds),
+      toMoveComponentIds,
+      toDeleteComponentIds,
       methodRelations,
       moduleComponentsSchema,
       moduleHandlers,

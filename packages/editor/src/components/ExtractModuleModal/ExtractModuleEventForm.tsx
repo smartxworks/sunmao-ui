@@ -48,7 +48,14 @@ export const ExtractModuleEventForm: React.FC<Props> = ({
 
   if (methodRelations.length) {
     content = (
-      <Table size="sm" border="1px solid" borderColor="gray.100">
+      <Table
+        size="sm"
+        border="1px solid"
+        borderColor="gray.100"
+        style={{
+          tableLayout: 'fixed',
+        }}
+      >
         <Thead>
           <Tr>
             <Th>Source</Th>

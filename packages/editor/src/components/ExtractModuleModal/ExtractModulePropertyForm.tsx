@@ -118,7 +118,15 @@ export const ExtractModulePropertyForm: React.FC<Props> = ({
                 </RadioGroup>
               </FormControl>
 
-              <Table size="sm" border="1px solid" borderColor="gray.100" width="full">
+              <Table
+                size="sm"
+                border="1px solid"
+                borderColor="gray.100"
+                width="full"
+                style={{
+                  tableLayout: 'fixed',
+                }}
+              >
                 <Thead>
                   <Tr>
                     <Th>Component Id</Th>
