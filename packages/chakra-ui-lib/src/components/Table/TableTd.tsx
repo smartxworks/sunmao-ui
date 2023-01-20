@@ -25,6 +25,7 @@ export const TableTd: React.FC<{
   onClickItem: () => void;
   services: UIServices;
   component: RuntimeComponentSchema;
+  allComponents: RuntimeComponentSchema[];
   app: RuntimeApplication;
   slotsElements: SlotsElements<{
     content: {
@@ -41,6 +42,7 @@ export const TableTd: React.FC<{
     onClickItem,
     services,
     app,
+    allComponents,
     slotsElements,
   } = props;
   const evalOptions = {
@@ -110,10 +112,10 @@ export const TableTd: React.FC<{
       );
       break;
     case 'component':
-      const childrenSchema = app.spec.components.filter(c => {
+      const childrenSchema = allComponents.filter(c => {
         return c.traits.find(
           t =>
-            t.type === 'core/v1/slot' &&
+            (t.type === 'core/v1/slot' || t.type === 'core/v2/slot') &&
             (t.properties.container as any).id === component.id
         );
       });
@@ -143,6 +145,7 @@ export const TableTd: React.FC<{
           key={_childrenSchema.id}
           component={_childrenSchema}
           app={app}
+          allComponents={allComponents}
           services={services}
           childrenMap={{}}
           isInModule
