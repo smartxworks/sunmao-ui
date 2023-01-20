@@ -76,8 +76,8 @@ export function removeModuleId(originModule: Module): Module {
 }
 
 // example: replaceIdsInExp('{{input1.value}} + {{input2.value}}', ids: ['input1']])
-function replaceIdsInProperty(property: string, ids: string[]): string {
-  const matches = [...property.matchAll(/{{(.*?)}}/g)];
+export function replaceIdsInProperty(property: string, ids: string[]): string {
+  const matches = [...property.matchAll(/{{((.|\n)*?)}}/g)];
 
   if (matches.length === 0) return property;
 

@@ -96,13 +96,18 @@ export class EditorStore {
         if (target.name) {
           this.setCurrentComponentsVersion(0);
           this.setLastSavedComponentsVersion(0);
+          // clear currrent components and store
           this.clearSunmaoGlobalState();
           this.eventBus.send('stateRefresh');
-          this.eventBus.send('componentsRefresh', this.originComponents);
-
-          this.setComponents(this.originComponents);
-          this.setSelectedComponentId(this.originComponents[0]?.id || '');
-          this.setModuleDependencies(target.metadata?.exampleProperties);
+          this.eventBus.send('componentsRefresh', []);
+          this.setComponents([]);
+          setTimeout(() => {
+            // set new components
+            this.setSelectedComponentId(this.originComponents[0]?.id || '');
+            this.setModuleDependencies(target.metadata?.exampleProperties);
+            this.eventBus.send('componentsRefresh', this.originComponents);
+            this.setComponents(this.originComponents);
+          }, 0);
         }
       }
     );
