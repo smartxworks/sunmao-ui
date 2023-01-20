@@ -21,6 +21,7 @@ export type ImplWrapperProps<
   services: UIServices;
   isInModule: boolean;
   app: RuntimeApplication;
+  allComponents: RuntimeComponentSchema[];
   slotContext?: { renderSet: Set<string>; slotKey?: string };
 } & ComponentParamsFromApp;
 

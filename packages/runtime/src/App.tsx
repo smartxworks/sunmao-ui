@@ -49,6 +49,7 @@ export const App: React.FC<AppProps> = props => {
             services={services}
             childrenMap={childrenMap}
             app={app}
+            allComponents={app.spec.components}
             hooks={hooks}
             isInModule={false}
             isInEditor={isInEditor}

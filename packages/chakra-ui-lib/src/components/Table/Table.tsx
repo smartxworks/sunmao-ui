@@ -33,6 +33,7 @@ export const TableImpl = implementTable(
     mergeState,
     services,
     app,
+    allComponents,
     elementRef,
     slotsElements,
   }) => {
@@ -197,6 +198,7 @@ export const TableImpl = implementTable(
                       column={column}
                       services={services}
                       app={app}
+                      allComponents={allComponents}
                       slotsElements={slotsElements}
                     />
                   ))}

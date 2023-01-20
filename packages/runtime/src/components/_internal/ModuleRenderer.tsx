@@ -67,7 +67,7 @@ const ModuleRendererContent = React.forwardRef<
     });
   }, [services.stateManager, moduleSpec.spec.stateMap, moduleId]);
 
-  const evaledModuleTemplate = useDeepCompareMemo(() => {
+  const evaledModuleTemplate: RuntimeComponentSchema[] = useDeepCompareMemo(() => {
     // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
     // so we can assume that template will not change if evaledProperties is the same
     return services.stateManager.deepEval(
@@ -159,6 +159,7 @@ const ModuleRendererContent = React.forwardRef<
           component={c}
           services={services}
           app={app}
+          allComponents={evaledModuleTemplate}
           childrenMap={childrenMap}
           isInModule={true}
         />
