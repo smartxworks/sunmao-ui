@@ -185,6 +185,7 @@ export const Table = implementRuntimeComponent({
     checkCrossPage,
     callbackMap,
     app,
+    allComponents,
     mergeState,
     customStyle,
     services,
@@ -420,10 +421,10 @@ export const Table = implementRuntimeComponent({
               break;
 
             case 'component':
-              const childrenSchema = app.spec.components.filter(c => {
+              const childrenSchema = allComponents.filter(c => {
                 return c.traits.find(
                   t =>
-                    t.type === 'core/v1/slot' &&
+                    (t.type === 'core/v1/slot' || t.type === 'core/v2/slot') &&
                     (t.properties.container as any).id === component.id
                 );
               });
@@ -460,6 +461,7 @@ export const Table = implementRuntimeComponent({
                   component={_childrenSchema}
                   app={app}
                   services={services}
+                  allComponents={allComponents}
                   childrenMap={{}}
                   isInModule
                   slotContext={{
