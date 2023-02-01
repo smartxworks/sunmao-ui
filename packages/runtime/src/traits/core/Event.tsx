@@ -26,7 +26,7 @@ export default implementRuntimeTrait({
     state: {},
   },
 })(() => {
-  return ({ trait, handlers, services, slotKey }) => {
+  return ({ trait, handlers, services, slotKey, componentId }) => {
     const callbackQueueMap: Record<string, Array<() => void>> = {};
     const rawHandlers = trait.properties.handlers;
     // setup current handlers
@@ -37,7 +37,7 @@ export default implementRuntimeTrait({
         callbackQueueMap[handler.type] = [];
       }
       callbackQueueMap[handler.type].push(
-        runEventHandler(handler, rawHandlers, Number(i), services, slotKey)
+        runEventHandler(handler, rawHandlers, Number(i), services, slotKey, componentId)
       );
     }
 
