@@ -40,6 +40,7 @@ export const ErrorLogs: React.FC<Props> = ({ services }) => {
       data={validateResult}
       pagination={{ hideOnSinglePage: true }}
       columns={errorColumns}
+      emptyMessage="No Errors"
     />
   );
 };

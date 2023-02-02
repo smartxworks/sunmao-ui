@@ -1,13 +1,18 @@
 import { Props, EventLog } from './type';
 import React from 'react';
 import { DebugTable } from './Table';
-import { Box } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 
 type EventLogsProps = Props & {
   events: EventLog[];
+  setEventLogs: React.Dispatch<React.SetStateAction<EventLog[]>>;
 };
 
-export const EventLogs: React.FC<EventLogsProps> = ({ services, events }) => {
+export const EventLogs: React.FC<EventLogsProps> = ({
+  services,
+  events,
+  setEventLogs,
+}) => {
   const { setSelectedComponentId } = services.editorStore;
 
   const eventColumns = [
@@ -60,6 +65,19 @@ export const EventLogs: React.FC<EventLogsProps> = ({ services, events }) => {
       columns={eventColumns}
       data={events}
       pagination={{ hideOnSinglePage: true }}
+      emptyMessage="No Event Logs"
+      footer={
+        !!events.length && (
+          <Button
+            onClick={() => {
+              setEventLogs([]);
+            }}
+            size="sm"
+          >
+            clear
+          </Button>
+        )
+      }
     />
   );
 };

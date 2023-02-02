@@ -31,7 +31,7 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
           draft.unshift({
             type,
             methodName: (event as Event).name,
-            triggered: (event as Event).triggerId,
+            triggered: (event as Event).triggerId || '',
             time: new Date().toLocaleTimeString(),
             target: (event as Event).componentId,
           });
@@ -76,21 +76,21 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
     >
       <HStack width="full" justifyContent="space-between">
         <Tabs
-          h={isCollapsed ? '' : '300px'}
+          minH={isCollapsed ? '' : '300px'}
           w="full"
           variant="soft-rounded"
           colorScheme="gray"
         >
           <TabList>
-            <Tab w="130px">
+            <Tab alignItems="baseline">
               <Text fontSize="md" fontWeight="bold">
                 Errors
-                <Badge ml="1" fontSize="0.8em" colorScheme="red">
-                  {editorStore.validateResult.length}
-                </Badge>
               </Text>
+              <Badge ml="1" fontSize="0.8em" colorScheme="red">
+                {editorStore.validateResult.length}
+              </Badge>
             </Tab>
-            <Tab w="130px">Logs</Tab>
+            <Tab>Logs</Tab>
             <HStack w="full" justify="end">
               {editorStore.isSaved ? savedBadge : unsaveBadge}
               <IconButton
@@ -108,7 +108,11 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
                 <ErrorLogs services={services} />
               </TabPanel>
               <TabPanel>
-                <EventLogs services={services} events={eventLogs} />
+                <EventLogs
+                  setEventLogs={setEventLogs}
+                  services={services}
+                  events={eventLogs}
+                />
               </TabPanel>
             </TabPanels>
           )}

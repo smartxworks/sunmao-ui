@@ -134,6 +134,7 @@ const ModuleRendererContent = React.forwardRef<
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
             parameters: evaledHandler.method.parameters,
+            triggerId: moduleId,
           });
         }
       };

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Table, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
+import React, { ReactNode, useEffect } from 'react';
+import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
 import { Pagination } from './Pagination';
 import { defaultPageSize } from './const';
 
@@ -17,16 +17,26 @@ type TableProps = {
     hideOnSinglePage?: boolean;
   };
   data: any[];
+  footer?: ReactNode;
+  emptyMessage?: string;
 };
 
 export const DebugTable: React.FC<TableProps> = ({
   columns = [],
   pagination = {},
   data,
+  footer,
+  emptyMessage = 'No Data',
 }) => {
   const { pageSize = defaultPageSize, hideOnSinglePage = false, lastPage } = pagination;
   const [currPage, setCurrPage] = React.useState(0);
   const currentData = data.slice(currPage * pageSize, currPage * pageSize + pageSize);
+
+  useEffect(() => {
+    if (data.length <= Number(pageSize) * (currPage - 1)) {
+      setCurrPage(0);
+    }
+  }, [currPage, data.length, pageSize]);
 
   return (
     <VStack width="full" justifyContent="start">
@@ -34,31 +44,42 @@ export const DebugTable: React.FC<TableProps> = ({
         <Thead>
           <Tr>
             {columns.map(c => {
-              return <Th key={c.title}>{c.title}</Th>;
+              return <Th key={c.title + c.dataIndex}>{c.title}</Th>;
             })}
           </Tr>
         </Thead>
         <Tbody>
-          {currentData.map((d, i) => {
-            return (
-              <Tr key={i}>
-                {columns.map(c => {
-                  if (c.render) {
-                    return <Td key={c.dataIndex}>{c.render(c, d, i)}</Td>;
-                  }
-                  return <Td key={c.dataIndex}>{d[c.dataIndex]}</Td>;
-                })}
-              </Tr>
-            );
-          })}
+          {!data.length ? (
+            <Tr>
+              <Td colSpan={columns.length}>
+                <Box textAlign="center">{emptyMessage}</Box>
+              </Td>
+            </Tr>
+          ) : (
+            currentData.map((d, i) => {
+              return (
+                <Tr key={i}>
+                  {columns.map(c => {
+                    if (c.render) {
+                      return <Td key={c.dataIndex}>{c.render(c, d, i)}</Td>;
+                    }
+                    return <Td key={c.dataIndex}>{d[c.dataIndex]}</Td>;
+                  })}
+                </Tr>
+              );
+            })
+          )}
         </Tbody>
       </Table>
-      <Pagination
-        currentPage={currPage}
-        lastPage={lastPage || Math.ceil(data.length / pageSize)}
-        handlePageClick={page => setCurrPage(page)}
-        hideOnSinglePage={hideOnSinglePage}
-      />
+      <HStack w="full" justify="end">
+        <Box flex="1">{footer}</Box>
+        <Pagination
+          currentPage={currPage}
+          lastPage={lastPage || Math.ceil(data.length / pageSize)}
+          handlePageClick={page => setCurrPage(page)}
+          hideOnSinglePage={hideOnSinglePage}
+        />
+      </HStack>
     </VStack>
   );
 };
