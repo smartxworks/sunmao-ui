@@ -10,6 +10,7 @@ type Column = {
 };
 
 type TableProps = {
+  className?: string;
   columns: Column[];
   pagination?: {
     pageSize?: number;
@@ -27,6 +28,7 @@ export const DebugTable: React.FC<TableProps> = ({
   data,
   footer,
   emptyMessage = 'No Data',
+  className,
 }) => {
   const { pageSize = defaultPageSize, hideOnSinglePage = false, lastPage } = pagination;
   const [currPage, setCurrPage] = React.useState(0);
@@ -40,7 +42,13 @@ export const DebugTable: React.FC<TableProps> = ({
 
   return (
     <VStack width="full" justifyContent="start">
-      <Table size="sm" width="full" maxHeight="200px" overflow="auto">
+      <Table
+        className={className}
+        size="sm"
+        width="full"
+        maxHeight="200px"
+        overflow="auto"
+      >
         <Thead>
           <Tr>
             {columns.map(c => {

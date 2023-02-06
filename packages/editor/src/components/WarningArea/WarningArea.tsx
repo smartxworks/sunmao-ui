@@ -28,12 +28,14 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
     const handler = (type: string, event: unknown) => {
       setEventLogs(cur => {
         return produce(cur, draft => {
+          const { name, triggerId, componentId, parameters } = event as Event;
           draft.unshift({
             type,
-            methodName: (event as Event).name,
-            triggered: (event as Event).triggerId || '',
+            methodName: name,
+            triggerId,
             time: new Date().toLocaleTimeString(),
-            target: (event as Event).componentId,
+            target: componentId,
+            parameters,
           });
         });
       });

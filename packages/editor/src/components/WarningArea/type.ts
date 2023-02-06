@@ -8,12 +8,13 @@ export type Event = {
   componentId: string;
   name: string;
   parameters: any;
-  triggerId?: string;
+  triggerId: string;
 };
 export type EventLog = {
   time: string;
   type: string;
   target: string;
   methodName: string;
-  triggered: string;
+  triggerId: string;
+  parameters: any;
 };

@@ -43,7 +43,7 @@ export const Pagination: React.FC<Props> = ({
     startIdx = 0;
     endIdx = ShowPagesNumber;
   }
-  if (currentPage + 3 >= lastPage) {
+  if (currentPage + 4 >= lastPage) {
     startIdx = Math.max(0, lastPage - ShowPagesNumber);
     endIdx = lastPage;
   }
