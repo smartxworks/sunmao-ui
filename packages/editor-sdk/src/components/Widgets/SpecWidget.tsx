@@ -109,7 +109,7 @@ const descriptionStyle = css`
   }
 `;
 
-const DefaultTemplate: React.FC<TemplateProps> = props => {
+export const DefaultTemplate: React.FC<TemplateProps> = props => {
   const {
     id,
     label,
@@ -261,7 +261,6 @@ export const SpecWidget: React.FC<Props> = props => {
   } else {
     Component = ExpressionWidget;
   }
-
   return (
     <DefaultTemplate
       label={label}
