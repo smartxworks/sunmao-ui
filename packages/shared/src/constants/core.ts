@@ -38,6 +38,7 @@ export enum CoreWidgetName {
   Spec = 'spec',
   StringField = 'string',
   UnsupportedField = 'unsupported',
+  Breadcrumb = 'breadcrumb',
 }
 
 export enum StyleWidgetName {
