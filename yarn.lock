@@ -2833,7 +2833,7 @@
 
 "@emotion/styled@^11.0.0", "@emotion/styled@^11.8.1":
   version "11.10.5"
-  resolved "https://registry.npmjs.org/@emotion/styled/-/styled-11.10.5.tgz#1fe7bf941b0909802cb826457e362444e7e96a79"
+  resolved "https://registry.npmmirror.com/@emotion/styled/-/styled-11.10.5.tgz#1fe7bf941b0909802cb826457e362444e7e96a79"
   integrity sha512-8EP6dD7dMkdku2foLoruPCNkRevzdcBaY6q0l0OsbyJK+x8D9HWjX27ARiSIKNF634hY9Zdoedh8bJCiva8yZw==
   dependencies:
     "@babel/runtime" "^7.18.3"
