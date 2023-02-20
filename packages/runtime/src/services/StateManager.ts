@@ -209,7 +209,7 @@ export class StateManager {
     if (value && typeof value === 'object') {
       const stop = watch(
         () => {
-          const result = this.deepEval(value);
+          const result = this.deepEval(value, options);
           return result;
         },
         newV => {
