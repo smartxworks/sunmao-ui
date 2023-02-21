@@ -1,5 +1,6 @@
-import { mapValues, isArray } from 'lodash';
+import { mapValues, isArray, set } from 'lodash';
 import dayjs from 'dayjs';
+import produce from 'immer';
 import 'dayjs/locale/zh-cn';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -207,16 +208,30 @@ export class StateManager {
     };
     // watch change
     if (value && typeof value === 'object') {
-      const stop = watch(
-        () => {
-          const result = this.deepEval(value);
-          return result;
-        },
-        newV => {
-          watcher({ result: newV as EvaledResult<T> });
-        }
-      );
-      stops.push(stop);
+      let resultCache = evaluated as PropsAfterEvaled<Exclude<T, string>>;
+
+      this.mapValuesDeep(value, ({ value, path }) => {
+        const isDynamicExpression =
+          typeof value === 'string' &&
+          parseExpression(value).some(exp => typeof exp !== 'string');
+
+        if (!isDynamicExpression) return;
+
+        const stop = watch(
+          () => {
+            const result = this._maskedEval(value as string, options);
+
+            return result;
+          },
+          newV => {
+            resultCache = produce(resultCache, draft => {
+              set(draft, path, newV);
+            });
+            watcher({ result: resultCache as EvaledResult<T> });
+          }
+        );
+        stops.push(stop);
+      });
     } else {
       const stop = watch(
         () => {
@@ -225,6 +240,9 @@ export class StateManager {
         },
         newV => {
           watcher({ result: newV as EvaledResult<T> });
+        },
+        {
+          deep: true,
         }
       );
       stops.push(stop);
