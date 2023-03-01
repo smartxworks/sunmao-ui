@@ -314,3 +314,135 @@ export const MultiSlotsSchema: Application = {
     ],
   },
 };
+
+export const UpdateTraitPropertiesSchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'state0',
+        type: 'core/v1/dummy',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/state',
+            properties: {
+              key: 'value',
+              initialValue: '',
+            },
+          },
+        ],
+      },
+      {
+        id: 'button0',
+        type: 'test/v1/button',
+        properties: {
+          type: 'default',
+          status: 'default',
+          long: false,
+          size: 'default',
+          disabled: false,
+          loading: false,
+          shape: 'square',
+          text: '{{state2.value}}',
+        },
+        traits: [
+          {
+            type: 'test/v1/count',
+            properties: {
+              param1: '{{state0.value + state1.value}}',
+              param2: '{{!state0.value}}',
+            },
+          },
+          {
+            type: 'core/v1/event',
+            properties: {
+              handlers: [
+                {
+                  type: 'click',
+                  componentId: 'state0',
+                  method: {
+                    name: 'setValue',
+                    parameters: {
+                      key: 'value',
+                      value: 'state0',
+                    },
+                  },
+                  wait: {
+                    type: 'debounce',
+                    time: 0,
+                  },
+                  disabled: false,
+                },
+                {
+                  type: 'click',
+                  componentId: 'state1',
+                  method: {
+                    name: 'setValue',
+                    parameters: {
+                      key: 'value',
+                      value: 'state1',
+                    },
+                  },
+                  wait: {
+                    type: 'debounce',
+                    time: 0,
+                  },
+                  disabled: false,
+                },
+                {
+                  type: 'click',
+                  componentId: 'state2',
+                  method: {
+                    name: 'setValue',
+                    parameters: {
+                      key: 'value',
+                      value: 'state2',
+                    },
+                  },
+                  wait: {
+                    type: 'debounce',
+                    time: 0,
+                  },
+                  disabled: false,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: 'state1',
+        type: 'core/v1/dummy',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/state',
+            properties: {
+              key: 'value',
+              initialValue: '',
+            },
+          },
+        ],
+      },
+      {
+        id: 'state2',
+        type: 'core/v1/dummy',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/state',
+            properties: {
+              key: 'value',
+              initialValue: '',
+            },
+          },
+        ],
+      },
+    ],
+  },
+};

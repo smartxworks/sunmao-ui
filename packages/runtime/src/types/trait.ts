@@ -15,6 +15,7 @@ export type TraitResult<
     componentDidUnmount?: Array<() => void>;
     componentDidMount?: Array<() => Function | void>;
     componentDidUpdate?: Array<() => Function | void>;
+    traitPropertiesDidUpdated?: Array<() => Function | void>;
   } | null;
   unmount?: boolean;
 };
