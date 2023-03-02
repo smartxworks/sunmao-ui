@@ -14,6 +14,7 @@ import {
   TabsWithSlotsSchema,
   ParentRerenderSchema,
   MultiSlotsSchema,
+  UpdateTraitPropertiesSchema,
 } from './mockSchema';
 
 // A pure single sunmao component will render twice when it mount.
@@ -217,6 +218,47 @@ describe('slot trait if condition', () => {
         "testList0": Object {},
       }
     `);
+
+    unmount();
+    clearTesterMap();
+  });
+});
+
+describe('the `traitPropertiesDidUpdated` lifecircle for trait', () => {
+  it('it will only count once after the states are updated', () => {
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
+    stateManager.mute = true;
+    const { unmount } = render(<App options={UpdateTraitPropertiesSchema} />);
+    const countBeforeClick = stateManager.store.button0.count;
+
+    act(() => {
+      screen.getByTestId('button0').click();
+    });
+
+    expect(stateManager.store.button0.count).toBe(countBeforeClick + 1);
+
+    unmount();
+    clearTesterMap();
+  });
+
+  it("it shouldn't count when update the states which the component depends on", () => {
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
+    const NewUpdateTraitPropertiesSchema = produce(UpdateTraitPropertiesSchema, draft => {
+      const button = draft.spec.components.find(({ id }) => id === 'button0');
+      const handlers = button?.traits[1].properties.handlers as { disabled: boolean }[];
+
+      handlers[0].disabled = true;
+      handlers[1].disabled = true;
+    });
+    stateManager.mute = true;
+    const { unmount } = render(<App options={NewUpdateTraitPropertiesSchema} />);
+    const countBeforeClick = stateManager.store.button0.count;
+
+    act(() => {
+      screen.getByTestId('button0').click();
+    });
+
+    expect(stateManager.store.button0.count).toBe(countBeforeClick);
 
     unmount();
     clearTesterMap();

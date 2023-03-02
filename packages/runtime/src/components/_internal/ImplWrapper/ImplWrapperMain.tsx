@@ -149,6 +149,13 @@ export const ImplWrapperMain = React.forwardRef<HTMLDivElement, ImplWrapperProps
       };
     });
 
+    useEffect(() => {
+      const clearFunctions = propsFromTraits?.traitPropertiesDidUpdated?.map(e => e());
+      return () => {
+        clearFunctions?.forEach(func => func && func());
+      };
+    }, [propsFromTraits?.traitPropertiesDidUpdated]);
+
     useDidUnmount(() => {
       propsFromTraits?.componentDidUnmount?.forEach(e => e());
     });

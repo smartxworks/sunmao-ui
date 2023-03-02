@@ -25,8 +25,9 @@ export default implementRuntimeComponent({
   },
 })(({ callbackMap, component, elementRef }) => {
   const onClick = () => {
-    callbackMap?.click();
+    callbackMap?.click?.();
   };
+
   return (
     <div ref={elementRef}>
       <button onClick={onClick} data-testid={component.id}>
