@@ -198,6 +198,7 @@ export const PopoverWidget = React.forwardRef<
       closeOnBlur={false}
       isOpen={isOpen}
       onOpen={handleOpen}
+      autoFocus={false}
     >
       <PopoverTrigger>
         {isObjectChildren && 'trigger' in children ? (
