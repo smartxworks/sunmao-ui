@@ -34,6 +34,7 @@ const zIndices = {
     ...theme.zIndices,
     // smaller than the default value of zIndex for chakra modal (1400)
     editorMask: 1399,
+    sideMenuIndex: 2,
   },
 };
 
