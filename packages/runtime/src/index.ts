@@ -19,6 +19,9 @@ export type SunmaoUIRuntimeProps = {
   dependencies?: Record<string, any>;
   hooks?: AppHooks;
   isInEditor?: boolean;
+  debugHandler?: {
+    onDebug: (currentState: Record<string, any>, message: Record<string, any>) => void;
+  };
 };
 
 export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
@@ -41,6 +44,10 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
 
   props.libs?.forEach(lib => {
     registry.installLib(lib);
+  });
+
+  apiService.on('debug', params => {
+    props.debugHandler?.onDebug(stateManager.store, params);
   });
 
   return {

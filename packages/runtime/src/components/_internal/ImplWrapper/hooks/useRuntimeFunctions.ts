@@ -3,6 +3,7 @@ import { RuntimeTraitSchema } from '@sunmao-ui/core';
 import { ImplWrapperProps } from '../../../../types';
 import { merge } from 'lodash';
 import { HandlerMap } from '../../../../services/handler';
+import { DebugLoggerType } from '../../../../services/debug';
 
 export function useRuntimeFunctions(props: ImplWrapperProps) {
   const { component: c, services, slotContext } = props;
@@ -12,8 +13,14 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
   const mergeState = useCallback(
     (partial: any) => {
       stateManager.store[c.id] = { ...stateManager.store[c.id], ...partial };
+      // Logging state change debug messages
+      services.apiService.send('debug', {
+        type: DebugLoggerType.MERGE_STATE,
+        id: c.id,
+        param: partial,
+      });
     },
-    [c.id, stateManager.store]
+    [c.id, services.apiService, stateManager.store]
   );
   const subscribeMethods = useCallback(
     (map: HandlerMap) => {
