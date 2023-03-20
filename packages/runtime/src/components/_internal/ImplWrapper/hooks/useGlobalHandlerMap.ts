@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { DebugLoggerType } from '../../../../services/debug';
 import { ImplWrapperProps } from '../../../../types';
 
 export function useGlobalHandlerMap(props: ImplWrapperProps) {
@@ -21,14 +20,6 @@ export function useGlobalHandlerMap(props: ImplWrapperProps) {
         // maybe log?
         return;
       }
-      // Logging event-triggered debug messages
-      apiService.send('debug', {
-        type: DebugLoggerType.TRIGGER_EVENT,
-        componentId: s.componentId,
-        name: s.name,
-        parameters: s.parameters,
-        methodType: 'uiMethod',
-      });
       handlerMap[s.name](s.parameters);
     };
 

@@ -1,6 +1,7 @@
+import type { DebugLog } from './type';
 type DebugInfo = {
   state: Record<string, any>;
-  debugLogs: Record<string, any>[];
+  debugLogs: DebugLog[];
 };
 
 const getDebugInfo = (key: string): DebugInfo | null => {
@@ -16,9 +17,9 @@ const setDebugInfo = (key: string, debugInfo: DebugInfo) => {
   localStorage.setItem(key, JSON.stringify(debugInfo));
 };
 
-export const setLocalStorage = (
-  message: Record<string, any>,
-  state: Record<string, any>[],
+export const saveDebugInfoToLocalstorage = (
+  message: DebugLog,
+  state: Record<string, any>,
   key = 'sunmao-debug-info'
 ) => {
   const debugInfo = getDebugInfo(key) || { state: {}, debugLogs: [] };

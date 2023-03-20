@@ -1,5 +1,4 @@
 import mitt from 'mitt';
-import { DebugLoggerType } from './debug';
 export type ApiService = ReturnType<typeof initApiService>;
 
 export function initApiService() {
@@ -18,11 +17,9 @@ export function initApiService() {
       eventType: string;
     };
     /**
-     * @description: record debug info
+     * @description: record merge state info for debug
      */
-    debug: {
-      type: DebugLoggerType;
-    } & Record<string, any>;
+    mergeState: Record<string, any>;
   }>();
   const apiService = {
     on: emitter.on,

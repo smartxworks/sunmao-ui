@@ -1,7 +1,6 @@
 import { GLOBAL_MODULE_ID, GLOBAL_UTIL_METHOD_ID } from '../constants';
 import { ApiService } from './apiService';
 import { ImplementedUtilMethod, UIServices } from '../types';
-import { DebugLoggerType } from './debug';
 
 export class UtilMethodManager {
   constructor(private apiService: ApiService) {
@@ -14,13 +13,6 @@ export class UtilMethodManager {
         componentId === GLOBAL_UTIL_METHOD_ID &&
         name === `${utilMethod.version}/${utilMethod.metadata.name}`
       ) {
-        this.apiService.send('debug', {
-          type: DebugLoggerType.TRIGGER_EVENT,
-          id: componentId,
-          methodType: 'uiMethod',
-          name,
-          parameters,
-        });
         utilMethod.impl(parameters, services);
       }
     });
@@ -31,13 +23,6 @@ export class UtilMethodManager {
       switch (componentId) {
         // handler as module event
         case GLOBAL_MODULE_ID:
-          this.apiService.send('debug', {
-            type: DebugLoggerType.TRIGGER_EVENT,
-            id: componentId,
-            methodType: 'uiMethod',
-            name,
-            parameters,
-          });
           this.apiService.send('moduleEvent', {
             fromId: parameters.moduleId,
             eventType: name,
