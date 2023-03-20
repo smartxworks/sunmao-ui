@@ -171,7 +171,8 @@ export default implementRuntimeTrait({
                 rawOnComplete,
                 index,
                 services,
-                slotKey
+                slotKey,
+                componentId
               )();
             });
           } else {
@@ -189,7 +190,14 @@ export default implementRuntimeTrait({
             const rawOnError = trait.properties.onError;
 
             onError?.forEach((_, index) => {
-              runEventHandler(onError[index], rawOnError, index, services, slotKey)();
+              runEventHandler(
+                onError[index],
+                rawOnError,
+                index,
+                services,
+                slotKey,
+                componentId
+              )();
             });
           }
         },
@@ -208,7 +216,14 @@ export default implementRuntimeTrait({
           const rawOnError = trait.properties.onError;
 
           onError?.forEach((_, index) => {
-            runEventHandler(onError[index], rawOnError, index, services, slotKey)();
+            runEventHandler(
+              onError[index],
+              rawOnError,
+              index,
+              services,
+              slotKey,
+              componentId
+            )();
           });
         }
       );

@@ -386,6 +386,7 @@ export const Table = implementRuntimeComponent({
                     componentId: handler.componentId,
                     name: handler.method.name,
                     parameters: handler.method.parameters || {},
+                    triggerId: component.id,
                   });
                 });
               };

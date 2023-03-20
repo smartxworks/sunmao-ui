@@ -74,6 +74,7 @@ export const ApiForm: React.FC<Props> = props => {
       componentId: component.id,
       name: 'triggerFetch',
       parameters: {},
+      triggerId: component.id,
     });
   }, [services.apiService, component]);
   const onMethodChange = useCallback(

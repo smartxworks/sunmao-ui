@@ -11,7 +11,8 @@ export const runEventHandler = (
   rawHandlers: string | PropsBeforeEvaled<Static<typeof CallbackSpec>>,
   index: number,
   services: UIServices,
-  slotKey: string
+  slotKey: string,
+  triggerId = ''
 ) => {
   const { stateManager } = services;
   const send = () => {
@@ -36,6 +37,7 @@ export const runEventHandler = (
       componentId: evaledHandler.componentId,
       name: evaledHandler.method.name,
       parameters: evaledHandler.method.parameters,
+      triggerId,
     });
   };
   const { wait } = handler;

@@ -10,6 +10,7 @@ export function initApiService() {
     uiMethod: {
       componentId: string;
       name: string;
+      triggerId: string;
       parameters?: any;
     };
     moduleEvent: {

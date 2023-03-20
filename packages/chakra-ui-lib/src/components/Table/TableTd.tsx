@@ -90,6 +90,7 @@ export const TableTd: React.FC<{
             componentId: evaledHandler.componentId,
             name: evaledHandler.method.name,
             parameters: evaledHandler.method.parameters,
+            triggerId: component.id,
           });
         });
       };
