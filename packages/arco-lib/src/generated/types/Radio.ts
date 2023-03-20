@@ -24,6 +24,7 @@ export const RadioPropsSpec = {
   defaultCheckedValue: Type.Union(radioValueType, {
     title: 'Default Value',
     category: Category.Basic,
+    widget: 'core/v1/expression',
   }),
   type: StringUnion(['radio', 'button'], {
     title: 'Type',
