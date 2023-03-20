@@ -60,7 +60,7 @@ export default implementRuntimeTrait({
           () => {
             handlers.forEach((h, i) => {
               if (h.type === MountEvent.mount) {
-                runEventHandler(h, rawHandlers, i, services, slotKey)();
+                runEventHandler(h, rawHandlers, i, services, slotKey, componentId)();
               }
             });
           },
@@ -69,7 +69,7 @@ export default implementRuntimeTrait({
           () => {
             handlers.forEach((h, i) => {
               if (h.type === MountEvent.update) {
-                runEventHandler(h, rawHandlers, i, services, slotKey)();
+                runEventHandler(h, rawHandlers, i, services, slotKey, componentId)();
               }
             });
           },
@@ -78,7 +78,7 @@ export default implementRuntimeTrait({
           () => {
             handlers.forEach((h, i) => {
               if (h.type === MountEvent.unmount) {
-                runEventHandler(h, rawHandlers, i, services, slotKey)();
+                runEventHandler(h, rawHandlers, i, services, slotKey, componentId)();
               }
             });
           },
