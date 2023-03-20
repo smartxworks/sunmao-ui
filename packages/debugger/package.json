@@ -1,0 +1,42 @@
+{
+  "name": "@sunmao-ui/debugger",
+  "version": "0.10.2",
+  "description": "debugger for sunmao-ui",
+  "author": "sunmao-ui developers",
+  "homepage": "https://github.com/smartxworks/sunmao-ui#readme",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm,iife --legacy-output --clean --sourcemap --platform browser",
+    "dev": "tsup src/index.ts --watch --format cjs,esm,iife --legacy-output --clean --sourcemap --platform browser",
+    "typings": "tsc --emitDeclarationOnly",
+    "prepublish": "npm run build && npm run typings",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tsup": "^6.2.2"
+  },
+  "keywords": [],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,html}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}
