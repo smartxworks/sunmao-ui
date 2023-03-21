@@ -5,7 +5,6 @@ export function useGlobalHandlerMap(props: ImplWrapperProps) {
   const { component: c, services } = props;
   const { apiService, globalHandlerMap } = services;
 
-  
   useEffect(() => {
     if (!globalHandlerMap.has(c.id)) {
       globalHandlerMap.set(c.id, {});

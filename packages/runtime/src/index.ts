@@ -8,6 +8,7 @@ import { AppHooks } from './types';
 import { enableES5, setAutoFreeze } from 'immer';
 import './style.css';
 import { initSlotReceiver } from './services/SlotReciver';
+import { debugLogger, DebuggerHandler } from './services/debugger';
 
 // immer would make some errors when read the states, so we do these to avoid it temporarily
 // ref: https://github.com/immerjs/immer/issues/916
@@ -19,6 +20,7 @@ export type SunmaoUIRuntimeProps = {
   dependencies?: Record<string, any>;
   hooks?: AppHooks;
   isInEditor?: boolean;
+  debugHandler?: DebuggerHandler;
 };
 
 export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
@@ -38,6 +40,9 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
     },
     utilMethodManager
   );
+
+  // record debug info
+  debugLogger(apiService, stateManager, props.debugHandler);
 
   props.libs?.forEach(lib => {
     registry.installLib(lib);
@@ -104,3 +109,4 @@ export { formatSlotKey } from './components/_internal/ImplWrapper/hooks/useSlotC
 
 // TODO: check this export
 export { watch } from './utils/watchReactivity';
+export { printDebugInfo, saveDebugInfoToLocalstorage } from './services/debugger';

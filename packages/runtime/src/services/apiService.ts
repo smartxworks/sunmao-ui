@@ -17,6 +17,10 @@ export function initApiService() {
       fromId: string;
       eventType: string;
     };
+    /**
+     * @description: record merge state info for debug
+     */
+    mergeState: Record<string, any>;
   }>();
   const apiService = {
     on: emitter.on,
