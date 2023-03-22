@@ -9,16 +9,19 @@ export type PasteComponentLeafOperationContext = {
   component: IComponentModel;
 };
 
-let copyTimes = 0;
-
 export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponentLeafOperationContext> {
   private componentCopy!: IComponentModel;
 
   do(prev: AppModel): AppModel {
+    let copyTimes = 0;
+    const ids = prev.allComponents.map(c => c.id);
     this.context.component.allComponents.forEach(c => {
-      c.changeId(`${c.id}_copy${copyTimes}` as ComponentId);
+      let copyId = `${c.id}_copy${copyTimes}`;
+      while (ids.includes(copyId as ComponentId)) {
+        copyId = `${c.id}_copy${++copyTimes}`;
+      }
+      c.changeId(copyId as ComponentId);
     });
-    copyTimes++;
 
     this.componentCopy = this.context.component;
 
