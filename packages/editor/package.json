@@ -34,7 +34,6 @@
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.7.1",
-    "@choc-ui/chakra-autocomplete": "^4.22.0",
     "@emotion/css": "^11.7.1",
     "@optum/json-schema-editor": "^2.1.0",
     "@sinclair/typebox": "^0.21.2",
