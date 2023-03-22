@@ -220,7 +220,7 @@ export const Checkbox = implementRuntimeComponent({
       <BaseCheckbox
         {...checkboxProps}
         className={css(customStyle?.content)}
-        disabled={option?.disabled}
+        disabled={checkboxProps.disabled || option?.disabled}
         onChange={onChange}
         checked={checkedValues.includes(option?.value)}
         indeterminate={option?.indeterminate}
