@@ -17,7 +17,7 @@ export function useRuntimeFunctions(props: ImplWrapperProps) {
       services.apiService.send('mergeState', {
         type: DebugLoggerType.MERGE_STATE,
         id: c.id,
-        param: partial,
+        parameters: partial,
       });
     },
     [c.id, services.apiService, stateManager.store]

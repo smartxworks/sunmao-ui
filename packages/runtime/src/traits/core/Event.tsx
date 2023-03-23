@@ -37,7 +37,15 @@ export default implementRuntimeTrait({
         callbackQueueMap[handler.type] = [];
       }
       callbackQueueMap[handler.type].push(
-        runEventHandler(handler, rawHandlers, Number(i), services, slotKey, componentId)
+        runEventHandler(
+          handler,
+          rawHandlers,
+          Number(i),
+          services,
+          slotKey,
+          componentId,
+          handler.type
+        )
       );
     }
 

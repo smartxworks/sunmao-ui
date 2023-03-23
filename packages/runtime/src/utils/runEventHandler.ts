@@ -12,7 +12,8 @@ export const runEventHandler = (
   index: number,
   services: UIServices,
   slotKey: string,
-  triggerId = ''
+  triggerId = '',
+  eventType = ''
 ) => {
   const { stateManager } = services;
   const send = () => {
@@ -38,6 +39,7 @@ export const runEventHandler = (
       name: evaledHandler.method.name,
       parameters: evaledHandler.method.parameters,
       triggerId,
+      eventType: eventType,
     });
   };
   const { wait } = handler;

@@ -11,6 +11,7 @@ export function initApiService() {
       componentId: string;
       name: string;
       triggerId: string;
+      eventType: string;
       parameters?: any;
     };
     moduleEvent: {
