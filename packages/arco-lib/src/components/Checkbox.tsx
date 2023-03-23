@@ -77,9 +77,14 @@ export const Checkbox = implementRuntimeComponent({
     checkAllText,
     ...checkboxProps
   } = getComponentProps(props);
+  const optionValues = useMemo(() => options.map(o => o.value), [options]);
+  const defaultValue = useMemo(
+    () => optionValues.filter(o => defaultCheckedValues.includes(o)),
+    [defaultCheckedValues, optionValues]
+  );
 
   const [checkedValues, setCheckedValues] = useStateValue(
-    defaultCheckedValues,
+    defaultValue,
     mergeState,
     updateWhenDefaultValueChanges,
     'checkedValues'
@@ -90,15 +95,14 @@ export const Checkbox = implementRuntimeComponent({
   );
   const isCheckedAll = useMemo<boolean>(
     () => checkedValues.length === options.length,
-    [checkedValues, options]
+    [checkedValues, options.length]
   );
 
   useEffect(() => {
     mergeState({
       isCheckAll: isCheckedAll,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isCheckedAll, mergeState]);
 
   const indeterminate = useMemo<boolean>(
     () => checkedValues.length !== 0 && !isCheckedAll,
@@ -208,7 +212,6 @@ export const Checkbox = implementRuntimeComponent({
       <BaseCheckbox.Group
         {...checkboxProps}
         className={css(customStyle?.content)}
-        defaultValue={defaultCheckedValues}
         value={checkedValues}
         onChange={onGroupChange}
         options={options}
@@ -217,7 +220,7 @@ export const Checkbox = implementRuntimeComponent({
       <BaseCheckbox
         {...checkboxProps}
         className={css(customStyle?.content)}
-        disabled={option?.disabled}
+        disabled={checkboxProps.disabled || option?.disabled}
         onChange={onChange}
         checked={checkedValues.includes(option?.value)}
         indeterminate={option?.indeterminate}
