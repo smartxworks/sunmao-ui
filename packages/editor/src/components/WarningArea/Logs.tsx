@@ -1,10 +1,11 @@
 import { Props, DisplayedLog } from './type';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { DebugTable } from './Table';
 import { Box, Button, Tooltip } from '@chakra-ui/react';
 import { css } from '@emotion/css';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { MERGE_STATE, MODULE_EVENT, TRIGGER_EVENT } from './const';
+import { ComponentId } from '../../AppModel/IAppModel';
 
 type LogsProps = Props & {
   logs: DisplayedLog[];
@@ -13,8 +14,42 @@ type LogsProps = Props & {
 };
 
 export const Logs: React.FC<LogsProps> = ({ services, logs, setLogs, count = 5 }) => {
-  const { setSelectedComponentId, setExplorerMenuTab, setViewStateComponentId } =
-    services.editorStore;
+  const {
+    setSelectedComponentId,
+    setExplorerMenuTab,
+    setViewStateComponentId,
+    dataSourceTypeCache: isDataSourceTypeCache,
+  } = services.editorStore;
+
+  const handleClick = useCallback(
+    (type: string, componentId: ComponentId) => {
+      switch (type) {
+        case MERGE_STATE:
+          setExplorerMenuTab(ExplorerMenuTabs.STATE);
+          setViewStateComponentId(componentId);
+          break;
+        case MODULE_EVENT: // TODO
+        case TRIGGER_EVENT:
+        default:
+          const component =
+            services.appModelManager.appModel.getComponentById(componentId);
+          if (component && isDataSourceTypeCache[component.type]) {
+            setExplorerMenuTab(ExplorerMenuTabs.DATA);
+          } else {
+            setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
+          }
+          setSelectedComponentId(componentId);
+          break;
+      }
+    },
+    [
+      isDataSourceTypeCache,
+      services.appModelManager.appModel,
+      setExplorerMenuTab,
+      setSelectedComponentId,
+      setViewStateComponentId,
+    ]
+  );
 
   const eventColumns = [
     {
@@ -34,18 +69,7 @@ export const Logs: React.FC<LogsProps> = ({ services, logs, setLogs, count = 5 }
             cursor="pointer"
             fontWeight="bold"
             onClick={() => {
-              switch (item.type) {
-                case MERGE_STATE:
-                  setExplorerMenuTab(ExplorerMenuTabs.STATE);
-                  setViewStateComponentId(item.target);
-                  break;
-                case MODULE_EVENT:
-                case TRIGGER_EVENT:
-                default:
-                  setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
-                  setSelectedComponentId(item.target);
-                  break;
-              }
+              handleClick(item.type, item.target);
             }}
           >
             {item.target}
@@ -86,8 +110,7 @@ export const Logs: React.FC<LogsProps> = ({ services, logs, setLogs, count = 5 }
             cursor="pointer"
             fontWeight="bold"
             onClick={() => {
-              setExplorerMenuTab(ExplorerMenuTabs.UI_TREE);
-              setSelectedComponentId(item.triggerId);
+              handleClick(item.type, item.triggerId);
             }}
           >
             {item.triggerId}

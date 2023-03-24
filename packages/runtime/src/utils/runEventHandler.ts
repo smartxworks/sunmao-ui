@@ -39,7 +39,7 @@ export const runEventHandler = (
       name: evaledHandler.method.name,
       parameters: evaledHandler.method.parameters,
       triggerId,
-      eventType: eventType,
+      eventType: eventType || (handler as any)?.type,
     });
   };
   const { wait } = handler;

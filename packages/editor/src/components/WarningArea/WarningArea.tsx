@@ -45,7 +45,7 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
           draft.unshift({
             time: new Date().toLocaleTimeString(),
             type,
-            eventType,
+            eventType: eventType || type,
             target: componentId || id,
             parameters,
             methodName: name,
