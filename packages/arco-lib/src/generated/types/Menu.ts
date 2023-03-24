@@ -72,7 +72,7 @@ export const MenuPropsSpec = {
     title: 'Ellipsis',
     description: 'Whether the horizontal menu automatically collapses when it overflows',
     category: Category.Behavior,
-    conditions: [{ key: 'mode', value: 'vertical' }],
+    conditions: [{ key: 'mode', value: 'horizontal' }],
   }),
   autoScrollIntoView: Type.Boolean({
     title: 'Auto Scroll Into View',
