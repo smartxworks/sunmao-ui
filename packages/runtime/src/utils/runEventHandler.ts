@@ -1,13 +1,17 @@
 import { Static, Type } from '@sinclair/typebox';
 import { debounce, throttle, delay } from 'lodash';
-import { EventCallBackHandlerSpec, MODULE_ID_EXP } from '@sunmao-ui/shared';
+import {
+  EventCallBackHandlerSpec,
+  MODULE_ID_EXP,
+  EventHandlerSpec,
+} from '@sunmao-ui/shared';
 import { type PropsBeforeEvaled } from '@sunmao-ui/core';
 import { UIServices } from '../types';
 
 const CallbackSpec = Type.Array(EventCallBackHandlerSpec);
 
 export const runEventHandler = (
-  handler: Omit<Static<typeof EventCallBackHandlerSpec>, 'type'>,
+  handler: Static<typeof EventCallBackHandlerSpec>,
   rawHandlers: string | PropsBeforeEvaled<Static<typeof CallbackSpec>>,
   index: number,
   services: UIServices,
@@ -39,7 +43,7 @@ export const runEventHandler = (
       name: evaledHandler.method.name,
       parameters: evaledHandler.method.parameters,
       triggerId,
-      eventType: eventType || (handler as any)?.type,
+      eventType: eventType || (handler as Static<typeof EventHandlerSpec>)?.type,
     });
   };
   const { wait } = handler;
