@@ -18,7 +18,8 @@ export class PasteComponentLeafOperation extends BaseLeafOperation<PasteComponen
     this.context.component.allComponents.forEach(c => {
       let copyId = `${c.id}_copy${copyTimes}`;
       while (ids.includes(copyId as ComponentId)) {
-        copyId = `${c.id}_copy${++copyTimes}`;
+        copyTimes++;
+        copyId = `${c.id}_copy${copyTimes}`;
       }
       c.changeId(copyId as ComponentId);
     });
