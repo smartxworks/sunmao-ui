@@ -9,39 +9,78 @@ import {
   TabPanel,
   TabPanels,
   TabList,
-  VStack,
   Tab,
+  Box,
 } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useMemo, useState } from 'react';
-import { EventLogs } from './EventLogs';
+import { Logs } from './Logs';
 import { ErrorLogs } from './ErrorLogs';
-import type { Props, Event, EventLog } from './type';
+import type { Props, Log, DisplayedLog } from './type';
 import produce from 'immer';
+import { Resizable } from 're-resizable';
+import { MERGE_STATE, MODULE_EVENT, paginationHeight, TRIGGER_EVENT } from './const';
+
+const WARNING_AREA_COLLAPSED__MIN_HEIGHT = 48;
+const WARNING_AREA_EXPANDED_MIN_HEIGHT = 320;
+const WARNING_AREA_MAX_HEIGHT = 800;
+const getMinHeight = (isCollapsed: boolean) => {
+  return isCollapsed
+    ? WARNING_AREA_COLLAPSED__MIN_HEIGHT
+    : WARNING_AREA_EXPANDED_MIN_HEIGHT;
+};
 
 export const WarningArea: React.FC<Props> = observer(({ services }) => {
   const { editorStore } = services;
-  const [isCollapsed, setIsCollapsed] = React.useState(true);
-  const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [height, setHeight] = useState(WARNING_AREA_COLLAPSED__MIN_HEIGHT);
+  const [logs, setLogs] = useState<DisplayedLog[]>([]);
 
   useEffect(() => {
-    const handler = (type: string, event: unknown) => {
-      setEventLogs(cur => {
+    const handler = (params: unknown) => {
+      setLogs(cur => {
         return produce(cur, draft => {
-          const { name, triggerId, componentId, parameters } = event as Event;
+          const { name, triggerId, componentId, parameters, eventType, type, id } =
+            params as Log;
           draft.unshift({
-            type,
-            methodName: name,
-            triggerId,
             time: new Date().toLocaleTimeString(),
-            target: componentId,
+            type,
+            eventType: eventType || type,
+            target: componentId || id,
             parameters,
+            methodName: name,
+            triggerId: triggerId,
           });
         });
       });
     };
-    services.apiService.on('*', handler);
-    return () => services.apiService.off('*', handler);
+    services.apiService.on('mergeState', params => {
+      handler({
+        ...params,
+        eventType: 'mergeState',
+        type: MERGE_STATE,
+      });
+    });
+    services.apiService.on('uiMethod', params => {
+      handler({
+        type: TRIGGER_EVENT,
+        ...params,
+      });
+    });
+    services.apiService.on('moduleEvent', params => {
+      handler({
+        ...params,
+        type: MODULE_EVENT,
+        eventType: 'moduleEvent',
+        triggerId: params.fromId,
+        componentId: params.fromId,
+      });
+    });
+    return () => {
+      services.apiService.off('mergeState');
+      services.apiService.off('uiMethod');
+      services.apiService.off('moduleEvent');
+    };
   }, [services.apiService]);
 
   const savedBadge = useMemo(() => {
@@ -63,26 +102,53 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
       </HStack>
     );
   }, [editorStore]);
+  const tabListHeight = 40;
+
+  const logsCount = useMemo(() => {
+    const tableHeaderHeight = 40;
+    const tableCeilHight = 45;
+    const padding = 16;
+    return (
+      Math.floor(
+        (height - padding - tabListHeight - paginationHeight - tableHeaderHeight) /
+          tableCeilHight
+      ) || 1
+    );
+  }, [height]);
 
   return (
-    <VStack
-      position="absolute"
-      bottom="0"
-      left="0"
-      right="0"
-      paddingY="2"
-      paddingX="4"
-      boxShadow="0 0 4px rgba(0, 0, 0, 0.1)"
-      background="white"
-      zIndex="1"
+    <Resizable
+      size={{
+        width: '100%',
+        height: height,
+      }}
+      enable={{ top: true }}
+      maxHeight={WARNING_AREA_MAX_HEIGHT}
+      minHeight={WARNING_AREA_COLLAPSED__MIN_HEIGHT}
+      snap={{ y: [WARNING_AREA_COLLAPSED__MIN_HEIGHT] }}
+      snapGap={WARNING_AREA_COLLAPSED__MIN_HEIGHT}
+      onResizeStop={(_e, _direction, _ref, d) => {
+        setHeight(prevH => prevH + d.height);
+        if (height + d.height === WARNING_AREA_COLLAPSED__MIN_HEIGHT) {
+          setIsCollapsed(true);
+        } else {
+          setIsCollapsed(false);
+        }
+      }}
     >
-      <HStack width="full" justifyContent="space-between">
-        <Tabs
-          minH={isCollapsed ? '' : '300px'}
-          w="full"
-          variant="soft-rounded"
-          colorScheme="gray"
-        >
+      <Box
+        h="full"
+        position="absolute"
+        bottom="0"
+        left="0"
+        right="0"
+        paddingY="2"
+        paddingX="4"
+        boxShadow="0 0 4px rgba(0, 0, 0, 0.1)"
+        background="white"
+        width="full"
+      >
+        <Tabs h="full" w="full" variant="soft-rounded" colorScheme="gray">
           <TabList>
             <Tab alignItems="baseline">
               <Text fontSize="md" fontWeight="bold">
@@ -100,26 +166,30 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
                 size="sm"
                 variant="ghost"
                 icon={isCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
-                onClick={() => setIsCollapsed(prev => !prev)}
+                onClick={() => {
+                  setIsCollapsed(prev => !prev);
+                  setHeight(getMinHeight(!isCollapsed));
+                }}
               />
             </HStack>
           </TabList>
           {!isCollapsed && (
-            <TabPanels>
-              <TabPanel>
+            <TabPanels h={height - tabListHeight}>
+              <TabPanel h="full" overflow="auto">
                 <ErrorLogs services={services} />
               </TabPanel>
-              <TabPanel>
-                <EventLogs
-                  setEventLogs={setEventLogs}
+              <TabPanel h="full" overflow="auto">
+                <Logs
+                  setLogs={setLogs}
                   services={services}
-                  events={eventLogs}
+                  logs={logs}
+                  count={logsCount}
                 />
               </TabPanel>
             </TabPanels>
           )}
         </Tabs>
-      </HStack>
-    </VStack>
+      </Box>
+    </Resizable>
   );
 });

@@ -387,6 +387,7 @@ export const Table = implementRuntimeComponent({
                     name: handler.method.name,
                     parameters: handler.method.parameters || {},
                     triggerId: component.id,
+                    eventType: 'onClick',
                   });
                 });
               };

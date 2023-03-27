@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from 'react';
-import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
+import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Pagination } from './Pagination';
-import { defaultPageSize } from './const';
+import { defaultPageSize, paginationHeight } from './const';
 
 type Column = {
   title: string;
@@ -41,7 +41,7 @@ export const DebugTable: React.FC<TableProps> = ({
   }, [currPage, data.length, pageSize]);
 
   return (
-    <VStack width="full" justifyContent="start">
+    <>
       <Table
         className={className}
         size="sm"
@@ -79,7 +79,7 @@ export const DebugTable: React.FC<TableProps> = ({
           )}
         </Tbody>
       </Table>
-      <HStack w="full" justify="end">
+      <HStack w="full" h={paginationHeight + 'px'}>
         <Box flex="1">{footer}</Box>
         <Pagination
           currentPage={currPage}
@@ -88,6 +88,6 @@ export const DebugTable: React.FC<TableProps> = ({
           hideOnSinglePage={hideOnSinglePage}
         />
       </HStack>
-    </VStack>
+    </>
   );
 };

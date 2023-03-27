@@ -91,6 +91,7 @@ export const TableTd: React.FC<{
             name: evaledHandler.method.name,
             parameters: evaledHandler.method.parameters,
             triggerId: component.id,
+            eventType: 'onClick',
           });
         });
       };
