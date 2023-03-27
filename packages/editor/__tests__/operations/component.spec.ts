@@ -1,7 +1,11 @@
 import { AppModel } from '../../src/AppModel/AppModel';
 import { ComponentId } from '../../src/AppModel/IAppModel';
 import { registry } from '../services';
-import { AppSchema, PasteComponentWithChildrenSchema } from './mock';
+import {
+  AppSchema,
+  PasteComponentWithChildrenSchema,
+  PasteComponentWithCopyComponent,
+} from './mock';
 import { genOperation } from '../../src/operations';
 
 describe('Component operations', () => {
@@ -33,7 +37,6 @@ describe('Component operations', () => {
       component: new AppModel(pasteComponent, registry).getComponentById(
         'stack5' as ComponentId
       )!,
-      copyTimes: 0,
     });
     operation.do(appModel);
     expect(appModel.getComponentById('text6_copy0' as ComponentId)?.parent?.id).toBe(
@@ -43,5 +46,29 @@ describe('Component operations', () => {
       appModel.getComponentById('text6_copy0' as ComponentId)?.traits[0].rawProperties
         .container.id
     ).toBe('stack5_copy0');
+  });
+
+  // issue #679
+  it(`Unique ids can be generated and components can be copied correctly when it contain copied components`, () => {
+    const appModel = new AppModel(
+      PasteComponentWithCopyComponent.spec.components,
+      registry
+    );
+
+    const pasteComponent = [
+      appModel.getComponentById('stack5' as ComponentId)!.toSchema(),
+      appModel.getComponentById('text6' as ComponentId)!.toSchema(),
+    ];
+    const operation = genOperation(registry, 'pasteComponent', {
+      parentId: 'stack3',
+      slot: 'content',
+      component: new AppModel(pasteComponent, registry).getComponentById(
+        'stack5' as ComponentId
+      )!,
+    });
+    operation.do(appModel);
+    const allComponentIds = appModel.allComponents.map(c => c.id);
+
+    expect(allComponentIds.length).toEqual(new Set(allComponentIds).size);
   });
 });
