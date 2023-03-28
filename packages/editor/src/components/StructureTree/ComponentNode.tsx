@@ -143,7 +143,7 @@ const ComponentNodeImpl = (props: Props) => {
             droppable={droppable}
             hasSlot={true}
           >
-            {_slot !== 'content' ? (
+            {_slot === 'content' && slots.length === 1 ? null : (
               <Text
                 fontSize={12}
                 color="gray.500"
@@ -152,7 +152,7 @@ const ComponentNodeImpl = (props: Props) => {
               >
                 {_slot}
               </Text>
-            ) : undefined}
+            )}
             <Text
               height="32px"
               lineHeight="32px"

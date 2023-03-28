@@ -54,10 +54,14 @@ export const StructureTree: React.FC<Props> = observer(props => {
     const prevNode = i > 0 ? shouldRenderNodes[i - 1] : null;
     let shouldShowSlot = false;
     // Conditions in which a component should show the slot name it belongs
-    // 1. It is in a slot and the slot is not 'content'.
+    // 1. It is in a slot and the slot is not 'content' or the slot is 'content' but its parent slot is not unique.
     // 2. And its previous node is its parent(has the same parent).
     // 3. Or its previous node is its sibling and is in different slot.
-    if (node.slot && node.slot !== 'content' && prevNode) {
+    if (
+      node.slot &&
+      !(node.parentSlots!.length === 1 && node.slot === 'content') &&
+      prevNode
+    ) {
       const prevNodeIsParent = prevNode.id === node.parentId;
       const prevNodeInDifferentSlot =
         prevNode.parentId === node.parentId && prevNode.slot !== node.slot;

@@ -36,6 +36,7 @@ export function useStructureTreeState(editorStore: EditorStore) {
           depth: params.depth,
           parentId: params.parentId,
           slot: params.slot,
+          parentSlots: params.parentSlots,
           notEmptySlots,
         };
         nodesMapCache[params.root.id] = node;
@@ -49,6 +50,7 @@ export function useStructureTreeState(editorStore: EditorStore) {
         depth: 0,
         parentId: null,
         slot: null,
+        parentSlots: [],
         cb,
       });
     });
@@ -138,12 +140,21 @@ type TraverseParams = {
   depth?: number;
   parentId?: string | null;
   slot?: string | null;
+  parentSlots?: string[];
   cb: (params: Required<TraverseParams>) => void;
 };
 
 function traverse(params: TraverseParams) {
-  const { root, depth = 0, parentId = null, slot = null, childrenMap, cb } = params;
-  const safeParams = { childrenMap, root, depth, parentId, slot, cb };
+  const {
+    root,
+    depth = 0,
+    parentId = null,
+    slot = null,
+    childrenMap,
+    cb,
+    parentSlots = [],
+  } = params;
+  const safeParams = { childrenMap, root, depth, parentId, slot, cb, parentSlots };
   cb(safeParams);
   const slots = childrenMap.get(root.id);
   if (slots) {
@@ -155,6 +166,7 @@ function traverse(params: TraverseParams) {
           root: child,
           depth: depth + 1,
           parentId: root.id,
+          parentSlots: Array.from(slots.keys()),
           slot: key,
           cb,
         });
