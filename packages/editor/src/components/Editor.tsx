@@ -110,7 +110,7 @@ export const Editor: React.FC<Props> = observer(
               <Box id={DIALOG_CONTAINER_ID} />
             </EditorMaskWrapper>
           </Box>
-          <Box id="warning-area" height="48px" position="relative" flex="0 0 auto">
+          <Box id="warning-area" position="relative" flex="0 0 auto">
             <WarningArea services={services} />
           </Box>
         </Flex>

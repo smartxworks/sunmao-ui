@@ -6,6 +6,7 @@ import { pickBy } from 'lodash';
 import { watch } from '@sunmao-ui/runtime';
 import ErrorBoundary from '../ErrorBoundary';
 import { EditorServices } from '../../types';
+import { observer } from 'mobx-react-lite';
 
 const theme = {
   base0A: '#fded02',
@@ -40,7 +41,7 @@ type Props = {
   services: EditorServices;
 };
 
-export const StateViewer: React.FC<Props> = ({ store, services }) => {
+export const StateViewer: React.FC<Props> = observer(({ store, services }) => {
   const { viewStateComponentId, setViewStateComponentId } = services.editorStore;
   const [filterText, setFilterText] = useState('');
   const [refreshFlag, setRefreshFlag] = useState(0);
@@ -86,4 +87,4 @@ export const StateViewer: React.FC<Props> = ({ store, services }) => {
       </Box>
     </ErrorBoundary>
   );
-};
+});

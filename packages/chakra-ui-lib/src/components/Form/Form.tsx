@@ -89,6 +89,7 @@ export default implementRuntimeComponent({
               componentId: inputId,
               name: 'resetInputValue',
               triggerId: component.id,
+              eventType: 'resetForm',
             });
           });
         },

@@ -6,5 +6,5 @@ export type DebugLog = {
 };
 
 export type DebuggerHandler = {
-  onDebug: (currentState: Record<string, any>, debugLog: DebugLog) => void;
+  onDebug: (debugLog: DebugLog, currentState: Record<string, any>) => void;
 };

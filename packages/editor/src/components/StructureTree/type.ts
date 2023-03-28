@@ -8,6 +8,7 @@ export type ComponentNode = {
   slot: string | null;
   depth: number;
   notEmptySlots: string[];
+  parentSlots?: string[];
 };
 
 // These fields need computed with UI State

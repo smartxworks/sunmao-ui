@@ -9,22 +9,31 @@ export const debugLogger = (
   debugHandler?: DebuggerHandler
 ) => {
   services.on('mergeState', params => {
-    debugHandler?.onDebug(stateManager.store, {
-      type: DebugLoggerType.TRIGGER_EVENT,
-      ...params,
-    });
+    debugHandler?.onDebug(
+      {
+        type: DebugLoggerType.MERGE_STATE,
+        ...params,
+      },
+      stateManager.store
+    );
   });
   services.on('uiMethod', params => {
-    debugHandler?.onDebug(stateManager.store, {
-      type: DebugLoggerType.TRIGGER_EVENT,
-      ...params,
-    });
+    debugHandler?.onDebug(
+      {
+        type: DebugLoggerType.TRIGGER_EVENT,
+        ...params,
+      },
+      stateManager.store
+    );
   });
 
   services.on('moduleEvent', params => {
-    debugHandler?.onDebug(stateManager.store, {
-      type: DebugLoggerType.MODULE_EVENT,
-      ...params,
-    });
+    debugHandler?.onDebug(
+      {
+        type: DebugLoggerType.MODULE_EVENT,
+        ...params,
+      },
+      stateManager.store
+    );
   });
 };

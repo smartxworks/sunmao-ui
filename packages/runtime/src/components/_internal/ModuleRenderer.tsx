@@ -135,6 +135,7 @@ const ModuleRendererContent = React.forwardRef<
             name: evaledHandler.method.name,
             parameters: evaledHandler.method.parameters,
             triggerId: moduleId,
+            eventType,
           });
         }
       };

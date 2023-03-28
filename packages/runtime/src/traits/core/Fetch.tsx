@@ -10,6 +10,8 @@ import {
 import { runEventHandler } from '../../utils/runEventHandler';
 import { implementRuntimeTrait } from '../../utils/buildKit';
 
+const FETCH_ONCOMPLETE_STATE = 'fetch onComplete';
+const FETCH_ONERROR_STATE = 'fetch onError';
 export const FetchTraitPropertiesSpec = Type.Object(
   {
     url: Type.String({ title: 'URL' }), // {format:uri}?;
@@ -172,7 +174,8 @@ export default implementRuntimeTrait({
                 index,
                 services,
                 slotKey,
-                componentId
+                componentId,
+                FETCH_ONCOMPLETE_STATE
               )();
             });
           } else {
@@ -196,7 +199,8 @@ export default implementRuntimeTrait({
                 index,
                 services,
                 slotKey,
-                componentId
+                componentId,
+                FETCH_ONERROR_STATE
               )();
             });
           }

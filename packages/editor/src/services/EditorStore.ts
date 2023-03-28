@@ -221,6 +221,10 @@ export class EditorStore {
     });
   }
 
+  get dataSourceTypeCache() {
+    return this.isDataSourceTypeCache;
+  }
+
   clearSunmaoGlobalState() {
     this.stateManager.clear();
     this.setSelectedComponentId('');
