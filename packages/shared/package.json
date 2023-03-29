@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.21.2",
-    "ajv": "^8.8.2"
+    "ajv": "^8.8.2",
+    "@sunmao-ui/core": "^0.10.1"
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.7",

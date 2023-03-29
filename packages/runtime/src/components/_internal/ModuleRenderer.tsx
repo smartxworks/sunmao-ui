@@ -39,20 +39,19 @@ const ModuleRendererContent = React.forwardRef<
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
   const { moduleSpec, properties, handlers, evalScope, services, app, className } = props;
-  const moduleId = services.stateManager.deepEval(props.id, {
-    scopeObject: evalScope,
-  }) as string | ExpressionError;
 
   function evalObject<T extends Record<string, any> = Record<string, any>>(
     obj: T
   ): PropsAfterEvaled<T> {
     const evalOptions = { scopeObject: evalScope };
-
     return services.stateManager.deepEval(obj, evalOptions) as PropsAfterEvaled<T>;
   }
 
   // first eval the property, handlers, id of module
   const evaledProperties = evalObject(properties);
+  const moduleId = services.stateManager.deepEval(props.id, {
+    scopeObject: evalScope,
+  }) as string | ExpressionError;
   const parsedTemplate = useMemo(
     () => moduleSpec.impl.map(parseTypeComponents),
     [moduleSpec]

@@ -5,3 +5,4 @@ export * from './console';
 export * from './object';
 export * from './function';
 export * from './initAjv';
+export * from './check';
