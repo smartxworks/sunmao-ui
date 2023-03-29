@@ -215,7 +215,7 @@ export const Table = implementRuntimeComponent({
   } = pagination;
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
-  const currentChecked = useRef<(string | number)[]>([]);
+  const currentChecked = useRef<any[]>([]);
   const currentClickedRow = useRef<(string | number)[] | undefined>(undefined);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
@@ -274,15 +274,13 @@ export const Table = implementRuntimeComponent({
 
   // reset selectedRows state when data changed
   useEffect(() => {
-    const selectedRows = currentPageData.filter(d =>
-      currentChecked.current.includes(d[rowKey])
-    );
+    const currentCheckedRowKeys = currentChecked.current.map(row => row[rowKey]);
     // TODO: Save clickedRow state when rowkey changes, save the UI of clickedRow when turning the page
     const clickedRow = currentPageData.find(d => d[rowKey] === currentClickedRow.current);
     if (!clickedRow) currentClickedRow.current = undefined;
     mergeState({
-      selectedRowKeys: selectedRows.map(r => r[rowKey]),
-      selectedRows,
+      selectedRowKeys: currentCheckedRowKeys,
+      selectedRows: currentChecked.current,
       clickedRow,
     });
   }, [currentPageData, mergeState, rowKey]);
@@ -573,7 +571,7 @@ export const Table = implementRuntimeComponent({
         // This option is required to achieve multi-selection across pages when customizing paging
         preserveSelectedRowKeys: useCustomPagination ? checkCrossPage : undefined,
         onChange(selectedRowKeys, selectedRows) {
-          currentChecked.current = selectedRowKeys;
+          currentChecked.current = selectedRows;
           mergeState({
             selectedRowKeys: selectedRowKeys as string[],
             selectedRows,

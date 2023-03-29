@@ -367,7 +367,8 @@ export const TablePropsSpec = Type.Object({
   checkCrossPage: Type.Boolean({
     title: 'Check Cross Page',
     category: Category.Basic,
-    description: 'Whether the checkboxes in multi-select mode cross pages',
+    description:
+      'Whether the checkboxes in multi-select mode cross pages。Please note that with this option on, if the data changes, the previous selected state will still be cached',
   }),
   rowSelectionType: StringUnion(['multiple', 'single', 'disable'], {
     title: 'Row Selection Type',
