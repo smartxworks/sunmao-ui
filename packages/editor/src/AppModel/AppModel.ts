@@ -61,11 +61,13 @@ export class AppModel implements IAppModel {
     component.parentId = null;
     component.parentSlot = null;
     component.parent = null;
-    this._bindComponentToModel(component);
     if (component._slotTrait) {
       component.removeTrait(component._slotTrait.id);
     }
     this.topComponents.push(component);
+    this.traverseTree(c => {
+      this._bindComponentToModel(c);
+    });
   }
 
   createComponent(type: ComponentType, id?: ComponentId): IComponentModel {
