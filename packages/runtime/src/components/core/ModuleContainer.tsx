@@ -77,6 +77,7 @@ export default implementRuntimeComponent({
         services={services}
         app={app}
         ref={elementRef}
+        containerId={component.id}
       />
     );
   }

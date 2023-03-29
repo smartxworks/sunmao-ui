@@ -13,7 +13,7 @@ import { RecordEditor } from '@sunmao-ui/editor-sdk';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
-import { JSONSchema7, JSONSchema7Object } from 'json-schema';
+import { JSONSchema7Object } from 'json-schema';
 import { CloseIcon } from '@chakra-ui/icons';
 import produce from 'immer';
 
@@ -21,7 +21,6 @@ export type ModuleMetaDataFormData = {
   name: string;
   version: string;
   stateMap: Record<string, string>;
-  properties: JSONSchema7;
   events: string[];
   exampleProperties: JSONSchema7Object;
 };

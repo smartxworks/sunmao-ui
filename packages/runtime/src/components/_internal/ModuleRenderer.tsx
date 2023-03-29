@@ -16,12 +16,14 @@ import { EventHandlerSpec, ModuleRenderSpec } from '@sunmao-ui/shared';
 import { resolveChildrenMap } from '../../utils/resolveChildrenMap';
 import { initStateAndMethod } from '../../utils/initStateAndMethod';
 import { ExpressionError } from '../../services/StateManager';
+import { UIMethodPayload } from '../../services/apiService';
 
 type Props = Static<typeof ModuleRenderSpec> & {
   evalScope?: Record<string, any>;
   services: UIServices;
   app: RuntimeApplication;
   className?: string;
+  containerId?: string;
 };
 
 export const ModuleRenderer = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -38,7 +40,16 @@ const ModuleRendererContent = React.forwardRef<
   HTMLDivElement,
   Props & { moduleSpec: ImplementedRuntimeModule }
 >((props, ref) => {
-  const { moduleSpec, properties, handlers, evalScope, services, app, className } = props;
+  const {
+    moduleSpec,
+    properties,
+    handlers,
+    evalScope,
+    services,
+    app,
+    className,
+    containerId,
+  } = props;
 
   function evalObject<T extends Record<string, any> = Record<string, any>>(
     obj: T
@@ -57,7 +68,7 @@ const ModuleRendererContent = React.forwardRef<
     [moduleSpec]
   );
 
-  // then eval the template and stateMap of module
+  // then eval the template, methods and stateMap of module
   const evaledStateMap = useMemo(() => {
     // stateMap only use state i
     return services.stateManager.deepEval(moduleSpec.spec.stateMap, {
@@ -65,6 +76,18 @@ const ModuleRendererContent = React.forwardRef<
       overrideScope: true,
     });
   }, [services.stateManager, moduleSpec.spec.stateMap, moduleId]);
+
+  // then eval the methods a of module
+  console.log('moduleSpec.spec.method', moduleSpec.spec.methods);
+  const evaledMethods = useMemo(() => {
+    return services.stateManager.deepEval(
+      { result: moduleSpec.spec.methods },
+      {
+        scopeObject: { $moduleId: moduleId },
+        overrideScope: true,
+      }
+    ).result;
+  }, [services.stateManager, moduleSpec.spec.methods, moduleId]);
 
   const evaledModuleTemplate: RuntimeComponentSchema[] = useDeepCompareMemo(() => {
     // here should only eval with evaledProperties, any other key not in evaledProperties should be ignored
@@ -148,6 +171,34 @@ const ModuleRendererContent = React.forwardRef<
       });
     };
   }, [evalScope, handlers, moduleId, services.apiService, services.stateManager]);
+
+  // listen methods calling
+  useEffect(() => {
+    console.log('evaledMethods', evaledMethods);
+    const methodHandlers: Array<(payload: UIMethodPayload) => void> = [];
+    evaledMethods.forEach(methodMap => {
+      const handler = (payload: UIMethodPayload) => {
+        console.log('监听到了', payload);
+        if (payload.componentId === containerId && payload.name === methodMap.name) {
+          console.log('发出去了');
+          services.apiService.send('uiMethod', {
+            ...payload,
+            componentId: methodMap.componentId,
+            name: methodMap.componentMethod,
+            triggerId: containerId,
+          });
+        }
+      };
+      services.apiService.on('uiMethod', handler);
+      methodHandlers.push(handler);
+    });
+
+    return () => {
+      methodHandlers.forEach(h => {
+        services.apiService.off('uiMethod', h);
+      });
+    };
+  }, [evaledMethods, services.apiService]);
 
   const result = useMemo(() => {
     // Must init components' state, otherwise store cannot listen these components' state changing
