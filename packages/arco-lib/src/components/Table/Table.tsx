@@ -215,7 +215,7 @@ export const Table = implementRuntimeComponent({
   } = pagination;
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
-  const currentChecked = useRef<any[]>([]);
+  const currentChecked = useRef<Record<string, unknown>[]>([]);
   const currentClickedRow = useRef<(string | number)[] | undefined>(undefined);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
@@ -274,7 +274,9 @@ export const Table = implementRuntimeComponent({
 
   // reset selectedRows state when data changed
   useEffect(() => {
-    const currentCheckedRowKeys = currentChecked.current.map(row => row[rowKey]);
+    const currentCheckedRowKeys = currentChecked.current.map(
+      row => row[rowKey] as string
+    );
     // TODO: Save clickedRow state when rowkey changes, save the UI of clickedRow when turning the page
     const clickedRow = currentPageData.find(d => d[rowKey] === currentClickedRow.current);
     if (!clickedRow) currentClickedRow.current = undefined;
