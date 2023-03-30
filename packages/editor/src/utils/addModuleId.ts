@@ -53,6 +53,7 @@ export function addModuleId(originModule: Module): Module {
     traverse(module.impl);
     // value of stateMap is expression, not property
     traverse(module.spec.stateMap, true);
+    traverse(module.spec.methods, true);
   });
 }
 
@@ -72,6 +73,7 @@ export function removeModuleId(originModule: Module): Module {
 
     traverse(module.impl);
     traverse(module.spec.stateMap);
+    traverse(module.spec.methods);
   });
 }
 

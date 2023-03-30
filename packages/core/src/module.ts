@@ -13,10 +13,17 @@ export type Module = {
   impl: ComponentSchema[];
 };
 
+export type ModuleMethodSpec = {
+  name: string;
+  componentId: string;
+  componentMethod: string;
+};
+
 type ModuleSpec = {
   properties: JSONSchema7;
   events: string[];
   stateMap: Record<string, string>;
+  methods: ModuleMethodSpec[];
 };
 
 // extended runtime
@@ -46,6 +53,7 @@ export function createModule(options: CreateModuleOptions): RuntimeModule {
       properties: { type: 'object' },
       events: [],
       stateMap: {},
+      methods: [],
       ...options.spec,
     },
     impl: options.impl || [],

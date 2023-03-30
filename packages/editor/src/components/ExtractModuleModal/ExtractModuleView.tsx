@@ -255,7 +255,7 @@ export const ExtractModuleView: React.FC<Props> = ({
     if (!genModuleResult || !moduleFormValueRef.current) return;
     services.editorStore.appStorage.createModule({
       components: genModuleResult.moduleComponentsSchema,
-      propertySpec: moduleFormValueRef.current.properties,
+      propertySpec: json2JsonSchema(genModuleResult.exampleProperties),
       exampleProperties: genModuleResult.exampleProperties,
       events: genModuleResult.eventSpec,
       moduleVersion: moduleFormValueRef.current.version,
@@ -289,9 +289,9 @@ export const ExtractModuleView: React.FC<Props> = ({
         name: componentId,
         version: 'custom/v1',
         stateMap: result.stateMap,
-        properties: json2JsonSchema(result.exampleProperties),
         events: result.eventSpec,
         exampleProperties: result.exampleProperties,
+        methods: [],
       };
       setModuleFormInitData(moduleFormData);
       moduleFormValueRef.current = moduleFormData;

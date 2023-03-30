@@ -3,6 +3,7 @@ import {
   Application,
   ComponentSchema,
   Module,
+  ModuleMethodSpec,
   parseVersion,
   RuntimeModule,
 } from '@sunmao-ui/core';
@@ -167,6 +168,7 @@ export class AppStorage {
       properties,
       exampleProperties,
       events,
+      methods,
     }: {
       version: string;
       name: string;
@@ -174,6 +176,7 @@ export class AppStorage {
       properties: JSONSchema7;
       exampleProperties: JSONSchema7Object;
       events: string[];
+      methods: ModuleMethodSpec[];
     }
   ) {
     const i = this.modules.findIndex(
@@ -186,6 +189,7 @@ export class AppStorage {
       draft[i].spec.properties = properties;
       draft[i].version = version;
       draft[i].spec.events = events;
+      draft[i].spec.methods = methods;
     });
 
     this.setModules(newModules);

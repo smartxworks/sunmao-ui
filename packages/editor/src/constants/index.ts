@@ -40,6 +40,7 @@ export const DefaultNewModule: ImplementedRuntimeModule = {
     stateMap: {},
     events: [],
     properties: { type: 'object', properties: {} },
+    methods: [],
   },
   impl: [
     {

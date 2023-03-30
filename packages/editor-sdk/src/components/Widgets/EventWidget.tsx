@@ -3,7 +3,7 @@ import { FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
 import { Type, Static } from '@sinclair/typebox';
 import { useFormik } from 'formik';
 import { GLOBAL_UTIL_METHOD_ID } from '@sunmao-ui/runtime';
-import { ComponentSchema } from '@sunmao-ui/core';
+import { ComponentSchema, MethodSchema } from '@sunmao-ui/core';
 import { WidgetProps } from '../../types/widget';
 import { implementWidget, mergeWidgetOptionsIntoSpec } from '../../utils/widget';
 import { RecordWidget } from './RecordField';
@@ -16,6 +16,7 @@ import {
   MountEvents,
   GLOBAL_MODULE_ID,
   ModuleEventMethodSpec,
+  isModuleContainer,
 } from '@sunmao-ui/shared';
 import { JSONSchema7Object } from 'json-schema';
 import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../constants/widget';
@@ -45,22 +46,47 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
     },
   });
   const findMethodsByComponent = useCallback(
-    (component?: ComponentSchema) => {
-      if (!component) {
+    (targetComponent?: ComponentSchema) => {
+      if (!targetComponent) {
         return [];
       }
 
-      const componentMethods = Object.entries(
-        registry.getComponentByType(component.type).spec.methods
+      const componentMethods: MethodSchema[] = Object.entries(
+        registry.getComponentByType(targetComponent.type).spec.methods
       ).map(([name, parameters]) => ({
         name,
         parameters,
       }));
-      const traitMethods = component.traits
+      const traitMethods: MethodSchema[] = targetComponent.traits
         .map(trait => registry.getTraitByType(trait.type).spec.methods)
         .flat();
 
-      return ([] as any[]).concat(componentMethods, traitMethods);
+      const moduleMethods: MethodSchema[] = [];
+      if (isModuleContainer(targetComponent)) {
+        const moduleType = targetComponent.properties.type as string;
+        const moduleSpec = registry.getModuleByType(moduleType);
+        moduleSpec.spec.methods.forEach(m => {
+          const innerComponent = moduleSpec.impl.find(c => c.id === m.componentId);
+          if (innerComponent) {
+            // find the method spec from the component or component's traits
+            const cMethod = registry.getComponentByType(innerComponent.type).spec.methods[
+              m.componentMethod
+            ];
+            const tMethod = innerComponent.traits
+              .map(trait => registry.getTraitByType(trait.type).spec.methods)
+              .flat()
+              .find(_m => _m.name === m.componentMethod);
+            if (cMethod || tMethod) {
+              moduleMethods.push({
+                name: m.name,
+                parameters: cMethod || tMethod?.parameters,
+              });
+            }
+          }
+        });
+      }
+
+      return ([] as any[]).concat(componentMethods, traitMethods, moduleMethods);
     },
     [registry]
   );
@@ -97,7 +123,9 @@ export const EventWidget: React.FC<WidgetProps<EventWidgetType>> = observer(prop
       } else if (componentId === GLOBAL_MODULE_ID) {
         spec = ModuleEventMethodSpec;
       } else {
-        const targetComponent = appModelManager.appModel.getComponentById(componentId);
+        const targetComponent = appModelManager.appModel
+          .getComponentById(componentId)
+          .toSchema();
         const targetMethod = (findMethodsByComponent(targetComponent) ?? []).find(
           ({ name }) => name === formik.values.method.name
         );
