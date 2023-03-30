@@ -39,7 +39,11 @@ export function shouldDisplayLabel(spec: JSONSchema7, label: string): boolean {
   return true;
 }
 
-export function getCodeMode(spec: JSONSchema7): boolean {
+export function getCodeMode(spec: WidgetProps['spec']): boolean {
+  if (spec.widget) {
+    return true;
+  }
+
   switch (spec.type) {
     case 'array':
     case 'object':
