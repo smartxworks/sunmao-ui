@@ -6,6 +6,7 @@ import { ModuleMetaDataForm, ModuleMetaDataFormData } from './ModuleMetaDataForm
 import { EditorServices } from '../../../types';
 import { Type } from '@sinclair/typebox';
 import { cloneDeep } from 'lodash';
+import { json2JsonSchema } from '@sunmao-ui/editor-sdk';
 
 type Props = {
   formType: 'app' | 'module';
@@ -30,9 +31,12 @@ export const ExplorerForm: React.FC<Props> = observer(
     };
     const saveModuleMetaData = () => {
       if (!newModuleMetaDataRef.current) return;
+      const propertiesSpec = json2JsonSchema(
+        services.stateManager.deepEval(newModuleMetaDataRef.current.exampleProperties)
+      );
       editorStore.appStorage.saveModuleMetaData(
         { originName: name, originVersion: version },
-        newModuleMetaDataRef.current
+        { ...newModuleMetaDataRef.current, properties: propertiesSpec }
       );
       editorStore.setModuleDependencies(newModuleMetaDataRef.current.exampleProperties);
       setCurrentVersion?.(newModuleMetaDataRef.current.version);
@@ -85,6 +89,7 @@ export const ExplorerForm: React.FC<Props> = observer(
           properties: moduleSpec?.spec.properties || Type.Object({}),
           exampleProperties: moduleSpec?.metadata.exampleProperties || {},
           events: moduleSpec?.spec.events || [],
+          methods: moduleSpec?.spec.methods || [],
         });
         form = (
           <ModuleMetaDataForm

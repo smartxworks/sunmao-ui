@@ -13,11 +13,17 @@ export type Module = {
   impl: ComponentSchema[];
 };
 
+export type ModuleMethodSpec = {
+  name: string;
+  componentId: string;
+  componentMethod: string;
+};
+
 type ModuleSpec = {
   properties: JSONSchema7;
   events: string[];
   stateMap: Record<string, string>;
-  methods: { name: string; componentId: string; componentMethod: string }[];
+  methods: ModuleMethodSpec[];
 };
 
 // extended runtime

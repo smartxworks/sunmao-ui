@@ -10,18 +10,22 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { RecordEditor } from '@sunmao-ui/editor-sdk';
+import { ModuleMethodSpec } from '@sunmao-ui/core';
 import { useFormik } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { EditorServices } from '../../../types';
 import { JSONSchema7Object } from 'json-schema';
 import { CloseIcon } from '@chakra-ui/icons';
 import produce from 'immer';
+import { CodeEditor } from '../../CodeEditor';
+import { css } from '@emotion/css';
 
 export type ModuleMetaDataFormData = {
   name: string;
   version: string;
   stateMap: Record<string, string>;
   events: string[];
+  methods: ModuleMethodSpec[];
   exampleProperties: JSONSchema7Object;
 };
 
@@ -206,6 +210,25 @@ export const ModuleMetaDataForm: React.FC<ModuleMetaDataFormProps> = observer(
           >
             + Add
           </Button>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Methods</FormLabel>
+          <CodeEditor
+            className={css`
+              width: 100%;
+              height: 120px;
+            `}
+            mode="json"
+            defaultCode={JSON.stringify(formik.values.methods)}
+            onBlur={v => {
+              try {
+                const newMethods = JSON.parse(v);
+                formik.setFieldValue('methods', newMethods);
+                formik.submitForm();
+              } catch {}
+            }}
+            needRerenderAfterMount
+          />
         </FormControl>
       </VStack>
     );

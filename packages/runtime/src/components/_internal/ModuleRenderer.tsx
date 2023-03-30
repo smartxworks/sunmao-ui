@@ -78,7 +78,6 @@ const ModuleRendererContent = React.forwardRef<
   }, [services.stateManager, moduleSpec.spec.stateMap, moduleId]);
 
   // then eval the methods a of module
-  console.log('moduleSpec.spec.method', moduleSpec.spec.methods);
   const evaledMethods = useMemo(() => {
     return services.stateManager.deepEval(
       { result: moduleSpec.spec.methods },
@@ -174,13 +173,10 @@ const ModuleRendererContent = React.forwardRef<
 
   // listen methods calling
   useEffect(() => {
-    console.log('evaledMethods', evaledMethods);
     const methodHandlers: Array<(payload: UIMethodPayload) => void> = [];
     evaledMethods.forEach(methodMap => {
       const handler = (payload: UIMethodPayload) => {
-        console.log('监听到了', payload);
         if (payload.componentId === containerId && payload.name === methodMap.name) {
-          console.log('发出去了');
           services.apiService.send('uiMethod', {
             ...payload,
             componentId: methodMap.componentId,
@@ -198,7 +194,7 @@ const ModuleRendererContent = React.forwardRef<
         services.apiService.off('uiMethod', h);
       });
     };
-  }, [evaledMethods, services.apiService]);
+  }, [containerId, evaledMethods, services.apiService]);
 
   const result = useMemo(() => {
     // Must init components' state, otherwise store cannot listen these components' state changing
