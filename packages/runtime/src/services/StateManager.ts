@@ -172,9 +172,18 @@ export class StateManager {
   ): EvaledResult<T> {
     const store = this.slotStore;
 
+    const redirector = new Proxy(
+      {},
+      {
+        get(_, prop) {
+          return options.slotKey ? store[options.slotKey][prop] : undefined;
+        },
+      }
+    );
+
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: options.slotKey ? store[options.slotKey] : undefined,
+      $slot: redirector,
     };
     // just eval
     if (typeof value !== 'string') {
@@ -201,10 +210,19 @@ export class StateManager {
       ? unknown
       : PropsAfterEvaled<Exclude<T, string>>;
 
+    const redirector = new Proxy(
+      {},
+      {
+        get(_, prop) {
+          return options.slotKey ? store[options.slotKey][prop] : undefined;
+        },
+      }
+    );
+
     const store = this.slotStore;
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: options.slotKey ? store[options.slotKey] : undefined,
+      $slot: redirector,
     };
     // watch change
     if (value && typeof value === 'object') {
