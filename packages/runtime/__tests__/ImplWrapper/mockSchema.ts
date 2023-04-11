@@ -446,3 +446,97 @@ export const UpdateTraitPropertiesSchema: Application = {
     ],
   },
 };
+
+export const EvalSlotPropsWithProxySchema: Application = {
+  version: 'sunmao/v1',
+  kind: 'Application',
+  metadata: {
+    name: 'some App',
+  },
+  spec: {
+    components: [
+      {
+        id: 'list6',
+        type: 'core/v1/list',
+        properties: {
+          listData: '{{tableData.value}}',
+        },
+        traits: [],
+      },
+      {
+        id: 'text7',
+        type: 'test/v1/tester',
+        properties: {
+          text: '{{$slot.$listItem.salary}}',
+        },
+        traits: [
+          {
+            type: 'core/v2/slot',
+            properties: {
+              container: {
+                id: 'list6',
+                slot: 'content',
+              },
+              ifCondition: true,
+            },
+          },
+        ],
+      },
+      {
+        id: 'button5',
+        type: 'test/v1/button',
+        properties: {
+          type: 'default',
+          status: 'default',
+          long: false,
+          size: 'default',
+          disabled: false,
+          loading: false,
+          shape: 'square',
+          text: 'change',
+        },
+        traits: [
+          {
+            type: 'core/v1/event',
+            properties: {
+              handlers: [
+                {
+                  type: 'click',
+                  componentId: 'tableData',
+                  method: {
+                    name: 'setValue',
+                    parameters: {
+                      key: 'value',
+                      value:
+                        '{{[\n  {\n    "key": 0,\n    "salary": 6000\n  },\n  {\n    "key": 1,\n    "salary": 2000\n  }\n]}}',
+                    },
+                  },
+                  wait: {
+                    type: 'debounce',
+                    time: 0,
+                  },
+                  disabled: false,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: 'tableData',
+        type: 'core/v1/dummy',
+        properties: {},
+        traits: [
+          {
+            type: 'core/v1/state',
+            properties: {
+              key: 'value',
+              initialValue:
+                '{{[\n  {\n    "key": 0,\n    "salary": 1000\n  },\n  {\n    "key": 1,\n    "salary": 2000\n  }\n]}}',
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
