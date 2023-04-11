@@ -15,6 +15,7 @@ import {
   ParentRerenderSchema,
   MultiSlotsSchema,
   UpdateTraitPropertiesSchema,
+  EvalSlotPropsWithProxySchema,
 } from './mockSchema';
 
 // A pure single sunmao component will render twice when it mount.
@@ -259,6 +260,23 @@ describe('the `traitPropertiesDidUpdated` lifecircle for trait', () => {
     });
 
     expect(stateManager.store.button0.count).toBe(countBeforeClick);
+
+    unmount();
+    clearTesterMap();
+  });
+});
+
+describe('component will rerender when slot props changes', () => {
+  it('it will only count once after the states are updated', () => {
+    const { App, stateManager } = initSunmaoUI({ libs: [TestLib] });
+    stateManager.mute = true;
+    const { unmount } = render(<App options={EvalSlotPropsWithProxySchema} />);
+
+    expect(screen.getByTestId('list6_text7_0-text')).toHaveTextContent('1000');
+    act(() => {
+      screen.getByTestId('button5').click();
+    });
+    expect(screen.getByTestId('list6_text7_0-text')).toHaveTextContent('6000');
 
     unmount();
     clearTesterMap();
