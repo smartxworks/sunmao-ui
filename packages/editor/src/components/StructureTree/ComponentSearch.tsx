@@ -42,7 +42,7 @@ export const ComponentSearch: React.FC<Props> = observer(props => {
       bordered={false}
       className={SelectStyle}
       placeholder="Search component"
-      onChange={onChange}
+      onSelect={onChange}
       showArrow={false}
       showSearch
       style={{ width: '100%' }}
