@@ -313,6 +313,7 @@ export default implementRuntimeTrait({
     }
     function validateFields({ names }: { names: string[] }) {
       const validatedResult = names
+        .filter(name => validatorMap[name])
         .map(name => {
           const validator = validatorMap[name];
           const { value, rules } = validator;
