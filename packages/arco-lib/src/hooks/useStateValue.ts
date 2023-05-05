@@ -1,6 +1,7 @@
 import { RuntimeFunctions } from '@sunmao-ui/runtime';
 import { useState, useEffect } from 'react';
 import { SlotSpec } from '@sunmao-ui/core';
+import useDeepCompareEffect from './useDeepCompareEffect';
 
 export const useStateValue = <
   T,
@@ -22,7 +23,7 @@ export const useStateValue = <
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (updateWhenDefaultValueChanges && mergeState) {
       setValue(defaultValue);
       mergeState({ [key]: defaultValue });
