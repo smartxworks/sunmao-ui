@@ -155,7 +155,10 @@ export const ExpressionWidget: React.FC<WidgetProps<ExpressionWidgetType>> = pro
       try {
         const value = getParsedValue(code, type);
         const result = isExpression(value)
-          ? services.stateManager.deepEval(value)
+          ? services.stateManager.deepEval(value, {
+              scopeObject: { $slot },
+              overrideSlot: true,
+            })
           : value;
 
         if (result instanceof ExpressionError) {

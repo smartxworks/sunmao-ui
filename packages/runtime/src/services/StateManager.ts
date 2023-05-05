@@ -18,6 +18,7 @@ dayjs.locale('zh-cn');
 type EvalOptions = {
   scopeObject?: Record<string, any>;
   overrideScope?: boolean;
+  overrideSlot?: boolean;
   fallbackWhenError?: (exp: string, err: Error) => any;
   // when ignoreEvalError is true, the eval process will continue after error happens in nests expression.
   ignoreEvalError?: boolean;
@@ -183,7 +184,7 @@ export class StateManager {
 
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: redirector,
+      ...(!options.overrideSlot && { $slot: redirector }),
     };
     // just eval
     if (typeof value !== 'string') {
@@ -222,7 +223,7 @@ export class StateManager {
     const store = this.slotStore;
     options.scopeObject = {
       ...options.scopeObject,
-      $slot: redirector,
+      ...(!options.overrideSlot && { $slot: redirector }),
     };
     // watch change
     if (value && typeof value === 'object') {
