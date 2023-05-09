@@ -17,6 +17,7 @@ export const PopoverPropsSpec = {
   }),
   color: Type.String({
     title: 'Background',
+    description: 'Background color of the popup-layer',
     category: Category.Style,
   }),
   position: StringUnion(
