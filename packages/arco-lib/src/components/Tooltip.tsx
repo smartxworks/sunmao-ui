@@ -39,7 +39,7 @@ export const Tooltip = implementRuntimeComponent({
     slots: {
       content: { slotProps: Type.Object({}) },
     },
-    styleSlots: ['content'],
+    styleSlots: ['content', 'tooltip-trigger'],
     events: [],
   },
 })(props => {
@@ -60,7 +60,7 @@ export const Tooltip = implementRuntimeComponent({
   }, [subscribeMethods]);
 
   return controlled ? (
-    <div>
+    <div className={css(customStyle?.['tooltip-trigger'])}>
       <BaseTooltip
         ref={elementRef}
         className={css(customStyle?.content)}
@@ -74,7 +74,7 @@ export const Tooltip = implementRuntimeComponent({
       </BaseTooltip>
     </div>
   ) : (
-    <div>
+    <div className={css(customStyle?.['tooltip-trigger'])}>
       <BaseTooltip className={css(customStyle?.content)} {...cProps}>
         <span ref={elementRef}>
           {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}

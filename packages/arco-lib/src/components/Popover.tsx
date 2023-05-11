@@ -41,7 +41,7 @@ export const Popover = implementRuntimeComponent({
       popupContent: { slotProps: Type.Object({}) },
       content: { slotProps: Type.Object({}) },
     },
-    styleSlots: ['content'],
+    styleSlots: ['content', 'popover-trigger'],
     events: [],
   },
 })(props => {
@@ -68,7 +68,7 @@ export const Popover = implementRuntimeComponent({
       {...cProps}
       content={slotsElements.popupContent ? slotsElements.popupContent({}) : null}
     >
-      <span ref={elementRef}>
+      <span className={css(customStyle?.['popover-trigger'])} ref={elementRef}>
         {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
       </span>
     </BasePopover>
@@ -82,7 +82,7 @@ export const Popover = implementRuntimeComponent({
         setPopupVisible(visible);
       }}
     >
-      <span ref={elementRef}>
+      <span className={css(customStyle?.['popover-trigger'])} ref={elementRef}>
         {slotsElements.content ? slotsElements.content({}) : <Button>Hover Me</Button>}
       </span>
     </BasePopover>

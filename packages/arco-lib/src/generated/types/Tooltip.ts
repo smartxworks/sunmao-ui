@@ -6,6 +6,7 @@ export const TooltipPropsSpec = {
   color: Type.String({
     title: 'Color',
     category: Category.Style,
+    description: 'Background color of the popup-layer',
     widget: 'core/v1/color',
   }),
   position: StringUnion(
