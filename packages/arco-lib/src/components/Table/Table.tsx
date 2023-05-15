@@ -215,7 +215,7 @@ export const Table = implementRuntimeComponent({
   } = pagination;
 
   const rowSelectionType = rowSelectionTypeMap[cProps.rowSelectionType];
-  const currentChecked = useRef<Record<string, unknown>[]>([]);
+  const currentChecked = useRef<(string | number)[]>([]);
   const currentClickedRow = useRef<(string | number)[] | undefined>(undefined);
 
   const [currentPage, setCurrentPage] = useStateValue<number>(
@@ -274,18 +274,22 @@ export const Table = implementRuntimeComponent({
 
   // reset selectedRows state when data changed
   useEffect(() => {
-    const currentCheckedRowKeys = currentChecked.current.map(
-      row => row[rowKey] as string
+    // under server-side paging and with checkCrossPage enabled, the previous data should be cached without having to update it
+    if (useCustomPagination && checkCrossPage) {
+      return;
+    }
+    const selectedRows = currentPageData.filter(d =>
+      currentChecked.current.includes(d[rowKey])
     );
     // TODO: Save clickedRow state when rowkey changes, save the UI of clickedRow when turning the page
     const clickedRow = currentPageData.find(d => d[rowKey] === currentClickedRow.current);
     if (!clickedRow) currentClickedRow.current = undefined;
     mergeState({
-      selectedRowKeys: currentCheckedRowKeys,
-      selectedRows: currentChecked.current,
+      selectedRowKeys: selectedRows.map(r => r[rowKey]),
+      selectedRows,
       clickedRow,
     });
-  }, [currentPageData, mergeState, rowKey]);
+  }, [checkCrossPage, currentPageData, mergeState, rowKey, useCustomPagination]);
 
   // If there is less data to display than the current page, reset to the first page
   useEffect(() => {
@@ -573,7 +577,7 @@ export const Table = implementRuntimeComponent({
         // This option is required to achieve multi-selection across pages when customizing paging
         preserveSelectedRowKeys: useCustomPagination ? checkCrossPage : undefined,
         onChange(selectedRowKeys, selectedRows) {
-          currentChecked.current = selectedRows;
+          currentChecked.current = selectedRowKeys;
           mergeState({
             selectedRowKeys: selectedRowKeys as string[],
             selectedRows,
