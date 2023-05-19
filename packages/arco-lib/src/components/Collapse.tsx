@@ -69,7 +69,7 @@ export const Collapse = implementRuntimeComponent({
   const { elementRef, mergeState, slotsElements, customStyle, callbackMap } = props;
 
   const [activeKey, setActiveKey] = useStateValue(
-    defaultActiveKey.map(String),
+    defaultActiveKey,
     mergeState,
     updateWhenDefaultValueChanges,
     'activeKey'
