@@ -152,5 +152,6 @@ export function initSunmaoUIEditor(props: SunmaoUIEditorProps = {}) {
   return {
     Editor,
     registry,
+    services,
   };
 }
