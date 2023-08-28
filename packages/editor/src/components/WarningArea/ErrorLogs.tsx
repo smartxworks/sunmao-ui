@@ -4,7 +4,7 @@ import { DebugTable } from './Table';
 import { Box } from '@chakra-ui/react';
 
 export const ErrorLogs: React.FC<Props> = ({ services }) => {
-  const { validateResult, setSelectedComponentId } = services.editorStore;
+  const { setSelectedComponentId } = services.editorStore;
   const errorColumns = [
     {
       title: 'Component Id',
@@ -37,7 +37,7 @@ export const ErrorLogs: React.FC<Props> = ({ services }) => {
 
   return (
     <DebugTable
-      data={validateResult}
+      data={[]}
       pagination={{ hideOnSinglePage: true }}
       columns={errorColumns}
       emptyMessage="No Errors"
