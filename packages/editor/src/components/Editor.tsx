@@ -240,6 +240,7 @@ export const Editor: React.FC<Props> = observer(
             setIsDisplayLeftMenu={setIsDisplayLeftMenu}
             setIsDisplayRightMenu={setIsDisplayRightMenu}
             onCodeMode={() => setCodeMode(true)}
+            services={services}
           />
           <Box display="flex" flex="1" overflow="auto">
             {renderMain()}

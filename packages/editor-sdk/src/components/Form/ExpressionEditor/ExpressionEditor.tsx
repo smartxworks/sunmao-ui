@@ -370,6 +370,26 @@ export const ExpressionEditor = React.forwardRef<
     },
   }));
 
+  const evaledValueElement = (
+    <Box
+      width="100%"
+      padding="8px"
+      maxHeight="128px"
+      background={error ? '#fef1f0' : '#d4eadd'}
+      color={error ? '#c04035' : '#3b734f'}
+      borderColor={error ? '#f7d6d4' : '#72b98e'}
+      borderStyle="solid"
+      borderWidth="1px"
+      borderRadius="0 0 4px 4px"
+      whiteSpace="pre-wrap"
+    >
+      <Box fontWeight="bold" marginBottom="4px">
+        {error ? 'Error' : getTypeString(evaledValue?.value)}
+      </Box>
+      {error || JSON.stringify(evaledValue?.value, null, 2)}
+    </Box>
+  );
+
   return (
     <Box className={wrapperStyle}>
       {/* Force re-render CodeMirror when editted in modal, since it's not reactive */}
@@ -404,25 +424,13 @@ export const ExpressionEditor = React.forwardRef<
       {isFocus ? (
         <Box
           width="100%"
-          padding="8px"
-          maxHeight="128px"
           overflow="auto"
           position="absolute"
           bottom="0"
           zIndex={4}
           transform="translateY(100%)"
-          background={error ? '#fef1f0' : '#d4eadd'}
-          color={error ? '#c04035' : '#3b734f'}
-          borderColor={error ? '#f7d6d4' : '#72b98e'}
-          borderStyle="solid"
-          borderWidth="1px"
-          borderRadius="0 0 4px 4px"
-          whiteSpace="pre-wrap"
         >
-          <Box fontWeight="bold" marginBottom="4px">
-            {error ? 'Error' : getTypeString(evaledValue?.value)}
-          </Box>
-          {error || JSON.stringify(evaledValue?.value, null, 2)}
+          {evaledValueElement}
         </Box>
       ) : null}
       {showModal && (
@@ -445,6 +453,7 @@ export const ExpressionEditor = React.forwardRef<
                   isError={!!error}
                 />
               </Box>
+              {evaledValueElement}
             </ModalBody>
             <ModalFooter>
               <Button size="sm" colorScheme="blue" onClick={onClose}>

@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex, Button, Icon } from '@chakra-ui/react';
+import { ExpressionWidget } from '@sunmao-ui/editor-sdk';
+import { Type } from '@sinclair/typebox';
+import { EditorServices } from '../../types';
 const SideBarIcon: React.FC<{
   transform?: string;
   color?: string;
@@ -15,6 +18,13 @@ const SideBarIcon: React.FC<{
   </Icon>
 );
 
+const MockComp = {
+  id: 'mock',
+  type: 'core/v1/dummy',
+  properties: {},
+  traits: [],
+};
+
 export const EditorHeader: React.FC<{
   isDisplayLeftMenu: boolean;
   isDisplayRightMenu: boolean;
@@ -23,6 +33,7 @@ export const EditorHeader: React.FC<{
   onPreview: () => void;
   onCodeMode: () => void;
   onRefresh: () => void;
+  services: EditorServices;
 }> = ({
   onPreview,
   onCodeMode,
@@ -31,10 +42,23 @@ export const EditorHeader: React.FC<{
   setIsDisplayRightMenu,
   isDisplayLeftMenu,
   isDisplayRightMenu,
+  services,
 }) => {
+  const [exp, setExp] = useState('');
   return (
     <Flex p={2} borderBottomWidth="2px" borderColor="gray.200" align="center">
-      <Flex flex="1" />
+      <Flex flex="1">
+        <ExpressionWidget
+          key={services.editorStore.selectedComponentId}
+          component={MockComp}
+          spec={Type.Any()}
+          services={services}
+          path={[]}
+          level={0}
+          value={exp}
+          onChange={v => setExp(v)}
+        />
+      </Flex>
       <Flex flex="1" align="center" justify="center">
         <SideBarIcon
           color={isDisplayLeftMenu ? '#000' : '#eee'}
