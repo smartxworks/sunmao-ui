@@ -97,7 +97,10 @@ export const CategoryWidget: React.FC<WidgetProps<CategoryWidgetType>> = props =
             if (typeof propertySpec === 'boolean') {
               return null;
             }
-            return shouldRender(propertySpec.conditions || [], value) ? (
+            return shouldRender(
+              propertySpec.conditions || [],
+              services.stateManager.deepEval(value)
+            ) ? (
               <SpecWidget
                 key={name}
                 component={component}
