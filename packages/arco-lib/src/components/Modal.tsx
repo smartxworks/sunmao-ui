@@ -20,6 +20,7 @@ const exampleProperties: Static<typeof ModalPropsSpec> = {
   confirmLoading: false,
   defaultOpen: true,
   unmountOnExit: true,
+  hideFooter: false,
 };
 export const Modal = implementRuntimeComponent({
   version: 'arco/v1',
@@ -48,7 +49,7 @@ export const Modal = implementRuntimeComponent({
   },
 })(props => {
   const { getElement, subscribeMethods, slotsElements, customStyle, callbackMap } = props;
-  const { title, defaultOpen, ...cProps } = getComponentProps(props);
+  const { title, defaultOpen, hideFooter, ...cProps } = getComponentProps(props);
   const [visible, setVisible] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
@@ -90,7 +91,7 @@ export const Modal = implementRuntimeComponent({
         }}
         afterClose={afterClose}
         afterOpen={afterOpen}
-        footer={slotsElements.footer ? slotsElements.footer({}) : undefined}
+        footer={hideFooter ? null : slotsElements?.footer?.({})}
         className={css(customStyle?.content)}
         mountOnEnter={true}
         {...cProps}

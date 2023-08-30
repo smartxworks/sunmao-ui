@@ -46,4 +46,8 @@ export const ModalPropsSpec = {
     title: 'Destroy On Hide',
     category: Category.Behavior,
   }),
+  hideFooter: Type.Boolean({
+    title: 'Hide Footer',
+    category: Category.Behavior,
+  }),
 };
