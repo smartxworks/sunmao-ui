@@ -35,7 +35,10 @@ export const ObjectField: React.FC<WidgetProps<ObjectFieldType>> = props => {
           return null;
         }
 
-        return shouldRender(subSpec.conditions || [], value) ? (
+        return shouldRender(
+          subSpec.conditions || [],
+          services.stateManager.deepEval(value)
+        ) ? (
           <SpecWidget
             component={component}
             key={name + component.id}
