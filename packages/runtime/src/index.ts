@@ -4,7 +4,7 @@ import { initRegistry, SunmaoLib } from './services/Registry';
 import { initApiService } from './services/apiService';
 import { initGlobalHandlerMap } from './services/handler';
 import { UtilMethodManager } from './services/UtilMethodManager';
-import { AppHooks } from './types';
+import { AppHooks, UIServices } from './types';
 import { enableES5, setAutoFreeze } from 'immer';
 import './style.css';
 import { initSlotReceiver } from './services/SlotReciver';
@@ -47,20 +47,19 @@ export function initSunmaoUI(props: SunmaoUIRuntimeProps = {}) {
   props.libs?.forEach(lib => {
     registry.installLib(lib);
   });
+  const services: UIServices = {
+    registry,
+    stateManager,
+    globalHandlerMap,
+    apiService,
+    eleMap,
+    slotReceiver,
+  };
+
+  (window as any).sunmaoServices = services;
 
   return {
-    App: genApp(
-      {
-        registry,
-        stateManager,
-        globalHandlerMap,
-        apiService,
-        eleMap,
-        slotReceiver,
-      },
-      props.hooks,
-      props.isInEditor
-    ),
+    App: genApp(services, props.hooks, props.isInEditor),
     stateManager,
     registry,
     globalHandlerMap,
