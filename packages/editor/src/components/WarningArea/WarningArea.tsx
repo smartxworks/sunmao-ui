@@ -5,7 +5,6 @@ import {
   HStack,
   IconButton,
   Tabs,
-  Text,
   TabPanel,
   TabPanels,
   TabList,
@@ -150,14 +149,6 @@ export const WarningArea: React.FC<Props> = observer(({ services }) => {
       >
         <Tabs h="full" w="full" variant="soft-rounded" colorScheme="gray">
           <TabList>
-            <Tab alignItems="baseline">
-              <Text fontSize="md" fontWeight="bold">
-                Errors
-              </Text>
-              <Badge ml="1" fontSize="0.8em" colorScheme="red">
-                {editorStore.validateResult.length}
-              </Badge>
-            </Tab>
             <Tab>Logs</Tab>
             <HStack w="full" justify="end">
               {editorStore.isSaved ? savedBadge : unsaveBadge}

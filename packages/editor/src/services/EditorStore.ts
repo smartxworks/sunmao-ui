@@ -5,10 +5,8 @@ import { isEqual } from 'lodash';
 
 import { EventBusType } from './eventBus';
 import { AppStorage } from './AppStorage';
-import type { SchemaValidator, ValidateErrorResult } from '../validator';
 import { ExplorerMenuTabs, ToolMenuTabs } from '../constants/enum';
 
-import { AppModelManager } from '../operations/AppModelManager';
 import type { Metadata } from '@sunmao-ui/core';
 
 type EditingTarget = {
@@ -29,7 +27,6 @@ export class EditorStore {
   explorerMenuTab = ExplorerMenuTabs.UI_TREE;
   toolMenuTab = ToolMenuTabs.INSERT;
   viewStateComponentId = '';
-  validateResult: ValidateErrorResult[] = [];
   // current editor editing target(app or module)
   currentEditingTarget: EditingTarget = {
     kind: 'app',
@@ -45,7 +42,6 @@ export class EditorStore {
   // when componentsChange event is triggered, currentComponentsVersion++
   currentComponentsVersion = 0;
   lastSavedComponentsVersion = 0;
-  schemaValidator?: SchemaValidator;
 
   private isDataSourceTypeCache: Record<string, boolean> = {};
 
@@ -53,23 +49,12 @@ export class EditorStore {
     private eventBus: EventBusType,
     private registry: RegistryInterface,
     private stateManager: StateManagerInterface,
-    public appStorage: AppStorage,
-    private appModelManager: AppModelManager
+    public appStorage: AppStorage
   ) {
     this.globalDependencies = this.stateManager.dependencies;
-    const dependencyNames = Object.keys(this.globalDependencies);
-    // dynamic load validator
-    import('../validator').then(({ SchemaValidator: SchemaValidatorClass }) => {
-      this.setSchemaValidator(new SchemaValidatorClass(this.registry, dependencyNames));
-      // do first validation
-      this.setValidateResult(
-        this.schemaValidator!.validate(this.appModelManager.appModel)
-      );
-    });
     makeAutoObservable(this, {
       eleMap: false,
       components: observable.shallow,
-      schemaValidator: observable.ref,
       setComponents: action,
       setHoverComponentId: action,
       setDragOverComponentId: action,
@@ -130,17 +115,6 @@ export class EditorStore {
           const modules = createModule(m);
           this.registry.registerModule(modules, true);
         });
-      }
-    );
-
-    reaction(
-      () => this.components,
-      () => {
-        if (this.schemaValidator) {
-          this.setValidateResult(
-            this.schemaValidator.validate(this.appModelManager.appModel)
-          );
-        }
       }
     );
 
@@ -287,10 +261,6 @@ export class EditorStore {
     this.lastSavedComponentsVersion = val;
   };
 
-  setValidateResult = (validateResult: ValidateErrorResult[]) => {
-    this.validateResult = validateResult;
-  };
-
   setExplorerMenuTab = (val: ExplorerMenuTabs) => {
     this.explorerMenuTab = val;
   };
@@ -305,10 +275,6 @@ export class EditorStore {
 
   setIsDraggingNewComponent = (val: boolean) => {
     this.isDraggingNewComponent = val;
-  };
-
-  setSchemaValidator = (val: SchemaValidator) => {
-    this.schemaValidator = val;
   };
 
   setModuleDependencies = (exampleProperties?: Record<string, unknown>) => {
