@@ -8,7 +8,7 @@ import {
   ModalBody,
 } from '@chakra-ui/react';
 import { EditorServices } from '../../types';
-import { ReplationshipView } from './RelationshipView';
+import { RelationshipView } from './RelationshipView';
 
 type Props = {
   componentId: string;
@@ -28,7 +28,7 @@ export const RelationshipModal: React.FC<Props> = ({
         <ModalHeader>Relationships of {componentId}</ModalHeader>
         <ModalCloseButton />
         <ModalBody flex="1 1 auto" height="75vh" alignItems="start" overflow="auto">
-          <ReplationshipView componentId={componentId} services={services} />
+          <RelationshipView componentId={componentId} services={services} />
         </ModalBody>
       </ModalContent>
     </Modal>
