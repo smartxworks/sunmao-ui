@@ -10,6 +10,10 @@ export type Metadata<
   isDataSource?: boolean;
 };
 
+export type ApplicationMetadata = Metadata<{
+  componentsTagMap?: Record<string, string[]>;
+}>;
+
 type ComponentCategory =
   | (string & {})
   | 'Layout'

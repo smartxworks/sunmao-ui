@@ -4,9 +4,14 @@ import { css } from '@emotion/css';
 import { observer } from 'mobx-react-lite';
 import { ComponentSchema } from '@sunmao-ui/core';
 import { Select } from '@sunmao-ui/editor-sdk';
+import { ComponentFilter } from '../ComponentsList/ComponentFilter';
+import { HStack } from '@chakra-ui/react';
 type Props = {
   components: ComponentSchema[];
   onChange: (id: string) => void;
+  tags: string[];
+  checkedTags: string[];
+  onTagsChange: (v: string[]) => void;
   services: EditorServices;
 };
 
@@ -28,7 +33,7 @@ const SelectStyle = css`
 `;
 
 export const ComponentSearch: React.FC<Props> = observer(props => {
-  const { components, onChange } = props;
+  const { components, onChange, tags, checkedTags, onTagsChange } = props;
 
   const options = useMemo(() => {
     return components.map(c => ({
@@ -38,15 +43,24 @@ export const ComponentSearch: React.FC<Props> = observer(props => {
   }, [components]);
 
   return (
-    <Select
-      bordered={false}
-      className={SelectStyle}
-      placeholder="Search component"
-      onSelect={onChange}
-      showArrow={false}
-      showSearch
-      style={{ width: '100%' }}
-      options={options}
-    />
+    <HStack width="full">
+      <Select
+        bordered={false}
+        className={SelectStyle}
+        placeholder="Search component"
+        onSelect={onChange}
+        showArrow={false}
+        showSearch
+        style={{ width: '100%' }}
+        options={options}
+      />
+      {tags.length > 0 ? (
+        <ComponentFilter
+          options={tags}
+          checkedOptions={checkedTags}
+          onChange={v => onTagsChange(v)}
+        />
+      ) : null}
+    </HStack>
   );
 });

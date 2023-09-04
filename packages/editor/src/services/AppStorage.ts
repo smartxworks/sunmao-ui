@@ -1,6 +1,7 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
 import {
   Application,
+  ApplicationMetadata,
   ComponentSchema,
   Module,
   ModuleMethodSpec,
@@ -154,6 +155,20 @@ export class AppStorage {
     const newApp = produce(toJS(this.app), draft => {
       draft.metadata.name = name;
       draft.version = version;
+    });
+    this.setApp(newApp);
+    this.saveApplication();
+  }
+
+  saveAppAnnotations(annotations: ApplicationMetadata['annotations']) {
+    if (!annotations) return;
+    const newApp = produce(toJS(this.app), draft => {
+      if (!draft.metadata.annotations) {
+        draft.metadata.annotations = {};
+      }
+      Object.keys(annotations).forEach(key => {
+        draft.metadata.annotations![key] = annotations[key];
+      });
     });
     this.setApp(newApp);
     this.saveApplication();

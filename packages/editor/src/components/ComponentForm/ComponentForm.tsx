@@ -12,6 +12,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { StyleTraitForm } from './StyleTraitForm';
 import { EditorServices } from '../../types';
 import { FormSection } from './FormSection';
+import { TagForm } from './TagForm';
 
 // avoid the expression tip would be covered
 const ComponentFormStyle = css`
@@ -126,6 +127,10 @@ export const ComponentForm: React.FC<Props> = observer(props => {
     {
       title: 'Traits',
       node: <GeneralTraitFormList component={selectedComponent} services={services} />,
+    },
+    {
+      title: 'Tags',
+      node: <TagForm services={services} />,
     },
   ];
 

@@ -113,9 +113,9 @@ export const ComponentList: React.FC<Props> = ({ services }) => {
         />
         <InputRightElement>
           <ComponentFilter
-            versions={versions}
-            checkedVersions={checkedVersions}
-            setCheckedVersions={setCheckedVersions}
+            options={versions}
+            checkedOptions={checkedVersions}
+            onChange={setCheckedVersions}
           />
         </InputRightElement>
       </InputGroup>
