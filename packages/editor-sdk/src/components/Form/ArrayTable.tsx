@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { css } from '@emotion/css';
-import { IconButton, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { IconButton, Table, Thead, Tbody, Tr, Th, Td, Tooltip } from '@chakra-ui/react';
 import { AddIcon, SettingsIcon } from '@chakra-ui/icons';
 import { generateDefaultValueFromSpec, isJSONSchema } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
@@ -125,11 +125,15 @@ const TableRow: React.FC<RowProps> = props => {
             ? propertyValue
             : JSON.stringify(propertyValue);
 
-        return (
-          <Td key={key} title={propertyValueString}>
-            {propertyValueString}
-          </Td>
-        );
+        let ele = <span>{propertyValueString}</span>;
+        if (propertyValueString.length > 10) {
+          ele = (
+            <Tooltip label={propertyValueString} placement="top">
+              {ele}
+            </Tooltip>
+          );
+        }
+        return <Td key={key}>{ele}</Td>;
       })}
       <Td key="button">
         <ArrayButtonGroup index={itemIndex} value={value} onChange={onChange} />
