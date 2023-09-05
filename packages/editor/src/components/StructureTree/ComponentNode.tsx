@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
   IconButton,
+  useToast,
 } from '@chakra-ui/react';
 import { isEqual, xor } from 'lodash';
 import { ComponentItemView } from './ComponentItemView';
@@ -21,6 +22,7 @@ import { RootId } from '../../constants';
 import { RelationshipModal } from '../RelationshipModal';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { ExtractModuleModal } from '../ExtractModuleModal';
+import { copyToClipboard } from '../../utils/copy';
 
 const IndextWidth = 24;
 
@@ -51,7 +53,8 @@ const ComponentNodeImpl = (props: Props) => {
     onDragEnd,
     prefix,
   } = props;
-  const { registry, eventBus, appModelManager, editorStore } = services;
+  const toast = useToast();
+  const { registry, eventBus, appModelManager, editorStore, stateManager } = services;
   const [isShowRelationshipModal, setIsShowRelationshipModal] = useState(false);
   const [isShowExtractModuleModal, setIsShowExtractModuleModal] = useState(false);
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
@@ -102,6 +105,34 @@ const ComponentNodeImpl = (props: Props) => {
       editorStore.setViewStateComponentId(component.id);
     },
     [component.id, editorStore]
+  );
+  const onClickCopyState = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      const componentState = stateManager.store[component.id];
+
+      if (componentState) {
+        const success = copyToClipboard(JSON.stringify(componentState, null, 2));
+
+        if (success) {
+          toast({
+            title: 'Copy state to clipboard successfully.',
+            status: 'success',
+            position: 'top',
+            duration: 1500,
+          });
+        } else {
+          toast({
+            title: 'Copy state to clipboard failed.',
+            status: 'warning',
+            position: 'top',
+            duration: 1500,
+          });
+        }
+      }
+    },
+    [component.id, stateManager, toast]
   );
   const onClickExtractToModule = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -188,6 +219,9 @@ const ComponentNodeImpl = (props: Props) => {
         </MenuItem>
         <MenuItem icon={<ViewIcon />} onClick={onClickShowState}>
           Show State
+        </MenuItem>
+        <MenuItem icon={<CopyIcon />} onClick={onClickCopyState}>
+          Copy State
         </MenuItem>
         <MenuItem icon={<ViewIcon />} onClick={onClickExtractToModule}>
           Extract to Module
