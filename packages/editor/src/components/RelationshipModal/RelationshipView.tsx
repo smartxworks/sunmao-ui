@@ -33,7 +33,7 @@ type MethodRelation = {
   method: string;
 };
 
-export const ReplationshipView: React.FC<Props> = ({ componentId, services }) => {
+export const RelationshipView: React.FC<Props> = ({ componentId, services }) => {
   const { appModelManager, editorStore } = services;
   const { appModel } = appModelManager;
 
@@ -128,7 +128,7 @@ export const ReplationshipView: React.FC<Props> = ({ componentId, services }) =>
   );
 };
 
-function getRelations(componentId: ComponentId, appModel: AppModel) {
+export function getRelations(componentId: ComponentId, appModel: AppModel) {
   const expressionRelations: ExpressionRelation[] = [];
   const methodRelations: MethodRelation[] = [];
   appModel.traverseTree(c => {

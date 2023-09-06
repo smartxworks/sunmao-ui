@@ -23,6 +23,8 @@ import { RelationshipModal } from '../RelationshipModal';
 import { ExplorerMenuTabs } from '../../constants/enum';
 import { ExtractModuleModal } from '../ExtractModuleModal';
 import { copyToClipboard } from '../../utils/copy';
+import { getRelations } from '../RelationshipModal/RelationshipView';
+import useModal from '../../hooks/useModal';
 
 const IndextWidth = 24;
 
@@ -55,22 +57,36 @@ const ComponentNodeImpl = (props: Props) => {
   } = props;
   const toast = useToast();
   const { registry, eventBus, appModelManager, editorStore, stateManager } = services;
+  const { appModel } = appModelManager;
   const [isShowRelationshipModal, setIsShowRelationshipModal] = useState(false);
   const [isShowExtractModuleModal, setIsShowExtractModuleModal] = useState(false);
+  const { modal: messageModal, open: openMessageModal } = useModal();
   const slots = Object.keys(registry.getComponentByType(component.type).spec.slots);
   const paddingLeft = depth * IndextWidth;
 
   const onClickRemove = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      eventBus.send(
-        'operation',
-        genOperation(registry, 'removeComponent', {
-          componentId: component.id,
-        })
+      const { expressionRelations, methodRelations } = getRelations(
+        component.id as ComponentId,
+        appModel
       );
+
+      if (expressionRelations.length || methodRelations.length) {
+        openMessageModal({
+          title: 'Remove component failed',
+          message: 'Its state or methods are used by another component.',
+        });
+      } else {
+        eventBus.send(
+          'operation',
+          genOperation(registry, 'removeComponent', {
+            componentId: component.id,
+          })
+        );
+      }
     },
-    [component.id, eventBus, registry]
+    [component.id, eventBus, registry, appModel, openMessageModal]
   );
   const onClickDuplicate = useCallback(
     (e: React.MouseEvent) => {
@@ -307,6 +323,7 @@ const ComponentNodeImpl = (props: Props) => {
       {emptyChildrenSlotsPlaceholder}
       {relationshipViewModal}
       {extractModuleModal}
+      {messageModal}
     </VStack>
   );
 };
