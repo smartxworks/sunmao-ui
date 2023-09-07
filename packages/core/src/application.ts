@@ -1,4 +1,4 @@
-import { Metadata } from './metadata';
+import { ApplicationMetadata } from './metadata';
 import { parseVersion, Version } from './version';
 import { type PropsBeforeEvaled } from './schema';
 // spec
@@ -6,7 +6,7 @@ import { type PropsBeforeEvaled } from './schema';
 export type Application = {
   version: string;
   kind: 'Application';
-  metadata: Metadata;
+  metadata: ApplicationMetadata;
   spec: {
     components: ComponentSchema[];
   };

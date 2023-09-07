@@ -102,6 +102,9 @@ export const StructureTree: React.FC<Props> = observer(props => {
           Components
         </Text>
         <ComponentSearch
+          tags={[]}
+          checkedTags={[]}
+          onTagsChange={() => null}
           components={components}
           onChange={id => setSelectedComponentId(id)}
           services={props.services}

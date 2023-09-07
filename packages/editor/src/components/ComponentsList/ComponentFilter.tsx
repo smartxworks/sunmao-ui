@@ -57,37 +57,43 @@ const FilterIcon = createIcon({
 });
 
 type FilterProps = {
-  versions: string[];
-  checkedVersions: string[];
-  setCheckedVersions: React.Dispatch<React.SetStateAction<string[]>>;
+  options: string[];
+  checkedOptions: string[];
+  onChange: (v: string[]) => void;
 };
 
 export const ComponentFilter: React.FC<FilterProps> = ({
-  versions,
-  checkedVersions,
-  setCheckedVersions,
+  options,
+  checkedOptions,
+  onChange,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     const value = e.target.value;
-    const newCheckedVersions = [...checkedVersions];
+    const newCheckedOptions = [...checkedOptions];
     if (checked) {
-      newCheckedVersions.push(value);
+      newCheckedOptions.push(value);
     } else {
-      const idx = newCheckedVersions.findIndex(c => c === value);
-      newCheckedVersions.splice(idx, 1);
+      const idx = newCheckedOptions.findIndex(c => c === value);
+      newCheckedOptions.splice(idx, 1);
     }
-    setCheckedVersions(newCheckedVersions);
+    onChange(newCheckedOptions);
   };
 
   const checkVersion = (version: string) => {
-    return checkedVersions.includes(version);
+    return checkedOptions.includes(version);
   };
 
   return (
     <Popover isLazy closeOnBlur placement="bottom">
       <PopoverTrigger>
-        <Button _focus={{ boxShadow: 'none' }} bg="transparent" h="1.75rem" size="sm">
+        <Button
+          _focus={{ boxShadow: 'none' }}
+          colorScheme="blue"
+          variant={checkedOptions.length > 0 ? 'solid' : 'ghost'}
+          h="1.75rem"
+          size="sm"
+        >
           <FilterIcon />
         </Button>
       </PopoverTrigger>
@@ -110,7 +116,7 @@ export const ComponentFilter: React.FC<FilterProps> = ({
           width="200px"
           _focus={{ boxShadow: 'none' }}
         >
-          {versions.map(version => {
+          {options.map(version => {
             return (
               <Checkbox
                 key={version}

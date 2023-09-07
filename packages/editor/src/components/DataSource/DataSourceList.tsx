@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   VStack,
   Spacer,
@@ -21,6 +21,7 @@ import { generateDefaultValueFromSpec } from '@sunmao-ui/shared';
 import { JSONSchema7 } from 'json-schema';
 import { ToolMenuTabs } from '../../constants/enum';
 import { ComponentSearch } from '../StructureTree/ComponentSearch';
+import { ComponentSchema } from '@sunmao-ui/core';
 
 interface Props {
   services: EditorServices;
@@ -30,8 +31,23 @@ export const DataSourceList: React.FC<Props> = props => {
   const { services } = props;
   const { editorStore, eventBus, registry } = services;
   const { dataSources, setSelectedComponentId, setToolMenuTab } = editorStore;
-  const tDataSources = dataSources.filter(ds => ds.type === 'core/v1/dummy');
-  const cDataSources = dataSources.filter(ds => ds.type !== 'core/v1/dummy');
+  const [checkedTags, setCheckedTags] = useState<string[]>([]);
+  const tagMap = services.editorStore.app.metadata.annotations?.componentsTagMap;
+  // filter datasources by tag
+  const filteredDataSources = useMemo(() => {
+    if (!tagMap || checkedTags.length === 0) {
+      return dataSources;
+    }
+
+    const dataSourceIds = checkedTags.reduce<string[]>((result, curr) => {
+      return result.concat(tagMap[curr]);
+    }, []);
+
+    return dataSources.filter(d => dataSourceIds.includes(d.id)) as ComponentSchema[];
+  }, [checkedTags, dataSources, tagMap]);
+
+  const tDataSources = filteredDataSources.filter(ds => ds.type === 'core/v1/dummy');
+  const cDataSources = filteredDataSources.filter(ds => ds.type !== 'core/v1/dummy');
   const cdsMap = groupBy(cDataSources, c => c.type);
   const tdsMap = groupBy(tDataSources, c => c.traits[0]?.type || '');
   const cdsGroups = Object.keys(cdsMap).map(type => {
@@ -165,6 +181,9 @@ export const DataSourceList: React.FC<Props> = props => {
         components={dataSources}
         onChange={id => setSelectedComponentId(id)}
         services={props.services}
+        tags={tagMap ? Object.keys(tagMap) : []}
+        checkedTags={checkedTags}
+        onTagsChange={v => setCheckedTags(v)}
       />
       <Accordion
         reduceMotion
