@@ -279,7 +279,7 @@ export default implementRuntimeTrait({
   const resultMap = new Map();
 
   return props => {
-    const { validators, componentId, subscribeMethods, mergeState } = props;
+    const { validators = [], componentId, subscribeMethods, mergeState } = props;
     const validatorMap = validators.reduce((result, validator) => {
       result[validator.name] = validator;
 
@@ -287,7 +287,7 @@ export default implementRuntimeTrait({
     }, {} as Record<string, Static<typeof ValidatorSpec>>);
 
     function setErrors({
-      errorsMap,
+      errorsMap = {},
     }: {
       errorsMap: Record<string, Static<typeof ErrorSpec>[]>;
     }) {
@@ -311,7 +311,7 @@ export default implementRuntimeTrait({
       });
       resultMap.set(componentId, validatedResult);
     }
-    function validateFields({ names }: { names: string[] }) {
+    function validateFields({ names = [] }: { names: string[] }) {
       const validatedResult = names
         .filter(name => validatorMap[name])
         .map(name => {
@@ -362,7 +362,7 @@ export default implementRuntimeTrait({
     function validateAllFields() {
       validateFields({ names: validators.map(({ name }) => name) });
     }
-    function clearErrors({ names }: { names: string[] }) {
+    function clearErrors({ names = [] }: { names: string[] }) {
       setErrors({
         errorsMap: names.reduce((result: Record<string, []>, name) => {
           result[name] = [];
