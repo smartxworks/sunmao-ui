@@ -36,6 +36,7 @@ import tern, { Def } from 'tern';
 import { getTypeString } from '../../../utils/type';
 import ecmascript from '../../../constants/ecmascript';
 import { PREVENT_POPOVER_WIDGET_CLOSE_CLASS } from '../../../constants';
+import { stringify } from '../../../utils/object';
 
 injectGlobal`
   .CodeMirror-hints {
@@ -386,7 +387,7 @@ export const ExpressionEditor = React.forwardRef<
       <Box fontWeight="bold" marginBottom="4px">
         {error ? 'Error' : getTypeString(evaledValue?.value)}
       </Box>
-      {error || JSON.stringify(evaledValue?.value, null, 2)}
+      {error || stringify(evaledValue?.value)}
     </Box>
   );
 
