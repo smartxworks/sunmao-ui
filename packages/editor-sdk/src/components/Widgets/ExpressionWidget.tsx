@@ -17,8 +17,16 @@ export function isNumeric(x: string | number) {
 
 // highly inspired by appsmith
 function generateTypeDef(
-  obj: any
+  obj: any,
+  seen: WeakSet<object> = new WeakSet(),
+  depth = 0
 ): string | Record<string, string | Record<string, unknown>> {
+  const MAX_DEPTH = 6; // 最大递归深度限制
+
+  if (depth > MAX_DEPTH) {
+    return '?';
+  }
+
   const type = getType(obj);
   switch (type) {
     case Types.ARRAY: {
@@ -26,10 +34,15 @@ function generateTypeDef(
       return `[${arrayType}]`;
     }
     case Types.OBJECT: {
+      if (seen.has(obj)) {
+        return '?';
+      }
+      seen.add(obj);
       const objType: Record<string, string | Record<string, unknown>> = {};
       Object.keys(obj).forEach(k => {
-        objType[k] = generateTypeDef(obj[k]);
+        objType[k] = generateTypeDef(obj[k], seen, depth + 1);
       });
+      seen.delete(obj);
       return objType;
     }
     case Types.STRING:
